@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2003/06/11 17:04:38 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/02 11:03:13 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2003/06/11 17:04:38 $
+ * @version $Revision: 1.40 $ $Date: 2003/07/02 11:03:13 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -108,10 +108,10 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
             if(cmsUri == null) {
                 // hammer nich
-                CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, file.getAbsolutePath());
+                CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, cms.readAbsolutePath(file));
 //				TODO: fix this later - check how to do this without getReadingpermittedGroup
 //				String readAccessGroup = CmsObject.C_GROUP_ADMIN;
-				String readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(), file.getAbsolutePath());
+				String readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(), cms.readAbsolutePath(file));
                 cmsUri = new CmsUri(elemDesc, readAccessGroup, (CmsElementDefinitionCollection)null,
                         Utils.isHttpsResource(cms, file));
                 elementCache.getUriLocator().put(uriDesc, cmsUri);
@@ -163,12 +163,12 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
                 boolean httpsReq = "https".equalsIgnoreCase(scheme);
                 if(cmsUri.isHttpsResource() != httpsReq){
                     if(httpsReq){
-                        // throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
+                        // throw new CmsException(" "+cms.readPath(file)+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
                         // since the netscape 4.7 dont shows http pics on https sides we cant throw this error.
                     }else if(CmsObject.getStaticExportProperties().isStaticExportEnabled()
                                 || "false_ssl".equals(CmsObject.getStaticExportProperties().getStaticExportEnabledValue())){
                         // check if static export is enabled and value is not false_ssl
-                        throw new CmsException(" "+file.getAbsolutePath()+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
+                        throw new CmsException(" "+cms.readAbsolutePath(file)+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
                     }
                 }
             }
@@ -176,7 +176,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
         } else {
             Object tmpl = getTemplateClass(cms, templateClass);
             if(!(tmpl instanceof com.opencms.template.I_CmsDumpTemplate)) {
-                String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a Cms dump template class.";
+                String errorMessage = "Error in " + cms.readAbsolutePath(file) + ": " + templateClass + " is not a Cms dump template class.";
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
                 }
@@ -188,7 +188,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             }
             catch(CmsException e) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "There were errors while building output for template file \"" + file.getAbsolutePath() + "\" and template class \"" + templateClass + "\". See above for details.");
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "There were errors while building output for template file \"" + cms.readAbsolutePath(file) + "\" and template class \"" + templateClass + "\". See above for details.");
                 }
                 throw e;
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,19 +28,17 @@
 
 package com.opencms.file;
 
-import com.opencms.core.*;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
-import java.io.*;
+import java.io.Serializable;
 /**
  * Describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/02 11:03:12 $
  */
-public class CmsFolder extends CmsResource implements I_CmsConstants,
-                                                      Cloneable,
-                                                      Serializable {
+public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
 
      /**
       * Constructor, creates a new CmsFolder object.
@@ -73,8 +71,8 @@ public class CmsFolder extends CmsResource implements I_CmsConstants,
               resourceName,resourceType,
               resourceFlags,userId,groupId,
               projectId,accessFlags,state,
-              lockedByUserId,C_UNKNOWN_LAUNCHER_ID,
-              C_UNKNOWN_LAUNCHER,dateCreated,
+              lockedByUserId,I_CmsConstants.C_UNKNOWN_LAUNCHER_ID,
+              I_CmsConstants.C_UNKNOWN_LAUNCHER,dateCreated,
               dateLastModified,resourceLastModifiedByUserId, -1, lockedInProject);
    }
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/26 15:32:22 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -55,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.82 $ $Date: 2003/06/26 15:32:22 $
+ * @version $Revision: 1.83 $ $Date: 2003/07/02 11:03:12 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -1199,9 +1200,9 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void getFolderTree() {
         try {
-            Vector folders = m_cms.getFolderTree();
+            List folders = m_cms.getFolderTree();
             for(int i = 0;i < folders.size();i++) {
-                System.out.println((CmsFolder)folders.elementAt(i));
+                System.out.println((CmsFolder)folders.get(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);

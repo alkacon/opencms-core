@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2003/03/02 18:43:55 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2003/03/02 18:43:55 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/02 11:03:12 $
  */
 public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_CmsLogChannels {
 
@@ -174,7 +174,7 @@ public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_
             && (queryString == null || "".equals(queryString));
         try {
             CmsFile file = cms.readFile(templateFile);
-            result = result && (file.getAccessFlags() & CmsFile.C_ACCESS_INTERNAL_READ) != CmsFile.C_ACCESS_INTERNAL_READ;
+            result = result && (file.getAccessFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) != I_CmsConstants.C_ACCESS_INTERNAL_READ;
         } catch(Exception e) {
             result = false;
         }

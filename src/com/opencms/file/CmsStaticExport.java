@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/04/03 16:55:22 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.44 $ $Date: 2003/04/03 16:55:22 $
+ * @version $Revision: 1.45 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -325,7 +325,7 @@ public class CmsStaticExport implements I_CmsConstants{
                     m_dynamicExportNameRulesExtern = new Vector();
                     for(int i=0; i < resWithProp.size(); i++){
                         CmsResource resource = (CmsResource)resWithProp.elementAt(i);
-                        String oldName = resource .getAbsolutePath();
+                        String oldName = m_cms.readAbsolutePath(resource);
                         String newName = m_cms.readProperty(oldName, C_PROPERTY_EXPORTNAME);
                         if(CmsObject.getStaticExportProperties().isExportDefault()){
                             m_dynamicExportNameRules.addElement("s#^"+oldName+"#"+CmsObject.getStaticExportProperties().getUrlPrefixArray()[0]+newName+"#");
@@ -354,7 +354,7 @@ public class CmsStaticExport implements I_CmsConstants{
                 m_rulesForHttpsEnabledResources = new Vector();
                 for(int i=0; i < resWithProp.size(); i++){
                     CmsResource resource = (CmsResource)resWithProp.elementAt(i);
-                    String resName = resource.getAbsolutePath();
+                    String resName = m_cms.readAbsolutePath(resource);
                     String propertyValue = m_cms.readProperty(resName, C_PROPERTY_EXPORT);
                     if(propertyValue != null){
                         if(propertyValue.equalsIgnoreCase("dynamic")){
@@ -748,6 +748,8 @@ public class CmsStaticExport implements I_CmsConstants{
      * @return the links (vector of strings).
      */
     private Vector getChangedLinks(CmsPublishedResources changedResources) throws CmsException{
+        String currentResourceName = null;
+        
         if(changedResources == null) return new Vector();
 
         Vector resToCheck = new Vector();
@@ -762,10 +764,11 @@ public class CmsStaticExport implements I_CmsConstants{
 
         // we also need all "new" files
         if(addVector != null){
-            for(int i=0; i<addVector.size(); i++){
-                String res = CmsResource.getAbsolutePath((String)addVector.elementAt(i));
-                if((!res.endsWith("/")) && (!returnValue.contains(res))){
-                    returnValue.add(res);
+            for(int i=0; i<addVector.size(); i++) {
+                currentResourceName = (String)addVector.elementAt(i);        
+                //String res = CmsResource.getAbsolutePath((String)addVector.elementAt(i));
+                if((!currentResourceName.endsWith("/")) && (!returnValue.contains(currentResourceName))){
+                    returnValue.add(currentResourceName);
                 }
             }
         }
@@ -811,11 +814,11 @@ public class CmsStaticExport implements I_CmsConstants{
         // the firstlevel files
         Vector files = m_cms.getFilesInFolder(folder);
         for(int i=0; i<files.size(); i++){
-            links.add(((CmsFile)files.elementAt(i)).getAbsolutePath());
+            links.add(m_cms.readAbsolutePath((CmsFile)files.elementAt(i)));
         }
         Vector subFolders = m_cms.getSubFolders(folder);
         for(int i=0; i<subFolders.size(); i++){
-            addSubFiles(links, ((CmsFolder)subFolders.elementAt(i)).getAbsolutePath());
+            addSubFiles(links, m_cms.readAbsolutePath((CmsFolder)subFolders.elementAt(i)));
         }
     }
 

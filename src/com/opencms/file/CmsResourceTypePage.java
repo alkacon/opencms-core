@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/06/24 15:43:24 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,15 +48,15 @@ import java.util.Vector;
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.57 $ $Date: 2003/06/24 15:43:24 $
+ * @version $Revision: 1.58 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
     /** Definition of the class */
-    private final static String C_CLASSNAME = "com.opencms.template.CmsXmlTemplate";
+    private static final String C_CLASSNAME = "com.opencms.template.CmsXmlTemplate";
 
     /** String to save the combined /default/vfs/ path */
-    private static String C_DEFVFS = C_DEFAULT_SITE + C_ROOTNAME_VFS;
+    private static final String C_DEFVFS = C_FOLDER_SEPARATOR + C_DEFAULT_SITE + C_FOLDER_SEPARATOR + C_ROOTNAME_VFS;
     
      /**
       * The id of resource type.
@@ -383,7 +383,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String bodyPath=(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")))+(source);
         String bodyXml=cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + hXml.getElementTemplate("body"));        
 
-        if ((C_DEFAULT_SITE + C_ROOTNAME_VFS + bodyPath).equals(bodyXml)){
+        if ((C_DEFVFS + bodyPath).equals(bodyXml)){
 
             // Evaluate some path information
             String destinationFolder = destination.substring(0,destination.lastIndexOf("/")+1);
@@ -459,7 +459,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // Select the first mastertemplate as default
         String masterTemplate = "";
         if(allMasterTemplates.size() > 0) {
-            masterTemplate = ((CmsFile)allMasterTemplates.elementAt(0)).getAbsolutePath();
+            masterTemplate = cms.readAbsolutePath((CmsFile)allMasterTemplates.elementAt(0));
         }
 
         // Evaluate the absolute path to the new body file
@@ -485,7 +485,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         if ((flags & C_ACCESS_INTERNAL_READ) ==0 ) {
             flags += C_ACCESS_INTERNAL_READ;
         }
-        cms.chmod(bodyFile.getAbsolutePath(), flags);
+        cms.chmod(cms.readAbsolutePath(bodyFile), flags);
         // linkmanagement: create the links of the new page (for the case that the content was not empty
         if(contents.length > 1){
             CmsPageLinks linkObject = cms.getPageLinks(newPageName);
@@ -562,7 +562,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         CmsXmlControlFile.clearFileCache(currentProject + ":" + filename);
 
         // linkmanagement: create the links of the restored page
-        CmsPageLinks linkObject = cms.getPageLinks(file.getAbsolutePath());
+        CmsPageLinks linkObject = cms.getPageLinks(cms.readAbsolutePath(file));
         cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
     }
 
@@ -735,9 +735,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String bodyPath = readBodyPath(cms, file);
         int help = C_VFS_PATH_BODIES.lastIndexOf("/");
         String hbodyPath=(C_VFS_PATH_BODIES.substring(0,help)) + oldname;
-        cms.doRenameFile(oldname,newname);
+        cms.doRenameResource(oldname,newname);
         if(hbodyPath.equals(bodyPath)) {
-            cms.doRenameFile(bodyPath, newname);
+            cms.doRenameResource(bodyPath, newname);
             help=bodyPath.lastIndexOf("/") + 1;
             hbodyPath = bodyPath.substring(0,help) + newname;
             changeContent(cms, file.getParent()+newname, hbodyPath);
@@ -784,7 +784,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         }
         
         // linkmanagement: create the links of the restored page
-        CmsPageLinks linkObject = cms.getPageLinks(file.getAbsolutePath());
+        CmsPageLinks linkObject = cms.getPageLinks(cms.readAbsolutePath(file));
         cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
     }
 
@@ -810,7 +810,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         }
         
         // linkmanagement: create the links of the restored page
-        CmsPageLinks linkObject = cms.getPageLinks(file.getAbsolutePath());
+        CmsPageLinks linkObject = cms.getPageLinks(cms.readAbsolutePath(file));
         cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
     }
 
@@ -878,7 +878,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      */
     private String checkBodyPath(CmsObject cms, CmsFile file) throws CmsException {
         // Use translated path name of body
-        String result = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")) + file.getAbsolutePath();
+        String result = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(file);
         if (!result.equals(readBodyPath(cms, (CmsFile)file))){
             result = null;
         }
@@ -932,16 +932,16 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                   orgFolder=orgFolder.substring(C_VFS_PATH_BODIES.length()-1);
                   CmsFolder newfolder=cms.doCreateFolder(completePath,foldername);
                   //CmsFolder folder = cms.readFolder(orgFolder);
-                  cms.doLockResource(newfolder.getAbsolutePath(),false);
-                  cms.cpacc(orgFolder, newfolder.getAbsolutePath());
+                  cms.doLockResource(cms.readAbsolutePath(newfolder),false);
+                  cms.cpacc(orgFolder, cms.readAbsolutePath(newfolder));
                   // TODO: remove this later
-                  //cms.doChgrp(newfolder.getAbsolutePath(),cms.readGroup(folder).getName());
-                  //cms.doChmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
-                  //cms.doChown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
+                  //cms.doChgrp(newcms.readPath(folder),cms.readGroup(folder).getName());
+                  //cms.doChmod(newcms.readPath(folder),folder.getAccessFlags());
+                  //cms.doChown(newcms.readPath(folder),cms.readOwner(folder).getName());
                   try{
                     CmsFolder correspondingFolder = cms.readFolder(correspFolder);
                     if(!correspondingFolder.isLocked()){
-                        cms.doUnlockResource(newfolder.getAbsolutePath());
+                        cms.doUnlockResource(cms.readAbsolutePath(newfolder));
                     }
                   } catch (CmsException ex){
                     // unable to unlock folder if parent folder is locked

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2003/06/13 15:13:13 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.47 $ $Date: 2003/06/13 15:13:13 $
+ * @version $Revision: 1.48 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -138,7 +138,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
 
                     // this is a file, so rename it
                     try {
-                        cms.renameResource(file.getAbsolutePath(), newFile);
+                        cms.renameResource(cms.readAbsolutePath(file), newFile);
                     }
                     catch(CmsException ex) {
 
@@ -172,7 +172,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
 
                     // this is a folder
                     try {
-                        cms.renameResource(file.getAbsolutePath(), newFile);
+                        cms.renameResource(cms.readAbsolutePath(file), newFile);
                     } catch(CmsException ex) {
 
                         // something went wrong, so remove all session parameters
@@ -194,7 +194,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
 
         // set the required datablocks
         if(action == null) {
-            String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
             }

@@ -137,13 +137,13 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
         for(int i = 0;i < modules.size();i++) {
             Vector moduleLangFiles = new Vector();
             try {
-                moduleLangFiles = cms.getFilesInFolder(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + lang);
+                moduleLangFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.elementAt(i)) + lang);
             } catch (CmsException e) {
                 // try read from old module locales path
                 try {
-                    moduleLangFiles = cms.getFilesInFolder(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + oldLang);
+                    moduleLangFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.elementAt(i)) + oldLang);
                     if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO) ) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[" + this.getClass().getName() + ".mergeLanguageFiles/1] Old module 'locales' path used: " + ((CmsFolder)modules.elementAt(i)).getAbsolutePath() + oldLang);
+                        A_OpenCms.log(C_OPENCMS_INFO, "[" + this.getClass().getName() + ".mergeLanguageFiles/1] Old module 'locales' path used: " + cms.readAbsolutePath((CmsFolder)modules.elementAt(i)) + oldLang);
                     }                    
                 } catch (CmsException ex) {
                     // no language files found, we can live with that, probably the module just has none                      
@@ -158,10 +158,10 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
             file = (CmsFile)langFiles.elementAt(i);
             if(! file.getName().toLowerCase().endsWith(".txt") && file.getState() != I_CmsConstants.C_STATE_DELETED) {
                 try {
-                    init(cms, file.getAbsolutePath());
+                    init(cms, cms.readAbsolutePath(file));
                 } catch(Exception exc) {
                     if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL) ) {
-                        A_OpenCms.log(C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".mergeLanguageFiles/3] Error merging language file: " + file.getAbsolutePath());
+                        A_OpenCms.log(C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".mergeLanguageFiles/3] Error merging language file: " + cms.readAbsolutePath(file));
                     }
                 }
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/06/12 15:16:32 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.34 $ $Date: 2003/06/12 15:16:32 $
+ * @version $Name:  $ $Revision: 1.35 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -258,7 +258,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 
             for(int i = 0;i < modules.size();i++) {
                 Vector moduleAdminPoints = new Vector();
-                moduleAdminPoints = cms.getSubFolders(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "administration/");
+                moduleAdminPoints = cms.getSubFolders(cms.readAbsolutePath((CmsFolder)modules.elementAt(i)) + "administration/");
                 for(int j = 0;j < moduleAdminPoints.size();j++) {
                     CmsFolder currentModuleAdminFolder = (CmsFolder) moduleAdminPoints.elementAt(j);
                     iconVector.addElement(currentModuleAdminFolder);
@@ -284,8 +284,8 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             for(int i = 0;i < numFolders;i++) {
                 CmsResource aktIcon = (CmsResource)iconVector.elementAt(i);
                 try {
-                    Map propertyinfos = cms.readProperties(aktIcon.getAbsolutePath());
-                    iconNames[i] = aktIcon.getAbsolutePath();
+                    Map propertyinfos = cms.readProperties(cms.readAbsolutePath(aktIcon));
+                    iconNames[i] = cms.readAbsolutePath(aktIcon);
                     index[i] = i;
                     folderLangKeys[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_NAVTEXT));
                     folderTitles[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_TITLE));
@@ -336,7 +336,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                         + "index.html?initial=true");
             }
             catch(Exception e) {
-                throw new CmsException("Redirect fails :" + ((CmsFile)iconVector2.elementAt(0)).getAbsolutePath(),
+                throw new CmsException("Redirect fails :" + cms.readAbsolutePath((CmsFile)iconVector2.elementAt(0)),
                         CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;

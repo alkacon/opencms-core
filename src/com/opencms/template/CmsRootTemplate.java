@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2002/12/06 23:16:50 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * generation of the master template class to be used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2002/12/06 23:16:50 $
+ * @version $Revision: 1.31 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
 
@@ -70,13 +70,13 @@ public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
         byte[] result;
 
         // Collect cache directives from subtemplates
-        CmsCacheDirectives cd = templateClass.collectCacheDirectives(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null);
+        CmsCacheDirectives cd = templateClass.collectCacheDirectives(cms, cms.readAbsolutePath(masterTemplate), C_ROOT_TEMPLATE_NAME, parameters, null);
         boolean streamable = cms.getRequestContext().isStreaming() && cd.isStreamable();
         cms.getRequestContext().setStreaming(streamable);
 
         /*System.err.println("******************************************************************");
         System.err.println("* Cache directives Summary");
-        System.err.println("* File                    : " + masterTemplate.getAbsolutePath());
+        System.err.println("* File                    : " + cms.readPath(masterTemplate));
         System.err.println("* Class                   : " + templateClass.getClass());
         System.err.println("* internal cacheable      : " + (cd.isInternalCacheable()?"true":"false"));
         System.err.println("* proxy public cacheable  : " + (cd.isProxyPublicCacheable()?"true":"false"));
@@ -87,8 +87,8 @@ public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
         */
 
         //String cacheKey = cms.getUrl();
-        Object cacheKey = templateClass.getKey(cms, masterTemplate.getAbsolutePath(), parameters, null);
-        //boolean cacheable = templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null);
+        Object cacheKey = templateClass.getKey(cms, cms.readAbsolutePath(masterTemplate), parameters, null);
+        //boolean cacheable = templateClass.isCacheable(cms, cms.readPath(masterTemplate), C_ROOT_TEMPLATE_NAME, parameters, null);
         boolean cacheable = cd.isInternalCacheable();
 
         I_CmsResponse resp = cms.getRequestContext().getResponse();
@@ -117,14 +117,14 @@ public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
             }
         }
 
-        if(cacheable && cache.has(cacheKey) && !templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null)) {
+        if(cacheable && cache.has(cacheKey) && !templateClass.shouldReload(cms, cms.readAbsolutePath(masterTemplate), C_ROOT_TEMPLATE_NAME, parameters, null)) {
             result = cache.get(cacheKey);
             // We don't want to stream this...
             cms.getRequestContext().setStreaming(false);
         }
         else {
             try {
-                result = templateClass.getContent(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters);
+                result = templateClass.getContent(cms, cms.readAbsolutePath(masterTemplate), C_ROOT_TEMPLATE_NAME, parameters);
             }
             catch(CmsException e) {
                 cache.clearCache(cacheKey);

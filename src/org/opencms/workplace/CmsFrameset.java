@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/06/30 18:13:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/02 11:03:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -113,7 +113,7 @@ public class CmsFrameset extends CmsWorkplace {
             CmsFile resourceTyp = (CmsFile)resTypes.elementAt(i);
             try {
                 int resId = getCms().getResourceType(resourceTyp.getName()).getResourceType();
-                result.append(getResourceEntry(new String(getCms().readFile(resourceTyp.getAbsolutePath()).getContents()), resId));
+                result.append(getResourceEntry(new String(getCms().readFile(getCms().readAbsolutePath(resourceTyp)).getContents()), resId));
             } catch(CmsException e) {
             }
         }  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2003/06/13 15:13:14 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * Template class for displaying the chgrp screen of the OpenCms workplace.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2003/06/13 15:13:14 $
+ * @version $Revision: 1.33 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
@@ -108,7 +108,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
 				// if the resource is a folder, check if there is a corresponding
 				boolean rekursive = (file.isFolder() && flags.equals("true"));
-				cms.chgrp(file.getAbsolutePath(), newgroup, rekursive);
+				cms.chgrp(cms.readAbsolutePath(file), newgroup, rekursive);
 
 				session.removeValue(C_PARA_FILE);
 
@@ -136,8 +136,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		}
 
 		// set the required datablocks
-		String title = cms.readProperty(file.getAbsolutePath(),
-		C_PROPERTY_TITLE);
+		String title = cms.readProperty(cms.readAbsolutePath(file),C_PROPERTY_TITLE);
 		if(title == null) title = "";
 		CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
 //		TODO fix this later

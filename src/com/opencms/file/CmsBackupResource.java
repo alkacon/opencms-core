@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,22 +29,23 @@
 package com.opencms.file;
 
 
+import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
-import java.io.*;
+import java.io.Serializable;
 
 /**
  * Describes a backup resource in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/02 11:03:12 $
  */
-public class CmsBackupResource extends CmsResource implements Cloneable,Serializable {
+public class CmsBackupResource extends CmsResource implements Cloneable, Serializable, Comparable {
 
     /**
      * The id of the version.
      */
-    private int m_versionId = C_UNKNOWN_ID;
+    private int m_versionId = I_CmsConstants.C_UNKNOWN_ID;
 
     /**
      * The name of the owner.
@@ -137,7 +138,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable,Serializ
 
         return new CmsBackupResource(this.getVersionId(), this.getId(), this.getResourceId(),
                                      this.getParentId(), this.getFileId(),
-                                     new String(this.getAbsolutePath()), this.getType(), this.getFlags(),
+                                     new String(this.getResourceName()), this.getType(), this.getFlags(),
                                      this.getOwnerId(), this.getOwnerName(), this.getGroupId(),
                                      this.getGroupName(), this.getProjectId(), this.getAccessFlags(),
                                      this.getState(),

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.42 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Revision: 1.43 $ $Date: 2003/07/02 11:03:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -110,7 +110,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
                 if(galleries.size() > 0) {
 
                     // take the first gallery
-                    folder = ((CmsResource)galleries.elementAt(0)).getAbsolutePath();
+                    folder = cms.readAbsolutePath((CmsResource)galleries.elementAt(0));
                     session.putValue(C_PARA_FOLDER, folder);
                 }
                 else {
@@ -177,7 +177,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         for(int i = 0;i < allPics.size();i++) {
             CmsFile file = (CmsFile)allPics.elementAt(i);
             String filename = file.getName();
-            String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
             boolean filenameFilter = inFilter(filename, filter);
             boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
             if((filenameFilter || titleFilter) && isImage(filename)) {
@@ -220,10 +220,10 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         for(int i = 0;i < numFolders;i++) {
             CmsResource currFolder = (CmsResource)folders.elementAt(i);
             String name = currFolder.getName();
-            if(chosenFolder.equals(currFolder.getAbsolutePath())) {
+            if(chosenFolder.equals(cms.readAbsolutePath(currFolder))) {
                 ret = i;
             }
-            values.addElement(currFolder.getAbsolutePath());
+            values.addElement(cms.readAbsolutePath(currFolder));
             names.addElement(name);
         }
         return new Integer(ret);
@@ -328,7 +328,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         for(int i = from;i < to;i++) {
             CmsFile file = (CmsFile)filteredPics.elementAt(i);
             String filename = file.getName();
-            String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
 
             // If no "Title" property is given, the title will be set to the filename
             // without its postfix
@@ -354,7 +354,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 
             // Set all datablocks for the current picture list entry
             xmlTemplateDocument.setData("picsource", picsUrl + file.getName());
-            xmlTemplateDocument.setData("filepath", file.getAbsolutePath());
+            xmlTemplateDocument.setData("filepath", cms.readAbsolutePath(file));
             xmlTemplateDocument.setData("title", Encoder.escapeXml(title));
             xmlTemplateDocument.setData("filename", filename);
             xmlTemplateDocument.setData("size", file.getLength() + " Byte");

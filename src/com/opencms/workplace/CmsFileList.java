@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.65 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.66 $ $Date: 2003/07/02 11:03:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -427,7 +427,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     template.setData(C_FILELIST_CLASS_VALUE, getStyle(cms, res));
 
                     // set the icon
-                    template.fastSetXmlData(C_CONTEXT_LINK, res.getAbsolutePath());
+                    template.fastSetXmlData(C_CONTEXT_LINK, cms.readAbsolutePath(res));
                     template.fastSetXmlData(C_CONTEXT_MENU, getContextMenue(cms, res, template));
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
                     I_CmsResourceType type = cms.getResourceType(res.getType());
@@ -436,7 +436,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
                     // set the link, but only if the folder is not deleted
                     if(res.getState() != C_STATE_DELETED) {
-                        template.fastSetXmlData(C_FILELIST_LINK_VALUE, res.getAbsolutePath());
+                        template.fastSetXmlData(C_FILELIST_LINK_VALUE, cms.readAbsolutePath(res));
                     }
                     else {
                         template.fastSetXmlData(C_FILELIST_LINK_VALUE, "#");
@@ -455,7 +455,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         // set the folder title
                         title = "";
                         try {
-                            title = Encoder.escapeXml(cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE));
+                            title = Encoder.escapeXml(cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_TITLE));
                         }
                         catch(CmsException e) {
 
@@ -532,7 +532,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     template.fastSetXmlData(C_FILELIST_CLASS_VALUE, getStyle(cms, file));
 
                     // set the icon
-                    template.fastSetXmlData(C_CONTEXT_LINK, res.getAbsolutePath());
+                    template.fastSetXmlData(C_CONTEXT_LINK, cms.readAbsolutePath(res));
                     template.fastSetXmlData(C_CONTEXT_MENU, getContextMenue(cms, res, template));
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
                     I_CmsResourceType type = cms.getResourceType(file.getType());
@@ -541,7 +541,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
                     // set the link, but only if the resource is not deleted
                     if(res.getState() != C_STATE_DELETED) {
-                        template.fastSetXmlData(C_FILELIST_LINK_VALUE, servlets + file.getAbsolutePath());
+                        template.fastSetXmlData(C_FILELIST_LINK_VALUE, servlets + cms.readAbsolutePath(file));
                     }
                     else {
                         template.fastSetXmlData(C_FILELIST_LINK_VALUE, "#");
@@ -559,7 +559,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         // set the file title
                         title = "";
                         try {
-                            title = Encoder.escapeXml(cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE));
+                            title = Encoder.escapeXml(cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE));
                         }
                         catch(CmsException e) {
 
@@ -689,7 +689,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                 output.append(C_LOCKED_VALUE_OWN);
             }
             else {
-                template.fastSetXmlData(C_LOCKEDBY, lang.getLanguageValue("explorer.lockedby") + cms.lockedBy(file.getAbsolutePath()).getName());
+                template.fastSetXmlData(C_LOCKEDBY, lang.getLanguageValue("explorer.lockedby") + cms.lockedBy(cms.readAbsolutePath(file)).getName());
                 output.append(C_LOCKED_VALUE_USER);
             }
         }

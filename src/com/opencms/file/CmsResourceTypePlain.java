@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/06/24 15:43:24 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,9 +63,6 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
      * The class name of the Java class launched by the launcher.
      */
     private String m_launcherClass;
-
-    /** Internal debug flag */
-    private static final int DEBUG = 0;  
     
     /**
      * Constructor, creates a new CmsResourceType object.
@@ -317,7 +314,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
             res = cms.doCreateFile(newFileName, contents, m_resourceTypeName, properties);
         }
         // lock the new file
-        cms.doLockResource(res.getAbsolutePath(), true);
+        cms.doLockResource(cms.readAbsolutePath(res), true);
         return res;
     }
 
@@ -401,27 +398,30 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
         int resaccess = 0;
         try{
             resowner = cms.readUser(user);
-        } catch (CmsException e){
-            if (DEBUG>0) System.err.println("[" + this.getClass().getName() + ".importResource/1] User " + user + " not found");
+        } catch (CmsException e) {
+            resowner = cms.getRequestContext().currentUser();
+            
             if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".importResource/1] User " + user + " not found");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".importResource/1] user " + user + " not found, using " + resowner.getName() + " instead");
             }                
-            resowner = cms.getRequestContext().currentUser();   
         }
+        
         try{
             resgroup = cms.readGroup(group);
-        } catch (CmsException e){
-            if (DEBUG>0) System.err.println("[" + this.getClass().getName() + ".importResource/2] Group " + group + " not found");
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".importResource/2] Group " + group + " not found");
-            }  
+        } catch (CmsException e) {
             resgroup = cms.getRequestContext().currentGroup();  
-        }       
+            
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".importResource/2] group " + group + " not found, using " + resgroup.getName() + " instead");
+            }    
+        }
+               
         try {
         	resaccess = Integer.parseInt(access);
         } catch (Exception e) {
         	//
         }
+        
         try {
             importedResource = cms.doImportResource(destination, resourceType ,properties, launcherType, 
                                              launcherStartClass, resowner.getName(), resgroup.getName(), resaccess, lastmodified, content);
@@ -431,6 +431,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
         } catch (CmsException e) {
             // an exception is thrown if the resource already exists
         }
+        
         if(changed){
         	// if the resource already exists it must be updated
             lockResource(cms,destination, true);
@@ -480,7 +481,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
     * to rename the file, or if the file couldn't be renamed.
     */
     public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
-        cms.doRenameFile(oldname, newname);
+        cms.doRenameResource(oldname, newname);
     }
 
     /**

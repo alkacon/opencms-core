@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/06/13 15:13:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2003/06/13 15:13:13 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -162,7 +162,7 @@ public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
 */
 				// modify the access flags
 				boolean rekursive = (file.isFolder() && allflag.equals("true"));
-				cms.chmod(file.getAbsolutePath(), flag, rekursive);
+				cms.chmod(cms.readAbsolutePath(file), flag, rekursive);
 
 				session.removeValue(C_PARA_FILE);
 
@@ -191,7 +191,7 @@ public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		}
 
 		// set the required datablocks
-		String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+		String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
 		if(title == null)
 			title = "";
 		CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/06/24 15:43:42 $
-* Version: $Revision: 1.96 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.97 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.96 $ $Date: 2003/06/24 15:43:42 $
+ * @version $Revision: 1.97 $ $Date: 2003/07/02 11:03:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -99,7 +99,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         cms.getRequestContext().setCurrentProject(tempProject);
         
         try {
-            cms.copyResource(file.getAbsolutePath(), temporaryFilename);
+            cms.copyResource(cms.readAbsolutePath(file), temporaryFilename);
             cms.chmod(temporaryFilename, 91);
         } catch (CmsException e) {
             if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
@@ -124,7 +124,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             extendedTempFile = temporaryFilename + loop;
             
             try {
-                cms.copyResource(file.getAbsolutePath(), extendedTempFile);
+                cms.copyResource(cms.readAbsolutePath(file), extendedTempFile);
                 cms.chmod(extendedTempFile, 91);
             } catch (CmsException e) {
                 if ((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {

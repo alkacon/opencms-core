@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -216,7 +216,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
 
         if (cms.getRequestContext().getRequest() instanceof CmsExportRequest) {
             // request is an export request 
-            if (DEBUG > 1) System.err.println("FlexJspLoader: Export requested for " + file.getAbsolutePath());
+            if (DEBUG > 1) System.err.println("FlexJspLoader: Export requested for " + cms.readAbsolutePath(file));
             // get the contents of the exported page
             byte[] export = exportJsp(cms, file);
             // try to write the result to the current output stream
@@ -353,7 +353,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         
         // generate export URL
         StringBuffer exportUrl = new StringBuffer(m_jspExportUrl); 
-        exportUrl.append(file.getAbsolutePath());
+        exportUrl.append(cms.readAbsolutePath(file));
         exportUrl.append("?");
         
         // add parameters to export call
@@ -517,7 +517,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         long timer1 = 0;
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
-            System.err.println("========== JspLoader loading: " + file.getAbsolutePath());
+            System.err.println("========== JspLoader loading: " + cms.readAbsolutePath(file));
             System.err.println("JspLoader.load()  cms uri is: " + cms.getRequestContext().getUri());
         }
 
@@ -529,7 +529,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         
         try {
             // Read caching property from requested VFS resource                                     
-            String stream = cms.readProperty(file.getAbsolutePath(), I_CmsResourceLoader.C_LOADER_STREAMPROPERTY);                    
+            String stream = cms.readProperty(cms.readAbsolutePath(file), I_CmsResourceLoader.C_LOADER_STREAMPROPERTY);                    
             if (stream != null) {
                 if ("yes".equalsIgnoreCase(stream) || "true".equalsIgnoreCase(stream)) {
                     // streaming not allowed in export mode
@@ -540,7 +540,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                 }
             }
         } catch (CmsException e) {
-            throw new ServletException("FlexJspLoader: Error while loading stream properties for " + file.getAbsolutePath() + "\n" + e, e);
+            throw new ServletException("FlexJspLoader: Error while loading stream properties for " + cms.readAbsolutePath(file) + "\n" + e, e);
         } 
         
         if (DEBUG > 1) System.err.println("========== JspLoader stream=" + streaming + " bypass=" + bypass);
@@ -566,7 +566,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         
         if (bypass) {
             // Bypass Flex cache for this page (this solves some compatibility issues in BEA Weblogic)        
-            if (DEBUG > 1) System.err.println("JspLoader.load() bypassing cache for file " + file.getAbsolutePath());
+            if (DEBUG > 1) System.err.println("JspLoader.load() bypassing cache for file " + cms.readAbsolutePath(file));
             // Update the JSP first if neccessary            
             String target = updateJsp(cms, file, f_req, controller, new HashSet(11));
             // Dispatch to external JSP
@@ -575,7 +575,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         } else {
             // Flex cache not bypassed            
             try {
-                f_req.getRequestDispatcher(file.getAbsolutePath()).include(f_req, f_res);
+                f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
             } catch (java.net.SocketException e) {        
                 // Uncritical, might happen if client (browser) does not wait until end of page delivery
                 if (DEBUG > 1) System.err.println("JspLoader.load() ignoring SocketException " + e);
@@ -618,7 +618,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         
         if (DEBUG > 0) {
             long timer2 = System.currentTimeMillis() - timer1;
-            System.err.println("========== JspLoader time delivering JSP for " + file.getAbsolutePath() + ": " + timer2 + "ms");
+            System.err.println("========== JspLoader time delivering JSP for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");
         }        
     }
     
@@ -641,11 +641,11 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         long timer1 = 0;
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
-            System.err.println("========== JspLoader (Template) loading: " + file.getAbsolutePath());
+            System.err.println("========== JspLoader (Template) loading: " + cms.readAbsolutePath(file));
         }       
 
         if (cms.getRequestContext().getRequest() instanceof CmsExportRequest) {
-            if (DEBUG > 1) System.err.println("FlexJspLoader.loadTemplate(): Export requested for " + file.getAbsolutePath());
+            if (DEBUG > 1) System.err.println("FlexJspLoader.loadTemplate(): Export requested for " + cms.readAbsolutePath(file));
             // export the JSP
             result = exportJsp(cms, file);
         } else {
@@ -672,14 +672,14 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             }
             
             try {
-                f_req.getRequestDispatcher(file.getAbsolutePath()).include(f_req, f_res);
+                f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
             } catch (java.net.SocketException e) {        
                 // Uncritical, might happen if client (browser) does not wait until end of page delivery
                 if (DEBUG > 1) System.err.println("JspLoader.loadTemplate() ignoring SocketException " + e);
             } catch (Exception e) {            
                 System.err.println("Error in CmsJspLoader.loadTemplate() while loading: " + e.toString());
                 if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
-                throw new CmsException("Error in CmsJspLoader.loadTemplate() while loading " + file.getAbsolutePath() + "\n" + e, CmsException.C_LAUNCH_ERROR, e);
+                throw new CmsException("Error in CmsJspLoader.loadTemplate() while loading " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LAUNCH_ERROR, e);
             } 
     
             if (! f_res.isSuspended()) {
@@ -700,14 +700,14 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                 } catch (Exception e) {
                     System.err.println("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream: " + e.toString());
                     if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
-                    throw new CmsException("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream for " + file.getAbsolutePath() + "\n" + e, CmsException.C_LAUNCH_ERROR, e);
+                    throw new CmsException("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream for " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LAUNCH_ERROR, e);
                 }        
             }
         }
         
         if (DEBUG > 0) {
             long timer2 = System.currentTimeMillis() - timer1;
-            System.err.println("========== JspLoader (Template) time delivering JSP for " + file.getAbsolutePath() + ": " + timer2 + "ms");
+            System.err.println("========== JspLoader (Template) time delivering JSP for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");
         }        
         
         return result;
@@ -785,7 +785,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
     private synchronized String updateJsp(CmsObject cms, CmsResource file, ServletRequest req, CmsFlexController controller, Set updates) 
     throws IOException, ServletException {
         
-        String jspTargetName = getJspName(file.getAbsolutePath());
+        String jspTargetName = getJspName(cms.readAbsolutePath(file));
 
         // check for inclusion loops
         if (updates.contains(jspTargetName)) return null;
@@ -819,21 +819,21 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             mustUpdate = true;
         }
 
-        String jspfilename = getJspUri(file.getAbsolutePath(), controller.getCurrentRequest().isOnline());               
+        String jspfilename = getJspUri(cms.readAbsolutePath(file), controller.getCurrentRequest().isOnline());               
         
         if (mustUpdate) {
             if (DEBUG > 2) System.err.println("JspLoader writing new file: " + jspfilename);         
             byte[] contents = null;
             String jspEncoding = null;
             try {
-                contents = cms.readFile(file.getAbsolutePath()).getContents();
+                contents = cms.readFile(cms.readAbsolutePath(file)).getContents();
                 // Encoding project:
                 // Check the JSP "content-encoding" property
-                jspEncoding = cms.readProperty(file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false);
+                jspEncoding = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false);
                 if (jspEncoding == null) jspEncoding = C_DEFAULT_JSP_ENCODING;
                 jspEncoding = jspEncoding.trim().toUpperCase();
             } catch (CmsException e) {
-                throw new ServletException("JspLoader: Could not read contents for file '" + file.getAbsolutePath() + "'", e);
+                throw new ServletException("JspLoader: Could not read contents for file '" + cms.readAbsolutePath(file) + "'", e);
             }
             
             try {
@@ -895,7 +895,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                                 // Make sure the jsp referenced file is generated
                                 CmsResource jsp = cms.readFileHeader(absolute);
                                 updateJsp(cms, jsp, req, controller, updates);
-                                jspname = getJspUri(jsp.getAbsolutePath(), controller.getCurrentRequest().isOnline());
+                                jspname = getJspUri(cms.readAbsolutePath(jsp), controller.getCurrentRequest().isOnline());
                             } catch (Exception e) {
                                 jspname = null;
                                 if (DEBUG > 2) System.err.println("JspLoader: Error while creating jsp file " + absolute + "\n" + e);
@@ -932,7 +932,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                 fs.close();
                 
                 if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Updated JSP file \"" + jspfilename + "\" for resource \"" + file.getAbsolutePath() + "\"");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Updated JSP file \"" + jspfilename + "\" for resource \"" + cms.readAbsolutePath(file) + "\"");
             } catch (FileNotFoundException e) {
                 throw new ServletException("JspLauncher: Could not write to file '" + f.getName() + "'\n" + e, e);
             }
@@ -971,17 +971,17 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
 	        // Important: Indicate that all output must be buffered
 	        controller.getCurrentResponse().setOnlyBuffering(true);   
 	        // Dispatch to external file
-            controller.getCurrentRequest().getRequestDispatcherToExternal(file.getAbsolutePath(), target).include(req, res);  	        
+            controller.getCurrentRequest().getRequestDispatcherToExternal(cms.readAbsolutePath(file), target).include(req, res);  	        
 	    } catch (ServletException e) {          
 	        // Check if this Exception has already been marked
 	        String msg = e.getMessage();
 	        if (DEBUG > 1) System.err.println("JspLauncher: Caught ServletException " + e);
 	        if ((msg != null) && msg.startsWith(C_LOADER_EXCEPTION_PREFIX)) throw e;
 	        // Not marked, imprint current JSP file and stack trace
-	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + file.getAbsolutePath() + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);           
+	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + cms.readAbsolutePath(file) + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);           
 	    } catch (Exception e) {
 	        // Imprint current JSP file and stack trace
-	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + file.getAbsolutePath() + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);          
+	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + cms.readAbsolutePath(file) + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);          
 	    }
 	} 
 }

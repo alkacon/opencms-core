@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/06/13 15:13:14 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.54 $ $Date: 2003/06/13 15:13:14 $
+ * @version $Revision: 1.55 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -141,7 +141,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
             }
 
             // ednfal: check if the user try to move the resource into itself
-            if(newFolder.equals(file.getAbsolutePath())) {
+            if(newFolder.equals(cms.readAbsolutePath(file))) {
                  // something went wrong, so remove all session parameters
                 session.removeValue(C_PARA_FILE);
                 session.removeValue(C_PARA_NEWFOLDER);
@@ -194,7 +194,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
                     // this is a file, so move it
                     try {
-                        cms.moveResource(((CmsFile)file).getAbsolutePath(), newFolder + newFile);
+                        cms.moveResource(cms.readAbsolutePath((CmsFile)file), newFolder + newFile);
                     }
                     catch(CmsException ex) {
 
@@ -236,7 +236,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     // this is a folder
                     // get all subfolders and files
                     try {
-                        cms.moveResource(((CmsFolder)file).getAbsolutePath(), newFolder + newFile);
+                        cms.moveResource(cms.readAbsolutePath((CmsFile)file), newFolder + newFile);
                     } catch(CmsException e) {
                         // something went wrong, so remove all session parameters
                         session.removeValue(C_PARA_FILE);
@@ -262,7 +262,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
         // set the required datablocks
         if(action == null) {
-            String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
             }
@@ -341,7 +341,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
      */
 
     private void getTree(CmsObject cms, CmsFolder root, Vector names, Vector values) throws CmsException {
-        Vector folders = cms.getSubFolders(root.getAbsolutePath());
+        Vector folders = cms.getSubFolders(cms.readAbsolutePath(root));
         CmsProject currentProject = cms.getRequestContext().currentProject();
         Enumeration enu = folders.elements();
         while(enu.hasMoreElements()) {
@@ -349,10 +349,10 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
             // check if the current folder is part of the current project
             if(folder.inProject(currentProject)) {
-                String name = folder.getAbsolutePath();
+                String name = cms.readAbsolutePath(folder);
                 name = name.substring(1, name.length() - 1);
                 names.addElement(name);
-                values.addElement(folder.getAbsolutePath());
+                values.addElement(cms.readAbsolutePath(folder));
             }
             getTree(cms, folder, names, values);
         }

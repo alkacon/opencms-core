@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2003/06/13 15:13:14 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Vector;
  * Template class for displaying the chown screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2003/06/13 15:13:14 $
+ * @version $Revision: 1.34 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants {
     
@@ -108,7 +108,7 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants {
 				boolean rekursive = false;
 				// if the resource is a folder, check if there is a corresponding
 				if(file.isFolder() && flags.equals("true")) rekursive = true;
-				cms.chown(file.getAbsolutePath(), newowner, rekursive);
+				cms.chown(cms.readAbsolutePath(file), newowner, rekursive);
 				session.removeValue(C_PARA_FILE);
 
 				// return to filelist
@@ -137,7 +137,7 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		}
 
 		// set the required datablocks
-		String title = cms.readProperty(file.getAbsolutePath(),
+		String title = cms.readProperty(cms.readAbsolutePath(file),
 		C_PROPERTY_TITLE);
 		if(title == null)
 			title = "";

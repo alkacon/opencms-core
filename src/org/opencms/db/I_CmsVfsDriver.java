@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -55,18 +56,18 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/07/02 11:03:12 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
-    void changeLockedInProject(int newProjectId, String resourcename) throws CmsException;
-    CmsFile copyFile(CmsProject project, CmsUUID userId, CmsUUID parentId, String source, String destination) throws CmsException;
+    void changeLockedInProject(int newProjectId, CmsUUID resourceId) throws CmsException;
+    //CmsFile copyFile(CmsProject project, CmsUUID userId, CmsUUID parentId, String source, String destination) throws CmsException;
     int countLockedResources(CmsProject project) throws CmsException;    
     
     CmsResource createCmsResourceFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException;
-    CmsFolder createCmsFolderFromResultSet(ResultSet res, boolean hasProjectIdInResultSet) throws SQLException;
-    CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, String resourceName) throws SQLException, CmsException;
-    CmsFile createCmsFileFromResultSet(ResultSet res, boolean hasProjectIdInResultSet, boolean hasFileContentInResultSet) throws SQLException, CmsException;
+    CmsFolder createCmsFolderFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet) throws SQLException;
+    CmsFile createCmsFileFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException;
+    CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet, boolean hasFileContentInResultSet) throws SQLException, CmsException;
     
     CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
     
@@ -101,12 +102,12 @@ public interface I_CmsVfsDriver {
     CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags) throws CmsException;
     void createProjectResource(int projectId, String resourceName) throws CmsException;
     CmsPropertydefinition createPropertydefinition(String name, int projectId, int resourcetype) throws CmsException;
-    CmsResource createResource(CmsProject project, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException;
+    CmsResource importResource(CmsProject project, CmsUUID parentId, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException;
     void deleteAllProjectResources(int projectId) throws CmsException;
     void deleteAllProperties(int projectId, CmsResource resource) throws CmsException;
     void deleteAllProperties(int projectId, CmsUUID resourceId) throws CmsException;
-    void deleteFile(CmsProject project, String filename) throws CmsException;
-    void deleteFolder(CmsProject project, CmsFolder orgFolder) throws CmsException;
+    void deleteFile(CmsProject project, CmsUUID resourceId) throws CmsException;
+    void deleteFolder(int projectId, CmsFolder orgFolder) throws CmsException;
     void deleteProjectResource(int projectId, String resourceName) throws CmsException;
     void deleteProjectResources(CmsProject project) throws CmsException;
     void deleteProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException;
@@ -128,7 +129,7 @@ public interface I_CmsVfsDriver {
     void getBrokenLinks(I_CmsReport report, Vector changed, Vector deleted, Vector newRes) throws CmsException;
     Vector getFilesInFolder(int projectId, CmsFolder parentFolder) throws CmsException;
     Vector getFilesWithProperty(int projectId, String propertyDefinition, String propertyValue) throws CmsException;
-    Vector getFolderTree(int projectId, String rootName) throws CmsException;
+    List getFolderTree(CmsProject currentProject, CmsResource parentResource) throws CmsException;
     Vector getOnlineResourceNames() throws CmsException;
     Vector getResourcesInFolder(int projectId, CmsFolder offlineResource) throws CmsException;
     Vector getResourcesWithProperty(int projectId, String propertyDefinition) throws CmsException;
@@ -145,20 +146,9 @@ public interface I_CmsVfsDriver {
      */
     org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl);
     
-    Vector readAllFileHeaders(int projectId, String resourceName) throws CmsException;
     Vector readAllPropertydefinitions(int projectId, I_CmsResourceType resourcetype) throws CmsException;
     Vector readAllPropertydefinitions(int projectId, int resourcetype) throws CmsException;
     Vector readBackupProjectResources(int versionId) throws CmsException;
-    
-    /**
-     * Reads a file.<p>
-     * 
-     * @param projectId the ID of the current project
-     * @param filename the name of the file
-     * @return CmsFile the file
-     * @throws CmsException if something gows wrong
-     */    
-    CmsFile readFile(int projectId, String filename) throws CmsException;
     
     /**
      * Reads a file.<p>
@@ -169,7 +159,7 @@ public interface I_CmsVfsDriver {
      * @return CmsFile the file
      * @throws CmsException if something goes wrong
      */        
-    CmsFile readFile(int projectId, String filename, boolean includeDeleted) throws CmsException;
+    CmsFile readFile(int projectId, boolean includeDeleted, CmsUUID resourceId) throws CmsException;
     
     /**
      * Reads the file content for publishProject(export)
@@ -182,18 +172,18 @@ public interface I_CmsVfsDriver {
     byte[] readFileContent(int projectId, int fileId) throws CmsException;
     
     CmsFile readFileHeader(int projectId, CmsResource resource) throws CmsException;
-    CmsFile readFileHeader(int projectId, CmsUUID resourceId) throws CmsException;
-    CmsFile readFileHeader(int projectId, String filename, boolean includeDeleted) throws CmsException;
-    CmsFile readFileHeaderInProject(int projectId, String filename) throws CmsException;
-    CmsFile readFileInProject(int projectId, int onlineProjectId, String filename) throws CmsException;
-    Vector readFiles(int projectId) throws CmsException;
-    Vector readFiles(int projectId, boolean includeUnchanged, boolean onlyProject) throws CmsException;
+    CmsFile readFileHeader(int projectId, CmsUUID resourceId, boolean includeDeleted) throws CmsException;
+    CmsFile readFileHeader(int projectId, CmsUUID parentId, String filename, boolean includeDeleted) throws CmsException;
+    //CmsFile readFileHeaderInProject(int projectId, String filename) throws CmsException;
+    //CmsFile readFileInProject(int projectId, int onlineProjectId, String filename) throws CmsException;
+    //List readFiles(int projectId) throws CmsException;
+    List readFiles(int projectId, boolean includeUnchanged, boolean onlyProject) throws CmsException;
     Vector readFilesByType(int projectId, int resourcetype) throws CmsException;
     CmsFolder readFolder(int projectId, CmsUUID folderId) throws CmsException;
-    CmsFolder readFolder(int projectId, String foldername) throws CmsException;
-    CmsFolder readFolderInProject(int projectId, String foldername) throws CmsException;
-    Vector readFolders(int projectId) throws CmsException;
-    Vector readFolders(int projectId, boolean includeUnchanged, boolean onlyProject) throws CmsException;
+    CmsFolder readFolder(int projectId, CmsUUID parentId, String filename) throws CmsException;
+    //CmsFolder readFolderInProject(int projectId, String foldername) throws CmsException;
+    //List readFolders(int projectId) throws CmsException;
+    List readFolders(CmsProject currentProject, boolean includeUnchanged, boolean onlyProject) throws CmsException;
     String readProjectResource(int projectId, String resourcename) throws CmsException;
     
     /**
@@ -221,15 +211,24 @@ public interface I_CmsVfsDriver {
     
     CmsPropertydefinition readPropertydefinition(String name, int projectId, I_CmsResourceType type) throws CmsException;
     CmsPropertydefinition readPropertydefinition(String name, int projectId, int type) throws CmsException;
-    CmsResource readResource(CmsProject project, String filename) throws CmsException;
+    CmsResource readResource(CmsProject project, CmsUUID parentId, String filename) throws CmsException;
     Vector readResources(CmsProject project) throws CmsException;
     Vector readResourcesLikeName(CmsProject project, String resourcename) throws CmsException;
-    void removeFile(int projectId, String filename) throws CmsException;
+    
+    /**
+     * Deletes a resource.<p>
+     * 
+     * @param projectId the ID of the current project
+     * @param resourceId the ID of the resource
+     * @throws CmsException if something goes wrong
+     */
+    void removeFile(CmsProject currentProject, CmsUUID resourceId) throws CmsException;
+    void removeFile(CmsProject currentProject, CmsUUID parentId, String filename) throws CmsException;
+    
     void removeFolder(int projectId, CmsFolder folder) throws CmsException;
-    void removeFolderForPublish(int projectId, String foldername) throws CmsException;
+    void removeFolderForPublish(CmsProject currentProject, CmsUUID folderId) throws CmsException;
     void removeTemporaryFile(CmsFile file) throws CmsException;
-    void renameFile(CmsProject project, CmsProject onlineProject, int userId, int oldfileID, String newname) throws CmsException;
-    void undeleteFile(CmsProject project, String filename) throws CmsException;
+    void renameResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, String newResourceName) throws CmsException;
     int updateAllResourceFlags(CmsProject theProject, int theValue) throws CmsException;
     void updateLockstate(CmsResource res, int projectId) throws CmsException;
     int updateResourceFlags(CmsProject theProject, int theResourceID, int theValue) throws CmsException;
@@ -273,4 +272,31 @@ public interface I_CmsVfsDriver {
     void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, boolean isChanged, CmsUUID userId) throws CmsException;
     void updateOnlineResourceFromOfflineResource( CmsResource onlineResource, CmsResource offlineResource) throws CmsException;
     
+    /**
+     * Reads the project ID's by matching a given path to all project resources.<p>
+     * 
+     * @param projectId the ID of the project
+     * @param path the path for which the matching project ID's are fetched
+     * @return int[] with all project ID's whose project resources match the given path
+     * @throws CmsException if something gows wrong
+     */
+    int[] getProjectsForPath(int projectId, String path) throws CmsException;
+    
+    /**
+     * Adds a CmsResource to a tree which is represented as a map of parent-ID's/adjacency lists.
+     * 
+     * @param tree the tree
+     * @param resource the CmsResource
+     */
+    public void addToTree(Map tree, CmsResource resource);
+    
+    /**
+     * Returns a subtree which is represented as a map of parent-ID's/adjacency lists of a tree.
+     * 
+     * @param tree the tree
+     * @param parentResource the resource which is the root of the subtree
+     * @return List the subtree as a list view
+     */
+    List getSubTree(Map tree, CmsResource parentResource);
+        
 }

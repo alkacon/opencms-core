@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndelete.java,v $
-* Date   : $Date: 2003/06/13 15:13:13 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.8 $ $Date: 2003/06/13 15:13:13 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -88,7 +88,7 @@ public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants
             file = (CmsResource)cms.readFileHeader(filename, true);
         }
         try{
-            cms.undeleteResource(file.getAbsolutePath());
+            cms.undeleteResource(cms.readAbsolutePath(file));
             session.removeValue(C_PARA_FILE);
             //template = "done";
             // return to filelist

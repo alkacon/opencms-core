@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
-* Date   : $Date: 2003/06/13 15:13:14 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2003/06/13 15:13:14 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -101,11 +101,11 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
                 orgFolder = orgFolder.substring(C_VFS_PATH_BODIES.length() - 1);
                 CmsFolder newfolder = (CmsFolder)cms.createResource(completePath, foldername, C_TYPE_FOLDER_NAME);
                 CmsFolder folder = cms.readFolder(orgFolder);
-                cms.lockResource(newfolder.getAbsolutePath());
-                cms.chown(newfolder.getAbsolutePath(), cms.readOwner(folder).getName());
-                cms.chgrp(newfolder.getAbsolutePath(), cms.readGroup(folder).getName());
-                cms.chmod(newfolder.getAbsolutePath(), folder.getAccessFlags());
-                cms.unlockResource(newfolder.getAbsolutePath());
+                cms.lockResource(cms.readAbsolutePath(newfolder));
+                cms.chown(cms.readAbsolutePath(newfolder), cms.readOwner(folder).getName());
+                cms.chgrp(cms.readAbsolutePath(newfolder), cms.readGroup(folder).getName());
+                cms.chmod(cms.readAbsolutePath(newfolder), folder.getAccessFlags());
+                cms.unlockResource(cms.readAbsolutePath(newfolder));
             }
             completePath += foldername + "/";
         }
@@ -190,7 +190,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
         //get the current filelist
         String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
         if(currentFilelist == null) {
-            currentFilelist = cms.rootFolder().getAbsolutePath();
+            currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
 
         // get request parameters
@@ -229,11 +229,11 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
                     // set the flags for the content file to internal use, the content
 
                     // should not be loaded
-                    cms.chmod(contentFile.getAbsolutePath(), contentFile.getAccessFlags() + C_ACCESS_INTERNAL_READ);
+                    cms.chmod(cms.readAbsolutePath(contentFile), contentFile.getAccessFlags() + C_ACCESS_INTERNAL_READ);
 
                     // now check if navigation informations have to be added to the new page.
                     if(navtitle != null) {
-                        cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_NAVTEXT, navtitle);
+                        cms.writeProperty(cms.readAbsolutePath(file), C_PROPERTY_NAVTEXT, navtitle);
 
                         // update the navposition.
                         if(navpos != null) {
@@ -295,7 +295,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
         // get the current folder
         currentFilelist = (String)session.getValue(C_PARA_FILELIST);
         if(currentFilelist == null) {
-            currentFilelist = cms.rootFolder().getAbsolutePath();
+            currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
 
         // get all files and folders in the current filelist.
@@ -332,17 +332,17 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 
                 // check if the resource is not marked as deleted
                 if(res.getState() != C_STATE_DELETED) {
-                    String navpos = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVPOS);
+                    String navpos = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVPOS);
 
                     // check if there is a navpos for this file/folder
                     if(navpos != null) {
-                        nicename = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVTEXT);
+                        nicename = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT);
                         if(nicename == null) {
                             nicename = res.getName();
                         }
 
                         // add this file/folder to the storage.
-                        filenames[count] = res.getAbsolutePath();
+                        filenames[count] = cms.readAbsolutePath(res);
                         nicenames[count] = nicename;
                         positions[count] = navpos;
                         if(new Float(navpos).floatValue() > max) {
@@ -433,7 +433,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
         modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
         for(int i = 0;i < modules.size();i++) {
             Vector moduleTemplateFiles = new Vector();
-            moduleTemplateFiles = cms.getFilesInFolder(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "templates/");
+            moduleTemplateFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.elementAt(i)) + "templates/");
             for(int j = 0;j < moduleTemplateFiles.size();j++) {
                 files.addElement(moduleTemplateFiles.elementAt(j));
             }
@@ -442,14 +442,14 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
         String templateType = null;
         while(enum.hasMoreElements()) {
             CmsFile file = (CmsFile)enum.nextElement();
-            templateType = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TEMPLATETYPE);
+            templateType = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TEMPLATETYPE);
             if((file.getState() != C_STATE_DELETED) && (C_PDFTEMPLATE.equals(templateType))) {
-                String nicename = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+                String nicename = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
                 if(nicename == null) {
                     nicename = file.getName();
                 }
                 names.addElement(nicename);
-                values.addElement(file.getAbsolutePath());
+                values.addElement(cms.readAbsolutePath(file));
             }
         }
         bubblesort(names, values);
@@ -542,6 +542,6 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
         else {
             newPos = 1;
         }
-        cms.writeProperty(newfile.getAbsolutePath(), C_PROPERTY_NAVPOS, new Float(newPos).toString());
+        cms.writeProperty(cms.readAbsolutePath(newfile), C_PROPERTY_NAVPOS, new Float(newPos).toString());
     }
 }

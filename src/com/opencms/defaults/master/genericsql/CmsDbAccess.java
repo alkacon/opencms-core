@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/06/25 13:50:29 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,12 @@
 
 package com.opencms.defaults.master.genericsql;
 
+import org.opencms.db.CmsIdGenerator;
+
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import org.opencms.db.CmsIdGenerator;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
@@ -494,8 +495,8 @@ public class CmsDbAccess {
                 if(resources.size() >= 1) {
                     // add the name of the channel to the ret-value
                     CmsResource resource = (CmsResource)resources.get(0);
-                    if (resource.getState() != CmsResource.C_STATE_DELETED) {
-                        retValue.add(resource.getAbsolutePath());
+                    if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
+                        retValue.add(cms.readAbsolutePath(resource));
                     }
                 }
             }

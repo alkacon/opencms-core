@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/06/13 14:48:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/02 11:03:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/02 11:03:13 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -69,12 +69,12 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         // Test if the file is already there and marked as deleted.
         // If so, delete it
         try {
-            readFileHeader(project.getId(), filename, false);
+            readFileHeader(project.getId(), parentId, filename, false);
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
             // if the file is maked as deleted remove it!
             if (e.getType() == CmsException.C_RESOURCE_DELETED) {
-                removeFile(project.getId(), filename);
+                removeFile(project, parentId, filename);
                 state = I_CmsConstants.C_STATE_CHANGED;
             }
             if (e.getType() == CmsException.C_FILE_EXISTS) {
@@ -134,7 +134,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
 
-        return readFile(project.getId(), filename);
+        return readFile(project.getId(), structureId, false);
     }
 
     /**
@@ -145,68 +145,30 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFile(int, java.lang.String)
-     */
-    public CmsFile readFile(int projectId, String filename) throws CmsException {
-        CmsFile file = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_FILES_READ");
-
-            stmt.setString(1, filename);
-            stmt.setInt(2, projectId);
-            res = stmt.executeQuery();
-
-            if (res.next()) {
-                file = createCmsFileFromResultSet(res, projectId, filename);
-
-                // check if this resource is marked as deleted
-                if (file.getState() == I_CmsConstants.C_STATE_DELETED) {
-                    throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
-                }
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return file;
-    }
-
-    /**
      * @see org.opencms.db.I_CmsVfsDriver#readFile(int, java.lang.String, boolean)
      */
-    public CmsFile readFile(int projectId, String filename, boolean includeDeleted) throws CmsException {
+    public CmsFile readFile(int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException {
         CmsFile file = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
+        
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_FILES_READ");
-            stmt.setString(1, filename);
-            stmt.setInt(2, projectId);
+            stmt.setString(1, structureId.toString());
+            //stmt.setInt(2, projectId);
             res = stmt.executeQuery();
+            
             if (res.next()) {
-                file = createCmsFileFromResultSet(res, projectId, filename);
+                file = createCmsFileFromResultSet(res, projectId);
 
                 // check if this resource is marked as deleted
                 if (file.getState() == I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
-                    throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
+                    throw new CmsException("[" + this.getClass().getName() + "] " + file.getResourceName(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
+                throw new CmsException("[" + this.getClass().getName() + "] " + structureId, CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -217,6 +179,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
+        
         return file;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2003/06/13 15:13:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2003/06/13 15:13:14 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
@@ -105,7 +105,7 @@ public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
             // get the new resource type
             I_CmsResourceType type = cms.getResourceType(newtype);
-            cms.chtype(file.getAbsolutePath(), type.getResourceTypeName());
+            cms.chtype(cms.readAbsolutePath(file), type.getResourceTypeName());
             session.removeValue(C_PARA_FILE);
 
             // return to filelist

@@ -161,7 +161,8 @@ create table CMS_ONLINE_RESOURCES       (RESOURCE_ID VARCHAR(36) NOT NULL,
                                          key resources_type (RESOURCE_TYPE),
                                          key resource_userid (USER_ID));
                                          
-create table CMS_BACKUP_RESOURCES       (RESOURCE_ID VARCHAR(36) NOT NULL,
+create table CMS_BACKUP_RESOURCES       (ID VARCHAR(36) NOT NULL,
+										 RESOURCE_ID VARCHAR(36) NOT NULL,
                                          RESOURCE_TYPE int not null,
                                          RESOURCE_FLAGS int not null,
                                          USER_ID VARCHAR(36) NOT NULL,
@@ -176,7 +177,7 @@ create table CMS_BACKUP_RESOURCES       (RESOURCE_ID VARCHAR(36) NOT NULL,
                                          DATE_LASTMODIFIED datetime not null,
                                          RESOURCE_SIZE int not null,
                                          VERSION_ID int not null,
-                                         primary key(RESOURCE_ID),
+                                         primary key(ID),
                                          key resource_fileid (FILE_ID),
                                          key resource_group (GROUP_ID),
                                          key resources_type (RESOURCE_TYPE),
@@ -190,10 +191,11 @@ create table CMS_ONLINE_FILES           (FILE_ID VARCHAR(36) NOT NULL,
                                          FILE_CONTENT mediumblob not null,
                                          primary key(FILE_ID));
 
-create table CMS_BACKUP_FILES           (FILE_ID VARCHAR(36) NOT NULL,
+create table CMS_BACKUP_FILES           (ID VARCHAR(36) NOT NULL,
+										 FILE_ID VARCHAR(36) NOT NULL,
                                          FILE_CONTENT mediumblob not null,
                                          VERSION_ID int,
-                                         primary key(FILE_ID));
+                                         primary key(ID));
 
 create table CMS_SYSTEMID               (TABLE_KEY varchar(255) not null,
                                          ID int not null,
@@ -776,6 +778,7 @@ CREATE TABLE CMS_ONLINE_STRUCTURE (
 );
 
 CREATE TABLE CMS_BACKUP_STRUCTURE (
+	ID VARCHAR(36) 			NOT NULL,
     VERSION_ID				INT NOT NULL,
 	STRUCTURE_ID			VARCHAR(36) NOT NULL,
 	PARENT_ID				VARCHAR(36) NOT NULL,
@@ -787,7 +790,7 @@ CREATE TABLE CMS_BACKUP_STRUCTURE (
     LOCKED_BY VARCHAR(36) 	NOT NULL,
 	RESOURCE_LASTMODIFIED_BY			VARCHAR(36) NOT NULL,
 	RESOURCE_LASTMODIFIED_BY_NAME		VARCHAR(167),
-	PRIMARY KEY				(STRUCTURE_ID),
+	PRIMARY KEY				(ID),
 	INDEX IDX1 				(STRUCTURE_ID, RESOURCE_NAME),
 	INDEX IDX2 				(RESOURCE_NAME, RESOURCE_ID),
 	INDEX IDX3 				(STRUCTURE_ID, PARENT_ID),

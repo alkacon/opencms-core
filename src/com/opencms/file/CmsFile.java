@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,9 +36,9 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/02 11:03:12 $
  */
-public class CmsFile extends CmsResource implements Cloneable,Serializable {
+public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
     /**
      * The content of the file.

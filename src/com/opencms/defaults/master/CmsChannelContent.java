@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/06/25 13:50:29 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/07/02 11:03:13 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.28 $
- * $Date: 2003/06/25 13:50:29 $
+ * $Revision: 1.29 $
+ * $Date: 2003/07/02 11:03:13 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -155,7 +155,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
             m_GroupId = m_channel.getGroupId();
             m_UserId = m_channel.getOwnerId();
             m_accessflags = m_channel.getAccessFlags();
-            m_properties = m_cms.readProperties(m_channel.getAbsolutePath());
+            m_properties = m_cms.readProperties(cms.readAbsolutePath(m_channel));
             m_channelId = (String) m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
         } catch (CmsException exc) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -181,7 +181,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_UserId = resource.getOwnerId();
         m_accessflags = resource.getAccessFlags();
         try{
-            m_properties = cms.readProperties(resource.getAbsolutePath());
+            m_properties = cms.readProperties(cms.readAbsolutePath(resource));
             channelId = (String)m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
         } catch (CmsException exc){
             m_properties = new Hashtable();
@@ -231,12 +231,12 @@ public class CmsChannelContent extends A_CmsContentDefinition
     public void delete(CmsObject cms) throws Exception {
         cms.setContextToCos();
         try{
-            cms.deleteResource(m_channel.getAbsolutePath());
+            cms.deleteResource(cms.readAbsolutePath(m_channel));
         } catch (CmsException exc){
             throw exc;
             /*
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Could not delete channel "+m_channel.getAbsolutePath());
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Could not delete channel "+cms.readPath(m_channel));
             }
             */
         } finally {
@@ -252,10 +252,10 @@ public class CmsChannelContent extends A_CmsContentDefinition
     public void undelete(CmsObject cms) throws Exception {
         cms.setContextToCos();
         try{
-            cms.undeleteResource(m_channel.getAbsolutePath());
+            cms.undeleteResource(cms.readAbsolutePath(m_channel));
         } catch (CmsException exc){
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Could not undelete channel "+m_channel.getAbsolutePath());
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Could not undelete channel "+cms.readAbsolutePath(m_channel));
             }
         } finally {
             cms.setContextToVfs();
@@ -348,63 +348,63 @@ public class CmsChannelContent extends A_CmsContentDefinition
                 // first set the new channelId
                 setNewChannelId();
                 newChannel = cms.createResource(m_parentchannel, m_channelname, I_CmsConstants.C_TYPE_FOLDER_NAME, m_properties);
-                cms.lockResource(newChannel.getAbsolutePath(), true);
+                cms.lockResource(cms.readAbsolutePath(newChannel), true);
             } else {
                 if (!"".equals(m_channel.getResourceName())) {
-                    newChannel = cms.readFolder(m_channel.getAbsolutePath());
+                    newChannel = cms.readFolder(cms.readAbsolutePath(m_channel));
                 }
                 
-                if (newChannel!=null && !newChannel.getAbsolutePath().equals(m_parentchannel+m_channelname+"/")){
+                if (newChannel!=null && !cms.readAbsolutePath(newChannel).equals(m_parentchannel+m_channelname+"/")){
                     // the parent and/or the channelname has changed,
                     // so move or rename the channel
                     if(!newChannel.getParent().equals(m_parentchannel)){
                         // move the channel to the new parent channel
-                        cms.moveResource(newChannel.getAbsolutePath(), m_parentchannel+m_channelname);
+                        cms.moveResource(cms.readAbsolutePath(newChannel), m_parentchannel+m_channelname);
                     } else if (!newChannel.getName().equals(m_channelname)){
                         // only rename the channel, the parent has not changed
-                        cms.renameResource(newChannel.getAbsolutePath(), m_channelname);
+                        cms.renameResource(cms.readAbsolutePath(newChannel), m_channelname);
                     }
                 }
                 // read the changed channel
                 newChannel =  cms.readFolder(m_parentchannel+m_channelname+"/");
                 // update the title of the channel
-                String propTitle = cms.readProperty(newChannel.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE);
+                String propTitle = cms.readProperty(cms.readAbsolutePath(newChannel), I_CmsConstants.C_PROPERTY_TITLE);
                 if (propTitle == null){
                     propTitle = "";
                 }
                 if (!propTitle.equals(this.getTitle())){
-                    cms.writeProperty(newChannel.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE, this.getTitle());
+                    cms.writeProperty(cms.readAbsolutePath(newChannel), I_CmsConstants.C_PROPERTY_TITLE, this.getTitle());
                 }
                 // check if the lockstate has changed
                 if(!newChannel.isLockedBy().equals(this.getLockstate()) ||
                     newChannel.getLockedInProject() != cms.getRequestContext().currentProject().getId()){
                     if(this.getLockstate().isNullUUID()){
                         // unlock the channel
-                        cms.unlockResource(newChannel.getAbsolutePath());
+                        cms.unlockResource(cms.readAbsolutePath(newChannel));
                     } else {
                         // lock the channel
-                        cms.lockResource(newChannel.getAbsolutePath(), true);
+                        cms.lockResource(cms.readAbsolutePath(newChannel), true);
                     }
                 }
             }
             // check if the owner has changed
             if(!newChannel.getOwnerId().equals(this.getOwner())){
-                cms.chown(newChannel.getAbsolutePath(), this.getOwnerName());
+                cms.chown(cms.readAbsolutePath(newChannel), this.getOwnerName());
             }
             // check if the group has changed
             if(!newChannel.getGroupId().equals(this.getGroupId())){
-                cms.chgrp(newChannel.getAbsolutePath(), this.getGroup());
+                cms.chgrp(cms.readAbsolutePath(newChannel), this.getGroup());
             }
             // check if the accessflags has changed
             if(newChannel.getAccessFlags() != this.getAccessFlags()){
-                cms.chmod(newChannel.getAbsolutePath(), this.getAccessFlags());
+                cms.chmod(cms.readAbsolutePath(newChannel), this.getAccessFlags());
             }
-            m_channel = cms.readFolder(newChannel.getAbsolutePath());
+            m_channel = cms.readFolder(cms.readAbsolutePath(newChannel));
         } catch (CmsException exc){
             throw exc;
             /*
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Could not write channel "+m_channel.getAbsolutePath());
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Could not write channel "+cms.readPath(m_channel));
             }
             */
         } finally {
@@ -724,7 +724,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     public boolean isReadable() {
         m_cms.setContextToCos();
         try {
-            return m_cms.checkPermissions(m_channel.getAbsolutePath(), I_CmsConstants.C_READ_ACCESS); 
+            return m_cms.checkPermissions(m_cms.readAbsolutePath(m_channel), I_CmsConstants.C_READ_ACCESS); 
             // TODO: remove this later
             // m_cms.accessRead();
         } catch(CmsException exc) {
@@ -742,8 +742,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
     public boolean isWriteable() {
         m_cms.setContextToCos();
         try {
-            // return m_cms.accessWrite(m_channel.getAbsolutePath());
-            return m_cms.checkPermissions(m_channel.getAbsolutePath(), I_CmsConstants.C_WRITE_ACCESS);
+            // return m_cms.accessWrite(cms.readPath(m_channel));
+            return m_cms.checkPermissions(m_cms.readAbsolutePath(m_channel), I_CmsConstants.C_WRITE_ACCESS);
         } catch(CmsException exc) {
             // there was a cms-exception - no write-access!
             return false;
@@ -921,7 +921,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
             CmsResource curFolder = (CmsResource)subFolders.elementAt(i);
             CmsChannelContent curChannel = new CmsChannelContent(cms, curFolder);
             allFolders.addElement(curChannel);
-            getAllResources(cms, curFolder.getAbsolutePath(), allFolders);
+            getAllResources(cms, cms.readAbsolutePath(curFolder), allFolders);
         }
     }
     /**

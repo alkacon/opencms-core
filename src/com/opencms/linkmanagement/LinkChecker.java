@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/07/02 11:03:13 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,6 +57,8 @@ public class LinkChecker {
 
         // first lets get the prefix of the page name (we need it later)
         String rootName = cms.readFileHeader(page).getRootName();
+        //String rootName = cms.getRootName(page);
+        
         // get the pages content
         String bodyFileName = null;
         String bodyClassName = null;
@@ -68,8 +70,7 @@ public class LinkChecker {
             bodyClassName = pageControlFile.getElementClass(I_CmsConstants.C_TYPE_BODY_NAME);
         }
         CmsXmlTemplate bodyClassObject = (CmsXmlTemplate)CmsTemplateClassManager.getClassInstance(cms, bodyClassName);
-        CmsXmlTemplateFile bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms,
-            bodyFileName, I_CmsConstants.C_TYPE_BODY_NAME, null, null);
+        CmsXmlTemplateFile bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms,bodyFileName, I_CmsConstants.C_TYPE_BODY_NAME, null, null);
         Vector result = bodyTemplateFile.getAllLinkTagValues();
         // we have to cleanup the result. Relative links will be inserted as absolute links
         // and we cut the parameters.

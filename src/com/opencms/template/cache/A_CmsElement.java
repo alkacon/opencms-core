@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/02/26 10:30:37 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.template.cache;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
@@ -308,7 +309,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                     if (m_cacheDirectives.isInternalCacheable() && (!m_cacheDirectives.isUserPartOfKey())){
                         CmsResource templ = cms.readFileHeader(m_templateName);
                         int accessflags = templ.getAccessFlags() ;
-                        if(!((accessflags & CmsResource.C_ACCESS_INTERNAL_READ) > 0)){
+                        if(!((accessflags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0)){
                             // internal flag not set
                             proxyPrivate = true;
                             if(m_readAccessGroup == null || "".equals(m_readAccessGroup)

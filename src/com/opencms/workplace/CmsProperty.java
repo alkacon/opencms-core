@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/06/12 16:44:35 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2003/06/12 16:44:35 $
+ * @version $Revision: 1.38 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -267,7 +267,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         }
 
         // set the required datablocks
-        String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+        String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
         if(title == null) {
             title = "";
         }

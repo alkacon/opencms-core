@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/06/24 15:43:24 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -179,7 +179,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             cms.doChgrp(filename, newGroup);
             // now change the bodyfolder if exists
             String bodyFolder = C_VFS_PATH_BODIES.substring(0,
-                    C_VFS_PATH_BODIES.lastIndexOf("/")) + folder.getAbsolutePath();
+                    C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readPath(folder);
             try {
                 cms.readFolder(bodyFolder);
                 cms.doChgrp(bodyFolder, newGroup);
@@ -197,10 +197,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 for(int i = 0;i < allFolders.size();i++) {
                     CmsFolder curfolder = (CmsFolder)allFolders.elementAt(i);
                     if(curfolder.getState() != C_STATE_DELETED) {
-                        cms.doChgrp(curfolder.getAbsolutePath(), newGroup);
+                        cms.doChgrp(cms.readPath(curFolder), newGroup);
                         // check if there is a corresponding directory in the content body folder
                         bodyFolder = C_VFS_PATH_BODIES.substring(0,
-                                C_VFS_PATH_BODIES.lastIndexOf("/")) + curfolder.getAbsolutePath();
+                                C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readPath(curFolder);
                         try {
                             cms.readFolder(bodyFolder);
                             cms.doChgrp(bodyFolder, newGroup);
@@ -215,10 +215,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                     CmsFile newfile = (CmsFile)allFiles.elementAt(i);
                     if(newfile.getState() != C_STATE_DELETED) {
                         try{
-                            cms.chgrp(newfile.getAbsolutePath(), newGroup);
+                            cms.chgrp(newcms.readPath(file), newGroup);
                         } catch (CmsException e){
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTraceAsString());
+                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newcms.readPath(file)+": "+e.getStackTraceAsString());
                             }
                         }
                     }
@@ -268,7 +268,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             cms.doChmod(filename, flags);
             // now change the bodyfolder if exists
             String bodyFolder = C_VFS_PATH_BODIES.substring(0,
-                    C_VFS_PATH_BODIES.lastIndexOf("/")) + folder.getAbsolutePath();
+                    C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readPath(folder);
             try {
                 cms.readFolder(bodyFolder);
                 cms.doChmod(bodyFolder, flags);
@@ -286,10 +286,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 for(int i = 0;i < allFolders.size();i++) {
                     CmsFolder curfolder = (CmsFolder)allFolders.elementAt(i);
                     if(curfolder.getState() != C_STATE_DELETED) {
-                        cms.doChmod(curfolder.getAbsolutePath(), flags);
+                        cms.doChmod(cms.readPath(curFolder), flags);
                         // check if there is a corresponding directory in the content body folder
                         bodyFolder = C_VFS_PATH_BODIES.substring(0,
-                                C_VFS_PATH_BODIES.lastIndexOf("/")) + curfolder.getAbsolutePath();
+                                C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readPath(curFolder);
                         try {
                             cms.readFolder(bodyFolder);
                             cms.doChmod(bodyFolder, flags);
@@ -303,10 +303,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                     CmsFile newfile = (CmsFile)allFiles.elementAt(i);
                     if(newfile.getState() != C_STATE_DELETED) {
                         try{
-                            cms.chmod(newfile.getAbsolutePath(), flags);
+                            cms.chmod(newcms.readPath(file), flags);
                         } catch (CmsException e){
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTraceAsString());
+                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newcms.readPath(file)+": "+e.getStackTraceAsString());
                             }
                         }
                     }
@@ -353,7 +353,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             // change the owner
             cms.doChown(filename, newOwner);
             String bodyFolder = C_VFS_PATH_BODIES.substring(0,
-                    C_VFS_PATH_BODIES.lastIndexOf("/")) + folder.getAbsolutePath();
+                    C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readPath(folder);
             try {
                 cms.readFolder(bodyFolder);
                 cms.doChown(bodyFolder, newOwner);
@@ -371,10 +371,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 for(int i = 0;i < allFolders.size();i++) {
                     CmsFolder curfolder = (CmsFolder)allFolders.elementAt(i);
                     if(curfolder.getState() != C_STATE_DELETED) {
-                        cms.doChown(curfolder.getAbsolutePath(), newOwner);
+                        cms.doChown(cms.readPath(curFolder), newOwner);
                         // check if there is a corresponding directory in the content body folder
                         bodyFolder = C_VFS_PATH_BODIES.substring(0,
-                                C_VFS_PATH_BODIES.lastIndexOf("/")) + curfolder.getAbsolutePath();
+                                C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readPath(curFolder);
                         try {
                             cms.readFolder(bodyFolder);
                             cms.doChown(bodyFolder, newOwner);
@@ -388,10 +388,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                     CmsFile newfile = (CmsFile)allFiles.elementAt(i);
                     if(newfile.getState() != C_STATE_DELETED) {
                         try{
-                            cms.chown(newfile.getAbsolutePath(), newOwner);
+                            cms.chown(newcms.readPath(file), newOwner);
                         } catch (CmsException e){
                             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTraceAsString());
+                                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newcms.readPath(file)+": "+e.getStackTraceAsString());
                             }
                         }
                     }
@@ -441,9 +441,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                     // add the current folder to the set of all folders to be touched
                     allFolders.add( (CmsFolder)currentFolder );
                     // add the files in the current folder to the set of all files to be touched
-                    allFiles.addAll( cms.getFilesInFolder(currentFolder.getAbsolutePath(), true) );
+                    allFiles.addAll( cms.getFilesInFolder(cms.readAbsolutePath(currentFolder), true) );
                     // add all sub-folders in the current folder to visit them in the next iteration                        
-                    unvisited.addAll( cms.getSubFolders(currentFolder.getAbsolutePath(),true) );
+                    unvisited.addAll( cms.getSubFolders(cms.readAbsolutePath(currentFolder),true) );
                 }
             }
         }
@@ -456,13 +456,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         while (touchFolders.hasMoreElements()) {
             currentFolder = (CmsFolder)touchFolders.nextElement();
             
-            if (DEBUG>0) System.err.println( "touching: " + currentFolder.getAbsolutePath() );
+            if (DEBUG>0) System.err.println( "touching: " + cms.readAbsolutePath(currentFolder) );
 
             // touch the folder itself
-            cms.doTouch( currentFolder.getAbsolutePath(), timestamp );
+            cms.doTouch( cms.readAbsolutePath(currentFolder), timestamp );
             
             // touch its counterpart under content/bodies
-            String bodyFolder = C_VFS_PATH_BODIES.substring( 0, C_VFS_PATH_BODIES.lastIndexOf("/")) + currentFolder.getAbsolutePath();
+            String bodyFolder = C_VFS_PATH_BODIES.substring( 0, C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(currentFolder);
             try {
                 cms.readFolder( bodyFolder );
                 cms.doTouch( bodyFolder, timestamp );
@@ -475,11 +475,11 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         while (touchFiles.hasMoreElements()) {
             currentFile = (CmsFile)touchFiles.nextElement();
             
-            if (DEBUG>0) System.err.println( "touching: " + currentFile.getAbsolutePath() );
+            if (DEBUG>0) System.err.println( "touching: " + cms.readAbsolutePath(currentFile) );
             
             if(currentFile.getState()!=I_CmsConstants.C_STATE_DELETED) {
                 // touch the file itself
-                cms.touch( currentFile.getAbsolutePath(), timestamp, false );
+                cms.touch( cms.readAbsolutePath(currentFile), timestamp, false );
             }
         }            
     }    
@@ -549,8 +549,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=0; i<allSubFolders.size(); i++){
             CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
             if(curFolder.getState() != C_STATE_DELETED){
-                String curDestination = destination + curFolder.getAbsolutePath().substring(source.length());
-                cms.doCopyFolder(curFolder.getAbsolutePath(), curDestination );
+                String curDestination = destination + cms.readAbsolutePath(curFolder).substring(source.length());
+                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination );
                 if(!keepFlags){
                     setDefaultFlags(cms, curDestination);
                 }
@@ -560,8 +560,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=0; i<allSubFiles.size(); i++){
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if(curFile.getState() != C_STATE_DELETED){
-                String curDest = destination + curFile.getAbsolutePath().substring(source.length());
-                cms.copyResource(curFile.getAbsolutePath(), curDest, keepFlags);
+                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length());
+                cms.copyResource(cms.readAbsolutePath(curFile), curDest, keepFlags);
             }
         }
         // copy the content bodys
@@ -589,7 +589,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         try{
             CmsResource contentFolder = (CmsResource)cms.readFolder(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/"))+resourceName, true);
             if (contentFolder != null){
-                cms.doCopyResourceToProject(contentFolder.getAbsolutePath());
+                cms.doCopyResourceToProject(cms.readAbsolutePath(contentFolder));
             }
         } catch(CmsException e){
             // cannot read the folder in C_VFS_PATH_BODIES so do nothing
@@ -636,7 +636,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if(curFile.getState() != C_STATE_DELETED){
                 try{
-                    cms.deleteResource(curFile.getAbsolutePath());
+                    cms.deleteResource(cms.readAbsolutePath(curFile));
                 }catch(CmsException e){
                     if(e.getType() != CmsException.C_RESOURCE_DELETED){
                         throw e;
@@ -648,7 +648,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=allSubFolders.size() - 1; i > -1; i--){
             CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
             if(curFolder.getState() != C_STATE_DELETED){
-                cms.doDeleteFolder(curFolder.getAbsolutePath());
+                cms.doDeleteFolder(cms.readAbsolutePath(curFolder));
             }
         }
 
@@ -684,14 +684,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=0; i<allSubFiles.size(); i++){
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if(curFile.getState() == C_STATE_DELETED){
-                cms.undeleteResource(curFile.getAbsolutePath());
+                cms.undeleteResource(cms.readAbsolutePath(curFile));
             }
         }
         // now all the empty subfolders
         for (int i=0; i<allSubFolders.size(); i++){
             CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
             if(curFolder.getState() == C_STATE_DELETED){
-                cms.doUndeleteFolder(curFolder.getAbsolutePath());
+                cms.doUndeleteFolder(cms.readAbsolutePath(curFolder));
             }
         }
         // finally the folder
@@ -792,7 +792,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         	changed = false;
             //the resource exists, check if properties has to be updated
             importedResource = cms.readFolder(destination);
-            Map oldProperties = cms.readProperties(importedResource.getAbsolutePath());
+            Map oldProperties = cms.readProperties(cms.readAbsolutePath(importedResource));
             if(oldProperties == null){
                 oldProperties = new HashMap();
             }
@@ -830,8 +830,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             }
             // update the folder if something has changed
             if(changed){
-            	lockResource(cms,importedResource.getAbsolutePath(), true);
-            	cms.doWriteResource(importedResource.getAbsolutePath(),properties,resowner.getName(), resgroup.getName(),resaccess,C_TYPE_FOLDER,new byte[0]);
+            	lockResource(cms,cms.readAbsolutePath(importedResource), true);
+            	cms.doWriteResource(cms.readAbsolutePath(importedResource),properties,resowner.getName(), resgroup.getName(),resaccess,C_TYPE_FOLDER,new byte[0]);
             }
         }
 
@@ -887,16 +887,16 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=0; i<allSubFolders.size(); i++){
             CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
             if(curFolder.getState() != C_STATE_DELETED){
-                String curDestination = destination + curFolder.getAbsolutePath().substring(source.length());
-                cms.doCopyFolder(curFolder.getAbsolutePath(), curDestination );
+                String curDestination = destination + cms.readAbsolutePath(curFolder).substring(source.length());
+                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination );
             }
         }
         // now move the files
         for (int i=0; i<allSubFiles.size(); i++){
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if(curFile.getState() != C_STATE_DELETED){
-                String curDest = destination + curFile.getAbsolutePath().substring(source.length());
-                cms.moveResource(curFile.getAbsolutePath(), curDest);
+                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length());
+                cms.moveResource(cms.readAbsolutePath(curFile), curDest);
             }
         }
         // finaly remove the original folders
@@ -913,42 +913,53 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * to rename the file, or if the file couldn't be renamed.
     */
     public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
-        // first of all check the new name
+        
+        // TODO change the handling of body-paths in page files
+        
         validResourcename(newname.replace('/','\n'));
-       // we have to copy the folder and all resources in the folder
-        Vector allSubFolders = new Vector();
-        Vector allSubFiles   = new Vector();
-        getAllResources(cms, oldname, allSubFiles, allSubFolders);
-        String parent = ((CmsResource)cms.readFileHeader(oldname)).getParent();
-        //if(!cms.accessWrite(oldname)){
-        if (!cms.checkPermissions(oldname, I_CmsConstants.C_WRITE_ACCESS)) {
-            throw new CmsException(oldname, CmsException.C_NO_ACCESS);
-        }
-        if(!newname.endsWith("/")){
-            newname = newname+"/";
-        }
-        // first copy the folder
-        cms.doCopyFolder(oldname, parent + newname);
-        // now copy the subfolders
-        for (int i=0; i<allSubFolders.size(); i++){
-            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
-            if(curFolder.getState() != C_STATE_DELETED){
-                String curDestination = parent + newname
-                                        + curFolder.getAbsolutePath().substring(oldname.length());
-                cms.doCopyFolder(curFolder.getAbsolutePath(), curDestination );
-            }
-        }
-        // now move the files
-        for (int i=0; i<allSubFiles.size(); i++){
-            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
-            if(curFile.getState() != C_STATE_DELETED){
-                String curDest = parent + newname
-                                + curFile.getAbsolutePath().substring(oldname.length());
-                cms.moveResource(curFile.getAbsolutePath(), curDest);
-            }
-        }
-        // finaly remove the original folders
-        deleteResource(cms, oldname);
+        
+        cms.doRenameResource(oldname, newname);
+        
+        oldname = oldname.substring(1);
+        String bodyPath = C_VFS_PATH_BODIES + oldname;
+        
+        cms.lockResource(bodyPath);
+        cms.doRenameResource(bodyPath, newname);
+        
+//       // we have to copy the folder and all resources in the folder
+//        Vector allSubFolders = new Vector();
+//        Vector allSubFiles   = new Vector();
+//        getAllResources(cms, oldname, allSubFiles, allSubFolders);
+//        String parent = ((CmsResource)cms.readFileHeader(oldname)).getParent();
+//        //if(!cms.accessWrite(oldname)){
+//        if (!cms.checkPermissions(oldname, I_CmsConstants.C_WRITE_ACCESS)) {
+//            throw new CmsException(oldname, CmsException.C_NO_ACCESS);
+//        }
+//        if(!newname.endsWith("/")){
+//            newname = newname+"/";
+//        }
+//        // first copy the folder
+//        cms.doCopyFolder(oldname, parent + newname);
+//        // now copy the subfolders
+//        for (int i=0; i<allSubFolders.size(); i++){
+//            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
+//            if(curFolder.getState() != C_STATE_DELETED){
+//                String curDestination = parent + newname
+//                                        + cms.readAbsolutePath(curFolder).substring(oldname.length());
+//                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination );
+//            }
+//        }
+//        // now move the files
+//        for (int i=0; i<allSubFiles.size(); i++){
+//            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
+//            if(curFile.getState() != C_STATE_DELETED){
+//                String curDest = parent + newname
+//                                + cms.readAbsolutePath(curFile).substring(oldname.length());
+//                cms.moveResource(cms.readAbsolutePath(curFile), curDest);
+//            }
+//        }
+//        // finaly remove the original folders
+//        deleteResource(cms, oldname);
 
     }
 
@@ -1007,14 +1018,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 //            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
 //            if(curFolder.getState() != C_STATE_NEW){
 //                if(curFolder.getState() == C_STATE_DELETED){
-//                    undeleteResource(cms, curFolder.getAbsolutePath());
-//                    lockResource(cms, curFolder.getAbsolutePath(), true);
+//                    undeleteResource(cms, cms.readPath(curFolder));
+//                    lockResource(cms, cms.readPath(curFolder), true);
 //                }
-//                undoChanges(cms, curFolder.getAbsolutePath());
+//                undoChanges(cms, cms.readPath(curFolder));
 //            } else {
 //                // if it is a new folder then delete the folder
 //                try{
-//                    deleteResource(cms, curFolder.getAbsolutePath());
+//                    deleteResource(cms, cms.readPath(curFolder));
 //                } catch (CmsException ex){
 //                    // do not throw exception when resource not exists
 //                    if(ex.getType() != CmsException.C_NOT_FOUND){
@@ -1028,14 +1039,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 //            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
 //            if(curFile.getState() != C_STATE_NEW){
 //                if(curFile.getState() == C_STATE_DELETED){
-//                    cms.undeleteResource(curFile.getAbsolutePath());
-//                    cms.lockResource(curFile.getAbsolutePath(), true);
+//                    cms.undeleteResource(cms.readPath(curFile));
+//                    cms.lockResource(cms.readPath(curFile), true);
 //                }
-//                cms.undoChanges(curFile.getAbsolutePath());
+//                cms.undoChanges(cms.readPath(curFile));
 //            } else {
 //                // if it is a new file then delete the file
 //                try{
-//                    cms.deleteResource(curFile.getAbsolutePath());
+//                    cms.deleteResource(cms.readPath(curFile));
 //                } catch (CmsException ex){
 //                    // do not throw exception when resource not exists
 //                    if(ex.getType() != CmsException.C_NOT_FOUND){
@@ -1109,7 +1120,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         //copy the values into the allFiles and allFolders Vectors
         for(int i = 0;i < folders.size();i++) {
             allFolders.addElement((CmsFolder)folders.elementAt(i));
-            getAllResources(cms, ((CmsFolder)folders.elementAt(i)).getAbsolutePath(),
+            getAllResources(cms, cms.readAbsolutePath((CmsFolder)folders.elementAt(i)),
                 allFiles, allFolders);
         }
         for(int i = 0;i < files.size();i++) {
@@ -1156,14 +1167,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=0; i<allSubFiles.size(); i++){
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if(curFile.getState() != C_STATE_UNCHANGED){
-                cms.changeLockedInProject(newProjectId, curFile.getAbsolutePath());
+                cms.changeLockedInProject(newProjectId, cms.readAbsolutePath(curFile));
             }
         }
         // now all the subfolders
         for (int i=0; i<allSubFolders.size(); i++){
             CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
             if(curFolder.getState() != C_STATE_UNCHANGED){
-                changeLockedInProject(cms, newProjectId, curFolder.getAbsolutePath());
+                changeLockedInProject(cms, newProjectId, cms.readAbsolutePath(curFolder));
             }
         }
         // finally the folder

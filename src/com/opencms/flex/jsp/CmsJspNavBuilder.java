@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/06/16 09:26:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/02 11:03:13 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package com.opencms.flex.jsp;
 
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -171,8 +172,8 @@ public class CmsJspNavBuilder {
         Iterator i = v.iterator();
         while (i.hasNext()) {
             CmsResource r = (CmsResource)i.next();
-            if (r.getState() != CmsResource.C_STATE_DELETED) {
-                CmsJspNavElement element = getNavigationForResource(cms, r.getAbsolutePath());
+            if (r.getState() != I_CmsConstants.C_STATE_DELETED) {
+                CmsJspNavElement element = getNavigationForResource(cms, cms.readAbsolutePath(r));
                 if ((element != null) && element.isInNavigation()) {
                     list.add(element);
                 }
@@ -580,7 +581,7 @@ public class CmsJspNavBuilder {
             m_res = res;
             try {
                 cms.setContextToCos();
-                m_title = cms.readProperty(res.getAbsolutePath(), com.opencms.core.I_CmsConstants.C_PROPERTY_TITLE);
+                m_title = cms.readProperty(cms.readAbsolutePath(res), com.opencms.core.I_CmsConstants.C_PROPERTY_TITLE);
                 cms.setContextToVfs();
             } catch (Exception e) {
                 m_title = "";

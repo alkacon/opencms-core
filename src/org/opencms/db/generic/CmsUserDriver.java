@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/25 16:21:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2003/06/25 16:21:43 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/02 11:03:12 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -280,59 +280,6 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
-    }
-
-    /**
-     * helper for getReadingpermittedGroup. Returns the id of the group that is in
-     * any way parent for the other group or -1 for no dependencies between the groups.
-     * 
-     * @param groupId1		id of the frist group
-     * @param groupId2		id of the second group
-     * @return				the id of the parent of both
-     * @throws CmsException	if something goes wrong
-     */
-    private CmsUUID checkGroupDependence(CmsUUID groupId1, CmsUUID groupId2) throws CmsException {
-        CmsUUID currentGroupId = groupId1;
-        do {
-            currentGroupId = readGroup(currentGroupId).getParentId();
-            if (currentGroupId.equals(groupId2)) {
-                return groupId1;
-            }
-        } while (!currentGroupId.isNullUUID());
-
-        currentGroupId = groupId2;
-        do {
-            currentGroupId = readGroup(currentGroupId).getParentId();
-            if (currentGroupId.equals(groupId1)) {
-                return groupId2;
-            }
-        } while (!currentGroupId.isNullUUID());
-
-        return CmsUUID.getNullUUID();
-    }
-
-    /**
-     * checks a Vector of Groupids for the Group which can read all files
-     *
-     * @param groups A Vector with groupids (Integer).
-     * @return The id of the group that is in any way parent of all other
-     *       group or -1 for no dependencies between the groups.
-     * @throws CmsException if something goes wrong
-     */
-    private CmsUUID checkGroupDependence(Vector groups) throws CmsException {
-        if ((groups == null) || (groups.size() == 0)) {
-            return CmsUUID.getNullUUID();
-        }
-
-        CmsUUID returnValue = (CmsUUID) groups.elementAt(0);
-        for (int i = 1; i < groups.size(); i++) {
-            returnValue = checkGroupDependence(returnValue, (CmsUUID) groups.elementAt(i));
-            if (returnValue.isNullUUID()) {
-                return CmsUUID.getNullUUID();
-            }
-        }
-
-        return returnValue;
     }
 
     /**
@@ -1052,6 +999,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
         ResultSet res = null;
         CmsUser user = null;
         Connection conn = null;
+        
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ");
@@ -1060,26 +1008,22 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 
             res = stmt.executeQuery();
 
-            // create new Cms user object
             if (res.next()) {
                 user = createCmsUserFromResultSet(res, true);
             } else {
-                res.close();
-                res = null;
                 throw new CmsException("[" + this.getClass().getName() + "]" + name, CmsException.C_NO_USER);
             }
-
-            return user;
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        }
-        catch (CmsException e) {
+        } catch (CmsException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
+        
+        return user;        
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2003/06/25 13:52:12 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.17 $ $Date: 2003/06/25 13:52:12 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -153,13 +153,13 @@ public class CmsSynchronize implements I_CmsConstants{
         if (startResource == null || startResource.getProjectId() == onlineProject){
             throw new CmsException("["+this.getClass().getName()+"] "+resourceName, CmsException.C_NOT_FOUND);
         }
-        if (startResource.getAbsolutePath().endsWith("/")){
+        if (m_cms.readAbsolutePath(startResource).endsWith("/")){
             // it's a folder, so all files and folders in this have to be synchronized
             // first create the start folder
-            startFolder = new File((m_synchronizePath+startResource.getAbsolutePath()).replace('/', File.separatorChar));
+            startFolder = new File((m_synchronizePath+m_cms.readAbsolutePath(startResource)).replace('/', File.separatorChar));
             startFolder.mkdirs();
             // now put the resource in the hashtable for VFS resources
-            m_vfsFolders.put(m_synchronizePath+startResource.getAbsolutePath(), startResource);
+            m_vfsFolders.put(m_synchronizePath+m_cms.readAbsolutePath(startResource), startResource);
             // read the resources from the virtual filesystem
             // and compare each with the file in the server filesystem
             filesInFolder = m_cms.getFilesInFolder(resourceName);
@@ -168,16 +168,16 @@ public class CmsSynchronize implements I_CmsConstants{
                 if ((syncFile.getProjectId() != onlineProject) && (!syncFile.getName().startsWith("~"))){
                     if (syncFile.getState() == C_STATE_DELETED) {
                         // the file has to be deleted from the server filesystem
-                        sfsFile = new File(m_synchronizePath+syncFile.getAbsolutePath());
+                        sfsFile = new File(m_synchronizePath+m_cms.readAbsolutePath(syncFile));
                         if (sfsFile.exists()){
                             sfsFile.delete();
                         }
-                        m_synchronizeList.remove(syncFile.getAbsolutePath());
+                        m_synchronizeList.remove(m_cms.readAbsolutePath(syncFile));
                     } else {
-                        syncFile = m_cms.readFile(syncFile.getAbsolutePath());
+                        syncFile = m_cms.readFile(m_cms.readAbsolutePath(syncFile));
                         synchronizeFile(syncFile);
                         // now put the resource in the hashtable for VFS resources
-                        m_vfsFiles.put(m_synchronizePath+syncFile.getAbsolutePath(), syncFile);
+                        m_vfsFiles.put(m_synchronizePath+m_cms.readAbsolutePath(syncFile), syncFile);
                     }
                 }
             }
@@ -187,18 +187,18 @@ public class CmsSynchronize implements I_CmsConstants{
                 if (syncFolder.getProjectId() != onlineProject){
                     if (syncFolder.getState() == C_STATE_DELETED) {
                         // the folder has to be deleted from the server filesystem
-                        sfsFile = new File(m_synchronizePath+syncFolder.getAbsolutePath());
+                        sfsFile = new File(m_synchronizePath+m_cms.readAbsolutePath(syncFolder));
                         if (sfsFile.exists()){
                             if (!deleteDirectory(sfsFile)){
                                 throw new CmsException("["+this.getClass().getName()+"] "+"Could not delete "+sfsFile.getPath());
                             }
                         }
                     } else {
-                        sfsFile = new File((m_synchronizePath+syncFolder.getAbsolutePath()).replace('/', File.separatorChar));
+                        sfsFile = new File((m_synchronizePath+m_cms.readAbsolutePath(syncFolder)).replace('/', File.separatorChar));
                         sfsFile.mkdir();
                         // now put the resource in the hashtable for VFS resources
-                        m_vfsFolders.put(m_synchronizePath+syncFolder.getAbsolutePath(), syncFolder);
-                        synchronizeServer(syncFolder.getAbsolutePath());
+                        m_vfsFolders.put(m_synchronizePath+m_cms.readAbsolutePath(syncFolder), syncFolder);
+                        synchronizeServer(m_cms.readAbsolutePath(syncFolder));
                     }
                 }
             }
@@ -207,11 +207,11 @@ public class CmsSynchronize implements I_CmsConstants{
             if ((startResource.getProjectId() != onlineProject) && (!startResource.getName().startsWith("~"))){
                 if (startResource.getState() == C_STATE_DELETED) {
                     // the file has to be deleted from the server filesystem
-                    sfsFile = new File(m_synchronizePath+startResource.getAbsolutePath());
+                    sfsFile = new File(m_synchronizePath+m_cms.readAbsolutePath(startResource));
                     if (sfsFile.exists()){
                         sfsFile.delete();
                     }
-                    m_synchronizeList.remove(startResource.getAbsolutePath());
+                    m_synchronizeList.remove(m_cms.readAbsolutePath(startResource));
                 } else {
                     syncFile = m_cms.readFile(resourceName);
                     synchronizeFile(syncFile);
@@ -315,8 +315,8 @@ public class CmsSynchronize implements I_CmsConstants{
         CmsFile updVfsFile = null;
         int action = C_SYNC_NONE;
 
-        String path = m_synchronizePath+vfsFile.getAbsolutePath().substring(0,vfsFile.getAbsolutePath().lastIndexOf("/"));
-        String fileName = vfsFile.getAbsolutePath().substring(vfsFile.getAbsolutePath().lastIndexOf("/")+1);
+        String path = m_synchronizePath+m_cms.readAbsolutePath(vfsFile).substring(0,m_cms.readAbsolutePath(vfsFile).lastIndexOf("/"));
+        String fileName = m_cms.readAbsolutePath(vfsFile).substring(m_cms.readAbsolutePath(vfsFile).lastIndexOf("/")+1);
         sfsFile = new File(path, fileName);
 
         if (!sfsFile.exists()){
@@ -326,14 +326,14 @@ public class CmsSynchronize implements I_CmsConstants{
             action = C_SYNC_SFS;
         } else {
             // if the file exists in SFS, compare the versions of the file
-            action = compareDate(vfsFile.getAbsolutePath(), vfsFile.getDateLastModified(), sfsFile.lastModified());
+            action = compareDate(m_cms.readAbsolutePath(vfsFile), vfsFile.getDateLastModified(), sfsFile.lastModified());
         }
         switch (action){
         case 1 :
             // the file from VFS has changed, so update the SFS
             try {
                 writeFileByte(vfsFile.getContents(), sfsFile);
-                m_synchronizeList.putDates(vfsFile.getAbsolutePath(), vfsFile.getDateLastModified(), sfsFile.lastModified());
+                m_synchronizeList.putDates(m_cms.readAbsolutePath(vfsFile), vfsFile.getDateLastModified(), sfsFile.lastModified());
             } catch (Exception e){
                 throw new CmsException("["+this.getClass().getName()+"]"+" Error while updating server filesystem",e);
             }
@@ -342,11 +342,11 @@ public class CmsSynchronize implements I_CmsConstants{
             // the file from SFS has changed, so update the VFS
             try {
                 byte [] content = getFileBytes(sfsFile);
-                m_cms.lockResource(vfsFile.getAbsolutePath(), true);
-                updVfsFile = m_cms.readFile(vfsFile.getAbsolutePath());
+                m_cms.lockResource(m_cms.readAbsolutePath(vfsFile), true);
+                updVfsFile = m_cms.readFile(m_cms.readAbsolutePath(vfsFile));
                 updVfsFile.setContents(content);
                 m_cms.writeFile(updVfsFile);
-                m_synchronizeList.putDates(vfsFile.getAbsolutePath(), m_cms.readFile(updVfsFile.getAbsolutePath()).getDateLastModified(), sfsFile.lastModified());
+                m_synchronizeList.putDates(m_cms.readAbsolutePath(vfsFile), m_cms.readFile(m_cms.readAbsolutePath(updVfsFile)).getDateLastModified(), sfsFile.lastModified());
             } catch (Exception e) {
                 throw new CmsException("["+this.getClass().getName()+"]"+" Error while updating virtual filesystem",e);
             }
@@ -359,7 +359,7 @@ public class CmsSynchronize implements I_CmsConstants{
                 // file has copied successfully, now copy the file from VFS
                 try {
                     writeFileByte(vfsFile.getContents(), sfsFile);
-                    m_synchronizeList.putDates(vfsFile.getAbsolutePath(), vfsFile.getDateLastModified(), sfsFile.lastModified());
+                    m_synchronizeList.putDates(m_cms.readAbsolutePath(vfsFile), vfsFile.getDateLastModified(), sfsFile.lastModified());
                 } catch (Exception e) {
                     throw new CmsException("["+this.getClass().getName()+"]"+" Error while updating server filesystem",e);
                 }

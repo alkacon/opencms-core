@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/06/13 13:13:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/02 11:03:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -131,7 +132,7 @@ public class CmsExplorer extends CmsWorkplace {
     /**
      * Checks if a folder with a given name exits in the VFS.<p>
      * 
-     * @param cms the current cms context
+     * @param getCms() the current cms context
      * @param folder the folder to check for
      * @return true if the folder exists in the VFS
      */
@@ -335,7 +336,7 @@ public class CmsExplorer extends CmsWorkplace {
             if(showTitle){
                 String title = "";
                 try {
-                    title = getCms().readProperty(res.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE);
+                    title = getCms().readProperty(getCms().readAbsolutePath(res), I_CmsConstants.C_PROPERTY_TITLE);
                 }catch(CmsException e) {
                 }
                 if(title == null) {
@@ -435,7 +436,7 @@ public class CmsExplorer extends CmsWorkplace {
         //  now the tree, only if changed
         if(newTreePlease && (!(listonly || vfslinkView))) {
             content.append("\ntop.rT();\n");
-            Vector tree;
+            List tree = null;
             try {
                 tree = getCms().getFolderTree();
             } catch (CmsException e) {
@@ -447,7 +448,7 @@ public class CmsExplorer extends CmsWorkplace {
 
             if (CmsProject.isOnlineProject(getSettings().getProject())) {
                 // all easy: we are in the onlineProject
-                CmsFolder rootFolder = (CmsFolder)tree.elementAt(0);
+                CmsFolder rootFolder = (CmsFolder)tree.get(0);
                 content.append("top.aC(\"");
                 content.append(rootFolder.getId().hashCode());
                 content.append("\", ");
@@ -457,7 +458,7 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append(rootFolder.getParentId().hashCode());
                 content.append("\", false);\n");
                 for(int i = startAt;i < tree.size();i++) {
-                    CmsFolder folder = (CmsFolder)tree.elementAt(i);
+                    CmsFolder folder = (CmsFolder)tree.get(i);
                     content.append("top.aC(\"");
                     // id
                     content.append(folder.getId().hashCode());
@@ -473,12 +474,12 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 // offline Project
                 Hashtable idMixer = new Hashtable();
-                CmsFolder rootFolder = (CmsFolder)tree.elementAt(0);
+                CmsFolder rootFolder = (CmsFolder)tree.get(0);
                 String folderToIgnore = null;
                 if(! CmsProject.isOnlineProject(rootFolder.getProjectId())) {
-                    startAt = 2;
+                    //startAt = 2;
                     grey = false;
-                    idMixer.put((CmsFolder)tree.elementAt(1), rootFolder.getId());
+                    idMixer.put((CmsFolder)tree.get(1), rootFolder.getId());
                 }else {
                     grey = true;
                 }
@@ -493,20 +494,20 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append(grey);
                 content.append(");\n");
                 for(int i = startAt;i < tree.size();i++) {
-                    CmsFolder folder = (CmsFolder)tree.elementAt(i);
-                    if((folder.getState() == I_CmsConstants.C_STATE_DELETED) || (folder.getAbsolutePath().equals(folderToIgnore))) {
+                    CmsFolder folder = (CmsFolder)tree.get(i);
+                    if((folder.getState() == I_CmsConstants.C_STATE_DELETED) || (getCms().readAbsolutePath(folder).equals(folderToIgnore))) {
 
                         // if the folder is deleted - ignore it and the following online res
-                        folderToIgnore = folder.getAbsolutePath();
+                        folderToIgnore = getCms().readAbsolutePath(folder);
                     }else {
                         if(! CmsProject.isOnlineProject(folder.getProjectId())) {
                             grey = false;
                             parentId = folder.getParentId();
                             try {
                                 // the next res is the same res in the online-project: ignore it!
-                                if(folder.getAbsolutePath().equals(((CmsFolder)tree.elementAt(i + 1)).getAbsolutePath())) {
+                                if(getCms().readAbsolutePath(folder).equals(getCms().readAbsolutePath((CmsFolder)tree.get(i + 1)))) {
                                     i++;
-                                    idMixer.put((CmsFolder)tree.elementAt(i), folder.getId());
+                                    idMixer.put((CmsFolder)tree.get(i), folder.getId());
                                 }
                             }catch(IndexOutOfBoundsException exc) {
                             // ignore the exception, this was the last resource
@@ -565,7 +566,7 @@ public class CmsExplorer extends CmsWorkplace {
      * Get the resources in the folder stored in parameter param
      * or in the project shown in the projectview
      *
-     * @param cms the current cms context
+     * @param getCms() the current getCms() context
      * @param mode the mode to use
      * @param folder the fodler to read the files from
      * @return a vector with ressources to display
@@ -574,13 +575,13 @@ public class CmsExplorer extends CmsWorkplace {
         
         if ("vfslink".equals(mode)) {
             try {
-                return new Vector(cms.fetchVfsLinksForResource(folder));
+                return new Vector(getCms().fetchVfsLinksForResource(folder));
             } catch (CmsException e) {
                 return new Vector();
             }
         } else {
             try {
-                return cms.getResourcesInFolder(folder);
+                return getCms().getResourcesInFolder(folder);
             } catch (CmsException e) {
                 return new Vector();
             }                
@@ -593,7 +594,7 @@ public class CmsExplorer extends CmsWorkplace {
         if("projectview".equals(mode)) {
             
             
-            // I_CmsSession session = cms.getRequestContext().getSession(true);
+            // I_CmsSession session = getCms().getRequestContext().getSession(true);
             
             
             if("search".equals(submode)){
@@ -604,13 +605,13 @@ public class CmsExplorer extends CmsWorkplace {
                     searchForm = (CmsSearchFormObject)((Hashtable)session.getValue("ocms_search.allfilter")).get(currentFilter);
                     if((currentFilter != null) && (searchForm != null)){
                         // flag for using lucene for search
-                        I_CmsRegistry registry = cms.getRegistry();
+                        I_CmsRegistry registry = getCms().getRegistry();
                         boolean luceneEnabled = "on".equals(registry.getSystemValue("searchbylucene"));
                         if("property".equals(currentFilter)){
                             String definition = searchForm.getValue02();
                             String value = searchForm.getValue03();
                             int type = Integer.parseInt(searchForm.getValue01());
-                            resources = cms.getVisibleResourcesWithProperty(definition, value, type);
+                            resources = getCms().getVisibleResourcesWithProperty(definition, value, type);
                         } else if ("filename".equals(currentFilter)){
                             String filename = searchForm.getValue01();
                             // if lucene is enabled the use lucene for searching by filename
@@ -618,7 +619,7 @@ public class CmsExplorer extends CmsWorkplace {
                             if(luceneEnabled){
                                 // put here the lucene search for filenames
                             } else {
-                                resources = cms.readResourcesLikeName(filename);
+                                resources = getCms().readResourcesLikeName(filename);
                             }
                         } else if ("content".equals(currentFilter)){
                             // this search is only available if lucene is enabled
@@ -629,7 +630,7 @@ public class CmsExplorer extends CmsWorkplace {
                 // remove the channel resources
                 for(int i=0; i<resources.size(); i++){
                     CmsResource curRes = (CmsResource)resources.elementAt(i);
-                    if(curRes.getResourceName().startsWith(cms.getRequestContext().getSiteName()+CmsObject.C_ROOTNAME_COS)){
+                    if(curRes.getResourceName().startsWith(getCms().getRequestContext().getSiteName()+CmsObject.C_ROOTNAME_COS)){
                         resources.remove(i);
                     }
                 }
@@ -640,12 +641,12 @@ public class CmsExplorer extends CmsWorkplace {
                 String projectId = (String) session.getValue("projectid");
                 int currentProjectId;
                 if(projectId == null || "".equals(projectId)){
-                    currentProjectId = cms.getRequestContext().currentProject().getId();
+                    currentProjectId = getCms().getRequestContext().currentProject().getId();
                 } else {
                     currentProjectId = Integer.parseInt(projectId);
                 }
                 session.removeValue("filter");
-                return cms.readProjectView(currentProjectId, filter);
+                return getCms().readProjectView(currentProjectId, filter);
             }
         } else 
         */       

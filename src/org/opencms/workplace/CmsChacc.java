@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/02 10:53:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/02 11:03:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -831,7 +831,7 @@ public class CmsChacc extends CmsDialog {
         CmsUUID resId = entry.getResource();
         try {
             CmsFolder folder = getCms().readFolder(resId, false);
-            return folder.getAbsolutePath();
+            return getCms().readAbsolutePath(folder);
         } catch (CmsException e) {
             // return null;
             return resId.toString();

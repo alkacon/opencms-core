@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/06/25 13:52:24 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.69 $ $Date: 2003/06/25 13:52:24 $
+ * @version $Revision: 1.70 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -151,7 +151,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         }else {
             currentFolder = (String)session.getValue(C_PARA_FILELIST);
             if((currentFolder == null) || (!folderExists(cms, currentFolder))) {
-                currentFolder = cms.rootFolder().getAbsolutePath();
+                currentFolder = cms.readAbsolutePath(cms.rootFolder());
                 session.putValue(C_PARA_FILELIST, currentFolder);
             }
         }
@@ -178,7 +178,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 currentFolder = "vfslink:" + file;
             } else {
                 // show the root folder in case of an error and reset the state
-                currentFolder = cms.rootFolder().getAbsolutePath();
+                currentFolder = cms.readAbsolutePath(cms.rootFolder());
                 vfslinkView = false;
                 parameters.remove("mode");
             }
@@ -354,7 +354,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             if(showTitle){
                 String title = "";
                 try {
-                    title = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE);
+                    title = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_TITLE);
                 }catch(CmsException e) {
                 }
                 if(title == null) {
@@ -406,7 +406,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 				
 				// currently, the current permissions are displayed here
 				content.append("\"");
-				content.append(cms.getPermissions(res.getAbsolutePath()).getPermissionString());
+				content.append(cms.getPermissions(cms.readAbsolutePath(res)).getPermissionString());
 				content.append("\",");
 				                
             }else{
@@ -453,15 +453,17 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         //  now the tree, only if changed
         if(newTreePlease && (!(listonly || vfslinkView))) {
             content.append("\n top.rT();\n");
-            Vector tree = cms.getFolderTree();
+            List tree = cms.getFolderTree();
             int startAt = 1;
             CmsUUID parentId = CmsUUID.getNullUUID();
             boolean grey = false;
             int onlineProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
             
             if(cms.getRequestContext().currentProject().isOnlineProject()) {
+                Iterator i = tree.iterator();
+                
                 // all easy: we are in the onlineProject
-                CmsFolder rootFolder = (CmsFolder)tree.elementAt(0);
+                CmsFolder rootFolder = (CmsFolder) i.next();
                 content.append("top.aC(\"");
                 content.append(rootFolder.getId());
                 content.append("\", ");
@@ -470,8 +472,9 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 content.append("\", \"");
                 content.append(rootFolder.getParentId());
                 content.append("\", false);\n");
-                for(int i = startAt;i < tree.size();i++) {
-                    CmsFolder folder = (CmsFolder)tree.elementAt(i);
+                
+                while(i.hasNext()) {
+                    CmsFolder folder = (CmsFolder) i.next();
                     content.append("top.aC(\"");
                     // id
                     content.append(folder.getId());
@@ -487,12 +490,12 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             }else {
                 // offline Project
                 Hashtable idMixer = new Hashtable();
-                CmsFolder rootFolder = (CmsFolder)tree.elementAt(0);
+                CmsFolder rootFolder = (CmsFolder) tree.get(0);
                 String folderToIgnore = null;
                 if(rootFolder.getProjectId() != onlineProjectId) {
-                    startAt = 2;
+                    //startAt = 2;
                     grey = false;
-                    idMixer.put((CmsFolder)tree.elementAt(1), rootFolder.getId());
+                    idMixer.put((CmsFolder)tree.get(1), rootFolder.getId());
                 }else {
                     grey = true;
                 }
@@ -507,20 +510,20 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 content.append(grey);
                 content.append(");\n");
                 for(int i = startAt;i < tree.size();i++) {
-                    CmsFolder folder = (CmsFolder)tree.elementAt(i);
-                    if((folder.getState() == C_STATE_DELETED) || (folder.getAbsolutePath().equals(folderToIgnore))) {
+                    CmsFolder folder = (CmsFolder)tree.get(i);
+                    if((folder.getState() == C_STATE_DELETED) || (cms.readAbsolutePath(folder).equals(folderToIgnore))) {
 
                         // if the folder is deleted - ignore it and the following online res
-                        folderToIgnore = folder.getAbsolutePath();
+                        folderToIgnore = cms.readAbsolutePath(folder);
                     }else {
                         if(folder.getProjectId() != onlineProjectId) {
                             grey = false;
                             parentId = folder.getParentId();
                             try {
                                 // the next res is the same res in the online-project: ignore it!
-                                if(folder.getAbsolutePath().equals(((CmsFolder)tree.elementAt(i + 1)).getAbsolutePath())) {
+                                if(cms.readAbsolutePath(folder).equals(cms.readAbsolutePath((CmsFolder)tree.get(i + 1)))) {
                                     i++;
-                                    idMixer.put((CmsFolder)tree.elementAt(i), folder.getId());
+                                    idMixer.put((CmsFolder)tree.get(i), folder.getId());
                                 }
                             }catch(IndexOutOfBoundsException exc) {
                             // ignore the exception, this was the last resource

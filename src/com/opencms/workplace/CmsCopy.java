@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2003/06/13 15:13:13 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.54 $ $Date: 2003/06/13 15:13:13 $
+ * @version $Revision: 1.55 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -163,7 +163,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
             else {
 
                 try {
-                    cms.copyResource(file.getAbsolutePath(), newFolder +newFile, !flags.equals("false"));
+                    cms.copyResource(cms.readAbsolutePath(file), newFolder +newFile, !flags.equals("false"));
                 }
                 catch(CmsException ex) {
                     // something went wrong, so remove all session parameters
@@ -207,7 +207,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         }
 
         // set the required datablocks
-        String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+        String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
         if(title == null) {
             title = "";
         }
@@ -301,7 +301,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
     private void getTree(CmsObject cms, CmsFolder root, Vector names, Vector values)
             throws CmsException {
-        Vector folders = cms.getSubFolders(root.getAbsolutePath());
+        Vector folders = cms.getSubFolders(cms.readAbsolutePath(root));
         CmsProject currentProject = cms.getRequestContext().currentProject();
         Enumeration enu = folders.elements();
         while(enu.hasMoreElements()) {
@@ -309,10 +309,10 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
             // check if the current folder is part of the current project
             if(folder.inProject(currentProject)) {
-                String name = folder.getAbsolutePath();
+                String name = cms.readAbsolutePath(folder);
                 name = name.substring(1, name.length() - 1);
                 names.addElement(name);
-                values.addElement(folder.getAbsolutePath());
+                values.addElement(cms.readAbsolutePath(folder));
             }
             getTree(cms, folder, names, values);
         }

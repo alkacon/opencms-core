@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/26 15:34:26 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,9 +57,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -68,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.8 $ $Date: 2003/06/26 15:34:26 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/02 11:03:12 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -690,7 +694,6 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     /**
      * Private method to init all default-resources
      */
-    // protected 
     public void fillDefaults() throws CmsException {
         try {
             if (readProject(I_CmsConstants.C_PROJECT_ONLINE_ID) != null) {
@@ -717,108 +720,88 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         m_driverManager.getUserDriver().addUserToGroup(guest.getId(), guests.getId());
         m_driverManager.getUserDriver().addUserToGroup(admin.getId(), administrators.getId());
         m_driverManager.getWorkflowDriver().writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // online project stuff
+        ////////////////////////////////////////////////////////////////////////////////////////////        
 
         // create the online project
         CmsTask task = m_driverManager.getWorkflowDriver().createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(), I_CmsConstants.C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
         CmsProject online = createProject(admin, guests, projectleader, task, I_CmsConstants.C_PROJECT_ONLINE, "the online-project", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
 
         // create the root-folder for the online project
-        CmsUUID siteRootId = CmsUUID.getNullUUID();
-        CmsFolder rootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), I_CmsConstants.C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(online, rootFolder, false);
-        
-		// create the access control entries
-		// not yet since theres no online/offline difference 
-		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
-		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
+        CmsFolder onlineRootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), I_CmsConstants.C_ROOT, 0);
+        onlineRootFolder.setGroupId(users.getId());
+        onlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+        m_driverManager.getVfsDriver().writeFolder(online, onlineRootFolder, false);        		
 
-        // create the folder for the default site
-        rootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, rootFolder.getId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(online, rootFolder, false); 
-		siteRootId = rootFolder.getId();
+        // create the folder for the default site for the online project
+        CmsFolder onlineDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineRootFolder.getId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE, 0);
+        onlineDefaultFolder.setGroupId(users.getId());
+        onlineDefaultFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+        m_driverManager.getVfsDriver().writeFolder(online, onlineDefaultFolder, false); 
+        CmsUUID onlineDefaultId = onlineDefaultFolder.getId();
 		
 		// create the access control entries
-        m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),administrators.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-        m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),projectleader.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-        m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),users.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-        m_driverManager.getUserDriver().createAccessControlEntry(online,rootFolder.getResourceAceId(),guests.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        m_driverManager.getUserDriver().createAccessControlEntry(online,onlineRootFolder.getResourceAceId(),administrators.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        m_driverManager.getUserDriver().createAccessControlEntry(online,onlineRootFolder.getResourceAceId(),projectleader.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        m_driverManager.getUserDriver().createAccessControlEntry(online,onlineRootFolder.getResourceAceId(),users.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        m_driverManager.getUserDriver().createAccessControlEntry(online,onlineRootFolder.getResourceAceId(),guests.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
 
-        // create the folder for the virtual file system
-        rootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, siteRootId, CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS + I_CmsConstants.C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(online, rootFolder, false);
-		// create the access control entries
-		//		not yet since theres no online/offline difference
-		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
-		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
+        // create the folder for the virtual file system for the online project
+        CmsFolder onlineVfsFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_VFS, 0);
+        onlineVfsFolder.setGroupId(users.getId());
+        onlineVfsFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+        m_driverManager.getVfsDriver().writeFolder(online, onlineVfsFolder, false);
 
-        // create the folder for the context objects system
-        rootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, siteRootId, CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_COS + I_CmsConstants.C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(online, rootFolder, false);
+        // create the folder for the context objects system for the online project
+        CmsFolder onlineCosFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_COS, 0);
+        onlineCosFolder.setGroupId(users.getId());
+        onlineCosFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+        m_driverManager.getVfsDriver().writeFolder(online, onlineCosFolder, false);
+                
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // setup project stuff
+        ////////////////////////////////////////////////////////////////////////////////////////////
         
-		// create the access control entries
-		// not yet since theres no online/offline difference
-		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
-		//m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
-
         // create the task for the setup project
         task = m_driverManager.getWorkflowDriver().createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(), "_setupProject", new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
         CmsProject setup = createProject(admin, administrators, administrators, task, "_setupProject", "Initial site import", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
 
         // create the root-folder for the offline project
-        rootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), I_CmsConstants.C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
+        //CmsFolder setupRootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), I_CmsConstants.C_ROOT, 0);
+        CmsFolder setupRootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineRootFolder, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOT);        
+        setupRootFolder.setGroupId(users.getId());
+        setupRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+        m_driverManager.getVfsDriver().writeFolder(setup, setupRootFolder, false);
+        
+        // create the folder for the default site for the offline project
+        //CmsFolder setupDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, setupRootFolder.getId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE, 0);
+        CmsFolder setupDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineDefaultFolder, onlineDefaultFolder.getParentId(), I_CmsConstants.C_DEFAULT_SITE);
+        setupDefaultFolder.setGroupId(users.getId());
+        setupDefaultFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+        m_driverManager.getVfsDriver().writeFolder(setup, setupDefaultFolder, false);
+        //CmsUUID offlineDefaultId = setupDefaultFolder.getId();
         
 		// create the access control entries
-		// not neccessary at this level
-		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
-		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
+        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),administrators.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),projectleader.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),users.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),guests.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
 
-        // create the folder for the default site
-        rootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, rootFolder.getId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
-        siteRootId = rootFolder.getId();
+        // create the folder for the virtual file system for the offline project
+        //CmsFolder setupVfsFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, offlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_VFS, 0);
+        CmsFolder setupVfsFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineVfsFolder, onlineVfsFolder.getParentId(), I_CmsConstants.C_ROOTNAME_VFS);
+        setupVfsFolder.setGroupId(users.getId());
+        setupVfsFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+        m_driverManager.getVfsDriver().writeFolder(setup, setupVfsFolder, false);
         
-		// create the access control entries
-		m_driverManager.getUserDriver().createAccessControlEntry(setup,rootFolder.getResourceAceId(),administrators.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-		m_driverManager.getUserDriver().createAccessControlEntry(setup,rootFolder.getResourceAceId(),projectleader.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-		m_driverManager.getUserDriver().createAccessControlEntry(setup,rootFolder.getResourceAceId(),users.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-		m_driverManager.getUserDriver().createAccessControlEntry(setup,rootFolder.getResourceAceId(),guests.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-
-
-        // create the folder for the virtual file system
-        rootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS + I_CmsConstants.C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
-        
-		// create the access control entries
-		// everything is attached to the site root
-		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
-		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
-
-        // create the folder for the context objects system
-        rootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_COS + I_CmsConstants.C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(setup, rootFolder, false);
-        
-		// create the access control entries
-		// everything is attached to the site root
-		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getOwnerId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_OWNER,0,0);
-		// m_driverManager.getUserDriver().createAccessControlEntry(rootFolder.getResourceId(),rootFolder.getGroupId(),rootFolder.getAccessFlags()& I_CmsConstants.C_ACCESS_GROUP,0,0);
-
+        // create the folder for the context objects system for the offline project
+        //CmsFolder setupCosFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, offlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_COS, 0);
+        CmsFolder setupCosFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineCosFolder, onlineCosFolder.getParentId(), I_CmsConstants.C_ROOTNAME_COS);
+        setupCosFolder.setGroupId(users.getId());
+        setupCosFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+        m_driverManager.getVfsDriver().writeFolder(setup, setupCosFolder, false);
     }
 
     protected void finalize() throws Throwable {
@@ -1104,7 +1087,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     links = new CmsPageLinks(next);
                     links.addLinkTarget(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
                     try {
-                        links.setResourceName(((CmsFile) m_driverManager.getVfsDriver().readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next)).getResourceName());
+                        links.setResourceName(((CmsFile) m_driverManager.getVfsDriver().readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next, false)).getResourceName());
                     } catch (CmsException e) {
                         links.setResourceName("id=" + next + ". Sorry, can't read resource. " + e.getMessage());
                     }
@@ -1163,267 +1146,224 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
      * @return a vector of changed or deleted resources.
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProject, boolean enableHistory, I_CmsReport report, Hashtable exportpoints) throws CmsException {
+    public Vector publishProject(CmsUser currentUser, CmsProject publishProject, CmsProject onlineProject, boolean backupEnabled, I_CmsReport report, Hashtable exportpoints) throws CmsException {
         CmsExportPointDriver discAccess = new CmsExportPointDriver(exportpoints);
         CmsFolder currentFolder = null;
         CmsFile currentFile = null;
         CmsFolder newFolder = null;
         CmsFile newFile = null;
-        Vector offlineFolders = null;
-        Vector offlineFiles = null;
-        Vector deletedFolders = new Vector();
+        List offlineFolders = null;
+        List offlineFiles = null;
+        List deletedFolders = (List) new ArrayList();
         Vector changedResources = new Vector();
-
-        Map folderIdIndex = (Map) new HashMap();
-
-        CmsProject currentProject = m_driverManager.readProject(projectId);
-        int versionId = 1;
+        String currentExportKey = null;
+        String currentResourceName = null;        
+        int backupVersionId = 1;
         long publishDate = System.currentTimeMillis();
+        int publishProjectId = publishProject.getId();
+        Iterator i = null;
+        
+        // TODO ensure that online resources from my own project get published        
 
-        if (enableHistory) {
-            // get the version id for the backup
-            versionId = m_driverManager.getBackupDriver().nextBackupVersionId();
-            // store the projectdata to the backuptables for history
-            m_driverManager.getBackupDriver().writeBackupProject(currentProject, versionId, publishDate, user);
+        if (backupEnabled) {
+            backupVersionId = m_driverManager.getBackupVersionId();
+            m_driverManager.backupProject(publishProject, backupVersionId, publishDate, currentUser);
         }
 
-        // read all folders in offlineProject
-        offlineFolders = m_driverManager.getVfsDriver().readFolders(projectId, false, true);
-        for (int i=0;i<offlineFolders.size();i++) {
-            currentFolder = ((CmsFolder) offlineFolders.elementAt(i));
-            report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);
-            report.println(currentFolder.getAbsolutePath());
-            // do not publish the folder if it is locked in another project
-
+        // read all folders in the offline project
+        offlineFolders = m_driverManager.getVfsDriver().readFolders(publishProject, false, true);
+        
+        i = offlineFolders.iterator();
+        while (i.hasNext()) {
+            currentFolder = (CmsFolder)i.next();
+            currentResourceName = CmsResource.getAbsolutePath(m_driverManager.readPath(currentUser, publishProject, currentFolder, true));
+            currentExportKey = checkExport(currentResourceName, exportpoints);
+            
+            report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);            
+            report.println(currentResourceName);
+            
             if (currentFolder.isLocked()) {
-                // in this case do nothing
-                // C_STATE_DELETE
+                // do not publish the folder if it is locked in another project
             } else if (currentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
-                deletedFolders.addElement(currentFolder);
-                changedResources.addElement(currentFolder.getResourceName());
-                // I_CmsConstants.C_STATE_NEW
+                // C_STATE_DELETE
+
+                deletedFolders.add(currentFolder);
+                changedResources.addElement(currentResourceName);
             } else if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
-                changedResources.addElement(currentFolder.getResourceName());
+                // I_CmsConstants.C_STATE_NEW
+                
+                changedResources.addElement(currentResourceName);
+                
                 // export to filesystem if necessary
-                String exportKey = checkExport(currentFolder.getAbsolutePath(), exportpoints);
-                if (exportKey != null) {
-                    discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
+                if (currentExportKey != null) {
+                    discAccess.createFolder(currentResourceName, currentExportKey);
                 }
 
-                // get parentId for onlineFolder either from folderIdIndex or from the database
-                CmsUUID parentId = (CmsUUID) folderIdIndex.get(currentFolder.getParentId());
-                if (parentId == null) {
-                    CmsFolder currentOnlineParent = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), currentFolder.getRootName() + currentFolder.getParent());
-                    parentId = currentOnlineParent.getId();
-                    folderIdIndex.put(currentFolder.getParentId(), parentId);
-                }
-
-                // create the new folder and insert its id in the folderindex
+                // create the new folder in the online project
                 try {
-                    newFolder = m_driverManager.getVfsDriver().createFolder(user, onlineProject, currentFolder, parentId, currentFolder.getResourceName());
+                    newFolder = (CmsFolder) currentFolder.clone();
                     newFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                    m_driverManager.getVfsDriver().updateResourcestate(newFolder);
+                    m_driverManager.getVfsDriver().createFolder(currentUser, onlineProject, newFolder, newFolder.getParentId(), newFolder.getResourceName());
+                    
+//                    newFolder = m_driverManager.getVfsDriver().createFolder(currentUser, onlineProject, currentFolder, currentFolder.getParentId(), currentFolder.getResourceName());
+//                    newFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+//                    m_driverManager.getVfsDriver().updateResourcestate(newFolder);
                 } catch (CmsException e) {
-                    // if the folder already exists in the onlineProject then update the onlineFolder
+                    // if the folder already exists in the online project
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         CmsFolder onlineFolder = null;
                         try {
-                            onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), currentFolder.getResourceName());
+                            onlineFolder = m_driverManager.readFolder(currentUser, onlineProject, currentFolder.getId(), false);
                         } catch (CmsException exc) {
                             throw exc;
-                        } // end of catch
-                        
-//                        PreparedStatement stmt = null;
-//                        Connection conn = null;
-//                        try {
-//                            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-//                            
-//                            // update the online folder with attribs. of the corresponding offline folder
-//                            stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE");
-//                            stmt.setInt(1, currentFolder.getType());
-//                            stmt.setInt(2, currentFolder.getFlags());
-//                            stmt.setString(3, currentFolder.getOwnerId().toString());
-//                            stmt.setString(4, currentFolder.getGroupId().toString());
-//                            stmt.setInt(5, onlineFolder.getProjectId());
-//                            stmt.setInt(6, currentFolder.getAccessFlags());
-//                            stmt.setInt(7, I_CmsConstants.C_STATE_UNCHANGED);
-//                            stmt.setString(8, currentFolder.isLockedBy().toString());
-//                            stmt.setInt(9, currentFolder.getLauncherType());
-//                            stmt.setString(10, currentFolder.getLauncherClassname());
-//                            stmt.setTimestamp(11, new Timestamp(currentFolder.getDateLastModified()));
-//                            stmt.setString(12, currentFolder.getResourceLastModifiedBy().toString());
-//                            stmt.setInt(13, 0);
-//                            stmt.setString(14, onlineFolder.getFileId().toString());
-//                            stmt.setString(15, onlineFolder.getResourceId().toString());
-//                            stmt.executeUpdate();
-//                            
-//                            newFolder = m_driverManager.getVfsDriver().readFolder(I_CmsConstants.C_PROJECT_ONLINE_ID, currentFolder.getResourceName());
-//                        } catch (SQLException exc) {
-//                            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-//                        } finally {
-//                            m_sqlManager.closeAll(conn, stmt, null);
-//                        }
+                        }
 
                         m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource( (CmsResource)onlineFolder, (CmsResource)currentFolder);
-                        newFolder = m_driverManager.getVfsDriver().readFolder(I_CmsConstants.C_PROJECT_ONLINE_ID, currentFolder.getResourceName());
+//                        newFolder = m_driverManager.readFolder(currentUser, onlineProject, currentFolder.getId(), false);
                     } else {
                         throw e;
                     }
                 }
-
-                folderIdIndex.put(currentFolder.getId(), newFolder.getId());
                 
                 // copy the access control entries of the folder
-                m_driverManager.getUserDriver().publishAccessControlEntries(currentProject, onlineProject, currentFolder.getResourceAceId(), newFolder.getResourceAceId());             
+                m_driverManager.getUserDriver().publishAccessControlEntries(publishProject, onlineProject, currentFolder.getResourceAceId(), newFolder.getResourceAceId());             
                 
                 // copy properties
-                Map props = new HashMap();
-
+                Map props = (Map) new HashMap();
                 try {
-                    props = m_driverManager.getVfsDriver().readProperties(projectId, currentFolder, currentFolder.getType());
+                    props = m_driverManager.getVfsDriver().readProperties(publishProjectId, currentFolder, currentFolder.getType());
                     m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), newFolder, newFolder.getType());
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, copy properties for " + newFolder.toString() + " Message= " + exc.getMessage());
                     }
                 }
-                if (enableHistory) {
+                
+                if (backupEnabled) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFolder, new byte[0], props, backupVersionId, publishDate);
                 }
 
-                // set the state of current folder in the offline project to unchanged
-                currentFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                m_driverManager.getVfsDriver().updateResourcestate(currentFolder);
-                // I_CmsConstants.C_STATE_CHANGED
-            } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
-                changedResources.addElement(currentFolder.getResourceName());
-                // export to filesystem if necessary
-                String exportKey = checkExport(currentFolder.getAbsolutePath(), exportpoints);
-                if (exportKey != null) {
-                    discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
+                if (currentFolder.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
+                    // set the state of current folder in the offline project to unchanged
+                    currentFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+                    m_driverManager.getVfsDriver().updateResourcestate(currentFolder);
                 }
+            } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
+                // I_CmsConstants.C_STATE_CHANGED
+                
+                changedResources.addElement(currentResourceName);               
+                
                 CmsFolder onlineFolder = null;
                 try {
-                    onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), currentFolder.getResourceName());
+                    onlineFolder = m_driverManager.readFolder(currentUser, onlineProject, currentFolder.getId(), false);
                 } catch (CmsException exc) {
                     // if folder does not exist create it
-                    if (exc.getType() == CmsException.C_NOT_FOUND) {
-                        // get parentId for onlineFolder either from folderIdIndex or from the database
-                        CmsUUID parentId = (CmsUUID) folderIdIndex.get(currentFolder.getParentId());
-                        if (parentId == null) {
-                            CmsFolder currentOnlineParent = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), currentFolder.getRootName() + currentFolder.getParent());
-                            parentId = currentOnlineParent.getId();
-                            folderIdIndex.put(currentFolder.getParentId(), parentId);
-                        }
+                    if (exc.getType() == CmsException.C_NOT_FOUND) {                        
                         // create the new folder
-                        onlineFolder = m_driverManager.getVfsDriver().createFolder(user, onlineProject, currentFolder, parentId, currentFolder.getResourceName());
+                        onlineFolder = m_driverManager.getVfsDriver().createFolder(currentUser, onlineProject, currentFolder, currentFolder.getParentId(), currentFolder.getResourceName());
                         onlineFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
                         m_driverManager.getVfsDriver().updateResourcestate(onlineFolder);
                     } else {
                         throw exc;
                     }
-                } // end of catch
+                } 
                 
-//                Connection conn = null;
-//                PreparedStatement stmt = null;
-//                try {
-//                    conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-//                    stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE");
-//                    // update the onlineFolder with data from offlineFolder
-//                    stmt.setInt(1, currentFolder.getType());
-//                    stmt.setInt(2, currentFolder.getFlags());
-//                    stmt.setString(3, currentFolder.getOwnerId().toString());
-//                    stmt.setString(4, currentFolder.getGroupId().toString());
-//                    stmt.setInt(5, onlineFolder.getProjectId());
-//                    stmt.setInt(6, currentFolder.getAccessFlags());
-//                    stmt.setInt(7, I_CmsConstants.C_STATE_UNCHANGED);
-//                    stmt.setString(8, currentFolder.isLockedBy().toString());
-//                    stmt.setInt(9, currentFolder.getLauncherType());
-//                    stmt.setString(10, currentFolder.getLauncherClassname());
-//                    stmt.setTimestamp(11, new Timestamp(currentFolder.getDateLastModified()));
-//                    stmt.setString(12, currentFolder.getResourceLastModifiedBy().toString());
-//                    stmt.setInt(13, 0);
-//                    stmt.setString(14, onlineFolder.getFileId().toString());
-//                    stmt.setString(15, onlineFolder.getResourceId().toString());
-//                    stmt.executeUpdate();
-//                } catch (SQLException e) {
-//                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-//                } finally {
-//                    m_sqlManager.closeAll(conn, stmt, null);
-//                }
+                // export to filesystem if necessary
+                if (currentExportKey != null) {
+                    discAccess.createFolder(currentResourceName, currentExportKey);
+                    
+                    if (!onlineFolder.getResourceName().equals(currentResourceName)) {
+                        discAccess.removeResource(onlineFolder.getResourceName(), currentExportKey);
+                    }
+                }                                    
 
-                m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource( (CmsResource)onlineFolder, (CmsResource)currentFolder);
-                
-                folderIdIndex.put(currentFolder.getId(), onlineFolder.getId());
+                m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource( (CmsResource)onlineFolder, (CmsResource)currentFolder);               
                 
                 // copy the access control entries of the folder
-                m_driverManager.getUserDriver().publishAccessControlEntries(currentProject, onlineProject, currentFolder.getResourceAceId(), newFolder.getResourceAceId());                
+                m_driverManager.getUserDriver().publishAccessControlEntries(publishProject, onlineProject, currentFolder.getResourceAceId(), onlineFolder.getResourceAceId());                
                 
                 // copy properties
-                Map props = new HashMap();
+                Map props = (Map) new HashMap();
                 try {
                     m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), onlineFolder);
-                    props = m_driverManager.getVfsDriver().readProperties(projectId, currentFolder, currentFolder.getType());
+                    props = m_driverManager.getVfsDriver().readProperties(publishProjectId, currentFolder, currentFolder.getType());
                     m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), onlineFolder, currentFolder.getType());
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
                     }
                 }
-                if (enableHistory) {
+                
+                if (backupEnabled) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFolder, new byte[0], props, backupVersionId, publishDate);
                 }
-                // set the state of current folder in the offline project to unchanged
-                currentFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                m_driverManager.getVfsDriver().updateResourcestate(currentFolder);
-            } // end of else if
-        } // end of for(...
+                
+                if (currentFolder.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
+                    // set the state of current folder in the offline project to unchanged
+                    currentFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+                    m_driverManager.getVfsDriver().updateResourcestate(currentFolder);
+                }
+            }
+        }
+        
+        offlineFolders.clear();
+        offlineFolders = null;
 
         // now read all FILES in offlineProject
 
-        offlineFiles = m_driverManager.getVfsDriver().readFiles(projectId, false, true);
-        for (int i = 0; i < offlineFiles.size(); i++) {
-            currentFile = ((CmsFile) offlineFiles.elementAt(i));
-            report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);
-            report.println(currentFile.getAbsolutePath());
+        offlineFiles = m_driverManager.getVfsDriver().readFiles(publishProjectId, false, true);
+        
+        i = offlineFiles.iterator();
+        while (i.hasNext()) {
+            currentFile = (CmsFile) i.next();
+            currentResourceName = CmsResource.getAbsolutePath(m_driverManager.readPath(currentUser, publishProject, currentFile, true));
+            currentExportKey = checkExport(currentResourceName, exportpoints);
+            
+            report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);            
+            report.println(currentResourceName);
+            
             if (!currentFile.isLocked()) {
                 // remove the temporary files for this resource
                 m_driverManager.getVfsDriver().removeTemporaryFile(currentFile);
             }
+            
             // do not publish files that are locked in another project
             if (currentFile.isLocked()) {
                 //in this case do nothing
             } else if (currentFile.getName().startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
-                m_driverManager.getVfsDriver().deleteAllProperties(projectId, currentFile);
-                m_driverManager.getVfsDriver().removeFile(projectId, currentFile.getResourceName());
-                // C_STATE_DELETE
+                m_driverManager.getVfsDriver().deleteAllProperties(publishProjectId, currentFile);
+                m_driverManager.getVfsDriver().removeFile(publishProject, currentFile.getId());
             } else if (currentFile.getState() == I_CmsConstants.C_STATE_DELETED) {
-                changedResources.addElement(currentFile.getResourceName());
-                String exportKey = checkExport(currentFile.getAbsolutePath(), exportpoints);
-                if (exportKey != null) {
+                // C_STATE_DELETE
+                
+                changedResources.addElement(currentResourceName);
+                
+                if (currentExportKey != null) {
                     try {
-                        discAccess.removeResource(currentFile.getAbsolutePath(), exportKey);
+                        discAccess.removeResource(currentResourceName, currentExportKey);
                     } catch (Exception ex) {
                         // NOOP
                     }
                 }
-                CmsFile currentOnlineFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), currentFile.getResourceName());
-                if (enableHistory) {
-                    // read the properties for backup
-                    Map props = m_driverManager.getVfsDriver().readProperties(projectId, currentFile, currentFile.getType());
-                    // backup the offline resource
-                    m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
+                
+                CmsFile currentOnlineFile = m_driverManager.readFile(currentUser,onlineProject,currentFile.getId(),false);
+                
+                if (backupEnabled) {
+                    Map props = m_driverManager.getVfsDriver().readProperties(publishProjectId, currentFile, currentFile.getType());
+                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFile, currentFile.getContents(), props, backupVersionId, publishDate);
                 }
+                
                 try {
                     m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), currentOnlineFile);
-                    m_driverManager.getVfsDriver().deleteAllProperties(projectId, currentFile);
+                    m_driverManager.getVfsDriver().deleteAllProperties(publishProjectId, currentFile);
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
                     }
                 }
+                
                 try {
                     m_driverManager.getVfsDriver().deleteResource(currentOnlineFile);
                     m_driverManager.getVfsDriver().deleteResource(currentFile);
@@ -1432,35 +1372,35 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
                     }
                 }
+                
 				try {                	         
 					m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, currentOnlineFile.getResourceAceId());
-					m_driverManager.getUserDriver().removeAllAccessControlEntries(currentProject, currentFile.getResourceAceId());
-
+					m_driverManager.getUserDriver().removeAllAccessControlEntries(publishProject, currentFile.getResourceAceId());
 				} catch (CmsException exc) {
 					if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsProjectDriver] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
 					}
 				}
                   
                 try {                	         
                     m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, currentOnlineFile.getResourceAceId());
-                    m_driverManager.getUserDriver().removeAllAccessControlEntries(currentProject, currentFile.getResourceAceId());
+                    m_driverManager.getUserDriver().removeAllAccessControlEntries(publishProject, currentFile.getResourceAceId());
 
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsProjectDriver] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
                     }
                 }
-                                  
-                // I_CmsConstants.C_STATE_CHANGED
             } else if (currentFile.getState() == I_CmsConstants.C_STATE_CHANGED) {
-                changedResources.addElement(currentFile.getResourceName());
+                // C_STATE_CHANGED
+                
+                changedResources.addElement(currentResourceName);
+                
                 // export to filesystem if necessary
-                String exportKey = checkExport(currentFile.getAbsolutePath(), exportpoints);
-                if (exportKey != null) {
+                if (currentExportKey != null) {
                     // Encoding project: Make sure files are written in the right encoding 
                     byte[] contents = currentFile.getContents();
-                    String encoding = m_driverManager.getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, projectId, currentFile, currentFile.getType());
+                    String encoding = m_driverManager.getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, publishProjectId, currentFile, currentFile.getType());
                     if (encoding != null) {
                         // Only files that have the encodig property set will be encoded,
                         // the other files will be ignored. So images etc. are not touched.                        
@@ -1470,88 +1410,58 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                             // contents will keep original value
                         }
                     }
-                    discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, contents);
+                    discAccess.writeFile(currentResourceName, currentExportKey, contents);
                 }
+                
                 CmsFile onlineFile = null;
                 try {
-                    onlineFile = m_driverManager.getVfsDriver().readFileHeader(onlineProject.getId(), currentFile.getResourceName(), false);
+                    onlineFile = m_driverManager.readFile(currentUser, onlineProject, currentFile.getId(), false);
                 } catch (CmsException exc) {
-                    if (exc.getType() == CmsException.C_NOT_FOUND) {
-                        // get parentId for onlineFolder either from folderIdIndex or from the database
-                        CmsUUID parentId = (CmsUUID) folderIdIndex.get(currentFile.getParentId());
-                        if (parentId == null) {
-                            CmsFolder currentOnlineParent = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), currentFile.getRootName() + currentFile.getParent());
-                            parentId = currentOnlineParent.getId();
-                            folderIdIndex.put(currentFile.getParentId(), parentId);
-                        }
+                    if (exc.getType() == CmsException.C_NOT_FOUND) {                        
                         // create a new File
                         currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        onlineFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, user.getId(), parentId, currentFile.getResourceName());
+                        onlineFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, currentUser.getId(), currentFile.getParentId(), currentFile.getResourceName());
                     }
-                } // end of catch
-                
-//                Connection conn = null;
-//                PreparedStatement stmt = null;
-//                try {
-//                    conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-//                    stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE");
-//                    // update the onlineFile with data from offlineFile
-//                    stmt.setInt(1, currentFile.getType());
-//                    stmt.setInt(2, currentFile.getFlags());
-//                    stmt.setString(3, currentFile.getOwnerId().toString());
-//                    stmt.setString(4, currentFile.getGroupId().toString());
-//                    stmt.setInt(5, onlineFile.getProjectId());
-//                    stmt.setInt(6, currentFile.getAccessFlags());
-//                    stmt.setInt(7, I_CmsConstants.C_STATE_UNCHANGED);
-//                    stmt.setString(8, currentFile.isLockedBy().toString());
-//                    stmt.setInt(9, currentFile.getLauncherType());
-//                    stmt.setString(10, currentFile.getLauncherClassname());
-//                    stmt.setTimestamp(11, new Timestamp(currentFile.getDateLastModified()));
-//                    stmt.setString(12, currentFile.getResourceLastModifiedBy().toString());
-//                    stmt.setInt(13, currentFile.getLength());
-//                    stmt.setString(14, onlineFile.getFileId().toString());
-//                    stmt.setString(15, onlineFile.getResourceId().toString());
-//                    stmt.executeUpdate();
-//                    stmt.close();
-//                } catch (SQLException e) {
-//                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-//                } finally {
-//                    m_sqlManager.closeAll(conn, stmt, null);
-//                }
+                }
 
-                m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource( (CmsResource)onlineFile, (CmsResource)currentFile);
+                m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource((CmsResource)onlineFile, (CmsResource)currentFile);
                 m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                 
                 // copy properties
-                Map props = new HashMap();
+                Map props = (Map) new HashMap();
                 try {
                     m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), onlineFile);
-                    props = m_driverManager.getVfsDriver().readProperties(projectId, currentFile, currentFile.getType());
+                    props = m_driverManager.getVfsDriver().readProperties(publishProjectId, currentFile, currentFile.getType());
                     m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), onlineFile, currentFile.getType());
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + onlineFile.toString() + " Message= " + exc.getMessage());
                     }
                 }
+                
                 // copy access control entries
-				m_driverManager.getUserDriver().publishAccessControlEntries(currentProject, onlineProject, currentFile.getResourceAceId(), onlineFile.getResourceAceId());
+				m_driverManager.getUserDriver().publishAccessControlEntries(publishProject, onlineProject, currentFile.getResourceAceId(), onlineFile.getResourceAceId());
 
-                if (enableHistory) {
+                if (backupEnabled) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFile, currentFile.getContents(), props, backupVersionId, publishDate);
                 }
-                // set the file state to unchanged
-                currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                m_driverManager.getVfsDriver().updateResourcestate(currentFile);
-                // I_CmsConstants.C_STATE_NEW
+                
+                if (currentFile.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
+                    // set the file state to unchanged
+                    currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
+                    m_driverManager.getVfsDriver().updateResourcestate(currentFile);
+                }
             } else if (currentFile.getState() == I_CmsConstants.C_STATE_NEW) {
-                changedResources.addElement(currentFile.getResourceName());
+                // C_STATE_NEW
+                
+                changedResources.addElement(currentResourceName);
+                
                 // export to filesystem if necessary
-                String exportKey = checkExport(currentFile.getAbsolutePath(), exportpoints);
-                if (exportKey != null) {
+                if (currentExportKey != null) {
                     // Encoding project: Make sure files are written in the right encoding 
                     byte[] contents = currentFile.getContents();
-                    String encoding = m_driverManager.getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, projectId, currentFile, currentFile.getType());
+                    String encoding = m_driverManager.getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, publishProjectId, currentFile, currentFile.getType());
                     if (encoding != null) {
                         // Only files that have the encodig property set will be encoded,
                         // the other files will be ignored. So images etc. are not touched.
@@ -1561,69 +1471,38 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                             // contents will keep original value
                         }
                     }
-                    discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, contents);
+                    discAccess.writeFile(currentResourceName, currentExportKey, contents);
                 }
-                // get parentId for onlineFile either from folderIdIndex or from the database
-                CmsUUID parentId = (CmsUUID) folderIdIndex.get(currentFile.getParentId());
-                if (parentId == null) {
-                    CmsFolder currentOnlineParent = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), currentFile.getRootName() + currentFile.getParent());
-                    parentId = currentOnlineParent.getId();
-                    folderIdIndex.put(currentFile.getParentId(), parentId);
-                }
+                
                 // create the new file
                 try {
-                    newFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, user.getId(), parentId, currentFile.getResourceName());
+                    newFile = (CmsFile) currentFile.clone();
                     newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                    m_driverManager.getVfsDriver().updateResourcestate(newFile);
+                    m_driverManager.getVfsDriver().createFile(onlineProject, newFile, currentUser.getId(), newFile.getParentId(), newFile.getResourceName());
+                    
+//                    newFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, currentUser.getId(), currentFile.getParentId(), currentFile.getResourceName());
+//                    newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
+//                    m_driverManager.getVfsDriver().updateResourcestate(newFile);
                 } catch (CmsException e) {
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         CmsFile onlineFile = null;
                         try {
-                            onlineFile = m_driverManager.getVfsDriver().readFileHeader(onlineProject.getId(), currentFile.getResourceName(), false);
+                            onlineFile = m_driverManager.readFile(currentUser, onlineProject, currentFile.getId(), false);
                         } catch (CmsException exc) {
                             throw exc;
-                        } // end of catch
-                        
-//                        Connection conn = null;
-//                        PreparedStatement stmt = null;
-//                        try {
-//                            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-//                            stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE");
-//                            // update the onlineFile with data from offlineFile
-//                            stmt.setInt(1, currentFile.getType());
-//                            stmt.setInt(2, currentFile.getFlags());
-//                            stmt.setString(3, currentFile.getOwnerId().toString());
-//                            stmt.setString(4, currentFile.getGroupId().toString());
-//                            stmt.setInt(5, onlineFile.getProjectId());
-//                            stmt.setInt(6, currentFile.getAccessFlags());
-//                            stmt.setInt(7, I_CmsConstants.C_STATE_UNCHANGED);
-//                            stmt.setString(8, currentFile.isLockedBy().toString());
-//                            stmt.setInt(9, currentFile.getLauncherType());
-//                            stmt.setString(10, currentFile.getLauncherClassname());
-//                            stmt.setTimestamp(11, new Timestamp(currentFile.getDateLastModified()));
-//                            stmt.setString(12, currentFile.getResourceLastModifiedBy().toString());
-//                            stmt.setInt(13, currentFile.getLength());
-//                            stmt.setString(14, onlineFile.getFileId().toString());
-//                            stmt.setString(15, onlineFile.getResourceId().toString());
-//                            stmt.executeUpdate();
-//                        } catch (SQLException exc) {
-//                            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-//                        } finally {
-//                            m_sqlManager.closeAll(conn, stmt, null);
-//                        }
+                        }
 
                         m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource( (CmsResource)onlineFile, (CmsResource)currentFile);
                         m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
-                        
-                        newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), currentFile.getResourceName());
                     } else {
                         throw e;
                     }
                 }
+                
                 // copy properties
                 Map props = new HashMap();
                 try {
-                    props = m_driverManager.getVfsDriver().readProperties(projectId, currentFile, currentFile.getType());
+                    props = m_driverManager.getVfsDriver().readProperties(publishProjectId, currentFile, currentFile.getType());
                     m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), newFile, newFile.getType());
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -1632,49 +1511,72 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
                 
 				// copy access control entries
-				m_driverManager.getUserDriver().publishAccessControlEntries(currentProject, onlineProject, currentFile.getResourceAceId(), newFile.getResourceAceId());
+				m_driverManager.getUserDriver().publishAccessControlEntries(publishProject, onlineProject, currentFile.getResourceAceId(), newFile.getResourceAceId());
 
-                if (enableHistory) {
+                if (backupEnabled) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFile, currentFile.getContents(), props, backupVersionId, publishDate);
                 }
-                // set the file state to unchanged
-                currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                m_driverManager.getVfsDriver().updateResourcestate(currentFile);
+                
+                if (currentFile.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
+                    // set the file state to unchanged
+                    currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
+                    m_driverManager.getVfsDriver().updateResourcestate(currentFile);
+                }
             }
-        } // end of for(...
+        }
+        
+        offlineFiles.clear();
+        offlineFiles = null;
         
         // now delete the "deleted" folders
-        for (int i = deletedFolders.size() - 1; i > -1; i--) {
-            currentFolder = ((CmsFolder) deletedFolders.elementAt(i));
-            report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
-            report.println(currentFolder.getAbsolutePath());
-            String exportKey = checkExport(currentFolder.getAbsolutePath(), exportpoints);
-            if (exportKey != null) {
-                discAccess.removeResource(currentFolder.getAbsolutePath(), exportKey);
+        
+        if (deletedFolders.isEmpty()) {
+            return changedResources;
+        }
+        
+        Collections.reverse(deletedFolders);
+        i = deletedFolders.iterator();
+        while (i.hasNext()) {
+            currentFolder = (CmsFolder) i.next();
+            currentResourceName = CmsResource.getAbsolutePath(m_driverManager.readPath(currentUser, publishProject, currentFolder, true));
+            currentExportKey = checkExport(currentResourceName, exportpoints);
+                        
+            report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);            
+            report.println(currentResourceName);
+            
+            if (currentExportKey != null) {
+                discAccess.removeResource(currentResourceName, currentExportKey);
             }
-            if (enableHistory) {
-                Map props = m_driverManager.getVfsDriver().readProperties(projectId, currentFolder, currentFolder.getType());
+            
+            if (backupEnabled) {
+                Map props = m_driverManager.getVfsDriver().readProperties(publishProjectId, currentFolder, currentFolder.getType());
                 // backup the offline resource
-                m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
+                m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFolder, new byte[0], props, backupVersionId, publishDate);
             }
-            CmsResource delOnlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), currentFolder.getResourceName());
+            
+            CmsResource delOnlineFolder = m_driverManager.readFolder(currentUser, onlineProject, currentFolder.getId(), true);
             try {
                 m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), delOnlineFolder);
-                m_driverManager.getVfsDriver().deleteAllProperties(projectId, currentFolder);
+                m_driverManager.getVfsDriver().deleteAllProperties(publishProjectId, currentFolder);
             } catch (CmsException exc) {
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + currentFolder.toString() + " Message= " + exc.getMessage());
                 }
             }
-            m_driverManager.getVfsDriver().removeFolderForPublish(onlineProject.getId(), currentFolder.getResourceName());
-            m_driverManager.getVfsDriver().removeFolderForPublish(projectId, currentFolder.getResourceName());
+            
+            m_driverManager.getVfsDriver().removeFolderForPublish(onlineProject, currentFolder.getId());
+            m_driverManager.getVfsDriver().removeFolderForPublish(publishProject, currentFolder.getId());
+            
             
             // delete both online and offline access control entries applied to this folder
             m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, delOnlineFolder.getResourceAceId());
-            m_driverManager.getUserDriver().removeAllAccessControlEntries(currentProject, currentFolder.getResourceAceId());
+            m_driverManager.getUserDriver().removeAllAccessControlEntries(publishProject, currentFolder.getResourceAceId());
 
-        } // end of for
+        }
+        
+        deletedFolders.clear();
+        deletedFolders = null;       
         
         return changedResources;
     }
@@ -2022,33 +1924,44 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
      * @return A Vecor of resources.
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Vector readProjectView(int currentProject, int project, String filter) throws CmsException {
-
-        Vector resources = new Vector();
-        CmsResource file;
+    public List readProjectView(int project, String filter) throws CmsException {
+        List resources = (List) new ArrayList();
+        CmsResource currentResource = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        String addStatement = filter + " ORDER BY CMS_OFFLINE_STRUCTURE.RESOURCE_NAME";
+        String orderClause = " ORDER BY CMS_OFFLINE_STRUCTURE.STRUCTURE_ID";        
+        String whereClause = new String();
+
+        if ("new".equalsIgnoreCase(filter)) {
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.STATE=" + I_CmsConstants.C_STATE_NEW;
+        } else if ("changed".equalsIgnoreCase(filter)) {
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.STATE=" + I_CmsConstants.C_STATE_CHANGED;
+        } else if ("deleted".equalsIgnoreCase(filter)) {
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.STATE=" + I_CmsConstants.C_STATE_DELETED;
+        } else if ("locked".equalsIgnoreCase(filter)) {
+            whereClause = " AND CMS_OFFLINE_RESOURCES.LOCKED_BY!='" + CmsUUID.getNullUUID() + "'";
+        } else {
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
+        }        
 
         try {
             // TODO make the getConnection and getPreparedStatement calls project-ID dependent
             conn = m_sqlManager.getConnection();
-            String query = m_sqlManager.get("C_RESOURCES_PROJECTVIEW") + addStatement;
+            String query = m_sqlManager.get("C_RESOURCES_PROJECTVIEW") + whereClause + orderClause;
             stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
 
             stmt.setInt(1, project);
             res = stmt.executeQuery();
 
-            // create new resource
             while (res.next()) {
-                file = m_driverManager.getVfsDriver().createCmsResourceFromResultSet(res, project);
-                resources.addElement(file);
+                currentResource = m_driverManager.getVfsDriver().createCmsResourceFromResultSet(res, project);
+                resources.add(currentResource);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readProjectView(int, int, String)", CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, "readProjectView(int,int, String)", CmsException.C_UNKNOWN_EXCEPTION, ex, false);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }

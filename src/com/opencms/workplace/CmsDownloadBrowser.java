@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.22 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Revision: 1.23 $ $Date: 2003/07/02 11:03:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -110,7 +110,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
                 if(galleries.size() > 0) {
 
                     // take the first gallery
-                    folder = ((CmsResource)galleries.elementAt(0)).getAbsolutePath();
+                    folder = cms.readAbsolutePath((CmsResource)galleries.elementAt(0));
                     session.putValue(C_PARA_FOLDER, folder);
                 }
                 else {
@@ -175,12 +175,12 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
     public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate,
             CmsResource res, CmsXmlLanguageFile lang) throws CmsException {
         String servletPath = cms.getRequestContext().getRequest().getServletUrl();
-        String downloadPath = servletPath + res.getAbsolutePath();
+        String downloadPath = servletPath + cms.readAbsolutePath(res);
         filelistTemplate.setData("fullpath", downloadPath);
         filelistTemplate.setData("name_value", res.getName());
         String title = "";
         try {
-            title = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE);
+            title = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_TITLE);
         }
         catch(CmsException e) {
 
@@ -209,10 +209,10 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         for(int i = 0;i < numFolders;i++) {
             CmsResource currFolder = (CmsResource)folders.elementAt(i);
             String name = currFolder.getName();
-            if(chosenFolder.equals(currFolder.getAbsolutePath())) {
+            if(chosenFolder.equals(cms.readAbsolutePath(currFolder))) {
                 ret = i;
             }
-            values.addElement(currFolder.getAbsolutePath());
+            values.addElement(cms.readAbsolutePath(currFolder));
             names.addElement(name);
         }
         return new Integer(ret);
@@ -250,7 +250,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
             if(galleries.size() > 0) {
 
                 // take the first gallery if none was chosen
-                folder = ((CmsResource)galleries.elementAt(0)).getAbsolutePath();
+                folder = cms.readAbsolutePath((CmsResource)galleries.elementAt(0));
             }
             session.putValue(C_PARA_FOLDER, folder);
         }
@@ -284,7 +284,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         for(int i = 0;i < allFiles.size();i++) {
             CmsFile file = (CmsFile)allFiles.elementAt(i);
             String filename = file.getName();
-            String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
             boolean filenameFilter = inFilter(filename, filter);
             boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
             if(filenameFilter || titleFilter) {

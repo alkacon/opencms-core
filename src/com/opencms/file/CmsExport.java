@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/06/25 16:18:18 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.58 $ $Date: 2003/06/25 16:18:18 $
+ * @version $Revision: 1.59 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -584,10 +584,10 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @throws CmsException if something goes wrong
      */
     private void exportResource(CmsFile file) throws CmsException {
-        String source = getSourceFilename(file.getAbsolutePath());
+        String source = getSourceFilename(m_cms.readAbsolutePath(file));
 
         m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-        m_report.print(file.getAbsolutePath());
+        m_report.print(m_cms.readAbsolutePath(file));
         m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
         try {
             // create the manifest-entrys
@@ -603,7 +603,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         }
 
         if (file.getType() == m_pageType) {
-            m_exportedPageFiles.add(file.getAbsolutePath());
+            m_exportedPageFiles.add(m_cms.readAbsolutePath(file));
         }
 
         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
@@ -640,7 +640,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
 
             if (m_isOnlineProject || (!m_excludeUnchanged) || state == C_STATE_NEW || state == C_STATE_CHANGED) {
                 if ((state != C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
-                    exportResource(m_cms.readFile(file.getAbsolutePath()));
+                    exportResource(m_cms.readFile(m_cms.readAbsolutePath(file)));
                 }
             }
             // release file header memory
@@ -654,7 +654,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
             CmsResource folder = (CmsResource)subFolders.elementAt(i);
             if (folder.getState() != C_STATE_DELETED) {
                 // check if this is a system-folder and if it should be included.
-                String export = folder.getAbsolutePath();
+                String export = m_cms.readAbsolutePath(folder);
                 if (// new VFS, always export "/system/" OR
                  (I_CmsWpConstants.C_VFS_NEW_STRUCTURE
                     && export.equalsIgnoreCase(I_CmsWpConstants.C_VFS_PATH_SYSTEM))
@@ -681,7 +681,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
                         writeXmlEntrys(folder);
                     }
                     // export all resources in this folder
-                    exportResources(folder.getAbsolutePath());
+                    exportResources(m_cms.readAbsolutePath(folder));
                 }
             }
             // release folder memory
@@ -716,7 +716,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         String source, type, /*user, group, access,*/ launcherStartClass, lastModified;
 
         // get all needed informations from the resource
-        source = getSourceFilename(resource.getAbsolutePath());
+        source = getSourceFilename(m_cms.readAbsolutePath(resource));
         type = m_cms.getResourceType(resource.getType()).getResourceTypeName();
         // TODO: fix this later
         // user = m_cms.readOwner(resource).getName();
@@ -735,7 +735,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         } else {
             // output something to the report for the folder
             m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(resource.getAbsolutePath());
+            m_report.print(m_cms.readAbsolutePath(resource));
             m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
@@ -756,7 +756,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         file.appendChild(properties);
 
         // read the properties
-        Map fileProperties = m_cms.readProperties(resource.getAbsolutePath());
+        Map fileProperties = m_cms.readProperties(m_cms.readAbsolutePath(resource));
         Iterator i = fileProperties.keySet().iterator();
 
         // create xml-elements for the properties
@@ -784,7 +784,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         addElement(m_docXml, acentries, C_EXPORT_TAG_ID, resource.getResourceAceId().toString());
         
         // read the access control entries
-        Vector fileAcEntries = m_cms.getAccessControlEntries(resource.getAbsolutePath(), false);
+        Vector fileAcEntries = m_cms.getAccessControlEntries(m_cms.readAbsolutePath(resource), false);
         i = fileAcEntries.iterator();
         
         // create xml elements for each access control entry

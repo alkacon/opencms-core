@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/06/13 15:13:14 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.17 $ $Date: 2003/06/13 15:13:14 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -135,7 +135,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             
             // linkcheck is ready. Now we can start the publishing
             CmsResource file = readResource(cms, filename);                     
-            A_CmsReportThread doPublish = new CmsPublishResourceThread(cms, file.getAbsolutePath());
+            A_CmsReportThread doPublish = new CmsPublishResourceThread(cms, cms.readAbsolutePath(file));
             doPublish.start();
             session.putValue(C_PUBLISH_THREAD, doPublish);
             // indicate that changes in the user project etc. must be ignored here
@@ -214,13 +214,13 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
                     // if the user continues the publish (or no broken links where found)
                     // auto-create a direct publish temp project (B) and publish this directly
                     
-                    int tempProjectId = cms.publishResource(file.getAbsolutePath(), true);
+                    int tempProjectId = cms.publishResource(cms.readAbsolutePath(file), true);
                     if(lasturl == null){
                         lasturl = "";
                     }
                     session.putValue(C_PUBLISH_LASTURL, lasturl);
                     // first part of the publish: check for broken links
-                    A_CmsReportThread doCheck = new CmsAdminLinkmanagementThread(cms, tempProjectId, file.getAbsolutePath());
+                    A_CmsReportThread doCheck = new CmsAdminLinkmanagementThread(cms, tempProjectId, cms.readAbsolutePath(file));
                     doCheck.start();
                     session.putValue(C_PUBLISH_LINKCHECK_THREAD, doCheck);
                     template = "showresult";
@@ -270,8 +270,8 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         if(resource.isLocked()){
             return false;
         }
-        Vector allFiles = cms.getFilesInFolder(resource.getAbsolutePath());
-        Vector allFolders = cms.getSubFolders(resource.getAbsolutePath());
+        Vector allFiles = cms.getFilesInFolder(cms.readAbsolutePath(resource));
+        Vector allFolders = cms.getSubFolders(cms.readAbsolutePath(resource));
         // first check if any file in the folder is locked
         for(int i=0; i<allFiles.size(); i++){
             CmsResource curFile = (CmsResource)allFiles.elementAt(i);
@@ -300,21 +300,21 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         if(resource.isLocked()){
             // first lock resource to set locked by to the current user
             if(!resource.isLockedBy().equals(cms.getRequestContext().currentUser().getId())){
-                cms.lockResource(resource.getAbsolutePath(),true);
+                cms.lockResource(cms.readAbsolutePath(resource),true);
             }
-            cms.unlockResource(resource.getAbsolutePath());
+            cms.unlockResource(cms.readAbsolutePath(resource));
         } else {
             // need to unlock each resource
-            Vector allFiles = cms.getFilesInFolder(resource.getAbsolutePath());
-            Vector allFolders = cms.getSubFolders(resource.getAbsolutePath());
+            Vector allFiles = cms.getFilesInFolder(cms.readAbsolutePath(resource));
+            Vector allFolders = cms.getSubFolders(cms.readAbsolutePath(resource));
             // unlock the files
             for(int i=0; i<allFiles.size(); i++){
                 CmsResource curFile = (CmsResource)allFiles.elementAt(i);
                 if(curFile.isLocked()){
                     if(!resource.isLockedBy().equals(cms.getRequestContext().currentUser().getId())){
-                        cms.lockResource(curFile.getAbsolutePath(),true);
+                        cms.lockResource(cms.readAbsolutePath(curFile),true);
                     }
-                    cms.unlockResource(curFile.getAbsolutePath());
+                    cms.unlockResource(cms.readAbsolutePath(curFile));
                 }
             }
             // unlock the folders

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Attic/CmsAccessGuard.java,v $
- * Date   : $Date: 2003/06/16 16:20:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.file.CmsUser;
  * An access guard checks the permissions of an user on a given resource against required permissions,
  * additionally depending on the policy that is implemented in a subclass.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2003/06/16 16:20:48 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/02 11:03:12 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public abstract class CmsAccessGuard {
@@ -125,7 +125,7 @@ public abstract class CmsAccessGuard {
 			hasPermissions = (requiredPermissions.getPermissions() & (currentPermissions.getPermissions())) > 0;
 		
 		if (blockAccess && ! hasPermissions) {
-			throw new CmsException("[" + this.getClass().getName() + "] denied access to resource " + resource.getAbsolutePath() + ", required permissions are " + requiredPermissions.getPermissionString() + ((strongCheck) ? " (required each)": " (required one)"), CmsException.C_NO_ACCESS);
+			throw new CmsException("[" + this.getClass().getName() + "] denied access to resource " + resource.getResourceName() + ", required permissions are " + requiredPermissions.getPermissionString() + ((strongCheck) ? " (required each)": " (required one)"), CmsException.C_NO_ACCESS);
 		}
 		
 		return hasPermissions;
@@ -150,7 +150,7 @@ public abstract class CmsAccessGuard {
 		boolean hasPermissions = (requiredPermissions.getPermissions() & (currentPermissions.getPermissions())) == requiredPermissions.getPermissions();
 		
 		if (blockAccess && ! hasPermissions) {
-			throw new CmsException("[" + this.getClass().getName() + "] denied access to resource " + resource.getAbsolutePath() + ", required permissions are " + requiredPermissions.getPermissionString(), CmsException.C_NO_ACCESS);
+			throw new CmsException("[" + this.getClass().getName() + "] denied access to resource " + resource.getResourceName() + ", required permissions are " + requiredPermissions.getPermissionString(), CmsException.C_NO_ACCESS);
 		}
 		
 		return hasPermissions;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/06/17 08:02:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsBackupResource;
 import com.opencms.file.CmsProject;
-import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
@@ -62,7 +61,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/06/17 08:02:31 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/02 11:03:12 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -288,7 +287,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readAllBackupFileHeaders(java.lang.String)
      */
-    public Vector readAllBackupFileHeaders(String resourceName) throws CmsException {
+    public Vector readAllBackupFileHeaders(CmsUUID resourceId) throws CmsException {
         //CmsBackupResource file = null;
         ResultSet res = null;
         Vector allHeaders = new Vector();
@@ -298,7 +297,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         try {
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_ALL_BACKUP");
-            stmt.setString(1, resourceName);
+            stmt.setString(1, resourceId.toString());
             res = stmt.executeQuery();
             while (res.next()) {
                 allHeaders.addElement(createCmsBackupResourceFromResultSet(res, false));
@@ -317,7 +316,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(int, java.lang.String)
      */
-    public CmsBackupResource readBackupFile(int versionId, String filename) throws CmsException {
+    public CmsBackupResource readBackupFile(int versionId, CmsUUID resourceId) throws CmsException {
         CmsBackupResource file = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -326,7 +325,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         try {
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_READ_BACKUP");
-            stmt.setString(1, filename);
+            stmt.setString(1, resourceId.toString());
             stmt.setInt(2, versionId);
             res = stmt.executeQuery();
             if (res.next()) {
@@ -335,7 +334,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
+                throw new CmsException("[" + this.getClass().getName() + "] " + resourceId.toString(), CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -353,16 +352,16 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeader(int, java.lang.String)
      */
-    public CmsBackupResource readBackupFileHeader(int versionId, String filename) throws CmsException {
-
+    public CmsBackupResource readBackupFileHeader(int versionId, CmsUUID resourceId) throws CmsException {
         CmsBackupResource file = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
+        
         try {
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_BACKUP");
-            stmt.setString(1, filename);
+            stmt.setString(1, resourceId.toString());
             stmt.setInt(2, versionId);
             res = stmt.executeQuery();
             if (res.next()) {
@@ -371,7 +370,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
+                throw new CmsException("[" + this.getClass().getName() + "] " + resourceId.toString(), CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -537,40 +536,42 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#writeBackupResource(int, com.opencms.file.CmsResource, byte[], java.util.Map, int, long)
      */
-    public void writeBackupResource(int projectId, CmsResource resource, byte[] content, Map properties, int versionId, long publishDate) throws CmsException {
+    public void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, byte[] content, Map properties, int versionId, long publishDate) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         String lastModifiedName = null;
+//        boolean hasBatch = false;
+        StringBuffer strBuf = new StringBuffer();
 
         try {
-            CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getResourceLastModifiedBy());
-            lastModifiedName = lastModified.getName() + " " + lastModified.getFirstname() + " " + lastModified.getLastname();
+            CmsUser lastModified = m_driverManager.readUser(currentUser, publishProject, resource.getResourceLastModifiedBy());
+            strBuf.append(lastModified.getName());
+            strBuf.append(" ");
+            strBuf.append(lastModified.getFirstname());
+            strBuf.append(" ");
+            strBuf.append(lastModified.getLastname());            
+            lastModifiedName = strBuf.toString();
         } catch (CmsException e) {
             // the user could not be read
             lastModifiedName = "";
         }
 
-        CmsUUID resourceId = new CmsUUID();
-        CmsUUID fileId = CmsUUID.getNullUUID();
-        CmsUUID structureId = new CmsUUID();
-
         try {
-            // if the resource is not a folder then backup the filecontent
             if (resource.getType() != I_CmsConstants.C_TYPE_FOLDER) {
-                // write new resource to the database
-                fileId = new CmsUUID();
-                m_driverManager.getVfsDriver().createFileContent(fileId, content, versionId, projectId, true);
+                // write the file content
+                m_driverManager.getVfsDriver().createFileContent(resource.getFileId(), content, versionId, publishProject.getId(), true);
             }
+            
+            conn = m_sqlManager.getConnectionForBackup();
 
             // write the resource
-            conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_BACKUP");
-            stmt.setString(1, resourceId.toString());
+            stmt.setString(1, resource.getId().toString());
             stmt.setInt(2, resource.getType());
             stmt.setInt(3, resource.getFlags());
             stmt.setString(4, resource.getOwnerId().toString());
             stmt.setString(5, resource.getGroupId().toString());
-            stmt.setString(6, fileId.toString());
+            stmt.setString(6, resource.getFileId().toString());
             stmt.setInt(7, resource.getAccessFlags());
             stmt.setInt(8, resource.getLauncherType());
             stmt.setString(9, resource.getLauncherClassname());
@@ -578,15 +579,16 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             stmt.setTimestamp(11, new Timestamp(resource.getDateLastModified()));
             stmt.setInt(12, resource.getLength());
             stmt.setInt(13, versionId);
+            stmt.setString(14, new CmsUUID().toString());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
 
             // write the structure
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_WRITE_BACKUP");
-            stmt.setString(1, structureId.toString());
+            stmt.setString(1, resource.getId().toString());
             stmt.setString(2, CmsUUID.getNullUUID().toString());
-            stmt.setString(3, resourceId.toString());
-            stmt.setInt(4, projectId);
+            stmt.setString(3, resource.getResourceId().toString());
+            stmt.setInt(4, publishProject.getId());
             stmt.setString(5, resource.getResourceName());
             stmt.setInt(6, 0);
             stmt.setInt(7, resource.getState());
@@ -594,31 +596,37 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             stmt.setString(9, resource.getResourceLastModifiedBy().toString());
             stmt.setString(10, lastModifiedName);
             stmt.setInt(11, versionId);
+            stmt.setString(12, new CmsUUID().toString());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
 
             // write the properties
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_CREATE_BACKUP");
-            Iterator keys = properties.keySet().iterator();
-            String key;
-            while (keys.hasNext()) {
-                key = (String) keys.next();
-                CmsPropertydefinition propdef = m_driverManager.getVfsDriver().readPropertydefinition(key, projectId, resource.getType());
-                String value = (String) properties.get(key);
-                if (propdef == null) {
-                    // there is no propertydefinition for with the overgiven name for the resource
-                    throw new CmsException("[" + this.getClass().getName() + "] " + key, CmsException.C_NOT_FOUND);
-                } else {
-                    // write the property into the db
-                    stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.get("C_TABLE_PROPERTIES_BACKUP")));
-                    stmt.setInt(2, propdef.getId());
-                    stmt.setString(3, resourceId.toString());
-                    stmt.setString(4, m_sqlManager.validateNull(value));
-                    stmt.setInt(5, versionId);
-                    stmt.executeUpdate();
-                    stmt.clearParameters();
-                }
-            }
+//            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_CREATE_BACKUP");
+//            Iterator keys = properties.keySet().iterator();
+//            String key = null;
+//            while (keys.hasNext()) {
+//                hasBatch = true;
+//                key = (String) keys.next();
+//                CmsPropertydefinition propdef = m_driverManager.getVfsDriver().readPropertydefinition(key, publishProject.getId(), resource.getType());
+//                String value = (String) properties.get(key);
+//                
+//                if (propdef == null) {
+//                    // there is no propertydefinition for with the overgiven name for the resource
+//                    throw new CmsException("[" + this.getClass().getName() + "] " + key, CmsException.C_NOT_FOUND);
+//                } else {
+//                    // write the property into the db
+//                    stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.get("C_TABLE_PROPERTIES_BACKUP")));
+//                    stmt.setInt(2, propdef.getId());
+//                    stmt.setString(3, resource.getId().toString());
+//                    stmt.setString(4, m_sqlManager.validateNull(value));
+//                    stmt.setInt(5, versionId);
+//                    stmt.addBatch();
+//                }
+//            }
+//            
+//            if (hasBatch) {
+//                stmt.executeBatch();
+//            }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {

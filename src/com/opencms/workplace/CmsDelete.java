@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2003/06/13 15:13:14 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.46 $ $Date: 2003/06/13 15:13:14 $
+ * @version $Revision: 1.47 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -116,7 +116,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
 
                     // its a file, so delete it
                     try{
-                        cms.deleteResource(file.getAbsolutePath());
+                        cms.deleteResource(cms.readAbsolutePath(file));
                         session.removeValue(C_PARA_DELETE);
                         session.removeValue(C_PARA_FILE);
                     }catch(CmsException e){
@@ -144,7 +144,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                 else {
                     // its a folder
                     try{
-                        cms.deleteResource(file.getAbsolutePath());
+                        cms.deleteResource(cms.readAbsolutePath(file));
                     }catch(CmsException e){
                         session.removeValue(C_PARA_DELETE);
                         session.removeValue(C_PARA_FILE);
@@ -162,7 +162,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
 
         // set the required datablocks
         if(action == null) {
-            String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
             }

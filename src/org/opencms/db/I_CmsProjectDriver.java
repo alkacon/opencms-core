@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import com.opencms.report.I_CmsReport;
 
 import java.io.Serializable;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -50,7 +51,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/07/02 11:03:12 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -128,7 +129,7 @@ public interface I_CmsProjectDriver {
      */     
     org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl);
     
-    Vector publishProject(CmsUser user, int projectId, CmsProject onlineProject, boolean enableHistory, I_CmsReport report, Hashtable exportpoints) throws CmsException;
+    Vector publishProject(CmsUser user, CmsProject publishProject, CmsProject onlineProject, boolean backupEnabled, I_CmsReport report, Hashtable exportpoints) throws CmsException;
     Vector readAllProjectResources(int projectId) throws CmsException;
     CmsExportLink readExportLink(String request) throws CmsException;
     CmsExportLink readExportLinkHeader(String request) throws CmsException;
@@ -146,7 +147,7 @@ public interface I_CmsProjectDriver {
      */    
     Vector readProjectLogs(int projectid) throws CmsException;
     
-    Vector readProjectView(int currentProject, int project, String filter) throws CmsException;
+    List readProjectView(int project, String filter) throws CmsException;
     Hashtable readSession(String sessionId) throws CmsException;
     Serializable readSystemProperty(String name) throws CmsException;
     void unlockProject(CmsProject project) throws CmsException;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/06/25 13:50:20 $
-* Version: $Revision: 1.235 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.236 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.235 $ $Date: 2003/06/25 13:50:20 $
+ * @version $Revision: 1.236 $ $Date: 2003/07/02 11:03:12 $
  */
 public interface I_CmsConstants {
 
@@ -1342,17 +1342,17 @@ public interface I_CmsConstants {
     /**
      * The name of the default site
      */
-    String C_DEFAULT_SITE = "/default";
+    String C_DEFAULT_SITE = "default";
 
     /**
      * The root name of the VFS
      */
-    String C_ROOTNAME_VFS = "/vfs";
+    String C_ROOTNAME_VFS = "vfs";
 
     /**
      * The root name of the COS
      */
-    String C_ROOTNAME_COS = "/cos";
+    String C_ROOTNAME_COS = "cos";
 
     /**
      * The name of the entry for the id generator to create new channelid's
@@ -1414,7 +1414,8 @@ public interface I_CmsConstants {
     String C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";    
     
     /** name of the special body element from an XMLTemplate */
-    String C_XML_BODY_ELEMENT = "body";    
+    String C_XML_BODY_ELEMENT = "body"; 
+  
 }
 
 

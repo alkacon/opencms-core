@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/06/13 15:13:14 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.29 $ $Date: 2003/06/13 15:13:14 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/02 11:03:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -161,8 +161,8 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                 // get the path from the workplace.ini
                 String superfolder = getConfigFile(cms).getDownGalleryPath();
                 CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, C_TYPE_FOLDER_NAME);
-                cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
-                cms.chgrp(folder.getAbsolutePath(), group);
+                cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
+                cms.chgrp(cms.readAbsolutePath(folder), group);
                 int flag = folder.getAccessFlags();
 
                 // set the access rights for 'other' users
@@ -196,8 +196,8 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                     flag ^= C_ACCESS_PUBLIC_VISIBLE;
                 }
                 */
-               cms.chmod(folder.getAbsolutePath(), flag);
-               cms.unlockResource(folder.getAbsolutePath());
+               cms.chmod(cms.readAbsolutePath(folder), flag);
+               cms.unlockResource(cms.readAbsolutePath(folder));
             }
             catch(CmsException ex) {
                 xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(ex));

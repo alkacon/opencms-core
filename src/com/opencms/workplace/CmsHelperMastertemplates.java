@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2003/06/12 15:16:32 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.13 $ $Date: 2003/06/12 15:16:32 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsHelperMastertemplates {
@@ -112,7 +112,7 @@ public class CmsHelperMastertemplates {
         modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
         for(int i = 0;i < modules.size();i++) {
             Vector moduleTemplateFiles = new Vector();
-            String folder = ((CmsFolder)modules.elementAt(i)).getAbsolutePath();
+            String folder = cms.readAbsolutePath((CmsFolder)modules.elementAt(i));
             moduleTemplateFiles = cms.getFilesInFolder(folder + subFolder);
             for(int j = 0;j < moduleTemplateFiles.size();j++) {
                 files.addElement(moduleTemplateFiles.elementAt(j));
@@ -124,12 +124,12 @@ public class CmsHelperMastertemplates {
         while(enum.hasMoreElements()) {
             CmsFile file = (CmsFile)enum.nextElement();
             if(file.getState() != I_CmsConstants.C_STATE_DELETED && checkVisible(cms, file)) {
-                String nicename = cms.readProperty(file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE);
+                String nicename = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_TITLE);
                 if(nicename == null) {
                     nicename = file.getName();
                 }
                 names.addElement(nicename);
-                values.addElement(file.getAbsolutePath());
+                values.addElement(cms.readAbsolutePath(file));
             }
         }
         

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/02/26 10:30:37 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/07/02 11:03:13 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -363,9 +363,9 @@ public class Utils {
      * @throws CmsException.
      */
     public static boolean isHttpsResource(CmsObject cms, CmsResource res) throws CmsException{
-        while(!res.getAbsolutePath().equals(I_CmsConstants.C_ROOT)){
+        while(!cms.readAbsolutePath(res).equals(I_CmsConstants.C_ROOT)){
             // check for the property export
-            String prop = cms.readProperty(res.getAbsolutePath(), I_CmsConstants.C_PROPERTY_EXPORT);
+            String prop = cms.readProperty(cms.readAbsolutePath(res), I_CmsConstants.C_PROPERTY_EXPORT);
             if((prop != null) && "https".equalsIgnoreCase(prop)){
                 // found one
                 return true;

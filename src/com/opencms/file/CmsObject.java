@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/26 15:33:37 $
-* Version: $Revision: 1.293 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.294 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,28 +29,14 @@
 package com.opencms.file;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Vector;
-
-import source.org.apache.java.util.Configurations;
+import org.opencms.db.CmsDriverManager;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.CmsCoreSession;
-import com.opencms.core.CmsException;
-import com.opencms.core.CmsExportRequest;
-import com.opencms.core.CmsExportResponse;
-import com.opencms.core.CmsStaticExportProperties;
-import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsRequest;
-import com.opencms.core.I_CmsResponse;
-import com.opencms.core.OpenCms;
-import org.opencms.db.CmsDriverManager;
+import com.opencms.core.*;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.launcher.CmsLauncherManager;
@@ -58,13 +44,20 @@ import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsAccessControlList;
-import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.I_CmsPrincipal;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.util.LinkSubstitution;
 import com.opencms.util.Utils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import source.org.apache.java.util.Configurations;
 
 /**
  * This class provides access to the OpenCms and its resources.
@@ -80,7 +73,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.293 $
+ * @version $Revision: 1.294 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -753,7 +746,7 @@ public void copyFolder(String source, String destination) throws CmsException {
      * @throws CmsException if operation was not successful.
  */
 public void copyResourceToProject(String resource) throws CmsException {
-    CmsResource res = readFileHeader(resource, I_CmsConstants.C_PROJECT_ONLINE_ID);
+    CmsResource res = readFileHeader(resource);
     I_CmsResourceType rt = getResourceType(res.getType());
     rt.copyResourceToProject(this, resource);
 }
@@ -1745,8 +1738,9 @@ public long getFileSystemFolderChanges() {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public Vector getFolderTree() throws CmsException {
-        return (m_driverManager.getFolderTree(m_context.currentUser(), m_context.currentProject(), getSiteRoot("")));
+    public List getFolderTree() throws CmsException {
+        CmsFolder rootFolder = readFolder(I_CmsConstants.C_ROOT);
+        return m_driverManager.getFolderTree(m_context.currentUser(), m_context.currentProject(), rootFolder);
     }
 /**
  * Returns all groups in the Cms.
@@ -2400,29 +2394,43 @@ public void publishProject(int id) throws CmsException {
      *
      * @throws CmsException if operation was not successful.
      */
-    public void publishProject(int id, I_CmsReport report) throws CmsException {
-        clearcache();
-        CmsPublishedResources allChanged = new CmsPublishedResources();
+    public void publishProject(int publishProjectId, I_CmsReport report) throws CmsException {
+        Vector newResources = null;
+        Vector deletedResources = null;
         Vector changedResources = null;
         Vector changedModuleMasters = null;
         boolean success = false;
-        CmsProject theProject = readProject(id);
+        CmsPublishedResources publishedResources = null;
+        CmsProject publishProject = null;
+        
+        clearcache();
+        
+        publishedResources = new CmsPublishedResources();
+        publishProject = readProject(publishProjectId);
         
         try {            
             // first we remember the new resources for the link management
-            Vector newRes = readProjectView(id, "new");
-            updateOnlineProjectLinks(readProjectView(id, "deleted"), readProjectView(id, "changed"), null, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
-            allChanged = m_driverManager.publishProject(this, m_context.currentUser(), m_context.currentProject(), id, report);
+            newResources = readProjectView(publishProjectId, "new");
+            deletedResources = readProjectView(publishProjectId, "deleted");
+            changedResources = readProjectView(publishProjectId, "changed");
+            
+            updateOnlineProjectLinks(deletedResources, changedResources, null, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
+            publishedResources = m_driverManager.publishProject(this, m_context.currentUser(), m_context.currentProject(), publishProject, report);
             
             // update the online links table for the new resources (now they are there)
-            updateOnlineProjectLinks(null, null, newRes, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
-            newRes = null;
-            changedResources = allChanged.getChangedResources();
-            changedModuleMasters = allChanged.getChangedModuleMasters();
+            updateOnlineProjectLinks(null, null, newResources, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
+            
+            changedResources.clear();
+            changedResources = null;
+            newResources = null;
+            
+            changedResources = publishedResources.getChangedResources();
+            changedModuleMasters = publishedResources.getChangedModuleMasters();
             
             if (getOnlineElementCache() != null) {
                 getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
             }
+            
             clearcache();
             
             // do static export if the static-export is enabled in opencms.properties
@@ -2436,7 +2444,7 @@ public void publishProject(int id) throws CmsException {
                     // the return value for cluster server to syncronize the export
                     Vector allExportedLinks = new Vector();
                     
-                    this.exportStaticResources(getStaticExportProperties().getStartPoints(), linkChanges, allExportedLinks, allChanged, report);
+                    this.exportStaticResources(getStaticExportProperties().getStartPoints(), linkChanges, allExportedLinks, publishedResources, report);
                     m_context.setCurrentProject(oldId);
                     Utils.getModulPublishMethods(this, linkChanges);
                     this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_STATIC_EXPORT, allExportedLinks);
@@ -2462,7 +2470,7 @@ public void publishProject(int id) throws CmsException {
             }
             success = true;
         } catch (Exception e) {
-            String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + id + " Time:" + new Date();
+            String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + publishProjectId + " Time:" + new Date();
             String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
             if (DEBUG > 0) {
                 System.err.println("###################################");
@@ -2483,7 +2491,7 @@ public void publishProject(int id) throws CmsException {
             }
         } finally {
             if (changedResources == null || changedResources.size() < 1) {
-                String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + id + " Time:" + new Date();
+                String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + publishProjectId + " Time:" + new Date();
                 String stamp2 = "[" + this.getClass().getName() + ".publishProject()/2] User: " + m_context.currentUser().toString();
                 String stamp3 = "[" + this.getClass().getName() + ".publishProject()/2] Vector was null or empty";
                 if (DEBUG > 0) {
@@ -2505,7 +2513,7 @@ public void publishProject(int id) throws CmsException {
             }
             // set current project to online project if the published project was temporary
             // and the published project is still the current project
-            if (theProject.getId() == m_context.currentProject().getId() && (theProject.getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
+            if (publishProject.getId() == m_context.currentProject().getId() && (publishProject.getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
             }
         }
@@ -2513,7 +2521,7 @@ public void publishProject(int id) throws CmsException {
         CmsProject onlineProject = this.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         this.joinLinksToTargets(onlineProject, report);
 
-        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT, theProject);
+        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT, publishProject);
     }
 
 /**
@@ -2555,8 +2563,7 @@ public int publishResource(String resourcename, boolean justPrepare, I_CmsReport
     }
     if(res.getState() == C_STATE_NEW){
         try{
-            m_driverManager.readFolder(m_context.currentUser(), readProject(I_CmsConstants.C_PROJECT_ONLINE_ID),
-                            res.getRootName()+res.getParent());
+            m_driverManager.readFolder(m_context.currentUser(), readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), res.getParentId(), false);
         } catch (CmsException ex){
             throw new CmsException("[CmsObject] cannot read parent folder in online project", CmsException.C_NOT_FOUND);
         }
@@ -2599,25 +2606,6 @@ public int publishResource(String resourcename, boolean justPrepare, I_CmsReport
  */
 public CmsUser readAgent(CmsTask task) throws CmsException {
     return (m_driverManager.readAgent(m_context.currentUser(), m_context.currentProject(), task));
-}
-
-/**
- * Reads all file headers of a file in the OpenCms.
- * <br>
- * This method returns a vector with all file headers, i.e.
- * the file headers of a file, independent of the project they were attached to.<br>
- *
- * The reading excludes the filecontent.
- *
- * @param filename the name of the file to be read.
- *
- * @return a Vector of file headers read from the Cms.
- *
- * @throws CmsException  if operation was not successful.
- * @deprecated For reading the file history use method readAllFileHeadersForHist
- */
-public Vector readAllFileHeaders(String filename) throws CmsException {
-    return (m_driverManager.readAllFileHeaders(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename)));
 }
 
 /**
@@ -2936,7 +2924,7 @@ public CmsResource readFileHeader(String filename, boolean includeDeleted) throw
  * to read the file headers, or if the file headers couldn't be read.
  */
 public CmsResource readFileHeader(String filename, int projectId) throws CmsException {
-    return (m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), projectId, getSiteRoot(filename)));
+    return (m_driverManager.readFileHeaderInProject(m_context.currentUser(), m_context.currentProject(), projectId, getSiteRoot(filename)));
 }
 
 /**
@@ -3227,7 +3215,7 @@ public CmsProject readProject(CmsTask task) throws CmsException {
  *
  */
 public Vector readProjectView(int projectId, String filter) throws CmsException {
-    return (m_driverManager.readProjectView(m_context.currentUser(), m_context.currentProject(),projectId, filter));
+    return m_driverManager.readProjectView(m_context.currentUser(), m_context.currentProject(),projectId, filter);
 }
 
 /**
@@ -3569,8 +3557,8 @@ public void renameResource(String oldname, String newname) throws CmsException {
  * @throws CmsException if the user has not the rights
  * to rename the file, or if the file couldn't be renamed.
  */
-protected void doRenameFile(String oldname, String newname) throws CmsException {
-    m_driverManager.renameFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(oldname), newname);
+protected void doRenameResource(String oldname, String newname) throws CmsException {
+    m_driverManager.renameResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot(oldname), newname);
 }
 
     /**
@@ -4058,21 +4046,21 @@ public int getBackupVersionId(){
     return m_driverManager.getBackupVersionId();
 }
 
-/**
- * Creates a backup of the published project
- *
- * @param project The project in which the resource was published.
- * @param projectresources The resources of the project
- * @param versionId The version of the backup
- * @param publishDate The date of publishing
- * @param userId The id of the user who had published the project
- *
- * @throws CmsException Throws CmsException if operation was not succesful.
- */
-
-public void backupProject(int projectId, int versionId, long publishDate) throws CmsException{
-    m_driverManager.backupProject(projectId, versionId, publishDate, getRequestContext().currentUser());
-}
+    /**
+     * Creates a backup of the published project
+     *
+     * @param project The project in which the resource was published.
+     * @param projectresources The resources of the project
+     * @param versionId The version of the backup
+     * @param publishDate The date of publishing
+     * @param userId The id of the user who had published the project
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful.
+     */
+    public void backupProject(int projectId, int versionId, long publishDate) throws CmsException {
+        CmsProject backupProject = m_driverManager.readProject(projectId);
+        m_driverManager.backupProject(backupProject, versionId, publishDate, getRequestContext().currentUser());
+    }
 
     /**
      * Gets the Crontable.
@@ -4654,8 +4642,20 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 	 * @throws CmsException		if something goes wrong
 	 */
 	// TODO: force the access control entries to belong to the given resource
-	public void writeAccessControlEntries(String resourceName, Vector acEntries) throws CmsException {
-		CmsResource resource = readFileHeader(resourceName);
+	public void writeAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
 		m_driverManager.writeAccessControlEntries(m_context.currentUser(), m_context.currentProject(), resource, acEntries);
 	}
+    
+    public String readAbsolutePath(CmsResource resource) {                
+        try {
+            if (!resource.hasFullResourceName()) {
+                m_driverManager.readPath(m_context.currentUser(), m_context.currentProject(), resource, false);
+            }
+        } catch (CmsException e) {
+            resource.setFullResourceName(null);
+        }
+        
+        return CmsResource.getAbsolutePath(resource.getFullResourceName());
+    }    
+    
 }

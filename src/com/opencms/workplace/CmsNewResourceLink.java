@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/06/13 15:13:14 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2003/06/13 15:13:14 $
+ * @version $Revision: 1.37 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -177,7 +177,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                 CmsFile currentFile = cms.readFile(filename);
                 String content = new String(currentFile.getContents());
                 xmlTemplateDocument.setData("LINKNAME", currentFile.getName());
-                xmlTemplateDocument.setData("LINK", currentFile.getAbsolutePath());
+                xmlTemplateDocument.setData("LINK", cms.readAbsolutePath(currentFile));
                 xmlTemplateDocument.setData("LINKVALUE", content);
                 templateSelector = "change";
             } catch (CmsException e){
@@ -195,7 +195,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                     // get folder- and filename
                     foldername = (String)session.getValue(C_PARA_FILELIST);
                     if(foldername == null) {
-                        foldername = cms.rootFolder().getAbsolutePath();
+                        foldername = cms.readAbsolutePath(cms.rootFolder());
                     }
 
                     String title = lang.getLanguageValue("explorer.linkto") + " " + link;
@@ -245,7 +245,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                     }
                     // now check if navigation informations have to be added to the new page.
                     if(addToNav && checkurl) {
-                        cms.writeProperty(linkResource.getAbsolutePath(), C_PROPERTY_NAVTEXT, navtitle);
+                        cms.writeProperty(cms.readAbsolutePath(linkResource), C_PROPERTY_NAVTEXT, navtitle);
                         // update the navposition.
                         if(navpos != null) {
                             updateNavPos(cms, linkResource, navpos);
@@ -416,7 +416,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         // get the current folder
         currentFilelist = (String)session.getValue(C_PARA_FILELIST);
         if(currentFilelist == null) {
-            currentFilelist = cms.rootFolder().getAbsolutePath();
+            currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
 
         // get all files and folders in the current filelist.
@@ -453,17 +453,17 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 
                 // check if the resource is not marked as deleted
                 if(res.getState() != C_STATE_DELETED) {
-                    String navpos = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVPOS);
+                    String navpos = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVPOS);
 
                     // check if there is a navpos for this file/folder
                     if(navpos != null) {
-                        nicename = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVTEXT);
+                        nicename = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT);
                         if(nicename == null) {
                             nicename = res.getName();
                         }
 
                         // add this file/folder to the storage.
-                        filenames[count] = res.getAbsolutePath();
+                        filenames[count] = cms.readAbsolutePath(res);
                         nicenames[count] = nicename;
                         positions[count] = navpos;
                         if(new Float(navpos).floatValue() > max) {
@@ -566,6 +566,6 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         else {
             newPos = 1;
         }
-        cms.writeProperty(newfile.getAbsolutePath(), C_PROPERTY_NAVPOS, new Float(newPos).toString());
+        cms.writeProperty(cms.readAbsolutePath(newfile), C_PROPERTY_NAVPOS, new Float(newPos).toString());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/06/17 08:02:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.file.CmsBackupResource;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
+import com.opencms.flex.util.CmsUUID;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/06/17 08:02:31 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/02 11:03:12 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -124,7 +125,7 @@ public interface I_CmsBackupDriver {
      * @return Vector with all backup file headers
      * @throws CmsException if something goes wrong
      */
-    Vector readAllBackupFileHeaders(String resourceName) throws CmsException;
+    Vector readAllBackupFileHeaders(CmsUUID resourceId) throws CmsException;
 
     /**
      * Reads a backup file including the file content.<p>
@@ -134,7 +135,7 @@ public interface I_CmsBackupDriver {
      * @return CmsBackupResource the backup file
      * @throws CmsException is something goes wrong
      */
-    CmsBackupResource readBackupFile(int versionId, String filename) throws CmsException;
+    CmsBackupResource readBackupFile(int versionId, CmsUUID resourceId) throws CmsException;
 
     /**
      * Reads a backup file header excluding the file content.<p>
@@ -144,7 +145,7 @@ public interface I_CmsBackupDriver {
      * @return CmsBackupResource the backup file
      * @throws CmsException is something goes wrong
      */
-    CmsBackupResource readBackupFileHeader(int versionId, String filename) throws CmsException;
+    CmsBackupResource readBackupFileHeader(int versionId, CmsUUID resourceId) throws CmsException;
 
     /**
      * Reads a backup project.<p>
@@ -186,6 +187,6 @@ public interface I_CmsBackupDriver {
      * @param publishDate long timestamp when the resource was published.
      * @throws CmsException if something goes wrong
      */
-    void writeBackupResource(int projectId, CmsResource resource, byte[] content, Map properties, int versionId, long publishDate) throws CmsException;
+    void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, byte[] content, Map properties, int versionId, long publishDate) throws CmsException;
 
 }

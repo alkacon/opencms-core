@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,12 +66,12 @@ import org.w3c.dom.NodeList;
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Serializable {
 
     /**
-     * Constructs a new import object which imports the module date from an OpenCms 
+     * Constructs a new import object which imports the module data from an OpenCms 
      * export zip file or a folder in the "real" file system.<p>
      *
      * @param cms the current cms object

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2003/01/20 23:59:22 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -97,8 +97,9 @@ public class CmsElementCache {
         if(changedResources != null){
             for(int i=0; i<changedResources.size(); i++){
                 String current = (String)changedResources.elementAt(i);
-                int rootIndex = current.indexOf("/", current.indexOf("/",1)+1);
-                resForUpdate.add(current.substring(rootIndex));
+                //int rootIndex = current.indexOf("/", current.indexOf("/",1)+1);
+                //resForUpdate.add(current.substring(rootIndex));
+                resForUpdate.add(current);
             }
         }
         m_uriLocator.deleteUris(resForUpdate);

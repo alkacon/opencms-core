@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/06/25 16:21:09 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/06/25 16:21:09 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/02 11:03:12 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -83,6 +83,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * This map caches all queries with replaced expressions to minimize costs of regex/matching operations.
      */
     protected Map m_cachedQueries;
+    
+    protected static final String C_TABLE_KEY_SEARCH_PATTERN = "_T_";
 
     /**
      * CmsSqlManager constructor.
@@ -205,12 +207,9 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             return query;
         }
         
-        if (!m_cachedQueries.containsKey(queryKey)) {
-            String searchPattern = "_T_";
-            
+        if (!m_cachedQueries.containsKey(queryKey)) {            
             // make the statement project dependent
-            String replacePattern = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? "_ONLINE_" : "_OFFLINE_";                                          
-            query = CmsStringSubstitution.substitute(query,searchPattern,replacePattern);           
+            query = replaceTableKey(projectId, query);
             
             // to minimize costs, all statements with replaced expressions are cached in a map
             queryKey += (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? "_ONLINE" : "_OFFLINE";
@@ -219,6 +218,22 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             // use the statement where the pattern is already replaced
             query = (String) m_cachedQueries.get(queryKey);            
         }
+
+        return query;
+    }
+    
+    /**
+     * Replaces the search pattern _T_ in SQL queries by the pattern _ONLINE_ or _OFFLINE_ 
+     * depending on the ID of the current project.<p> 
+     * 
+     * @param projectId the ID of the current project
+     * @param query the SQL query
+     * @return String the SQL query with the table key search pattern replaced
+     */
+    public String replaceTableKey(int projectId, String query) {
+        // make the statement project dependent
+        String replacePattern = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? "_ONLINE_" : "_OFFLINE_";
+        query = CmsStringSubstitution.substitute(query, C_TABLE_KEY_SEARCH_PATTERN, replacePattern);
 
         return query;
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2003/05/05 07:50:52 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2003/05/05 07:50:52 $
+ * @version $Revision: 1.40 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -93,11 +93,11 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         //get the current filelist
         String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
         if(currentFilelist == null) {
-            currentFilelist = cms.rootFolder().getAbsolutePath();
+            currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
 
         // set the title
-        if ((extendedNavigation) && (cms.rootFolder().getAbsolutePath().equals(currentFilelist))){
+        if ((extendedNavigation) && (cms.readAbsolutePath(cms.rootFolder()).equals(currentFilelist))){
             xmlTemplateDocument.setData("frameTitle", lang.getLanguageValue("label.ebtitle"));
         }else{
             xmlTemplateDocument.setData("frameTitle", lang.getLanguageValue("title.newfolder"));
@@ -145,7 +145,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                     //set the default values or the before selected values in the template
                     setNavDefault(xmlTemplateDocument, preprops, newFolder);
                     // now we decide if we should show the sectionLogo entry (only in root)
-                    if (cms.rootFolder().getAbsolutePath().equals(currentFilelist)){
+                    if (cms.readAbsolutePath(cms.rootFolder()).equals(currentFilelist)){
                         //display it
                         xmlTemplateDocument.setData("displaySektLogo", xmlTemplateDocument.getProcessedDataValue("SektLogo", this));
                         xmlTemplateDocument.setData("displayFolderLogo", xmlTemplateDocument.getProcessedDataValue("folderLogo", this));
@@ -158,31 +158,31 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                     try {
                         // create the folder
                         CmsFolder folder = (CmsFolder)cms.createResource(currentFilelist, newFolder, "folder");
-                        //cms.lockResource(folder.getAbsolutePath());
-                        cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
+                        //cms.lockResource(cms.readPath(folder));
+                        cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                         // create the folder in content bodys
                         try{
                             CmsFolder bodyFolder = (CmsFolder)cms.createResource(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1)+currentFilelist, newFolder, "folder");
-                            //cms.lockResource(bodyFolder.getAbsolutePath());
-                            cms.writeProperty(bodyFolder.getAbsolutePath(), C_PROPERTY_TITLE, title);
+                            //cms.lockResource(cms.readPath(bodyFolder));
+                            cms.writeProperty(cms.readAbsolutePath(bodyFolder), C_PROPERTY_TITLE, title);
                         } catch (CmsException ce){
                             //throw ce;
                         }
                         // now check if navigation informations have to be added to the new page.
                         if(navtitle != null) {
-                            cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_NAVTEXT, navtitle);
+                            cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_NAVTEXT, navtitle);
                             // update the navposition.
                             if(navpos != null) {
                                 updateNavPos(cms, folder, navpos);
                                 // ednfal(20.06.01) new projectmechanism: do not unlock the new folder
                                 // try to unlock the folder, ignore the Exception (the parent folder is looked)
                                 //try{
-                                //    cms.unlockResource(folder.getAbsolutePath());
+                                //    cms.unlockResource(cms.readPath(folder));
                                 //}catch(CmsException e){
                                 //}
                                 // prepare to call the dialog for creating the index.html page
-                                session.putValue(C_PARA_FILELIST, folder.getAbsolutePath());
-                                xmlTemplateDocument.setData("indexlocation", folder.getAbsolutePath());
+                                session.putValue(C_PARA_FILELIST, cms.readAbsolutePath(folder));
+                                xmlTemplateDocument.setData("indexlocation", cms.readAbsolutePath(folder));
                             }
                             template = "update2";
                         }else{
@@ -213,7 +213,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                     // fast forward
                     try {
                         // first check if everything is ok
-                        boolean checkFileLogo = ! cms.rootFolder().getAbsolutePath().equals(currentFilelist);
+                        boolean checkFileLogo = ! cms.readAbsolutePath(cms.rootFolder()).equals(currentFilelist);
                         int propError = checkProperties(cms, allProperties, checkFileLogo);
                         if (propError > 0){
                             // error by user get the correct error template
@@ -223,16 +223,16 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                         // create the folder
                         CmsFolder folder = (CmsFolder)cms.createResource(currentFilelist, newFolder, C_TYPE_FOLDER_NAME);
                         try{
-                            cms.lockResource(folder.getAbsolutePath());
+                            cms.lockResource(cms.readAbsolutePath(folder));
                         }catch(CmsException e){
                             //folder is already locked, do nothing
                         }
-                        cms.writeProperties(folder.getAbsolutePath(), allProperties);
+                        cms.writeProperties(cms.readAbsolutePath(folder), allProperties);
                         // create the folder in content bodys
                         try{
                             CmsFolder bodyFolder = (CmsFolder)cms.createResource(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length()-1)+currentFilelist, newFolder, C_TYPE_FOLDER_NAME);
-                            cms.lockResource(bodyFolder.getAbsolutePath());
-                            cms.writeProperty(bodyFolder.getAbsolutePath(), C_PROPERTY_TITLE, title);
+                            cms.lockResource(cms.readAbsolutePath(bodyFolder));
+                            cms.writeProperty(cms.readAbsolutePath(bodyFolder), C_PROPERTY_TITLE, title);
                         } catch (CmsException ce){
                             //throw ce;
                         }
@@ -242,12 +242,12 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                             // ednfal(20.06.01) new projectmechanism: do not unlock the new folder
                             // try to unlock the folder, ignore the Exception (the parent folder is looked)
                             //try{
-                            //    cms.unlockResource(folder.getAbsolutePath());
+                            //    cms.unlockResource(cms.readPath(folder));
                             //}catch(CmsException e){
                             //}
                             // prepare to call the new Page dialog
-                            xmlTemplateDocument.setData("indexlocation", folder.getAbsolutePath());
-                            session.putValue(C_PARA_FILELIST, folder.getAbsolutePath());
+                            xmlTemplateDocument.setData("indexlocation", cms.readAbsolutePath(folder));
+                            session.putValue(C_PARA_FILELIST, cms.readAbsolutePath(folder));
                             template = "update2";
                         } else{
                             template = "update";
@@ -315,7 +315,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         // get the current folder
         currentFilelist = (String)session.getValue(C_PARA_FILELIST);
         if(currentFilelist == null) {
-            currentFilelist = cms.rootFolder().getAbsolutePath();
+            currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
 
         // get all files and folders in the current filelist.
@@ -352,17 +352,17 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 
                 // check if the resource is not marked as deleted
                 if(res.getState() != C_STATE_DELETED) {
-                    String navpos = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVPOS);
+                    String navpos = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVPOS);
 
                     // check if there is a navpos for this file/folder
                     if(navpos != null) {
-                        nicename = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVTEXT);
+                        nicename = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT);
                         if(nicename == null) {
                             nicename = res.getName();
                         }
 
                         // add this file/folder to the storage.
-                        filenames[count] = res.getAbsolutePath();
+                        filenames[count] = cms.readAbsolutePath(res);
                         nicenames[count] = nicename;
                         positions[count] = navpos;
                         if(new Float(navpos).floatValue() > max) {
@@ -544,7 +544,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         else {
             newPos = 1;
         }
-        cms.writeProperty(newfolder.getAbsolutePath(), C_PROPERTY_NAVPOS, new Float(newPos).toString());
+        cms.writeProperty(cms.readAbsolutePath(newfolder), C_PROPERTY_NAVPOS, new Float(newPos).toString());
     }
 
     /**

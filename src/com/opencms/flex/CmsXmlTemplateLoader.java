@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/06/25 13:50:39 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -172,7 +172,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
         long timer1 = 0;
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
-            System.err.println("============ CmsXmlTemplateLoader loading: " + file.getAbsolutePath());            
+            System.err.println("============ CmsXmlTemplateLoader loading: " + cms.readAbsolutePath(file));            
             System.err.println("CmsXmlTemplateLoader.service() cms uri is: " + cms.getRequestContext().getUri());            
         }
         // save the original context settings
@@ -183,12 +183,12 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
         try {                        
             // get the CmsRequest
             byte[] result = null;
-            com.opencms.file.CmsFile fx = cms.readFile(file.getAbsolutePath());            
+            com.opencms.file.CmsFile fx = cms.readFile(cms.readAbsolutePath(file));            
             // care about encoding issues
             String dnc = A_OpenCms.getDefaultEncoding().trim();
-            String enc = cms.readProperty(fx.getAbsolutePath(), C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
+            String enc = cms.readProperty(cms.readAbsolutePath(fx), C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
             // fake the called URI (otherwise XMLTemplate / ElementCache would not work)
-            cms.getRequestContext().setUri(fx.getAbsolutePath());            
+            cms.getRequestContext().setUri(cms.readAbsolutePath(fx));            
             cms_req.setOriginalRequest(req);
             cms.getRequestContext().setEncoding(enc);      
             if (DEBUG > 1) {
@@ -222,7 +222,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
         }
         if (DEBUG > 0) {
             long timer2 = System.currentTimeMillis() - timer1;        
-            System.err.println("============ CmsXmlTemplateLoader time delivering XmlTemplate for " + file.getAbsolutePath() + ": " + timer2 + "ms");            
+            System.err.println("============ CmsXmlTemplateLoader time delivering XmlTemplate for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");            
         }
     }   
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2003/03/02 18:43:54 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/02 11:03:12 $
  */
 
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -172,7 +172,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
                     xmlTemplateDocument.setData(C_STARTUP, xmlTemplateDocument.getProcessedDataValue(C_STARTUP_FOLDER, this));
                     currentFilelist = (String)session.getValue(C_PARA_FILELIST);
                     if(currentFilelist == null) {
-                        currentFilelist = cms.rootFolder().getAbsolutePath();
+                        currentFilelist = cms.readAbsolutePath(cms.rootFolder());
                     }
                     session.putValue(C_PARA_PREVIOUSLIST, currentFilelist);
                     session.putValue(C_PARA_FILELIST, url);
@@ -210,7 +210,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
 
             // if no filelist parameter was given, use the current folder
             if(currentFilelist == null) {
-                currentFilelist = cms.rootFolder().getAbsolutePath();
+                currentFilelist = cms.readAbsolutePath(cms.rootFolder());
             }
             if(!currentFilelist.equals("/")) {
 
@@ -299,7 +299,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
 
         // if no filelist parameter was given, use the current folder
         if(currentFilelist == null) {
-            currentFilelist = cms.rootFolder().getAbsolutePath();
+            currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
         return currentFilelist;
     }

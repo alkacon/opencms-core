@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/02 11:03:12 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletResponse;
  * by other loaders. 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implements I_CmsResourceLoader {
     
@@ -155,10 +155,10 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
         long timer1 = 0;
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
-            System.err.println("========== DumpLoader loading: " + file.getAbsolutePath());            
+            System.err.println("========== DumpLoader loading: " + cms.readAbsolutePath(file));            
         }
         try {
-            res.getOutputStream().write(cms.readFile(file.getAbsolutePath()).getContents());
+            res.getOutputStream().write(cms.readFile(cms.readAbsolutePath(file)).getContents());
         }  catch (CmsException e) {
             System.err.println("Error in CmsDumpLoader: " + e.toString());
             if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
@@ -166,7 +166,7 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
         }
         if (DEBUG > 0) {
             long timer2 = System.currentTimeMillis() - timer1;        
-            System.err.println("========== Time delivering dump for " + file.getAbsolutePath() + ": " + timer2 + "ms");            
+            System.err.println("========== Time delivering dump for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");            
         }
     }
  }

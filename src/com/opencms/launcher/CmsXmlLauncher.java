@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2003/06/11 17:04:38 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/07/02 11:03:13 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.45 $ $Date: 2003/06/11 17:04:38 $
+ * @version $Revision: 1.46 $ $Date: 2003/07/02 11:03:13 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants {
     
@@ -140,7 +140,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
             catch(Exception e) {
                 // there was an error while parsing the document.
                 // No chance to go on here.
-                handleException(cms, e, "There was an error while parsing XML page file " + file.getAbsolutePath());
+                handleException(cms, e, "There was an error while parsing XML page file " + cms.readAbsolutePath(file));
                 return "".getBytes();
             }
 
@@ -162,7 +162,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
             }
             templateName = doc.getMasterTemplate();
             if(templateName != null && !"".equals(templateName)){
-                templateName = Utils.mergeAbsolutePath(file.getAbsolutePath(), templateName);
+                templateName = Utils.mergeAbsolutePath(cms.readAbsolutePath(file), templateName);
             }
 
             // Previously, the template class was loaded here.
@@ -271,11 +271,11 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
                     boolean httpsReq = "https".equalsIgnoreCase(scheme);
                     if(cmsUri.isHttpsResource() != httpsReq){
                         if(httpsReq){
-                            //throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
+                            //throw new CmsException(" "+cms.readPath(file)+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
                         }else if(CmsObject.getStaticExportProperties().isStaticExportEnabled()
                                 || "false_ssl".equals(CmsObject.getStaticExportProperties().getStaticExportEnabledValue())){
                             // check if static export is enabled and value is not false_ssl
-                            throw new CmsException(" "+file.getAbsolutePath()+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
+                            throw new CmsException(" "+cms.readAbsolutePath(file)+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
                         }
                     }
                 }
@@ -292,7 +292,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
                 CmsFile masterTemplate = loadMasterTemplateFile(cms, templateName, doc);
                 I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);               
                 if(!(tmpl instanceof I_CmsXmlTemplate)) {
-                    String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class.";
+                    String errorMessage = "Error in " + cms.readAbsolutePath(file) + ": " + templateClass + " is not a XML template class.";
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
                     }
@@ -302,7 +302,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
             }
             catch(CmsException e) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] There were exceptions while generating output for " + file.getAbsolutePath());
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] There were exceptions while generating output for " + cms.readAbsolutePath(file));
                     A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] Clearing template file cache for this file.");
                 }
                 doc.removeFromFileCache();

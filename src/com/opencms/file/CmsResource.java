@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,9 +38,9 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.49 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.50 $ $Date: 2003/07/02 11:03:12 $
  */
-public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
+public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
      /**
       * The ID of the file header database entry.
@@ -66,6 +66,11 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
       * The name of this resource.
       */
      private String m_resourceName;
+     
+     /**
+      * The full name of a resource include it's path.
+      */
+     private String m_fullResourceName;
 
      /**
       * The type of this resource.
@@ -201,6 +206,8 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
         m_size=size;
         m_lockedInProject=lockedInProject;
         m_isTouched = false;
+        
+        m_fullResourceName = null;
      }
     /**
      * Clones the CmsResource by creating a new CmsObject.
@@ -234,17 +241,27 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
       
     /**
      * Returns the absolute path of this resource,
-     * e.g. <code>/system/workplace/action/index.html</code><p>
+     * e.g. <code>/system/workplace/action/index.html</code>.<p>
+     * 
+     * Use this method with caution! The full name of a resource including the path
+     * is only available if the resource has been fetched from the database by it's 
+     * name.
      *
-     * @return the absolute path for this resource
+     * @return I_CmsConstants.C_FULL_RESOURCENAME_UNAVAILABLE or the resource name including the path
      */
-    public String getAbsolutePath() {
-        return getAbsolutePath(m_resourceName);
-    }
+//    public String getAbsolutePath() {
+//        String fullResourceName = getFullResourceName(); 
+//        return CmsResource.getAbsolutePath(fullResourceName);
+//    }
 
     /**
      * Returns the absolute path of the provided resource,
-     * e.g. <code>/system/workplace/action/index.html</code><p>
+     * e.g. <code>/system/workplace/action/index.html</code>.<p>
+     * 
+     * Use this method with caution! The full name of a resource including the path
+     * is only available if the resource has been fetched from the database by it's 
+     * name. getFullResourceName() will return I_CmsConstants.C_FULL_RESOURCENAME_UNAVAILABLE
+     * or the full resource name including the path.
      *
      * @return the absolute path of the provided resource
      */
@@ -254,14 +271,15 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
     }
 
     /**
-     * Returns the root name of this resource,
+     * Returns the site root name of this resource,
      * e.g. <code>/default/vfs</code><p>
      *
-     * @return the root name for this resource
+     * @return the site root name for this resource
      */
     public String getRootName() {
-        int rootIndex = m_resourceName.indexOf("/", m_resourceName.indexOf("/", 1) + 1);
-        return m_resourceName.substring(0, rootIndex);
+        String fullResourceName = getFullResourceName(); 
+        int rootIndex = fullResourceName.indexOf("/", fullResourceName.indexOf("/", 1) + 1);
+        return fullResourceName.substring(0, rootIndex);
     }
     
     /**
@@ -380,26 +398,28 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      public int getLength() {
         return m_size;
      }
+     
     /**
-     * Returns the name of this resource.<BR/>
-     * Example: retuns language.cms for the
-     * resource /system/def/language.cms
+     * Returns the name of this resource, e.g. <code>index.html</code>.<p>
      *
-     * @return the name of this resource.
+     * @return the name of this resource
+     * 
      */
-    public String getName() {
-        String name = null;
-        String absoluteName = getAbsolutePath();
-        
-        // check if this is a file
-        if (!absoluteName.endsWith("/")) {
-            name = absoluteName.substring(absoluteName.lastIndexOf("/") + 1, absoluteName.length());
-        } else {
-            name = absoluteName.substring(0, absoluteName.length() - 1);
-            name = name.substring(name.lastIndexOf("/") + 1, name.length());
-        }
-
-        return name;
+    public String getName() {     
+        return getResourceName();
+          
+//        String name = null;
+//        String absoluteName = getAbsolutePath();
+//        
+//        // check if this is a file
+//        if (!absoluteName.endsWith("/")) {
+//            name = absoluteName.substring(absoluteName.lastIndexOf("/") + 1, absoluteName.length());
+//        } else {
+//            name = absoluteName.substring(0, absoluteName.length() - 1);
+//            name = name.substring(name.lastIndexOf("/") + 1, name.length());
+//        }
+//
+//        return name;    
     }
     
     /**
@@ -423,7 +443,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
      */
      public String getParent() {
-        return getParent(getAbsolutePath());
+        return getParent(getAbsolutePath(getFullResourceName()));
      }
      
     /**
@@ -439,7 +459,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
      */
     public static String getParent(String resource) {
-        if (C_ROOT.equals(resource)) return null;
+        if (I_CmsConstants.C_ROOT.equals(resource)) return null;
         // remove the last char, for a folder this will be "/", for a file it does not matter
         String parent = (resource.substring(0, resource.length() - 1));
         // now as the name does not end with "/", check for the last "/" which is the parent folder name
@@ -461,7 +481,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      * @return the folder of this resource
      */
     public String getPath() {
-        return getPath(getAbsolutePath());
+        return getPath(getAbsolutePath(getFullResourceName()));
     }
     
     /**
@@ -619,11 +639,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
       * @return true if the resource is in the project, false otherwise.
       */
      public boolean inProject(CmsProject project){
-         boolean inProject=false;
-         if (project.getId() == m_projectId) {
-             inProject=true;
-         }
-         return inProject;
+        return project.getId() == getProjectId();
      }
     /**
      * Determines, if this resource is a file.
@@ -631,11 +647,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      * @return true, if this resource is a file, else it returns false.
      */
       public boolean isFile() {
-         boolean isFile=true;
-         if (m_resourceName.endsWith("/")){
-             isFile=false;
-         }
-         return isFile;
+        return getType() != I_CmsConstants.C_TYPE_FOLDER;
       }
     /**
      * Determines, if this resource is a folder.
@@ -643,12 +655,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      * @return true, if this resource is a folder, else it returns false.
      */
       public boolean isFolder(){
-         boolean isFolder=false;
-         if (m_resourceName.endsWith("/")){
-             isFolder=true;
-         }
-         return isFolder;
-
+          return getType() == I_CmsConstants.C_TYPE_FOLDER;
       }
     /**
      * Determines, if this resource is locked by a user.
@@ -656,12 +663,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      * @return true, if this resource is locked by a user, else it returns false.
      */
     public boolean isLocked() {
-        boolean isLocked = true;
-        //check if the user id in the locked by field is the unknown user id.
-        if (m_lockedByUserId.isNullUUID()) {
-            isLocked = false;
-        }
-        return isLocked;
+        return !isLockedBy().equals(CmsUUID.getNullUUID());
     }
     /**
      * Returns the user idthat locked this resource.
@@ -835,6 +837,52 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      */
     public CmsUUID getResourceAceId() {
         return this.getResourceId();
+    }
+    
+    /**
+     * Sets the resource name including the path.<p>
+     * 
+     * @param fullResourceName the resource name including the path
+     */
+    public void setFullResourceName(String fullResourceName) {
+        m_fullResourceName = fullResourceName;
+    }
+
+    /**
+     * Returns the resource name of this resource including the path,
+     * e.g. <code>/default/vfs/system/workplace/action/index.html</code>.<p>
+     * 
+     * Use this method with caution. In the worst case scenario, the complete
+     * path of this resources has to be calculated first!
+     *
+     * @return the resource name including it's path
+     */
+    public String getFullResourceName() {
+        return m_fullResourceName;
+    }
+    
+    /**
+     * Checks whether the current state of this resource contains the full resource
+     * path including the site root or not.
+     * 
+     * @return true if the current state of this resource contains the full resource path
+     */
+    public boolean hasFullResourceName() {
+        return (getFullResourceName()!=null);
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) {
+        if ((o == null) || (!(o instanceof CmsResource))) {
+            return 0;
+        }
+        
+        String ownResourceName = getResourceName();
+        String otherResourceName = ((CmsResource) o).getResourceName();
+        
+        return ownResourceName.compareTo(otherResourceName);
     }
     
 }

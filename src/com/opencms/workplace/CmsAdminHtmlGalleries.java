@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.10 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/02 11:03:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -136,9 +136,9 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
                     String superfolder = getConfigFile(cms).getHtmlGalleryPath();
                     CmsResource folder = cms.createResource(superfolder, galleryname, C_TYPE_FOLDER_NAME);
                     if(title != null) {
-                        cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
+                        cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                     }
-                    cms.chgrp(folder.getAbsolutePath(), group);
+                    cms.chgrp(cms.readAbsolutePath(folder), group);
                     int flag = folder.getAccessFlags();
 
                     // set the access rights for 'other' users
@@ -172,14 +172,14 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
                         flag ^= C_ACCESS_PUBLIC_VISIBLE;
                     }
 */
-                    cms.chmod(folder.getAbsolutePath(), flag);
+                    cms.chmod(cms.readAbsolutePath(folder), flag);
 
                     try {
-                      cms.unlockResource(folder.getAbsolutePath());
+                      cms.unlockResource(cms.readAbsolutePath(folder));
                     }
                     catch (CmsException e) {
                       cms.unlockResource(folder.getParent());
-                      cms.unlockResource(folder.getAbsolutePath());
+                      cms.unlockResource(cms.readAbsolutePath(folder));
 
                     }
                 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.74 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.75 $ $Date: 2003/07/02 11:03:12 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -113,7 +113,7 @@ public class CmsRequestContext implements I_CmsConstants {
     private Vector m_language = new Vector();
 
     /** The name of the root, e.g. /site_a/vfs */
-    private String m_siteRoot = C_DEFAULT_SITE + C_ROOTNAME_VFS;
+    private String m_siteRoot = I_CmsConstants.C_FOLDER_SEPARATOR + C_DEFAULT_SITE + I_CmsConstants.C_FOLDER_SEPARATOR + C_ROOTNAME_VFS;
 
     /** Current encoding */
     private String m_encoding = null;
@@ -574,7 +574,18 @@ public class CmsRequestContext implements I_CmsConstants {
      * of the virtual file system
      */
     public void setContextTo(String name) {
-        m_siteRoot = C_DEFAULT_SITE + name;
+        StringBuffer strBuf = new StringBuffer();
+        
+        strBuf.append(I_CmsConstants.C_FOLDER_SEPARATOR);
+        strBuf.append(C_DEFAULT_SITE);
+        strBuf.append(I_CmsConstants.C_FOLDER_SEPARATOR);
+        strBuf.append(name);
+        
+//        if (!name.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+//            strBuf.append(I_CmsConstants.C_FOLDER_SEPARATOR);
+//        }        
+        
+        m_siteRoot = strBuf.toString();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/02 09:29:02 $
-* Version: $Revision: 1.100 $
+* Date   : $Date: 2003/07/02 11:03:12 $
+* Version: $Revision: 1.101 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,6 +66,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
 
+
 /**
  * Holds the functionaility to import resources from the filesystem
  * or a zip file into the OpenCms VFS.
@@ -74,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.100 $ $Date: 2003/07/02 09:29:02 $
+ * @version $Revision: 1.101 $ $Date: 2003/07/02 11:03:12 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -129,9 +130,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     /** Groups to create during import are stored here */
     private Stack m_groupsToCreate = new Stack();
 
-	/** Access control entries for a single resource */
-	private Vector m_acEntriesToCreate = new Vector();
-	
+    /** Access control entries for a single resource */
+    private Vector m_acEntriesToCreate = new Vector();
+    
     /**
      * In this vector we store the imported pages (as Strings from getAbsolutePath()),
      * after the import we check them all to update the link tables for the linkmanagement.
@@ -572,7 +573,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                         destination += C_FOLDER_SEPARATOR;
                     }
                     CmsResource channel = m_cms.readFileHeader(C_ROOT + destination);
-                    channelId = m_cms.readProperty(channel.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CHANNELID);
+                    channelId = m_cms.readProperty(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID);
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }
@@ -615,9 +616,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                                         properties, launcherStartClass, content, m_importPath);
 
             if(res != null){
-                fullname = res.getAbsolutePath();
                 if(C_TYPE_PAGE_NAME.equals(type)){
-                    m_importedPages.add(fullname);
+                    m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
                 }
             }
             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
@@ -630,7 +630,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 Thread.sleep(1000);   
             } catch (Exception e) {
             	// 
-            }
+        }
         }
         
         byte[] digestContent = {0};
@@ -711,7 +711,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
             int importSize = fileNodes.getLength();
     
-            String root = I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS;
+            String root = C_FOLDER_SEPARATOR + I_CmsConstants.C_DEFAULT_SITE + C_FOLDER_SEPARATOR + I_CmsConstants.C_ROOTNAME_VFS;
     
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.getLength(); i++) {
@@ -785,18 +785,18 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                         currentProperty = (Element) propertyNodes.item(j);
                         // get name information for this property
                         String name = getTextNodeValue(currentProperty, C_EXPORT_TAG_NAME);
-						// check if this is an unwanted property
-						if ((name != null) && (!deleteProperties.contains(name))) {
+                        // check if this is an unwanted property
+                        if ((name != null) && (!deleteProperties.contains(name))) {
                             // get value information for this property
-							String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
-							if (value == null) {
-								// create an empty property
-								value = "";
-							}
-							// add property
-							properties.put(name, value);
-							createPropertydefinition(name, type);
-						}
+                            String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
+                            if (value == null) {
+                                // create an empty property
+                                value = "";
+                            }
+                            // add property
+                            properties.put(name, value);
+                            createPropertydefinition(name, type);
+                        }
                     }
     
                     // import the specified file 
@@ -804,23 +804,24 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
 					if (res != null) {
 
-						// write all imported access control entries for this file
-						acentryNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
-						// collect all access control entries
-						//String resid = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
-						for (int j = 0; j < acentryNodes.getLength(); j++) {
-							currentEntry = (Element) acentryNodes.item(j);
-							// get the data of the access control entry
-							String id = getTextNodeValue(currentEntry, C_EXPORT_TAG_ID);
-							String flags = getTextNodeValue(currentEntry, C_EXPORT_TAG_FLAGS);
-							String allowed = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
-							String denied = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
-	
-							// add the entry to the list
-							addImportAccessControlEntry(res, id, allowed, denied, flags);
-						}
-						importAccessControlEntries(res);
-					} else {
+                    // write all imported access control entries for this file
+                    acentryNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+                    // collect all access control entries
+                    //String resid = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
+                    for (int j = 0; j < acentryNodes.getLength(); j++) {
+                        currentEntry = (Element) acentryNodes.item(j);
+                        // get the data of the access control entry
+                        String id = getTextNodeValue(currentEntry, C_EXPORT_TAG_ID);
+                        String flags = getTextNodeValue(currentEntry, C_EXPORT_TAG_FLAGS);
+                        String allowed = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
+                        String denied = getTextNodeValue(currentEntry, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
+
+                        // add the entry to the list
+                        addImportAccessControlEntry(res, id, allowed, denied, flags);
+                    }
+                    importAccessControlEntries(res);
+                    
+                } else {
 						// resource import failed, since no CmsResource was created
 						m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
 						m_report.println(translatedName);
@@ -1068,27 +1069,27 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         }
     }
 
-	/**
-	 * Writes alread imported access control entries for a given resource.
-	 * 
-	 * @param res			the resource assigned to the access control entries
-	 * @throws CmsException	if something goes wrong
-	 */
-	private void importAccessControlEntries(CmsResource res)
-		throws CmsException {
-		try {
-			try {
-				m_cms.writeAccessControlEntries(res.getAbsolutePath(), m_acEntriesToCreate);
-			} catch (CmsException exc){
-				m_report.println(m_report.key("report.import_accesscontroldata_failed"), I_CmsReport.C_FORMAT_WARNING);
-			}
-		} catch (Exception exc){
-			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-		} finally {
-			m_acEntriesToCreate = new Vector();
-		}
-	}
-	
+    /**
+     * Writes alread imported access control entries for a given resource.
+     * 
+     * @param resource			the resource assigned to the access control entries
+     * @throws CmsException	if something goes wrong
+     */
+    private void importAccessControlEntries(CmsResource resource)
+        throws CmsException {
+        try {
+            try {
+                m_cms.writeAccessControlEntries(resource, m_acEntriesToCreate);
+            } catch (CmsException exc){
+                m_report.println(m_report.key("report.import_accesscontroldata_failed"), I_CmsReport.C_FORMAT_WARNING);
+            }
+        } catch (Exception exc){
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            m_acEntriesToCreate = new Vector();
+        }
+    }
+    
 	/**
 	 * Creates a new access control entry and stores it for later write out.
 	 * 
@@ -1098,12 +1099,12 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 	 * @param denied	the denied permissions
 	 * @param flags		the flags
 	 */
-	private void addImportAccessControlEntry (CmsResource res, String id, String allowed, String denied, String flags) {
+    private void addImportAccessControlEntry (CmsResource res, String id, String allowed, String denied, String flags) {
 
-		CmsAccessControlEntry ace = new CmsAccessControlEntry(res.getResourceAceId(), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
-		m_acEntriesToCreate.add(ace);
-	}		
-		
+        CmsAccessControlEntry ace = new CmsAccessControlEntry(res.getResourceAceId(), new CmsUUID(id), Integer.parseInt(allowed), Integer.parseInt(denied), Integer.parseInt(flags));
+        m_acEntriesToCreate.add(ace);
+    }       
+        
     /**
      * Checks all new imported pages and create or updates the entrys in the
      * database for the linkmanagement.<p>
@@ -1126,13 +1127,13 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         }
     }
     
-	/**
-	 * Converts the content of a file from OpenCms 4.x versions.<p>
-	 * 
-	 * @param filename the name of the file to convert
-	 * @param byteContent the content of the file
-	 * @return the converted filecontent
-	 */
+    /**
+     * Converts the content of a file from OpenCms 4.x versions.<p>
+     * 
+     * @param filename the name of the file to convert
+     * @param byteContent the content of the file
+     * @return the converted filecontent
+     */
     private byte[] convertFile(String filename, byte[] byteContent) {
         byte[] returnValue = byteContent;
         if (!filename.startsWith("/")) {
@@ -1190,20 +1191,20 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param content the file content
      * @return String the found encoding
      */
-	private String getEncoding(String content) {
-		String encoding = content;
-		int index = encoding.toLowerCase().indexOf("encoding=\"");
-		// encoding attribute found, get the value
-		if (index != -1) {
-			encoding = encoding.substring(index + 10);
-			if ((index = encoding.indexOf("\"")) != -1) {
-				encoding = encoding.substring(0, index);
-				return encoding.toUpperCase();
-			}
-		}
-		// no encoding attribute found
-		return "";
-	}	
+    private String getEncoding(String content) {
+        String encoding = content;
+        int index = encoding.toLowerCase().indexOf("encoding=\"");
+        // encoding attribute found, get the value
+        if (index != -1) {
+            encoding = encoding.substring(index + 10);
+            if ((index = encoding.indexOf("\"")) != -1) {
+                encoding = encoding.substring(0, index);
+                return encoding.toUpperCase();
+            }
+        }
+        // no encoding attribute found
+        return "";
+    }   
     
     /** 
      * Scans the given content of a frametemplate and returns the result.<p>
@@ -1216,14 +1217,14 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         if (content.toLowerCase().indexOf("http-equiv=\"content-type\"") == -1) {
             content = CmsStringSubstitution.substitute(content, "</head>", "<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
         } else {
-			// Meta-Tag present
-        	if(content.toLowerCase().indexOf("charset=]]><method name=\"getencoding\"/>") == -1){
-            	String fileStart = content.substring(0,content.toLowerCase().indexOf("charset=")+8);
-            	String editContent = content.substring(content.toLowerCase().indexOf("charset="));
-            	editContent = editContent.substring(editContent.indexOf("\""));
-            	String newEncoding = "]]><method name=\"getEncoding\"/><![CDATA[";
-            	content = fileStart + newEncoding + editContent;
-        	}
+        // Meta-Tag present
+            if(content.toLowerCase().indexOf("charset=]]><method name=\"getencoding\"/>") == -1){
+                String fileStart = content.substring(0,content.toLowerCase().indexOf("charset=")+8);
+                String editContent = content.substring(content.toLowerCase().indexOf("charset="));
+                editContent = editContent.substring(editContent.indexOf("\""));
+                String newEncoding = "]]><method name=\"getEncoding\"/><![CDATA[";
+                content = fileStart + newEncoding + editContent;
+            }
         }
         return content;
     }
@@ -1239,7 +1240,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         if (content.toLowerCase().indexOf("<?xml") == -1) {
             return content;
         } else {
-			// XML information present, replace encoding
+        // XML information present, replace encoding
             // set the encoding only if it does not exist
             String xmlTag = content.substring(0, content.indexOf(">") + 1);
             if (xmlTag.toLowerCase().indexOf("encoding") == -1) {
@@ -1286,7 +1287,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * Searches for the webapps String and replaces it with a macro which is needed for the WYSIWYG editor,
      * also creates missing &lt;edittemplate&gt; tags for exports of older OpenCms 4.x versions.<p>
      * 
-     * @param content the filecontent
+     * @param content the filecontent 
      * @param fileName the name of the file 
      * @return String the modified filecontent
      */
@@ -1386,7 +1387,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                         if (key.equals("noNameKey")) {
                             content += "\n<TEMPLATE><![CDATA[" + value;
                         } else {
-							// create template with "name" attribute
+                        // create template with "name" attribute
                             content += "\n<TEMPLATE name=\"" + key + "\"><![CDATA[" + value;
                         }
                         content += "]]></TEMPLATE>\n";
