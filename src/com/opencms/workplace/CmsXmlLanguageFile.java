@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/07/17 07:48:33 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,13 +33,13 @@ import com.opencms.core.*;
 import com.opencms.template.*;
 
 import java.util.*;
-
+import java.io.*;
 
 /**
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.11 $ $Date: 2000/07/17 07:48:33 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,
                                                                    I_CmsWpConstants,
@@ -50,7 +50,8 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
 
     /** Name of the class specific language section. */
     private static String m_languagePath = null;
-    
+	
+	
     /**
      * Default constructor.
      */
@@ -112,13 +113,14 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
         if (currentLanguage == null) {        
             currentLanguage = C_DEFAULT_LANGUAGE;
         }
-     
-        try {
-            init(cms, m_languagePath + currentLanguage);
-        } catch(Exception e) {
-            e.printStackTrace();
-            throwException("Could not load language file " + m_languagePath + currentLanguage + ".");
-        }
+		
+		try {
+			mergeLanguageFiles(cms,currentLanguage);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throwException("Error while merging language files in folder " + m_languagePath + currentLanguage + "/.");
+		}
+		
     }        
 
     
@@ -206,5 +208,26 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
             result = super.getDataValue(tag);
         }
         return result;
-    }    
+    } 
+	
+	/**
+     * Merges all language files available for current language settings.
+     * Language files have to be stored in a folder like 
+     * "system/workplace/config/language/[language shortname]/"
+     * 
+     * @author Matthias Schreiber
+	 * @param cms CmsObject object for accessing system resources.
+     * @param language Current language
+     */
+	private void mergeLanguageFiles(CmsObject cms, String language) throws CmsException {
+		Vector langFiles = new Vector();
+		langFiles = cms.getFilesInFolder(m_languagePath + language + "/");
+		CmsFile file = null;
+				 
+		for(int i=0; i < langFiles.size(); i++) {
+			file = (CmsFile)langFiles.elementAt(i);
+			init(cms,file.getAbsolutePath());
+			readIncludeFile(file.getAbsolutePath());
+		}
+	}
 }

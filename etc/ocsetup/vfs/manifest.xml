@@ -1062,8 +1062,24 @@
             <properties/>
         </file>
         <file>
-            <source>config/language/de</source>
             <destination>system/workplace/config/language/de</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <destination>system/workplace/config/language/uk</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>config/language/de/core_de</source>
+            <destination>system/workplace/config/language/de/core_de</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
@@ -1071,8 +1087,26 @@
             <properties/>
         </file>
         <file>
-            <source>config/language/en</source>
-            <destination>system/workplace/config/language/en</destination>
+            <source>config/language/de/news_de</source>
+            <destination>system/workplace/config/language/de/news_de</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>config/language/uk/core_uk</source>
+            <destination>system/workplace/config/language/uk/core_uk</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>config/language/uk/news_uk</source>
+            <destination>system/workplace/config/language/uk/news_uk</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>

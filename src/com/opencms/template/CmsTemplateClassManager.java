@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2000/07/11 08:49:57 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/07/17 07:48:33 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * be cached and re-used. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/07/11 08:49:57 $
+ * @version $Revision: 1.10 $ $Date: 2000/07/17 07:48:33 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels { 
     
@@ -121,7 +121,6 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
         } else {
             Vector repositories = new Vector();
 			String[] repositoriesFromConfigFile = null;
-            //repositories.addElement("/");
 			repositoriesFromConfigFile = cms.getConfigurations().getStringArray("repositories");
 			
 			for (int i=0; i < repositoriesFromConfigFile.length; i++)

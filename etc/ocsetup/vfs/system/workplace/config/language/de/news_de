@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<LANGUAGE>
+		<name>Deutsch</name>
+		
+		<label>
+			<author>Autor</author>
+			<date>Datum</date>
+			<externallink>Externer Link</externallink>
+			<headline>Schlagzeile</headline>
+			<shorttext>Kurzbeschreibung</shorttext>
+			<text>Text</text>
+		</label>
+		
+		<icon>
+			<news>News- verwaltung</news>
+		</icon>
+		
+		<select>
+			<news>News</news>
+		</select>
+		
+		<task>
+			<label>
+				<news>Neuen News-Artikel überprüfen</news>
+			</label>
+		</task>
+		
+</LANGUAGE>
