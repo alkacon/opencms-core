@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 14:16:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/06 14:27:55 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,10 +46,10 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/06/06 14:16:24 $
+ * @version $Revision: 1.8 $ $Date: 2000/06/06 14:27:55 $
  * 
  */
-public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsQuerys {
+public class CmsResourceBroker implements I_CmsResourceBroker {
 	
 	/**
 	 * The configuration of the property-file.

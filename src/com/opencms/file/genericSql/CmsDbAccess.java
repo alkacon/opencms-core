@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 14:16:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/06 14:27:55 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,6 +30,7 @@ package com.opencms.file.genericSql;
 
 import javax.servlet.http.*;
 import java.util.*;
+import java.sql.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 
@@ -45,9 +46,9 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.6 $ $Date: 2000/06/06 14:16:24 $ * 
+ * @version $Revision: 1.7 $ $Date: 2000/06/06 14:27:55 $ * 
  */
-public class CmsDbAccess implements I_CmsConstants {
+public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
 	/**
 	 * The maximum amount of tables.
@@ -231,43 +232,37 @@ public class CmsDbAccess implements I_CmsConstants {
 	 * @return Group.
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-   /*  public CmsGroup readGroup(String groupname)
+     public CmsGroup readGroup(String groupname)
          throws CmsException {
-         Connection con=null;
-         
+            
          CmsGroup group=null;
          ResultSet res = null;
+         PreparedStatement statement=null;
    
          try{ 
              // read the group from the database
-             con=getConnection();
-             PreparedStatement statementGroupRead=con.prepareStatement(C_GROUP_READ);
-             statementGroupRead.setString(1,groupname);
-             res = statementGroupRead.executeQuery();
-             putConnection(con);
+             statement=m_pool.getPreparedStatement(C_GROUPS_READGROUP_KEY);
+             statement.setString(1,groupname);
+             res = statement.executeQuery();
+             m_pool.putPreparedStatement(C_GROUPS_READGROUP_KEY,statement);
              // create new Cms group object
 			 if(res.next()) {
-                group=new CmsGroup(res.getInt(C_GROUP_ID),
+             /*  group=new CmsGroup(res.getInt(C_GROUP_ID),
                                    res.getInt(C_PARENT_GROUP_ID),
                                    res.getString(C_GROUP_NAME),
                                    res.getString(C_GROUP_DESCRIPTION),
-                                   res.getInt(C_GROUP_FLAGS));                                
+                                   res.getInt(C_GROUP_FLAGS)); */                              
              } else {
                  throw new CmsException("[" + this.getClass().getName() + "] "+groupname,CmsException.C_NO_GROUP);
              }
+            
        
          } catch (SQLException e){
-            putConnection(con);
+            m_pool.putPreparedStatement(C_GROUPS_READGROUP_KEY,statement);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return group;
-     } */
-    
-    
-    
-    
-    
-    
+     } 
     
 	/**
 	 * Private method to init all statements in the pool.

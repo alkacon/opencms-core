@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/06/06 12:04:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/06/06 14:27:55 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -163,7 +163,7 @@ public class CmsPreparedStatementPool {
 	 * @param key - the hashtable key
 	 * @return a prepared statement matching the key
 	 */
-	public PreparedStatement getPreparedStatement(String key) throws CmsException {
+	public PreparedStatement getPreparedStatement(Integer key) throws CmsException {
 		PreparedStatement pstmt = null;
 		int num;
 		Vector temp = (Vector) m_prepStatements.get(key);
@@ -201,7 +201,7 @@ public class CmsPreparedStatementPool {
 	 * @param key - the hashtable key
 	 * @param pstmt - the statement
 	 */
-	public void putPreparedStatement(String key, PreparedStatement pstmt) {
+	public void putPreparedStatement(Integer key, PreparedStatement pstmt) {
 		/* TODO: 
 		 * 
 		 * Bei dem Versuch, ein Statement in den Vector zu schreiben, muss
