@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2004/02/03 10:59:16 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2004/02/12 16:54:20 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsModuleExportThread;
 
-import org.opencms.setup.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -205,7 +204,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
                 } 
             }                            
             
-            String filename = CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName));
+            String filename = OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName));
             A_CmsReportThread doExport = new CmsModuleExportThread(cms, reg, moduleName, resourcen, filename);
             doExport.start();
             session.putValue(C_MODULE_THREAD, doExport);

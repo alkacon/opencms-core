@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/11 11:07:27 $
- * Version: $Revision: 1.318 $
+ * Date   : $Date: 2004/02/12 16:54:19 $
+ * Version: $Revision: 1.319 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsExportModuledata;
 import org.opencms.importexport.CmsImport;
 import org.opencms.importexport.CmsImportModuledata;
-import org.opencms.validation.CmsHtmlLinkValidator;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockManager;
@@ -53,10 +52,10 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPasswordValidation;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
+import org.opencms.validation.CmsHtmlLinkValidator;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import org.opencms.setup.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.*;
@@ -77,6 +76,7 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.LRUMap;
+
 import org.w3c.dom.Document;
 
 /**
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.318 $ $Date: 2004/02/11 11:07:27 $
+ * @version $Revision: 1.319 $ $Date: 2004/02/12 16:54:19 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3442,7 +3442,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         Document docXml = null;
         BufferedReader xmlReader = null;
         // get the import resource
-        File importResource = new File(CmsBase.getAbsolutePath(importFile));
+        File importResource = new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(importFile));
         try {
             // if it is a file it must be a zip-file
             if (importResource.isFile()) {
@@ -4615,7 +4615,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Initializing registry: starting");
         }
         try {
-            m_registry = new CmsRegistry(CmsBase.getAbsolutePath(config.getString(I_CmsConstants.C_CONFIGURATION_REGISTRY)));
+            m_registry = new CmsRegistry(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(config.getString(I_CmsConstants.C_CONFIGURATION_REGISTRY)));
         } catch (CmsException ex) {
             throw ex;
         } catch (Exception ex) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2004/02/11 16:12:04 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/12 16:54:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,8 @@
  
 package org.opencms.jsp;
 
-import org.opencms.main.OpenCms;
-
-import org.opencms.setup.CmsBase;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.main.OpenCms;
 
 import java.util.Arrays;
 import java.util.List;
@@ -79,7 +77,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsJspTagInfo extends TagSupport {
     
@@ -182,10 +180,10 @@ public class CmsJspTagInfo extends TagSupport {
                 result = req.getRequestURI();
                 break;
             case 3 : // opencms.webapp
-                result = CmsBase.getWebAppName();
+                result = OpenCms.getSystemInfo().getWebApplicationName();
                 break;
             case 4 : // opencms.webbasepath
-                result = CmsBase.getWebBasePath();
+                result = OpenCms.getSystemInfo().getWebApplicationPath();
                 break;
             case 5 : // opencms.request.uri
                 result = controller.getCmsObject().getRequestContext().getUri();

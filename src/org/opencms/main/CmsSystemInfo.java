@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/02/12 10:17:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/12 16:54:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@ package org.opencms.main;
 
 import org.opencms.staticexport.CmsLinkManager;
 
+import com.opencms.core.I_CmsConstants;
+
 import java.io.File;
 import java.util.Properties;
 
@@ -40,7 +42,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -54,20 +56,11 @@ public class CmsSystemInfo {
     /** Static version number to use if version.properties can not be read */
     private static final String C_DEFAULT_VERSION_NUMBER = "5.3.x";
     
-    /** The OpenCms application base path */
-    private String m_basePath;    
+    /** The abolute path to the "opencms.properties" configuration file in the "real" file system */
+    private String m_configurationFilePath;
     
     /** Default encoding, can be overwritten in "opencms.properties" */
     private String m_defaultEncoding;    
-        
-    /** The version name (including version number) of this OpenCms installation */
-    private String m_versionName;
-
-    /** The version number of this OpenCms installation */
-    private String m_versionNumber;
-    
-    /** The name of the OpenCms server */
-    private String m_serverName;
 
     /** The filename of the log file */
     private String m_logFileName;
@@ -75,7 +68,23 @@ public class CmsSystemInfo {
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code> */
     private String m_openCmsContext;
     
+    /** The name of the OpenCms server */
+    private String m_serverName;
+        
+    /** The version name (including version number) of this OpenCms installation */
+    private String m_versionName;
+
+    /** The version number of this OpenCms installation */
+    private String m_versionNumber;
     
+    /** The web application name */
+    private String m_webApplicationName;
+    
+    /** The OpenCms web application folder in the servlet container */
+    private String m_webApplicationPath;
+    
+    /** The OpenCms web application "WEB-INF" directory path */
+    private String m_webInfPath;    
     
     /**
      * Creates a new system info container.<p>
@@ -87,25 +96,61 @@ public class CmsSystemInfo {
         m_defaultEncoding = C_DEFAULT_ENCODING;
     }
     
-    /** 
-     * Returns the OpenCms web application name, e.g. "opencms".<p> 
+    /**
+     * Returns an absolute path (to a directory or a file) from a path relative to 
+     * the web application folder of OpenCms.<p> 
      * 
-     * @return the OpenCms web application name
+     * If the provided path is already absolute, then it is returned unchanged.<p>
+     * 
+     * @param path the path (relative) to generate an absolute path from
+     * @return an absolute path (to a directory or a file) from a path relative to the web application folder of OpenCms
+     */    
+    public String getAbsolutePathRelativeToWebApplication(String path) {
+        if (path == null) {
+            return null;
+        }
+        // check for absolute path is system depended, let's just use the standard check  
+        File f = new File(path);
+        if (f.isAbsolute()) {
+            // apparently this is an absolute path already
+            return f.getAbsolutePath();
+        }
+        return CmsLinkManager.normalizeRfsPath(getWebApplicationPath() + path);
+    }
+
+    /**
+     * Returns an absolute path (to a directory or a file) from a path relative to 
+     * the "WEB-INF" folder of the OpenCms web application.<p> 
+     * 
+     * If the provided path is already absolute, then it is returned unchanged.<p>
+     * 
+     * @param path the path (relative) to generate an absolute path from
+     * @return an absolute path (to a directory or a file) from a path relative to the "WEB-INF" folder
      */
-    public static String getWebAppName() {
-        File basePath = new File(OpenCms.getSystemInfo().getBasePath());
-        String webAppName = basePath.getParentFile().getName();
-        return webAppName;
-    }    
+    public String getAbsolutePathRelativeToWebInf(String path) {
+        if (path == null) {
+            return null;
+        }
+        // check for absolute path is system depended, let's just use the standard check  
+        File f = new File(path);
+        if (f.isAbsolute()) {
+            // apparently this is an absolute path already
+            return f.getAbsolutePath();
+        }
+        return CmsLinkManager.normalizeRfsPath(m_webInfPath + path);
+    }
     
-    /** 
-     * Returns the OpenCms web application base path.<p>
-     *
-     * @return the OpenCms web application base path
+    /**
+     * Returns the abolute path to the "opencms.properties" configuration file in the "real" file system.<p>
+     * 
+     * @return the abolute path to the "opencms.properties" configuration file
      */
-    public String getBasePath() {
-        return m_basePath;
-    }    
+    public String getConfigurationFilePath() {
+        if (m_configurationFilePath == null) {
+            m_configurationFilePath = getAbsolutePathRelativeToWebInf(I_CmsConstants.C_CONFIGURATION_PROPERTIES_FILE);
+        }
+        return m_configurationFilePath;
+    }
     
     /**
      * Return the OpenCms default character encoding.<p>
@@ -119,6 +164,36 @@ public class CmsSystemInfo {
     public String getDefaultEncoding() {
         return m_defaultEncoding;
     }   
+    
+
+    /**
+     * Returns the filename of the logfile.<p>
+     * 
+     * @return the filename of the logfile
+     */
+    public String getLogFileName() {
+        return m_logFileName;
+    }    
+    
+    /**
+     * Returns the OpenCms request context, e.g. /opencms/opencms.<p>
+     * 
+     * The context will always start with a "/" and never have a trailing "/".<p>
+     * 
+     * @return the OpenCms request context, e.g. /opencms/opencms
+     */
+    public String getOpenCmsContext() {
+        return m_openCmsContext;
+    }
+    
+    /**
+     * Returns the OpenCms server name.<p>
+     * 
+     * @return the OpenCms server name
+     */
+    public String getServerName() {
+        return m_serverName;
+    }
     
     /**
      * Returns a String containing the version information (version name and version number) 
@@ -140,6 +215,44 @@ public class CmsSystemInfo {
         return m_versionNumber;
     }
     
+    /** 
+     * Returns the OpenCms web application name, e.g. "opencms" or "ROOT".<p> 
+     * 
+     * @return the OpenCms web application name
+     */    
+    public String getWebApplicationName() {
+        if (m_webApplicationName == null) {
+            File path = new File(m_webInfPath);
+            m_webApplicationName = path.getParentFile().getName();
+        }
+        return m_webApplicationName;
+    }
+    
+    /**
+     * Returns the OpenCms web application folder in the servlet container.<p>
+     * 
+     * @return the OpenCms web application folder in the servlet container
+     */
+    public String getWebApplicationPath() {
+        if (m_webApplicationPath == null) {
+            File path = new File(m_webInfPath);
+            m_webApplicationPath = path.getParentFile().getAbsolutePath();
+            if (! m_webApplicationPath.endsWith(File.separator)) {
+                m_webApplicationPath += File.separator;
+            }
+        }
+        return m_webApplicationPath;        
+    }
+    
+    /** 
+     * Returns the OpenCms web application "WEB-INF" directory path.<p>
+     *
+     * @return the OpenCms web application "WEB-INF" directory path
+     */
+    public String getWebInfPath() {
+        return m_webInfPath;
+    }    
+    
     /**
      * Initializes the version for this OpenCms, will be called by 
      * CmsHttpServlet or CmsShell upon system startup.<p>
@@ -160,23 +273,6 @@ public class CmsSystemInfo {
         m_versionName = m_versionNumber + " " + props.getProperty("version.name", C_DEFAULT_VERSION_NAME);
     }  
     
-    /** 
-     * Sets the OpenCms web application base path.<p>
-     *
-     * @param basePath the OpenCms web application base path to set
-     */
-    protected void setBasePath(String basePath) {
-        // init base path
-        basePath = basePath.replace('\\', '/');
-        if (!basePath.endsWith("/")) {
-            basePath = basePath + "/";
-        }
-        m_basePath = CmsLinkManager.normalizeRfsPath(basePath);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info("OpenCms: Base application path is " + m_basePath);
-        }        
-    }
-    
     /**
      * Sets the default encoding, called after the properties have been read.<p>
      *  
@@ -189,16 +285,6 @@ public class CmsSystemInfo {
         }        
     }
     
-
-    /**
-     * Returns the filename of the logfile.<p>
-     * 
-     * @return the filename of the logfile
-     */
-    public String getLogFileName() {
-        return m_logFileName;
-    }    
-    
     /**
      * Sets the filename of the logfile.<p>
      *  
@@ -209,17 +295,6 @@ public class CmsSystemInfo {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Log file is          : " + m_logFileName);
         }        
-    }
-    
-    /**
-     * Returns the OpenCms request context, e.g. /opencms/opencms.<p>
-     * 
-     * The context will always start with a "/" and never have a trailing "/".<p>
-     * 
-     * @return the OpenCms request context, e.g. /opencms/opencms
-     */
-    public String getOpenCmsContext() {
-        return m_openCmsContext;
     }
     
     /**
@@ -254,12 +329,20 @@ public class CmsSystemInfo {
         }        
     }    
     
-    /**
-     * Returns the OpenCms server name.<p>
-     * 
-     * @return the OpenCms server name
+    /** 
+     * Sets the OpenCms web application "WEB-INF" directory path in the "real" file system.<p>
+     *
+     * @param basePath the OpenCms web application "WEB-INF" directory path to set
      */
-    public String getServerName() {
-        return m_serverName;
-    }    
+    protected void setWebInfPath(String basePath) {
+        // init base path
+        basePath = basePath.replace('\\', '/');
+        if (!basePath.endsWith("/")) {
+            basePath = basePath + "/";
+        }
+        m_webInfPath = CmsLinkManager.normalizeRfsPath(basePath);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info("OpenCms: Base application path is " + m_webInfPath);
+        }        
+    }
 }

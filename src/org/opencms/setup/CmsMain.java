@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsMain.java,v $
- * Date   : $Date: 2004/02/03 10:59:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/12 16:54:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@ package org.opencms.setup;
 
 import org.opencms.main.CmsShell;
 
+import com.opencms.core.I_CmsConstants;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -45,7 +47,7 @@ import java.io.IOException;
  * it is also used for the initial setup.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public final class CmsMain extends Object {
 
@@ -212,7 +214,7 @@ public final class CmsMain extends Object {
      */
     private static boolean isBaseFolder(File currentDir) {
         if (currentDir.exists() && currentDir.isDirectory()) {
-            File f1 = new File(currentDir.getAbsolutePath() + File.separator + CmsBase.getPropertiesPath(false));
+            File f1 = new File(currentDir.getAbsolutePath() + File.separator + I_CmsConstants.C_CONFIGURATION_PROPERTIES_FILE.replace('/', File.separatorChar));
             return f1.exists() && f1.isFile();
         }
         return false;

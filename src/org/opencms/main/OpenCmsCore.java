@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/12 11:14:41 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2004/02/12 16:54:20 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.setup.CmsBase;
 import org.opencms.setup.CmsMain;
 import org.opencms.setup.CmsSetupUtils;
 import org.opencms.site.CmsSite;
@@ -105,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1542,20 +1541,20 @@ public final class OpenCmsCore {
                 throwInitException(new CmsInitException(C_ERRORMSG + "OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.\n\n"));
             }
         }
-        m_systemInfo.setBasePath(base);
+        m_systemInfo.setWebInfPath(base);
         
         // Collect the configurations 
         ExtendedProperties configuration = null;       
         try {
-            configuration = CmsSetupUtils.loadProperties(CmsBase.getPropertiesPath(true));
+            configuration = CmsSetupUtils.loadProperties(getSystemInfo().getConfigurationFilePath());
         } catch (Exception e) {
-            throwInitException(new CmsInitException(C_ERRORMSG + "Trouble reading property file " + CmsBase.getPropertiesPath(true) + ".\n\n", e));
+            throwInitException(new CmsInitException(C_ERRORMSG + "Trouble reading property file " + getSystemInfo().getConfigurationFilePath() + ".\n\n", e));
         }
         
         // set path to log file
         String logfile = (String)configuration.get("log.file");
         if (logfile != null) {
-            logfile = CmsBase.getAbsolutePath(logfile);
+            logfile = getSystemInfo().getAbsolutePathRelativeToWebInf(logfile);
             configuration.put("log.file", logfile);
         }
         m_systemInfo.setLogFileName(logfile);
@@ -1590,10 +1589,10 @@ public final class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");        
             getLog(CmsLog.CHANNEL_INIT).info(". Startup time         : " + (new Date(System.currentTimeMillis())));        
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms version      : " + getSystemInfo().getVersionName()); 
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms context path : /" + CmsBase.getWebAppName());                    
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms context      : " + getSystemInfo().getWebApplicationName());                    
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms servlet path : " + servletMapping);                    
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms base path    : " + getSystemInfo().getBasePath());        
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms property file: " + CmsBase.getPropertiesPath(true));      
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms base path    : " + getSystemInfo().getWebInfPath());        
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms property file: " + getSystemInfo().getConfigurationFilePath());      
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms logfile      : " + getSystemInfo().getLogFileName());   
             getLog(CmsLog.CHANNEL_INIT).info(". Servlet container    : " + context.getServerInfo());        
         }
@@ -1626,11 +1625,11 @@ public final class OpenCmsCore {
         m_staticExportManager.setExportSuffixes(exportSuffixes);
                 
         // set the path for the export
-        m_staticExportManager.setExportPath(org.opencms.setup.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(configuration.getString("staticexport.export_path"))));
+        m_staticExportManager.setExportPath(CmsLinkManager.getAbsoluteUri(configuration.getString("staticexport.export_path", "export"), getSystemInfo().getWebApplicationName()));
 
         // replace the "magic" names                 
         String servletName = configuration.getString("servlet.mapping"); 
-        String contextName = "/" + CmsBase.getWebAppName(); 
+        String contextName = "/" + getSystemInfo().getWebApplicationName(); 
         if ("/ROOT".equals(contextName)) {
             contextName = "";
         }
@@ -1714,7 +1713,7 @@ public final class OpenCmsCore {
      * @param configuration The configurations read from <code>opencms.properties</code>
      */
     private void initLogging(ExtendedProperties configuration) {
-        m_log.init(configuration, CmsBase.getPropertiesPath(true));
+        m_log.init(configuration, getSystemInfo().getConfigurationFilePath());
     }
     
     /**
@@ -1936,7 +1935,7 @@ public final class OpenCmsCore {
         String copy[] = I_CmsConstants.C_COPYRIGHT;
 
         // log to error-stream
-        System.err.println("\n\nStarting OpenCms, version " + OpenCms.getSystemInfo().getVersionName() + " in context " + CmsBase.getWebAppName());
+        System.err.println("\n\nStarting OpenCms, version " + OpenCms.getSystemInfo().getVersionName() + " in context " + getSystemInfo().getWebApplicationName());
         for (int i = 0; i<copy.length; i++) {
             System.err.println(copy[i]);
         }

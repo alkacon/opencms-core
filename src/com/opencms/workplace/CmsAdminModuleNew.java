@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2004/02/03 10:59:16 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/02/12 16:54:20 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsModuleImportThread;
 import org.opencms.threads.CmsModuleReplaceThread;
 
-import org.opencms.setup.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -121,7 +121,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");         
         } else if ("server".equals(step)) {
-            File modulefolder = new File(CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH));
+            File modulefolder = new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH));
             if (!modulefolder.exists()) {
                 boolean success = modulefolder.mkdir();
                 if (OpenCms.getLog(this).isWarnEnabled()
@@ -166,7 +166,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             filecontent = (byte[]) session.getValue(C_PARA_FILECONTENT);
 
             // first create the folder if it doesnt exists
-            File discFolder = new File(CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH));
+            File discFolder = new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH));
             if (!discFolder.exists()) {
                 boolean success = discFolder.mkdir();
                 if (OpenCms.getLog(this).isWarnEnabled()
@@ -177,7 +177,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
 
             // now write the file into the modules dierectory in the exportpaht
             File discFile =
-                new File(CmsBase.getAbsolutePath(cms.readPackagePath()+ File.separator + CmsRegistry.C_MODULE_PATH + filename));
+                new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath()+ File.separator + CmsRegistry.C_MODULE_PATH + filename));
             try {
 
                 // write the new file to disk
@@ -188,7 +188,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage());
             }
             session.removeValue(C_MODULE_NAV);
-            templateSelector = importModule(cms, reg, xmlTemplateDocument, session, CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH + filename));
+            templateSelector = importModule(cms, reg, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH + filename));
                         
         } else if ("serverupload".equals(step)) {
             String filename = (String) parameters.get("moduleselect");
@@ -196,7 +196,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             if ((filename == null) || ("".equals(filename))) {
                 templateSelector = C_DONE;
             } else {
-                templateSelector = importModule(cms, reg, xmlTemplateDocument, session, CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH + filename));
+                templateSelector = importModule(cms, reg, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(cms.readPackagePath() + File.separator + CmsRegistry.C_MODULE_PATH + filename));
             }
         }
 

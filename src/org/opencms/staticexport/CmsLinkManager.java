@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/02/11 16:12:05 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/02/12 16:54:20 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsLinkManager {
     
@@ -162,29 +162,39 @@ public class CmsLinkManager {
     /**
      * Returns the site path for a given uri.<p>
      * 
-     * If the uri contains no site information, but starts with the opencms context, the context is removed
-     *  /opencms/opencms/system/further_path -> /system/further_path
+     * If the uri contains no site information, but starts with the opencms context, the context is removed.<p>
+     * <code>/opencms/opencms/system/further_path -> /system/further_path</code>
      * 
      * If the uri contains no site information, the path will be prefixed with the current site
-     *  /folder/page.html -> /sites/mysite/folder/page.html
-     *  (if mysite is the site currently selected in the workplace or in the request)
-     * 
+     * (if mysite is the site currently selected in the workplace or in the request).<p>
+     * <pre>
+     * /folder/page.html -> /sites/mysite/folder/page.html
+     * </pre>
+     *  
      * If the path of the uri is relative, i.e. does not start with "/", 
      * the path will be prefixed with the current site and the given relative path,
-     * then normalized
-     * if no relative path is given, null is returned
-     * if the normalized path is outsite a site, null is returned
-     *  page.html -> /sites/mysite/<relativePath>/page.html
-     *  ../page.html -> /sites/mysite/page.html
-     *  ../../page.html -> null
+     * then normalized.
+     * If no relative path is given, null is returned.
+     * If the normalized path is outsite a site, null is returned.<p>
+     * <pre>
+     * page.html -> /sites/mysite/{relativePath}/page.html
+     * ../page.html -> /sites/mysite/page.html
+     * ../../page.html -> null
+     * </pre>
      * 
-     * If the uri contains a scheme/server name that denotes an opencms site, it is replaced by the appropriate site path
-     *  http://www.mysite.de/folder/page.html -> /sites/mysite/folder/page.html
+     * If the uri contains a scheme/server name that denotes an opencms site, 
+     * it is replaced by the appropriate site path.<p>
+     * <pre>
+     * http://www.mysite.de/folder/page.html -> /sites/mysite/folder/page.html
+     * </pre>
      * 
-     * If the uri contains a scheme/server name that does not match with any site, or if the uri is opaque or invalid,
-     * null is returned.
-     *  http://www.elsewhere.com/page.html -> null
-     *  mailto:someone@elsewhere.com -> null
+     * If the uri contains a scheme/server name that does not match with any site, 
+     * or if the uri is opaque or invalid,
+     * null is returned.<p>
+     * <pre>
+     * http://www.elsewhere.com/page.html -> null
+     * mailto:someone@elsewhere.com -> null
+     * </pre>
      * 
      * @param cms the cms object
      * @param relativePath path to use as prefix if neccessary

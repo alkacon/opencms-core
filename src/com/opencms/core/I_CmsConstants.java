@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.286 $
+ * Date   : $Date: 2004/02/12 16:54:19 $
+ * Version: $Revision: 1.287 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.286 $ $Date: 2004/02/06 20:52:43 $
+ * @version $Revision: 1.287 $ $Date: 2004/02/12 16:54:19 $
  */
 public interface I_CmsConstants {
 
@@ -156,6 +156,9 @@ public interface I_CmsConstants {
     
     /** Property for the allowed set of loacales */
     String C_PROPERTY_AVAILABLE_LOCALES = "locale-available";
+    
+    /** Path to the "opencms.properties" file relative to the "WEB-INF" directory of the application */
+    String C_CONFIGURATION_PROPERTIES_FILE = "config/opencms.properties";
     
     /**
      * A user-type

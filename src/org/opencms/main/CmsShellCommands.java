@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/11 16:12:04 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/02/12 16:54:20 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 
-import org.opencms.setup.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
@@ -75,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.30 $ $Date: 2004/02/11 16:12:04 $ 
+ * @version $Revision: 1.31 $ $Date: 2004/02/12 16:54:20 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -1711,7 +1710,7 @@ class CmsShellCommands {
             CmsShell.printException(e);
             return;
         }
-        String fileName = CmsBase.getAbsolutePath(exportPath + CmsRegistry.C_MODULE_PATH + importFile);
+        String fileName = OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);
         System.out.println("Importing module: " + fileName);
         // import the module
         try {

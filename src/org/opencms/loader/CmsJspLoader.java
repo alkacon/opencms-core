@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/02/11 16:12:05 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/02/12 16:54:20 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -163,7 +163,11 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @return The full uri to the JSP
      */
     public static String getJspUri(String name, boolean online) {
-        return m_jspWebAppRepository + (online?"/online":"/offline") + getJspName(name);  
+        StringBuffer result = new StringBuffer(64);
+        result.append(m_jspWebAppRepository);
+        result.append(online?"/online":"/offline");
+        result.append(getJspName(name));
+        return result.toString();
     }
     
     /** Destroy this ResourceLoder, this is a NOOP so far.  */
@@ -247,7 +251,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @param configuration the OpenCms configuration 
      */
     public void init(ExtendedProperties configuration) {
-        m_jspRepository = OpenCms.getSystemInfo().getBasePath();
+        m_jspRepository = OpenCms.getSystemInfo().getWebInfPath();
         if (m_jspRepository.indexOf("WEB-INF") >= 0) {
             // Should always be true, just make sure we don't generate an exception in untested environments
             m_jspRepository = m_jspRepository.substring(0, m_jspRepository.indexOf("WEB-INF")-1);

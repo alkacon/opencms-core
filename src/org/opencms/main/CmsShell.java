@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/11 16:12:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/12 16:54:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,8 @@ package org.opencms.main;
 
 
 import org.opencms.db.CmsDriverManager;
-
-import org.opencms.setup.CmsBase;
 import org.opencms.setup.CmsSetupUtils;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -58,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $ $Date: 2004/02/11 16:12:04 $
+ * @version $Revision: 1.12 $ $Date: 2004/02/12 16:54:20 $
  */
 public class CmsShell {
 
@@ -99,9 +98,9 @@ public class CmsShell {
             
             // first initialize runlevel 1 and set all path information
             m_openCms = OpenCmsCore.getInstance();
-            m_openCms.getSystemInfo().setBasePath(basePath);
+            m_openCms.getSystemInfo().setWebInfPath(basePath);
             
-            String propsPath = CmsBase.getPropertiesPath(true);
+            String propsPath = m_openCms.getSystemInfo().getConfigurationFilePath();
             System.out.println("[OpenCms] Property path: " + propsPath);
             ExtendedProperties conf = CmsSetupUtils.loadProperties(propsPath);
             

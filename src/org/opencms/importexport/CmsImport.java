@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/02/03 10:59:17 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2004/02/12 16:54:20 $
+* Version: $Revision: 1.12 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 
-import org.opencms.setup.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -71,7 +70,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.11 $ $Date: 2004/02/03 10:59:17 $
+ * @version $Revision: 1.12 $ $Date: 2004/02/12 16:54:20 $
  */
 public class CmsImport implements Serializable {
 
@@ -368,7 +367,7 @@ public class CmsImport implements Serializable {
     protected void getImportResource() throws CmsException {
         try {
             // get the import resource
-            m_importResource = new File(CmsBase.getAbsolutePath(m_importFile));
+            m_importResource = new File(OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(m_importFile));
 
             // if it is a file it must be a zip-file
             if (m_importResource.isFile()) {
