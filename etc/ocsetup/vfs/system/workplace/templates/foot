@@ -17,7 +17,7 @@
 <table cellspacing=0 cellpadding=0 border=0>
 	<tr>
 		<td class=formular nowrap><p class=einzug>]]><LABEL value="label.user"/><![CDATA[:</p></td>
-		<td class=dialogtxt nowrap><p class=einzug>]]><METHOD name="getInformation">currentUser</METHOD><![CDATA[</p></td>
+		<td class=dialogtxt nowrap><p class=einzug>]]><METHOD name="getUser"/><![CDATA[</p></td>
 		<td class=formular nowrap><p class=tab>]]><LABEL value="label.group"/><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt nowrap valign=top>
 			]]><SELECT class="textfeld" name="group" width="150" method="getGroups" onchange="javascript:document.all.form1.submit()"/><![CDATA[
