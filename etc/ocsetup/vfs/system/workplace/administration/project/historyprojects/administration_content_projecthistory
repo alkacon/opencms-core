@@ -37,17 +37,19 @@ top.help_url='Administration/projektverwaltung/Projektaktuell.html';
 <body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="window.top.body.admin_head.location.href='../../../action/administration_head.html'; start();">
 
 <!-- Beginn Kontent Projekthistorie -->
-<table cellspacing=1 cellpadding=1 border=0 width="1082">
+<table cellspacing=1 cellpadding=1 border=0>
 	<!-- Beginn Kopf Kontent Projekthistorie -->
 	<tr bgcolor="#c0c0c0">
-		<td valign=bottom width=16  nowrap valign=top>&nbsp;</td>
-		<td valign=bottom width=200 nowrap valign=top><p class=einzug>]]><LABEL value="label.projectname" /><![CDATA[</p></td>
-		<td valign=bottom width=200 nowrap valign=top><p class=einzug>]]><LABEL value="label.description" /><![CDATA[</p></td>
-		<td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><LABEL value="label.datecreated" /><![CDATA[</p></td>
-		<td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><LABEL value="label.createdby" /><![CDATA[</p></td>
-		<td valign=bottom width=100 nowrap valign=top><p class=einzug>]]><LABEL value="label.publishedat" /><![CDATA[</p></td>
-		<td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><LABEL value="label.publishedby" /><![CDATA[</p></td>
-		
+		<td valign=bottom nowrap valign=top>&nbsp;</td>
+		<td valign=bottom nowrap valign=top><p class=einzug>]]><LABEL value="label.projectname" /><![CDATA[</p></td>
+		<td valign=bottom width=300 nowrap valign=top><p class=einzug>]]><LABEL value="label.description" /><![CDATA[</p></td>
+		<td valign=bottom nowrap valign=top><p class=einzug>]]><LABEL value="label.allfolders" /><![CDATA[</p></td>
+		<td valign=bottom nowrap valign=top><p class=einzug>]]><LABEL value="label.publishedat" /><![CDATA[</p></td>
+		<td valign=bottom nowrap valign=top><p class=einzug>]]><LABEL value="label.publishedby" /><![CDATA[</p></td>
+		<td valign=bottom nowrap valign=top><p class=einzug>]]><LABEL value="label.groupsprojectworker" /><![CDATA[</p></td>
+		<td valign=bottom nowrap valign=top><p class=einzug>]]><LABEL value="label.groupsprojectmanager" /><![CDATA[</p></td>
+		<td valign=bottom nowrap valign=top><p class=einzug>]]><LABEL value="label.datecreated" /><![CDATA[</p></td>
+		<td valign=bottom nowrap valign=top><p class=einzug>]]><LABEL value="label.createdby" /><![CDATA[</p></td>	
 	</tr>
 	]]><PROJECTHISTORY method="projectList" /><![CDATA[
 </table>
