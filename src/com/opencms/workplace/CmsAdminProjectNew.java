@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/03/13 10:13:23 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2001/03/27 15:45:27 $
+* Version: $Revision: 1.45 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.44 $ $Date: 2001/03/13 10:13:23 $
+ * @version $Revision: 1.45 $ $Date: 2001/03/27 15:45:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -350,20 +350,16 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
             // create new Project
             try {
-
                 // append the /content/bodys/, /pics/ and /download/ path to the list of all resources
                 String picspath = getConfigFile(cms).getPicGalleryPath();
                 String downloadpath = getConfigFile(cms).getDownGalleryPath();
                 allResources = allResources + C_CONTENTPATH + ";" + picspath + ";"
                         + downloadpath;
-
                 // 'allResurces' has the "form res1;res2;...resk;"
-
                 // this is because the simpler 'getParameterValues' method doesn't work with Silverstream
                 Vector folders = parseResources(allResources);
                 int numRes = folders.size();
                 for(int i = 0;i < numRes;i++) {
-
                     // modify the foldername if nescessary (the root folder is always given
                     // as a nice name)
                     if(lang.getLanguageValue("title.rootfolder").equals(folders.elementAt(i))) {
@@ -373,54 +369,23 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 checkRedundancies(folders);
                 numRes = folders.size(); // could have been changed
 
-                // check if all the resources are writeable
+                // finally create the project
+                CmsProject project = cms.createProject(newName, newDescription, newGroup,
+                        newManagerGroup);
+                // change the current project
+                reqCont.setCurrentProject(project.getId());
 
-                // if not, don't create a project
-                Vector notWriteable = new Vector();
-                for(int i = numRes - 1;i >= 0;i--) {
-                    String theFolder = (String)folders.elementAt(i);
-                    if(!checkWriteable(cms, theFolder)) {
-                        notWriteable.addElement(theFolder);
-                        if(!(picspath.equals(theFolder) || downloadpath.equals(theFolder)
-                                || C_CONTENTPATH.equals(theFolder))) {
-                            templateSelector = "errornewproject"+errorTemplateAddOn;
-                        }
-                        else {
-
-                            // ignore problems with these three folders, which were added automatically
-                            folders.removeElementAt(i);
-                        }
-                    }
+                // start the thread for: copy the resources to the project
+                // first clear the session entry if necessary
+                if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
+                    session.removeValue(C_SESSION_THREAD_ERROR);
                 }
-                if(!("errornewproject"+errorTemplateAddOn).equals(templateSelector)) {
-
-                    // finally create the project
-                    CmsProject project = cms.createProject(newName, newDescription, newGroup,
-                            newManagerGroup);
-
-                    // change the current project
-                    reqCont.setCurrentProject(project.getId());
-
-                    // start the thread for: copy the resources to the project
-
-                    // first clear the session entry if necessary
-                    if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-                        session.removeValue(C_SESSION_THREAD_ERROR);
-                    }
-                    Thread doProjectNew = new CmsAdminNewProjectThread(cms, folders);
-                    doProjectNew.start();
-                    session.putValue(C_PROJECTNEW_THREAD, doProjectNew);
-                    xmlTemplateDocument.setData("time", "10");
-                    templateSelector = "wait";
-                }
-                else {
-
-                    // at least one of the choosen folders was not writeable -> don't create the project.
-                    xmlTemplateDocument.setData("details", "The following folders were not writeable:"
-                            + notWriteable.toString());
-                }
-            }
-            catch(CmsException exc) {
+                Thread doProjectNew = new CmsAdminNewProjectThread(cms, folders);
+                doProjectNew.start();
+                session.putValue(C_PROJECTNEW_THREAD, doProjectNew);
+                xmlTemplateDocument.setData("time", "10");
+                templateSelector = "wait";
+            }catch(CmsException exc) {
                 xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
                 templateSelector = "errornewproject"+errorTemplateAddOn;
             }
