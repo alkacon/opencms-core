@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/05/24 17:04:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/07 12:59:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.setup;
 
+import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.i18n.CmsEncoder;
@@ -58,6 +59,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.collections.ExtendedProperties;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -76,7 +78,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -450,6 +452,17 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         str = getDbProperty(m_databaseKey + ".constr");
         return str;
     }
+    
+    /**
+     * Returns the JDBC connect URL parameters.<p>
+     * 
+     * @return the JDBC connect URL parameters
+     */
+    public String getDbConStrParams() {
+        String str = null;
+        str = getDbProperty(m_databaseKey + ".constr.params");
+        return str;
+    }    
 
     /** 
      * Returns the password used for database creation.<p>
@@ -511,7 +524,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * @return the connection string used by the OpenCms core  
      */
     public String getDbWorkConStr() {
-        String str = getExtProperty("db.pool." + getPool() + ".jdbcUrl");
+        String str = getExtProperty(CmsDbPool.C_KEY_DATABASE_POOL  + "." + getPool() + ".jdbcUrl");
         return str;
     }
 
@@ -521,7 +534,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * @return the password for the OpenCms database user 
      */
     public String getDbWorkPwd() {
-        return getExtProperty("db.pool." + getPool() + ".password");
+        return getExtProperty(CmsDbPool.C_KEY_DATABASE_POOL  + "." + getPool() + ".password");
     }
 
     /** 
@@ -530,7 +543,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * @return the database user used by the opencms core  
      */
     public String getDbWorkUser() {
-        return getExtProperty("db.pool." + getPool() + ".user");
+        return getExtProperty(CmsDbPool.C_KEY_DATABASE_POOL  + "." + getPool() + ".user");
     }
 
     /** 
@@ -1052,6 +1065,15 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
     
     /**
+     * Sets the JDBC connect URL parameters.<p>
+     * 
+     * @param value the JDBC connect URL parameters
+     */    
+    public void setDbConStrParams(String value) {
+        setDbProperty(m_databaseKey + ".constr.params", value);
+    }
+    
+    /**
      * Sets the password used for the initial OpenCms database creation.<p>
      * 
      * This password will not be stored permanently, 
@@ -1102,9 +1124,10 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                             
         String driver = getDbProperty(m_databaseKey + ".driver");
 
-        setExtProperty("db.pool." + getPool() + ".jdbcDriver", driver);
-        setExtProperty("db.pool." + getPool() + ".jdbcUrl", dbWorkConStr);
-        setExtProperty("db.pool." + getPool() + ".testQuery", getDbTestQuery());
+        setExtProperty(CmsDbPool.C_KEY_DATABASE_POOL  + "." + getPool() + "." + CmsDbPool.C_KEY_JDBC_DRIVER, driver);
+        setExtProperty(CmsDbPool.C_KEY_DATABASE_POOL  + "." + getPool() + "." + CmsDbPool.C_KEY_JDBC_URL, dbWorkConStr);
+        setExtProperty(CmsDbPool.C_KEY_DATABASE_POOL  + "." + getPool() + "." + CmsDbPool.C_KEY_TEST_QUERY, getDbTestQuery());
+        setExtProperty(CmsDbPool.C_KEY_DATABASE_POOL  + "." + getPool() + "." + CmsDbPool.C_KEY_JDBC_URL_PARAMS, getDbConStrParams());
     }
     
     /**
@@ -1113,8 +1136,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * @param dbWorkPwd the password for the OpenCms database user  
      */
     public void setDbWorkPwd(String dbWorkPwd) {
-        setExtProperty("db.pool." + getPool() + ".password", dbWorkPwd);
-                }
+
+        setExtProperty(CmsDbPool.C_KEY_DATABASE_POOL + "." + getPool() + "." + CmsDbPool.C_KEY_PASSWORD, dbWorkPwd);
+    }    
                 
     /** 
      * Sets the user of the database to the given value 
@@ -1122,8 +1146,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * @param dbWorkUser the database user used by the opencms core 
      */
     public void setDbWorkUser(String dbWorkUser) {
-        setExtProperty("db.pool." + getPool() + ".user", dbWorkUser);
-            }
+
+        setExtProperty(CmsDbPool.C_KEY_DATABASE_POOL + "." + getPool() + "." + CmsDbPool.C_KEY_POOL_USER, dbWorkUser);
+    }
             
     /** 
      * Set the mac ethernet address, required for UUID generation.<p>
@@ -1131,8 +1156,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * @param ethernetAddress the mac addess to set
      */
     public void setEthernetAddress(String ethernetAddress) {
+
         setExtProperty("server.ethernet.address", ethernetAddress);
-                }
+    }
     
     /**
      * Sets the list with the package names of the modules to be installed.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/06/04 09:06:42 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/06/07 12:59:51 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.opencms.util.CmsUUID;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.3.5
  */
@@ -353,17 +353,20 @@ public class OpenCmsTestCase extends TestCase {
         String password = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_PASSWORD);        
 
         String jdbcUrl;
+        String jdbcUrlParams;
         if (create) {
             jdbcUrl = dbConfiguration.getString(dbProduct + ".constr");
+            jdbcUrlParams = dbConfiguration.getString(dbProduct + ".constr.params");
         } else {
             jdbcUrl = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL);
+            jdbcUrlParams = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL_PARAMS);
         }
         
         // create setup DB instance
         CmsSetupDb setupDb = new CmsSetupDb(getSetupDataPath());
         
         // connecto to the DB
-        setupDb.setConnection(jdbcDriver, jdbcUrl, username, password);
+        setupDb.setConnection(jdbcDriver, jdbcUrl, jdbcUrlParams, username, password);
                 
         // check for errors 
         checkErrors(setupDb);

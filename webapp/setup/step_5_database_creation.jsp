@@ -38,7 +38,7 @@
 
 			/* check if database exists */
 			if(!dropDb)	{
-				db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
+				db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
 				dbExists = db.noErrors();
 				if(dbExists)	{
 					db.closeConnection();
@@ -48,7 +48,7 @@
 				}
 			}
 			if( !dbExists || dropDb)	{
-				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
+				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 			}
 			else {
 				if (createDb || createTables) {
@@ -220,14 +220,14 @@ OpenCms Setup Wizard - Create database & tables
 
 
 							if (createTables) {
-								db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
+								db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
 								//Drop Tables (intentionally quiet)
 								db.dropTables(Bean.getDatabase());
 								db.clearErrors();
 								db.closeConnection();
 
 								// reopen the connection in order to display errors
-								db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
+								db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
 								//Create Tables %>
 								
 								<%= Bean.getHtmlPart("C_BLOCK_START", "Creating tables ...") %>

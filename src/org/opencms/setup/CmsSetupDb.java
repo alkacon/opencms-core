@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/05/25 11:00:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/07 12:59:51 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2004/05/25 11:00:42 $
+ * @version $Revision: 1.6 $ $Date: 2004/06/07 12:59:51 $
  */
 public class CmsSetupDb extends Object {
     
@@ -78,15 +78,20 @@ public class CmsSetupDb extends Object {
     /**
      * Creates a new internal connection to the database.<p>
      * 
-     * @param DbDriver the name of the driver class
-     * @param DbConStr the databse url
-     * @param DbUser the database user
-     * @param DbPwd the password of the database user
+     * @param DbDriver JDBC driver class name
+     * @param DbConStr JDBC connect URL
+     * @param DbConStrParams JDBC connect URL params, or null
+     * @param DbUser JDBC database user
+     * @param DbPwd JDBC database password
      */
-    public void setConnection(String DbDriver, String DbConStr, String DbUser, String DbPwd) {
+    public void setConnection(String DbDriver, String DbConStr, String DbConStrParams, String DbUser, String DbPwd) {
+        String jdbcUrl = DbConStr;
         try {
+            if (DbConStrParams != null) {
+                jdbcUrl += DbConStrParams;
+            }            
             Class.forName(DbDriver).newInstance();
-            m_con = DriverManager.getConnection(DbConStr, DbUser, DbPwd);
+            m_con = DriverManager.getConnection(jdbcUrl, DbUser, DbPwd);
         } catch (ClassNotFoundException e) {
             m_errors.addElement("Error loading JDBC driver: " + DbDriver);
             m_errors.addElement(CmsException.getStackTraceAsString(e));

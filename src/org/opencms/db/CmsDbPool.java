@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2004/03/31 14:01:10 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/06/07 12:59:51 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2004/03/31 14:01:10 $
+ * @version $Revision: 1.20 $ $Date: 2004/06/07 12:59:51 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -90,6 +90,11 @@ public final class CmsDbPool extends Object {
      * Key for jdbc url
      */
     public static final String C_KEY_JDBC_URL = "jdbcUrl";
+    
+    /**
+     * Key for jdbc url params
+     */
+    public static final String C_KEY_JDBC_URL_PARAMS = C_KEY_JDBC_URL + ".params";    
     
     /**
      * Key for max active connections
@@ -177,6 +182,7 @@ public final class CmsDbPool extends Object {
         // read the values of the pool configuration specified by the given key
         String jdbcDriver = configuration.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_DRIVER);
         String jdbcUrl = configuration.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_URL);
+        String jdbcUrlParams = configuration.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_URL_PARAMS);
         int maxActive = configuration.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_ACTIVE, 10);
         int maxWait = configuration.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_WAIT, 2000);
         int maxIdle = configuration.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_IDLE, 5);
@@ -244,6 +250,9 @@ public final class CmsDbPool extends Object {
         connectionPool.setTestWhileIdle(true);
 
         // initialize a connection factory to make the DriverManager taking connections from the pool
+        if (jdbcUrlParams != null) {
+            jdbcUrl += jdbcUrlParams;
+        }
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
 
         // initialize a keyed object pool to store PreparedStatements
