@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
- * Date   : $Date: 2000/06/05 13:37:57 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/08/02 15:56:36 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/06/05 13:37:57 $
+ * @version $Revision: 1.15 $ $Date: 2000/08/02 15:56:36 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
     
@@ -69,6 +69,15 @@ public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
         Object cacheKey = templateClass.getKey(cms, masterTemplate.getAbsolutePath(), parameters, null);
     
         boolean cacheable = templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null);
+		
+		if( cacheable) {
+			// set max-age to 5 minutes. In this time a proxy may cache this content.
+			cms.getRequestContext().getResponse().setHeader("Cache-Control", "max-age=300, must-revalidate");
+		} else {
+			// set the http-header to pragma no-cache.
+			cms.getRequestContext().getResponse().setHeader("Cache-Control", "no-cache");
+		}
+		
         if(cacheable
                 && cache.has(cacheKey) 
                 && ! templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null)) {

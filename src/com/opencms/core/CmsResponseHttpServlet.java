@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
- * Date   : $Date: 2000/08/01 17:34:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/08/02 15:56:36 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/08/01 17:34:25 $  
+ * @version $Revision: 1.11 $ $Date: 2000/08/02 15:56:36 $  
  */
 public class CmsResponseHttpServlet implements I_CmsConstants,  
                                                I_CmsResponse{ 
@@ -197,6 +197,16 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
      */
 	public void setLastModified(long time) {
 		m_res.setDateHeader(C_LAST_MODIFIED, time);
+	}
+	
+    /**
+     * Sets a header-field in the response.
+     * 
+     * @param key The key for the header.
+     * @param value The value for the header.
+     */
+	public void setHeader(String key, String value) {
+		m_res.setHeader(key, value);
 	}
 	
     /**

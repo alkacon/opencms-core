@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
- * Date   : $Date: 2000/08/01 17:34:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/08/02 15:56:36 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.4 $ $Date: 2000/08/01 17:34:25 $  
+ * @version $Revision: 1.5 $ $Date: 2000/08/02 15:56:36 $  
  */
 public interface I_CmsResponse { 
     
@@ -115,6 +115,14 @@ public interface I_CmsResponse {
      * @param time The last-modified time.
      */
     public void setLastModified(long time);
+	
+    /**
+     * Sets a header-field in the response.
+     * 
+     * @param key The key for the header.
+     * @param value The value for the header.
+     */
+	public void setHeader(String key, String value);
 	
     /**
      * Returns the type of the response that was used to create the CmsResponse.
