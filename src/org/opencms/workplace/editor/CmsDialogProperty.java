@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/02/16 12:05:58 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/16 17:14:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,9 @@
  */
 package org.opencms.workplace.editor;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsResource;
-import com.opencms.workplace.CmsHelperMastertemplates;
-
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -40,9 +40,13 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.CmsChnav;
 import org.opencms.workplace.CmsProperty;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.I_CmsWpConstants;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.0
  */
@@ -91,34 +95,28 @@ public class CmsDialogProperty extends CmsProperty {
     }
     
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * Performs the edit properties action, will be called by the JSP page.<p>
+     * 
+     * @param request the HttpServletRequest
+     * @throws JspException if problems including sub-elements occur
      */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_SHOW_DEFAULT.equals(getParamAction())) {
-            // redirect to the default OpenCms dialog
-            setAction(ACTION_DEFAULT);
-            try {
-                getCms().getRequestContext().getResponse().sendCmsRedirect(CmsProperty.URI_PROPERTY_DIALOG + "?" + paramsAsRequest());
-            } catch (Exception e) {
-                // ignore this exception
-            }          
-        } else if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
-            // save the edited properties
-            setAction(ACTION_SAVE_EDIT);
-        } else {                   
-            setAction(ACTION_EDIT); 
-            String resName = CmsResource.getName(getParamResource());
-            if (resName.startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
-                resName = resName.substring(1);
-            }
-            setParamTitle(key("title.property") + ": " + resName);
-        }         
-    } 
+    public void actionEdit(HttpServletRequest request) throws JspException {
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        try {
+            // save the changes only if resource is properly locked
+            if (isEditable()) {
+                performEditOperation(request);    
+            }  
+            // return to the explorer view 
+            closeDialog();         
+        } catch (CmsException e) {
+            // error defining property, show error dialog
+            setParamErrorstack(e.getStackTraceAsString());
+            setParamReasonSuggestion(getErrorSuggestionDefault());
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        } 
+    }
     
     /**
      * Creates the HTML String for the edit properties form.<p>
@@ -226,87 +224,6 @@ public class CmsDialogProperty extends CmsProperty {
     }
     
     /**
-     * Builds the html for the page template select box.<p>
-     * 
-     * @param attributes optional attributes for the &lt;select&gt; tag
-     * @return the html for the page template select box
-     */
-    public String buildSelectTemplates(String attributes) {
-        Vector names = new Vector();
-        Vector values = new Vector();
-        Integer selectedValue = new Integer(-1);
-        String currentTemplate = null;
-        try {
-            currentTemplate = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_TEMPLATE, true);
-            selectedValue = CmsHelperMastertemplates.getTemplates(getCms(), names, values, currentTemplate, -1);
-        } catch (CmsException e) {
-            // ignore this exception
-        }
-        if (currentTemplate == null) {
-            currentTemplate = "";
-        }        
-        if (selectedValue.intValue() == -1) {
-            // no template found -> use the given one
-            // first clean the vectors
-            names.removeAllElements();
-            values.removeAllElements();
-            // now add the current template
-            String name = currentTemplate;
-            try { 
-                // read the title of this template
-                name = getCms().readProperty(name, I_CmsConstants.C_PROPERTY_TITLE);
-            } catch (CmsException exc) {
-                // ignore this exception - the title for this template was not readable
-            }
-            names.add(name);
-            values.add(currentTemplate);
-        }
-
-        String hiddenField = "<input type=\"hidden\" name=\"" + PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_TEMPLATE +  "\" value=\"" + currentTemplate + "\">";
-        return buildSelect(attributes, names, values, selectedValue.intValue(), false) + hiddenField;
-    }
-    
-    /**
-     * Builds the HTML for the start of a table row for a single property.<p>
-     * 
-     * @param propertyName the name of the current property
-     * @return the HTML code for the start of a table row
-     */
-    private StringBuffer buildTableRowStart(String propertyName) {
-        StringBuffer retValue = new StringBuffer(96);
-        retValue.append("<tr>\n");
-        retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">" + propertyName);
-        retValue.append("</td>\n");
-        retValue.append("\t<td class=\"maxwidth\">");
-        return retValue; 
-    }
-    
-    /**
-     * Builds the HTML for the end of a table row for a single property.<p>
-     * 
-     * @return the HTML code for a table row end
-     */
-    private String buildTableRowEnd() {
-        return "</td>\n</tr>\n";
-    }
-    
-    /**
-     * Builds the HTML for the common text input property values stored in the String array "PROPERTIES".<p>
-     * 
-     * @param editable indicates if the properties are editable
-     * @param activeProperties Map of all active properties of the resource
-     * @return the HTML code for the common text input fields
-     */
-    private StringBuffer buildTextInput(boolean editable, Map activeProperties) {
-        StringBuffer retValue = new StringBuffer(256);        
-        // iterate over the array
-        for (int i=0; i<PROPERTIES.length; i++) {
-            retValue.append(buildPropertyEntry(activeProperties, PROPERTIES[i], PROPERTIES[i], editable));
-        }
-        return retValue;
-    }
-    
-    /**
      * Builds the html for a single text input property row.<p>
      * 
      * @param activeProperties Map of all active properties of the resource
@@ -353,28 +270,174 @@ public class CmsDialogProperty extends CmsProperty {
     }
     
     /**
-     * Performs the edit properties action, will be called by the JSP page.<p>
+     * Builds the html for the page template select box.<p>
      * 
-     * @param request the HttpServletRequest
-     * @throws JspException if problems including sub-elements occur
+     * @param attributes optional attributes for the &lt;select&gt; tag
+     * @return the html for the page template select box
      */
-    public void actionEdit(HttpServletRequest request) throws JspException {
-        // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+    public String buildSelectTemplates(String attributes) {
+        List options = new ArrayList();
+        List values = new ArrayList();
+        int selectedValue = -1;
+        String currentTemplate = null;
+        TreeMap templates = null;
         try {
-            // save the changes only if resource is properly locked
-            if (isEditable()) {
-                performEditOperation(request);    
-            }  
-            // return to the explorer view 
-            closeDialog();         
+            // read the current template
+            currentTemplate = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_TEMPLATE, true);
+            // get all available templates
+            templates = getTemplates();
         } catch (CmsException e) {
-            // error defining property, show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-        } 
+            // ignore this exception
+        }
+        if (currentTemplate == null) {
+            currentTemplate = "";
+        }        
+        if (templates == null) {
+            // no templates found -> use the given one
+            String name = currentTemplate;
+            try { 
+                // read the title of this template
+                name = getCms().readProperty(name, I_CmsConstants.C_PROPERTY_TITLE);
+            } catch (CmsException exc) {
+                // ignore this exception - the title for this template was not readable
+            }
+            options.add(name);
+            values.add(currentTemplate);
+        } else {
+            // templates found, create option and value lists
+            Iterator i = templates.keySet().iterator();
+            int counter = 0;
+            while (i.hasNext()) {
+                String key = (String)i.next();
+                String path = (String)templates.get(key);
+                if (currentTemplate.equals(path)) {
+                    // mark the currently selected template
+                    selectedValue = counter;
+                }
+                options.add(key);
+                values.add(path);
+                counter++;
+            }
+        }
+
+        String hiddenField = "<input type=\"hidden\" name=\"" + PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_TEMPLATE +  "\" value=\"" + currentTemplate + "\">";
+        return buildSelect(attributes, options, values, selectedValue, false) + hiddenField;
     }
+    
+    /**
+     * Builds the HTML for the end of a table row for a single property.<p>
+     * 
+     * @return the HTML code for a table row end
+     */
+    private String buildTableRowEnd() {
+        return "</td>\n</tr>\n";
+    }
+    
+    /**
+     * Builds the HTML for the start of a table row for a single property.<p>
+     * 
+     * @param propertyName the name of the current property
+     * @return the HTML code for the start of a table row
+     */
+    private StringBuffer buildTableRowStart(String propertyName) {
+        StringBuffer retValue = new StringBuffer(96);
+        retValue.append("<tr>\n");
+        retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">" + propertyName);
+        retValue.append("</td>\n");
+        retValue.append("\t<td class=\"maxwidth\">");
+        return retValue; 
+    }
+    
+    /**
+     * Builds the HTML for the common text input property values stored in the String array "PROPERTIES".<p>
+     * 
+     * @param editable indicates if the properties are editable
+     * @param activeProperties Map of all active properties of the resource
+     * @return the HTML code for the common text input fields
+     */
+    private StringBuffer buildTextInput(boolean editable, Map activeProperties) {
+        StringBuffer retValue = new StringBuffer(256);        
+        // iterate over the array
+        for (int i=0; i<PROPERTIES.length; i++) {
+            retValue.append(buildPropertyEntry(activeProperties, PROPERTIES[i], PROPERTIES[i], editable));
+        }
+        return retValue;
+    }
+    
+    /**
+     * Defines a new property.<p>
+     * 
+     * @param newProperty the name of the new property
+     * @return true, if the new property was created, otherwise false
+     * @throws CmsException if creation is not successful
+     */
+    private boolean defineProperty(String newProperty) throws CmsException {
+        CmsResource res = getCms().readFileHeader(getParamResource());
+        getCms().createPropertydefinition(newProperty, res.getType());
+        return true;
+    }
+    
+    /**
+     * Returns a sorted Map of all available templates of the OpenCms modules.<p>
+     * 
+     * @return a sorted map with the template title as key and absolute path to the template as value
+     * @throws CmsException if reading a folder or file fails
+     */
+    protected TreeMap getTemplates() throws CmsException {
+        TreeMap templates = new TreeMap();
+        String templateFolder = I_CmsWpConstants.C_VFS_DIR_TEMPLATES;
+
+        // get all visible template elements in the module folders
+        List modules = getCms().getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES, false);
+        for (int i = 0; i < modules.size(); i++) {
+            List moduleTemplateFiles = (List) new ArrayList();
+            String folder = getCms().readAbsolutePath((CmsFolder)modules.get(i));
+            moduleTemplateFiles = getCms().getFilesInFolder(folder + templateFolder);
+            for (int j = 0; j < moduleTemplateFiles.size(); j++) {
+                // get the current template file
+                CmsFile templateFile = (CmsFile)moduleTemplateFiles.get(j);
+                String title = getCms().readProperty(getCms().readAbsolutePath(templateFile), I_CmsConstants.C_PROPERTY_TITLE);
+                if (title == null) {
+                    // no title property found, display the file name
+                    title = templateFile.getName();
+                }
+                String path = getCms().readAbsolutePath(templateFile);
+                templates.put(title, path);
+            }
+        }
+        // return the templates sorted by title
+        return templates;
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_SHOW_DEFAULT.equals(getParamAction())) {
+            // redirect to the default OpenCms dialog
+            setAction(ACTION_DEFAULT);
+            try {
+                getCms().getRequestContext().getResponse().sendCmsRedirect(CmsProperty.URI_PROPERTY_DIALOG + "?" + paramsAsRequest());
+            } catch (Exception e) {
+                // ignore this exception
+            }          
+        } else if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
+            // save the edited properties
+            setAction(ACTION_SAVE_EDIT);
+        } else {                   
+            setAction(ACTION_EDIT); 
+            String resName = CmsResource.getName(getParamResource());
+            if (resName.startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
+                resName = resName.substring(1);
+            }
+            setParamTitle(key("title.property") + ": " + resName);
+        }         
+    } 
 
     /**
      * Performs the editing of the resources properties.<p>
@@ -435,19 +498,6 @@ public class CmsDialogProperty extends CmsProperty {
                 switchToCurrentProject();
             }
         }
-        return true;
-    }
-    
-    /**
-     * Defines a new property.<p>
-     * 
-     * @param newProperty the name of the new property
-     * @return true, if the new property was created, otherwise false
-     * @throws CmsException if creation is not successful
-     */
-    private boolean defineProperty(String newProperty) throws CmsException {
-        CmsResource res = getCms().readFileHeader(getParamResource());
-        getCms().createPropertydefinition(newProperty, res.getType());
         return true;
     }
     

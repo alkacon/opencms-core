@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/16 17:14:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 package org.opencms.workplace;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -41,20 +43,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.editor.CmsWorkplaceEditorConfiguration;
 
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsUser;
-import com.opencms.workplace.CmsXmlLanguageFile;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.Vector;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
@@ -443,25 +433,25 @@ public class CmsPreferences extends CmsTabDialog {
      * @return the html for the language select box
      */
     public String buildSelectLanguage(String htmlAttributes) {
-        try {
-            // get all folders with language files
-            List allLangFolders = getCms().getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
-            List options = new ArrayList(allLangFolders.size());
-            List values = new ArrayList(allLangFolders.size());
-            int checkedIndex = 0;
-            for (int i=0; i<allLangFolders.size(); i++) {
-                CmsFolder folder = (CmsFolder)allLangFolders.get(i);
-                CmsXmlLanguageFile langFile = new CmsXmlLanguageFile(getCms(), folder.getName());
-                options.add(langFile.getLanguageValue("name"));
-                values.add(folder.getName());
-                if (getParamTabWpLanguage().equals(folder.getName())) {
-                    checkedIndex = i;
-                }
+        // get available locales from the workplace manager
+        Set locales = OpenCms.getWorkplaceManager().getLocales();
+        List options = new ArrayList(locales.size());
+        List values = new ArrayList(locales.size());
+        int checkedIndex = 0;
+        int counter = 0;
+        Iterator i = locales.iterator();
+        while (i.hasNext()) {
+            Locale currentLocale = (Locale)i.next();
+            // add all locales to the select box
+            options.add(currentLocale.getDisplayLanguage(getSettings().getUserSettings().getLocale()));
+            values.add(currentLocale.getLanguage());
+            if (getParamTabWpLanguage().equals(currentLocale.getLanguage())) {
+                // mark the currently active locale
+                checkedIndex = counter;
             }
-            return buildSelect(htmlAttributes, options, values, checkedIndex);
-        } catch (CmsException e) {
-            return getLocale().toString();
+            counter++;
         }
+        return buildSelect(htmlAttributes, options, values, checkedIndex);
     }
     
     /**
