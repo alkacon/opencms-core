@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2002/02/19 09:52:13 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/02/20 11:08:25 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.defaults.master.*;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2002/02/19 09:52:13 $
+ * @version $Revision: 1.4 $ $Date: 2002/02/20 11:08:25 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -332,9 +332,11 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             m_cms.setContextToCos();
             try{
                 String channelId = m_cms.readProperty(curChannel, I_CmsConstants.C_PROPERTY_CHANNELID);
-                if(!m_channelIds.contains(channelId)) {
-                    // This channelid was not added previously. Add it now.
-                    m_channelIds.put(channelId, curChannel);
+                if(channelId != null){
+                    if(!m_channelIds.contains(channelId)) {
+                        // This channelid was not added previously. Add it now.
+                        m_channelIds.put(channelId, curChannel);
+                    }
                 }
             } catch (CmsException e){
                 throw e;
