@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/26 11:42:45 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2001/07/26 13:20:36 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -486,7 +486,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         cms.doCopyResourceToProject(resourceName);
         // try to copy the corresponding folder in /content/bodys/ to the project
         try{
-            CmsResource contentFolder = (CmsResource)cms.readFolder(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/"))+resourceName);
+            CmsResource contentFolder = (CmsResource)cms.readFolder(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/"))+resourceName, true);
             if (contentFolder != null){
                 cms.doCopyResourceToProject(contentFolder.getAbsolutePath());
             }
