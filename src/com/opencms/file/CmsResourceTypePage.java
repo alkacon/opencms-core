@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/01/23 10:44:09 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/01/31 16:57:21 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.CmsXmlControlFile;
-import com.opencms.template.I_CmsXmlParser;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.Serializable;
 import java.util.Hashtable;
@@ -46,16 +46,13 @@ import java.util.Vector;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.43 $ $Date: 2003/01/23 10:44:09 $
+ * @version $Revision: 1.44 $ $Date: 2003/01/31 16:57:21 $
  */
-public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
+public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
-     /** Definition of the class */
-     private final static String C_CLASSNAME="com.opencms.template.CmsXmlTemplate";
+    /** Definition of the class */
+    private final static String C_CLASSNAME = "com.opencms.template.CmsXmlTemplate";
 
-     private static final String C_DEFAULTBODY_START = "<?xml version=\"1.0\" encoding=\"" + I_CmsXmlParser.C_XML_ENCODING + "\"?>\n<XMLTEMPLATE>\n<TEMPLATE>\n<![CDATA[\n";
-     private static final String C_DEFAULTBODY_END = "]]></TEMPLATE>\n</XMLTEMPLATE>";
-    
     /** String to save the combined /default/vfs/ path */
     private static String C_DEFVFS = C_DEFAULT_SITE + C_ROOTNAME_VFS;
     
@@ -100,7 +97,26 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         m_resourceTypeName=resourceTypeName;
         m_launcherClass=launcherClass;
     }
-     /**
+    
+    /**
+     * Returns the default body start string for a new XML template.
+     * @return the default body start string for a new XML template 
+     */
+    public static String getDefaultBodyStart() {
+       return "<?xml version=\"1.0\" encoding=\""
+            + A_OpenCms.getDefaultEncoding()
+            + "\"?>\n<XMLTEMPLATE>\n<TEMPLATE>\n<![CDATA[\n";
+    }
+    
+    /**
+     * Returns the default body end string for a new XML template.
+     * @return the default body end string for a new XML template 
+     */    
+    public static String getDefaultBodyEnd() {
+        return "]]></TEMPLATE>\n</XMLTEMPLATE>";
+    }
+    
+    /**
      * Returns the name of the Java class loaded by the launcher.
      * This method returns <b>null</b> if the default class for this type is used.
      *
@@ -457,7 +473,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         checkFolders(cms, folderName);
 
         // Create the new body file
-        CmsFile bodyFile = cms.doCreateFile(bodyFolder + pageName, (C_DEFAULTBODY_START + new String(contents) + C_DEFAULTBODY_END).getBytes(), I_CmsConstants.C_TYPE_PLAIN_NAME, new Hashtable());
+        CmsFile bodyFile = cms.doCreateFile(bodyFolder + pageName, (getDefaultBodyStart() + new String(contents) + getDefaultBodyEnd()).getBytes(), I_CmsConstants.C_TYPE_PLAIN_NAME, new Hashtable());
         cms.doLockResource(bodyFolder + pageName, true);
         int flags = bodyFile.getAccessFlags();
         if ((flags & C_ACCESS_INTERNAL_READ) ==0 ) {
