@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2001/07/09 08:10:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/07/10 15:44:15 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -474,7 +474,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
 	 * @param filename The name of the file.
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	private void setDefaultFlags(CmsObject cms, String filename)
+	protected void setDefaultFlags(CmsObject cms, String filename)
 		throws CmsException {
 
 		Hashtable startSettings=null;

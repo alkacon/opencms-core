@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/07/09 08:10:22 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2001/07/10 15:44:15 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -35,6 +35,7 @@ import java.lang.reflect.*;
 import java.security.*;
 import com.opencms.boot.*;
 import com.opencms.core.*;
+import com.opencms.file.*;
 import com.opencms.template.*;
 import org.w3c.dom.*;
 import source.org.apache.java.util.*;
@@ -44,7 +45,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.43 $ $Date: 2001/07/09 08:10:22 $
+ * @version $Revision: 1.44 $ $Date: 2001/07/10 15:44:15 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -62,6 +63,13 @@ public class CmsImport implements I_CmsConstants, Serializable {
      * The import-resource (folder) to load resources from
      */
     private File m_importResource = null;
+
+    /**
+     * The version of this import, noted in the info tag of the manifest.xml.
+     * 0 if the import file dosent have a version nummber (that is befor version
+     * 4.3.23 of OpenCms).
+     */
+    private int m_importVersion = 0;
 
     /**
      * The import-resource (zip) to load resources from
@@ -115,6 +123,16 @@ public class CmsImport implements I_CmsConstants, Serializable {
 
         // read the xml-config file
         getXmlConfigFile();
+
+        // try to read the export version nummber
+        try{
+            m_importVersion = Integer.parseInt(
+                getTextNodeValue((Element)m_docXml.getElementsByTagName(
+                    C_EXPORT_TAG_INFO).item(0) , C_EXPORT_TAG_VERSION));
+        }catch(Exception e){
+            //ignore the exception, the export file has no version nummber (version 0).
+        }
+        System.err.println("mgm--importVersion: "+m_importVersion);
     }
 /**
  * Read infos from the properties and create a MessageDigest
@@ -150,6 +168,32 @@ private void createDigest() throws CmsException {
             m_cms.createPropertydefinition(name, resourceType);
         }
     }
+
+    /**
+     * checks if the file sticks to the rules for files in the conten path.
+     * If not, it sets the type of the file to compatible_plain.
+     * This is for exports of older versions of OpenCms. The imported files
+     * will work as befor, but they cant be edited.
+     *
+     * @param path the path the resource will be imported to.
+     * @param name The name of the resource.
+     * @param content the content of the resource.
+     * @param type the type of the resourse, is set to compatible_plain if nessesary.
+     * @param properties the properties, not yet used here.
+     * @return the new type of the resouce
+     */
+    private String fitFileType(String path, String name, byte[] content, String type, Hashtable properties){
+
+        // only check the file if the version of the export is 0
+        if(m_importVersion == 0){
+            // ok, an old system exported this, check if the file is ok
+            if(!(new CmsCompatibleCheck()).isTemplateCompatible(path+name, content, type)){
+                type = C_TYPE_COMPATIBLEPLAIN_NAME;
+            }
+        }
+        return type;
+    }
+
 /**
  * Returns a list of files which are both in the import and in the virtual file system
  * Creation date: (24.08.00 16:18:23)
@@ -410,8 +454,12 @@ private void importFile(String source, String destination, String type, String u
                 state = C_STATE_NEW;
                 // ignore the exception, the file dosen't exist
             }
-            // now create the file
+            // read the filecontent
             content = getFileBytes(source);
+
+            // set invalid files to type compatible_plain
+            type = fitFileType(path, name, content, type, properties);
+            // now create the file
             fullname = m_cms.createFile(path, name, content, type, properties).getAbsolutePath();
             m_cms.lockResource(path + name, true);
             success = true;

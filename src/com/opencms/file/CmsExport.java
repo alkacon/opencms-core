@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2001/06/29 13:42:21 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2001/07/10 15:44:15 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2001/06/29 13:42:21 $
+ * @version $Revision: 1.22 $ $Date: 2001/07/10 15:44:15 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -475,11 +475,16 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 			// creates the document
 			m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_EXPORT);
 			// abbends the initital tags
-			// add some comments here
 			Node exportNode = m_docXml.getFirstChild();
-			exportNode.appendChild( m_docXml.createComment("Creator: " + m_cms.getRequestContext().currentUser().getName()));
-			exportNode.appendChild( m_docXml.createComment("Createdate: " + Utils.getNiceDate(new Date().getTime())));
-            exportNode.appendChild( m_docXml.createComment("Project: " + m_cms.getRequestContext().currentProject().getName()));
+
+            // add the info element. it contains all infos for this export
+			Element info = m_docXml.createElement(C_EXPORT_TAG_INFO);
+			m_docXml.getDocumentElement().appendChild(info);
+            addElement(info, C_EXPORT_TAG_CREATOR, m_cms.getRequestContext().currentUser().getName());
+            addElement(info, C_EXPORT_TAG_OC_VERSION, C_VERSION);
+            addElement(info, C_EXPORT_TAG_DATE, Utils.getNiceDate(new Date().getTime()));
+            addElement(info, C_EXPORT_TAG_PROJECT, m_cms.getRequestContext().currentProject().getName());
+            addElement(info, C_EXPORT_TAG_VERSION, C_EXPORT_VERSION);
 
 			if(moduleNode != null) {
 				// this is a module export - import module informations here

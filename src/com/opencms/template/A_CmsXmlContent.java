@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/07/03 11:53:57 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2001/07/10 15:44:15 $
+* Version: $Revision: 1.45 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -77,7 +77,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2001/07/03 11:53:57 $
+ * @version $Revision: 1.45 $ $Date: 2001/07/10 15:44:15 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -1981,9 +1981,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         while(nextnode == null && parent != null && parent != root) {
 
             // child has sibling
-
             // last chance: we take our parent's sibling
-
             // (or our grandparent's sibling...)
             nextnode = parent.getNextSibling();
             parent = parent.getParentNode();

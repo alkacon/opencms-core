@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/07/09 08:26:53 $
-* Version: $Revision: 1.172 $
+* Date   : $Date: 2001/07/10 15:44:15 $
+* Version: $Revision: 1.173 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.172 $ $Date: 2001/07/09 08:26:53 $
+ * @version $Revision: 1.173 $ $Date: 2001/07/10 15:44:15 $
  */
 public interface I_CmsConstants {
 
@@ -135,6 +135,13 @@ public interface I_CmsConstants {
      * The resource type-name for plain files.
      */
     final static String C_TYPE_PLAIN_NAME = "plain";
+
+    /**
+     * The resource type-name for compatiblePlain files. This type is
+     * used by the opencms system to show the user that this resource doesent
+     * fit to the new standard in the folder content.
+     */
+    final static String C_TYPE_COMPATIBLEPLAIN_NAME = "compatiblePlain";
 
     /**
      * The resource type-name for body files.
@@ -839,6 +846,41 @@ public interface I_CmsConstants {
     public static String C_EXPORT_XMLFILENAME = "manifest.xml";
 
     /**
+     * The version of the opencms export (appears in the export manifest-file).
+     */
+    public static String C_EXPORT_VERSION = "1";
+
+    /**
+     * A tag in the export manifest-file.
+     */
+    public static String C_EXPORT_TAG_INFO = "info";
+
+    /**
+     * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     */
+    public static String C_EXPORT_TAG_CREATOR = "creator";
+
+    /**
+     * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     */
+    public static String C_EXPORT_TAG_OC_VERSION = "opencms_version";
+
+    /**
+     * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     */
+    public static String C_EXPORT_TAG_DATE = "createdate";
+
+    /**
+     * A tag in the manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     */
+    public static String C_EXPORT_TAG_PROJECT = "project";
+
+    /**
+     * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     */
+    public static String C_EXPORT_TAG_VERSION = "export_version";
+
+    /**
      * A tag in the manifest-file.
      */
     public static String C_EXPORT_TAG_FILE = "file";
@@ -982,11 +1024,6 @@ public interface I_CmsConstants {
      * A tag in the manifest-file.
      */
     public static String C_EXPORT_TAG_USERINFO = "userinfo";
-
-    /**
-     * A tag in the manifest-file.
-     */
-    public static String C_EXPORT_TAG_INFO = "info";
 
     /**
      * A tag in the manifest-file.
