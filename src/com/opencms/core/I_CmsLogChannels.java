@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/10/30 10:03:22 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,11 +30,16 @@ package com.opencms.core;
 
 
 /**
- * Common interface for OpenCms logging.
- * Constants used for logging purposes are defined here.
+ * Common interface for OpenCms logging,
+ * constants used for logging purposes are defined here.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2001/07/31 15:50:13 $
+ * 
+ * @version $Revision: 1.12 $ $Date: 2002/10/30 10:03:22 $
+ * 
+ * @see com.opencms.boot.I_CmsLogChannels
+ * 
+ * @deprecated This class is deprecated, please use com.opencms.boot.I_CmsLogChannels
  */
 public interface I_CmsLogChannels extends com.opencms.boot.I_CmsLogChannels {
     // This class is deprecated, please use com.opencms.boot.I_CmsLogChannels
