@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms.js,v $
- * Date   : $Date: 2000/03/21 16:48:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/03/23 09:07:34 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@
 //------------------------------------------
 
 var admincontenturl="administration_content_top.html";
-//var taskcontenturl="tasks_content_nafm.html";
+var explorercontenturl="explorer_files_projekt.html";
 var selectedTask=0;
 var lastVisited="tasks_content_nafm.html";
 var formID;
