@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
- * Date   : $Date: 2000/02/20 21:09:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/21 08:49:40 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/20 21:09:03 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/21 08:49:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -86,8 +86,8 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         }
         
         // go through all tasklogs
-        for (int i=0;i<taskdocs.size();i++) {
-            tasklog=(CmsTaskLog)taskdocs.elementAt(i);
+        for (int i=1;i<=taskdocs.size();i++) {
+            tasklog=(CmsTaskLog)taskdocs.elementAt(taskdocs.size()-i);
             int type=tasklog.getType();
             // check if this is a type to be displayed
             if (type >= 100) {
@@ -101,10 +101,15 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 template.setXmlData("MESSAGE",tasklog.getComment());                
                 // set the image
                 template.setXmlData("ICON",template.getProcessedXmlDataValue("ICON"+type, callingObject, parameters));
-                result.append(template.getProcessedXmlDataValue("LISTENTRY", callingObject, parameters));
-	            // set the headline
+                // set the headline
                 template.setXmlData("HEADLINE",lang.getLanguageValue("task.headline.m"+type)); 
-            }
+                
+                // generate the entry
+                result.append(template.getProcessedXmlDataValue("LISTENTRY", callingObject, parameters));
+                // generate the spacerline
+                result.append(template.getProcessedXmlDataValue("LISTSEPETATOR", callingObject, parameters));
+         
+	        }
      
         }
   

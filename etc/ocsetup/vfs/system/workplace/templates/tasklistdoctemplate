@@ -19,6 +19,19 @@
     ]]>
 	</LISTENTRY>
 	
+	<LISTSEPETATOR>
+	<![CDATA[
+	<tr>
+		<td width=3%>&nbsp;</td>
+		<td>
+		<table cellspacing=0 cellpadding=0 border=0 width="100%">
+			<tr><td class="taskviewbackblue" height="1"><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=10 height=1></td></tr>
+		</table>
+		</td>
+		<td width=3%>&nbsp;</td>
+	</tr>
+	]]>
+	</LISTSEPETATOR>
 	
 	<ICON100><![CDATA[<img src="]]><METHOD name="picsUrl">ic_taskdoku_start.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON100>
 	<ICON101><![CDATA[<img src="]]><METHOD name="picsUrl">ic_taskdoku_accepted.gif</METHOD><![CDATA[" border=0 width=16 height=16>]]></ICON101>
