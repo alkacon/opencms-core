@@ -1,6 +1,6 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsStagingContext.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsStagingContext.java,v $
+* Date   : $Date: 2001/05/03 16:00:41 $
 * Version: $Revision: 1.1 $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -25,7 +25,7 @@
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-package com.opencms.staging;
+package com.opencms.template.cache;
 
 import java.util.*;
 import java.io.*;

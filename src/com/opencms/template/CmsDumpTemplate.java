@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2001/05/03 15:42:48 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2001/05/03 16:00:51 $
+* Version: $Revision: 1.18 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -33,7 +33,7 @@ import java.util.*;
 import com.opencms.launcher.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
-import com.opencms.staging.*;
+import com.opencms.template.cache.*;
 
 /**
  * Template class for dumping files to the output without further
@@ -41,7 +41,7 @@ import com.opencms.staging.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2001/05/03 15:42:48 $
+ * @version $Revision: 1.18 $ $Date: 2001/05/03 16:00:51 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 

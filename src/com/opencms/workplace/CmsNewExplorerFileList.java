@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/05/03 15:42:58 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/05/03 16:01:29 $
+* Version: $Revision: 1.20 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -34,7 +34,7 @@ import com.opencms.launcher.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
-import com.opencms.staging.*;
+import com.opencms.template.cache.*;
 import com.opencms.util.*;
 import java.util.*;
 import org.w3c.dom.*;
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2001/05/03 15:42:58 $
+ * @version $Revision: 1.20 $ $Date: 2001/05/03 16:01:29 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {

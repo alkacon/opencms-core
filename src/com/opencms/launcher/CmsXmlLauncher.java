@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/05/03 15:44:23 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/05/03 16:01:16 $
+* Version: $Revision: 1.21 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -32,7 +32,7 @@ package com.opencms.launcher;
 import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
-import com.opencms.staging.*;
+import com.opencms.template.cache.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.util.*;
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2001/05/03 15:44:23 $
+ * @version $Revision: 1.21 $ $Date: 2001/05/03 16:01:16 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 

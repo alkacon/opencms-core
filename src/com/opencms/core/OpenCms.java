@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/05/03 15:37:38 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2001/05/03 16:01:02 $
+* Version: $Revision: 1.50 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -38,7 +38,7 @@ import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 import com.opencms.file.*;
 import com.opencms.launcher.*;
-import com.opencms.staging.*;
+import com.opencms.template.cache.*;
 
 /**
  * This class is the main class of the OpenCms system.
@@ -52,7 +52,7 @@ import com.opencms.staging.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2001/05/03 15:37:38 $
+ * @version $Revision: 1.50 $ $Date: 2001/05/03 16:01:02 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {

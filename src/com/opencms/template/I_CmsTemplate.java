@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsTemplate.java,v $
-* Date   : $Date: 2001/05/03 15:42:49 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/05/03 16:00:51 $
+* Version: $Revision: 1.11 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -32,7 +32,7 @@ package com.opencms.template;
 import com.opencms.launcher.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
-import com.opencms.staging.*;
+import com.opencms.template.cache.*;
 import java.util.*;
 
 /**
@@ -41,7 +41,7 @@ import java.util.*;
  * have to be implemtented.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2001/05/03 15:42:49 $
+ * @version $Revision: 1.11 $ $Date: 2001/05/03 16:00:51 $
  */
 public interface I_CmsTemplate {
 

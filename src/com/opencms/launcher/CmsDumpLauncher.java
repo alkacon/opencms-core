@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2001/05/03 15:44:23 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/05/03 16:01:16 $
+* Version: $Revision: 1.19 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -36,7 +36,7 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.util.*;
 import javax.servlet.http.*;
-import com.opencms.staging.*;
+import com.opencms.template.cache.*;
 
 /**
  * OpenCms launcher class for starting template classes implementing
@@ -47,7 +47,7 @@ import com.opencms.staging.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2001/05/03 15:44:23 $
+ * @version $Revision: 1.19 $ $Date: 2001/05/03 16:01:16 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 

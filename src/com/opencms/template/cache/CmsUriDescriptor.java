@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElementDescriptor.java,v $
-* Date   : $Date: 2001/04/27 15:21:48 $
-* Version: $Revision: 1.2 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUriDescriptor.java,v $
+* Date   : $Date: 2001/05/03 16:00:41 $
+* Version: $Revision: 1.1 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -25,47 +25,38 @@
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-package com.opencms.staging;
+package com.opencms.template.cache;
 
 import java.util.*;
 import java.io.*;
 import com.opencms.file.*;
 
 /**
- * This descriptor is used to locate CmsElement-Objects with the
- * CmsElementLocator. It is the key for a CmsElement.
+ * This descriptor is used to locate CmsUri-Object with the CmsUriLocator. It
+ * is the key for a CmsUri.
  *
  * @author: Andreas Schouten
  */
-public class CmsElementDescriptor {
+public class CmsUriDescriptor {
 
     /**
-     * The name of the class for this descriptor.
+     * The uri string
      */
-    private String m_className;
+    private String m_uri;
 
     /**
-     * The name of the template-file for this descriptor.
+     * Creates a new UriDescriptor
+     * @param uri - the uri
      */
-    private String m_templateName;
-
-    /**
-     * The constructor to create a new CmsElementDescriptor.
-     *
-     * @param className the name of the class for this descriptor.
-     * @param templateName the name of the template for this descriptor.
-     */
-    public CmsElementDescriptor(String className, String templateName) {
-        m_className = className;
-        m_templateName = templateName;
+    public CmsUriDescriptor(String uri){
+        m_uri = uri;
     }
 
     /**
-     * Returns the key of this descriptor.
-     *
-     * @returns the key of this descriptor.
+     * Returns the uri.
+     * @returns the uri
      */
-    public String getKey() {
-        return m_className + "|" + m_templateName;
+    public String getKey(){
+        return m_uri;
     }
 }

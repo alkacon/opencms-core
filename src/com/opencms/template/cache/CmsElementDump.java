@@ -1,6 +1,6 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/05/03 15:43:43 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
+* Date   : $Date: 2001/05/03 16:00:41 $
 * Version: $Revision: 1.1 $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -25,7 +25,7 @@
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-package com.opencms.staging;
+package com.opencms.template.cache;
 
 import java.util.*;
 import java.io.*;
@@ -45,13 +45,12 @@ import com.opencms.template.*;
  * @author Andreas Schouten
  * @author Alexander Lucas
  */
-public class CmsElementXml extends A_CmsElement {
-
+public class CmsElementDump extends A_CmsElement {
 
     /**
      * Constructor for an element with the given class and template name.
      */
-    public CmsElementXml(String className, String templateName, String elementName) {
+    public CmsElementDump(String className, String templateName, String elementName) {
         init(className, templateName, elementName);
     }
 
@@ -62,9 +61,10 @@ public class CmsElementXml extends A_CmsElement {
      * @param className the classname of this element-definition.
      * @param defs Vector with ElementDefinitions for this element.
      */
-    public CmsElementXml(String className, String templateName, String elementName, Vector defs) {
+    public CmsElementDump(String className, String templateName, String elementName, Vector defs) {
         init(className, templateName, elementName, defs);
     }
+
 
     public byte[] getContent(CmsStaging staging, CmsObject cms, Hashtable parameters) throws CmsException  {
         byte[] result = null;
@@ -102,12 +102,9 @@ public class CmsElementXml extends A_CmsElement {
             try {
                 System.err.println(toString() + " : Variante muss generiert werden.");
                 result = templateClass.getContent(cms, m_templateName, m_elementName, parameters);
-                // We got the cache key just before. It's very funny, but it could
-                // have changed in the meantime (e.g. by a user login).
-                // Recalculate it to avoid wrong results.
-                cacheKey = templateClass.getKey(cms, m_templateName, parameters, null);
-                System.err.println("*** Trying to get variant with key: " + cacheKey);
-                variant = (CmsElementVariant)m_variants.get(cacheKey);
+                variant = new CmsElementVariant();
+                variant.add(result);
+                addVariant(cacheKey, variant);
                 System.err.println(toString() + " : New variant is: " + variant);
 
             }
@@ -127,20 +124,15 @@ public class CmsElementXml extends A_CmsElement {
 
         // Now the variant really should exist. Try to resolve it.
         try {
-            System.err.println("= Start resolving variant " + variant);
             int len = variant.size();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             for(int i=0; i<len; i++) {
-                System.err.print("= Part " + i + " is a ");
                 Object o = variant.get(i);
                 if(o instanceof String) {
-                    System.err.println("String");
                     baos.write(((String)o).getBytes());
                 } else if(o instanceof byte[]) {
-                    System.err.println("byte array");
                     baos.write((byte[])o);
                 } else if(o instanceof CmsElementLink) {
-                    System.err.println("Link");
                     // we have to resolve the element link right NOW!
                     String lookupName = ((CmsElementLink)o).getElementName();
                     System.err.println("= Trying to resolve link \"" + lookupName +"\".");
@@ -154,12 +146,7 @@ public class CmsElementXml extends A_CmsElement {
                             System.err.println("= Element object found for \"" + lookupName +"\". Calling getContent on this object. ");
                             baos.write(subEl.getContent(staging, cms, parameters));
                         } else {
-                            System.err.println("= Cannot find Element object for \"" + lookupName +"\". Trying to create a new one. ");
-                            I_CmsTemplate subTemplClass = getTemplateClass(cms, elDef.getClassName());
-                            subEl = subTemplClass.createElement(cms, elDef.getTemplateName(), lookupName, parameters);
-                            staging.getElementLocator().put(elDef.getDescriptor(), subEl);
-                            System.err.println("= New Element object is: " + subEl);
-                            baos.write(subEl.getContent(staging, cms, parameters));
+                            System.err.println("= Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
                         }
                     } else {
                         System.err.println("= No element definition found for \"" + lookupName +"\". Ignoring this link. ");
