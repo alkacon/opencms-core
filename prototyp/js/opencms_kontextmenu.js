@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_kontextmenu.js,v $
- * Date   : $Date: 2000/08/23 14:18:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/09/06 08:46:33 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -77,12 +77,18 @@ var DO_DELETEF=33;
 var DO_LOCKF=34;
 var DO_LOCKUSERF=35;
 var DO_UNLOCKF=36;
+var DO_RENFOLDER=37;
+var DO_DELFOLDER=38;
 
 var DO_HIST=40;
 var DO_HISTVIEW=41;
+var DO_EDITNEWS=42;
+var DO_DELETENEWS=43;
 
 var DO_RECOVER=50;
 var DO_TAKEOVER=51;
+
+
 //==PROJECTS==============================
 var DO_PUNLOCK=1;
 var DO_PONLINELOCK=2;
@@ -341,6 +347,16 @@ function doAction(action) // which action on layer is clicked
 					location.href='explorer_files_unlockf.html';
 					break;
 		}
+		case 37:
+		{
+			location.href='news_content_folder_rename.html';
+			break;
+		}
+		case 38:
+		{
+			location.href='news_content_folder_delete.html';
+			break;
+		}
 		
 		case 40:
 		{
@@ -352,6 +368,18 @@ function doAction(action) // which action on layer is clicked
 			location.href='explorer_files_historyshow.html';
 			break;
 		}
+		case 42:
+		{
+			location.href='news_content_nachricht_edit.html';
+			break;
+		}
+		case 43:
+		{
+			location.href='news_content_nachricht_delete.html';
+			break;
+		}			
+		
+		
 		case 50:
 		{
 			location.href='explorer_files_recover.html';

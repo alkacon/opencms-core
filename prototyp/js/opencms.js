@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms.js,v $
- * Date   : $Date: 2000/03/29 14:16:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/09/06 08:46:33 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -31,6 +31,7 @@
 // m.schleich 03.01.2000
 //------------------------------------------
 
+var newscontenturl="news_content_top.html";
 var admincontenturl="administration_content_top.html";
 var explorercontenturl="explorer_files_projekt.html";
 var selectedTask=0;
