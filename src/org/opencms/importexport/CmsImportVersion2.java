@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/11/11 16:04:55 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2004/11/12 11:45:37 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -315,14 +315,17 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
 
                 if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Import: Original resource name is " + destination);
+                    OpenCms.getLog(this).debug("Original import resource name is: " + destination);
                 }                
                 String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);                
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(resourceTypeName)) {
-                    translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
+                    // ensure folders end with a "/"
+                    if (! CmsResource.isFolder(translatedName)) {
+                        translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
+                    }
                 }
                 if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Import: Translated resource name is " + translatedName);
+                    OpenCms.getLog(this).debug("Translated import resource name is: " + translatedName);
                 }
 
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
@@ -342,9 +345,9 @@ public class CmsImportVersion2 extends A_CmsImport {
                     // import the specified file 
                     CmsResource res = importResource(source, destination, uuid, uuidresource, resourceTypeId, resourceTypeName, lastmodified, properties, writtenFilenames, fileCodes);
                     
-                    List aceList = new ArrayList();
-                    if (res != null) {
+                    if (res != null) {                                         
 
+                        List aceList = new ArrayList();
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
@@ -361,15 +364,41 @@ public class CmsImportVersion2 extends A_CmsImport {
                         }
                         importAccessControlEntries(res, aceList);
 
+                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                            OpenCms.getLog(this).info(
+                                "( " + (i + 1) + " / " + importSize + " ) "
+                                + m_report.key("report.importing")
+                                + translatedName
+                                + " ("
+                                + destination
+                                + ")"
+                                + m_report.key("report.dots")
+                                + m_report.key("report.ok"));
+                        }      
+                        
                     } else {
                         // resource import failed, since no CmsResource was created
                         m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_OK);
                         m_report.println(translatedName);
+                        
+                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                            OpenCms.getLog(this).info(
+                                " ( " + (i + 1) + " / " + importSize + " ) "
+                                + m_report.key("report.skipping")
+                                + translatedName);
+                        }
                     }
                 } else {
                     // skip the file import, just print out the information to the report
                     m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(translatedName);
+                    
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(
+                            " ( " + (i + 1) + " / " + importSize + " ) "
+                            + m_report.key("report.skipping")
+                            + translatedName);
+                    }                    
                 }
             }
 
@@ -527,7 +556,8 @@ public class CmsImportVersion2 extends A_CmsImport {
                 if (C_RESOURCE_TYPE_PAGE_NAME.equals(resourceTypeName)) {
                     m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
                 }
-                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);                 
+                
             }
             
         } catch (Exception exc) {
@@ -645,6 +675,17 @@ public class CmsImportVersion2 extends A_CmsImport {
             try {
                 
                 mergePageFile(resname);
+                
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(
+                        
+                        "( " + counter + " / " + size + " ) "
+                        + m_report.key("report.merge")
+                        + " "
+                        + resname
+                        + " "
+                        + m_report.key("report.ok"));
+                }  
                 
             } catch (Exception e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -938,9 +979,14 @@ public class CmsImportVersion2 extends A_CmsImport {
             StringTokenizer ruleT = new StringTokenizer(actRule, "#");
             ruleT.nextToken();
             String search = ruleT.nextToken();
-            search = search.substring(0, search.lastIndexOf("(.*)"));
+            int pos = search.lastIndexOf("(.*)");
+            if (pos >= 0) {
+                search = search.substring(0, pos);
+            }
             String replace = ruleT.nextToken();
-            replace = replace.substring(0, replace.lastIndexOf("$1"));
+            if (pos >= 0) {
+                replace = replace.substring(0, replace.lastIndexOf("$1"));
+            }
             // scan content for paths if the replace String is not present
             if (content.indexOf(replace) == -1 && content.indexOf(search) != -1) {
                 // ensure subdirectories of the same name are not replaced
