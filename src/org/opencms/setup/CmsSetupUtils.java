@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupUtils.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/20 14:03:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,15 +33,12 @@ package org.opencms.setup;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.util.CmsStringSubstitution;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,7 +50,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * Provides utilities methods used by the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsSetupUtils {
 
@@ -69,18 +66,6 @@ public class CmsSetupUtils {
     public CmsSetupUtils(String basePath) {
         m_errors = new Vector();
         m_configFolder = basePath + "WEB-INF/config/";
-    }
-
-    /**
-     *  Checks if the used JDK is a higher version than the required JDK
-     *  @param usedJDK The JDK version in use
-     *  @param requiredJDK The required JDK version
-     *  @return true if used JDK version is equal or higher than required JDK version,
-     *  false otherwise
-     */
-    public static boolean compareJDKVersions(String usedJDK, String requiredJDK) {
-        int compare = usedJDK.compareTo(requiredJDK);
-        return (!(compare < 0));
     }
 
     /**
@@ -145,80 +130,6 @@ public class CmsSetupUtils {
         }
 
         return properties;
-    }
-
-    /** Checks if the used servlet engine is part of the servlet engines OpenCms supports
-     *  @param thisEngine The servlet engine in use
-     *  @param supportedEngines All known servlet engines OpenCms supports
-     *  @return true if this engine is supported, false if it was not found in the list
-     */
-    public static boolean supportedServletEngine(String thisEngine, String[] supportedEngines) {
-        boolean supported = false;
-        engineCheck : for (int i = 0; i < supportedEngines.length; i++) {
-            if (thisEngine.indexOf(supportedEngines[i]) >= 0) {
-                supported = true;
-                break engineCheck;
-            }
-        }
-        return supported;
-    }
-
-    /** 
-     * Checks if the used servlet engine is part of the servlet engines OpenCms
-     * does NOT support<p>
-     * 
-     * @param thisEngine the servlet engine in use
-     * @param unsupportedEngines all known servlet engines OpenCms does NOT support
-     * @return the engine id or -1 if the engine is not supported
-     */
-    public static int unsupportedServletEngine(String thisEngine, String[] unsupportedEngines) {
-        for (int i = 0; i < unsupportedEngines.length; i++) {
-            if (thisEngine.indexOf(unsupportedEngines[i]) >= 0) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Writes the version info of the used servlet engine and the used JDK
-     * to the version.txt.<p>
-     *
-     * @param thisEngine The servlet engine in use
-     * @param usedJDK The JDK version in use
-     * @param basePath the OpenCms base path
-     */
-    public static void writeVersionInfo(String thisEngine, String usedJDK, String basePath) {
-        FileWriter fOut = null;
-        PrintWriter dOut = null;
-        String filename = basePath + CmsSetupDb.C_SETUP_FOLDER + "versions.txt";
-        try {
-            File file = new File(filename);
-            if (file.exists()) {
-                // new FileOutputStream of the existing file with parameter append=true
-                fOut = new FileWriter(filename, true);
-            } else {
-                fOut = new FileWriter(file);
-            }
-            // write the content to the file in server filesystem
-            dOut = new PrintWriter(fOut);
-            dOut.println();
-            dOut.println("############### currently used configuration ################");
-            dOut.println("Date:                " + DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis())));
-            dOut.println("Used JDK:            " + usedJDK);
-            dOut.println("Used Servlet Engine: " + thisEngine);
-            dOut.close();
-        } catch (IOException e) {
-            // nothing we can do
-        } finally {
-            try {
-                if (fOut != null) {
-                    fOut.close();
-                }
-            } catch (IOException e) {
-                // nothing we can do
-            }
-        }
     }
 
     /**

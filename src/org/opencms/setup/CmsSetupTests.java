@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/02/20 13:25:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/20 14:03:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,14 @@
 
 package org.opencms.setup;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/02/20 13:25:20 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/20 14:03:25 $
  * @since 5.3
  */
 public class CmsSetupTests extends Object implements Serializable, Cloneable {
@@ -125,7 +130,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
         }
 
         // save the detected software component versions in a text file
-        CmsSetupUtils.writeVersionInfo(m_pageContext.getServletConfig().getServletContext().getServerInfo(), System.getProperty("java.version"), m_pageContext.getServletConfig().getServletContext().getRealPath("/"));
+        writeVersionInfo(m_pageContext.getServletConfig().getServletContext().getServerInfo(), System.getProperty("java.version"), m_pageContext.getServletConfig().getServletContext().getRealPath("/"));
     }
 
     /**
@@ -137,7 +142,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
         try {
             String requiredJDK = "1.4.0";
             String JDKVersion = System.getProperty("java.version");
-            boolean supportedJDK = CmsSetupUtils.compareJDKVersions(JDKVersion, requiredJDK);
+            boolean supportedJDK = compareJDKVersions(JDKVersion, requiredJDK);
 
             testResult.setName("JDK version");
             testResult.setResult(JDKVersion);
@@ -183,8 +188,8 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
 
             ServletConfig config = m_pageContext.getServletConfig();
             String servletEngine = config.getServletContext().getServerInfo();
-            boolean supportedServletEngine = CmsSetupUtils.supportedServletEngine(servletEngine, supportedEngines);
-            int unsupportedServletEngine = CmsSetupUtils.unsupportedServletEngine(servletEngine, unsupportedEngines);
+            boolean supportedServletEngine = hasSupportedServletEngine(servletEngine, supportedEngines);
+            int unsupportedServletEngine = unsupportedServletEngine(servletEngine, unsupportedEngines);
 
             testResult.setName("Servlet engine");
             testResult.setResult(servletEngine);
@@ -302,6 +307,94 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
      */
     public List getTestResults() {
         return m_testResults;
+    }
+
+    /**
+     * Checks if the used JDK is a higher version than the required JDK
+     * 
+     * @param usedJDK The JDK version in use
+     * @param requiredJDK The required JDK version
+     * @return true if used JDK version is equal or higher than required JDK version, false otherwise
+     */
+    protected boolean compareJDKVersions(String usedJDK, String requiredJDK) {
+        int compare = usedJDK.compareTo(requiredJDK);
+        return (!(compare < 0));
+    }
+
+    /** 
+     * Checks if the used servlet engine is part of the servlet engines OpenCms
+     * does NOT support<p>
+     * 
+     * @param thisEngine the servlet engine in use
+     * @param unsupportedEngines all known servlet engines OpenCms does NOT support
+     * @return the engine id or -1 if the engine is not supported
+     */
+    protected int unsupportedServletEngine(String thisEngine, String[] unsupportedEngines) {
+        for (int i = 0; i < unsupportedEngines.length; i++) {
+            if (thisEngine.indexOf(unsupportedEngines[i]) >= 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Writes the version info of the used servlet engine and the used JDK
+     * to the version.txt.<p>
+     *
+     * @param thisEngine The servlet engine in use
+     * @param usedJDK The JDK version in use
+     * @param basePath the OpenCms base path
+     */
+    protected void writeVersionInfo(String thisEngine, String usedJDK, String basePath) {
+        FileWriter fOut = null;
+        PrintWriter dOut = null;
+        String filename = basePath + CmsSetupDb.C_SETUP_FOLDER + "versions.txt";
+        try {
+            File file = new File(filename);
+            if (file.exists()) {
+                // new FileOutputStream of the existing file with parameter append=true
+                fOut = new FileWriter(filename, true);
+            } else {
+                fOut = new FileWriter(file);
+            }
+            // write the content to the file in server filesystem
+            dOut = new PrintWriter(fOut);
+            dOut.println();
+            dOut.println("############### currently used configuration ################");
+            dOut.println("Date:                " + DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis())));
+            dOut.println("Used JDK:            " + usedJDK);
+            dOut.println("Used Servlet Engine: " + thisEngine);
+            dOut.close();
+        } catch (IOException e) {
+            // nothing we can do
+        } finally {
+            try {
+                if (fOut != null) {
+                    fOut.close();
+                }
+            } catch (IOException e) {
+                // nothing we can do
+            }
+        }
+    }
+
+    /** 
+     * Checks if the used servlet engine is part of the servlet engines OpenCms supports
+     * 
+     * @param thisEngine The servlet engine in use
+     * @param supportedEngines All known servlet engines OpenCms supports
+     * @return true if this engine is supported, false if it was not found in the list
+     */
+    protected boolean hasSupportedServletEngine(String thisEngine, String[] supportedEngines) {
+        boolean supported = false;
+        engineCheck : for (int i = 0; i < supportedEngines.length; i++) {
+            if (thisEngine.indexOf(supportedEngines[i]) >= 0) {
+                supported = true;
+                break engineCheck;
+            }
+        }
+        return supported;
     }
 
 }
