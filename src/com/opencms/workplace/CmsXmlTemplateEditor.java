@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2003/02/04 16:17:56 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.80 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Revision: 1.81 $ $Date: 2003/02/04 16:17:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -703,6 +703,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         xmlTemplateDocument.setData("bodyfile", bodyElementFilename);
         xmlTemplateDocument.setData("bodyclass", bodyElementClassName);
         xmlTemplateDocument.setData("editorframe", (String)parameters.get("root.editorframe"));
+        if (bodytitle != null) {
+            xmlTemplateDocument.setData("bodytitle", bodytitle);
+        }
 
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
