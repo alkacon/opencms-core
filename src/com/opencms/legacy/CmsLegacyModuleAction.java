@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2004/07/18 16:27:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/05 11:18:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package com.opencms.legacy;
 
+import org.opencms.db.CmsDbPool;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
@@ -43,11 +44,16 @@ import org.opencms.module.CmsModule;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
 
+import com.opencms.defaults.master.genericsql.CmsDbAccess;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Provided backward compatiblity for legacy (5.0) module "publishClass" 
@@ -105,6 +111,57 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
         
         return splitClassNames(module.getParameter(C_PARAM_PUBLISH_CLASSES));        
     }       
+
+    /**
+     * @see org.opencms.module.I_CmsModuleAction#initialize(org.opencms.file.CmsObject, CmsModule)
+     */
+    public void initialize(CmsObject adminCms, CmsModule module) {
+        
+        ExtendedProperties config = adminCms.getConfigurations();
+        String dbName = config.getString(CmsDbPool.C_KEY_DATABASE_NAME).toLowerCase();
+        String poolUrl = (String)OpenCms.getRuntimeProperty("cosPoolUrl");
+        
+        CmsDbAccess dbAccess = new CmsDbAccess(poolUrl);
+        boolean masterAvailable = dbAccess.checkTables();
+
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Checking master module tables for " + dbName
+                + " - " + ((masterAvailable) ? "found" : "not found"));
+        }
+        
+        if (!masterAvailable) {
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Calling master module table setup script for " + dbName);
+            }
+            
+            String modulePath[] = (String[])module.getResources().toArray(new String[1]);
+            String scriptPath = modulePath[0] + "setup" + "/" + dbName + ".sql";
+            try {
+                String updateScript = new String(adminCms.readFile(scriptPath).getContents());
+                
+                HashMap replacers = new HashMap();
+                for (Iterator i = module.getParameters().keySet().iterator(); i.hasNext();) {
+                    String param = (String)i.next(), value = null;
+                    if (param.startsWith("$")) {
+                        value = (String)module.getParameters().get(param);
+                        replacers.put(param, value);
+                    }
+                }
+                dbAccess.updateDatabase(updateScript, replacers);
+            } catch (CmsException exc) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error(
+                        "Error while creating master module tables",
+                        exc);
+                }
+            }
+            
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(
+                        ". Legacy initialization: Created master module tables");
+            }
+        }
+    }
     
     /**
      * @see org.opencms.module.I_CmsModuleAction#publishProject(org.opencms.file.CmsObject, org.opencms.db.CmsPublishList, int, org.opencms.report.I_CmsReport)
