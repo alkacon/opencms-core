@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/11/16 16:08:20 $
- * Version: $Revision: 1.199 $
+ * Date   : $Date: 2004/11/17 16:12:34 $
+ * Version: $Revision: 1.200 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.199 $ $Date: 2004/11/16 16:08:20 $
+ * @version $Revision: 1.200 $ $Date: 2004/11/17 16:12:34 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -2006,14 +2006,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(I_CmsRuntimeInfo, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, int, org.opencms.file.CmsResource)
      */
-    public void writePublishHistory(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsUUID publishId, int tagId, CmsResource resource) throws CmsException {
+    public void writePublishHistory(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsUUID publishId, int backupTagId, CmsResource resource) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
             conn = m_sqlManager.getConnection(runtimeInfo, currentProject);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
-            stmt.setInt(1, tagId);
+            stmt.setInt(1, backupTagId);
             stmt.setString(2, resource.getStructureId().toString());
             stmt.setString(3, resource.getResourceId().toString());
             stmt.setString(4, resource.getRootPath());

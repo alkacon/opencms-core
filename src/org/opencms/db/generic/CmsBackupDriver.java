@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/11/12 17:31:48 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2004/11/17 16:12:22 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.112 $ $Date: 2004/11/12 17:31:48 $
+ * @version $Revision: 1.113 $ $Date: 2004/11/17 16:12:22 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -888,8 +888,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
-        int versionId = 1;
-        int resVersionId = 1;
+        int projectBackupTagId = 1;
+        int resourceBackupTagId = 1;
 
         try {
             // get the max version id
@@ -897,7 +897,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_BACKUP_MAXTAG");
             res = stmt.executeQuery();
             if (res.next()) {
-                versionId = res.getInt(1) + 1;
+                projectBackupTagId = res.getInt(1) + 1;
             }
 
             m_sqlManager.closeAll(null, null, stmt, res);
@@ -905,18 +905,18 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_BACKUP_MAXTAG_RESOURCE");
             res = stmt.executeQuery();
             if (res.next()) {
-                resVersionId = res.getInt(1) + 1;
+                resourceBackupTagId = res.getInt(1) + 1;
             }
-            if (resVersionId > versionId) {
-                versionId = resVersionId;
+            if (resourceBackupTagId > projectBackupTagId) {
+                projectBackupTagId = resourceBackupTagId;
             }
-
-            return versionId;
         } catch (SQLException exc) {
             return 1;
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
+        
+        return projectBackupTagId;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/10/25 14:17:16 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2004/11/17 16:12:13 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.55 $ $Date: 2004/10/25 14:17:16 $
+ * @version $Revision: 1.56 $ $Date: 2004/11/17 16:12:13 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -418,12 +418,12 @@ public interface I_CmsProjectDriver {
      * @param runtimeInfo the current runtime info
      * @param currentProject the current project
      * @param publishId the ID of the current publishing process
-     * @param tagId the current backup ID
+     * @param backupTagId the current backup ID
      * @param resource the state of the resource *before* it was published
      * 
      * @throws CmsException if something goes wrong
      */
-    void writePublishHistory(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsUUID publishId, int tagId, CmsResource resource) throws CmsException;
+    void writePublishHistory(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsUUID publishId, int backupTagId, CmsResource resource) throws CmsException;
     
     /**
      * Inserts an entry in the published resource table.<p>
