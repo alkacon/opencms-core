@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/11/04 13:58:22 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/11/11 16:03:04 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.main;
 
 import org.opencms.i18n.CmsEncoder;
@@ -51,11 +52,11 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.3
  */
 public class CmsSystemInfo {
-    
+
     /** Default encoding. */
     private static final String C_DEFAULT_ENCODING = CmsEncoder.C_UTF8_ENCODING;
 
@@ -64,68 +65,69 @@ public class CmsSystemInfo {
 
     /** Static version number to use if version.properties can not be read. */
     private static final String C_DEFAULT_VERSION_NUMBER = "6.0 development";
-    
+
     /** The abolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
-    
+
     /** The web application context path. */
     private String m_contextPath;
-    
+
     /** Default encoding, can be overwritten in "opencms.properties". */
-    private String m_defaultEncoding;    
-    
+    private String m_defaultEncoding;
+
     /** The default web application (usually "ROOT"). */
     private String m_defaultWebApplicationName;
 
     /** The  abolute path to the OpenCms log file (in the "real" file system). */
     private String m_logFileRfsPath;
-    
+
     /** The settings for the internal OpenCms email service. */
     private CmsMailSettings m_mailSettings;
-    
+
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code>. */
     private String m_openCmsContext;
-    
+
     /** The abolute path to the "packages" folder (in the "real" file system). */
     private String m_packagesRfsPath;
-    
+
     /** The name of the OpenCms server. */
     private String m_serverName;
-    
+
     /** The servlet path for the OpenCms servlet. */
     private String m_servletPath;
-    
+
     /** The startup time of this OpenCms instance. */
     private long m_startupTime;
-    
+
     /** The settings for the synchronization. */
     private CmsSynchronizeSettings m_synchronizeSettings;
-    
+
     /** Indicates if the version history is enabled. */
     private boolean m_versionHistoryEnabled;
-    
+
     /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
-    
+
     /** The version name (including version number) of this OpenCms installation. */
     private String m_versionName;
 
     /** The version number of this OpenCms installation. */
     private String m_versionNumber;
-    
+
     /** The web application name. */
     private String m_webApplicationName;
-    
+
     /** The OpenCms web application servlet container folder path (in the "real" file system). */
     private String m_webApplicationRfsPath;
-    
+
     /** The OpenCms web application "WEB-INF" path (in the "real" file system). */
     private String m_webInfRfsPath;
-    
+
     /**
      * Creates a new system info container.<p>
-     */    
+     */
     public CmsSystemInfo() {
+
         // set startup time
         m_startupTime = System.currentTimeMillis();
         // init version onformation
@@ -133,7 +135,7 @@ public class CmsSystemInfo {
         // set default encoding (will be changed again later when properties have been read)
         m_defaultEncoding = C_DEFAULT_ENCODING.intern();
     }
-    
+
     /**
      * Returns an absolute path (to a directory or a file in the "real" file system) from a path relative to 
      * the web application folder of OpenCms.<p> 
@@ -143,8 +145,9 @@ public class CmsSystemInfo {
      * 
      * @param path the path (relative) to generate an absolute path from
      * @return an absolute path (to a directory or a file) from a path relative to the web application folder of OpenCms
-     */    
+     */
     public String getAbsoluteRfsPathRelativeToWebApplication(String path) {
+
         if (path == null) {
             return null;
         }
@@ -152,7 +155,7 @@ public class CmsSystemInfo {
         File f = new File(path);
         if (f.isAbsolute()) {
             // apparently this is an absolute path already
-            path =  f.getAbsolutePath();
+            path = f.getAbsolutePath();
             if (f.isDirectory() && !path.endsWith(File.separator)) {
                 // make sure all folder paths end with a separator
                 path = path.concat(File.separator);
@@ -172,6 +175,7 @@ public class CmsSystemInfo {
      * @return an absolute path (to a directory or a file) from a path relative to the "WEB-INF" folder
      */
     public String getAbsoluteRfsPathRelativeToWebInf(String path) {
+
         if (path == null) {
             return null;
         }
@@ -183,32 +187,20 @@ public class CmsSystemInfo {
         }
         return CmsFileUtil.normalizePath(m_webInfRfsPath + path);
     }
-    
+
     /**
      * Returns the abolute path to the "opencms.properties" configuration file (in the "real" file system).<p>
      * 
      * @return the abolute path to the "opencms.properties" configuration file
      */
     public String getConfigurationFileRfsPath() {
+
         if (m_configurationFileRfsPath == null) {
             m_configurationFileRfsPath = getAbsoluteRfsPathRelativeToWebInf(I_CmsConstants.C_CONFIGURATION_PROPERTIES_FILE);
         }
         return m_configurationFileRfsPath;
     }
 
-    /**
-     * Returns the abolute path to the "packages" folder (in the "real" file system).<p>
-     * 
-     * @return the abolute path to the "packages" folder
-     */
-    public String getPackagesRfsPath() {
-        if (m_packagesRfsPath == null) {
-            m_packagesRfsPath = getAbsoluteRfsPathRelativeToWebInf(I_CmsConstants.C_PACKAGES_FOLDER);
-        }
-        return m_packagesRfsPath;
-    }
-    
-    
     /**
      * Returns the web application context path, e.g. "" (empty String) if the web application 
      * is the default web application (usually "ROOT"), or "/opencms" if the web application 
@@ -227,9 +219,10 @@ public class CmsSystemInfo {
      * @see #getOpenCmsContext()
      */
     public String getContextPath() {
+
         return m_contextPath;
-    }   
-    
+    }
+
     /**
      * Return the OpenCms default character encoding.<p>
      * 
@@ -240,37 +233,40 @@ public class CmsSystemInfo {
      * @return the default encoding, e.g. "UTF-8" or "ISO-8859-1"
      */
     public String getDefaultEncoding() {
+
         return m_defaultEncoding;
-    }   
-    
+    }
+
     /**
      * Returns the default web application name (usually "ROOT").<p>
      * 
      * @return the default web application name
      */
     public String getDefaultWebApplicationName() {
+
         return m_defaultWebApplicationName;
     }
-    
 
     /**
      * Returns the filename of the logfile (in the "real" file system).<p>
      * 
      * @return the filename of the logfile (in the "real" file system)
-     */ 
+     */
     public String getLogFileRfsPath() {
+
         return m_logFileRfsPath;
-    }    
-    
+    }
+
     /**
      * Returns the settings for the internal OpenCms email service.<p>
      * 
      * @return the settings for the internal OpenCms email service
      */
     public CmsMailSettings getMailSettings() {
+
         return m_mailSettings;
     }
-    
+
     /**
      * Returns the OpenCms request context, e.g. "/opencms/opencms".<p>
      * 
@@ -282,18 +278,33 @@ public class CmsSystemInfo {
      * @see #getServletPath()
      */
     public String getOpenCmsContext() {
+
         return m_openCmsContext;
     }
-    
+
+    /**
+     * Returns the abolute path to the "packages" folder (in the "real" file system).<p>
+     * 
+     * @return the abolute path to the "packages" folder
+     */
+    public String getPackagesRfsPath() {
+
+        if (m_packagesRfsPath == null) {
+            m_packagesRfsPath = getAbsoluteRfsPathRelativeToWebInf(I_CmsConstants.C_PACKAGES_FOLDER);
+        }
+        return m_packagesRfsPath;
+    }
+
     /**
      * Returns the time this OpenCms instance is running in miliseconds.<p>
      * 
      * @return the time this OpenCms instance is running in miliseconds
      */
     public long getRuntime() {
+
         return System.currentTimeMillis() - m_startupTime;
     }
-    
+
     /**
      * Returns the OpenCms server name, e.g. "OpenCmsServer".<p>
      * 
@@ -305,9 +316,10 @@ public class CmsSystemInfo {
      * @return the OpenCms server name
      */
     public String getServerName() {
+
         return m_serverName;
     }
-    
+
     /**
      * Returns the OpenCms servlet path, e.g. "/opencms".<p> 
      * 
@@ -323,18 +335,20 @@ public class CmsSystemInfo {
      * @see #getOpenCmsContext()
      */
     public String getServletPath() {
+
         return m_servletPath;
     }
-    
+
     /**
      * Returns the current settings for the synchronization.<p>
      * 
      * @return the current settings for the synchronization
      */
     public CmsSynchronizeSettings getSynchronizeSettings() {
+
         return m_synchronizeSettings;
     }
-    
+
     /**
      * Returns the maximum number of versions that are kept per file in the VFS version history.<p>
      * 
@@ -344,9 +358,10 @@ public class CmsSystemInfo {
      * @see #isVersionHistoryEnabled()
      */
     public int getVersionHistoryMaxCount() {
+
         return m_versionHistoryMaxCount;
     }
-    
+
     /**
      * Returns a String containing the version information (version name and version number) 
      * of this OpenCms system.<p>
@@ -354,6 +369,7 @@ public class CmsSystemInfo {
      * @return version a String containing the version information
      */
     public String getVersionName() {
+
         return m_versionName;
     }
 
@@ -364,9 +380,10 @@ public class CmsSystemInfo {
      * @return version a String containing the version number
      */
     public String getVersionNumber() {
+
         return m_versionNumber;
     }
-    
+
     /** 
      * Returns the OpenCms web application name, e.g. "opencms" or "ROOT" (no leading or trainling "/").<p> 
      * 
@@ -378,35 +395,39 @@ public class CmsSystemInfo {
      * @see #getContextPath()
      * @see #getServletPath()
      * @see #getOpenCmsContext()
-     */    
+     */
     public String getWebApplicationName() {
+
         return m_webApplicationName;
     }
-    
+
     /**
      * Returns the OpenCms web application folder in the servlet container.<p>
      * 
      * @return the OpenCms web application folder in the servlet container
      */
     public String getWebApplicationRfsPath() {
-        return m_webApplicationRfsPath;        
+
+        return m_webApplicationRfsPath;
     }
-    
+
     /** 
      * Returns the OpenCms web application "WEB-INF" directory path.<p>
      *
      * @return the OpenCms web application "WEB-INF" directory path
      */
     public String getWebInfRfsPath() {
+
         return m_webInfRfsPath;
-    }    
-    
+    }
+
     /**
      * Returns if the VFS version history is enabled.<p> 
      * 
      * @return if the VFS version history is enabled
      */
     public boolean isVersionHistoryEnabled() {
+
         return m_versionHistoryEnabled;
     }
 
@@ -417,19 +438,33 @@ public class CmsSystemInfo {
      * @return if versions in the VFS version history should be kept
      */
     public boolean keepVersionHistory() {
+
         // TODO: make configurable
         return true;
     }
-    
+
     /**
      * Sets the settings for the synchronization.<p>
      * 
      * @param synchronizeSettings the settings for the synchronization to set
      */
     public void setSynchronizeSettings(CmsSynchronizeSettings synchronizeSettings) {
+
         m_synchronizeSettings = synchronizeSettings;
     }
-    
+
+    /**
+     * VFS version history settings are set here.<p>
+     * 
+     * @param historyEnabled if true the history is enabled
+     * @param historyMaxCount the maximum number of versions that are kept per VFS resource
+     */
+    public void setVersionHistorySettings(boolean historyEnabled, int historyMaxCount) {
+
+        m_versionHistoryEnabled = historyEnabled;
+        m_versionHistoryMaxCount = historyMaxCount;
+    }
+
     /** 
      * Sets the OpenCms web application "WEB-INF" directory path (in the "real" file system).<p>
      * 
@@ -438,37 +473,42 @@ public class CmsSystemInfo {
      * @param webApplicationContext the name/path of the OpenCms web application context (optional, will be calculated form the path if null)
      * @param defaultWebApplication the default web application name (usually "ROOT")
      */
-    protected void init(String webInfRfsPath, String servletMapping, String webApplicationContext, String defaultWebApplication) {
+    protected void init(
+        String webInfRfsPath,
+        String servletMapping,
+        String webApplicationContext,
+        String defaultWebApplication) {
+
         // init base path
         webInfRfsPath = webInfRfsPath.replace('\\', '/');
         if (!webInfRfsPath.endsWith("/")) {
             webInfRfsPath = webInfRfsPath + "/";
         }
         m_webInfRfsPath = CmsFileUtil.normalizePath(webInfRfsPath);
- 
+
         // set the servlet paths
         if (servletMapping.endsWith("/*")) {
             // usually a mapping must be in the form "/opencms/*", cut off all slashes
-            servletMapping = servletMapping.substring(0, servletMapping.length()-2);
-        } 
-        if (! servletMapping.startsWith("/")) {
+            servletMapping = servletMapping.substring(0, servletMapping.length() - 2);
+        }
+        if (!servletMapping.startsWith("/")) {
             servletMapping = "/" + servletMapping;
         }
-        m_servletPath = servletMapping;  
-        
+        m_servletPath = servletMapping;
+
         // set the default web application name
         if (defaultWebApplication.endsWith("/")) {
-            defaultWebApplication = defaultWebApplication.substring(0, defaultWebApplication.length()-1);
-        }        
+            defaultWebApplication = defaultWebApplication.substring(0, defaultWebApplication.length() - 1);
+        }
         if (defaultWebApplication.startsWith("/")) {
             defaultWebApplication = defaultWebApplication.substring(1);
-        }             
+        }
         m_defaultWebApplicationName = defaultWebApplication;
-        
+
         // set the web application name
         File path = new File(m_webInfRfsPath);
         m_webApplicationName = path.getParentFile().getName();
-        
+
         String contextPath;
         if (webApplicationContext == null) {
             // default: use web application context calculated form RFS path (fine with Tomcat)
@@ -478,62 +518,65 @@ public class CmsSystemInfo {
             // runtime environments (e.g. Jboss) that do not use the same RFS and context path
             contextPath = webApplicationContext;
         }
-        
+
         // set the context path
         if (contextPath.equals(getDefaultWebApplicationName())) {
             m_contextPath = "";
         } else {
             m_contextPath = "/" + contextPath;
         }
-        
+
         // this fixes an issue with context names in Jboss
         if (m_contextPath.endsWith(".war")) {
-            m_contextPath = m_contextPath.substring(0, m_contextPath.length()-4);
-        }        
+            m_contextPath = m_contextPath.substring(0, m_contextPath.length() - 4);
+        }
 
         // set the OpenCms context
         m_openCmsContext = m_contextPath + m_servletPath;
-        
+
         // set the web application path
         m_webApplicationRfsPath = path.getParentFile().getAbsolutePath();
-        if (! m_webApplicationRfsPath.endsWith(File.separator)) {
+        if (!m_webApplicationRfsPath.endsWith(File.separator)) {
             m_webApplicationRfsPath += File.separator;
-        }      
+        }
     }
-    
+
     /**
      * Sets the default encoding, called after the properties have been read.<p>
      *  
      * @param encoding the default encoding to set
      */
     protected void setDefaultEncoding(String encoding) {
+
         m_defaultEncoding = encoding.intern();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Encoding set to      : " + m_defaultEncoding);
-        }        
+        }
     }
-    
+
     /**
      * Sets the absolute path to the OpenCms logfile (in the "real" file system).<p>
      *  
      * @param logFileRfsPath the absolute path to the OpenCms logfile
      */
     protected void setLogFileRfsPath(String logFileRfsPath) {
+
         m_logFileRfsPath = logFileRfsPath;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Log file is          : " + m_logFileRfsPath);
-        }        
+        }
     }
-    
+
     /**
      * Sets the settings for the internal OpenCms email service.<p>
      * 
      * @param mailSettings the settings for the internal OpenCms email service to set
      */
     protected void setMailSettings(CmsMailSettings mailSettings) {
+
         m_mailSettings = mailSettings;
     }
-    
+
     /**
      * Sets the server name.<p>
      * 
@@ -545,31 +588,22 @@ public class CmsSystemInfo {
      * @param serverName the server name to set
      */
     protected void setServerName(String serverName) {
+
         m_serverName = serverName;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Server name is       : " + m_serverName);
-        }        
-    }    
-    
-    /**
-     * VFS version history settings are set here.<p>
-     * 
-     * @param historyEnabled if true the history is enabled
-     * @param historyMaxCount the maximum number of versions that are kept per VFS resource
-     */
-    public void setVersionHistorySettings(boolean historyEnabled, int historyMaxCount) {
-        m_versionHistoryEnabled = historyEnabled;
-        m_versionHistoryMaxCount = historyMaxCount;
+        }
     }
-    
+
     /**
      * Initializes the version for this OpenCms, will be called by 
      * CmsHttpServlet or CmsShell upon system startup.<p>
      */
     private void initVersion() {
+
         // init version information with static defaults
         m_versionName = C_DEFAULT_VERSION_NUMBER + " " + C_DEFAULT_VERSION_NAME;
-        m_versionNumber = C_DEFAULT_VERSION_NUMBER;  
+        m_versionNumber = C_DEFAULT_VERSION_NUMBER;
         // read the version-informations from properties, if not done
         Properties props = new Properties();
         try {
@@ -580,6 +614,6 @@ public class CmsSystemInfo {
         }
         m_versionNumber = props.getProperty("version.number", C_DEFAULT_VERSION_NUMBER);
         m_versionName = m_versionNumber + " " + props.getProperty("version.name", C_DEFAULT_VERSION_NAME);
-    }  
-    
+    }
+
 }

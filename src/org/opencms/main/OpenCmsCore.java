@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/11/05 18:15:11 $
- * Version: $Revision: 1.151 $
+ * Date   : $Date: 2004/11/11 16:03:04 $
+ * Version: $Revision: 1.152 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,8 +59,8 @@ import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.module.CmsModuleManager;
-import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsSecurityException;
@@ -71,7 +71,6 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsPropertyUtils;
-import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -110,7 +109,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.151 $
+ * @version $Revision: 1.152 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -144,18 +143,12 @@ public final class OpenCmsCore {
 
     /** The default user and group names. */
     private CmsDefaultUsers m_defaultUsers;
-
-    /** Directory translator, used to translate all accesses to resources. */
-    private CmsResourceTranslator m_directoryTranslator;
-
+    
     /** List to save the event listeners in. */
     private Map m_eventListeners;
 
     /** The set of configured export points. */
     private Set m_exportPoints;
-
-    /** Filename translator, used only for the creation of new files. */
-    private CmsResourceTranslator m_fileTranslator;
 
     /** The site manager contains information about the Cms import/export. */
     private CmsImportExportManager m_importExportManager;
@@ -525,16 +518,6 @@ public final class OpenCmsCore {
     protected CmsDefaultUsers getDefaultUsers() {
 
         return m_defaultUsers;
-    }
-
-    /**
-     * Returns the file name translator this OpenCms has read from the opencms.properties.<p>
-     * 
-     * @return The file name translator this OpenCms has read from the opencms.properties
-     */
-    protected CmsResourceTranslator getFileTranslator() {
-
-        return m_fileTranslator;
     }
 
     /**
@@ -979,6 +962,9 @@ public final class OpenCmsCore {
         m_xmlContentTypeManager = vfsConfiguation.getXmlContentTypeManager();
         m_defaultFiles = vfsConfiguation.getDefaultFiles();
 
+        // initialize translation engines
+        m_resourceManager.setTranslators(vfsConfiguation.getFolderTranslator(), vfsConfiguation.getFileTranslator());
+
         // try to initialize the flex cache
         CmsFlexCache flexCache = null;
         try {
@@ -1048,10 +1034,6 @@ public final class OpenCmsCore {
 
         // initialize the link manager
         m_linkManager = new CmsLinkManager();
-
-        // initialize translation engines
-        m_directoryTranslator = vfsConfiguation.getFolderTranslator();
-        m_fileTranslator = vfsConfiguation.getFileTranslator();
         
         if (m_runtimeProperties == null) {
             m_runtimeProperties = Collections.synchronizedMap(new HashMap());
@@ -1760,8 +1742,8 @@ public final class OpenCmsCore {
                 contextInfo.getLocale(), 
                 contextInfo.getEncoding(), 
                 contextInfo.getRemoteAddr(),
-                m_directoryTranslator, 
-                m_fileTranslator);
+                m_resourceManager.getFolderTranslator(),
+                m_resourceManager.getFileTranslator());
 
         // now initialize and return the CmsObject
         CmsObject cms = new CmsObject(m_securityManager, context, sessionStorage);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2004/11/11 11:46:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/11 16:03:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
+import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -67,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -80,6 +81,12 @@ public class CmsResourceManager {
 
     /** The list of all currently configured content collector instances. */
     private List m_collectors;
+
+    /** Filename translator, used only for the creation of new files. */
+    private CmsResourceTranslator m_fileTranslator;
+    
+    /** Folder translator, used to translate all accesses to resources. */
+    private CmsResourceTranslator m_folderTranslator;
 
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
@@ -378,6 +385,26 @@ public class CmsResourceManager {
 
         return m_mappings;
     }
+    
+    /**
+     * Returns the file translator.<p>
+     *
+     * @return the file translator
+     */
+    public CmsResourceTranslator getFileTranslator() {
+
+        return m_fileTranslator;
+    }
+    
+    /**
+     * Returns the folder translator.<p>
+     *
+     * @return the folder translator
+     */
+    public CmsResourceTranslator getFolderTranslator() {
+
+        return m_folderTranslator;
+    }
 
     /**
      * Returns the loader class instance for a given resource.<p>
@@ -654,6 +681,18 @@ public class CmsResourceManager {
             result = loader.includeExtension(target, element, editable, paramMap, req, res);
         }
         return result;
+    }
+    
+    /**
+     * Sets the folder and the file translator.<p>
+     * 
+     * @param folderTranslator the folder translator to set
+     * @param fileTranslator the file translator to set
+     */
+    public void setTranslators(CmsResourceTranslator folderTranslator, CmsResourceTranslator fileTranslator) {
+        
+        m_folderTranslator = folderTranslator;
+        m_fileTranslator = fileTranslator;
     }
 
     /**
