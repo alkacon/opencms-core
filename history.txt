@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/10/09 16:28:25 $
- * Version: $Revision: 1.405 $
+ * Date   : $Date: 2002/10/11 14:01:41 $
+ * Version: $Revision: 1.406 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@ OpenCms 5.0 (next version)
 ! Export: You can now set a max age for the content to export, ie. export only files that have changed
   after a specified date
 ! The <stylesheet> tag in XMLTemplates can now also be defined in the mastertemplate (in addition to the frametemplate)
+! HTML Editor: Added option to remove the "new body" function while keeping the body selector (use this with default bodies)
+* HTML Editor: Fixed some issues with the new link dialog, it's now also possible to add links to images
 * The <stylesheet> tag in XMLTemplates (for display in WYSIWYG) can now start with a "/"
 * The locale "uk" has been renamed to "en" (rename your module directories accordingly)
 * Removed usage of deprecated methods where possible
