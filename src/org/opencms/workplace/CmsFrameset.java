@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/11/03 09:05:51 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/11/03 17:31:09 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,6 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -49,6 +45,10 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
+
 /**
  * Provides methods for building the main framesets of the OpenCms Workplace.<p> 
  * 
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1
  */
@@ -365,6 +365,24 @@ public class CmsFrameset extends CmsWorkplace {
         }
 
         return buildSelect(htmlAttributes, options, values, 0);                             
+    }
+    
+    /**
+     * Returns the last login time of the current user in localized format.<p>
+     *
+     * @return the last login time of the current user in localized format
+     */
+    public String getLoginTime() {
+        return getSettings().getMessages().getDateTime(getSettings().getUser().getLastlogin());
+    }
+
+    /**
+     * Returns the remote ip address of the current user.<p>
+     * 
+     * @return the remote ip address of the current user
+     */
+    public String getLoginAddress() {
+        return getCms().getRequestContext().getRemoteAddress();
     }
     
     /**

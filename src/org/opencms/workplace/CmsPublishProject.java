@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2003/11/03 09:05:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/03 17:31:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.threads.CmsPublishThread;
  * Creates the dialogs for publishing a project or a resource.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -261,8 +261,15 @@ public class CmsPublishProject extends CmsReport {
                 // start different publish threads for direct publish and publish project             
                 CmsPublishThread thread = null;
                 if ("true".equals(getParamDirectpublish())) {
+                    // publish resource directly
                     thread = new CmsPublishThread(getCms(), getParamResource(), "true".equals(getParamPublishsiblings()));
                 } else {
+                    try {
+                        // switch to prject which will be published
+                        int projectId = Integer.parseInt(getParamProjectid());
+                        getCms().getRequestContext().setCurrentProject(projectId);
+                    } catch (Exception e) { }
+                    
                     thread = new CmsPublishThread(getCms());
                 }
                 thread.start();
@@ -336,8 +343,8 @@ public class CmsPublishProject extends CmsReport {
                 setParamProjectname(getCms().readProject(id).getName());
             } catch (CmsException e) {
                 // ignore
-            }
         }
+    }
     }
     
     /**
@@ -351,7 +358,7 @@ public class CmsPublishProject extends CmsReport {
             setParamModifieduser(getCms().readUser(res.getUserLastModified()).getName());
         } catch (CmsException e) {
             // ignore
-        }
+    }
     }
     
     /**
