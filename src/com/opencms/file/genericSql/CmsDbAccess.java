@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/08 14:46:51 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/06/08 15:50:19 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.33 $ $Date: 2000/06/08 14:46:51 $ * 
+ * @version $Revision: 1.34 $ $Date: 2000/06/08 15:50:19 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -1464,6 +1464,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 			   								res.getInt(C_PROPERTYDEF_TYPE) );
 			    res.close();
 			} else {
+				res.close();
 			    // not found!
 			    throw new CmsException("[" + this.getClass().getName() + "] " + name, 
 					CmsException.C_NOT_FOUND);
@@ -1942,9 +1943,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 				}
 			 }
 		}
-	}
-	
-	 
+	} 
 	
 	/**
 	 * Deletes all properties for a project.
@@ -1961,7 +1960,73 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 
 	// methods working with resources
 	
+	/**
+	 * Reads a resource from the Cms.<BR/>
+	 * A resource is either a file header or a folder.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @param project The project in which the resource will be used.
+	 * @param filename The complete name of the new file (including pathinformation).
+	 * 
+	 * @return The resource read.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 private CmsResource readResource(CmsProject project, String filename)
+         throws CmsException {
+                 
+         CmsResource file = null;
+         ResultSet res = null;
+         PreparedStatement statement = null;
+         try {  
+               // read resource data from database
+               statement = m_pool.getPreparedStatement(C_RESOURCES_READ_KEY);
+               statement.setString(1,filename);
+               statement.setInt(2,project.getId());
+               res = statement.executeQuery();
+               
+               // create new resource
+               if(res.next()) {
+                        file = new CmsResource(res.getInt(C_RESOURCES_RESOURCE_ID),
+										   res.getInt(C_RESOURCES_PARENT_ID),
+										   res.getInt(C_RESOURCES_FILE_ID),
+										   res.getString(C_RESOURCES_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                           res.getInt(C_RESOURCES_USER_ID),
+                                           res.getInt(C_RESOURCES_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
+                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                           res.getInt(C_RESOURCES_STATE),
+                                           res.getInt(C_RESOURCES_LOCKED_BY),
+                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
+                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
+                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
+                                           res.getInt(C_RESOURCES_SIZE)
+                                           );
+					res.close();
+               } else {
+				 res.close();
+                 throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);  
+               }
+ 
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} catch( Exception exc ) {
+             throw new CmsException("readResource "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_PROPERTYDEF_READ_KEY, statement);
+			}
+		  }
+        return file;
+       }
+           
+     
 
+	 
 	/**
 	 * Private method to init all statements in the pool.
 	 */
@@ -1970,7 +2035,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		// init statements for resources
 		m_pool.initPreparedStatement(C_RESOURCES_MAXID_KEY,C_RESOURCES_MAXID);
         m_pool.initPreparedStatement(C_FILES_MAXID_KEY,C_FILES_MAXID);
-        m_pool.initPreparedStatement(C_RESOURCES_MAXID_KEY,C_RESOURCES_MAXID);
+        m_pool.initPreparedStatement(C_RESOURCES_READ_KEY,C_RESOURCES_READ);
         	
         // init statements for groups
 		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);

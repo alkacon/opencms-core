@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/08 14:46:52 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/06/08 15:50:19 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,12 +32,36 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.21 $ $Date: 2000/06/08 14:46:52 $
+ * @version $Revision: 1.22 $ $Date: 2000/06/08 15:50:19 $
  */
 public interface I_CmsQuerys {
     
     // Common constants   
 	static String C_DATABASE_PREFIX = "CMS_";
+	
+	// Constants for resources tables
+	public static final String C_RESOURCES_RESOURCE_ID="RESOURCE_ID";
+    public static final String C_RESOURCES_PARENT_ID="PARENT_ID";
+    public static final String C_RESOURCES_RESOURCE_TYPE="RESOURCE_TYPE";
+    public static final String C_RESOURCES_RESOURCE_FLAGS="RESOURCE_FLAGS";
+    public static final String C_RESOURCES_FILE_ID="FILE_ID";
+    public static final String C_RESOURCES_RESOURCE_NAME="RESOURCE_NAME";
+    public static final String C_RESOURCES_USER_ID="USER_ID";
+    public static final String C_RESOURCES_GROUP_ID="GROUP_ID";
+    public static final String C_RESOURCES_PROJECT_ID="PROJECT_ID";
+	public static final String C_PROJECT_ID_RESOURCES=C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID";
+	public static final String C_RESOURCE_FLAGS="RESOURCE_FLAGS";
+    public static final String C_RESOURCES_ACCESS_FLAGS="ACCESS_FLAGS";
+    public static final String C_RESOURCES_STATE="STATE";
+    public static final String C_RESOURCES_LOCKED_BY="LOCKED_BY";
+    public static final String C_RESOURCES_LAUNCHER_TYPE="LAUNCHER_TYPE";
+    public static final String C_RESOURCES_LAUNCHER_CLASSNAME="LAUNCHER_CLASSNAME";    
+	public static final String C_RESOURCES_DATE_CREATED="DATE_CREATED";    
+    public static final String C_RESOURCES_DATE_LASTMODIFIED="DATE_LASTMODIFIED";    
+    public static final String C_RESOURCES_SIZE="SIZE";
+	public static final String C_RESOURCES_LASTMODIFIED_BY="RESOURCE_LASTMODIFIED_BY";
+    public static final String C_RESOURCES_FILE_CONTENT="FILE_CONTENT";
+    
 	
 	// Constants for resources
 	public static final Integer C_RESOURCES_MAXID_KEY = new Integer(100);
@@ -45,6 +69,9 @@ public interface I_CmsQuerys {
 	public static final Integer C_RESOURCES_WRITE_KEY = new Integer(101);
 	public static final String C_RESOURCEES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     
+    public static final Integer C_RESOURCES_READ_KEY = new Integer(102);
+	public static final String C_RESOURCES_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+  
 	
 	// Constants for files
 	public static final Integer C_FILES_MAXID_KEY = new Integer(150);
