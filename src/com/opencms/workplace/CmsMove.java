@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2001/01/02 09:27:24 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2001/01/03 15:42:33 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.35 $ $Date: 2001/01/02 09:27:24 $
+ * @version $Revision: 1.36 $ $Date: 2001/01/03 15:42:33 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -218,7 +218,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				CmsFolder toFolder = cms.readFolder(newFolder);
 			} catch (CmsException ex) {
 				if (ex.getType() == CmsException.C_NOT_FOUND) {
-					throw new CmsException("Destination folder not exists", CmsException.C_NOT_FOUND);
+					throw new CmsException("Destination folder not exists", CmsException.C_BAD_NAME);
 				}
 			}		
 		}
@@ -249,7 +249,10 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 						session.removeValue(C_PARA_FILE);
 	    		        session.removeValue(C_PARA_NEWFOLDER);
 						session.removeValue(C_PARA_FLAGS);
-						throw ex;
+						//throw ex;
+						template="error";
+						xmlTemplateDocument.setData("details", ex.getStackTrace());
+						return startProcessing(cms,xmlTemplateDocument,"", parameters, template);
 					}
 				   
 					// everything is done, so remove all session parameters
@@ -337,7 +340,10 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 						session.removeValue(C_PARA_FILE);
 	    		        session.removeValue(C_PARA_NEWFOLDER);
 						session.removeValue(C_PARA_FLAGS);
-						throw ex;
+						//throw ex;
+						template="error";
+						xmlTemplateDocument.setData("details", ex.getStackTrace());
+						return startProcessing(cms,xmlTemplateDocument,"", parameters, template);
 					}
 					  
 					// everything is done, so remove all session parameters
