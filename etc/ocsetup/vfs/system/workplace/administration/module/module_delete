@@ -187,7 +187,7 @@ location.href="module_delete.html?step=working&time=]]><PROCESS>time</PROCESS><!
 }
 </SCRIPT>
 </HEAD>
-<BODY onload="setTimeout('reload()', 15000);">
+<BODY onload="setTimeout('reload()', 5000);">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
