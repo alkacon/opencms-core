@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2001/02/28 16:42:57 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2001/03/05 11:37:19 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2001/02/28 16:42:57 $
+ * @version $Revision: 1.18 $ $Date: 2001/03/05 11:37:19 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -413,21 +413,22 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 		// walk through all subfolders and export them
 		for(int i = 0; i < subFolders.size(); i++) {
 			CmsResource folder = (CmsResource) subFolders.elementAt(i);
-
-			// check if this is a system-folder and if it should be included.
-			if(folder.getAbsolutePath().startsWith("/system/")) {
-				if(!m_excludeSystem) {
-					// export this folder
-					writeXmlEntrys(folder);
-					// export all resources in this folder
-					exportResources(folder.getAbsolutePath());
-				}
-			} else {
-				// export this folder
-				writeXmlEntrys(folder);
-				// export all resources in this folder
-				exportResources(folder.getAbsolutePath());
-			}
+            if(folder.getState() != C_STATE_DELETED){
+			    // check if this is a system-folder and if it should be included.
+			    if(folder.getAbsolutePath().startsWith("/system/")) {
+				    if(!m_excludeSystem) {
+					    // export this folder
+					    writeXmlEntrys(folder);
+					    // export all resources in this folder
+					    exportResources(folder.getAbsolutePath());
+				    }
+			    } else {
+				    // export this folder
+				    writeXmlEntrys(folder);
+				    // export all resources in this folder
+				    exportResources(folder.getAbsolutePath());
+			    }
+            }
 		}
 	}
 	/**
