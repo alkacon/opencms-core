@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/11/11 13:10:09 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2004/11/11 16:04:55 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -320,7 +321,6 @@ public class CmsImportVersion2 extends A_CmsImport {
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(resourceTypeName)) {
                     translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                 }
-                translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("Import: Translated resource name is " + translatedName);
                 }
@@ -514,7 +514,13 @@ public class CmsImportVersion2 extends A_CmsImport {
                 //  import this resource in the VFS                         
                 String resName = m_importPath+destination;
                 res = m_cms.importResource(resName, resource, content, properties);
-                m_cms.unlockResource(resName);
+                try {
+                    m_cms.unlockResource(resName);
+                } catch (CmsLockException e) {
+                    if (OpenCms.getLog(this).isDebugEnabled()) {
+                        OpenCms.getLog(this).debug("Unable to unlock resource " + resName + " (continuing anyway)");
+                    }
+                }
             }   
             
             if (res != null) {
