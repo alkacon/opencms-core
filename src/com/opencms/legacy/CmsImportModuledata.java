@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/10/02 10:54:16 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2005/01/17 13:04:05 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.12 $ $Date: 2004/10/02 10:54:16 $
+ * @version $Revision: 1.13 $ $Date: 2005/01/17 13:04:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -198,7 +198,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @param masterElement the current element of the xml file
      * @throws CmsException in case something goes wrong
      */
-    private void importMaster(String subId, String classname, Element masterElement) throws CmsException {
+    protected void importMaster(String subId, String classname, Element masterElement) throws CmsException {
         CmsMasterDataSet newDataset = new CmsMasterDataSet();
         Vector channelRelations = new Vector();
         Vector masterMedia = new Vector();
@@ -263,7 +263,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @return the dataset with the imported information
      * @throws CmsException in case something goes wrong
      */
-    private CmsMasterDataSet getMasterDataSet(int subId, Element masterElement) throws CmsException {
+    protected CmsMasterDataSet getMasterDataSet(int subId, Element masterElement) throws CmsException {
         String datasetfile = null, username = null, groupname = null, accessFlags = null, 
             publicationDate = null, purgeDate = null, flags = null, feedId = null, 
             feedReference = null, feedFilename = null, title = null, master_id = null;
@@ -430,7 +430,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @param masterElement the current element of the xml file
      * @return vector containing the ids of all channels of the master
      */
-    private Vector getMasterChannelRelation(Element masterElement) {
+    protected Vector getMasterChannelRelation(Element masterElement) {
         Vector channelRelations = new Vector();
         // get the channelnames of the master
         List channelNodes = masterElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_CHANNELNAME);
@@ -454,7 +454,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @return vector containing the media (CmsMasterMedia object) of the master
      * @throws CmsException in case something goes wrong
      */
-    private Vector getMasterMedia(Element masterElement) throws CmsException {
+    protected Vector getMasterMedia(Element masterElement) throws CmsException {
         Vector masterMedia = new Vector();
         // get the mediafiles of the master
         List mediaNodes = masterElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_MEDIA);
