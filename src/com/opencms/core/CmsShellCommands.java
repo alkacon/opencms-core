@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/11/17 16:00:12 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/11/20 11:06:47 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.19 $ $Date: 2000/11/17 16:00:12 $
+ * @version $Revision: 1.20 $ $Date: 2000/11/20 11:06:47 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -1618,9 +1618,14 @@ public void printHelpText()
  * 
  * @param task the task to read the agent from.
  */
-public void readAgent(String task) {
+public void readAgent(String taskId) {
 	try {
-		System.out.println(m_cms.readAgent(m_cms.readTask(Integer.parseInt(task))));
+		CmsTask task = m_cms.readTask(Integer.parseInt(taskId));
+		if( task == null ) {
+			System.out.println("No task: " + task);
+		} else {
+			System.out.println(m_cms.readAgent(task));
+		}
 	} catch (Exception exc) {
 		CmsShell.printException(exc);
 	}
