@@ -5,19 +5,20 @@
 <tabledataend><![CDATA[</a></td>]]></tabledataend>
 <tablerowbegin><![CDATA[<tr>]]></tablerowbegin>
 <tablerowend><![CDATA[</tr>]]></tablerowend>
-<url><![CDATA[<a href="]]><method name="getServletPath"/><method name="getUrl"/><![CDATA[?parentId=]]><PROCESS>uniqueid</PROCESS><![CDATA[">]]></url>
+<url><![CDATA[<a href="]]><method name="getServletPath"/><method name="getUrl"/><![CDATA[?parentId=]]><PROCESS>uniqueid</PROCESS><![CDATA[" target="admin_head">]]></url>
 
 <lockuser><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lock.gif" alt="" border=0 width=16 height=16></td>]]></lockuser>
 <lock><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lockuser.gif" alt="" border=0 width=16 height=16></td>]]></lock>
 <nolock><![CDATA[<td></td>]]></nolock>
-
+<focus>; window.document.swl.filterparameter.focus()</focus>
+<setfocus></setfocus>
 
 <nowand><![CDATA[]]></nowand>
 <wand><![CDATA[
 <td class=menu nowrap width=32px valign=top>
 	<a href="javascript:document.location.href=']]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[';parent.frames[1].location.href=']]><method name="getServletPath"/><method name="getCreateUrl"/><![CDATA[?id=new'"  
 		onMouseDown="ChPush('bt_new')" onMouseUp="ChOn('bt_new')" onMouseOver="ChOn('bt_new')" onMouseOut="ChOff('bt_new')">
-		<img align=top src="/pics/system/bt_new_off.gif" name="bt_new" border=0 width=32 heigth=32>
+		 <img align=top src="/pics/system/bt_new_off.gif" name="bt_new" border=0 width=32 heigth=32> 
 	</a>
 </td>
 ]]></wand>
@@ -47,14 +48,13 @@
 </head>
 
 <!-- onload="window.top.body.admin_content.location.href='Backoffice.html'" -->
-<body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed onload="window.top.body.admin_content.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[?action=list'">
+<body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed onload="window.top.body.admin_content.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[?action=list']]><process>setfocus</process><![CDATA[">  
 
-	<table cellspacing=0 cellpadding=0 valign=bottom>
+	<table border="0" cellspacing=0 cellpadding=0 valign=bottom>
 	
 	<tr>
 		<td class=menu nowrap width=32px valign=top>
-			<a href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');
-				parent.frames[1].location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_content_top.html?sender=/system/workplace/administration/'">
+			<a href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');parent.frames[1].location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_content_top.html?sender=/system/workplace/administration/'">
 				<IMG align=top alt="]]><label value="button.back"/><![CDATA[" width=32 border=0 name=bt_back src="/pics/system/bt_back_off.gif" >
 			</a>
 		</td>	
@@ -594,40 +594,43 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 </singlerow>
 
 <singleSelectbox><![CDATA[
-	<form name=swl valign=bottom method="get" >
-        <td>
-            <div id="pull" style="position:relative; visibility:hide">
+	<form name=swl valign=top method="get" >
+        <td nowrap valign="center">
                
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
+        </td>
+		<td nowrap valign="center">
                 <input type=hidden name="setaction" value="filterchange"/> ]]>
         		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" size="1" onchange="document.swl.submit()"/><![CDATA[
                
-            </div>
         </td>
     </form>]]>
 </singleSelectbox>
 
 <selectboxWithParam><![CDATA[
-	<form name=swl valign=bottom method="get" >
-        <td>
-            <div id="pull" style="position:relative; visibility:hide">
-               
+	<form name=swl valign=top method="get">
+        <td nowrap valign="center">                          
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
-                <input type=hidden name="setaction" value="filterchange"/> ]]>
-        		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" size="1" onchange="document.swl.submit()"/><![CDATA[
+		</td>
+		<td nowrap valign="center">
+                <input type=hidden name="setaction" value="filterchange"> ]]>
+        		<SELECT method="getFilter" class="textfeld" name="selectbox" id="selectbox" width="100" size="1" onchange="self.document.swl.submit()" /><![CDATA[
                
-            </div>
         </td>
-        <td>        
-            <div id="feld" style="position:relative; visibility:hide">
-
+        <td nowrap valign="center">        
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterparameterlabel</PROCESS><![CDATA[:&nbsp;&nbsp;&nbsp;</b>
-   				<input type=hidden name="setaction" value="setaction"/>
-                <input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA["/>
-				<!-- <input type=image src="/pics/system/ic_admin_enter.gif" value="]]><label value="button.reload"/><![CDATA[!" onClick="javascript:document.swl.selectbox.selectedIndex=]]><PROCESS>filternumber</PROCESS><![CDATA[;window.top.body.admin_content.reload();"/>  -->       
-            	<input type=image src="/pics/system/ic_admin_enter.gif" value="]]><label value="button.reload"/><![CDATA[!" /> 
-            
-            </div>        
+		</td>
+		<td nowrap valign="center">
+   				<input type=hidden name="setaction" value="setaction">
+                <input type=text name="filterparameter" id="filterparameter" size="5" value="]]><PROCESS>filterparameter</PROCESS><![CDATA[">
+		</td>
+		<td>	
+				&nbsp;&nbsp
+				<a href="javascript:window.document.swl.submit()" onMouseDown="ChPush('ic_admin_enter')" onMouseUp="ChOn('ic_admin_enter')" onMouseOver="ChOn('ic_admin_enter')" onMouseOut="ChOff('ic_admin_enter')">
+				<img align="center" name="ic_admin_enter" src="/pics/system/ic_admin_enter_off.gif" border=0 width=32 heigth=32>
+				</a>
+            	<!-- <input type=image src="/pics/system/ic_admin_enter.gif" value="]]><label value="button.reload"/><![CDATA[!" /> -->
+                  
         </td>
         </form>]]>
 </selectboxWithParam>
