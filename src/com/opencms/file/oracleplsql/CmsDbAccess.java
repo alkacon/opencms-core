@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/05/31 13:20:58 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2002/08/08 09:42:39 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.report.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.49 $ $Date: 2002/05/31 13:20:58 $ *
+ * @version $Revision: 1.50 $ $Date: 2002/08/08 09:42:39 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1765,13 +1765,13 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onlineProject,
-                        boolean enableHistory, I_CmsReport report) throws CmsException {
+                        boolean enableHistory, I_CmsReport report, Hashtable exportpoints) throws CmsException {
     //System.out.println("PL/SQL: publishProject");
     report.addSeperator(0);
     report.addString("PL/SQL: publishProject");
     report.addSeperator(0);
     com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-    CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
+    CmsAccessFilesystem discAccess = new CmsAccessFilesystem(exportpoints);
     CallableStatement statement = null;
     Connection con = null;
     ResultSet res1 = null;
@@ -1803,7 +1803,7 @@ public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onli
         res1 = (ResultSet) statement.getObject(6);
         while (res1.next()) {
             changedResources.add(res1.getString("RESOURCE_NAME"));
-            String exportKey = checkExport(getShortResourceName(res1.getString("RESOURCE_NAME")));
+            String exportKey = checkExport(getShortResourceName(res1.getString("RESOURCE_NAME")), exportpoints);
             if (exportKey != null) {
                 discAccess.removeResource(getShortResourceName(res1.getString("RESOURCE_NAME")), exportKey);
             }
@@ -1812,7 +1812,7 @@ public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onli
         res2 = (ResultSet) statement.getObject(7);
         while (res2.next()) {
             changedResources.add(res2.getString("RESOURCE_NAME"));
-            String exportKey = checkExport(getShortResourceName(res2.getString("RESOURCE_NAME")));
+            String exportKey = checkExport(getShortResourceName(res2.getString("RESOURCE_NAME")), exportpoints);
             if (exportKey != null) {
                 discAccess.createFolder(getShortResourceName(res2.getString("RESOURCE_NAME")), exportKey);
             }
@@ -1821,7 +1821,7 @@ public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onli
         res3 = (ResultSet) statement.getObject(8);
         while (res3.next()) {
             changedResources.add(res3.getString("RESOURCE_NAME"));
-            String exportKey = checkExport(getShortResourceName(res3.getString("RESOURCE_NAME")));
+            String exportKey = checkExport(getShortResourceName(res3.getString("RESOURCE_NAME")), exportpoints);
             if (exportKey != null) {
                 discAccess.removeResource(getShortResourceName(res3.getString("RESOURCE_NAME")), exportKey);
             }
@@ -1830,7 +1830,7 @@ public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onli
         res4 = (ResultSet) statement.getObject(9);
         while (res4.next()) {
             changedResources.add(res4.getString("RESOURCE_NAME"));
-            String exportKey = checkExport(getShortResourceName(res4.getString("RESOURCE_NAME")));
+            String exportKey = checkExport(getShortResourceName(res4.getString("RESOURCE_NAME")), exportpoints);
             if (exportKey != null) {
                 discAccess.writeFile(getShortResourceName(res4.getString("RESOURCE_NAME")), exportKey, readFileContent(projectId, res4.getInt("FILE_ID")));
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/08/02 12:12:57 $
-* Version: $Revision: 1.251 $
+* Date   : $Date: 2002/08/08 09:42:38 $
+* Version: $Revision: 1.252 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.251 $ $Date: 2002/08/02 12:12:57 $ *
+ * @version $Revision: 1.252 $ $Date: 2002/08/08 09:42:38 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -183,7 +183,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * Storage for all exportpoints.
      */
-    protected Hashtable m_exportpointStorage=null;
+    //protected Hashtable m_exportpointStorage=null;
 
    /**
      * 'Constants' file.
@@ -233,6 +233,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // read the name of the rb from the properties
         rbName = (String)config.getString(C_CONFIGURATION_RESOURCEBROKER);
 
+/*
         // read the exportpoints
         m_exportpointStorage = new Hashtable();
         int i = 0;
@@ -243,6 +244,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
             i++;
         }
+*/
 
         // read all needed parameters from the configuration
         // all needed pools are read in the following method
@@ -606,13 +608,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * test if resource must be written to the filesystem
      *
      * @param filename Name of a resource in the OpenCms system.
-     * @return key in m_exportpointStorage Hashtable or null.
+     * @return key in exportpoint Hashtable or null.
      */
-    protected String checkExport(String filename){
+    protected String checkExport(String filename, Hashtable exportpoints){
 
         String key = null;
         String exportpoint = null;
-        Enumeration e = m_exportpointStorage.keys();
+        Enumeration e = exportpoints.keys();
 
         while (e.hasMoreElements()) {
           exportpoint = (String)e.nextElement();
@@ -4709,8 +4711,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProject,
-                         boolean enableHistory, I_CmsReport report) throws CmsException{
-        CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
+                         boolean enableHistory, I_CmsReport report, Hashtable exportpoints) throws CmsException{
+        CmsAccessFilesystem discAccess = new CmsAccessFilesystem(exportpoints);
         CmsFolder currentFolder = null;
         CmsFile currentFile = null;
         CmsFolder newFolder = null;
@@ -4749,7 +4751,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             } else if (currentFolder.getState() == C_STATE_NEW){
                 changedResources.addElement(currentFolder.getResourceName());
                 // export to filesystem if necessary
-                String exportKey = checkExport(currentFolder.getAbsolutePath());
+                String exportKey = checkExport(currentFolder.getAbsolutePath(), exportpoints);
                 if (exportKey != null){
                     discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
                 }
@@ -4841,7 +4843,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             } else if (currentFolder.getState() == C_STATE_CHANGED){
                 changedResources.addElement(currentFolder.getResourceName());
                 // export to filesystem if necessary
-                String exportKey = checkExport(currentFolder.getAbsolutePath());
+                String exportKey = checkExport(currentFolder.getAbsolutePath(), exportpoints);
                 if (exportKey != null){
                     discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
                 }
@@ -4948,8 +4950,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 // C_STATE_DELETE
             } else if (currentFile.getState() == C_STATE_DELETED){
                 changedResources.addElement(currentFile.getResourceName());
-                // delete in filesystem if necessary
-                String exportKey = checkExport(currentFile.getAbsolutePath());
+                String exportKey = checkExport(currentFile.getAbsolutePath(), exportpoints);
                 if (exportKey != null){
                     try{
                         discAccess.removeResource(currentFile.getAbsolutePath(), exportKey);
@@ -4982,7 +4983,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }else if (currentFile.getState() == C_STATE_CHANGED){
                 changedResources.addElement(currentFile.getResourceName());
                 // export to filesystem if necessary
-                String exportKey = checkExport(currentFile.getAbsolutePath());
+                String exportKey = checkExport(currentFile.getAbsolutePath(), exportpoints);
                 if (exportKey != null){
                     discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, currentFile.getContents());
                 }
@@ -5072,7 +5073,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             } else if (currentFile.getState() == C_STATE_NEW) {
                 changedResources.addElement(currentFile.getResourceName());
                 // export to filesystem if necessary
-                String exportKey = checkExport(currentFile.getAbsolutePath());
+                String exportKey = checkExport(currentFile.getAbsolutePath(), exportpoints);
                 if (exportKey != null){
                     discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, currentFile.getContents());
                 }
@@ -5172,7 +5173,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             currentFolder = ((CmsFolder) deletedFolders.elementAt(i));
             report.addString(currentFolder.getAbsolutePath());
             report.addSeperator(0);
-            String exportKey = checkExport(currentFolder.getAbsolutePath());
+            String exportKey = checkExport(currentFolder.getAbsolutePath(), exportpoints);
             if (exportKey != null){
                 discAccess.removeResource(currentFolder.getAbsolutePath(), exportKey);
             }
