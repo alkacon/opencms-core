@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryStatus.java,v $
- * Date   : $Date: 2005/03/17 12:59:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/21 11:27:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ class CmsMemoryStatus {
         m_totalMemory = ((m_count * m_totalMemory) + currentStatus.getTotalMemory()) / newCount;
         m_usedMemory = ((m_count * m_usedMemory) + currentStatus.getUsedMemory()) / newCount;
         m_freeMemory = ((m_count * m_freeMemory) + currentStatus.getFreeMemory()) / newCount;
-        m_usage = ((m_count * m_usage) + currentStatus.getUsage()) / newCount;
+        m_usage = m_usedMemory * 100 / m_maxMemory;
         m_count = newCount;
     }
 
