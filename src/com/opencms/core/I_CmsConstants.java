@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/01/24 18:56:36 $
+ * @version $Revision: 1.21 $ $Date: 2000/01/25 16:16:17 $
  */
 public interface I_CmsConstants
 {
@@ -30,8 +30,13 @@ public interface I_CmsConstants
 	 * This flag is set for disabled entrys in the database.
 	 * (GROUP_FLAGS for example)
 	 */
-	 static final int C_FLAG_DISABLED = 1;
-	
+	 static final int C_FLAG_DISABLED = 1;	
+
+     /**
+      * Path to the workplace ini file
+      */     
+     static final String C_WORKPLACE_INI = "/system/workplace/config/workplace.ini";
+     
 	 /**
 	  * The last index, that was used for resource-types.
 	  */

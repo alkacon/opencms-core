@@ -9,5 +9,5 @@ import com.opencms.core.*;
 import java.util.*;
 
 public interface I_CmsWpElement {
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters) throws CmsException;    
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException;    
 }

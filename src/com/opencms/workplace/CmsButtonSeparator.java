@@ -11,7 +11,7 @@ import java.util.*;
 
 public class CmsButtonSeparator implements I_CmsWpElement {    
         
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters) throws CmsException {
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 
         CmsXmlWpButtonsDefFile buttondef = new CmsXmlWpButtonsDefFile(cms, "/system/workplace/templates/ButtonTemplate");       
         String result = buttondef.getButtonSeparator();

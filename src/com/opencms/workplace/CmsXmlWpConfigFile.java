@@ -9,9 +9,9 @@ import com.opencms.template.*;
  * Content definition for "/workplace/workplace.ini".
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/25 13:46:52 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/25 16:16:17 $
  */
-public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels {
+public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
     /**
      * Default constructor.
@@ -19,7 +19,7 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
     public CmsXmlWpConfigFile() throws CmsException {
         super();
     }
-    
+
     /**
      * Constructor for creating a new object containing the content
      * of the given filename.
@@ -34,7 +34,7 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
 
     /**
      * Constructor for creating a new object containing the content
-     * of the given filename.
+     * of the given CmsFile object.
      * 
      * @param cms A_CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
@@ -43,6 +43,25 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
         super();
         init(cms, file);
     }        
+
+    /**
+     * Constructor for creating a new config file object containing the content
+     * of the actual system config file.
+     * <P>
+     * The position of the workplace.ini is defined in I_CmsConstants.
+     * 
+     * @param cms A_CmsObject object for accessing system resources.
+     */        
+     public CmsXmlWpConfigFile(A_CmsObject cms) throws CmsException {
+        super();
+        CmsFile configFile = null;
+        try {
+           configFile = cms.readFile(C_WORKPLACE_INI);
+        } catch(Exception e) {
+            throwException("Configuration file \"workplace.ini\" missing.", CmsException.C_NOT_FOUND);
+        }        
+        init(cms, configFile);
+    }
     
     /**
      * Gets the expected tagname for the XML documents of this content type

@@ -23,14 +23,12 @@ public class CmsButton implements I_CmsWpElement {
      * @exception CmsException
      */
     
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters) throws CmsException {
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         String buttonName = n.getAttribute("name");
         String buttonAction = n.getAttribute("action");
         String buttonAlt = n.getAttribute("alt");
-                
+        
         CmsXmlWpButtonsDefFile buttondef = new CmsXmlWpButtonsDefFile(cms, "/system/workplace/templates/ButtonTemplate");
-        CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms, "/system/workplace/config/language/de.txt");
-
         buttonAlt = lang.getLanguageValue("button." + buttonAlt);
         
         String result = buttondef.getButton(buttonName, buttonAction, buttonAlt);

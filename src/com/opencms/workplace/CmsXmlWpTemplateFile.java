@@ -14,10 +14,13 @@ import java.util.*;
  * Content definition for Workplace template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/25 13:46:52 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/25 16:16:17 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
+    /** Reference to the actual language file. */
+    CmsXmlLanguageFile m_languageFile = null;
+    
     /**
      * Default constructor.
      */
@@ -50,8 +53,34 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         super();
         registerMyTags();
         init(cms, file);
-    }        
+    }            
     
+    /**
+     * Overridden init method of A_CmsXmlContent.
+     * This method is now extended to get an actual instance of the
+     * language file.
+     * @param cms A_CmsObject Object for accessing resources.
+     * @param file CmsFile object of the file to be loaded and parsed.
+     * @exception CmsException
+     */
+    public void init(A_CmsObject cms, String filename) throws CmsException {
+        m_languageFile = new CmsXmlLanguageFile(cms);
+        super.init(cms, filename);
+    }
+    
+    /**
+     * Overridden init method of A_CmsXmlContent.
+     * This method is now extended to get an actual instance of the
+     * language file.
+     * @param cms A_CmsObject Object for accessing resources.
+     * @param file CmsFile object of the file to be loaded and parsed.
+     * @exception CmsException
+     */
+    public void init(A_CmsObject cms, CmsFile file) throws CmsException {
+        m_languageFile = new CmsXmlLanguageFile(cms);
+        super.init(cms, file);
+    }
+        
     /**
      * Registers the special tags for processing with
      * processNode().
@@ -69,7 +98,14 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         return "WORKPLACE";
     }
     
-
+    /**
+     * Gets the actual instance of the language file.
+     * @return Language file.
+     */
+    public CmsXmlLanguageFile getLanguageFile() {
+        return m_languageFile; 
+    }
+    
     public String getProcessedTemplateContent(Object callingObject, Hashtable parameters) throws CmsException {
         return getProcessedDataValue("TEMPLATE", callingObject, parameters);
     }
@@ -94,7 +130,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         }
     
         workplaceObject = (I_CmsWpElement)loadedClass;
-        result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, (Hashtable)userObj);                
+        result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, (Hashtable)userObj, m_languageFile);                
     
         return result; 
     }                    

@@ -1,16 +1,20 @@
-package com.opencms.template;
+package com.opencms.workplace;
 
 import com.opencms.file.*;
 import com.opencms.core.*;
+import com.opencms.template.*;
+
 
 /**
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/25 14:02:39 $
+ * @version $Revision: 1.1 $ $Date: 2000/01/25 16:16:17 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
+    private final static String C_CURRENT_LANGUAGE = "de";
+    
     /** Name of the class specific language section. */
     private String m_localSection = null;
     
@@ -44,6 +48,34 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
         super();
         init(cms, file);
     }        
+
+    /**
+     * Constructor for creating a new language file object containing the content
+     * of the corresponding system language file for the actual user.
+     * <P>
+     * The position of the language file will be looked up in workplace.ini.
+     * The selected language of the current user can be searched in the user object.
+     * 
+     * @param cms A_CmsObject object for accessing system resources.
+     * @param filename Name of the body file that shoul be read.
+     */        
+    public CmsXmlLanguageFile(A_CmsObject cms) throws CmsException {
+        super();
+        CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+        
+        String languagePath = configFile.getLanguagePath();
+        String currentLanguage = C_CURRENT_LANGUAGE;
+        
+        CmsFile languageFile = null;
+        try {
+            languageFile = cms.readFile(languagePath + currentLanguage);
+        } catch(Exception e) {
+            throwException("Could not load language file " + languagePath + currentLanguage + ".", CmsException.C_NOT_FOUND);
+        }
+        
+        init(cms, languageFile);
+    }        
+
     
     /**
      * Gets the expected tagname for the XML documents of this content type
