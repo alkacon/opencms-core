@@ -94,13 +94,13 @@ function show_help()
 ]]>
 </TEMPLATE>
 
-<TEMPLATE name="done">
+<TEMPLATE name="wait">
 <![CDATA[
 <HTML>
 <HEAD>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 </HEAD>
-<BODY onload="updateFrame('head', 'head.html');">
+<BODY onload="location.href='administration_content_publish_project.html?action=ok&projectid=]]><PROCESS>projectid</PROCESS><![CDATA['">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
