@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/01/18 08:29:02 $
-* Version: $Revision: 1.88 $
+* Date   : $Date: 2002/01/25 16:41:12 $
+* Version: $Revision: 1.89 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.88 $ $Date: 2002/01/18 08:29:02 $
+ * @version $Revision: 1.89 $ $Date: 2002/01/25 16:41:12 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -752,14 +752,123 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
     /**
      * @param cms CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param tagcontent May contain the parameter for framesets to work in the static export.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
     public Object getUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        return (cms.getRequestContext().getRequest().getServletUrl() + cms.getRequestContext().getUri()).getBytes();
+        if(tagcontent == null || "".equals(tagcontent) || !cms.isStaticExportEnabled()){
+            return (cms.getRequestContext().getRequest().getServletUrl() + cms.getRequestContext().getUri()).getBytes();
+        }else{
+            String res = cms.getRequestContext().getUri();
+            return (cms.getLinkSubstitution(res+"?"+tagcontent)).getBytes();
+        }
+    }
+
+    /**
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Contains the parameter for framesets.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     * /
+    public Object getUriWithParameter(CmsObject cms, Sring tagcontent, A_CmsXmlContnent doc, Object userObject) throws CsmException{
+
+        String query = new String();
+        // get the parameternames of the original request and get the values from the userObject
+        try{
+            Enumeration parameters = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getParameterNames();
+            StringBuffer paramQuery = new StringBuffer();
+            while(parameters.hasMoreElements()){
+                String name = (String)parameters.nextElement();
+                String value = (String)((Hashtable)userObject).get(name);
+                if(value != null && !"".equals(value)){
+                    paramQuery.append(name+"="+value+"&");
+                }
+            }
+            if(paramQuery.length() > 0){
+                // add the parameters to the query string
+                query = paramQuery.substring(0,paramQuery.length()-1).toString();
+            }
+        } catch (Exception exc){
+            exc.printStackTrace();
+        }
+
+        // get the name of the frame and parameters
+        String frame = "", param = "";
+        if(!tagcontent.equals("")) {
+            if(!tagcontent.startsWith("&")) {
+                if(tagcontent.indexOf(",") != -1) {
+                    frame = tagcontent.substring(0, tagcontent.indexOf(","));
+                    param = tagcontent.substring(tagcontent.indexOf(",") + 1);
+                }
+                else {
+                    frame = tagcontent;
+                }
+            }
+            else {
+                param = tagcontent;
+            }
+        }
+        query = (query == null ? "" : query);
+        if(!query.equals("")) {
+            if(query.indexOf("cmsframe=") != -1) {
+                int start = query.indexOf("cmsframe=");
+                int end = query.indexOf("&", start);
+                String cmsframe = "";
+                if(end != -1) {
+                    cmsframe = query.substring(start + 9, end);
+                }
+                else {
+                    cmsframe = query.substring(start + 9);
+                }
+                if(!cmsframe.equals("plain")) {
+                    if(!frame.equals("")) {
+                        if(end != -1) {
+                            query = query.substring(0, start + 9) + frame + query.substring(end);
+                        }
+                        else {
+                            query = query.substring(0, start + 9) + frame;
+                        }
+                    }
+                    else {
+                        if(end != -1) {
+                            query = query.substring(0, start) + query.substring(end + 1);
+                        }
+                        else {
+                            query = query.substring(0, start);
+                        }
+                    }
+                }
+            }
+            else {
+                if(!tagcontent.equals("")) {
+                    query = query + "&cmsframe=" + frame;
+                }
+            }
+            if(!query.equals("")) {
+                query = "?" + query;
+            }
+        }
+        else {
+            if(!frame.equals("")) {
+                query = "?cmsframe=" + frame;
+            }
+        }
+        if(!query.equals("")) {
+            query = query + param;
+        }
+        else {
+            query = "?" + param.substring(param.indexOf("&") + 1);
+        }
+        if (query.trim().equals("?") || query.trim().equals("&") || query.trim().equals("?&") ||
+            query.trim().equals("??")) {
+            query="";
+        }
+        return query;
     }
 
     /**

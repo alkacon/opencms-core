@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/01/23 15:16:21 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/01/25 16:41:12 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.10 $ $Date: 2002/01/23 15:16:21 $
+ * @version $Revision: 1.11 $ $Date: 2002/01/25 16:41:12 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -370,7 +370,11 @@ public class CmsStaticExport implements I_CmsConstants{
 
             if(writeFile){
                 // now create the necesary folders
-                String folder = externLink.substring(0, externLink.lastIndexOf('/'));
+                String folder = "";
+                int folderIndex = externLink.lastIndexOf('/');
+                if(folderIndex != -1){
+                    folder = externLink.substring(0, externLink.lastIndexOf('/'));
+                }
                 String correctur = "";
                 if(!externLink.startsWith("/")){
                     correctur = "/";
@@ -474,7 +478,7 @@ public class CmsStaticExport implements I_CmsConstants{
             }
         }catch(Exception e){
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport]  export "+link+" failed : "+e.toString());
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport]  export "+link+" failed : "+Utils.getStackTrace(e));
             }
         }
     }

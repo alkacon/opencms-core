@@ -242,16 +242,16 @@ create table CMS_SYSTEMID               (TABLE_KEY varchar(255) not null,
 
 create table CMS_EXPORT_LINKS           (LINK_ID int not null,
                                          LINK varchar(255) not null,
-                                         DATE bigint not null,
+                                         CREATEDATE bigint not null,
                                          PROCESSED bit,
                                          primary key (LINK_ID),
                                          key(LINK(100)),
                                          unique (LINK));
 
 create table CMS_EXPORT_DEPENDENCIES    (LINK_ID int not null,
-                                         RESOURCE varchar(255),
+                                         RESOURCENAME varchar(255),
                                          key (LINK_ID),
-                                         unique(LINK_ID, RESOURCE));
+                                         unique(LINK_ID, RESOURCENAME));
 
 create table CMS_SESSIONS               (SESSION_ID varchar(255) not null,
                                          SESSION_LASTUSED datetime not null,
