@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterDataSet.java,v $
- * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/09 07:17:48 $
- * Version: $Revision: 1.3 $
+ * Author : $Author: t.kellermeier $
+ * Date   : $Date: 2001/11/13 08:38:06 $
+ * Version: $Revision: 1.4 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -26,6 +26,7 @@ package com.opencms.defaults.master;
 
 import java.io.Serializable;
 import java.util.Vector;
+import com.opencms.core.I_CmsConstants;
 
 /**
  * This class defines the dataset of the master module. It carries a lot of
@@ -33,8 +34,8 @@ import java.util.Vector;
  * should only be used within this mastermodule.
  *
  * @author A. Schouten $
- * $Revision: 1.3 $
- * $Date: 2001/11/09 07:17:48 $
+ * $Revision: 1.4 $
+ * $Date: 2001/11/13 08:38:06 $
  */
 public class CmsMasterDataSet implements Serializable {
 
@@ -104,7 +105,7 @@ public class CmsMasterDataSet implements Serializable {
     //// data members for history ////
 
     /** The version-number of this record in history */
-    public int m_versionId;
+    public int m_versionId = I_CmsConstants.C_UNKNOWN_ID;
 
     /** The owner as String */
     public String m_userName;
