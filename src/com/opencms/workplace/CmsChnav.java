@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/05/05 07:50:52 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/05/05 09:40:40 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.10 $ $Date: 2003/05/05 07:50:52 $
+ * @version $Revision: 1.11 $ $Date: 2003/05/05 09:40:40 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -219,7 +219,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                         String navpos = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVPOS);
                         // check if there is a navpos for this file/folder
                         if(navpos != null) {
-                            nicename = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVTEXT);
+                            nicename = Encoder.escapeHtml(cms.readProperty(res.getAbsolutePath(), C_PROPERTY_NAVTEXT));
                             if(nicename == null) {
                                 nicename = res.getName();
                             }
@@ -300,7 +300,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             for(int i = 0;i <= count;i++) {
                 names.addElement(nicenames[i]);
                 values.addElement(nicenames[i]);
-                if ((preselect != null) && (preselect.equals(nicenames[i]))){
+                if ((preselect != null) && (Encoder.escapeHtml(preselect).equals(nicenames[i]))){
                     retValue = values.size() -1;
                 }
             }
@@ -386,7 +386,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             // now find the file after which the new file is sorted
             int pos = 0;
             for(int i = 0;i < nicenames.length;i++) {
-                if(navpos.equals((String)nicenames[i])) {
+                if(Encoder.escapeHtml(navpos).equals((String)nicenames[i])) {
                     pos = i;
                 }
             }
