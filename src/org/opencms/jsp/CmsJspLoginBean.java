@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2004/03/12 16:00:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/03 07:21:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,10 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.security.CmsSecurityException;
+import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 
@@ -40,7 +42,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
-
 
 /**
  * Provides convenient wrappers usefull to create user login pages.<p>
@@ -53,11 +54,14 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3
  */
-public class CmsJspLoginBean extends CmsJspBean {
+public class CmsJspLoginBean extends CmsJspActionElement {
+    
+    /** Flag to indicate if a login was successful */
+    private CmsException m_loginException;
     
     /**
      * Empty constructor, required for every JavaBean.<p>
@@ -79,64 +83,147 @@ public class CmsJspLoginBean extends CmsJspBean {
     }    
     
     /**
-     * Logs a user out, i.e. destroys the current users session,
-     * after that the current page will be redirected it itself one time so that
-     * the users session is truly destroyed.<p>
+     * Returns the link to the form that contains the login element.<p>
      * 
-     * @throws IOException if redirect fails
+     * @return the link to the form that contains the login element
      */
-    public void logout() throws IOException {
-        HttpSession session = getRequest().getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-        getResponse().sendRedirect(CmsJspTagLink.linkTagAction(getRequestContext().getUri(), getRequest()));
+    public String getFormLink() {
+        return link(getRequestContext().getUri());
+    }
+        
+    /**
+     * Returns the exception that was thrown after login, 
+     * or null if no Exception was thrown (i.e. login was successul
+     * or not attempted).<p>
+     *  
+     * @return the exception thrown after login
+     */
+    public CmsException getLoginException() {
+        return m_loginException;
     }
     
+    /**
+     * Returns the currently logged in user.<p>
+     * 
+     * @return the currently logged in user
+     */
+    public CmsUser getUser() {
+        return getRequestContext().currentUser();
+    }    
+    
+    /**
+     * Returns the username of the currently logged in user.<p>
+     * 
+     * @return the username of the currently logged in user
+     */
+    public String getUserName() {
+        return getRequestContext().currentUser().getName();
+    }
+    
+    /**
+     * Returns true if the current user is not the guest user, 
+     * i.e. if he already has logged in with some other user account.<p>
+     * 
+     * @return true if the current user is already logged in
+     */
+    public boolean isLoggedIn() {
+        return !getCmsObject().getRequestContext().currentUser().isGuestUser();
+    }
+        
+    /**
+     * Indicates if a login was successful or not.<p>
+     * 
+     * @return true if the login was successful
+     */
+    public boolean isLoginSuccess() {
+        return (m_loginException == null);
+    }
+
     /**
      * Logs a system user in to OpenCms.<p>
      * 
      * @param username the users name
      * @param password the password
      * 
-     * @throws CmsSecurityException in case login was not successful
-     */
-    public void login(String username, String password) throws CmsSecurityException {
-        getCmsObject().loginUser(username, password, getRequestContext().getRemoteAddress(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER);        
-    }
+     * @throws IOException in case redirect after login was not successful
+     */    
+    public void login(String username, String password) throws IOException {
+        login(username, password, null);
+    }    
     
     /**
-     * Logs a system user in to OpenCms, 
-     * but only if the given resource URI can be accessed by the logged in user.<p>
-     * 
-     * A user might login to OpenCms when it's password is o.k. but then have no access
-     * to the requested resource since the resource has permission settings that do not
-     * allow the logged in user to read it. This method first checks the login, and then 
-     * also checks the permission settings on the requested resource. 
-     * If the resource permissions do not allow "read" for the user, 
-     * a security exception is thrown that appears to the user like a usual
-     * "login failed" message. The session of the user is destroyed in this case.<p>
-     * 
-     * Keep in mind that the project of the user will be switched to the
-     * "Online" project after login. So that is where he must have read permissions on 
-     * the given resource.<p>
+     * Logs a system user in to OpenCms.<p>
      * 
      * @param username the users name
      * @param password the password
-     * @param resourceUri file to check for permissions
+     * @param login_project the project to switch to after login (if null project is not switched)
      * 
-     * @throws CmsSecurityException in case login was not successful
+     * @throws IOException in case redirect after login was not successful
      */    
-    public void login(String username, String password, String resourceUri) throws CmsSecurityException {
-        getCmsObject().loginUser(username, password, getRequestContext().getRemoteAddress(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+    public void login(String username, String password, String login_project) throws IOException {
+        login(username, password, login_project, null);
+    }    
+    
+    /**
+     * Logs a system user in to OpenCms.<p>
+     * 
+     * @param username the users name
+     * @param password the password
+     * @param login_project the project to switch to after login (if null project is not switched)
+     * @param login_redirect the URI to redirect to after login (if null the current URI is used)
+     * 
+     * @throws IOException in case redirect after login was not successful
+     */
+    public void login(String username, String password, String login_project, String login_redirect) throws IOException {
+        HttpSession session = null;
+        m_loginException = null;
         try {
-            getCmsObject().readFileHeader(resourceUri);
-        } catch (Throwable t) {
-            // logout the user
-            // logout();
-            // no read permissions, thow security execption
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED, t);
+            getCmsObject().loginUser(username, password, getRequestContext().getRemoteAddress(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER);        
+            session = getRequest().getSession(true);
+            if (login_project != null) {
+                getCmsObject().getRequestContext().setCurrentProject(getCmsObject().readProject(login_project));
+            }
+        } catch (CmsException e) {
+            // any exception here indicates that the login has failed
+            m_loginException = e;
+            if (session != null) {
+                session.invalidate();       
+            }
+        }
+        if (m_loginException == null) {
+            // login was successful
+            if (OpenCms.getLog(CmsJspLoginBean.class).isInfoEnabled()) {
+                OpenCms.getLog(CmsJspLoginBean.class).info("Login of user '" + username + "' on page " + getRequestContext().addSiteRoot(getRequestContext().getUri()));
+            }
+            if (login_redirect != null) {
+                getResponse().sendRedirect(link(login_redirect));    
+            } else {
+                getResponse().sendRedirect(getFormLink());  
+            }
+        } else {
+            // login was not successful
+            if (OpenCms.getLog(CmsJspLoginBean.class).isWarnEnabled()) {
+                OpenCms.getLog(CmsJspLoginBean.class).warn("Failed login attempt for user '" + username + "' on page " + getRequestContext().addSiteRoot(getRequestContext().getUri()));
+            }
         }
     }
-
+    
+    /**
+     * Logs a user out, i.e. destroys the current users session,
+     * after that the current page will be redirected it itself one time to ensure
+     * the users session is truly destroyed.<p>
+     * 
+     * @throws IOException if redirect after logout fails
+     */
+    public void logout() throws IOException {
+        HttpSession session = getRequest().getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        // login was successful
+        if (OpenCms.getLog(CmsJspLoginBean.class).isDebugEnabled()) {
+            OpenCms.getLog(CmsJspLoginBean.class).debug("Logout of user '" + getUserName() + "' on page " + getRequestContext().addSiteRoot(getRequestContext().getUri()));
+        }
+        getResponse().sendRedirect(getFormLink());
+    }
 }
