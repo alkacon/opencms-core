@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/02/15 18:05:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/20 16:10:24 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/02/15 18:05:06 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/20 16:10:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -171,7 +171,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, errorMessage);
             }
-            return("no content");
+            return("");
             // throw new CmsException(errorMessage, CmsException.C_BAD_NAME);
         }
                     
