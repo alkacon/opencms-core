@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/13 09:11:07 $
-* Version: $Revision: 1.273 $
+* Date   : $Date: 2001/09/17 06:33:28 $
+* Version: $Revision: 1.274 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.273 $ $Date: 2001/09/13 09:11:07 $
+ * @version $Revision: 1.274 $ $Date: 2001/09/17 06:33:28 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -202,9 +202,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 
                 // is the resource locked?
-                if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ||
-                    (resource.getLockedInProject() != currentProject.getId() &&
-                    currentProject.getFlags() != C_PROJECT_STATE_INVISIBLE)) ) {
+                if( resource.isLocked() && resource.isLockedBy() != currentUser.getId() ) {
                     // resource locked by anopther user, no creation allowed
                     return(false);
                 }
@@ -1498,7 +1496,9 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         // is the current project the onlineproject?
         // and is the current user the owner of the project?
         // and is the current project state UNLOCKED?
-        if ((!currentProject.equals(online)) && (currentProject.getOwnerId() == currentUser.getId()) && (currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
+        if ((!currentProject.equals(online)) &&
+            (isManagerOfProject(currentUser, currentProject))
+            && (currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
             // is offlineproject and is owner
             // try to read the resource from the offline project, include deleted
             CmsResource offlineRes = null;
@@ -3869,7 +3869,9 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             // YES
             return true;
         }
-
+        if (isAdmin(currentUser, currentProject)){
+            return true;
+        }
         // get all groups of the user
         Vector groups = getGroupsOfUser(currentUser, currentProject,
                                         currentUser.getName());
