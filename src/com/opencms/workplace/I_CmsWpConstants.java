@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/04/06 09:26:34 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2000/04/06 12:39:03 $
+ * Version: $Revision: 1.82 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.81 $ $Date: 2000/04/06 09:26:34 $
+ * @version $Revision: 1.82 $ $Date: 2000/04/06 12:39:03 $
  */
 public interface I_CmsWpConstants {
 
@@ -770,7 +770,13 @@ public interface I_CmsWpConstants {
     
     /** Flag for displaying the locked column */
     public static final int C_FILELIST_LOCKED = 256;
-    
+  
+	/** Parameter of user management */    
+	public static final String C_USERS_NAME = "USERNAME";
+	
+	/** Parameter of user management */    
+	public static final String C_GROUPS_NAME = "GROUPNAME";
+	
 	/** Parameter of projectnew */    
 	public static final String C_PROJECTNEW_NAME = "NAME";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessUserInfoMySql.java,v $
- * Date   : $Date: 2000/03/13 15:42:23 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/04/06 12:39:03 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/03/13 15:42:23 $
+ * @version $Revision: 1.17 $ $Date: 2000/04/06 12:39:03 $
  */
  class CmsAccessUserInfoMySql implements I_CmsAccessUserInfo, I_CmsConstants {
 
@@ -238,6 +238,7 @@ import com.opencms.util.*;
 	 public void writeUserInformation(A_CmsUser user)
          throws CmsException {
         byte[] value=null;
+		 
         try	{			
             // serialize the hashtable
             ByteArrayOutputStream bout= new ByteArrayOutputStream();            

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/05 14:43:45 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2000/04/06 12:39:03 $
+ * Version: $Revision: 1.97 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.96 $ $Date: 2000/04/05 14:43:45 $
+ * @version $Revision: 1.97 $ $Date: 2000/04/06 12:39:03 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1448,7 +1448,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
 			// check the password minimumsize
-			if( (name.length() > 1) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
+			if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
 				return( m_userRb.addUser(name, password, group, description, 
 										 additionalInfos, flags) );
 			} else {

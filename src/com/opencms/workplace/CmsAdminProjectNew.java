@@ -1,12 +1,13 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/04/06 09:26:34 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/06 12:39:03 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
+
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/04/06 09:26:34 $
+ * @version $Revision: 1.15 $ $Date: 2000/04/06 12:39:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {

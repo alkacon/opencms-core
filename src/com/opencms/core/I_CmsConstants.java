@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/04/04 10:28:47 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2000/04/06 12:39:03 $
+ * Version: $Revision: 1.69 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.68 $ $Date: 2000/04/04 10:28:47 $
+ * @version $Revision: 1.69 $ $Date: 2000/04/06 12:39:03 $
  */
 public interface I_CmsConstants
 {
@@ -78,6 +78,24 @@ public interface I_CmsConstants
 	 * (GROUP_FLAGS for example)
 	 */
 	 static final int C_FLAG_DISABLED = 1;	
+	 
+	 /**
+	 * Flag constant: Projectmanager
+	 * flag for groups
+	 */
+	 static final int C_FLAG_GROUP_PROJECTMANAGER = 2;	
+	 
+	  /**
+	 * Flag constant: ProjectCoWorker
+	 * flag for groups
+	 */
+	 static final int C_FLAG_GROUP_PROJECTCOWORKER = 4;	
+	  
+	 /**
+	 * Flag constant: Role (for coworkers)
+	 * flag for groups
+	 */
+	 static final int C_FLAG_GROUP_ROLE = 8;	
 
      /** Path to the workplace ini file */     
      static final String C_WORKPLACE_INI = "/system/workplace/config/workplace.ini";
@@ -209,6 +227,16 @@ public interface I_CmsConstants
 	 */
 	 final static String C_ADDITIONAL_INFO_ADDRESS	= "USER_ADDRESS";
 
+	 /**
+	 * Key for additional info address.
+	 */
+	 final static String C_ADDITIONAL_INFO_ZIPCODE	= "USER_ZIPCODE";
+
+	/**
+	 * Key for additional info address.
+	 */
+	 final static String C_ADDITIONAL_INFO_TOWN	= "USER_TOWN";
+	 
 	/**
 	 * Key for additional info section.
 	 */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsGroup.java,v $
- * Date   : $Date: 2000/04/04 12:42:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/06 12:39:03 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/04/04 12:42:19 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/06 12:39:03 $
  */
 abstract public class A_CmsGroup { 
 	
@@ -61,11 +61,31 @@ abstract public class A_CmsGroup {
 	abstract public String getDescription();
 	
     /**
-     * Desides, if this group is disabled.
+     * Decides, if this group is disabled.
      * 
      * @return GROUP_FLAGS == C_FLAG_DISABLED
      */
-	abstract public boolean getDisabled();    
+	abstract public boolean getDisabled();   
+	
+	/**
+     * Is the Flag Projectmanager set?
+     * 
+     * @return true if C_FLAG_GROUP_PROJECTMANAGER is set 
+     */
+	abstract public boolean getProjectmanager();   
+
+	/**
+     * Is the Flag ProjectCoWorker set?
+     * 
+     * @return true if C_FLAG_GROUP_PROJECTCOWORKER is set 
+     */
+	abstract public boolean getProjectCoWorker();   
+
+	/**
+     * Is the Flag Role set?
+     * 
+     * @return true if C_FLAG_GROUP_ROLE is set 
+     */	abstract public boolean getRole();   
 	
 	/**
 	 * Returns the GROUP_FLAGS.
@@ -76,7 +96,6 @@ abstract public class A_CmsGroup {
 
      /**
 	 * Sets the GROUP_FLAGS.
-	 * 
 	 */
 	abstract void setFlags(int flags);
     
@@ -89,6 +108,12 @@ abstract public class A_CmsGroup {
      * Enables the flags by setting them to C_FLAG_ENABLED.
      */
     abstract public void  setEnabled();
+	
+	abstract public void setProjectManager(boolean yes);
+	abstract public void setProjectCoWorker(boolean yes); 
+	abstract public void setRole(boolean yes);
+	
+	
 
 	/**
 	 * Returns the id of the parent group of the actual Cms group object, 

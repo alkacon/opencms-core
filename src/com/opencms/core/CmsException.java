@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/04/03 10:48:28 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/04/06 12:39:03 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/04/03 10:48:28 $
+ * @version $Revision: 1.24 $ $Date: 2000/04/06 12:39:03 $
  */
 public class CmsException extends Exception {
 	
@@ -199,7 +199,7 @@ public class CmsException extends Exception {
     public final static int C_CLASSLOADER_ERROR = 29;
     
     /**
-     * Definition of error code for error "Password to short".
+     * Definition of error code for error "Password too short".
      */
     public final static int C_SHORT_PASSWORD = 30;
 	
@@ -239,7 +239,7 @@ public class CmsException extends Exception {
                             "No XML template class ",
                             "Error while launching template class ",
                             "OpenCms class loader error ",
-                            "New password is to short ",
+                            "New password is too short ",
 							"Access denied to resource ",
 };
     

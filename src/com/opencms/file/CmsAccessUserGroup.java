@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessUserGroup.java,v $
- * Date   : $Date: 2000/03/29 15:13:12 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/06 12:39:03 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/03/29 15:13:12 $
+ * @version $Revision: 1.16 $ $Date: 2000/04/06 12:39:03 $
  */
  class CmsAccessUserGroup implements I_CmsAccessUserGroup, I_CmsConstants {
 
@@ -201,6 +201,7 @@ import com.opencms.core.*;
 	 public Vector getUsersOfGroup(String groupname)
          throws CmsException {
          A_CmsGroup group=null;
+		 A_CmsGroup defaultGroup;
          A_CmsUser user=null;
          int userid;
          Vector users=new Vector();
@@ -216,6 +217,9 @@ import com.opencms.core.*;
              while (enu.hasMoreElements()){
                  userid=((Integer)enu.nextElement()).intValue();
                  user=m_accessUser.readUser(userid);
+				 user=m_accessUserInfo.readUserInformation(user);
+				 defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
+				 user.setDefaultGroup(defaultGroup);
                   // check if this user really exists
                  if (user != null) {
                     users.addElement(user);
@@ -295,10 +299,12 @@ import com.opencms.core.*;
 		user.setDefaultGroup(defaultGroup);
 		user.setFlags(flags);
 		user.setLastlogin(0);
-	    m_accessUserInfo.addUserInformation(user);  
+	  
         //combine user object and additional information to the complete user object.
         user.setAdditionalInfo(additionalInfos);
         user.setDefaultGroup(defaultGroup);
+		
+		 m_accessUserInfo.addUserInformation(user);
         return user;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsGroup.java,v $
- * Date   : $Date: 2000/04/04 12:42:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/06 12:39:03 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This class describes a Cms user group and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/04/04 12:42:19 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/06 12:39:03 $
  */
  public class CmsGroup extends A_CmsGroup implements I_CmsConstants { 
     
@@ -111,26 +111,59 @@ import com.opencms.core.*;
      }
 	
 	/**
-	 * Returns the description of this group.
-	 * 
-	 * @return description The description of this group.
+	 * Sets the description of this group.
 	 */
      public void setDescription(String description){
          m_description = description;
      }
 	 
     /**
-     * Desides, if this group is disabled.
+     * Decides, if this group is disabled.
      * 
      * @return GROUP_FLAGS == C_FLAG_DISABLED
      */
      public boolean getDisabled() {
-         boolean disabled=false;
-         if (m_flags == C_FLAG_DISABLED) {
-             disabled = true;
-         }
-         return disabled;
+         if ((m_flags & C_FLAG_DISABLED) != 0) 
+             return true;
+         else
+			 return false;
      }
+	 
+	/**
+     * Is the Flag Projectmanager set?
+     * 
+     * @return true if C_FLAG_GROUP_PROJECTMANAGER is set 
+     */
+	public boolean getProjectmanager() {
+		if ((m_flags & C_FLAG_GROUP_PROJECTMANAGER) != 0) {
+             return true;
+         } else
+			 return false;
+     } 
+ 
+	/**
+     * Is the Flag ProjectCoWorker set?
+     * 
+     * @return true if C_FLAG_GROUP_PROJECTCOWORKER is set 
+     */
+	public boolean getProjectCoWorker(){
+		if ((m_flags & C_FLAG_GROUP_PROJECTCOWORKER) != 0) {
+             return true;
+         } else
+			 return false;
+     }
+ 
+	/**
+     * Is the Flag Role set?
+     * 
+     * @return true if C_FLAG_GROUP_ROLE is set 
+     */
+	public boolean getRole(){
+		if ((m_flags & C_FLAG_GROUP_ROLE) != 0) {
+             return true;
+         } else
+			 return false;
+     }  
 	
 	/**
 	 * Returns the GROUP_FLAGS.
@@ -152,12 +185,37 @@ import com.opencms.core.*;
      }
 	 
     /**
-     * Disables the flags by setting them to C_FLAG_DISABLED.
+     * Disables the group by setting the C_FLAG_DISABLED flag.
      */
     public void  setDisabled() {
         setFlags(C_FLAG_DISABLED);
     }
     
+	/**
+     * sets the PROJECTMANAGER flag of the group
+     */
+	public void setProjectManager(boolean f) {
+		if (getProjectmanager() != f)
+			setFlags(getFlags() ^ C_FLAG_GROUP_PROJECTMANAGER);
+    } 
+
+	/**
+     * sets the PROJECTCOWORKER flag of the group
+     */
+	public void setProjectCoWorker(boolean f){
+		if (getProjectCoWorker() != f) 
+			setFlags(getFlags() ^ C_FLAG_GROUP_PROJECTCOWORKER);
+    }
+	
+	/**
+     *  sets the ROLE flag of the group
+     */
+	public void setRole(boolean f){
+		if (getRole() != f) 
+			setFlags(getFlags() ^ C_FLAG_GROUP_ROLE);
+    }  
+	
+	
     /**
      * Enables the flags by setting them to C_FLAG_ENABLED.
      */
