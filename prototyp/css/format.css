@@ -852,3 +852,26 @@ DIV.timer_day
     VISIBILITY: hidden;
     Z-INDEX: 1;
 }
+/*============================================*/
+/* Styles for errors						  */
+/*============================================*/
+#errormain
+{
+	position:absolute;
+	top:78;
+	left:0; 
+	width:350;
+	visibility:hidden;
+	z-index:10;
+}
+
+#errordetails
+{
+	position:absolute;
+	top:78;
+	left:0;
+	width:350;
+	visibility:hidden; 
+	z-index:100
+}
+
