@@ -11,17 +11,17 @@ function show_help()
 {
 	return '2_2_2_2_3_2.html';
 }
-//-->
+
 
 
 function checkForName(){
 
-	if(LINK.NEUNAME.value=="")NEU.WEITER.disabled=true;
+	if(LINK.NEUNAME.value!="")NEU.WEITER.disabled=false;
 	else NEU.WEITER.disabled=false;
  
 }
 
-
+//-->
 </script>
 
 <head>
