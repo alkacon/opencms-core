@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2003/09/05 12:22:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/11 10:03:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,17 +40,13 @@ import com.opencms.workplace.I_CmsWpConstants;
  * 
  * It stores nothing. It just prints everthing to <code>System.out</code>.
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- *  
- * @version $Revision: 1.1 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)  
+ * @version $Revision: 1.2 $
  */
 public class CmsShellReport implements I_CmsReport {
 
     /** Localized message access object */
     private CmsMessages m_messages;
-    
-    /** Flag to indicate if broken links have been reported */
-    private boolean m_hasBrokenLinks = false;
     
     /**
      * Empty default constructor. 
@@ -61,32 +57,32 @@ public class CmsShellReport implements I_CmsReport {
         // generate a message object with the default (english) language
         m_messages = new CmsMessages(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LANGUAGE);        
     }
-        
+    
     /**
-     * @see com.opencms.report.I_CmsReport#println()
+     * @see com.opencms.report.I_CmsReport#getReportUpdate()
      */
-    public void println() {
-        System.out.println();
+    public synchronized String getReportUpdate() {
+        return "";
+    }
+    
+    /**
+     * @see com.opencms.report.I_CmsReport#key(java.lang.String)
+     */
+    public String key(String keyName) {
+        return m_messages.key(keyName);
     }
 
     /**
      * @see com.opencms.report.I_CmsReport#print(java.lang.String)
      */
-    public void print(String value) {
+    public synchronized void print(String value) {
         this.print(value, C_FORMAT_DEFAULT);
-    }
-    
-    /**
-     * @see com.opencms.report.I_CmsReport#println(java.lang.String)
-     */
-    public void println(String value) {
-       this.println(value, C_FORMAT_DEFAULT);
     }
         
     /**
      * @see com.opencms.report.I_CmsReport#print(java.lang.String, int)
      */
-    public void print(String value, int format) {
+    public synchronized void print(String value, int format) {
         StringBuffer buf;
         switch (format) {
             case C_FORMAT_HEADLINE:
@@ -108,11 +104,35 @@ public class CmsShellReport implements I_CmsReport {
             System.out.print(value);
         }       
     }
+        
+    /**
+     * @see com.opencms.report.I_CmsReport#println()
+     */
+    public synchronized void println() {
+        System.out.println();
+    }
+    
+    /**
+     * @see com.opencms.report.I_CmsReport#println(com.opencms.linkmanagement.CmsPageLinks)
+     */
+    public synchronized void println(CmsPageLinks value) {        
+        this.println(value.getResourceName());
+        for (int index=0; index<value.getLinkTargets().size(); index++) {
+            this.println("     " + m_messages.key("report.broken_link_to") + (String)value.getLinkTargets().elementAt(index));
+        }
+    }
+    
+    /**
+     * @see com.opencms.report.I_CmsReport#println(java.lang.String)
+     */
+    public synchronized void println(String value) {
+       this.println(value, C_FORMAT_DEFAULT);
+    }
     
     /**
      * @see com.opencms.report.I_CmsReport#println(java.lang.String, int)
      */
-    public void println(String value, int format) {
+    public synchronized void println(String value, int format) {
         StringBuffer buf;
         switch (format) {
             case C_FORMAT_HEADLINE:
@@ -136,45 +156,13 @@ public class CmsShellReport implements I_CmsReport {
     }
     
     /**
-     * @see com.opencms.report.I_CmsReport#getReportUpdate()
-     */
-    public String getReportUpdate() {
-        return "";
-    }
-    
-    /**
      * @see com.opencms.report.I_CmsReport#println(java.lang.Throwable)
      */
-    public void println(Throwable t) {
+    public synchronized void println(Throwable t) {
         StringBuffer buf = new StringBuffer();        
         buf.append(m_messages.key("report.exception"));   
         buf.append(t.getMessage());
         this.println(new String(buf), C_FORMAT_WARNING);
         t.printStackTrace(System.out);
-    }
-    
-    /**
-     * @see com.opencms.report.I_CmsReport#println(com.opencms.linkmanagement.CmsPageLinks)
-     */
-    public void println(CmsPageLinks value) {     
-        m_hasBrokenLinks = true;           
-        this.println(value.getResourceName());
-        for (int index=0; index<value.getLinkTargets().size(); index++) {
-            this.println("     " + m_messages.key("report.broken_link_to") + (String)value.getLinkTargets().elementAt(index));
-        }
-    }
-    
-    /**
-     * @see com.opencms.report.I_CmsReport#hasBrokenLinks()
-     */
-    public boolean hasBrokenLinks() {
-        return m_hasBrokenLinks;
-    }
-    
-    /**
-     * @see com.opencms.report.I_CmsReport#key(java.lang.String)
-     */
-    public String key(String keyName) {
-        return m_messages.key(keyName);
     }
 }

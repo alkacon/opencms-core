@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/09/05 12:22:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/11 10:03:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,27 +46,12 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
- * 
- * @since 5.0 rc 1
+ * @version $Revision: 1.2 $
  */
 public class CmsHtmlReport implements I_CmsReport {
     
     /** Constant for a HTML linebreak with added "real" line break) */
     private static final String C_LINEBREAK = "<br>\\n";
-    
-    /** Localized message access object */
-    private CmsMessages m_messages;        
-    
-    /**
-     * Constructs a new report using the provided locale for the output language.<p>
-     * 
-     * @param locale a 2-letter language code according to ISO 639 
-     */    
-    public CmsHtmlReport(String locale) {
-        m_messages = new CmsMessages(C_BUNDLE_NAME, locale);
-        m_content = new ArrayList(256);
-    }
     
     /** The list of report objects e.g. String, CmsPageLink, Exception ... */
     private List m_content;
@@ -77,94 +62,21 @@ public class CmsHtmlReport implements I_CmsReport {
      */
     private int m_indexNext;
     
-    /** Flag to indicate if broken links have been reported */
-    private boolean m_hasBrokenLinks = false;
+    /** Localized message access object */
+    private CmsMessages m_messages;        
     
     /** Flag to indicate if exception should be displayed long or short */
-    private boolean m_showExceptionStackTracke = true; 
-
+    private boolean m_showExceptionStackTracke; 
+        
     /**
-     * @see com.opencms.report.I_CmsReport#println()
-     */
-    public void println() {
-        this.print(C_LINEBREAK);
-    }
-
-    /**
-     * @see com.opencms.report.I_CmsReport#print(java.lang.String)
-     */
-    public void print(String value) {
-        this.print(value, C_FORMAT_DEFAULT);
-    }
-
-    /**
-     * @see com.opencms.report.I_CmsReport#println(java.lang.String)
-     */
-    public void println(String value) {
-        this.print(value + C_LINEBREAK, C_FORMAT_DEFAULT);
-    }
-    
-    /**
-     * @see com.opencms.report.I_CmsReport#print(java.lang.String, int)
-     */
-    public void print(String value, int format) {
-        value = convertChars(value);
-        StringBuffer buf;
-        switch (format) { 
-            case C_FORMAT_HEADLINE:
-                buf = new StringBuffer();
-                buf.append("<span style='color: #000099; font-weight: bold;'>");
-                buf.append(value);
-                buf.append("</span>");   
-                m_content.add(buf);                         
-                break;
-            case C_FORMAT_WARNING:
-                buf = new StringBuffer();
-                buf.append("<span style='color: #990000; padding-left:40px;'>");
-                buf.append(value);
-                buf.append("</span>");
-                m_content.add(buf);            
-                break;
-            case C_FORMAT_NOTE:
-                buf = new StringBuffer();
-                buf.append("<span style='color: #666666;'>");
-                buf.append(value);
-                buf.append("</span>");
-                m_content.add(buf);
-                break;        
-            case C_FORMAT_OK:
-                buf = new StringBuffer();
-                buf.append("<span style='color: #009900;'>");
-                buf.append(value);
-                buf.append("</span>");
-                m_content.add(buf);
-                break;                        
-            case C_FORMAT_DEFAULT:
-            default:
-                m_content.add(value);
-        }                    
-    }
-    
-    /**
-     * @see com.opencms.report.I_CmsReport#println(java.lang.String, int)
-     */
-    public void println(String value, int format) {
-        this.print(value + C_LINEBREAK, format);        
-    }
-    
-    /**
-     * @see com.opencms.report.I_CmsReport#println(com.opencms.linkmanagement.CmsPageLinks)
-     */
-    public void println(CmsPageLinks value) {
-        m_hasBrokenLinks = true;
-        m_content.add(value);
-    }
-
-    /**
-     * @see com.opencms.report.I_CmsReport#println(java.lang.Throwable)
-     */
-    public void println(Throwable t) {
-        m_content.add(t);
+     * Constructs a new report using the provided locale for the output language.<p>
+     * 
+     * @param locale a 2-letter language code according to ISO 639 
+     */    
+    public CmsHtmlReport(String locale) {
+        m_messages = new CmsMessages(C_BUNDLE_NAME, locale);
+        m_content = new ArrayList(256);
+        m_showExceptionStackTracke = true;
     }
     
     /**
@@ -174,14 +86,14 @@ public class CmsHtmlReport implements I_CmsReport {
      * @return the char converted String without linebreaks
      */
     private String convertChars(String value) {
-        value = CmsStringSubstitution.substitute(value, "\"", "\\\"");
+        value = CmsStringSubstitution.substitute(value, "\"", "\\\"");   
         StringBuffer buf = new StringBuffer();
         StringTokenizer tok = new StringTokenizer(value, "\r\n");
         while (tok.hasMoreTokens()) {
             buf.append(tok.nextToken());
             buf.append(" ");
         }
-        return buf.toString(); 
+        return buf.toString();
     }
 
     /**
@@ -200,7 +112,7 @@ public class CmsHtmlReport implements I_CmsReport {
     private StringBuffer getExceptionElement(Throwable throwable) {        
         StringBuffer buf = new StringBuffer();
         if (m_showExceptionStackTracke) {
-            buf.append("<span style='color: #990000;'>");
+            buf.append("<span class='throw'>");
             buf.append(m_messages.key("report.exception"));
             String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
             exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
@@ -211,7 +123,7 @@ public class CmsHtmlReport implements I_CmsReport {
             }            
             buf.append("</span>");
         } else {
-            buf.append("<span style='color: #990000;'>");
+            buf.append("<span class='throw'>");
             buf.append(m_messages.key("report.exception"));
             buf.append(throwable.toString());
             buf.append("</span>");
@@ -230,7 +142,7 @@ public class CmsHtmlReport implements I_CmsReport {
      */
     private StringBuffer getLinkElement(String link) {
         StringBuffer buf = new StringBuffer();
-        buf.append("<span style='color: #666666;'>");
+        buf.append("<span class='link1'>");
         buf.append(m_messages.key("report.checking"));
         buf.append("</span>");        
         // TODO: Check for absolute path when link management is working again
@@ -248,9 +160,9 @@ public class CmsHtmlReport implements I_CmsReport {
      * @return the formatted StringBuffer
      */    
     private StringBuffer getLinkTargetElement(String target) {
-        StringBuffer buf = new StringBuffer("<span style='padding-left:40px; color: #666666;'>");
+        StringBuffer buf = new StringBuffer("<span class='link2'>");
         buf.append(m_messages.key("report.broken_link_to"));
-        buf.append("<span style='color: #990000;'>");
+        buf.append("<span class='link3'>");
         // TODO: Check for absolute path when link management is working again
         buf.append(target);
         buf.append("</span></span>");        
@@ -284,16 +196,92 @@ public class CmsHtmlReport implements I_CmsReport {
     }
     
     /**
-     * @see com.opencms.report.I_CmsReport#hasBrokenLinks()
-     */
-    public boolean hasBrokenLinks() {
-        return m_hasBrokenLinks;
-    }
-    
-    /**
      * @see com.opencms.report.I_CmsReport#key(java.lang.String)
      */
     public String key(String keyName) {
         return m_messages.key(keyName);
+    }
+
+    /**
+     * @see com.opencms.report.I_CmsReport#print(java.lang.String)
+     */
+    public synchronized void print(String value) {
+        this.print(value, C_FORMAT_DEFAULT);
+    }
+    
+    /**
+     * @see com.opencms.report.I_CmsReport#print(java.lang.String, int)
+     */
+    public synchronized void print(String value, int format) {
+        value = convertChars(value);
+        StringBuffer buf;
+        switch (format) { 
+            case C_FORMAT_HEADLINE:
+                buf = new StringBuffer();
+                buf.append("<span class='head'>");
+                buf.append(value);
+                buf.append("</span>");   
+                m_content.add(buf);                         
+                break;
+            case C_FORMAT_WARNING:
+                buf = new StringBuffer();
+                buf.append("<span class='warn'>");
+                buf.append(value);
+                buf.append("</span>");
+                m_content.add(buf);            
+                break;
+            case C_FORMAT_NOTE:
+                buf = new StringBuffer();
+                buf.append("<span class='note'>");
+                buf.append(value);
+                buf.append("</span>");
+                m_content.add(buf);
+                break;        
+            case C_FORMAT_OK:
+                buf = new StringBuffer();
+                buf.append("<span class='ok'>");
+                buf.append(value);
+                buf.append("</span>");
+                m_content.add(buf);
+                break;                        
+            case C_FORMAT_DEFAULT:
+            default:
+                m_content.add(value);
+        }                    
+    }
+
+    /**
+     * @see com.opencms.report.I_CmsReport#println()
+     */
+    public synchronized void println() {
+        this.print(C_LINEBREAK);
+    }
+    
+    /**
+     * @see com.opencms.report.I_CmsReport#println(com.opencms.linkmanagement.CmsPageLinks)
+     */
+    public synchronized void println(CmsPageLinks value) {
+        m_content.add(value);
+    }
+
+    /**
+     * @see com.opencms.report.I_CmsReport#println(java.lang.String)
+     */
+    public synchronized void println(String value) {
+        this.print(value + C_LINEBREAK, C_FORMAT_DEFAULT);
+    }
+    
+    /**
+     * @see com.opencms.report.I_CmsReport#println(java.lang.String, int)
+     */
+    public synchronized void println(String value, int format) {
+        this.print(value + C_LINEBREAK, format);        
+    }
+
+    /**
+     * @see com.opencms.report.I_CmsReport#println(java.lang.Throwable)
+     */
+    public synchronized void println(Throwable t) {
+        m_content.add(t);
     }
 }

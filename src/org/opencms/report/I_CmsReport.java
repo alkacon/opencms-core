@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2003/09/05 12:22:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/11 10:03:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,7 @@ import com.opencms.linkmanagement.CmsPageLinks;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface I_CmsReport {
 
@@ -126,18 +125,6 @@ public interface I_CmsReport {
      * @return new elements that have been added to the report and not yet processed.
      */
     String getReportUpdate();
-    
-    /**
-     * Returns <code>true</code> if broken links where reported, <code>false</code>
-     * otherwise.<p>
-     * 
-     * Open links where reported if at last one link was added to the report using the 
-     * {@link #println(CmsPageLinks) } method.<p>
-     * 
-     * @return <code>true</code> if broken links where reported, <code>false</code>
-     * otherwise
-     */
-    boolean hasBrokenLinks();
     
     /**
      * Gets the localized resource string for a given message key.<p>

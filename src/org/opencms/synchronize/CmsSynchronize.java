@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/09/10 16:13:06 $
- * Version: $Revision: 1.12 $
- * Date   : $Date: 2003/09/10 16:13:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/11 10:03:15 $
+ * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/11 10:03:15 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/09/10 16:13:06 $
+ * @version $Revision: 1.13 $ $Date: 2003/09/11 10:03:15 $
  */
 public class CmsSynchronize {
 
@@ -297,8 +297,16 @@ public class CmsSynchronize {
             m_cms.readFolder(translate(folder));
         } catch (CmsException e) {
             // the folder could not be read, so create it
-            // extract the foldername
-            CmsResource newFolder = m_cms.createResource(translate(folder), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new HashMap(), new byte[0], null);
+            m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);  
+            m_report.print(m_report.key("report.sync_importing_folder"), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));      
+            // extract the foldername            
+            String foldername = translate(folder);
+            m_report.print(m_report.key("report.sync_from_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                     
+            m_report.print(foldername);
+            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE); 
+                        
+            CmsResource newFolder = m_cms.createResource(foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new HashMap(), new byte[0], null);
             // now check if there is some external method to be called which 
             // should modify the imported resource in the VFS
             Iterator i = m_synchronizeModifications.iterator();
@@ -309,15 +317,14 @@ public class CmsSynchronize {
                     break;
                 }
             }
-            // lock the resource
-            //m_cms.unlockResource(translate(folder), false);
-            // we have to read the new resource again, to get the correct
-            // timestamp.
-            newFolder = m_cms.readFolder(translate(folder));
+            // we have to read the new resource again, to get the correct timestamp
+            newFolder = m_cms.readFolder(foldername);
             String resourcename = m_cms.readAbsolutePath(newFolder);
             // add the folder to the sync list
             CmsSynchronizeList sync = new CmsSynchronizeList(folder, resourcename, newFolder.getDateLastModified(), fsFile.lastModified());
             m_newSyncList.put(resourcename, sync);
+            
+            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
         }
         // since the check has been done on folder basis, this must be a folder
         if (fsFile.isDirectory()) {
