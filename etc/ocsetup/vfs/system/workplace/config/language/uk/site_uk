@@ -6,6 +6,7 @@
 			<title>
 				<deletesite>Delete site</deletesite>
 				<siteproperty>Site properties</siteproperty>
+				<sitecopy>Copy site</sitecopy>
 			</title>
 			<label>
 				<createnewsite>Create new site</createnewsite>
@@ -15,6 +16,8 @@
 				<domain>Domain</domain>
 				<languagelabel>Language</languagelabel>
 				<categories>Category</categories>
+				<site>Site</site>
+				<project>Project</project>
 				<suredeletingsite1>Are you sure that you want to delete the site </suredeletingsite1>
 				<suredeletingsite2>?</suredeletingsite2>
 				
@@ -23,7 +26,6 @@
 				<title>		
 					<newsite>New site</newsite>
 					<editsite>Edit site</editsite>
-	
 				</title>
 				
 				<message>

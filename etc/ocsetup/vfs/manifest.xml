@@ -137,6 +137,15 @@
 			<properties/>
 		</file>
 		<file>
+			<source>action/administration_sitecopy.html</source>
+			<destination>system/workplace/action/administration_sitecopy.html</destination>
+			<type>XMLTemplate</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>7</access>
+			<properties/>
+		</file>
+		<file>
 			<source>action/administration_content_sitenew.html</source>
 			<destination>system/workplace/action/administration_content_sitenew.html</destination>
 			<type>XMLTemplate</type>
@@ -6920,6 +6929,15 @@
 		<file>
 			<source>templates/sitematrix_frames</source>
 			<destination>system/workplace/templates/sitematrix_frames</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>templates/administration_sitecopy</source>
+			<destination>system/workplace/templates/administration_sitecopy</destination>
 			<type>plain</type>
 			<user>Admin</user>
 			<group>Users</group>

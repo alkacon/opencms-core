@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<script language="JavaScript" type="text/javascript">
+function changesite()
+{
+	document.sitecopy.submitform.value="false";
+	document.sitecopy.submit();
+}
+</script>
+<!-- Include external JavaScripts-->
+<script language="JavaScript" type="text/javascript" src="../templates/js/opencms.js"></script>
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+</head>
+<!--
+<body bgcolor="#ffffff"  background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_project.html';" onUnload="if(treewin!=null)treewin.close();">
+-->
+<body bgcolor="#ffffff"  background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form id="sitecopy" name="sitecopy" action="administration_sitecopy.html">
+<input type=hidden name="submitform" value="true">
+<table cellspacing=0 cellpadding=0 border=1 width=380>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td class="head">]]><LABEL value="sitemanagement.title.sitecopy" /><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Beginn Inhalt-->
+			<tr><td class=dialogtxt>
+				<table border=0 width=100%>
+					<tr><td class=dialogtxt>
+						<table border=0 cellspacing=4 width=100% height=200px>
+							<tr>
+								<td class=formular width=10%>]]><LABEL value="sitemanagement.label.site" /><![CDATA[:</td>
+								<td class=dialogtxt>
+									]]><SELECT class="textfeld" name="site" width="150" method="getSites" onchange="changesite();"/><![CDATA[
+								</td>
+							</tr>
+							<tr>
+								<td class=formular width=10%>]]><LABEL value="sitemanagement.label.project" /><![CDATA[:</td>
+								<td class=dialogtxt>
+									]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange=""/><![CDATA[
+								</td>
+							</tr>
+				</table>
+			</td></tr>
+			
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt>
+				<table cellspacing=0 border=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="document.sitecopy.submit();" /><![CDATA[</td>
+					<td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="document.location='explorer_files.html'" /><![CDATA[</td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			
+			</table>
+	</td></tr>
+</table>
+</td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="wait">
+<![CDATA[
+<html>
+<head>
+<script language="JavaScript" type="text/javascript" src="../templates/js/opencms.js"></script>
+</head>
+<body onload="document.location='administration_sitecopy.html?action=start'">
+<center>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</center>
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="done">
+<![CDATA[
+<html>
+<head>
+<script language="JavaScript" type="text/javascript" src="../templates/js/opencms.js"></script>
+</head>
+<body onload="document.location='sitematrix.html'">
+<center>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><img alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</center>
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+</WORKPLACE>
