@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/02/04 16:42:08 $
-* Version: $Revision: 1.195 $
+* Date   : $Date: 2002/02/14 14:24:07 $
+* Version: $Revision: 1.196 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.195 $ $Date: 2002/02/04 16:42:08 $
+ * @version $Revision: 1.196 $ $Date: 2002/02/14 14:24:07 $
  */
 public interface I_CmsConstants {
 
@@ -1012,6 +1012,11 @@ public interface I_CmsConstants {
      * A tag in the manifest-file.
      */
     public static String C_EXPORT_TAG_EXPORT = "export";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_MODULEXPORT = "modulexport";
 
     /**
      * A tag in the manifest-file.
