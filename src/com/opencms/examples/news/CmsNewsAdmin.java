@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/27 12:21:15 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/27 12:21:15 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -197,9 +197,15 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                         newDate = Utils.getNiceShortDate(cal.getTime().getTime());
                     }
                     
-                    // Create task
-                    makeTask(cms, newsFileName);
-                    
+                    // Try creating the task
+                    try {
+                        makeTask(cms, newsFileName);
+                    } catch(Exception e) {
+                        if(A_OpenCms.isLogging()) {
+                            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Cannot create news task for news article " + newsFileName + ". ");
+                            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + e.getMessage());
+                        }
+                    }                    
                 } else {
                     newsContentFile = getNewsContentFile(cms, cms.readFile(file));                
                 }
