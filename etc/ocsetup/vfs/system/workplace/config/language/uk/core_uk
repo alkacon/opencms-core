@@ -21,7 +21,7 @@
             <default>Default</default>
             <delete>Delete</delete>
             <detail>Details...</detail>
-            <downloadlist>download list</downloadlist>
+            <downloadlist>Download Gallery</downloadlist>
             <edit>Edit</edit>
             <endwizard>Finish</endwizard>
             <executedelete>Delete now</executedelete>
@@ -34,14 +34,15 @@
             <help>Help</help>
             <hidedetails>Hide details</hidedetails>
             <htmlgallery>HTML-Gallery</htmlgallery>                        
+            <htmllist>HTML-Gallery</htmllist>                        
             <image>Insert Image</image>
-            <imagelist>Image List</imagelist>
+            <imagelist>Image Gallery</imagelist>
             <indentin>Indent</indentin>
             <indentout>Unindent</indentout>
             <italic>Italic</italic>
             <linkto>Link</linkto>
             <linkinternal>Internal Link</linkinternal>
-            <linklist>External links gallery</linklist>
+            <linklist>External links Gallery</linklist>
             <login>Login</login>
             <new>New</new>
             <newarticle>New Article</newarticle>
@@ -426,10 +427,10 @@
             <downloadgallery>Download galleries<![CDATA[<br>]]>management</downloadgallery>
             <export>Export</export>
             <exportmoduledata>Export Moduldata</exportmoduledata>
-            <extlinkgallery>External links<![CDATA[<br>]]>management</extlinkgallery>
+            <extlinkgallery>External links galleries<![CDATA[<br>]]>management</extlinkgallery>
             <groups>Edit Groups</groups> 
             <histproperties>Manage history properties</histproperties>
-            <htmlgallery>HTML-Gallery</htmlgallery>                        
+            <htmlgallery>HTML-Gallery<![CDATA[<br>]]>management</htmlgallery>                        
             <imagelist>image list</imagelist>
             <import>Import</import>
             <linkmanagement>Check Project</linkmanagement>
@@ -587,7 +588,7 @@
             <promptgroup>Please choose group ...</promptgroup>
             <propertydef>Select Property</propertydef>
             <navtext>Navigationtext</navtext>
-			<navpos>Position in Navigation</navpos>
+            <navpos>Position in Navigation</navpos>
             <newposition>New Position</newposition>
             <newpropertydefvalue>Enter Property Value</newpropertydefvalue>
             <newpropertydef>New Property</newpropertydef>

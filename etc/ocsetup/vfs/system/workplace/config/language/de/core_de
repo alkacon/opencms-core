@@ -21,7 +21,7 @@
             <default>Voreinstellungen</default>
             <delete>Löschen</delete>
             <detail>Details...</detail>
-            <downloadlist>Download Liste</downloadlist>
+            <downloadlist>Downloadgalerien</downloadlist>
             <edit>Bearbeiten</edit>
             <endwizard>Fertig stellen</endwizard>
             <executedelete>Jetzt löschen</executedelete>
@@ -33,15 +33,16 @@
             <goto>Gehe zu</goto>
             <help>Hilfe</help>
             <hidedetails>Details verbergen</hidedetails>
-            <htmlgallery>HTML-Galerie</htmlgallery>            
+            <htmlgallery>HTML-Galerien</htmlgallery>
+            <htmllist>HTML-Galerien</htmllist>
             <image>Bildparameter</image>
-            <imagelist>Bilderliste</imagelist>
+            <imagelist>Bildergalerien</imagelist>
             <indentin>Einzug vergrößern</indentin>
             <indentout>Einzug verkleinern</indentout>
             <italic>Kursiv</italic>
             <linkto>Link</linkto>
             <linkinternal>Interner Link</linkinternal>
-            <linklist>Externe Links-Galerie</linklist>
+            <linklist>Externe Links-Galerien</linklist>
             <login>Anmelden</login>
             <new>Neu</new>
             <newarticle>Neuer Artikel</newarticle>
@@ -424,14 +425,14 @@
             <downloadgallery>Downloadgalerien<![CDATA[<br>]]>verwalten</downloadgallery>
             <export>Export</export>
             <exportmoduledata>Export Moduldaten</exportmoduledata>
-            <extlinkgallery>Externe Links<![CDATA[<br>]]>verwalten</extlinkgallery>
+            <extlinkgallery>Externe Links-Galerien<![CDATA[<br>]]>verwalten</extlinkgallery>
             <groups>Gruppe</groups>
             <histproperties>Verwaltung Historieneigenschaften</histproperties>
-            <htmlgallery>HTML-Galerie</htmlgallery>            
+            <htmlgallery>HTML-Galerien<![CDATA[<br>]]>verwalten</htmlgallery>            
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>
             <linkmanagement>Projekt prüfen</linkmanagement>
-            <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
+            <linkcheckviewer>Ergebnisse Linkprüfung</linkcheckviewer>
             <logfileviewer>Logfileviewer</logfileviewer>
             <module>Modul- verwaltung</module>
             <mountpoint>Mountpoint- </mountpoint>
@@ -585,7 +586,7 @@
             <promptgroup>Bitte Verwalter wählen ...</promptgroup>
             <propertydef>Eigenschaft wählen</propertydef>
             <navtext>Navigationstext</navtext>
-			<navpos>Position in Navigation</navpos>
+            <navpos>Position in Navigation</navpos>
             <newposition>Neue Position</newposition>
             <newpropertydefvalue>Wert der Eigenschaft eingeben</newpropertydefvalue>
             <newpropertydef>Neue Eigenschaft</newpropertydef>
