@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -14,7 +14,7 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <title>OpenCms</title>
 
@@ -31,9 +31,9 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
 
 <!-- Tabellenaufbau Dokumentation Aufgabe-->
 <table width=90% cellspacing=1 cellpadding=4 border=0>
-    <!-- Beginn Überschrift Task-->
+    <!-- Beginn Ueberschrift Task-->
     <tr><td colspan=3 class=]]><PROCESS>style</PROCESS><![CDATA[>]]><PROCESS>task</PROCESS><![CDATA[</td></tr>
-    <!-- Ende Überschrift -->
+    <!-- Ende Ueberschrift -->
     
     <!-- Beginn Inhalt -->
     <tr>
@@ -129,7 +129,7 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 
@@ -173,7 +173,7 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 
@@ -216,7 +216,7 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 
@@ -229,7 +229,7 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=01 name=01 action="tasks_content_detail.html?action=takeok" method="post">
 <table cellspacing=0 cellpadding=0 border=2 width=300px>
     <tr><td>
@@ -301,7 +301,7 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
 
 <!-- Beginn Style -->
@@ -321,13 +321,13 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
 
 <form id=NEWTASK name=NEWTASK action="tasks_content_detail.html?action=dueok" method="post">
 
-<!-- Tabellenaufbau für Neue Aufgabe-->
+<!-- Tabellenaufbau fuer Neue Aufgabe-->
 <table border=2 cellspacing=0 cellpadding=0 width=500px>
 <tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
 
-    <!-- Beginn Überschrift blau-->
+    <!-- Beginn Ueberschrift blau-->
     <tr><td colspan=3 class=head>]]><LABEL value="task.dialog.due.title" /><![CDATA[</td></tr>
-    <!-- Ende Überschrift blau-->
+    <!-- Ende Ueberschrift blau-->
     
     <!-- Beginn Leerzele-->
     <tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
@@ -347,7 +347,7 @@ top.help_url='Aufgaben/aufgabebearbeiten.html';
     <tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
     <!-- Ende Leerzeile-->
 
-    <!-- Beginn Buttonleiste Zurück inaktiv-->
+    <!-- Beginn Buttonleiste Zurueck inaktiv-->
     <tr><td colspan=3 class=formular>
             <table cellspacing=0 cellpadding=5 width=100%>
             <tr>

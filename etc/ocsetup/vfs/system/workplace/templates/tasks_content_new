@@ -1,15 +1,15 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
 
 <html>
 
-<!-- Beginn externe Scripte wegen Datumsprüfung-->
+<!-- Beginn externe Scripte wegen Datumspruefung-->
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
-<!-- um 2te Combobox zu füllen -->
+<!-- um 2te Combobox zu fuellen -->
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_task.js"></SCRIPT>
-<!-- Script wegen Datumsprüfung-->
+<!-- Script wegen Datumspruefung-->
 
 <script language=JavaScript>
 <!--
@@ -40,7 +40,7 @@ iMaxOpts = iMaxOpts + 1;
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 <title>OpenCms</title>
 
 <!-- Beginn Style -->
@@ -57,13 +57,13 @@ iMaxOpts = iMaxOpts + 1;
 
 <form id=NEWTASK name=NEWTASK>
 
-<!-- Tabellenaufbau für Neue Aufgabe-->
+<!-- Tabellenaufbau fuer Neue Aufgabe-->
 <table border=2 cellspacing=0 cellpadding=0 width=500px>
 <tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
 
-    <!-- Beginn Überschrift blau-->
+    <!-- Beginn Ueberschrift blau-->
     <tr><td colspan=5 class=head>]]><label value="task.label.newtask"/><![CDATA[</td></tr>
-    <!-- Ende Überschrift blau-->
+    <!-- Ende Ueberschrift blau-->
     
     <!-- Beginn Leerzele-->
     <tr><td colspan=5 class=dialogtxt><img src="]]><METHOD name="picsUrl">ic_taskdoku_start.gif</METHOD><![CDATA[" border=0 width=16 height=16></td></td></tr>
@@ -135,7 +135,7 @@ iMaxOpts = iMaxOpts + 1;
     <tr><td colspan=5 class=leerzeile>&nbsp;</td></tr>
     <!-- Ende Leerzeile-->
 
-    <!-- Beginn Buttonleiste Zurück inaktiv-->
+    <!-- Beginn Buttonleiste Zurueck inaktiv-->
     <tr><td colspan=5 class=formular>
             <table cellspacing=0 cellpadding=5 width=100%>
             <tr>

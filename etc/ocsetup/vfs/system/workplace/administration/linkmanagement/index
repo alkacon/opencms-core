@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -16,7 +16,7 @@ top.help_url='Administration/linkmanagement.html';
 <script language=JavaScript>
 <!--
  var pageStart="<HTML><head>"+
-                    "<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=iso-8859-1'>"+
+                    "<META HTTP-EQUIV='Content-Type' CONTENT='text/html;  '>"+
                     "<link rel=stylesheet type='text/css' href='../../css/format.css'>"+
                 "</HEAD>"+
                 "<BODY bgcolor='#ffffff' marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload=\"window.scrollTo(0,100000);\">";
@@ -53,7 +53,7 @@ top.help_url='Administration/linkmanagement.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../css/format.css">

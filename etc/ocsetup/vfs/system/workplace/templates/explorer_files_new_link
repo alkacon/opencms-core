@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -124,7 +124,7 @@ top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
 //-->
 </script>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
@@ -288,7 +288,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
@@ -365,7 +365,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
 
 <link rel=stylesheet type="text/css" href="../css/format.css">

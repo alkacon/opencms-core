@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -11,7 +11,7 @@ top.help_url='ExplorerAnsicht/header.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -23,7 +23,7 @@ top.help_url='ExplorerAnsicht/header.html';
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=UEBERNEHMEN name=UEBERNEHMEN>
 <input type="hidden" name="projectid" value="]]><PROCESS>projectid</PROCESS>"><![CDATA[</input>
 <table cellspacing=0 cellpadding=0 border=2 width=300>
@@ -89,7 +89,7 @@ top.help_url='ExplorerAnsicht/header.html';
 //-->
 </script>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 </HEAD>
@@ -97,7 +97,7 @@ top.help_url='ExplorerAnsicht/header.html';
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=UEBERNEHMEN name=UEBERNEHMEN>
 <input type="hidden" name="projectid" value="]]><PROCESS>projectid</PROCESS>"><![CDATA[</input>
 <table cellspacing=0 cellpadding=0 border=2 width=300>
@@ -222,7 +222,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <script language=JavaScript>
 <!--
  var pageStart="<HTML><head>"+
-                    "<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=iso-8859-1'>"+
+                    "<META HTTP-EQUIV='Content-Type' CONTENT='text/html;  '>"+
                     "<link rel=stylesheet type='text/css' href='../css/format.css'>"+
                 "</HEAD>"+
                 "<BODY bgcolor='#ffffff' marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload=\"window.scrollTo(0,100000);\">";
@@ -271,7 +271,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -282,7 +282,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <table cellspacing=0 cellpadding=0 border=1 width=950>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -346,7 +346,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <script language=JavaScript>
 <!--

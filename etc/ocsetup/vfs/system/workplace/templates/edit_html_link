@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -189,7 +189,7 @@
 		//-->
 		</script>
 
-		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 		<title>]]><LABEL value="title.newlink" /><![CDATA[</title>
 		<link rel=stylesheet type="text/css" href="../css/format.css">
 		<script language="JavaScript" type="text/javascript" src="../templates/js/opencms.js"></script>

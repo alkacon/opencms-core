@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -14,7 +14,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../css/format.css">
@@ -84,7 +84,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <!-- Include external JavaScripts-->
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
 <head>
-    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
     <title>OpenCms</title>
     <link rel=stylesheet type="text/css" href="../../css/format.css">
 </HEAD>
@@ -93,7 +93,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <table width=100% height=100% border=2 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=DBIMPORT name=DBIMPORT action="module_new.html?step=serverupload" method="post">
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
@@ -170,7 +170,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <!-- Include external JavaScripts-->
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
 <head>
-    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
     <title>OpenCms</title>
     <link rel=stylesheet type="text/css" href="../../css/format.css">
 </HEAD>
@@ -261,7 +261,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../css/format.css">
 </HEAD>
@@ -269,7 +269,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=LOCK name=LOCK>
 <table cellspacing=0 cellpadding=0 border=2 width=300>
     <tr><td>
@@ -328,7 +328,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>Dialog</title>
 <link rel=stylesheet type="text/css" href="../../css/format.css">
 </HEAD>
@@ -336,7 +336,7 @@ top.help_url='Administration/Modulverwaltung/index.html';
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=XXX name=XXX>
 <table cellspacing=0 cellpadding=0 border=2 width=300>
     <tr><td>

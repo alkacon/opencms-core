@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE name="description">
 <![CDATA[
@@ -10,7 +10,7 @@
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../css/format.css">
 </head>
@@ -20,7 +20,7 @@
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=UEBERNEHMEN name=UEBERNEHMEN>
 <table cellspacing=0 cellpadding=0 border=2 width=400>
 	<tr><td>
@@ -135,7 +135,7 @@ function checkHowMuch(){
 //-->
 </script>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../css/format.css">
 </HEAD>
@@ -144,7 +144,7 @@ function checkHowMuch(){
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=META name="META" action="properties.html?view=changeparameter&module=]]><PROCESS>name</PROCESS><![CDATA[" method="post">
 <table cellspacing=0 cellpadding=0 border=2 width=500>
 	<tr><td>
@@ -228,7 +228,7 @@ function checkHowMuch(){
 //-->
 </script>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../css/format.css">
 </HEAD>
@@ -238,7 +238,7 @@ function checkHowMuch(){
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=UEBERNEHMEN name=UEBERNEHMEN action="properties.html?view=newvalue&module=]]><PROCESS>name</PROCESS><![CDATA[&parameter=]]><PROCESS>paraname</PROCESS><![CDATA[" method="post">
 <table cellspacing=0 cellpadding=0 border=2 width=400>
 	<tr><td>

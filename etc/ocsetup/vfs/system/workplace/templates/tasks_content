@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -17,7 +17,7 @@ top.help_url='Aufgaben/index.html';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 <title>OpenCms</title>
 
 <!-- Beginn Style -->
@@ -28,7 +28,7 @@ top.help_url='Aufgaben/index.html';
 
 <body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="start();">
 
-<!-- Beginn Kontent Neue Aufgaben für mich-->
+<!-- Beginn Kontent Neue Aufgaben fuer mich-->
 <table cellspacing=1 cellpadding=1 border=0 width="732">
 	<!-- Beginn Kopf Kontent Aufgaben-->
 	<tr bgcolor="#c0c0c0">

@@ -16,7 +16,7 @@ function show_help()
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 <title>OpenCms</title>
 
 <!-- Beginn Style -->
@@ -33,13 +33,13 @@ function show_help()
 
 <form id=NEWTASK name=NEWTASK action="tasks_content_detail.html?action=priorityok" method="post">
 
-<!-- Tabellenaufbau für Neue Aufgabe-->
+<!-- Tabellenaufbau fuer Neue Aufgabe-->
 <table border=2 cellspacing=0 cellpadding=0 width=500px>
 <tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
 
-	<!-- Beginn Überschrift blau-->
+	<!-- Beginn Ueberschrift blau-->
 	<tr><td class=head>]]><LABEL value="task.dialog.priority.title" /><![CDATA[</td></tr>
-	<!-- Ende Überschrift blau-->
+	<!-- Ende Ueberschrift blau-->
 	
 	<!-- Beginn Leerzele-->
 	<tr><td class=formular><img src="]]><METHOD name="picsUrl">ic_taskdoku_prio.gif</METHOD><![CDATA[" border=0 width=16 height=16></td></tr>
@@ -64,7 +64,7 @@ function show_help()
 	<tr><td class=leerzeile>&nbsp;</td></tr>
 	<!-- Ende Leerzeile-->
 
-	<!-- Beginn Buttonleiste Zurück inaktiv-->
+	<!-- Beginn Buttonleiste Zurueck inaktiv-->
 	<tr><td class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>

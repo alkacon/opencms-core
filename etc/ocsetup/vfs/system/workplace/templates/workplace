@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
 <html>
-<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html;">
 <title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
 <!-- Beginn Styles und Scripte -->
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -18,16 +18,16 @@
 </frameset>
 <!-- Ende Aufbau der Frames des gesamten Systems -->
 
-<!-- Beginn Aufbau Inhalt für Browser ohne Frameversion -->
+<!-- Beginn Aufbau Inhalt fuer Browser ohne Frameversion -->
 <body>
 <p><img src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA[" border=0 alt="opencms">
-<p>Leider unterstützt Ihr Browser keine Frames.
+<p>Leider unterstuetzt Ihr Browser keine Frames.
 <p>Wir achten stets darauf, daß in diesem Produkt die neueste Technik verwendet wird.
 <p>Bitte laden Sie sich die aktuelle Version von
 <a href="www.netscape.com">Netscape</a> oder
 <a href="www.microsoft.com">MS Internet Explorer</a> runter.
 </body>
-<!-- Beginn Aufbau Inhalt für Browser ohne Frameversion -->
+<!-- Beginn Aufbau Inhalt fuer Browser ohne Frameversion -->
 
 </html>
 ]]>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <STARTUP>openwin('index.html', 'opencms<PROCESS>ID</PROCESS>', 0, 0); if(window.name != 'opencms<PROCESS>ID</PROCESS>') {window.close();}</STARTUP>
 <TEMPLATE>
@@ -6,7 +6,7 @@
 <html>
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 
 <title>]]><METHOD name="getTitle"/><![CDATA[</title>
 <!-- Begin Styles and Scripts -->

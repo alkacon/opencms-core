@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -14,7 +14,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
@@ -78,7 +78,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 <title>OpenCms</title>
 
 <link rel=stylesheet type="text/css" href="../../css/format.css">
@@ -157,7 +157,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
     </script>
     
     <head>
-    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  1">
     
     <title>OpenCms</title>
     <link rel=stylesheet type="text/css" href="../../css/format.css">
@@ -216,7 +216,7 @@ function check_text_local()
 //-->
 </script>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  1">
 <title>OpenCms</title>
 
 <link rel=stylesheet type="text/css" href="../../css/format.css">
@@ -298,7 +298,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
     <HTML>
 
     <head>
-    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html;  1">
 
     <title>OpenCms - Datei hochladen</title>
 
@@ -316,7 +316,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
     <BODY onLoad="errorinit();" bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
 
     <div id="errormain">
-    <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+    <!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
     <form id=ERROR name=ERROR>
     <table cellspacing=0 cellpadding=0 border=2 width=350>
         <tr><td class=dialogtxt>

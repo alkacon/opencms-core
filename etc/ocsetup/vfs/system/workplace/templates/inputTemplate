@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WP_INPUTS>	
 	<inputfield><![CDATA[<input class="]]><PROCESS>class</PROCESS><![CDATA[" value="]]><PROCESS>value</PROCESS><![CDATA[" size=]]><PROCESS>size</PROCESS><![CDATA[ maxlength=]]><PROCESS>length</PROCESS><![CDATA[ name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA[" ]]><PROCESS>action</PROCESS>></inputfield>
 	<password><![CDATA[<input type ="password" class="]]><PROCESS>class</PROCESS><![CDATA[" size=]]><PROCESS>size</PROCESS><![CDATA[ maxlength=]]><PROCESS>length</PROCESS><![CDATA[ name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA["]]>></password>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -15,7 +15,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -29,7 +29,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=META name=META>
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
@@ -99,7 +99,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -123,7 +123,7 @@ function checkSelect()
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=META name=META onsubmit="return checkSelect();">
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
@@ -204,7 +204,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -216,7 +216,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=METACHANGE name=METACHANGE>
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
@@ -298,7 +298,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -331,7 +331,7 @@ top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -343,7 +343,7 @@ top.help_url='ExplorerAnsicht/eigenschaftsAktionen/properties.html';
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=METANEW name=METANEW>
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>
@@ -428,7 +428,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -440,7 +440,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/eigenschaftsAktionen/properties.html'
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=METAORG name=METAORG>
 <table cellspacing=0 cellpadding=0 border=2 width=500>
     <tr><td>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WP_BUTTONS>
 	<defaultbutton><![CDATA[<A href="]]><PROCESS>href</PROCESS><![CDATA[" onmousedown="ChPush(']]><PROCESS>name</PROCESS><![CDATA[');]]><PROCESS>action</PROCESS><![CDATA[" onmouseout="ChOff(']]><PROCESS>name</PROCESS><![CDATA[')" onmouseover="ChOn(']]><PROCESS>name</PROCESS><![CDATA[')" onmouseup="ChOn(']]><PROCESS>name</PROCESS><![CDATA[')"><IMG alt="]]><PROCESS>alt</PROCESS><![CDATA[" width=32 border=0 name=]]><PROCESS>name</PROCESS><![CDATA[ src="]]><METHOD name="picsUrl"><PROCESS>name</PROCESS>_off.gif</METHOD><![CDATA[" ></a>]]></defaultbutton>
 	<deactivatedbutton><![CDATA[<IMG alt="]]><PROCESS>alt</PROCESS><![CDATA[" border=0 name=]]><PROCESS>name</PROCESS><![CDATA[ src="]]><METHOD name="picsUrl"><PROCESS>name</PROCESS>_in.gif</METHOD><![CDATA[" ></a>]]></deactivatedbutton>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -15,7 +15,7 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../../css/format.css">
@@ -28,7 +28,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.admin_he
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id="USERS" name="USERS">
 <input type=hidden name="perspective" value="user">
 <table cellspacing=0 cellpadding=0 border=2 width=500>
@@ -111,7 +111,7 @@ top.help_url='Administration/Benutzerverwaltung/BenutzerBearbeiten.html';
 </script>
 
 <HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../../css/format.css">
@@ -124,7 +124,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=CHANGENEW name=CHANGENEW>
 <input type=hidden name="perspective" value="changeuser">
 <table cellspacing=0 cellpadding=0 border=2 width=500>
@@ -353,7 +353,7 @@ function checkForm(){
 
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../../css/format.css">
@@ -363,7 +363,7 @@ function checkForm(){
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=USERNEW name=USERNEW onSubmit="return checkForm();">
 <input type=hidden name="perspective" value="newuser">
 <table cellspacing=0 cellpadding=0 border=2 width=500>
@@ -532,7 +532,7 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 
  
 <HEAD>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../../css/format.css">
@@ -544,7 +544,7 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=DELETE name=DELETE>
 <input type=hidden name="USER" value="]]><PROCESS>USER</PROCESS><![CDATA[">
 <input type=hidden name="perspective" value="reallydeleteuser">

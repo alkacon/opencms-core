@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 <part><![CDATA[<tr><td colspan="5"><table cellspacing=0 cellpadding=0 border=0 width="100%"><tr><td height="1" class="taskviewbackblack"><spacer type=block width=1 height=1></td></tr>
 </table></td></tr>]]></part>
@@ -26,7 +26,7 @@
 <![CDATA[
 <html>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
 <title>OpenCms</title>
 <!-- Beginn Style -->
 <link rel=stylesheet type="text/css" href="../css/format.css">

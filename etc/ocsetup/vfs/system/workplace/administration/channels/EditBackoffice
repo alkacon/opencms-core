@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
 
 <newChannelId/>
@@ -181,7 +181,7 @@
 	WIDTH: 250px;
 }
 </style>
- <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+ <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html">
     <title>Comments Backoffice</title>
     <link rel=stylesheet type="text/css" href="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/css/format.css">     
 	<script language="JavaScript">
