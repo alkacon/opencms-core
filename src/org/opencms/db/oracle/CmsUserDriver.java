@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2005/02/25 15:20:59 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/02/25 15:53:30 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.39 $ $Date: 2005/02/25 15:20:59 $
+ * @version $Revision: 1.40 $ $Date: 2005/02/25 15:53:30 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -332,14 +332,15 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      */
     public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
         
+        // this is the most version independent code                
         oracle.sql.BLOB blob = ((oracle.jdbc.OracleResultSet)res).getBLOB(name);
-        
         return blob.getBinaryOutputStream();
-        // TODO: figure out how to implement this without being Oracle JDBC driver version dependent        
+
         // this is the code for Oracle 10 (doesn't work with Oracle 9)                
         //((oracle.sql.BLOB)blob).truncate(0);
         //return blob.setBinaryStream(0L);
         
+        // this is the code for Oracle 9 (doesn't work with Oracle 8)                
         //((oracle.sql.BLOB)blob).trim(0);
         //return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
     }
