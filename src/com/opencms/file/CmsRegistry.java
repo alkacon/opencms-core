@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2001/10/02 12:21:43 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2001/10/02 12:24:45 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.37 $ $Date: 2001/10/02 12:21:43 $
+ * @version $Revision: 1.38 $ $Date: 2001/10/02 12:24:45 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -128,20 +128,16 @@ public CmsRegistry(String regFileName) throws CmsException {
 
         StringBuffer content = new StringBuffer();
         String buffer = "";
-        System.out.println("IR lod file to buffer");
         do {
             content.append(buffer);
             buffer = reader.readLine();
         } while (buffer != null);
 
         reader.close();
-        System.out.println("IR parse content");
 
         // parse the registry-xmlfile and store it.
         m_xmlReg = parse(content.toString());
-        System.out.println("IR init");
         init();
-        System.out.println("IR done");
     } catch (Exception exc) {
         throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
     }
