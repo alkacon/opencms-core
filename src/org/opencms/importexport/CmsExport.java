@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/03/06 18:52:21 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/04/11 16:48:35 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.31 $ $Date: 2004/03/06 18:52:21 $
+ * @version $Revision: 1.32 $ $Date: 2004/04/11 16:48:35 $
  */
 public class CmsExport implements Serializable {
 
@@ -568,6 +568,8 @@ public class CmsExport implements Serializable {
             // check if the content of this resource was not already exported
             if (!m_exportedResources.contains(file.getResourceId())) {
                 ZipEntry entry = new ZipEntry(source);
+                // save the time of the last modification in the zip
+                entry.setTime(file.getDateLastModified());
                 getExportZipStream().putNextEntry(entry);
                 getExportZipStream().write(file.getContents());
                 getExportZipStream().closeEntry();
