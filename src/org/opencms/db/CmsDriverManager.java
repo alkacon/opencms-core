@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/29 19:12:04 $
- * Version: $Revision: 1.255 $
+ * Date   : $Date: 2003/09/30 16:03:44 $
+ * Version: $Revision: 1.256 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.255 $ $Date: 2003/09/29 19:12:04 $
+ * @version $Revision: 1.256 $ $Date: 2003/09/30 16:03:44 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -633,7 +633,7 @@ public class CmsDriverManager extends Object {
                     //check if group exists
                     if (group != null) {
                         //add this user to the group
-                        m_userDriver.createUserInGroup(user.getId(), group.getId());
+                        m_userDriver.createUserInGroup(user.getId(), group.getId(), null);
                         // update the cache
                         m_userGroupsCache.clear();
                     } else {
@@ -684,7 +684,7 @@ public class CmsDriverManager extends Object {
                 //check if group exists
                 if (usergroup != null) {
                     //add this user to the group
-                    m_userDriver.createUserInGroup(user.getId(), usergroup.getId());
+                    m_userDriver.createUserInGroup(user.getId(), usergroup.getId(), null);
                     // update the cache
                     m_userGroupsCache.clear();
                 } else {
@@ -738,7 +738,7 @@ public class CmsDriverManager extends Object {
                 //check if group exists
                 if (usergroup != null && isWebgroup(usergroup)) {
                     //add this user to the group
-                    m_userDriver.createUserInGroup(user.getId(), usergroup.getId());
+                    m_userDriver.createUserInGroup(user.getId(), usergroup.getId(), null);
                     // update the cache
                     m_userGroupsCache.clear();
                 } else {
@@ -750,7 +750,7 @@ public class CmsDriverManager extends Object {
                     addGroup = readGroup(additionalGroup);
                     if (addGroup != null && isWebgroup(addGroup)) {
                         //add this user to the group
-                        m_userDriver.createUserInGroup(user.getId(), addGroup.getId());
+                        m_userDriver.createUserInGroup(user.getId(), addGroup.getId(), null);
                         // update the cache
                         m_userGroupsCache.clear();
                     } else {

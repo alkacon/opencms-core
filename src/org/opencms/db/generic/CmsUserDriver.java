@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/09/30 16:03:44 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.37 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.38 $ $Date: 2003/09/30 16:03:44 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -99,7 +99,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_CREATE");
 
             stmt.setString(1, resource.toString());
@@ -220,16 +220,22 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     /**
      * @see org.opencms.db.I_CmsUserDriver#createUserInGroup(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
-    public void createUserInGroup(CmsUUID userid, CmsUUID groupid) throws CmsException {
+    public void createUserInGroup(CmsUUID userid, CmsUUID groupid, Object reservedParam) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
         // check if user is already in group
-        if (!validateUserInGroup(userid, groupid)) {
+        if (!internalValidateUserInGroup(userid, groupid, reservedParam)) {
             // if not, add this user to the group
             try {
-                // create statement
-                conn = m_sqlManager.getConnection();
+                if (reservedParam == null) {
+                    // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                    conn = m_sqlManager.getConnection();
+                } else {
+                    // get a JDBC connection from the reserved JDBC pools
+                    conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+                }
+                
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_ADDUSERTOGROUP");
 
                 // write the new assingment to the database
@@ -605,9 +611,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         // at first, we remove all access contries of this resource in the online project
         removeAccessControlEntries(onlineProject, onlineId);
 
-        // then, we copy thze access control entries from the offline project into the online project
+        // then, we copy the access control entries from the offline project into the online project
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(offlineProject.getId());
             stmt = m_sqlManager.getPreparedStatement(conn, offlineProject, "C_ACCESS_READ_ENTRIES");
 
             stmt.setString(1, offlineId.toString());
@@ -1135,7 +1141,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL");
 
             stmt.setString(1, resource.toString());
@@ -1197,17 +1203,29 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#validateUserInGroup(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * Checks if a user is member of a group.<P/>
+     *
+     * @param userId the id of the user to check
+     * @param groupId the id of the group to check
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
+     * @return true if user is member of group
+     * @throws CmsException if operation was not succesful
      */
-    public boolean validateUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
+    private boolean internalValidateUserInGroup(CmsUUID userId, CmsUUID groupId, Object reservedParam) throws CmsException {
         boolean userInGroup = false;
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
 
         try {
-            // create statement
-            conn = m_sqlManager.getConnection();
+            if (reservedParam == null) {
+                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                conn = m_sqlManager.getConnection();
+            } else {
+                // get a JDBC connection from the reserved JDBC pools
+                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+            }
+            
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_USERINGROUP");
 
             stmt.setString(1, groupId.toString());
@@ -1235,7 +1253,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY");
 
             stmt.setString(1, acEntry.getResource().toString());

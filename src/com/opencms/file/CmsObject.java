@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/29 08:33:45 $
-* Version: $Revision: 1.420 $
+* Date   : $Date: 2003/09/30 16:03:44 $
+* Version: $Revision: 1.421 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.420 $
+ * @version $Revision: 1.421 $
  */
 public class CmsObject {
 
@@ -2655,7 +2655,7 @@ public class CmsObject {
         Vector changedResources = null;
         Vector changedModuleMasters = null;
         boolean success = false;
-        int publishHistoryId = m_driverManager.getProjectDriver().readNextPublishVersionId();
+        int publishHistoryId = m_driverManager.getProjectDriver().readNextPublishVersionId(null);
 
         clearcache();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2003/09/29 19:11:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/30 16:03:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/09/29 19:11:34 $
+ * @version $Revision: 1.3 $ $Date: 2003/09/30 16:03:44 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(int, int)
  */
@@ -72,6 +72,9 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     /** The structure ID of the published resource.<p> */
     private CmsUUID m_structureId;
 
+    /** The count of siblings of the published resource. */
+    private int m_siblingCount;
+
     /**
      * Creates a new published resource object.<p>
      * 
@@ -81,14 +84,16 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @param rootPath the root path of the published resource
      * @param resourceType the type of the published resource
      * @param resourceState the state of the resource *before* it was published
+     * @param siblingCount count of siblings of the published resource
      */
-    public CmsPublishedResource(CmsUUID structureId, CmsUUID resourceId, CmsUUID contentId, String rootPath, int resourceType, int resourceState) {
+    public CmsPublishedResource(CmsUUID structureId, CmsUUID resourceId, CmsUUID contentId, String rootPath, int resourceType, int resourceState, int siblingCount) {
         m_structureId = structureId;
         m_resourceId = resourceId;
         m_contentId = contentId;
         m_rootPath = rootPath;
         m_resourceType = resourceType;
         m_resourceState = resourceState;
+        m_siblingCount = siblingCount;
     }
 
     /**
@@ -176,28 +181,28 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     public int hashCode() {
         return m_structureId.hashCode();
     }
-    
+
     /**
      * Checks if the resource is changed.<p>
      * 
      * @return true if the resource is changed
-     */      
+     */
     public boolean isChanged() {
         return getState() == I_CmsConstants.C_STATE_CHANGED;
     }
-    
+
     /**
      * Checks if the resource is deleted.<p>
      * 
      * @return true if the resource is deleted
-     */    
+     */
     public boolean isDeleted() {
         return getState() == I_CmsConstants.C_STATE_DELETED;
     }
 
     /**
      * Determines if this resource is a file.<p>
-     *
+     * 
      * @return true if this resource is a file, false otherwise
      */
     public boolean isFile() {
@@ -212,7 +217,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     public boolean isFolder() {
         return getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
     }
-    
+
     /**
      * Checks if the resource is new.<p>
      * 
@@ -226,11 +231,20 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * Checks if the resource is unchanged.<p>
      * 
      * @return true if the resource is unchanged
-     */    
+     */
     public boolean isUnChanged() {
         return getState() == I_CmsConstants.C_STATE_UNCHANGED;
     }
-    
+
+    /**
+     * Returns the count of siblings of the published resource.<p>
+     * 
+     * @return the count of siblings of the published resource
+     */
+    public int getLinkCount() {
+        return m_siblingCount;
+    }
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -246,5 +260,4 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
 
         return objInfo;
     }
-
 }

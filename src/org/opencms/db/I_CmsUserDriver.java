@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/09/30 16:03:44 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.27 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.28 $ $Date: 2003/09/30 16:03:44 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -108,9 +108,10 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @param userid the id of the user that is to be added to the group
      * @param groupid the id of the group
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * @throws CmsException if operation was not succesfull
      */
-    void createUserInGroup(CmsUUID userid, CmsUUID groupid) throws CmsException;
+    void createUserInGroup(CmsUUID userid, CmsUUID groupid, Object reservedParam) throws CmsException;
 
     /**
      * Removes an access control entry from the database.<p>
@@ -413,10 +414,11 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @param userId the id of the user to check
      * @param groupId the id of the group to check
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * @return true if user is member of group
      * @throws CmsException if operation was not succesful
      */
-    // boolean validateUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
+    //boolean validateUserInGroup(CmsUUID userId, CmsUUID groupId, Object reservedParam) throws CmsException;
 
     /**
      * Writes an access control entry to the cms.<p>

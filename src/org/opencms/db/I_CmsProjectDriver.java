@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/26 15:12:48 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/09/30 16:03:44 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.30 $ $Date: 2003/09/26 15:12:48 $
+ * @version $Revision: 1.31 $ $Date: 2003/09/30 16:03:44 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -239,14 +239,14 @@ public interface I_CmsProjectDriver {
      * for a specific DB server to shift the binary content from the offline into the online table
      * in a more sophisticated way than in the generic ANSI-SQL implementation of this interface.
      * 
-     * @param context the current request context
-     * @param onlineProject the online project
+     * @param offlineProject the offline project to read data
+     * @param onlineProject the online project to write data
      * @param offlineFileHeader the offline header of the file of which the content gets published
      * @param publishedContentIds a Set with the UUIDs of the already published content records
      * @return the published file (online)
      * @throws Exception if something goes wrong
      */
-    CmsFile publishFileContent(CmsRequestContext context, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception;
+    CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception;
 
     /**
      * Publishes a new or changed folder.<p>
@@ -330,10 +330,11 @@ public interface I_CmsProjectDriver {
     /**
      * Returns the next version number of the publish history.<p>
      * 
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * @return a new version number greater than the last used version number 
      * @throws CmsException if something goes wrong
      */
-    int readNextPublishVersionId() throws CmsException;
+    int readNextPublishVersionId(Object reservedParam) throws CmsException;
 
     /**
      * Reads a project by task-id.<p>
@@ -465,11 +466,10 @@ public interface I_CmsProjectDriver {
      * @param currentProject the current project
      * @param publishId the ID of the current publishing process
      * @param tagId the current backup ID
-     * @param resourcename the name of the resource
      * @param resource the resource that was published
      * @throws CmsException if something goes wrong
      */
-    void writePublishHistory(CmsProject currentProject, int publishId, int tagId, String resourcename, CmsResource resource) throws CmsException;
+    void writePublishHistory(CmsProject currentProject, int publishId, int tagId, CmsResource resource) throws CmsException;
 
     /**
      * Writes a serializable object to the systemproperties.<p>
