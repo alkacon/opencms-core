@@ -111,6 +111,41 @@ function show_help()
 ]]>
 </TEMPLATE>
 
+<TEMPLATE name="wait">
+<![CDATA[
+<HTML>
+<HEAD>
+<meta http-equiv="refresh" content="15; URL=index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
+</HEAD>
+<BODY onload="">
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+	<tr><br><br>
+		<td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+</CENTER>
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
 <TEMPLATE name="done">
 <![CDATA[
 <HTML>

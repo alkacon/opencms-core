@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
- * Date   : $Date: 2000/08/28 15:48:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/11/01 14:26:30 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,10 +43,13 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/08/28 15:48:08 $
+ * @version $Revision: 1.11 $ $Date: 2000/11/01 14:26:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsLogChannels {
+
+
+	private final String C_PUBLISH_THREAD	= "publishprojectthread";
 
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
@@ -68,41 +71,54 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
 		
 		CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)
 													getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		I_CmsSession session = cms.getRequestContext().getSession(true);
+		String paraId = (String)parameters.get("projectid");
+		int projectId = -1;
+		if (paraId != null){
+			projectId = Integer.parseInt(paraId);
+			CmsProject project = cms.readProject(projectId);
 		
-		int projectId = Integer.parseInt((String)parameters.get("projectid")); 
-		CmsProject project = cms.readProject(projectId);
-		
-		xmlTemplateDocument.setData("projectid", projectId + "");
-		xmlTemplateDocument.setData("projectname", project.getName());
-		
-		if(parameters.get("ok") != null) {
-			// display the wait template and return 
-			templateSelector="wait";
-		} else if (parameters.get("action")!=null) { 
-			// publish the project
-			try { 
-				cms.getRequestContext().setCurrentProject(cms.onlineProject().getId()); 
-				cms.publishProject(projectId); 
-				
-				// clear the languagefile cache
-				CmsXmlWpTemplateFile.clearcache();
-
-		
-				// publish process was successfull
-				// redirect to the project overview... 
-				templateSelector="done";
-				
-			} catch (CmsException exc) {
-				// error while publishing...
-				if(A_OpenCms.isLogging()) {
-					A_OpenCms.log(C_OPENCMS_INFO, exc.getMessage());
-				}				
-				// get errorpage:
-				xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
-				templateSelector = "error";
+			xmlTemplateDocument.setData("projectid", projectId + "");
+			xmlTemplateDocument.setData("projectname", project.getName());
+		}
+		String action = (String)parameters.get("action");
+		if ((action !=null) && "ok".equals(action)) { 
+			// start the publishing
+			// first clear the session entry if necessary
+			if(session.getValue(C_SESSION_THREAD_ERROR) != null){
+				session.removeValue(C_SESSION_THREAD_ERROR);
+			}
+			cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
+			Thread doPublish = new CmsAdminPublishProjectThread(cms, projectId);
+			doPublish.start();
+			session.putValue(C_PUBLISH_THREAD,doPublish);
+			xmlTemplateDocument.setData("time", "10");
+			templateSelector = "wait";
+			
+		}else if ((action != null) && ("working".equals(action))){
+			// still working?
+			Thread doPublish = (Thread)session.getValue(C_PUBLISH_THREAD);
+			if (doPublish.isAlive()){
+				String time = (String)parameters.get("time");
+				int wert = Integer.parseInt(time);
+				wert += 20;
+				xmlTemplateDocument.setData("time", ""+wert);
+				templateSelector = "wait";
+			}else{
+				// thread has come to an end, was there an error?
+				String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
+				if (errordetails == null){
+					// clear the languagefile cache
+					CmsXmlWpTemplateFile.clearcache();			
+					templateSelector = "done";
+				}else{
+					// get errorpage:
+					xmlTemplateDocument.setData("details", errordetails);
+					templateSelector = "error";
+					session.removeValue(C_SESSION_THREAD_ERROR);
+				}
 			}
 		}
-
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 	}

@@ -185,13 +185,14 @@ function selectAll(theList) {
 <ERRORPAGE title="error.title.newproject" message="error.message.projectdatamissing" reason="error.reason.projectdatamissing" suggestion="error.suggestion.none" ref="index.html?sender=/system/workplace/administration/project/newproject/index.html"></ERRORPAGE>
 </TEMPLATE>
 
-<TEMPLATE name="done">
+<TEMPLATE name="wait">
 <![CDATA[
 <HTML>
 <HEAD>
+<meta http-equiv="refresh" content="15; URL=index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA[">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
 </HEAD>
-<BODY onload="window.top.head.location.href='../../../action/head.html'; parent.frames[1].location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/project/'">
+<BODY onload="">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
@@ -208,38 +209,23 @@ function selectAll(theList) {
 </tr>
 </table>
 <!-- End please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+	<tr><br><br>
+		<td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
 </CENTER>
 </BODY>
 </HTML>
 ]]>
 </TEMPLATE>
 
-<TEMPLATE name="wait">
+<TEMPLATE name="done">
 <![CDATA[
 <HTML>
-<HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
-</HEAD>
-<BODY onload="updateFrame('body.admin_content', 'index.html?action=start');">
-<CENTER>
-<!-- Begin Logo opencms -->
-<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
-	<tr>
-		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
-	</tr>
-</table>
-<!-- End Logo opencms -->
-
-<!-- Begin please wait text -->
-<table cellspacing=0 cellpadding=0 border=0>
-<tr>
-<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
-</tr>
-</table>
-<!-- End please wait text -->
-</CENTER>
+<BODY onload="window.top.head.location.href='../../../action/head.html'; parent.frames[1].location.href='../../../action/administration_content_top.html?sender=/system/workplace/administration/project/'">
 </BODY>
-</HTML>
+</html>
 ]]>
 </TEMPLATE>
 

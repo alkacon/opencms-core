@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/10/31 13:11:29 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2000/11/01 14:26:29 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.36 $ $Date: 2000/10/31 13:11:29 $
+ * @version $Revision: 1.37 $ $Date: 2000/11/01 14:26:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -68,6 +68,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 	
 	/** Session key */
 	private static String C_NEWRESOURCES = "ALLRES";
+
+	private static String C_PROJECTNEW_THREAD = "project_new_thread";
+
 
 	 /** Check whether some of the resources are redundant because a superfolder has also
 	  *  been selected. 
@@ -184,7 +187,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		String newName, newGroup, newDescription, newManagerGroup, newFolder;
 		String action = new String();
 		action = (String) parameters.get("action");
-		
+
+		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);	
+			
 		newName = (String) parameters.get(C_PROJECTNEW_NAME);
 		newGroup = (String) parameters.get(C_PROJECTNEW_GROUP);
 		newDescription = (String) parameters.get(C_PROJECTNEW_DESCRIPTION);
@@ -224,11 +229,42 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		if (allResources == null) {
 			allResources = "";  
 		}  
-		
+
+		// first we look if the thread is allready running
+		if ((action != null) && ("working".equals(action))){
+			// still working?
+			Thread doProjectNew = (Thread)session.getValue(C_PROJECTNEW_THREAD);
+			if (doProjectNew.isAlive()){
+				String time = (String)parameters.get("time"); 
+				int wert = Integer.parseInt(time);
+				wert += 20;
+				xmlTemplateDocument.setData("time", ""+wert);
+				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "wait");
+
 		//reqCont.setCurrentProject(cms.onlineProject().getId()); MLA: removed because it should be unnessesary, and can cause problems
 		
-		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-		
+			}else{
+				// thread has come to an end, was there an error?
+				String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
+				if (errordetails == null){
+					// project ready; clear the session
+					session.removeValue(C_NEWNAME);
+					session.removeValue(C_NEWGROUP);
+					session.removeValue(C_NEWDESCRIPTION);
+					session.removeValue(C_NEWMANAGERGROUP);
+					session.removeValue(C_NEWFOLDER); 					
+					return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
+				}else{
+					// get errorpage:
+					xmlTemplateDocument.setData(C_NEWNAME, newName);
+					xmlTemplateDocument.setData(C_NEWDESCRIPTION, newDescription); 
+					xmlTemplateDocument.setData("details", errordetails);
+					session.removeValue(C_SESSION_THREAD_ERROR);
+					return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "errornewproject");
+				}
+			}			
+		}
+			
 		if (parameters.get("submitform") != null) { 
 			// the form has just been submitted, store the data in the session
 			session.putValue(C_NEWNAME, newName); 
@@ -241,7 +277,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			} else {
 				session.putValue(C_NEWRESOURCES, allResources); 
 				// all the required data has been entered, display 'Please wait'
-				templateSelector = "wait";
+				//templateSelector = "wait";
+				action = "start";
 			}
 		}
 		
@@ -296,17 +333,17 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		 			  
 		 			// change the current project
 					reqCont.setCurrentProject(project.getId());
-					// copy the resources to the project   
-					for (int i=0; i<folders.size(); i++) { 
-						cms.copyResourceToProject((String) folders.elementAt(i));
-					} 
-					 
-					templateSelector = C_PROJECTNEW_DONE; 
-					session.removeValue(C_NEWNAME);
-					session.removeValue(C_NEWGROUP);
-					session.removeValue(C_NEWDESCRIPTION);
-					session.removeValue(C_NEWMANAGERGROUP);
-					session.removeValue(C_NEWFOLDER); 
+					// start the thread for: copy the resources to the project   
+					// first clear the session entry if necessary
+					if(session.getValue(C_SESSION_THREAD_ERROR) != null){
+						session.removeValue(C_SESSION_THREAD_ERROR);
+					}
+					Thread doProjectNew = new CmsAdminNewProjectThread(cms, folders);
+					doProjectNew.start();
+					session.putValue(C_PROJECTNEW_THREAD,doProjectNew);
+					xmlTemplateDocument.setData("time", "10");
+					templateSelector = "wait";
+
 				} else { 
 					// at least one of the choosen folders was not writeable -> don't create the project. 
 					xmlTemplateDocument.setData("details", "The following folders were not writeable:" +

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
- * Date   : $Date: 2000/09/25 15:43:40 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/11/01 14:26:29 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,10 +44,12 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/09/25 15:43:40 $
+ * @version $Revision: 1.11 $ $Date: 2000/11/01 14:26:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConstants {
+
+	private static String C_DATABASE_THREAD = "databse_im_export_thread";
 	
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
@@ -69,6 +71,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 
 		//CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		I_CmsSession session= cms.getRequestContext().getSession(true);
 				
 		// get the parameters
 		// String folder = (String)parameters.get("selectallfolders");
@@ -77,6 +80,33 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 		String action = (String)parameters.get("action");
 		String allResources = (String) parameters.get("ALLRES"); 
 		 
+		// first we look if the thread is allready running
+		if ((action != null) && ("working".equals(action))){
+			// still working?
+			Thread doTheWork = (Thread)session.getValue(C_DATABASE_THREAD);
+			if (doTheWork.isAlive()){
+				String time = (String)parameters.get("time"); 
+				int wert = Integer.parseInt(time);
+				wert += 20;
+				xmlTemplateDocument.setData("time", ""+wert);
+				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "wait");
+		
+			}else{
+				// thread has come to an end, was there an error?
+				String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
+				if (errordetails == null){
+					// im/export ready 
+					return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
+				}else{
+					// get errorpage:
+					xmlTemplateDocument.setData("details", errordetails);
+					session.removeValue(C_SESSION_THREAD_ERROR);
+					return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "error");
+				}
+			}			
+		}
+
+		
 		try {
 			if("export".equals(action)) {
 				// export the database
@@ -96,13 +126,29 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 				if (parameters.get("nosystem") != null) {
 					excludeSystem=true;
 				}
-				cms.exportResources(cms.readExportPath() + fileName, exportPaths, excludeSystem);
-				templateSelector = "done";
+				// start the thread for: export   
+				// first clear the session entry if necessary
+				if(session.getValue(C_SESSION_THREAD_ERROR) != null){
+					session.removeValue(C_SESSION_THREAD_ERROR);
+				}
+				Thread doExport = new CmsAdminDatabaseExportThread(cms, cms.readExportPath() + fileName, exportPaths, excludeSystem);
+				doExport.start();
+				session.putValue(C_DATABASE_THREAD,doExport);
+				xmlTemplateDocument.setData("time", "10");
+				templateSelector = "wait";
+
 			} else if ("import".equals(action)) {
-				// import the database
-				cms.importResources(cms.readExportPath() + existingFile, C_ROOT); 
-				templateSelector = "done";
-			}
+				// start the thread for: import   
+				// first clear the session entry if necessary
+				if(session.getValue(C_SESSION_THREAD_ERROR) != null){
+					session.removeValue(C_SESSION_THREAD_ERROR);
+				}
+				Thread doImport = new CmsAdminDatabaseImportThread(cms, cms.readExportPath() + existingFile);
+				doImport.start();
+				session.putValue(C_DATABASE_THREAD,doImport);
+				xmlTemplateDocument.setData("time", "10");
+				templateSelector = "wait";
+ 			}
 		}
 		catch(CmsException exc) {
 			xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));

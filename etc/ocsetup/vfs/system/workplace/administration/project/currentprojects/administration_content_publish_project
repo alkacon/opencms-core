@@ -66,7 +66,7 @@ function show_help()
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='administration_content_publish_project.html?action=ok&projectid=]]><PROCESS>projectid</PROCESS><![CDATA['"></td>
 					<td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='index.html'" /><![CDATA[</td>
 				</tr>
 				</table>
@@ -98,9 +98,10 @@ function show_help()
 <![CDATA[
 <HTML>
 <HEAD>
+<meta http-equiv="refresh" content="15; URL=administration_content_publish_project.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA[">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
 </HEAD>
-<BODY onload="location.href='administration_content_publish_project.html?action=ok&projectid=]]><PROCESS>projectid</PROCESS><![CDATA['">
+<BODY onload="">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
@@ -117,6 +118,11 @@ function show_help()
 </tr>
 </table>
 <!-- End please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+	<tr><br><br>
+		<td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
 </CENTER>
 </BODY>
 </HTML>
@@ -126,29 +132,9 @@ function show_help()
 <TEMPLATE name="done">
 <![CDATA[
 <HTML>
-<HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
-</HEAD>
-<BODY onload="window.top.head.location.href='../../../action/head.html';"> 
-<CENTER>
-<!-- Begin Logo opencms -->
-<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
-	<tr>
-		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
-	</tr>
-</table>
-<!-- End Logo opencms -->
-
-<!-- Begin please wait text -->
-<table cellspacing=0 cellpadding=0 border=0>
-<tr>
-<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
-</tr>
-</table>
-<!-- End please wait text -->
-</CENTER>
+<BODY onload="window.top.head.location.href='../../../action/head.html';">
 </BODY>
-</HTML>
+</html>
 ]]>
 </TEMPLATE>
 
