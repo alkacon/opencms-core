@@ -154,7 +154,7 @@ End Sub
         <table width=100%>
             <tr>
                 <td class=dialogtxt>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;]]> <INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[</td>
-                <td class=dialogtxt>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;]]><SELECT class="textfeld" name="editor" width="200" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
+                <td class=dialogtxt><p class=tab>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;]]><SELECT class="textfeld" name="editor" width="200" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
 
                 <script language="JavaScript">                  
                 if (USE_TEMPLATESELECTOR && (! USE_BODYSELECTOR)) {            
@@ -182,19 +182,20 @@ End Sub
                 --><![CDATA[
                                     
                 <script language="JavaScript">                  
-                if (USE_BODYSELECTOR) {
-                    document.write('<td class=menubold>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
-                    document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[</td>');
-                    document.write('<td class=dialogtxt>]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle"/><![CDATA[</td>');
-                    document.write('<td class=menu><p class=tab><A href="javascript:doTemplSubmit(6);" onmousedown="ChPush(\'bt_newdoc\');" onmouseout="ChOff(\'bt_newdoc\')" onmouseover="ChOn(\'bt_newdoc\')" onmouseup="ChOn(\'bt_newdoc\')"><IMG alt="]]><LABEL value="button.newbody"/><![CDATA[" width=32 border=0 name=bt_newdoc src="/opencms/pics/system/bt_newdoc_off.gif" ></a></td>');
-                }        
                 if (USE_TEMPLATESELECTOR && USE_BODYSELECTOR) {            
-                    document.write('<td class=menubold><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
+                    document.write('<td class=dialogtxt>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
                     document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="220" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>');
-                    document.write('<td class=menu width="100%" align=right>&nbsp;</td>');
+                }                
+                if (USE_BODYSELECTOR) {
+                    document.write('<td class=dialogtxt><p class=tab>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
+                    document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[</td>');
                 }
+                if (USE_BODYSELECTOR && USE_NEWBODYOPTION) {
+                    document.write('<td class=dialogtxt><p class=tab>&nbsp;]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle"/><![CDATA[</td>');
+                    document.write('<td class=menu><A href="javascript:doTemplSubmit(6);" onmousedown="ChPush(\'bt_newdoc\');" onmouseout="ChOff(\'bt_newdoc\')" onmouseover="ChOn(\'bt_newdoc\')" onmouseup="ChOn(\'bt_newdoc\')"><IMG alt="]]><LABEL value="button.newbody"/><![CDATA[" width=32 border=0 name=bt_newdoc src="/opencms/pics/system/bt_newdoc_off.gif" ></a></td>');
+                }        
                 </script>
-                                                           
+                <td class=menu width="100%" align=right>&nbsp;</td>                                           
             </tr>
         </table>
 </td></tr>

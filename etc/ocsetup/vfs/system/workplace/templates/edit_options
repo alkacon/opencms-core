@@ -12,6 +12,7 @@
     var USE_IMPORTBUTTONS = false;
     var USE_HELPBUTTON = true;
     var USE_BODYSELECTOR = false;
+    var USE_NEWBODYOPTION = false;    
     var USE_TEMPLATESELECTOR = true;
     var USE_DOWNLOADGALS = true;
     var USE_EXTERNLINKGALS = true;
