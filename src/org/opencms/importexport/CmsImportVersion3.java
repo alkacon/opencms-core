@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/11/17 11:34:45 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -273,7 +273,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
         } catch (Exception exc) {
             m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
         } finally {
             if (m_importingChannelData) {
                 m_cms.getRequestContext().restoreSiteRoot();

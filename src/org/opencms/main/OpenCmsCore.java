@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/12/23 10:32:03 $
- * Version: $Revision: 1.156 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.157 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsException;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.flex.CmsFlexController;
@@ -109,7 +110,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.156 $
+ * @version $Revision: 1.157 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1619,7 +1620,7 @@ public final class OpenCmsCore {
             int exceptionType = e.getType();
             switch (exceptionType) {
 
-                case CmsException.C_NOT_FOUND:
+                case CmsVfsException.C_VFS_RESOURCE_NOT_FOUND:
                     // file not found - display 404 error.
                     status = HttpServletResponse.SC_NOT_FOUND;
                     break;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/23 10:32:03 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.107 $
+ * @version $Revision: 1.108 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1886,21 +1886,7 @@ public class CmsObject {
     public CmsUUID publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
 
         synchronized (m_securityManager) {
-            try {
-                return m_securityManager.publishProject(this, publishList, report);
-            } catch (CmsException e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error(e);
-                }
-
-                throw e;
-            } catch (Exception e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error(e);
-                }
-
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
-            }
+            return m_securityManager.publishProject(this, publishList, report);
         }
     }
 

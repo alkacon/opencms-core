@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2004/11/28 21:58:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/01/04 17:34:07 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -133,9 +133,9 @@ public final class CmsDbUtil extends Object {
      * @param dbPoolUrl the URL to access the connection pool
      * @param tableName the name of the table to create a new primary key ID
      * @return a new primary key ID for the given table
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    public static synchronized int nextId(String dbPoolUrl, String tableName) throws CmsException {
+    public static synchronized int nextId(String dbPoolUrl, String tableName) throws CmsDataAccessException {
 
         String cacheKey = dbPoolUrl + "." + tableName;
 
@@ -178,7 +178,7 @@ public final class CmsDbUtil extends Object {
      * @param newId the new primary key ID
      * @throws CmsException if something gows wrong
      */
-    private static void createId(Connection conn, String tableName, int newId) throws CmsException {
+    private static void createId(Connection conn, String tableName, int newId) throws CmsSqlException {
 
         PreparedStatement statement = null;
 
@@ -188,7 +188,7 @@ public final class CmsDbUtil extends Object {
             statement.setInt(2, newId);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + CmsDbUtil.class.getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw new CmsSqlException(CmsDbUtil.class.getName(), statement, e);
         } finally {
             if (statement != null) {
                 try {
@@ -210,7 +210,7 @@ public final class CmsDbUtil extends Object {
      * 
      * @throws CmsException if something goes wrong
      */
-    private static void generateNextId(String dbPoolUrl, String tableName, String cacheKey) throws CmsException {
+    private static void generateNextId(String dbPoolUrl, String tableName, String cacheKey) throws CmsSqlException {
 
         Connection con = null;
         int id;
@@ -241,7 +241,7 @@ public final class CmsDbUtil extends Object {
             c_currentId.put(cacheKey, new Integer(id));
             c_borderId.put(cacheKey, new Integer(borderId));
         } catch (SQLException e) {
-            throw new CmsException("[" + CmsDbUtil.class.getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw new CmsSqlException(CmsDbUtil.class.getName(), null, e);
         } finally {
             // close all db-resources
             if (con != null) {
@@ -263,7 +263,7 @@ public final class CmsDbUtil extends Object {
      * @return the primary key ID or C_UNKNOWN_ID if there is no entry for the given table
      * @throws CmsException if something gows wrong
      */
-    private static int readId(Connection conn, String tableName) throws CmsException {
+    private static int readId(Connection conn, String tableName) throws CmsSqlException {
 
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -278,7 +278,7 @@ public final class CmsDbUtil extends Object {
                 return I_CmsConstants.C_UNKNOWN_ID;
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + CmsDbUtil.class.getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw new CmsSqlException(CmsDbUtil.class.getName(), stmt, e);
         } finally {
             // close all db-resources
             if (res != null) {
@@ -309,7 +309,7 @@ public final class CmsDbUtil extends Object {
      * @return true if the number of affected rows is 1
      * @throws CmsException if something gows wrong
      */
-    private static boolean writeId(Connection conn, String tableName, int oldId, int newId) throws CmsException {
+    private static boolean writeId(Connection conn, String tableName, int oldId, int newId) throws CmsSqlException {
 
         PreparedStatement statement = null;
 
@@ -323,7 +323,7 @@ public final class CmsDbUtil extends Object {
             // return, if the update had succeeded
             return (amount == 1);
         } catch (SQLException e) {
-            throw new CmsException("[" + CmsDbUtil.class.getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw new CmsSqlException(CmsDbUtil.class.getName(), statement, e);
         } finally {
             if (statement != null) {
                 try {

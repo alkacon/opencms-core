@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/16 13:57:21 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/01/04 17:34:14 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.db.mysql;
 
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
+import org.opencms.db.CmsSerializationException;
+import org.opencms.db.CmsSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -48,7 +51,7 @@ import java.util.Map;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.22 $ $Date: 2004/12/16 13:57:21 $
+ * @version $Revision: 1.23 $ $Date: 2005/01/04 17:34:14 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -90,9 +93,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+            throw new CmsSerializationException("creating user:", e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -111,7 +114,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
      */
-    public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
+    public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
         
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -132,9 +135,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(10, user.getId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+            throw new CmsSerializationException("writing user:", e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }

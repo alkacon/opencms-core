@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2004/10/22 14:37:40 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/01/04 17:34:07 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,9 @@ import java.util.*;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsException extends Exception {
 
@@ -57,50 +58,62 @@ public class CmsException extends Exception {
      */
     public static final String[] C_ERROR_DESCRIPTION =
         {
-            "Unknown exception",
-            "Access denied",
-            "Not found",
-            "Bad name",
-            "Sql exception",
-            "Folder not empty",
-            "Admin access required",
-            "Serialization/Deserialization failed",
-            "Unknown User Group",
-            "Group not empty",
-            "Unknown User",
-            "No removal from Default Group",
-            "Resource already exists",
-            "(code 13: unused)",
-            "Filesystem exception",
-            "Internal use only",
-            "Deprecated exception: File-property is mandatory",
-            "Service unavailable",
-            "Unknown XML datablock",
-            "Corrupt internal structure",
-            "Wrong XML content type",
-            "XML parsing error",
-            "Could not process OpenCms special XML tag",
-            "Could not call user method",
-            "Could not call process method",
-            "XML tag missing",
-            "Wrong XML template class",
-            "No XML template class",
-            "(code 28: moved to CmsLoaderException)",
-            "OpenCms class loader error",
-            "New password is too short",
-            "(code 31: unused)",
-            "Resource deleted",
-            "DriverManager init error",
-            "Registry error",
-            "(code 35: unused)",
-            "(code 36: unused)",
-            "Wrong scheme for http resource",
-            "Wrong scheme for https resource",
-            "Error in Flex cache",
-            "Error in Flex loader" };
+  /*  0 */  "Unknown exception",
+  /*  1 */  "Access denied",
+  /*  2 */  "(code 5: moved to CmsVfsResourceNotFoundException)",
+  /*  3 */  "Bad name",
+  /*  4 */  "(code 4: moved to and extended by CmsDataAccessException)",  
+  /*  5 */  "(code 5: moved to CmsVfsException-C_VFS_FOLDER_NOT_EMPTY)",         
+  /*  6 */  "Admin access required",
+  /*  7 */  "(code 7: moved to CmsSerializationException)", 
+  /*  8 */  "Unknown User Group",
+  /*  9 */  "Group not empty",
+  /* 10 */  "Unknown User",
+  /* 11 */  "No removal from Default Group",
+  /* 12 */  "(code 12: moved to CmsVfsException-C_VFS_RESOURCE_ALREADY_EXISTS)",
+  /* 13 */  "File not found exception",
+  /* 14 */  "Filesystem exception",
+  /* 15 */  "Internal use only",
+  /* 16 */  "Deprecated exception: File-property is mandatory",
+  /* 17 */  "Service unavailable",
+  /* 18 */  "Unknown XML datablock",
+  /* 19 */  "Corrupt internal structure",
+  /* 20 */  "Wrong XML content type",
+  /* 21 */  "XML parsing error",
+  /* 22 */  "Could not process OpenCms special XML tag",
+  /* 23 */  "Could not call user method",
+  /* 24 */  "Could not call process method",
+  /* 25 */  "XML tag missing",
+  /* 26 */  "Wrong XML template class",
+  /* 27 */  "No XML template class",
+  /* 28 */  "(code 28: moved to CmsLoaderException)",
+  /* 29 */  "OpenCms class loader error",
+  /* 30 */  "New password is too short",
+  /* 31 */  "(code 31: unused)",
+  /* 32 */  "(code 32: moved to CmsVfsException-C_VFS_RESOURCE_DELETED)",
+  /* 33 */  "DriverManager init error",
+  /* 34 */  "Registry error",
+  /* 35 */  "Security Manager initialization error",
+  /* 36 */  "(code 36: unused)",
+  /* 37 */  "Wrong scheme for http resource",
+  /* 38 */  "Wrong scheme for https resource",
+  /* 39 */  "Error in Flex cache",
+  /* 40 */  "Error in Flex loader",
+  /* 41 */  "Group already exists",
+  /* 42 */  "User already exists",
+  /* 43 */  "Import error",
+  /* 44 */  "Export error"
+        };
 
-    /** Error code for file exists exception. */
+    /** 
+     * Error code for file exists exception.<p>
+     * 
+     * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
+     */    
     public static final int C_FILE_EXISTS = 12;
+
+    /** Error code for file not found exception. */    
+    public static final int C_FILE_NOT_FOUND = 13;
 
     /** Error code filesystem error. */
     public static final int C_FILESYSTEM_ERROR = 14;
@@ -131,7 +144,7 @@ public class CmsException extends Exception {
 
     /** 
      * Error code for access denied exception for vfs resources.
-     * @deprecated use a {@link org.opencms.security.CmsSecurityException} instead
+     * @deprecated use a <code>{@link org.opencms.security.CmsSecurityException}</code> instead
      */    
     public static final int C_NO_ACCESS = 1;
 
@@ -147,31 +160,61 @@ public class CmsException extends Exception {
     /** Error code for no admin exception. */
     public static final int C_NOT_ADMIN = 6;
 
-    /** Error code for not empty exception. */
+    /** 
+     * Error code for not empty exception.<p>
+     * 
+     * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
+     */    
     public static final int C_NOT_EMPTY = 5;
 
-    /** Error code for not found exception. */
+    /** 
+     * Error code for not found exception.<p>
+     * 
+     * @deprecated use a <code>{@link org.opencms.db.CmsObjectNotFoundException}</code> 
+     *    or <code>{@link org.opencms.file.CmsVfsResourceNotFoundException}</code> instead
+     */    
     public static final int C_NOT_FOUND = 2;
 
-    /** Error code for RB-INIT-ERRORS. */
+    /** Error code for driver manager initialization errors. */
     public static final int C_RB_INIT_ERROR = 33;
 
     /** Error code for Registry exception. */
     public static final int C_REGISTRY_ERROR = 34;
 
-    /** Error code for accessing a deleted resource. */
+    /** Error code for security manager initialization error. */
+    public static final int C_SM_INIT_ERROR = 35;
+
+    /** 
+     * Error code for accessing a deleted resource.<p>
+     * 
+     * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
+     */    
     public static final int C_RESOURCE_DELETED = 32;
 
-    /** Error code for serialization exception. */
+    /** 
+     * Error code for serialization exception. 
+     * 
+     * @deprecated use a <code>{@link org.opencms.db.CmsSerializationException}</code> instead
+     */
     public static final int C_SERIALIZATION = 7;
 
     /** Error code service unavailable. */
     public static final int C_SERVICE_UNAVAILABLE = 17;
 
-    /** Error code for sql exception. */
+    /** 
+     * Error code for sql exception.<p>
+     * 
+     * @deprecated use a <code>{@link org.opencms.db.CmsDataAccessException}</code> 
+     *      or one of their subclasses instead
+     */    
     public static final int C_SQL_ERROR = 4;
 
-    /** Error code for unknown exception. */
+    /** 
+     * Error code for unknown exception.
+     *  
+     * @deprecated use a <code>{@link org.opencms.db.CmsDataAccessException}</code> 
+     *      or one of their subclasses instead
+     */
     public static final int C_UNKNOWN_EXCEPTION = 0;
 
     /** Error code for corrupt internal structure. */
@@ -203,6 +246,12 @@ public class CmsException extends Exception {
 
     /** Error code for wrong XML template class. */
     public static final int C_XML_WRONG_TEMPLATE_CLASS = 26;
+
+    /** Error code for import issues. */
+    public static final int C_IMPORT_ERROR = 41;
+
+    /** Error code for export issues. */
+    public static final int C_EXPORT_ERROR = 42;
 
     /** A string message describing the CmsEception. */
     protected String m_message;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/22 16:36:45 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/01/04 17:34:07 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -588,7 +588,6 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException in case of any i/o error
      * @throws CmsSecurityException if the required permissions are not satisfied
-     * @throws CmsVfsResourceNotFoundException if the required resource is not readable
      * 
      * @see #checkPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, int)
      */
@@ -597,7 +596,7 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         boolean checkLock,
-        CmsResourceFilter filter) throws CmsException, CmsSecurityException, CmsVfsResourceNotFoundException {
+        CmsResourceFilter filter) throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);      
         try {
@@ -2230,7 +2229,7 @@ public final class CmsSecurityManager {
             m_keyGenerator = (I_CmsCacheKey)Class.forName(
                 config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".keygenerator")).newInstance();
         } catch (Exception e) {
-            throw new CmsException("Unable to create security manager classes", e);
+            throw new CmsException("Unable to create security manager classes", CmsException.C_SM_INIT_ERROR, e);
         }
 
         LRUMap hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".permissions", 1000));
@@ -2246,7 +2245,7 @@ public final class CmsSecurityManager {
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isFatalEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).fatal(message);
             }
-            throw new CmsException(message, CmsException.C_RB_INIT_ERROR);
+            throw new CmsException(message, CmsException.C_SM_INIT_ERROR);
         } else {
             m_dbContextFactory = runtimeInfoFactory;
         }
@@ -2501,12 +2500,12 @@ public final class CmsSecurityManager {
      * 
      * @return the publish history id of the published project
      * 
-     * @throws Exception if something goes wrong
+     * @throws CmsException if something goes wrong
      * 
      * @see #getPublishList(CmsRequestContext, CmsResource, boolean)
      */
     public synchronized CmsUUID publishProject(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
-    throws Exception {
+     throws CmsException {
 
         CmsRequestContext context = cms.getRequestContext();
         int publishProjectId = context.currentProject().getId();
@@ -4708,7 +4707,6 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException in case of any i/o error
      * @throws CmsSecurityException if the required permissions are not satisfied
-     * @throws CmsVfsResourceNotFoundException if the required resource is not readable
      * 
      * @see #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
      */    
@@ -4717,7 +4715,7 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         boolean checkLock,
-        CmsResourceFilter filter) throws CmsException, CmsSecurityException, CmsVfsResourceNotFoundException {
+        CmsResourceFilter filter) throws CmsException, CmsSecurityException {
 
         // get the permissions
         int permissions = hasPermissions(dbc, resource, requiredPermissions, checkLock, filter);
@@ -4945,18 +4943,18 @@ public final class CmsSecurityManager {
      * @param requiredPermissions the set of permissions required to access the resource
      * 
      * @throws CmsSecurityException if the required permissions are not satisfied
-     * @throws CmsVfsResourceNotFoundException if the required resource has been filtered
      * @throws CmsLockException if the lock status is not as required
+     * @throws CmsVfsResourceNotFoundException if the required resource has been filtered
      */
     private void checkPermissions(
         CmsRequestContext context,
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
-        int permissions) throws CmsSecurityException, CmsVfsResourceNotFoundException, CmsLockException {
+        int permissions) throws CmsSecurityException, CmsLockException, CmsVfsResourceNotFoundException {
 
         switch (permissions) {
             case PERM_FILTERED:
-                throw new CmsVfsResourceNotFoundException("Resource not found '" + context.getSitePath(resource) + "'");
+                throw new CmsVfsResourceNotFoundException("Resource not found '" + context.getSitePath(resource) + "'", null);
                 
             case PERM_DENIED:
                 throw new CmsSecurityException("Denied access to resource '"

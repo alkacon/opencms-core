@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/12/15 12:29:46 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/01/04 17:34:14 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.db.mysql;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.main.CmsException;
@@ -51,7 +52,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.19 $ $Date: 2004/12/15 12:29:46 $
+ * @version $Revision: 1.20 $ $Date: 2005/01/04 17:34:14 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -102,7 +103,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                         resources));
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc, false);
+            throw new CmsSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }

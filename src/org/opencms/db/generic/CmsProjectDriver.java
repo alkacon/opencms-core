@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.203 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.204 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,14 @@ package org.opencms.db.generic;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsObjectNotFoundException;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.db.CmsSqlException;
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
+import org.opencms.file.*;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
@@ -78,7 +82,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.203 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.204 $ $Date: 2005/01/04 17:34:08 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -103,7 +107,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createProject(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser, org.opencms.file.CmsGroup, org.opencms.file.CmsGroup, org.opencms.workflow.CmsTask, java.lang.String, java.lang.String, int, int, java.lang.Object)
      */
-    public CmsProject createProject(CmsDbContext dbc, CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type, Object reservedParam) throws CmsException {
+    public CmsProject createProject(CmsDbContext dbc, CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type, Object reservedParam) throws CmsDataAccessException {
         CmsProject project = null;
 
         if ((description == null) || (description.length() < 1)) {
@@ -146,7 +150,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             
             project = new CmsProject(id, name, description, task.getId(), owner.getId(), group.getId(), managergroup.getId(), flags, createTime, type);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -157,16 +161,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createProjectResource(org.opencms.db.CmsDbContext, int, java.lang.String, java.lang.Object)
      */
-    public void createProjectResource(CmsDbContext dbc, int projectId, String resourcePath, Object reservedParam) throws CmsException {
+    public void createProjectResource(CmsDbContext dbc, int projectId, String resourcePath, Object reservedParam) throws CmsDataAccessException {
         // do not create entries for online-project
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
             readProjectResource(dbc, projectId, resourcePath, reservedParam);
-            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-        } catch (CmsException e) {
-            if (e.getType() == CmsException.C_FILE_EXISTS) {
+            throw new CmsVfsException("[" + this.getClass().getName() + "] ", CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS);
+        } catch (CmsDataAccessException e) {
+            if (e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
                 throw e;
             }
         }
@@ -188,7 +192,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -197,7 +201,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deleteProject(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject)
      */
-    public void deleteProject(CmsDbContext dbc, CmsProject project) throws CmsException {
+    public void deleteProject(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
 
         // delete the resources from project_resources
         deleteProjectResources(dbc, project);
@@ -214,8 +218,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // create the statement
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } catch (SQLException exc) {
+            throw new CmsSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -224,7 +228,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deleteProjectResource(org.opencms.db.CmsDbContext, int, java.lang.String)
      */
-    public void deleteProjectResource(CmsDbContext dbc, int projectId, String resourceName) throws CmsException {
+    public void deleteProjectResource(CmsDbContext dbc, int projectId, String resourceName) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -235,7 +239,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setString(2, resourceName);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -244,7 +248,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deleteProjectResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject)
      */
-    public void deleteProjectResources(CmsDbContext dbc, CmsProject project) throws CmsException {
+    public void deleteProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
         
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -255,7 +259,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -264,7 +268,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deletePublishHistory(org.opencms.db.CmsDbContext, int, int)
      */
-    public void deletePublishHistory(CmsDbContext dbc, int projectId, int maxBackupTagId) throws CmsException {
+    public void deletePublishHistory(CmsDbContext dbc, int projectId, int maxBackupTagId) throws CmsDataAccessException {
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -274,7 +278,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, maxBackupTagId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }        
@@ -283,7 +287,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deleteStaticExportPublishedResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, int, java.lang.String)
      */
-    public void deleteStaticExportPublishedResource(CmsDbContext dbc, CmsProject currentProject, String resourceName, int linkType, String linkParameter) throws CmsException {
+    public void deleteStaticExportPublishedResource(CmsDbContext dbc, CmsProject currentProject, String resourceName, int linkType, String linkParameter) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
         
@@ -295,7 +299,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setString(3, linkParameter);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -304,7 +308,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#deleteAllStaticExportPublishedResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, int)
      */
-    public void deleteAllStaticExportPublishedResources(CmsDbContext dbc, CmsProject currentProject, int linkType) throws CmsException {
+    public void deleteAllStaticExportPublishedResources(CmsDbContext dbc, CmsProject currentProject, int linkType) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
         
@@ -314,7 +318,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, linkType);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -342,7 +346,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 // online-project exists - no need of filling defaults
                 return;
             }
-        } catch (CmsException exc) {
+        } catch (CmsDataAccessException exc) {
             // ignore the exception - the project was not readable so fill in the defaults
         }
 
@@ -644,15 +648,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     + report.key("report.dots")
                     + report.key("report.ok"));
             }               
-        } catch (Exception e) {
-            // this is a dummy try-catch block to have a finally clause here
-
-            if (C_DEBUG) {
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
-            }
-
-            throw e;
         } finally {
             // notify the app. that the published folder and it's properties have been modified offline
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFolder)));
@@ -929,7 +924,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Caught error "+e.getType(), e);
                     }
-                    if (e.getType() == CmsException.C_FILE_EXISTS) {
+                    if (e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
                         try {
                             // remove the existing file and ensure that it's content is written 
                             // in any case by removing it's content ID from the set of published content IDs
@@ -1107,7 +1102,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     onlineFolder = m_driverManager.getVfsDriver().createResource(dbc, onlineProject, newFolder, null);
 
                 } catch (CmsException e) {
-                    if (e.getType() == CmsException.C_FILE_EXISTS) {
+                    if (e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
                         try {
                             onlineFolder = m_driverManager.getVfsDriver().readFolder(dbc, onlineProject.getId(), newFolder.getStructureId());
                             m_driverManager.getVfsDriver().publishResource(dbc, onlineProject, onlineFolder, offlineFolder, false);
@@ -1247,7 +1242,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         CmsPublishList publishList,
         boolean backupEnabled,
         int backupTagId, 
-        int maxVersions) throws Exception {
+        int maxVersions) throws CmsException {
         
         CmsResource currentFileHeader = null;
         long publishDate = System.currentTimeMillis();
@@ -1447,17 +1442,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             if (n > 0) {
                 report.println(report.key("report.publish_delete_folders_end"), I_CmsReport.C_FORMAT_HEADLINE);
             }
-        } catch (Exception e) {
-            // these are dummy catch blocks to have a finally block for clearing 
-            // allocated resources. thus the exceptions are just logged and 
-            // immediately thrown to the upper app. layer.
-
-            if (C_DEBUG) {
-                System.err.println(e.getMessage());
-                e.printStackTrace(System.err);
-            }
-
-            throw e;
         } catch (OutOfMemoryError o) {
             if (OpenCms.getLog(this).isFatalEnabled()) {
                 OpenCms.getLog(this).fatal("Out of memory error during publishing", o);
@@ -1493,7 +1477,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProject(org.opencms.db.CmsDbContext, int)
      */
-    public CmsProject readProject(CmsDbContext dbc, int id) throws CmsException {
+    public CmsProject readProject(CmsDbContext dbc, int id) throws CmsDataAccessException {
         PreparedStatement stmt = null;
         CmsProject project = null;
         ResultSet res = null;
@@ -1521,10 +1505,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")));
             } else {
                 // project not found!
-                throw m_sqlManager.getCmsException(this, "project with ID " + id + " not found", CmsException.C_NOT_FOUND, null, true);
+                throw new CmsObjectNotFoundException("project with ID " + id + " not found. ");
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readProject(int)/1 ", CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1534,7 +1518,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProject(org.opencms.db.CmsDbContext, java.lang.String)
      */
-    public CmsProject readProject(CmsDbContext dbc, String name) throws CmsException {
+    public CmsProject readProject(CmsDbContext dbc, String name) throws CmsDataAccessException {
         PreparedStatement stmt = null;
         CmsProject project = null;
         ResultSet res = null;
@@ -1562,10 +1546,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")));
             } else {
                 // project not found!
-                throw m_sqlManager.getCmsException(this, "project with name " + name + " not found", CmsException.C_NOT_FOUND, null, true);
+                throw new CmsObjectNotFoundException("project with name " + name + " not found. ");
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readProject(String)/1 ", CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1576,7 +1560,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectResource(org.opencms.db.CmsDbContext, int, java.lang.String, java.lang.Object)
      */
-    public String readProjectResource(CmsDbContext dbc, int projectId, String resourcePath, Object reservedParam) throws CmsException {
+    public String readProjectResource(CmsDbContext dbc, int projectId, String resourcePath, Object reservedParam) throws CmsDataAccessException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -1601,10 +1585,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             if (res.next()) {
                 resName = res.getString("RESOURCE_PATH");
             } else {
-                throw new CmsException("[" + this.getClass().getName() + ".readProjectResource] " + resourcePath, CmsException.C_NOT_FOUND);
+                throw new CmsVfsResourceNotFoundException(resourcePath + " not found.");
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1614,7 +1598,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject)
      */
-    public List readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsException {
+    public List readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -1630,7 +1614,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 result.add(res.getString("RESOURCE_PATH"));
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1641,7 +1625,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjects(org.opencms.db.CmsDbContext, int)
      */
-    public List readProjects(CmsDbContext dbc, int state) throws CmsException {
+    public List readProjects(CmsDbContext dbc, int state) throws CmsDataAccessException {
         List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1670,7 +1654,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE"))));
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, "getAllProjects(int)", CmsException.C_SQL_ERROR, exc, false);
+            throw new CmsSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1681,7 +1665,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
-    public List readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
+    public List readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
         List projects = new Vector();
         ResultSet res = null;
         Connection conn = null;
@@ -1699,8 +1683,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (res.next()) {
                 projects.add(new CmsProject(res, m_sqlManager));
             }
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } catch (SQLException exc) {
+            throw new CmsSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1710,7 +1694,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForManagerGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
-    public List readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
+    public List readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
         List projects = new Vector();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1727,8 +1711,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (res.next()) {
                 projects.add(new CmsProject(res, m_sqlManager));
             }
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } catch (SQLException exc) {
+            throw new CmsSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1738,7 +1722,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForUser(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
      */
-    public List readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsException {
+    public List readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
         Vector projects = new Vector();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1755,8 +1739,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (res.next()) {
                 projects.addElement(new CmsProject(res, m_sqlManager));
             }
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } catch (SQLException exc) {
+            throw new CmsSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1766,7 +1750,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectView(org.opencms.db.CmsDbContext, int, java.lang.String)
      */
-    public List readProjectView(CmsDbContext dbc, int project, String filter) throws CmsException {
+    public List readProjectView(CmsDbContext dbc, int project, String filter) throws CmsDataAccessException {
         List resources = new ArrayList();
         CmsResource currentResource = null;
         ResultSet res = null;
@@ -1802,9 +1786,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 resources.add(currentResource);
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
+            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1815,7 +1799,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID)
      */
-    public List readPublishedResources(CmsDbContext dbc, int projectId, CmsUUID publishHistoryId) throws CmsException {
+    public List readPublishedResources(CmsDbContext dbc, int projectId, CmsUUID publishHistoryId) throws CmsDataAccessException {
         
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1856,7 +1840,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         siblingCount));
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }  
@@ -1867,7 +1851,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readStaticExportResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, int, long)
      */
-    public List readStaticExportResources(CmsDbContext dbc, CmsProject currentProject, int parameterResources, long timestamp) throws CmsException {
+    public List readStaticExportResources(CmsDbContext dbc, CmsProject currentProject, int parameterResources, long timestamp) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1887,7 +1871,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 returnValue.add(res.getString(1));               
             }           
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }  
@@ -1898,7 +1882,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readStaticExportPublishedResourceParameters(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String)
      */
-    public String readStaticExportPublishedResourceParameters(CmsDbContext dbc, CmsProject currentProject, String rfsName) throws CmsException {
+    public String readStaticExportPublishedResourceParameters(CmsDbContext dbc, CmsProject currentProject, String rfsName) throws CmsDataAccessException {
         String returnValue = null;
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1914,7 +1898,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 returnValue=res.getString(1);               
             }           
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }  
@@ -1926,7 +1910,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#unmarkProjectResources(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject)
      */
-    public void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsException {
+    public void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
         // finally remove the project id form all resources 
   
         Connection conn = null;
@@ -1937,8 +1921,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // create the statement
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } catch (SQLException exc) {
+            throw new CmsSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1947,7 +1931,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, int, org.opencms.file.CmsResource)
      */
-    public void writePublishHistory(CmsDbContext dbc, CmsProject currentProject, CmsUUID publishId, int backupTagId, CmsResource resource) throws CmsException {
+    public void writePublishHistory(CmsDbContext dbc, CmsProject currentProject, CmsUUID publishId, int backupTagId, CmsResource resource) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -1964,7 +1948,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(8, resource.getSiblingCount());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1973,7 +1957,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, java.lang.String, int, java.lang.String, long)
      */
-    public void writeStaticExportPublishedResource(CmsDbContext dbc, CmsProject currentProject, String resourceName, int linkType, String linkParameter, long timestamp) throws CmsException {
+    public void writeStaticExportPublishedResource(CmsDbContext dbc, CmsProject currentProject, String resourceName, int linkType, String linkParameter, long timestamp) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1987,8 +1971,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             if (res.next()) {
                 returnValue = res.getInt(1);
             }           
-        } catch (SQLException e) {         
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (SQLException e) {
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }  
@@ -2004,8 +1988,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 stmt.setString(4, linkParameter);
                 stmt.setLong(5, timestamp);
                 stmt.executeUpdate();
-            } catch (SQLException e) {         
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            } catch (SQLException e) {
+                throw new CmsSqlException(this, stmt, e);
             } finally {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }

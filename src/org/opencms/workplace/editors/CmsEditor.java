@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2004/12/09 17:04:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/01/04 17:34:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
@@ -592,7 +593,7 @@ public abstract class CmsEditor extends CmsDialog {
             getCms().copyResource(getCms().getSitePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
             getCms().touch(temporaryFilename, System.currentTimeMillis(), CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, false);            
         } catch (CmsException e) {
-            if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
+            if (e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
                 try {
                     CmsLock tempFileLock = getCms().getLock(temporaryFilename);
                     if (!tempFileLock.equals(CmsLock.getNullLock())) {
@@ -631,7 +632,7 @@ public abstract class CmsEditor extends CmsDialog {
             try {
                 getCms().copyResource(getCms().getSitePath(file), extendedTempFile);
             } catch (CmsException e) {
-                if ((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
+                if (e.getType() != CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
                     switchToCurrentProject();
                     // This was not a "file exists" exception. Very bad.
                     // We should not continue here since we may run into an endless loop.

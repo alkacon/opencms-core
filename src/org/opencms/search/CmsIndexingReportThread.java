@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2004/07/06 08:39:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/01/04 17:34:14 $
+ * Version: $Revision: 1.7 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -52,12 +52,13 @@ import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 
 /**
  * Implements methods to utilize a report thread for <code>CmsIndexingReport</code>.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.3.1
  */
 public class CmsIndexingReportThread extends A_CmsReportThread {
@@ -135,16 +136,12 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
                 OpenCms.getSearchManager().updateIndex(m_indexName, getReport());
             }
             getReport().println(getReport().key("search.indexing_rebuild_finished"), I_CmsReport.C_FORMAT_HEADLINE);
-
+        } catch (CmsVfsResourceNotFoundException e) {
+            getReport().println(getReport().key("search.indexing_missing_config"), I_CmsReport.C_FORMAT_NOTE);
+            m_error = e;
         } catch (CmsException exc) {
-
-            if (exc.getType() == CmsException.C_NOT_FOUND) {
-                getReport().println(getReport().key("search.indexing_missing_config"), I_CmsReport.C_FORMAT_NOTE);
-            } else {
-                getReport().println(getReport().key("search.indexing_failed"), I_CmsReport.C_FORMAT_WARNING);
-                getReport().println(exc);
-            }
-
+            getReport().println(getReport().key("search.indexing_failed"), I_CmsReport.C_FORMAT_WARNING);
+            getReport().println(exc);
             m_error = exc;
         }
     }

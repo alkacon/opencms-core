@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/12/15 12:29:46 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,10 @@ package org.opencms.db.oracle;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsObjectNotFoundException;
+import org.opencms.db.CmsSerializationException;
+import org.opencms.db.CmsSqlException;
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
@@ -59,7 +63,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2004/12/15 12:29:46 $
+ * @version $Revision: 1.44 $ $Date: 2005/01/04 17:34:08 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -67,7 +71,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(org.opencms.db.CmsDbContext, java.util.List, int)
      */
-    public void deleteBackups(CmsDbContext dbc, List existingBackups, int maxVersions) throws CmsException {
+    public void deleteBackups(CmsDbContext dbc, List existingBackups, int maxVersions) throws CmsDataAccessException {
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
         PreparedStatement stmt3 = null;
@@ -113,9 +117,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             }
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, null, e);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
+            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt1, null);
             m_sqlManager.closeAll(dbc, conn, stmt2, null);
@@ -135,7 +139,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     /**
      * @see org.opencms.db.generic.CmsBackupDriver#internalWriteBackupFileContent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.file.CmsResource, int, int)
      */
-    protected void internalWriteBackupFileContent(CmsDbContext dbc, CmsUUID backupId, CmsResource resource, int tagId, int versionId) throws CmsException {
+    protected void internalWriteBackupFileContent(CmsDbContext dbc, CmsUUID backupId, CmsResource resource, int tagId, int versionId) throws CmsDataAccessException {
                       
         PreparedStatement stmt = null, stmt2 = null;
         PreparedStatement commit = null;
@@ -167,7 +171,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt.executeUpdate();
             
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString(), CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -186,7 +190,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
-                throw new CmsException("internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString() + " content not found", CmsException.C_NOT_FOUND);
+                throw new CmsObjectNotFoundException("internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString() + " content not found");
             }
         
             // write file content
@@ -211,9 +215,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 conn.setAutoCommit(true);    
             }
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString(), CmsException.C_SERIALIZATION, e, false);
+            throw new CmsSerializationException("internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString(), e);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString(), CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             
             if (res != null) {
@@ -303,7 +307,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                         resources));
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, "readBackupProjects", CmsException.C_SQL_ERROR, exc, false);
+            throw new CmsSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }

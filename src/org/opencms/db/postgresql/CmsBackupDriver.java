@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/12/15 12:29:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/01/04 17:34:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,10 @@
 
 package org.opencms.db.postgresql;
 
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
@@ -52,7 +54,7 @@ import java.util.Vector;
  * PostgreSql implementation of the backup driver methods.<p>
  * 
  * @author Antonio Core (antonio@starsolutions.it)
- * @version $Revision: 1.3 $ $Date: 2004/12/15 12:29:46 $
+ * @version $Revision: 1.4 $ $Date: 2005/01/04 17:34:14 $
  * @since 6.0
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -69,7 +71,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(org.opencms.db.CmsDbContext, java.util.List, int)
      */
-    public void deleteBackups(CmsDbContext dbc, List existingBackups, int maxVersions) throws CmsException {
+    public void deleteBackups(CmsDbContext dbc, List existingBackups, int maxVersions) throws CmsDataAccessException {
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
         PreparedStatement stmt3 = null;
@@ -115,9 +117,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             }
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, null, e);
         } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
+            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt1, null);
             m_sqlManager.closeAll(dbc, conn, stmt2, null);
@@ -166,7 +168,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                         resources));
             }
         } catch (SQLException exc) {
-            throw m_sqlManager.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc, false);
+            throw new CmsSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }

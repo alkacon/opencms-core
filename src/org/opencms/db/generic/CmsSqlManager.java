@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/12/16 13:57:21 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db.generic;
 
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsProject;
@@ -59,7 +60,7 @@ import java.util.Properties;
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.47 $ $Date: 2004/12/16 13:57:21 $
+ * @version $Revision: 1.48 $ $Date: 2005/01/04 17:34:08 $
  * @since 5.1
  */
 public class CmsSqlManager implements Serializable, Cloneable {
@@ -236,6 +237,8 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @param rootCause the exception that was thrown
      * @param logSilent if TRUE, no entry to the log is written
      * @return CmsException
+     * 
+     * @deprecated use any <code>{@link CmsDataAccessException}</code> instead.
      */
     public CmsException getCmsException(
         Object o,
@@ -424,9 +427,9 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * 
      * @param tableName the table for which a new primary key should be generated.
      * @return int the new primary key
-     * @throws CmsException if an error occurs
+     * @throws CmsDataAccessException if an error occurs
      */
-    public synchronized int nextId(String tableName) throws CmsException {
+    public synchronized int nextId(String tableName) throws CmsDataAccessException {
 
         return org.opencms.db.CmsDbUtil.nextId(m_poolUrl, tableName);
     }

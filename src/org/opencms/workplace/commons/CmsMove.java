@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/01/04 17:34:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -190,7 +191,7 @@ public class CmsMove extends CmsDialog {
                 + key("source") + ": " + getParamResource() + "<br>\n" 
                 + key("target") + ": " + getParamTarget() + "\n</p>\n";
             // check if this exception requires a confirmation or error screen
-            if ((e.getType() == CmsException.C_FILE_EXISTS)) {
+            if ((e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS)) {
                 // file move operation but file already exists, show confirmation dialog
                 setParamMessage(message + key("confirm.message.copy"));
                 getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM);        
@@ -286,7 +287,7 @@ public class CmsMove extends CmsDialog {
                     getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
                 } else {
                     // throw exception to indicate that the target exists
-                    throw new CmsException("The target already exists", CmsException.C_FILE_EXISTS);
+                    throw new CmsException("The target already exists", CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS);
                 }
             } 
                     

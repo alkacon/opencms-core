@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/12/22 16:41:24 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/01/04 17:34:07 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.61 $ $Date: 2004/12/22 16:41:24 $
+ * @version $Revision: 1.62 $ $Date: 2005/01/04 17:34:07 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -341,7 +341,7 @@ public interface I_CmsProjectDriver {
      * @param backupTagId the backup tag ID
      * @param maxVersions maximum number of backup versions
      * 
-     * @throws Exception if something goes wrong
+     * @throws CmsException if something goes wrong
      * @see org.opencms.db.CmsDriverManager#getPublishList(CmsDbContext, CmsResource, boolean)
      */
     void publishProject(
@@ -351,7 +351,7 @@ public interface I_CmsProjectDriver {
         CmsPublishList publishList,
         boolean backupEnabled,
         int backupTagId,
-        int maxVersions) throws Exception;
+        int maxVersions) throws CmsException;
 
     /**
      * Reads a project given the projects id.<p>

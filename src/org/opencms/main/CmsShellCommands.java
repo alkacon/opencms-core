@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/12/23 10:32:03 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2005/01/04 17:34:07 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -456,7 +456,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             file = null;
         }
         if (file == null) {
-            throw new CmsException("Could not load local file " + filename, CmsException.C_NOT_FOUND);
+            throw new CmsException("Could not load local file " + filename, CmsException.C_FILE_NOT_FOUND);
         }
         // now import the file
         try {
@@ -466,7 +466,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             importInput.read(result);
             importInput.close();
         } catch (Exception e) {
-            throw new CmsException(e.toString(), CmsException.C_UNKNOWN_EXCEPTION);
+            throw new CmsException(e.toString(), CmsException.C_FILESYSTEM_ERROR);
         }
         return result;
     }

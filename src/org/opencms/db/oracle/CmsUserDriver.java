@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/15 12:29:46 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,11 @@
 
 package org.opencms.db.oracle;
 
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
+import org.opencms.db.CmsObjectNotFoundException;
+import org.opencms.db.CmsSerializationException;
+import org.opencms.db.CmsSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -52,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.36 $ $Date: 2004/12/15 12:29:46 $
+ * @version $Revision: 1.37 $ $Date: 2005/01/04 17:34:08 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -95,7 +99,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             internalWriteUserInfo(dbc, id, additionalInfos, null);
              
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "createUser name=" + name + " id=" + id.toString(), CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -144,7 +148,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             internalWriteUserInfo(dbc, id, additionalInfos, reservedParam);
                         
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "importUser name=" + name + " id=" + id.toString(), CmsException.C_SQL_ERROR, e, true);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -162,7 +166,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
      */
-    public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
+    public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -190,7 +194,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             internalWriteUserInfo(dbc, user.getId(), user.getAdditionalInfo(), null);
             
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "writeUser name=" + user.getName() + " id=" + user.getId().toString(), CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -206,7 +210,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, Map additionalInfo, Object reservedParam) throws CmsException {
+    private void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, Map additionalInfo, Object reservedParam) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         PreparedStatement commit = null;
@@ -237,7 +241,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(1, userId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
-                throw new CmsException("internalWriteUserInfo id=" + userId.toString() + " user info not found", CmsException.C_NOT_FOUND);
+                throw new CmsObjectNotFoundException("internalWriteUserInfo id=" + userId.toString() + " user info not found");
             }
             
             // write serialized user info 
@@ -263,9 +267,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             }
             
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "internalWriteUserInfo id=" + userId.toString(), CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "internalWriteUserInfo id=" + userId.toString(), CmsException.C_SERIALIZATION, e, false);
+            throw new CmsSerializationException("internalWriteUserInfo id=" + userId.toString(), e);
         } finally {
 
             if (res != null) {

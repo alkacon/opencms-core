@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -86,7 +87,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.53 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.54 $ $Date: 2005/01/04 17:34:08 $
  */
 public class CmsExport implements Serializable {
 
@@ -216,13 +217,13 @@ public class CmsExport implements Serializable {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error exporting to file " + getExportFileName(), se);
             }
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, se);
+            throw new CmsException(CmsException.C_EXPORT_ERROR, se);
         } catch (IOException ioe) {
             getReport().println(ioe);
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error exporting to file " + getExportFileName(), ioe);
             }
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, ioe);
+            throw new CmsException(CmsException.C_EXPORT_ERROR, ioe);
         }
     }
 
@@ -635,7 +636,7 @@ public class CmsExport implements Serializable {
                         exportFile(file);
                     }
                 } catch (CmsException exc) {
-                    if (exc.getType() != CmsException.C_RESOURCE_DELETED) {
+                    if (exc.getType() != CmsVfsException.C_VFS_RESOURCE_DELETED) {
                         throw exc;
                     }
                 }
@@ -902,7 +903,7 @@ public class CmsExport implements Serializable {
             }                
         } catch (Exception exc) {
             getReport().println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsException(CmsException.C_EXPORT_ERROR, exc);
         }
         getReport().println(" " + getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }

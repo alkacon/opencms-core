@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/16 13:57:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/01/04 17:34:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.db.postgresql;
 
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
+import org.opencms.db.CmsSerializationException;
+import org.opencms.db.CmsSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
@@ -50,7 +53,7 @@ import java.util.Map;
  * 
  * @author Antonio Core (antonio@starsolutions.it)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
@@ -102,12 +105,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
             group = new CmsGroup(groupId, parentId, groupName, description, flags);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(
-                this,
-                "[CmsGroup]: " + groupName + ", Id=" + groupId.toString(),
-                CmsException.C_SQL_ERROR,
-                e,
-                true);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -161,9 +159,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+            throw new CmsSerializationException("creating user:", e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -222,19 +220,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setInt(12, type);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(
-                this,
-                "[CmsUser]: " + name + ", Id=" + id.toString(),
-                CmsException.C_SQL_ERROR,
-                e,
-                true);
+            throw new CmsSqlException(this, stmt, e);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(
-                this,
-                "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:",
-                CmsException.C_SERIALIZATION,
-                e,
-                false);
+            throw new CmsSerializationException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -271,7 +259,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                 stmt.executeUpdate();
 
             } catch (SQLException e) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+                throw new CmsSqlException(this, stmt, e);
             } finally {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }
@@ -283,7 +271,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
      */
-    public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
+    public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -304,9 +292,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(10, user.getId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+            throw new CmsSerializationException("writing user:", e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }

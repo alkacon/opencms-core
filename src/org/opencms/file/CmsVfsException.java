@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsException.java,v $
- * Date   : $Date: 2004/07/03 10:17:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,17 @@
  
 package org.opencms.file;
 
-import org.opencms.main.CmsException;
+import org.opencms.db.CmsDataAccessException;
 
 /**
  * Used to signal VFS related issues, for example during file access.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Michael Moossen (a.kandzior@alkacon.com)
+ * @version $Revision: 1.3 $
  * @since 5.1.4
  */
-public class CmsVfsException extends CmsException {
+public class CmsVfsException extends CmsDataAccessException {
 
     /** Folders don't suport siblings. */
     public static final int C_VFS_FOLDERS_DONT_SUPPORT_SIBLINGS = 300;
@@ -51,11 +52,18 @@ public class CmsVfsException extends CmsException {
     /** Undo changes on a new resource is impossible. */
     public static final int C_VFS_UNDO_CHANGES_NOT_POSSIBLE_ON_NEW_RESOURCE = 302;
     
+    // TODO: to change the constants in a more consistent way
     /** Resource not found. */
-    public static final int C_VFS_RESOURCE_NOT_FOUND = C_NOT_FOUND;
+    public static final int C_VFS_RESOURCE_NOT_FOUND = 2; //C_NOT_FOUND;
 
     /** Resource already exists. */
-    public static final int C_VFS_RESOURCE_ALREADY_EXISTS = C_FILE_EXISTS;
+    public static final int C_VFS_RESOURCE_ALREADY_EXISTS = 12; //C_FILE_EXISTS;
+    
+    /** Resource deleted. */
+    public static final int C_VFS_RESOURCE_DELETED = 32; //C_RESOURCE_DELETED;
+
+    /** Error code for not empty exception. */
+    public static final int C_VFS_FOLDER_NOT_EMPTY = 5; //C_NOT_EMPTY;
     
     /**
      * Default constructor for a CmsSecurityException.<p>
@@ -65,7 +73,7 @@ public class CmsVfsException extends CmsException {
     }
     
     /**
-     * Constructs a CmsSecurityException with the specified description message and type.<p>
+     * Constructs a exception with the specified description message and type.<p>
      * 
      * @param type the type of the exception
      */
@@ -74,7 +82,7 @@ public class CmsVfsException extends CmsException {
     }
         
     /**
-     * Constructs a CmsSecurityException with the specified description message and type.<p>
+     * Constructs a exception with the specified description message and type.<p>
      * 
      * @param message the description message
      * @param type the type of the exception
@@ -84,7 +92,7 @@ public class CmsVfsException extends CmsException {
     }
     
     /**
-     * Constructs a CmsSecurityException with the specified description message and root exception.<p>
+     * Constructs a exception with the specified description message and root exception.<p>
      * 
      * @param type the type of the exception
      * @param rootCause root cause exception
@@ -94,7 +102,7 @@ public class CmsVfsException extends CmsException {
     }        
     
     /**
-     * Constructs a CmsSecurityException with the specified description message and root exception.<p>
+     * Constructs a exception with the specified description message and root exception.<p>
      * 
      * @param message the description message
      * @param type the type of the exception
@@ -135,6 +143,10 @@ public class CmsVfsException extends CmsException {
                 return "Resource already exists!";
             case C_VFS_UNDO_CHANGES_NOT_POSSIBLE_ON_NEW_RESOURCE:
                 return "Undo changes is not possible on a new resource!";
+            case C_VFS_RESOURCE_DELETED:
+                return "Resource has been deleted!";
+            case C_VFS_FOLDER_NOT_EMPTY:
+                return "Folder is not empty!";
             default:
                 return super.getErrorDescription(type);
         }

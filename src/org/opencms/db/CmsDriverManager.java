@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/01/03 13:52:25 $
- * Version: $Revision: 1.467 $
+ * Date   : $Date: 2005/01/04 17:34:07 $
+ * Version: $Revision: 1.468 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.467 $ $Date: 2005/01/03 13:52:25 $
+ * @version $Revision: 1.468 $ $Date: 2005/01/04 17:34:07 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4564,14 +4564,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @param publishList a publish list
      * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
      * 
-     * @throws Exception if something goes wrong
+     * @throws CmsException if something goes wrong
      * @see #getPublishList(CmsDbContext, CmsResource, boolean)
      */
     public synchronized void publishProject(
         CmsObject cms,
         CmsDbContext dbc,
         CmsPublishList publishList,
-        I_CmsReport report) throws Exception {
+        I_CmsReport report) throws CmsException {
 
         int publishProjectId = dbc.currentProject().getId();
         boolean temporaryProject = (dbc.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
@@ -4832,7 +4832,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
             } catch (CmsException e) {
                 // the project resource probably doesnt exist (anymore)...
-                if (e.getType() != CmsException.C_NOT_FOUND) {
+                if (e.getType() != CmsVfsException.C_VFS_RESOURCE_NOT_FOUND) {
                     throw e;
                 }
             }
@@ -4965,9 +4965,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     throws CmsException {
 
         if (resource.isFolder()) {
-            throw new CmsException(
-                "Trying to access a folder as file " + "(" + resource.getRootPath() + ")",
-                CmsException.C_NOT_FOUND);
+            throw new CmsVfsResourceNotFoundException(
+                "Trying to access a folder as file " + "(" + resource.getRootPath() + ")");
         }
 
         CmsFile file = m_vfsDriver.readFile(
@@ -6359,11 +6358,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 user = m_userDriver.readUser(dbc, username, oldPassword, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
             } catch (CmsException e) {
                 if (e.getType() != CmsException.C_NO_USER) {
-                    throw new CmsException("["
+                    throw new CmsDataAccessException("["
                         + getClass().getName()
                         + "] Error resetting password for user '"
                         + username
-                        + "'", CmsException.C_UNKNOWN_EXCEPTION);
+                        + "'", e);
                 }
             }
 
@@ -6376,11 +6375,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     I_CmsConstants.C_USER_TYPE_WEBUSER);
             } catch (CmsException e) {
                 if (e.getType() != CmsException.C_NO_USER) {
-                    throw new CmsException("["
+                    throw new CmsDataAccessException("["
                         + getClass().getName()
                         + "] Error resetting password for user '"
                         + username
-                        + "'", CmsException.C_UNKNOWN_EXCEPTION);
+                        + "'", e);
                 }
             }
 
@@ -6392,9 +6391,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             m_userDriver.writePassword(dbc, username, user.getType(), oldPassword, newPassword);
 
         } else {
-            throw new CmsException(
-                "[" + getClass().getName() + "] Missing old/new password",
-                CmsException.C_UNKNOWN_EXCEPTION);
+            throw new CmsDataAccessException(
+                "[" + getClass().getName() + "] Missing old/new password");
         }
     }
 
@@ -6550,11 +6548,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 user = m_userDriver.readUser(dbc, username, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
             } catch (CmsException e) {
                 if (e.getType() != CmsException.C_NO_USER) {
-                    throw new CmsException("["
+                    throw new CmsDataAccessException("["
                         + getClass().getName()
                         + "] Error resetting password for user '"
                         + username
-                        + "'", CmsException.C_UNKNOWN_EXCEPTION);
+                        + "'", e);
                 }
             }
 
@@ -6566,11 +6564,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     I_CmsConstants.C_USER_TYPE_WEBUSER);
             } catch (CmsException e) {
                 if (e.getType() != CmsException.C_NO_USER) {
-                    throw new CmsException("["
+                    throw new CmsDataAccessException("["
                         + getClass().getName()
                         + "] Error resetting password for user '"
                         + username
-                        + "'", CmsException.C_UNKNOWN_EXCEPTION);
+                        + "'", e);
                 }
             }
 
@@ -7030,8 +7028,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     }
                 } catch (CmsException e) {
                     // there might exist export points without corresponding resources in the VFS
-                    // -> ingore exceptions which are not "resource not found" exception quiet here
-                    if (e.getType() != CmsException.C_NOT_FOUND) {
+                    // -> ignore exceptions which are not "resource not found" exception quiet here
+                    if (e.getType() != CmsVfsException.C_VFS_RESOURCE_NOT_FOUND) {
                         if (OpenCms.getLog(this).isErrorEnabled()) {
                             OpenCms.getLog(this).error("Error updating export points", e);
                         }
@@ -7614,9 +7612,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             return new CmsFolder(resource);
         }
 
-        throw new CmsException(
-            "Trying to access a file as a folder " + "(" + resource.getRootPath() + ")",
-            CmsException.C_NOT_FOUND);
+        throw new CmsVfsResourceNotFoundException(
+            "Trying to access a file as a folder " + "(" + resource.getRootPath() + ")");
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/25 09:29:59 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,13 @@
 
 package org.opencms.db.oracle;
 
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
+import org.opencms.db.CmsObjectNotFoundException;
+import org.opencms.db.CmsSerializationException;
+import org.opencms.db.CmsSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsProject;
-import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
@@ -51,7 +54,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.26 $ $Date: 2004/11/25 09:29:59 $
+ * @version $Revision: 1.27 $ $Date: 2005/01/04 17:34:08 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -59,7 +62,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createContent(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, byte[], int)
      */
-    public void createContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content, int versionId) throws CmsException {
+    public void createContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content, int versionId) throws CmsDataAccessException {
         PreparedStatement stmt = null;
         Connection conn = null;
         
@@ -74,7 +77,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "createFileContent resourceId=" + resourceId.toString(), CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -94,7 +97,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeContent(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, byte[])
      */
-    public void writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content) throws CmsException {
+    public void writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         PreparedStatement commit = null;
@@ -114,7 +117,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             stmt.setString(1, resourceId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
-                throw new CmsException("writeFileContent resourceId=" + resourceId.toString() + " content not found", CmsException.C_NOT_FOUND);
+                throw new CmsObjectNotFoundException("writeFileContent resourceId=" + resourceId.toString() + " content not found");
             }
             
             // write file content 
@@ -139,9 +142,9 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             }
                 
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "writeFileContent resourceId=" + resourceId.toString(), CmsException.C_SERIALIZATION, e, false);
+            throw new CmsSerializationException("writeFileContent resourceId=" + resourceId.toString(), e);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "writeFileContent resourceId=" + resourceId.toString(), CmsException.C_SQL_ERROR, e, false);
+            throw new CmsSqlException(this, stmt, e);
         } finally {
 
             if (res != null) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/11/11 13:10:09 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2005/01/04 17:34:08 $
+* Version: $Revision: 1.27 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.26 $ $Date: 2004/11/11 13:10:09 $
+ * @version $Revision: 1.27 $ $Date: 2005/01/04 17:34:08 $
  */
 public class CmsImport implements Serializable {
     
@@ -233,7 +233,7 @@ public class CmsImport implements Serializable {
                 m_importZip.close();
             } catch (IOException exc) {
                 m_report.println(exc);
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+                throw new CmsException(CmsException.C_FILESYSTEM_ERROR, exc);
             }
         }
     }
@@ -299,13 +299,13 @@ public class CmsImport implements Serializable {
                 }
             }
         } catch (Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
         }
         if (m_importZip != null) {
             try {
                 m_importZip.close();
             } catch (IOException exc) {
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+                throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
             }
         }
         return conflictNames;
@@ -372,7 +372,7 @@ public class CmsImport implements Serializable {
             }
         } catch (Exception exc) {
             m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
         }
     }
 
@@ -424,7 +424,7 @@ public class CmsImport implements Serializable {
             }
         } catch (Exception exc) {
             m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
         } finally {
             if (m_importingChannelData) {
                 m_cms.getRequestContext().restoreSiteRoot();
@@ -435,7 +435,7 @@ public class CmsImport implements Serializable {
                 m_importZip.close();
             } catch (IOException exc) {
                 m_report.println(exc);
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+                throw new CmsException(CmsException.C_FILESYSTEM_ERROR, exc);
             }
         }
         if (resources.contains(I_CmsConstants.C_ROOT)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/12/23 10:32:03 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2005/01/04 17:34:08 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -590,7 +590,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         } catch (Exception exc) {            
             m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
         }
     }
 
@@ -633,7 +633,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
             }
         } catch (Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
         }
     }
         
@@ -681,7 +681,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             }
         } catch (Exception exc) {
             m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
         }
     }
     
@@ -750,7 +750,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             }
         } catch (Exception exc) {
             m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsException(CmsException.C_IMPORT_ERROR, exc);
         }
     }
 }

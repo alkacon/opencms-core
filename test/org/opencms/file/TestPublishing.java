@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2004/12/07 17:45:11 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/01/04 17:34:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -163,18 +163,18 @@ public class TestPublishing extends OpenCmsTestCase {
         try {
             cms.readResource(destination3);
             fail("Resource " + destination3+ " should not available online yet");
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok
         } catch (CmsException e) {
-            if (e.getType() != CmsException.C_NOT_FOUND) {
-                fail("Resource " + destination3 + " error:" +e);
-            }
+            fail("Resource " + destination3 + " error:" +e);
         }
         try {
             cms.readResource(destination4);
             fail("Resource " + destination4+ " should not available online yet");
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok
         } catch (CmsException e) {
-            if (e.getType() != CmsException.C_NOT_FOUND) {
-                fail("Resource " + destination4 + " error:" +e);
-            }
+            fail("Resource " + destination4 + " error:" +e);
         }
         
         assertFilter(cms, destination2, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);          
@@ -514,10 +514,10 @@ public class TestPublishing extends OpenCmsTestCase {
         try {
             cms.readResource(resource1);
             fail ("Resource " + resource1 + " was not deleted online");
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok
        } catch (CmsException e) {
-            if (e.getType() != CmsException.C_NOT_FOUND) {
-                fail("Resource " + resource1 + " error:" +e);
-            }
+            fail("Resource " + resource1 + " error:" +e);
         }
        
        cms.getRequestContext().setCurrentProject(offlineProject);
@@ -538,10 +538,10 @@ public class TestPublishing extends OpenCmsTestCase {
        try {
            cms.readResource(resource2);
            fail ("Resource " + resource2 + " was not deleted online");
+       } catch (CmsVfsResourceNotFoundException e) {
+           // ok
       } catch (CmsException e) {
-           if (e.getType() != CmsException.C_NOT_FOUND) {
-               fail("Resource " + resource2 + " error:" +e);
-           }
+           fail("Resource " + resource2 + " error:" +e);
        }    
        // the other siblings must still be there
       try {
@@ -569,18 +569,18 @@ public class TestPublishing extends OpenCmsTestCase {
       try {
           cms.readResource(resource3);
           fail ("Resource " + resource3 + " was not deleted online");
+      } catch (CmsVfsResourceNotFoundException e) {
+          // ok
       } catch (CmsException e) {
-          if (e.getType() != CmsException.C_NOT_FOUND) {
-              fail("Resource " + resource3 + " error:" +e);
-          }
+          fail("Resource " + resource3 + " error:" +e);
       } 
       try {
           cms.readResource(resource4);
           fail ("Resource " + resource4 + " was not deleted online");
+      } catch (CmsVfsResourceNotFoundException e) {
+          // ok
       } catch (CmsException e) {
-          if (e.getType() != CmsException.C_NOT_FOUND) {
-              fail("Resource " + resource4 + " error:" +e);
-          }
+          fail("Resource " + resource4 + " error:" +e);
       } 
       
       cms.getRequestContext().setCurrentProject(offlineProject);
