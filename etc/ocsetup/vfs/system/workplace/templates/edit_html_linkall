@@ -5,10 +5,7 @@ MSHTML edit dialog for links that allows the insertion of anchors (a name="") an
 Based on previous versions of the OpenCms link dialog.
 
 Author : Alexander Kandzior (a.kandzior@alkacon.com)
-Version: 1.0
-
-TODO:
-* Localization of some strings (currently hardcoded in english)
+Version: 1.1
 
 -->
 <WORKPLACE>
@@ -249,7 +246,7 @@ TODO:
                 var url = document.forms["NEU"].elements["neulink"];
                 if (checkUrl(url.value)) {
                     // TODO: Localize this string
-                    var conf = confirm("The link URL you entered looks like a server name\nbut misses the required protocol (eg. 'http://').\n\nShould the http protocol be added to the URL?");
+                    var conf = confirm("]]><LABEL value="editor.message.confirmhttp" /><![CDATA[");
                     if (conf) {                        
                         url.value = "http://" + url.value;
                     }
@@ -315,7 +312,7 @@ TODO:
                         <option value="_self">]]><LABEL value="input.linktargetself" /><![CDATA[</option>
                         <option value="_blank">]]><LABEL value="input.linktargetblank" /><![CDATA[</option>
                         <option value="_top">]]><LABEL value="input.linktargettop" /><![CDATA[</option>
-                        <option value="named">Named Window</option>
+                        <option value="named">]]><LABEL value="input.linktargetnamed" /><![CDATA[</option>
                       </select>
                       &nbsp;&nbsp;<span id="targetinput" style="visibility:hidden"><input type="text" name="targetname" size="15" class="textfeld3" style="width:141px" onchange="setNameTarget(true);" /></span>
                     </td>
@@ -342,5 +339,3 @@ TODO:
 </TEMPLATE>
 
 </WORKPLACE>
-
-
