@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsHtmlConverter;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -50,7 +51,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5
  */
@@ -155,6 +156,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
         // validate the xml structure before writing the file         
         // an exception will be thrown if the structure is invalid
         xmlContent.validateXmlStructure(new CmsXmlEntityResolver(cms));
+        // read the content-conversion property
+        String contentConversion = CmsHtmlConverter.getConversionSettings(cms, resource);               
+        xmlContent.setConversion(contentConversion);   
         // correct the HTML structure 
         resource = xmlContent.correctXmlStructure(cms);        
         // resolve the file mappings

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -75,6 +75,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /** The encoding to use for this xml document. */
     protected String m_encoding;
 
+    /** The content conversion to use for this xml document. */
+    protected String m_conversion;    
+    
     /** The file that contains the document data (note: is not set when creating an empty or document based document). */
     protected CmsFile m_file;
 
@@ -110,6 +113,16 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         return result.toString();
     }
 
+    /**
+     * Returns the content converison used for the page content.<p>
+     * 
+     * @return the content converison used for the page content
+     */
+    public String getConversion() {
+
+        return m_conversion;
+    }
+    
     /**
      * Returns the encoding used for the page content.<p>
      * 
@@ -281,6 +294,16 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         return ((ByteArrayOutputStream)marshal(new ByteArrayOutputStream(), m_encoding)).toByteArray();
     }
 
+    /**
+     * Sets the content conversion mode for this document.<p>
+     * 
+     * @param conversion the conversion mode to set for this document
+     */
+    public void setConversion(String conversion) {
+        m_conversion = conversion;
+    }
+    
+    
     /**
      * @see java.lang.Object#toString()
      */

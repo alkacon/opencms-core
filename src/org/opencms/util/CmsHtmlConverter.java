@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2004/10/11 09:48:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,26 +31,33 @@
  
 package org.opencms.util;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import org.w3c.tidy.Tidy;
 
 /**
- * Html Parser, used to clean up html code (e.g. remove word tags) and created xhtml output.<p>
+ * Html cleaner, used to clean up html code (e.g. remove word tags) and created xhtml output.<p>
  *  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsHtmlConverter {
     
@@ -59,15 +66,12 @@ public class CmsHtmlConverter {
     
     /** param value for enabled mode. **/
     public static final String C_PARAM_ENABLED = "true";
-
-    /** param value for PRETTYPRINT mode. **/
-    public static final String C_PARAM_PRETTYPRINT = "prettyprint";
     
     /** param value for WORD mode. **/
-    public static final String C_PARAM_WORD = "cleanup-office";
+    public static final String C_PARAM_WORD = "cleanup";
     
     /** param value for XHTML mode. **/
-    public static final String C_PARAM_XHTML = "XHTML";
+    public static final String C_PARAM_XHTML = "xhtml";
 
     /** constant for disabled mode. */
     static final int C_MODE_DISABLED = 0;
@@ -80,16 +84,29 @@ public class CmsHtmlConverter {
     /** constant for XHTML parsing mode. */
     static final int C_MODE_XHTML = 2;
     
+    /** patterns for cleanup. */
+    Pattern[] m_clearStyle;         
+    
     
     /** the input encoding. */
     String m_encoding;
     
     /** the operation mode. */
-    int m_mode;
+    List m_mode;
+    
+    /** regular expression for cleanup. */    
+    String[] m_patterns = {"<o:p>.*(\\r\\n)*.*</o:p>",    
+                          "<o:p>.*(\\r\\n)*.*</O:p>",
+                          "<\\?xml:.*(\\r\\n).*/>",
+                          "<\\?xml:.*(\\r\\n).*(\\r\\n).*/\\?>",
+                          "<\\?xml:.*(\\r\\n).*(\\r\\n).*/>",
+                          "<\\?xml:(.*(\\r\\n)).*/\\?>",
+                          "<o:SmartTagType.*(\\r\\n)*.*/>",
+                          "<o:smarttagtype.*(\\r\\n)*.*/>",
+                          };
     
     /** the tidy to use. */
     Tidy m_tidy;
-    
     
     /**
      * Constructor, creates a new CmsHtmlConverter.<p>
@@ -114,39 +131,59 @@ public class CmsHtmlConverter {
         m_encoding = encoding;           
         init(mode);
     } 
-        
-    
+
     /**
-     * Main method for the CmsHtmlParserBean, used for testing.<p>
+     * Reads the content conversion property of a given resource and returns its value.<p>
      * 
-     * @param args first parameter is the filename
+     * A default value (disabled) is returned if the property could not be read
+     * 
+     * @param cms the CmsObject
+     * @param resource the resource in the vfs
+     * @return the content conversion property value
      */
-    public static void main(String[] args) {
-        if (args.length == 3) {
-            File inputfile = new File(args[0]);            
-            File outputfile = new File(args[1]);
-            String mode = args[2];
-            CmsHtmlConverter parser = new CmsHtmlConverter("UTF-8", mode);
-            
-            try {
-                byte[] htmlInput = parser.getFileBytes(inputfile);
-
-                String inputContent = new String(htmlInput, parser.m_encoding);
-                inputContent = parser.adjustHtml(inputContent);
-                
-                byte[] htmlOutput = parser.convertToByte(inputContent);
-
-                System.out.println(new String(htmlOutput, parser.m_encoding));
-                
-                parser.writeFileByte(htmlOutput, outputfile);
-   
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        } else {
-            System.out.println("Usage: CmsHtmlParser inputfile outputfile mode");
+    public static String getConversionSettings(CmsObject cms, CmsResource resource) {
+        // read the content-conversion property
+        String contentConversion;          
+        try {
+            String resourceName = cms.getSitePath(resource);
+            CmsProperty contentConversionProperty = cms.readPropertyObject(resourceName , I_CmsConstants.C_PROPERTY_CONTENT_CONVERSION , true);                
+            contentConversion = contentConversionProperty.getValue();
+        } catch (CmsException e) {
+            // if there was an error reading the property, choose a default value
+           contentConversion = CmsHtmlConverter.C_PARAM_DISABLED;
         }
+        return contentConversion;
+    }
+
+    /**
+     * Adjusts the html input code in WORD mode if nescessary.<p>
+     * 
+     * When in WORD mode, the html tag must contain the xmlns:o="urn:schemas-microsoft-com:office:office"
+     * attribute, otherwiese tide will not remove the WORD tags from the document.
+     * 
+     * @param htmlInput the html input
+     * @return adjusted html input
+     */
+    public String adjustHtml(String htmlInput) {
         
+        // we only have to do an adjustment id we are in WORD mode
+        if (m_mode.contains(C_PARAM_WORD)) {
+            // check if we have some opening and closing html tags
+            if ((htmlInput.toLowerCase().indexOf("<html>") == -1) 
+            && (htmlInput.toLowerCase().indexOf("</html>") == -1)) {
+                // add a correct <html> tag for word generated html
+                StringBuffer tmp = new StringBuffer();
+                tmp.append("<html xmlns:o=\"\"><body>");
+                tmp.append(htmlInput);
+                tmp.append("</body></html>");
+                htmlInput = tmp.toString();
+                /*htmlInput = "<html xmlns:o=\"\">" 
+                    + "<body>" 
+                    + htmlInput
+                    + "</body></html>";*/               
+            }
+        }
+        return htmlInput;
     }
     
     
@@ -159,13 +196,36 @@ public class CmsHtmlConverter {
      */
     public byte[] convertToByte(byte[] htmlInput) throws Exception {
         // only do some parsing if the parsing mode is not set to disabled
-        if (m_mode != C_MODE_DISABLED) {
-            // parsing run 1, remove word tags
-            byte[] parsedRun1 = parse(htmlInput, m_encoding);
-            // parsing run 2, remove empty tags
-            byte[] parsedRun2 = parse(parsedRun1, m_encoding);
-            // parsing run 3, remove additional word tags wirh regexp
-            return parsedRun2;
+        if (m_mode.size() > 0 && !m_mode.contains(C_PARAM_DISABLED)) {
+            
+            int loop = 10;
+            int count = 0;
+            
+            // we have to do several parsing runs until all tags are removed
+            int oldSize = htmlInput.length;            
+            byte[] parsedRun = regExp(new String(htmlInput, m_encoding)).getBytes(m_encoding);
+                        
+            while (loop > 0) {
+                loop--;
+
+                // first add the optional header if in word mode                
+                String parsedContent = adjustHtml(new String(parsedRun, m_encoding));
+               
+                parsedRun = parse(parsedContent.getBytes(m_encoding), m_encoding);
+                if (parsedRun.length == oldSize) {
+                    break;
+                } else {           
+                    oldSize = parsedRun.length;
+                    count++;
+                }                                           
+            }
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(
+                    "[" + this.getClass().getName() + "] " + " needed " + count + " parsing runs");                            
+            }
+            
+            return regExp(new String(parsedRun, m_encoding)).getBytes(m_encoding);
+
         } else {
             // the parsing mode was disabled, so return the oringinal value
             return htmlInput;
@@ -180,7 +240,7 @@ public class CmsHtmlConverter {
      * @throws Exception if something goes wrong
      */
     public byte[] convertToByte(String htmlInput) throws Exception {
-       return convertToByte(adjustHtml(htmlInput).getBytes(m_encoding));
+       return convertToByte(htmlInput.getBytes(m_encoding));
     }
     
     
@@ -212,7 +272,7 @@ public class CmsHtmlConverter {
      */
     public byte[] convertToByteSilent(String htmlInput) {
         try {
-            return convertToByte(adjustHtml(htmlInput).getBytes(m_encoding));
+            return convertToByte(htmlInput.getBytes(m_encoding));
         } catch (Exception e) {
             if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn(
@@ -252,7 +312,7 @@ public class CmsHtmlConverter {
      * @throws Exception if something goes wrong
      */
     public String convertToString(String htmlInput) throws Exception {
-        byte[] result = convertToByte(adjustHtml(htmlInput).getBytes(m_encoding)); 
+        byte[] result = convertToByte(htmlInput.getBytes(m_encoding)); 
         return new String(result, m_encoding);
     } 
     
@@ -315,32 +375,6 @@ public class CmsHtmlConverter {
         return m_encoding;
     }
     
-
-    /**
-     * Adjusts the html input code in WORD mode if nescessary.<p>
-     * 
-     * When in WORD mode, the html tag must contain the xmlns:o="urn:schemas-microsoft-com:office:office"
-     * attribute, otherwiese tide will not remove the WORD tags from the document.
-     * 
-     * @param htmlInput the html input
-     * @return adjusted html input
-     */
-    private String adjustHtml(String htmlInput) {
-        // we only have to do an adjustment id we are in WORD mode
-        if (m_mode == C_MODE_WORD) {
-            // check if we have some opening and closing html tags
-            if ((htmlInput.toLowerCase().indexOf("<html>") == -1) 
-            && (htmlInput.toLowerCase().indexOf("</html>") == -1)) {
-                // add a correct <html> tag for word generated html
-                htmlInput = "<html xmlns:o=\"urn:schemas-microsoft-com:office:office\">" 
-                    + "<body>" 
-                    + htmlInput
-                    + "</body></html>";
-            }
-        }
-        return htmlInput;
-    }
-    
     /**
      * Returns a byte array containing the content of server FS file.<p>
      *
@@ -348,7 +382,7 @@ public class CmsHtmlConverter {
      * @return bytes[] the content of the file
      * @throws Exception if something goes wrong
      */
-    private byte[] getFileBytes(File file) throws Exception {
+    public byte[] getFileBytes(File file) throws Exception {
         byte[] buffer = null;
         FileInputStream fileStream = null;
         int charsRead;
@@ -374,8 +408,27 @@ public class CmsHtmlConverter {
             }
         }
     }
-    
-    
+        
+    /**
+     * Extracts all mode parameters from the mode property value and stores them in a list.<p>
+     * 
+     * Values must be seperated iwth a semicolon.
+     * 
+     * @param mode the mode paramter string
+     * @return list with all extracted nodes
+     */
+    private List extractModes(String mode) {
+        ArrayList extractedModes = new ArrayList();
+        if (mode != null) {
+            StringTokenizer extract = new StringTokenizer(mode, ";");
+            while (extract.hasMoreTokens()) {
+                String tok = extract.nextToken();
+                extractedModes.add(tok);
+            }
+        }
+        return extractedModes;
+    }
+        
     /**
      * Initializes the CmsHtmlConverter.<p>
      * 
@@ -393,8 +446,8 @@ public class CmsHtmlConverter {
         
         // disable the tidy meta element in output
         m_tidy.setTidyMark(false);
-        // enable clean mode
-        m_tidy.setMakeClean(true);
+        // disable clean mode
+        m_tidy.setMakeClean(false);              
         // enable num entities
         m_tidy.setNumEntities(true);
         // create output of the body only
@@ -405,41 +458,31 @@ public class CmsHtmlConverter {
         m_tidy.setQuiet(true);
         // disable warning output
         m_tidy.setShowWarnings(false);
+
+        // extract all operation mode
+        m_mode = extractModes(mode);
         
-        // set the operating mode     
-        if (mode == null) {
-            m_mode = C_MODE_DISABLED;
-        } else if (mode.equals(C_PARAM_DISABLED)) {
-            m_mode = C_MODE_DISABLED;
-        } else if (mode.equals(C_PARAM_ENABLED)) {
-            m_mode = C_MODE_ENABLED;
-        } else if (mode.equals(C_PARAM_XHTML)) {
-            m_mode = C_MODE_XHTML;
-        } else if (mode.equals(C_PARAM_WORD)) {
-           m_mode = C_MODE_WORD;   
-        } else {
-            m_mode = C_MODE_DISABLED;
+        // confiugurate the tidy depending on the operation mode
+        if (m_mode.contains(C_PARAM_ENABLED)) {
+            m_tidy.setXHTML(false);
+            m_tidy.setWord2000(false);
+        }        
+        if (m_mode.contains(C_PARAM_XHTML)) {
+            m_tidy.setXHTML(true);
+        }
+        if (m_mode.contains(C_PARAM_WORD)) {
+            m_tidy.setWord2000(true);   
+        }
+        
+        // create the regexp for cleanup
+        m_clearStyle = new Pattern[m_patterns.length];
+        for (int i = 0; i < m_patterns.length; i++) {
+            m_clearStyle[i] = Pattern.compile(m_patterns[i]);
         }
 
-        // confiugurate the tidy depending on the operation mode
-        switch (m_mode) {
-            case C_MODE_ENABLED:
-                m_tidy.setXHTML(false);
-                m_tidy.setWord2000(false);                
-            break;
-            case C_MODE_XHTML:
-                m_tidy.setXHTML(true);
-                m_tidy.setWord2000(true);                
-            break;
-            case C_MODE_WORD:
-                m_tidy.setXHTML(false);
-                m_tidy.setWord2000(true);                
-            break;
-            default:
-                break;
-        }
     }
-        
+    
+    
     /**
      * Parses a string containing html code with different paring modes.<p>
      * 
@@ -447,7 +490,7 @@ public class CmsHtmlConverter {
      * @param encoding the  encoding
      * @return parsed and cleared html code
      */
-    private byte[] parse(byte[] htmlInput, String encoding) {
+    private byte[] parse(byte[] htmlInput, String encoding) { 
         byte[] parsedHtml;
         
         // set the encoding
@@ -467,33 +510,22 @@ public class CmsHtmlConverter {
 
     
     /**
-     * This writes the byte content of a resource to the file on the server
-     * filesystem.<p>
-     *
-     * @param content the content of the file in the VFS
-     * @param file the file in SFS that has to be updated with content
-     * @throws Exception if something goes wrong
+     * Parses the htmlInput with regular expressions for cleanup purposes.<p>
+     * 
+     * @param htmlInput the html input
+     * @return processed html
      */
-    private void writeFileByte(byte[] content, File file) throws Exception {
-        FileOutputStream fOut = null;
-        DataOutputStream dOut = null;
-        try {
-            // write the content to the file in server filesystem
-            fOut = new FileOutputStream(file);
-            dOut = new DataOutputStream(fOut);
-            dOut.write(content);
-            dOut.flush();
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            try {
-                if (fOut != null) {
-                    fOut.close();
-                }
-            } catch (IOException e) {
-                // ignore
-            }
-        }
-    } 
+    private String regExp(String htmlInput) {
+       
+        String parsedHtml = new String();
+        parsedHtml = htmlInput;
 
+        // process all regexp
+        for (int i = 0; i < m_patterns.length; i++) {                       
+            parsedHtml = m_clearStyle[i].matcher(parsedHtml).replaceAll("");
+        }
+        
+        return parsedHtml;
+    }
+       
 }

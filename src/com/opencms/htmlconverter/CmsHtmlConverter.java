@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2004/10/14 15:05:54 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -352,10 +352,14 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         InputStream in;
         try {
             in = new ByteArrayInputStream(outString.getBytes("UTF-8"));
-            m_tidy.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+            //m_tidy.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+            m_tidy.setOutputEncoding("UTF-8");
+            m_tidy.setInputEncoding("UTF-8");
         } catch (UnsupportedEncodingException e) {
             in = new ByteArrayInputStream(outString.getBytes());
-            m_tidy.setCharEncoding(org.w3c.tidy.Configuration.LATIN1);
+            //m_tidy.setCharEncoding(org.w3c.tidy.Configuration.LATIN1);
+            m_tidy.setOutputEncoding("LATIN1");
+            m_tidy.setInputEncoding("LATIN1");
         }
         node = m_tidy.parseDOM(in, null);
         /* check if html code has errors */

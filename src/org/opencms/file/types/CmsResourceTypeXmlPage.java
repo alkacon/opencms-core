@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.util.CmsHtmlConverter;
 import org.opencms.validation.I_CmsHtmlLinkValidatable;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
@@ -59,7 +60,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -190,7 +191,10 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
             CmsXmlPage xmlPage = CmsXmlPageFactory.unmarshal(cms, resource, false);
             // validate the xml structure before writing the file         
             // an exception will be thrown if the structure is invalid
-            xmlPage.validateXmlStructure(new CmsXmlEntityResolver(cms));
+            xmlPage.validateXmlStructure(new CmsXmlEntityResolver(cms));            
+            // read the content-conversion property
+            String contentConversion = CmsHtmlConverter.getConversionSettings(cms, resource);               
+            xmlPage.setConversion(contentConversion);            
             // correct the HTML structure 
             resource = xmlPage.correctXmlStructure(cms);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/10/08 13:57:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,12 +30,9 @@
  */
 package org.opencms.workplace.editors;
 
-import org.opencms.file.CmsProperty;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -54,7 +51,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.12
  */
@@ -163,19 +160,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         if (!save) {
             // set the content parameter to the modified content
             setParamContent(content);
-        } else {  
-            CmsProperty contentConversionProperty;
-            String contentConversion;          
-            try {
-                contentConversionProperty = getJsp().getCmsObject().readPropertyObject(getJsp().getCmsObject().getSitePath(m_file), "content-conversion", true);                
-                contentConversion = contentConversionProperty.getValue();
-            } catch (CmsException e) {
-                // if there was an error reading the property, choose a default value
-               contentConversion = CmsHtmlConverter.C_PARAM_DISABLED;
-            }
-            CmsHtmlConverter converter = new CmsHtmlConverter(getFileEncoding(), contentConversion);
-            content = converter.convertToStringSilent(content);
-        }
+        } 
         return content.trim();
     }  
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/10/11 08:12:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -54,7 +55,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -273,6 +274,11 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
             // ensure all chars in the given content are valid chars for the selected charset
             value = CmsEncoder.adjustHtmlEncoding(value, encoding);
         }
+        
+        // do some processing to remove unneccessary tags
+        String contentConversion = document.getConversion();         
+        CmsHtmlConverter converter = new CmsHtmlConverter(encoding, contentConversion);
+        value = converter.convertToStringSilent(value);
 
         if (linkProcessor != null) {
             try {
@@ -345,8 +351,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                     OpenCms.getLog(this).error("HTML link processing failed", e);
                 }
             } 
-        }     
-        
+        }             
         return content;
     }
 }

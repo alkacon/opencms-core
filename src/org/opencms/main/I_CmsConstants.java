@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/10/14 08:23:01 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public interface I_CmsConstants {
 
@@ -152,6 +152,9 @@ public interface I_CmsConstants {
 
     /** Property for the content encoding. */
     String C_PROPERTY_CONTENT_ENCODING = "content-encoding";
+
+    /** Property for the content conversion. */
+    String C_PROPERTY_CONTENT_CONVERSION = "content-conversion";
     
     /** Property for the current locale. */
     String C_PROPERTY_LOCALE = "locale";

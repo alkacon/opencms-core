@@ -200,6 +200,13 @@ function buttonAction(para) {
     		alert("<%= wp.key("editor.message.noselection") %>");
     	}
     	break;
+    	case 13:
+        // clear document
+        saveContent();
+		_form.action.value = "<%= wp.EDITOR_CLEANUP %>";
+		_form.target = "_self";
+		_form.submit();
+        break;	
     }
 }
 
@@ -640,6 +647,7 @@ if (options.showElement("option.properties", displayOptions)) {
 	}
 	out.println(wp.button("javascript:buttonAction(5);", null, "properties", "editor.dialog.properties.button", buttonStyle));
 }
+out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", "editor.dialog.cleanup.button", buttonStyle));
 %>             
 <td class="maxwidth">&nbsp;</td>
 <%= wp.button("javascript:buttonAction(2);", null, "preview", "button.preview", buttonStyle) %>

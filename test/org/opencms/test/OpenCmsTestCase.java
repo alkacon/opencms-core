@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 5.3.5
  */
@@ -825,7 +825,35 @@ public class OpenCmsTestCase extends TestCase {
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
         }
-    }        
+    } 
+    
+    
+    /**
+     * Tests if a pattern can be found in a content string.<p>
+     * Fails if the pattern is not found.
+     * 
+     * @param content the content string
+     * @param pattern the pattern to search for
+     */
+    public void assertContains(String content, String pattern) {
+        if (content.toLowerCase().indexOf(pattern.toLowerCase()) == -1) {
+            fail ("pattern '" + pattern +"' not found in content");
+        }
+    }
+    
+    /**
+     * Tests if a pattern cannot  be found in a content string.<p>
+     * Fails if the pattern is found.
+     * 
+     * @param content the content string
+     * @param pattern the pattern to search for
+     */
+    public void assertContainsNot(String content, String pattern) {
+        if (content.toLowerCase().indexOf(pattern.toLowerCase()) != -1) {
+            fail ("pattern '" + pattern +"' found in content");
+        }
+    }
+    
     
     /**
      * Compares the current date created of a resource with a given date.<p>

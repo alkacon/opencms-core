@@ -11524,6 +11524,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/buttons/cleanup.gif</source>
+			<destination>system/workplace/resources/buttons/cleanup.gif</destination>
+			<type>image</type>
+			<uuidresource>f056e140-1dd7-11d9-ba2a-d1b0199af6aa</uuidresource>
+			<datelastmodified>Thu, 14 Oct 2004 13:55:27 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Oct 2004 13:55:27 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/buttons/color_fill.gif</source>
 			<destination>system/workplace/resources/buttons/color_fill.gif</destination>
 			<type>image</type>

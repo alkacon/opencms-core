@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
@@ -133,6 +134,28 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // get the new editor content 
         initContent();
     }
+    
+    /**
+     * Performs the cleanup body action of the editor.<p>
+     */
+    public void actionCleanupBodyElement() {
+        try {
+            // save eventually changed content of the editor to the temporary file
+            Locale oldLocale = CmsLocaleManager.getLocale(getParamOldelementlanguage());
+            performSaveContent(getParamOldelementname(), oldLocale);
+        } catch (CmsException e) {
+            // show error page
+            try {
+            showErrorPage(this, e, "save");
+            } catch (JspException exc) {
+                // should usually never happen
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(exc);
+                }       
+            }
+        }
+    }
+    
     
     /**
      * Deletes the temporary file and unlocks the edited resource when in direct edit mode.<p>
@@ -552,7 +575,20 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     protected void performSaveContent(String body, Locale locale) throws CmsException {
         // prepare the content for saving
         String content = prepareContent(true);
-
+            
+        String contentConversion = m_page.getConversion();
+        // check if cleanup was selected in the editor, we have to add the cleanup parameter
+        if (EDITOR_CLEANUP.equals(getParamAction())) {
+            if ((contentConversion == null) || (contentConversion.equals(CmsHtmlConverter.C_PARAM_DISABLED))) {
+                // if the current conversion mode is "false" only, we have to remove the "false" value and set it to "cleanup", as "false" will be stronger than all other values
+                contentConversion = CmsHtmlConverter.C_PARAM_WORD;
+            } else {
+                // add "cleanup" to the already existing values
+                contentConversion += ";" + CmsHtmlConverter.C_PARAM_WORD;
+            }
+        }
+        m_page.setConversion(contentConversion);
+        
         // create the element if necessary and if content is present
         if (!m_page.hasValue(body, locale) && !"".equals(content)) {
             m_page.addValue(body, locale);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPageFactory.java,v $
- * Date   : $Date: 2004/10/02 10:57:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public final class CmsXmlPageFactory {
@@ -203,7 +203,7 @@ public final class CmsXmlPageFactory {
                 // this usually only triggered by a save operation                
                 try {
                     String contentStr = new String(content, encoding);
-                    newPage = CmsXmlPageFactory.unmarshal(contentStr, encoding, new CmsXmlEntityResolver(cms));
+                    newPage = unmarshal(contentStr, encoding, new CmsXmlEntityResolver(cms));
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
                     throw new CmsXmlException(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/10/14 15:05:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -304,8 +304,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
             Element element = value.getElement();
             element.detach();
         }
-    }
-
+    }     
+    
     /**
      * Sets the enabled flag of an already existing element.<p>
      * 
