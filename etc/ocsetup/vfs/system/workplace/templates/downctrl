@@ -24,7 +24,7 @@
 	list='downlist';
 	ctrl='downctrl';
 	browser='downloadbrowser';
-	uploadurl='explorer_files_new_upload.html?lasturl=downlist.html&filelist=';
+	uploadurl='../administration/downloadgallery/administration_content_downgallery_upload.html?lasturl=../../action/downlist.html&filelist=';
 </SCRIPT>
 
 <!-- Ende JavaScript -->
