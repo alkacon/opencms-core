@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/03/04 17:30:10 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.flex.util.CmsMessages;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.launcher.I_CmsTemplateCache;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.I_CmsDumpTemplate;
@@ -59,7 +60,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.61 $ $Date: 2003/03/04 17:30:10 $
+ * @version $Revision: 1.62 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -216,12 +217,13 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         check = cms.getFileSystemFolderChanges();
 
         // get the currentFolder Id
-        int currentFolderId;
+        CmsUUID currentFolderId;
         if (! vfslinkView) {
             currentFolderId = (cms.readFolder(currentFolder)).getResourceId();
         } else {
-            currentFolderId = -1;            
+            currentFolderId = CmsUUID.getNullUUID();            
         }
+        
         // start creating content
         StringBuffer content = new StringBuffer(2048);
         content.append("<html> \n<head> \n");
@@ -282,9 +284,9 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         content.append(writeAccess);
         content.append(");\n");
         // the folder
-        content.append("top.setDirectory(");
+        content.append("top.setDirectory(\"");
         content.append(currentFolderId);
-        content.append(",\"");
+        content.append("\",\"");
         content.append(currentFolder);
         content.append("\");\n");
         content.append("top.rD();\n\n");
@@ -416,7 +418,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append(res.getAccessFlags());
             content.append(",");            
             // locked by
-            if(res.isLockedBy() == C_UNKNOWN_ID) {
+            if(res.isLockedBy().isNullUUID()) {
                 content.append("\"\",");
             }else {
                 content.append("\"");                
@@ -443,34 +445,34 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append("\n top.rT();\n");
             Vector tree = cms.getFolderTree();
             int startAt = 1;
-            int parentId;
+            CmsUUID parentId = CmsUUID.getNullUUID();
             boolean grey = false;
             int onlineProjectId = cms.onlineProject().getId();
+            
             if(cms.getRequestContext().currentProject().isOnlineProject()) {
-
                 // all easy: we are in the onlineProject
                 CmsFolder rootFolder = (CmsFolder)tree.elementAt(0);
-                content.append("top.aC(");
+                content.append("top.aC(\"");
                 content.append(rootFolder.getResourceId());
-                content.append(", ");
+                content.append("\", ");
                 content.append("\"");
                 content.append(messages.key("title.rootfolder"));
-                content.append("\", ");
+                content.append("\", \"");
                 content.append(rootFolder.getParentId());
-                content.append(", false);\n");
+                content.append("\", false);\n");
                 for(int i = startAt;i < tree.size();i++) {
                     CmsFolder folder = (CmsFolder)tree.elementAt(i);
-                    content.append("top.aC(");
+                    content.append("top.aC(\"");
                     // id
                     content.append(folder.getResourceId());
-                    content.append(", ");
+                    content.append("\", ");
                     // name
                     content.append("\"");
                     content.append(folder.getName());
-                    content.append("\", ");
+                    content.append("\", \"");
                     // parentId
                     content.append(folder.getParentId());
-                    content.append(", false);\n");
+                    content.append("\", false);\n");                    
                 }
             }else {
                 // offline Project
@@ -480,19 +482,18 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 if(rootFolder.getProjectId() != onlineProjectId) {
                     startAt = 2;
                     grey = false;
-                    idMixer.put(new Integer(((CmsFolder)tree.elementAt(1)).getResourceId()),
-                            new Integer(rootFolder.getResourceId()));
+                    idMixer.put((CmsFolder)tree.elementAt(1), rootFolder.getResourceId());
                 }else {
                     grey = true;
                 }
-                content.append("top.aC(");
+                content.append("top.aC(\"");
                 content.append(rootFolder.getResourceId());
-                content.append(", ");
+                content.append("\", ");
                 content.append("\"");
                 content.append(messages.key("title.rootfolder"));
-                content.append("\", ");
+                content.append("\", \"");
                 content.append(rootFolder.getParentId());
-                content.append(", ");
+                content.append("\", ");
                 content.append(grey);
                 content.append(");\n");
                 for(int i = startAt;i < tree.size();i++) {
@@ -509,8 +510,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                                 // the next res is the same res in the online-project: ignore it!
                                 if(folder.getAbsolutePath().equals(((CmsFolder)tree.elementAt(i + 1)).getAbsolutePath())) {
                                     i++;
-                                    idMixer.put(new Integer(((CmsFolder)tree.elementAt(i)).getResourceId()),
-                                            new Integer(folder.getResourceId()));
+                                    idMixer.put((CmsFolder)tree.elementAt(i), folder.getResourceId());
                                 }
                             }catch(IndexOutOfBoundsException exc) {
                             // ignore the exception, this was the last resource
@@ -518,27 +518,28 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                         }else {
                             grey = true;
                             parentId = folder.getParentId();
-                            if(idMixer.containsKey(new Integer(parentId))) {
-                                parentId = ((Integer)idMixer.get(new Integer(parentId))).intValue();
+                            if(idMixer.containsKey(parentId)) {
+                                parentId = (CmsUUID) idMixer.get(parentId);
                             }
                         }
-                        content.append("top.aC(");
+                        content.append("top.aC(\"");
                         // id
                         content.append(folder.getResourceId());
-                        content.append(", ");
+                        content.append("\", ");
                         // name
                         content.append("\"");
                         content.append(folder.getName());
-                        content.append("\", ");
+                        content.append("\", \"");
                         // parentId
                         content.append(parentId);
-                        content.append(", ");
+                        content.append("\", ");
                         content.append(grey);
                         content.append(");\n");
                     }
                 }
             }
         }
+        
         if(listonly || projectView) {
             // only show the filelist
             content.append(" top.dUL(document); \n");
@@ -550,8 +551,10 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append(selectedPage);
             content.append("); \n");
         }
+        
         content.append("}\n");
         content.append("</script>\n</head> \n<BODY onLoad=\"initialize()\"></BODY> \n</html>\n");
+        
         return (content.toString()).getBytes();
     }
 

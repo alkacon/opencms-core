@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/03/04 17:26:34 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.29 $ $Date: 2003/03/04 17:26:34 $
+ * @version $Name:  $ $Revision: 1.30 $ $Date: 2003/05/15 12:39:34 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -217,7 +217,27 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
      * @param templateSelector template section that should be processed.
      */
 
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {       
+        I_CmsSession session = cms.getRequestContext().getSession(true);
+        CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
+        CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
+        String navPos = (String)session.getValue(C_SESSION_ADMIN_POS);
+        templateDocument.setData("emptyPic", (String)resourcesUri(cms, "empty.gif", null, null));
+        CmsXmlWpConfigFile confFile = new CmsXmlWpConfigFile(cms);
+        String sentBy = (String)parameters.get("sender");      
+        
+        if(sentBy == null) {
+            if(navPos == null) {
+                sentBy = confFile.getWorkplaceAdministrationPath();
+            }
+            else {
+                if(!navPos.endsWith("/")) {
+                    navPos = navPos.substring(0, navPos.indexOf("/") + 1);
+                }
+                sentBy = navPos;
+            }
+        }
+        
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element "
                     + ((elementName == null) ? "<root>" : elementName));
@@ -225,46 +245,34 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                     + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: "
                     + ((templateSelector == null) ? "<default>" : templateSelector));
-        }
-        I_CmsSession session = cms.getRequestContext().getSession(true);
-        CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
-        String navPos = (String)session.getValue(C_SESSION_ADMIN_POS);
-        templateDocument.setData("emptyPic", (String)resourcesUri(cms, "empty.gif", null, null));
-        CmsXmlWpConfigFile confFile = new CmsXmlWpConfigFile(cms);
-        String sendBy = (String)parameters.get("sender");
-        if(sendBy == null) {
-            if(navPos == null) {
-                sendBy = confFile.getWorkplaceAdministrationPath();
-            }
-            else {
-                if(!navPos.endsWith("/")) {
-                    navPos = navPos.substring(0, navPos.indexOf("/") + 1);
-                }
-                sendBy = navPos;
-            }
-        }
+            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "sentBy: " + sentBy );                    
+        }          
+        
         Vector iconVector = new Vector();
-        if(sendBy.endsWith("/administration/")) {
+        if(sentBy.endsWith("/administration/")) {
 
             // we must serch for administrationPoints in AdminPath and in system/modules/..
-            sendBy = confFile.getWorkplaceAdministrationPath();
-            iconVector = cms.getSubFolders(sendBy);
+            sentBy = confFile.getWorkplaceAdministrationPath();
+            iconVector = cms.getSubFolders(sentBy);
             Vector modules = new Vector();
+
             modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
+
             for(int i = 0;i < modules.size();i++) {
                 Vector moduleAdminPoints = new Vector();
                 moduleAdminPoints = cms.getSubFolders(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "administration/");
                 for(int j = 0;j < moduleAdminPoints.size();j++) {
-                    iconVector.addElement(moduleAdminPoints.elementAt(j));
+                    CmsFolder currentModuleAdminFolder = (CmsFolder) moduleAdminPoints.elementAt(j);
+                    iconVector.addElement(currentModuleAdminFolder);
+                    System.err.println( currentModuleAdminFolder.getResourceName() );
                 }
             }
         }
         else {
-            iconVector = cms.getSubFolders(sendBy);
+            iconVector = cms.getSubFolders(sentBy);
         }
-        session.putValue(C_SESSION_ADMIN_POS, sendBy);
-        Vector iconVector2 = cms.getFilesInFolder(sendBy);
+        session.putValue(C_SESSION_ADMIN_POS, sentBy);
+        Vector iconVector2 = cms.getFilesInFolder(sentBy);
         int numFolders = iconVector.size();
         if(numFolders > 0) {
             String iconNames[] = new String[numFolders];
@@ -326,7 +334,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 
             // no Folders, just a real page
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(sendBy
+                cms.getRequestContext().getResponse().sendCmsRedirect(sentBy
                         + "index.html?initial=true");
             }
             catch(Exception e) {
@@ -435,7 +443,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             return true;
         }
         // is the resource owned by this user?
-        if(resource.getOwnerId() == cms.getRequestContext().currentUser().getId()) {
+        if(resource.getOwnerId().equals(cms.getRequestContext().currentUser().getId())) {
             if( (accessflags & C_ACCESS_OWNER_VISIBLE) == C_ACCESS_OWNER_VISIBLE ) {
                 return true ;
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2003/05/07 15:32:08 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/05/15 12:39:35 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,15 +38,12 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsProject;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Hashtable;
 import java.util.Properties;
 
 import source.org.apache.java.util.Configurations;
@@ -69,7 +66,7 @@ import source.org.apache.java.util.Configurations;
  * TODO: multiple instances of this class should not load the same property hashes multiple times.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.47 $ $Date: 2003/05/07 15:32:08 $
+ * @version $Revision: 1.48 $ $Date: 2003/05/15 12:39:35 $
  */
 public class CmsQueries extends Object {
 
@@ -229,7 +226,7 @@ public class CmsQueries extends Object {
      * @return a JDBC connection from the pool specified by the project-ID 
      * @throws SQLException if a database access error occurs
      */
-    public Connection getConnection(int projectId) throws SQLException {
+    public Connection getConnectionForProject(int projectId) throws SQLException {
         String jdbcUrl = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? m_JdbcUrlOnline : m_JdbcUrlOffline;
         return DriverManager.getConnection(jdbcUrl);
     }
@@ -241,8 +238,8 @@ public class CmsQueries extends Object {
      * @return a JDBC connection from the pool specified by the project-ID 
      * @throws SQLException if a database access error occurs
      */
-    public Connection getConnection(CmsProject project) throws SQLException {
-        return getConnection(project.getId());
+    public Connection getConnectionForProject(CmsProject project) throws SQLException {
+        return getConnectionForProject(project.getId());
     }
     
     /**
@@ -254,9 +251,9 @@ public class CmsQueries extends Object {
      * @throws SQLException if a database access error occurs
      */
     public Connection getConnection() throws SQLException {
-        // To receive a JDBC connection from the offline pool, a non-existent
-        // dummy project-ID is used.
-        return getConnection(Integer.MIN_VALUE);
+        // To receive a JDBC connection from the offline pool, 
+        // a non-existent dummy project-ID is used
+        return getConnectionForProject(Integer.MIN_VALUE);
     }
 
     /**
@@ -266,7 +263,7 @@ public class CmsQueries extends Object {
      * @return a JDBC connection from the backup pool 
      * @throws SQLException if a database access error occurs
      */
-    public Connection getConnectionBackup() throws SQLException {
+    public Connection getConnectionForBackup() throws SQLException {
         return DriverManager.getConnection(m_JdbcUrlBackup);
     }
 
@@ -280,7 +277,7 @@ public class CmsQueries extends Object {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatement(Connection con, int projectId, String queryKey) throws SQLException {
+    public PreparedStatement getPreparedStatementForProject(Connection con, int projectId, String queryKey) throws SQLException {
         String rawSql = get(projectId, queryKey);
         return con.prepareStatement(rawSql);
     }
@@ -295,8 +292,8 @@ public class CmsQueries extends Object {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey) throws SQLException {
-        return getPreparedStatement(con, project.getId(), queryKey);
+    public PreparedStatement getPreparedStatementForProject(Connection con, CmsProject project, String queryKey) throws SQLException {
+        return getPreparedStatementForProject(con, project.getId(), queryKey);
     }
 
     /**
@@ -307,7 +304,7 @@ public class CmsQueries extends Object {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatementBackup(Connection con, String queryKey) throws SQLException {
+    public PreparedStatement getPreparedStatementForKey(Connection con, String queryKey) throws SQLException {
         String rawSql = get(Integer.MIN_VALUE, queryKey);
         return con.prepareStatement(rawSql);
     }

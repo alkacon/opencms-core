@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/05/08 15:04:10 $
-* Version: $Revision: 1.125 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.126 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.125 $ $Date: 2003/05/08 15:04:10 $
+ * @version $Revision: 1.126 $ $Date: 2003/05/15 12:39:34 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -786,7 +786,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 
         try {
             // Try to read the requested file
-            file = cms.readFile(resourceName);
+            file = cms.readFile(resourceName);            
         } catch (CmsException e) {
             if (e.getType() == CmsException.C_NOT_FOUND) {
                 // The requested file was not found

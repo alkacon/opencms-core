@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/07 15:32:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/15 12:39:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,7 @@ import com.opencms.file.genericSql.I_CmsUserAccess;
 import com.opencms.flex.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -59,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/07 15:32:08 $
+ * @version $Revision: 1.3 $ $Date: 2003/05/15 12:39:34 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -99,34 +97,36 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
      * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser addImportUser(String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
-        int id = m_SqlQueries.nextPkId("C_TABLE_USERS");
+        //int id = m_SqlQueries.nextPkId("C_TABLE_USERS");
+        CmsUUID id = new CmsUUID();
         byte[] value = null;
         PreparedStatement statement = null;
         PreparedStatement statement2 = null;
         PreparedStatement nextStatement = null;
         Connection con = null;
         ResultSet res = null;
-        
+
         try {
-            // serialize the hashtable
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oout = new ObjectOutputStream(bout);
-            oout.writeObject(additionalInfos);
-            oout.close();
-            value = bout.toByteArray();
+//            // serialize the hashtable
+//            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+//            ObjectOutputStream oout = new ObjectOutputStream(bout);
+//            oout.writeObject(additionalInfos);
+//            oout.close();
+//            value = bout.toByteArray();
+
+            value = serializeAdditionalUserInfo( additionalInfos );
 
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
             con = m_SqlQueries.getConnection();
             statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSFORINSERT"));
-            
-            statement.setInt(1, id);
-            statement.setString(2, (new CmsUUID()).toString());
+
+            statement.setString(1, id.toString());
             statement.setString(2, name);
-            
+
             // crypt the password with MD5
             statement.setString(3, m_SqlQueries.validateNull(password));
-            
+
             statement.setString(4, m_SqlQueries.validateNull(recoveryPassword));
             statement.setString(5, m_SqlQueries.validateNull(description));
             statement.setString(6, m_SqlQueries.validateNull(firstname));
@@ -135,7 +135,7 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
             statement.setTimestamp(9, new Timestamp(lastlogin));
             statement.setTimestamp(10, new Timestamp(lastused));
             statement.setInt(11, flags);
-            statement.setInt(12, defaultGroup.getId());
+            statement.setString(12, defaultGroup.getId().toString());
             statement.setString(13, m_SqlQueries.validateNull(address));
             statement.setString(14, m_SqlQueries.validateNull(section));
             statement.setInt(15, type);
@@ -145,7 +145,7 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
 
             // now update user_info of the new user
             statement2 = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSFORUPDATE"));
-            statement2.setInt(1, id);
+            statement2.setString(1, id.toString());
             con.setAutoCommit(false);
 
             res = statement2.executeQuery();
@@ -242,52 +242,54 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
      * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
-        int id = m_SqlQueries.nextPkId("C_TABLE_USERS");
+        //int id = m_SqlQueries.nextPkId("C_TABLE_USERS");
+        CmsUUID id = new CmsUUID();
         byte[] value = null;
         PreparedStatement statement = null;
         PreparedStatement statement2 = null;
         PreparedStatement nextStatement = null;
         Connection con = null;
         ResultSet res = null;
-        
+
         try {
-            // serialize the hashtable
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oout = new ObjectOutputStream(bout);
-            oout.writeObject(additionalInfos);
-            oout.close();
-            value = bout.toByteArray();
+//            // serialize the hashtable
+//            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+//            ObjectOutputStream oout = new ObjectOutputStream(bout);
+//            oout.writeObject(additionalInfos);
+//            oout.close();
+//            value = bout.toByteArray();
+
+            value = serializeAdditionalUserInfo( additionalInfos );
 
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
             con = m_SqlQueries.getConnection();
             statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSFORINSERT"));
 
-            statement.setInt(1, id);
-            statement.setString(2, (new CmsUUID()).toString());
-            statement.setString(3, name);
+            statement.setString(1, id.toString());
+            statement.setString(2, name);
 
             // crypt the password with MD5
-            statement.setString(4, digest(password));
+            statement.setString(3, digest(password));
 
-            statement.setString(5, digest(""));
-            statement.setString(6, m_SqlQueries.validateNull(description));
-            statement.setString(7, m_SqlQueries.validateNull(firstname));
-            statement.setString(8, m_SqlQueries.validateNull(lastname));
-            statement.setString(9, m_SqlQueries.validateNull(email));
-            statement.setTimestamp(10, new Timestamp(lastlogin));
-            statement.setTimestamp(11, new Timestamp(lastused));
-            statement.setInt(12, flags);
-            statement.setInt(13, defaultGroup.getId());
-            statement.setString(14, m_SqlQueries.validateNull(address));
-            statement.setString(15, m_SqlQueries.validateNull(section));
-            statement.setInt(16, type);
+            statement.setString(4, digest(""));
+            statement.setString(5, m_SqlQueries.validateNull(description));
+            statement.setString(6, m_SqlQueries.validateNull(firstname));
+            statement.setString(7, m_SqlQueries.validateNull(lastname));
+            statement.setString(8, m_SqlQueries.validateNull(email));
+            statement.setTimestamp(9, new Timestamp(lastlogin));
+            statement.setTimestamp(10, new Timestamp(lastused));
+            statement.setInt(11, flags);
+            statement.setString(12, defaultGroup.getId().toString());
+            statement.setString(13, m_SqlQueries.validateNull(address));
+            statement.setString(14, m_SqlQueries.validateNull(section));
+            statement.setInt(15, type);
             statement.executeUpdate();
             statement.close();
 
             // now update user_info of the new user
             statement2 = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSFORUPDATE"));
-            statement2.setInt(1, id);
+            statement2.setString(1, id.toString());
             con.setAutoCommit(false);
             res = statement2.executeQuery();
             while (res.next()) {
@@ -385,12 +387,15 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         ResultSet res = null;
         Connection con = null;
         try {
-            // serialize the hashtable
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oout = new ObjectOutputStream(bout);
-            oout.writeObject(user.getAdditionalInfo());
-            oout.close();
-            value = bout.toByteArray();
+//            // serialize the hashtable
+//            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+//            ObjectOutputStream oout = new ObjectOutputStream(bout);
+//            oout.writeObject(user.getAdditionalInfo());
+//            oout.close();
+//            value = bout.toByteArray();
+
+            value = serializeAdditionalUserInfo( user.getAdditionalInfo() );
+
             // write data to database
             con = DriverManager.getConnection(m_poolName);
             statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSWRITE"));
@@ -401,16 +406,16 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
             statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
             statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
             statement.setInt(7, user.getFlags());
-            statement.setInt(8, user.getDefaultGroupId());
+            statement.setString(8, user.getDefaultGroupId().toString());
             statement.setString(9, m_SqlQueries.validateNull(user.getAddress()));
             statement.setString(10, m_SqlQueries.validateNull(user.getSection()));
             statement.setInt(11, user.getType());
-            statement.setInt(12, user.getId());
+            statement.setString(12, user.getId().toString());
             statement.executeUpdate();
             statement.close();
             // update user_info in this special way because of using blob
             statement2 = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSFORUPDATE"));
-            statement2.setInt(1, user.getId());
+            statement2.setString(1, user.getId().toString());
             con.setAutoCommit(false);
             res = statement2.executeQuery();
             try {

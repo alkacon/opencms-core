@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/03/02 18:43:55 $
-* Version: $Revision: 1.110 $
+* Date   : $Date: 2003/05/15 12:39:35 $
+* Version: $Revision: 1.111 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.110 $ $Date: 2003/03/02 18:43:55 $
+ * @version $Revision: 1.111 $ $Date: 2003/05/15 12:39:35 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -69,7 +69,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public final static String C_BODY_ELEMENT = I_CmsConstants.C_XML_BODY_ELEMENT;
 
     /** Boolean for additional debug output control */
-    public final static boolean C_DEBUG = false;
+    public final static boolean C_DEBUG = true;
 
     /** Error string to be inserted for corrupt subtemplates for guest user requests. */
     private final static String C_ERRORTEXT = "ERROR!";

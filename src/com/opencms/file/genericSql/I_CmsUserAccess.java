@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/07 11:43:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/15 12:39:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package com.opencms.file.genericSql;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsUser;
+import com.opencms.flex.util.CmsUUID;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -44,7 +45,7 @@ import source.org.apache.java.util.Configurations;
  * (or anything else) to obtain user data. 
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/07 11:43:25 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/15 12:39:35 $
  * 
  * @see com.opencms.file.genericSql.CmsResourceBroker#initAccess(Configurations configurations)
  */
@@ -72,23 +73,7 @@ public interface I_CmsUserAccess {
      * @return the created user.
      * @throws thorws CmsException if something goes wrong.
      */
-    public CmsUser addImportUser(
-        String name,
-        String password,
-        String recoveryPassword,
-        String description,
-        String firstname,
-        String lastname,
-        String email,
-        long lastlogin,
-        long lastused,
-        int flags,
-        Hashtable additionalInfos,
-        CmsGroup defaultGroup,
-        String address,
-        String section,
-        int type)
-        throws CmsException;
+    public CmsUser addImportUser(String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
 
     /**
      * Adds a user to the database.
@@ -111,22 +96,7 @@ public interface I_CmsUserAccess {
      * @return the created user.
      * @throws thorws CmsException if something goes wrong.
      */
-    public CmsUser addUser(
-        String name,
-        String password,
-        String description,
-        String firstname,
-        String lastname,
-        String email,
-        long lastlogin,
-        long lastused,
-        int flags,
-        Hashtable additionalInfos,
-        CmsGroup defaultGroup,
-        String address,
-        String section,
-        int type)
-        throws CmsException;
+    public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
 
     /**
      * Adds a user to a group.<BR/>
@@ -137,7 +107,7 @@ public interface I_CmsUserAccess {
      * @param groupid The id of the group.
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
-    public void addUserToGroup(int userid, int groupid) throws CmsException;
+    public void addUserToGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
 
     /**
      * Changes the user type of the user
@@ -145,13 +115,13 @@ public interface I_CmsUserAccess {
      * @param userId The id of the user to change
      * @param userType The new usertype of the user
      */
-    public void changeUserType(int userId, int userType) throws CmsException;
+    public void changeUserType(CmsUUID userId, int userType) throws CmsException;
 
     /**
      * helper for getReadingpermittedGroup. Returns the id of the group that is in
      * any way parent for the other group or -1 for no dependencies between the groups.
      */
-    public int checkGroupDependence(int group1, int group2) throws CmsException;
+    public CmsUUID checkGroupDependence(CmsUUID groupId1, CmsUUID groupId2) throws CmsException;
 
     /**
      * checks a Vector of Groupids for the Group which can read all files
@@ -160,7 +130,7 @@ public interface I_CmsUserAccess {
      * @return The id of the group that is in any way parent of all other
      *       group or -1 for no dependencies between the groups.
      */
-    public int checkGroupDependence(Vector groups) throws CmsException;
+    public CmsUUID checkGroupDependence(Vector groups) throws CmsException;
 
     /**
      * Add a new group to the Cms.<BR/>
@@ -176,7 +146,7 @@ public interface I_CmsUserAccess {
      *
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
-    public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException;
+    public CmsGroup createGroup(String groupName, String groupDescription, int groupFlags, String parentGroupName) throws CmsException;
 
     /**
      * Delete a group from the Cms.<BR/>
@@ -187,7 +157,7 @@ public interface I_CmsUserAccess {
      * @param delgroup The name of the group that is to be deleted.
      * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
-    public void deleteGroup(String delgroup) throws CmsException;
+    public void deleteGroup(String groupName) throws CmsException;
 
     /**
      * Deletes a user from the database.
@@ -195,7 +165,7 @@ public interface I_CmsUserAccess {
      * @param userId The Id of the user to delete
      * @throws thorws CmsException if something goes wrong.
      */
-    public void deleteUser(int id) throws CmsException;
+    public void deleteUser(CmsUUID userId) throws CmsException;
 
     /**
      * Deletes a user from the database.
@@ -203,7 +173,7 @@ public interface I_CmsUserAccess {
      * @param user the user to delete
      * @throws thorws CmsException if something goes wrong.
      */
-    public void deleteUser(String name) throws CmsException;
+    public void deleteUser(String userName) throws CmsException;
 
     /**
      * Private method to encrypt the passwords.
@@ -255,7 +225,7 @@ public interface I_CmsUserAccess {
      * @return Vector of groups
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Vector getGroupsOfUser(String name) throws CmsException;
+    public Vector getGroupsOfUser(String userName) throws CmsException;
 
     /**
      * Gets all users of a type.
@@ -297,7 +267,7 @@ public interface I_CmsUserAccess {
      * @return Vector of users
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Vector getUsersOfGroup(String name, int type) throws CmsException;
+    public Vector getUsersOfGroup(String groupName, int type) throws CmsException;
 
     public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config);
 
@@ -307,7 +277,7 @@ public interface I_CmsUserAccess {
     * @return Group.
     * @throws CmsException  Throws CmsException if operation was not succesful
     */
-    public CmsGroup readGroup(int id) throws CmsException;
+    public CmsGroup readGroup(CmsUUID groupId) throws CmsException;
 
     /**
      * Returns a group object.<P/>
@@ -315,7 +285,7 @@ public interface I_CmsUserAccess {
      * @return Group.
      * @throws CmsException  Throws CmsException if operation was not succesful
      */
-    public CmsGroup readGroup(String groupname) throws CmsException;
+    public CmsGroup readGroup(String groupName) throws CmsException;
 
     /**
      * Reads a user from the cms, only if the password is correct.
@@ -325,7 +295,7 @@ public interface I_CmsUserAccess {
      * @return the read user.
      * @throws thorws CmsException if something goes wrong.
      */
-    public CmsUser readUser(int id) throws CmsException;
+    public CmsUser readUser(CmsUUID userId) throws CmsException;
 
     /**
      * Reads a user from the cms.
@@ -335,7 +305,7 @@ public interface I_CmsUserAccess {
      * @return the read user.
      * @throws thorws CmsException if something goes wrong.
      */
-    public CmsUser readUser(String name, int type) throws CmsException;
+    public CmsUser readUser(String userName, int type) throws CmsException;
 
     /**
      * Reads a user from the cms, only if the password is correct.
@@ -346,7 +316,7 @@ public interface I_CmsUserAccess {
      * @return the read user.
      * @throws thorws CmsException if something goes wrong.
      */
-    public CmsUser readUser(String name, String password, int type) throws CmsException;
+    public CmsUser readUser(String userName, String password, int type) throws CmsException;
 
     /**
      * Sets the password, only if the user knows the recovery-password.
@@ -356,7 +326,7 @@ public interface I_CmsUserAccess {
      * @param password the password to set
      * @throws thorws CmsException if something goes wrong.
      */
-    public void recoverPassword(String user, String recoveryPassword, String password) throws CmsException;
+    public void recoverPassword(String userName, String recoveryPassword, String password) throws CmsException;
 
     /**
      * Removes a user from a group.
@@ -367,7 +337,7 @@ public interface I_CmsUserAccess {
      * @param groupid The id of the group.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public void removeUserFromGroup(int userid, int groupid) throws CmsException;
+    public void removeUserFromGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
 
     /**
      * Sets a new password for a user.
@@ -376,7 +346,7 @@ public interface I_CmsUserAccess {
      * @param password the password to set
      * @throws thorws CmsException if something goes wrong.
      */
-    public void setPassword(String user, String password) throws CmsException;
+    public void setPassword(String userName, String userPassword) throws CmsException;
 
     /**
      * Sets a new password for a user.
@@ -385,7 +355,7 @@ public interface I_CmsUserAccess {
      * @param password the recoveryPassword to set
      * @throws thorws CmsException if something goes wrong.
      */
-    public void setRecoveryPassword(String user, String password) throws CmsException;
+    public void setRecoveryPassword(String userName, String recoveryPassword) throws CmsException;
 
     /**
      * Checks if a user is member of a group.<P/>
@@ -396,7 +366,7 @@ public interface I_CmsUserAccess {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public boolean userInGroup(int userid, int groupid) throws CmsException;
+    public boolean isUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
 
     /**
      * Writes an already existing group in the Cms.<BR/>

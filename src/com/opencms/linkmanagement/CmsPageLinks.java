@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/CmsPageLinks.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/05/15 12:39:35 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,7 +27,9 @@
 */
 package com.opencms.linkmanagement;
 
-import java.util.*;
+import com.opencms.flex.util.CmsUUID;
+
+import java.util.Vector;
 
 /**
  * Contains all link destinations (anchors) of a OpenCms page.
@@ -41,7 +43,7 @@ public class CmsPageLinks {
     /**
      * the database id of the resource containing the links.
      */
-    private int m_resourceId;
+    private CmsUUID m_resourceId;
 
     /**
      * The resource name.
@@ -65,7 +67,7 @@ public class CmsPageLinks {
      * @param resourceId The database id of the resource
      * @param linkTargets A Vector (of resourcenames, Strings) with the targets of the links
      */
-    public CmsPageLinks(int resourceId) {
+    public CmsPageLinks(CmsUUID resourceId) {
         this(resourceId, null);
     }
 
@@ -74,7 +76,7 @@ public class CmsPageLinks {
      * @param resourceId The database id of the resource
      * @param linkTargets A Vector (of resourcenames, Strings) with the targets of the links
      */
-    public CmsPageLinks(int resourceId, Vector linkTargets) {
+    public CmsPageLinks(CmsUUID resourceId, Vector linkTargets) {
         m_resourceId = resourceId;
         if(linkTargets == null){
             m_linkDestinations = new Vector();
@@ -93,7 +95,7 @@ public class CmsPageLinks {
     /**
      * returns the id of this.
      */
-    public int getResourceId(){
+    public CmsUUID getResourceId(){
         return m_resourceId;
     }
 

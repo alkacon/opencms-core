@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/07 11:43:25 $
-* Version: $Revision: 1.87 $
+* Date   : $Date: 2003/05/15 12:39:35 $
+* Version: $Revision: 1.88 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsBackupProject;
-import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
@@ -42,19 +41,15 @@ import com.opencms.file.CmsTask;
 import com.opencms.file.CmsTaskLog;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceBroker;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.Encoder;
 import com.opencms.util.SqlHelper;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Hashtable;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -69,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.87 $ $Date: 2003/05/07 11:43:25 $ *
+ * @version $Revision: 1.88 $ $Date: 2003/05/15 12:39:35 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -124,15 +119,15 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
                                                     res.getInt("PROJECT_ID"),
                                                     res.getString("PROJECT_NAME"),
                                                     SqlHelper.getTimestamp(res,"PROJECT_PUBLISHDATE"),
-                                                    res.getInt("PROJECT_PUBLISHED_BY"),
+                                                    new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
                                                     res.getString("PROJECT_PUBLISHED_BY_NAME"),
                                                     res.getString("PROJECT_DESCRIPTION"),
                                                     res.getInt("TASK_ID"),
-                                                    res.getInt("USER_ID"),
+                                                    new CmsUUID(res.getString("USER_ID")),
                                                     res.getString("USER_NAME"),
-                                                    res.getInt("GROUP_ID"),
+                                                    new CmsUUID(res.getString("GROUP_ID")),
                                                     res.getString("GROUP_NAME"),
-                                                    res.getInt("MANAGERGROUP_ID"),
+                                                    new CmsUUID(res.getString("MANAGERGROUP_ID")),
                                                     res.getString("MANAGERGROUP_NAME"),
                                                     SqlHelper.getTimestamp(res,"PROJECT_CREATEDATE"),
                                                     res.getInt("PROJECT_TYPE"),
@@ -187,71 +182,67 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
     /**
      * Private method to init all default-resources
      */
-    protected void fillDefaults() throws CmsException {
-        // set the groups
-        CmsGroup guests = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
-        CmsGroup administrators = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER, null);
-        CmsGroup users = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED | C_FLAG_GROUP_ROLE | C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
-        CmsGroup projectleader = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER | C_FLAG_GROUP_PROJECTCOWORKER | C_FLAG_GROUP_ROLE, users.getName());
-
-        // add the users
-        CmsUser guest = m_ResourceBroker.getUserAccess().addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, "", "", C_USER_TYPE_SYSTEMUSER);
-        CmsUser admin = m_ResourceBroker.getUserAccess().addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, "", "", C_USER_TYPE_SYSTEMUSER);
-        m_ResourceBroker.getUserAccess().addUserToGroup(guest.getId(), guests.getId());
-        m_ResourceBroker.getUserAccess().addUserToGroup(admin.getId(), administrators.getId());
-        writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
-        // create the online project
-        CmsTask task = createTask(0, 0, 1, // standart project type,
-                    admin.getId(), admin.getId(), administrators.getId(), C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), C_TASK_PRIORITY_NORMAL);
-        CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
-
-        // create the root-folder for the online project
-        int siteRootId = 0;
-        CmsFolder rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
-        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, rootFolder.getResourceId(), C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
-        siteRootId = rootFolder.getResourceId();
-        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
-        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
-        // create the setup project
-        task = createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(),
-                                    "_setupProject", new java.sql.Timestamp(new java.util.Date().getTime()),
-                                    new java.sql.Timestamp(new java.util.Date().getTime()),
-                                    C_TASK_PRIORITY_NORMAL);
-
-        CmsProject setup = createProject(admin, administrators, administrators, task, "_setupProject",
-                                           "the project for setup", C_FLAG_ENABLED, C_PROJECT_TYPE_TEMPORARY);
-
-        // create the root-folder for the offline project
-        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
-        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, rootFolder.getResourceId(), C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
-        siteRootId = rootFolder.getResourceId();
-        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
-        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
-        rootFolder.setGroupId(users.getId());
-        rootFolder.setState(C_STATE_UNCHANGED);
-        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
-    }
+//    protected void fillDefaults() throws CmsException {
+//        // set the groups
+//        CmsGroup guests = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
+//        CmsGroup administrators = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER, null);
+//        CmsGroup users = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED | C_FLAG_GROUP_ROLE | C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
+//        CmsGroup projectleader = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER | C_FLAG_GROUP_PROJECTCOWORKER | C_FLAG_GROUP_ROLE, users.getName());
+//
+//        // add the users
+//        CmsUser guest = m_ResourceBroker.getUserAccess().addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, "", "", C_USER_TYPE_SYSTEMUSER);
+//        CmsUser admin = m_ResourceBroker.getUserAccess().addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, "", "", C_USER_TYPE_SYSTEMUSER);
+//        m_ResourceBroker.getUserAccess().addUserToGroup(guest.getId(), guests.getId());
+//        m_ResourceBroker.getUserAccess().addUserToGroup(admin.getId(), administrators.getId());
+//        writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
+//        
+//        // create the online project
+//        CmsTask task = createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(), C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), C_TASK_PRIORITY_NORMAL);
+//        CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
+//
+//        // create the root-folder for the online project
+//        CmsUUID siteRootId = CmsUUID.getNullUUID();
+//        CmsFolder rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), C_ROOT, 0);
+//        rootFolder.setGroupId(users.getId());
+//        rootFolder.setState(C_STATE_UNCHANGED);
+//        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
+//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, rootFolder.getResourceId(), CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOT, 0);
+//        rootFolder.setGroupId(users.getId());
+//        rootFolder.setState(C_STATE_UNCHANGED);
+//        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
+//        siteRootId = rootFolder.getResourceId();
+//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
+//        rootFolder.setGroupId(users.getId());
+//        rootFolder.setState(C_STATE_UNCHANGED);
+//        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
+//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
+//        rootFolder.setGroupId(users.getId());
+//        rootFolder.setState(C_STATE_UNCHANGED);
+//        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
+//        
+//        // create the setup project
+//        task = createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(),"_setupProject", new java.sql.Timestamp(new java.util.Date().getTime()),new java.sql.Timestamp(new java.util.Date().getTime()),C_TASK_PRIORITY_NORMAL);
+//        CmsProject setup = createProject(admin, administrators, administrators, task, "_setupProject","the project for setup", C_FLAG_ENABLED, C_PROJECT_TYPE_TEMPORARY);
+//
+//        // create the root-folder for the offline project
+//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), C_ROOT, 0);
+//        rootFolder.setGroupId(users.getId());
+//        rootFolder.setState(C_STATE_UNCHANGED);
+//        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
+//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, rootFolder.getResourceId(), CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOT, 0);
+//        rootFolder.setGroupId(users.getId());
+//        rootFolder.setState(C_STATE_UNCHANGED);
+//        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
+//        siteRootId = rootFolder.getResourceId();
+//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
+//        rootFolder.setGroupId(users.getId());
+//        rootFolder.setState(C_STATE_UNCHANGED);
+//        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
+//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
+//        rootFolder.setGroupId(users.getId());
+//        rootFolder.setState(C_STATE_UNCHANGED);
+//        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
+//    }
 
     /**
      * Finds an agent for a given role (group).
@@ -261,25 +252,24 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    protected int findAgent(int roleid)
+    protected CmsUUID findAgent(CmsUUID roleid)
         throws CmsException {
         return super.findAgent(roleid);
     }
 
-/**
- * retrieve the correct instance of the queries holder.
- * This method should be overloaded if other query strings should be used.
- */
-public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config)
-{
-    m_SqlQueries = new  com.opencms.file.mySql.CmsQueries();
-    m_SqlQueries.initJdbcPoolUrls(config); 
+    /**
+     * retrieve the correct instance of the queries holder.
+     * This method should be overloaded if other query strings should be used.
+     */
+    public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config) {
+        m_SqlQueries = new com.opencms.file.mySql.CmsQueries();
+        m_SqlQueries.initJdbcPoolUrls(config);
     
-    com.opencms.file.mySql.CmsQueries queries = new com.opencms.file.mySql.CmsQueries();
-    queries.initJdbcPoolUrls(config);
+        com.opencms.file.mySql.CmsQueries queries = new com.opencms.file.mySql.CmsQueries();
+        queries.initJdbcPoolUrls(config);
     
-    return queries;
-}
+        return queries;
+    }
 
 
     /**
@@ -304,8 +294,9 @@ public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config)
      *
      * @throws CmsException if something goes wrong.
      */
+    /*
     public CmsTask createTask(int rootId, int parentId, int tasktype,
-                               int ownerId, int agentId,int  roleId, String taskname,
+                               CmsUUID ownerId, CmsUUID agentId,CmsUUID  roleId, String taskname,
                                java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout,
                                int priority)
     throws CmsException {
@@ -347,6 +338,7 @@ public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config)
         task = writeTask(task);
         return task;
     }
+    */
     
     /**
      * Reads a task from the Cms with
@@ -417,7 +409,7 @@ public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config)
      *
      * @throws CmsException if something goes wrong
      */
-    public void writeTaskLog(int taskId, int userid,
+    public void writeTaskLog(int taskId, CmsUUID userid,
                              java.sql.Timestamp starttime, String comment, int type)
         throws CmsException {
         super.writeTaskLog(taskId, userid, starttime, escape(comment), type);
@@ -480,7 +472,7 @@ public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config)
     /**
      * Escapes a String to prevent issues with UTF-8 encoding, same style as
      * http uses for form data since MySQL doesn't support Unicode/UTF-8 strings.<p>
-     * TODO: this method is both in the DbcAccess and VfsAccess!
+     * TODO: this method is still both in the DbcAccess and VfsAccess!
      * 
      * @param value String to be escaped
      * @return the escaped String
@@ -495,7 +487,7 @@ public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config)
     /**
      * Returns <code>true</code> if Strings must be escaped before they are stored in the DB, 
      * this is required because MySQL does not support multi byte unicode strings.<p>
-     * TODO: this method is both in the DbcAccess and VfsAccess!
+     * TODO: this method is still both in the DbcAccess and VfsAccess!
      * 
      * @return boolean <code>true</code> if Strings must be escaped before they are stored in the DB
      */
@@ -510,7 +502,7 @@ public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config)
     /**
      * Unescapes a String to prevent issues with UTF-8 encoding, same style as
      * http uses for form data since MySQL doesn't support Unicode/UTF-8 strings.<p>
-     * TODO: this method is both in the DbcAccess and VfsAccess!
+     * TODO: this method is still both in the DbcAccess and VfsAccess!
      * 
      * @param value String to be unescaped
      * @return the unescaped String

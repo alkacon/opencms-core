@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsGroup.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,14 @@
 package com.opencms.file;
 
 
-import com.opencms.core.*;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
 
 /**
  * Describes a Cms user group and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.18 $ $Date: 2003/05/15 12:39:34 $
  */
  public class CmsGroup implements I_CmsConstants { 
     
@@ -47,12 +48,12 @@ import com.opencms.core.*;
     /**
      * The id of the user group.
      */
-    private int m_id=C_UNKNOWN_ID;
+    private CmsUUID m_id;
     
      /**
      * The parent id of the user group.
      */
-    private int m_parentId=C_UNKNOWN_ID;
+    private CmsUUID m_parentId;
     
     /**
      * The description of the user group.
@@ -75,13 +76,13 @@ import com.opencms.core.*;
      * @param flags The flags of the new group.
      
      */
-    public CmsGroup (int id, int parent,String name, String description, 
+    public CmsGroup (CmsUUID id, CmsUUID parentId,String name, String description, 
                      int flags) {
         m_id=id;
         m_name=name;
         m_description=description;
         m_flags=flags;
-        m_parentId=parent;
+        m_parentId=parentId;
        
     }
     /** 
@@ -103,7 +104,7 @@ import com.opencms.core.*;
         // check if the object is a CmsGroup object
         if (obj instanceof CmsGroup) {
             // same ID than the current user?
-            if (((CmsGroup)obj).getId() == m_id){
+            if (((CmsGroup)obj).getId().equals(m_id)){
                 equal = true;
             }
         }
@@ -141,7 +142,7 @@ import com.opencms.core.*;
      * 
      * @return id The id of this group.
      */
-     public int getId(){
+     public CmsUUID getId(){
          return m_id;
      } 
     /**
@@ -158,7 +159,7 @@ import com.opencms.core.*;
      * 
      * @return PARENT_GROUP_ID or C_UNKNOWN_ID
      */
-     public int getParentId() {
+     public CmsUUID getParentId() {
       return m_parentId;         
      } 
     /**
@@ -226,8 +227,8 @@ import com.opencms.core.*;
      * 
      * @param id The parent-groupid
      */
-     public void setParentId(int id) {
-      m_parentId = id;
+     public void setParentId(CmsUUID parentGroupId) {
+      m_parentId = parentGroupId;
      } 
     /**
      * sets the PROJECTCOWORKER flag of the group
@@ -265,5 +266,6 @@ import com.opencms.core.*;
         output.append(" :");
         output.append(m_description);
         return output.toString();
-      }  
+      } 
+       
 }

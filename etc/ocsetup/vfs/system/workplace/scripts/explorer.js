@@ -36,6 +36,9 @@ var projectView = false;
 var openfolderMethod="openthisfolder";
 var showKon=true;
 
+// the empty UUID
+var nullUUID = "00000000-0000-0000-0000-000000000000";
+
  /**
   *  returns the actual help page
   */
@@ -109,7 +112,7 @@ var showKon=true;
      this.check_lockedBy;
      this.userName;
      this.shown = false;
-     this.lastid=0;
+     this.lastid = nullUUID;
      this.lastLayer=null;
      this.condition=0;
      this.dokument=null;
@@ -349,7 +352,7 @@ whichBrowser();
      var parentName = '_n'+parent;
      var theParent = tree.nodes[parentName];
 
-    tree.nodes[nodeName] = new node(id, name, 0, theParent, false, isGrey);
+    tree.nodes[nodeName] = new node(id, name, nullUUID, theParent, false, isGrey);
 
      if ((tree.oldNodes != null) && tree.oldNodes[nodeName] != null) {
          tree.nodes[nodeName].open = tree.oldNodes[nodeName].open;
@@ -468,8 +471,8 @@ function showPic(doc, pic) {
  *  write linked <img> tag, used for open-able folders/crosses in the tree frame
  */
 function showPicLink(doc, pic, id,windowed) {
-    if(windowed==0) doc.write("<a href=javascript:top.toggleNode(document,"+ id +","+windowed+")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
-    if(windowed>0) doc.write("<a href=javascript:window.opener.toggleNode(document,"+ id +","+windowed+")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
+    if(windowed==0) doc.write("<a href=javascript:top.toggleNode(document,'"+ id +"',"+windowed+")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
+    if(windowed>0) doc.write("<a href=javascript:window.opener.toggleNode(document,'"+ id +"',"+windowed+")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
 }
 
 
@@ -521,8 +524,8 @@ function dfsTree(doc, node, depth, last, shape,windowed) {
      if(node.isGrey)var foco="class=ig ";
          else var foco="class=tf ";
      if(windowed==0) doc.writeln("<a "+foco+"href='javascript:top.openFolder(&quot;"+ node.id +"&quot;);' target='explorer_files' ;>&nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
-     if(windowed==1) doc.writeln("<a "+foco+" href=javascript:window.opener.addProjectDir("+node.id+");> &nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
-     if(windowed==2) doc.writeln("<a "+foco+" href=javascript:window.opener.addDir("+node.id+");> &nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
+     if(windowed==1) doc.writeln("<a "+foco+" href=javascript:window.opener.addProjectDir('"+node.id+"');> &nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
+     if(windowed==2) doc.writeln("<a "+foco+" href=javascript:window.opener.addDir('"+node.id+"');> &nbsp;"+ node.name + "&nbsp;</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
 
     if (node.open || node == tree.root) {
         for (var loop1=0; loop1<node.childs.length; loop1++) {

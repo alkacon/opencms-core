@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTask.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,13 +30,14 @@ package com.opencms.file;
 
 
 import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
 
 
 /**
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.15 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.16 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsTask implements I_CmsConstants {
 
@@ -53,22 +54,22 @@ public class CmsTask implements I_CmsConstants {
     /**
      * The id of the user who initiated the task.
      */
-    private int         m_InitiatorUser = C_UNKNOWN_ID;
+    private CmsUUID         m_InitiatorUser;
     
     /**
      * The id of the user name who was the original agent.
      */
-    private int         m_OriginalUser = C_UNKNOWN_ID;
+    private CmsUUID         m_OriginalUser;
     
     /**
      * The id of the user who is the agent of the task.
      */
-    private int         m_AgentUser = C_UNKNOWN_ID;
+    private CmsUUID         m_AgentUser;
     
     /**
      * The id of the role which has to do the task.
      */
-    private int         m_Role = C_UNKNOWN_ID;
+    private CmsUUID         m_RoleId;
     
     private int         m_AutoFinish = 0;
     
@@ -154,8 +155,8 @@ public class CmsTask implements I_CmsConstants {
      * 
      */
     public CmsTask(int id, String name, int state, int tasktype,
-            int root, int parent, int initiatoruser,
-            int role, int agentuser, int originaluser,
+            int root, int parent, CmsUUID initiatorUserId,
+            CmsUUID roleId, CmsUUID agentUserId, CmsUUID originalUserId,
             java.sql.Timestamp starttime, java.sql.Timestamp wakeuptime,
             java.sql.Timestamp timeout, java.sql.Timestamp endtime,
             int percentage, String permission, int priority,
@@ -167,10 +168,10 @@ public class CmsTask implements I_CmsConstants {
         m_TaskType = tasktype;
         m_Root = root;
         m_Parent = parent;
-        m_InitiatorUser = initiatoruser;
-        m_Role = role;
-        m_AgentUser = agentuser;
-        m_OriginalUser = originaluser;
+        m_InitiatorUser = initiatorUserId;
+        m_RoleId = roleId;
+        m_AgentUser = agentUserId;
+        m_OriginalUser = originalUserId;
         m_StartTime = starttime;
         m_WakeupTime = wakeuptime;
         m_TimeOut = timeout;
@@ -204,7 +205,7 @@ public class CmsTask implements I_CmsConstants {
      * 
      * @return the agent user id of this task.
      */
-    public int getAgentUser(){
+    public CmsUUID getAgentUser(){
         return m_AgentUser;
     }
     /**
@@ -252,7 +253,7 @@ public class CmsTask implements I_CmsConstants {
      * 
      * @return the initiator user id of this task.
      */ 
-    public int getInitiatorUser(){
+    public CmsUUID getInitiatorUser(){
         return m_InitiatorUser;
     }
     /**
@@ -276,7 +277,7 @@ public class CmsTask implements I_CmsConstants {
      * 
      * @return the original agent user id of this task.
      */ 
-    public int getOriginalUser(){
+    public CmsUUID getOriginalUser(){
         return m_OriginalUser;
     }
     /**
@@ -316,8 +317,8 @@ public class CmsTask implements I_CmsConstants {
      * 
      * @return the role group id of this task.
      */
-    public int getRole(){
-        return m_Role;
+    public CmsUUID getRole(){
+        return m_RoleId;
     }
     /**
      * Returns the root id of this task.
@@ -375,11 +376,11 @@ public class CmsTask implements I_CmsConstants {
     public java.sql.Timestamp getWakeupTime(){
         return m_WakeupTime;
     }
-    public void setAgentUser(int agentuser){
-        m_AgentUser = agentuser;
+    public void setAgentUser(CmsUUID agentUserId){
+        m_AgentUser = agentUserId;
     }
-    public void setInitiatorUser(int initiatoruser){
-        m_InitiatorUser = initiatoruser;
+    public void setInitiatorUser(CmsUUID initiatorUserId){
+        m_InitiatorUser = initiatorUserId;
     }
     public void setMilestone(int milestone){
         m_Milestone = milestone;
@@ -387,8 +388,8 @@ public class CmsTask implements I_CmsConstants {
     public void setName(String taskname){
         m_Name = taskname;
     }
-    public void setOriginalUser(int originaluser){
-        m_OriginalUser = originaluser;
+    public void setOriginalUser(CmsUUID originalUserId){
+        m_OriginalUser = originalUserId;
     }
     public void setParent(int parent){
         m_Parent = parent;
@@ -399,8 +400,8 @@ public class CmsTask implements I_CmsConstants {
     public void setPriority(int priority){
         m_Priority = priority;
     }
-    public void setRole(int role){
-        m_Role = role;
+    public void setRole(CmsUUID roleId){
+        m_RoleId = roleId;
     }
     public void setRoot(int root){
         m_Root = root;

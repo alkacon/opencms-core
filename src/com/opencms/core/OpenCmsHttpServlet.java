@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/04/25 07:40:20 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.47 $ $Date: 2003/04/25 07:40:20 $
+ * @version $Revision: 1.48 $ $Date: 2003/05/15 12:39:34 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -456,11 +456,11 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * @throws IOException Thrown if user autherization fails.
      */
     private CmsObject initUser(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throws IOException {
-        HttpSession session;
+        HttpSession session = null;
         String user = null;
         String group = null;
         Integer project = null;
-        String loginParameter;
+        String loginParameter = null;
 
         // get the original ServletRequest and response
         HttpServletRequest req = (HttpServletRequest)cmsReq.getOriginalRequest();

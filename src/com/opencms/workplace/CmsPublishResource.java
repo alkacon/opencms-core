@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.15 $ $Date: 2003/02/21 15:18:23 $
+ * @version $Revision: 1.16 $ $Date: 2003/05/15 12:39:34 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -297,7 +297,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         // if the folder itself is locked, all subresources are unlocked by unlocking the folder
         if(resource.isLocked()){
             // first lock resource to set locked by to the current user
-            if(resource.isLockedBy() != cms.getRequestContext().currentUser().getId()){
+            if(!resource.isLockedBy().equals(cms.getRequestContext().currentUser().getId())){
                 cms.lockResource(resource.getAbsolutePath(),true);
             }
             cms.unlockResource(resource.getAbsolutePath());
@@ -309,7 +309,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             for(int i=0; i<allFiles.size(); i++){
                 CmsResource curFile = (CmsResource)allFiles.elementAt(i);
                 if(curFile.isLocked()){
-                    if(resource.isLockedBy() != cms.getRequestContext().currentUser().getId()){
+                    if(!resource.isLockedBy().equals(cms.getRequestContext().currentUser().getId())){
                         cms.lockResource(curFile.getAbsolutePath(),true);
                     }
                     cms.unlockResource(curFile.getAbsolutePath());

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/07 15:32:08 $
-* Version: $Revision: 1.377 $
+* Date   : $Date: 2003/05/15 12:39:35 $
+* Version: $Revision: 1.378 $
 
 *
 * This library is part of OpenCms -
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.377 $ $Date: 2003/05/07 15:32:08 $
+ * @version $Revision: 1.378 $ $Date: 2003/05/15 12:39:35 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -192,11 +192,12 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
         if(resource.getProjectId() != currentProject.getId()) {
             return false;
         }
+        
         // is the resource locked?
-        if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ||
+        if( resource.isLocked() && (!resource.isLockedBy().equals(currentUser.getId()) ||
             (resource.getLockedInProject() != currentProject.getId() &&
             currentProject.getFlags() != C_PROJECT_STATE_INVISIBLE)) ) {
-            // resource locked by anopther user, no creation allowed
+            // resource locked by another user, no creation allowed
             return(false);
         }
 
@@ -224,7 +225,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 
                 // is the resource locked?
-                if( resource.isLocked() && resource.isLockedBy() != currentUser.getId() ) {
+                if( resource.isLocked() && !resource.isLockedBy().equals(currentUser.getId()) ) {
                     // resource locked by anopther user, no creation allowed
                     return(false);
                 }
@@ -325,7 +326,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
         // check the rights and if the resource is not locked
         do {
             // is the resource locked?
-            if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ||
+            if( resource.isLocked() && ((!resource.isLockedBy().equals(currentUser.getId())) ||
                 (resource.getLockedInProject() != currentProject.getId() &&
                  currentProject.getFlags() != C_PROJECT_STATE_INVISIBLE)) ) {
                 // resource locked by anopther user, no creation allowed
@@ -394,7 +395,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
             return(true);
         }
         // is the resource owned by this user?
-        if(resource.getOwnerId() == currentUser.getId()) {
+        if(resource.getOwnerId().equals(currentUser.getId())) {
             if( (resource.getAccessFlags() & flags) == flags ) {
                 return true ;
             }
@@ -416,42 +417,34 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
      * @return true, if the user has access, else returns false.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public boolean accessProject(CmsUser currentUser, CmsProject currentProject,
-                                 int projectId)
-        throws CmsException {
-
-
+    public boolean accessProject(CmsUser currentUser, CmsProject currentProject, int projectId) throws CmsException {
         CmsProject testProject = readProject(currentUser, currentProject, projectId);
 
-        if (projectId==C_PROJECT_ONLINE_ID) {
+        if (projectId == C_PROJECT_ONLINE_ID) {
             return true;
         }
 
         // is the project unlocked?
-        if( testProject.getFlags() != C_PROJECT_STATE_UNLOCKED &&
-            testProject.getFlags() != C_PROJECT_STATE_INVISIBLE) {
-            return(false);
+        if (testProject.getFlags() != C_PROJECT_STATE_UNLOCKED && testProject.getFlags() != C_PROJECT_STATE_INVISIBLE) {
+            return (false);
         }
 
         // is the current-user admin, or the owner of the project?
-        if( (currentProject.getOwnerId() == currentUser.getId()) ||
-            isAdmin(currentUser, currentProject) ) {
-            return(true);
+        if ((currentProject.getOwnerId().equals(currentUser.getId())) || isAdmin(currentUser, currentProject)) {
+            return (true);
         }
 
         // get all groups of the user
-        Vector groups = getGroupsOfUser(currentUser, currentProject,
-                                        currentUser.getName());
+        Vector groups = getGroupsOfUser(currentUser, currentProject, currentUser.getName());
 
         // test, if the user is in the same groups like the project.
-        for(int i = 0; i < groups.size(); i++) {
-            int groupId = ((CmsGroup) groups.elementAt(i)).getId();
-            if( ( groupId == testProject.getGroupId() ) ||
-                ( groupId == testProject.getManagerGroupId() ) ) {
-                return( true );
+        for (int i = 0; i < groups.size(); i++) {
+            CmsUUID groupId = ((CmsGroup) groups.elementAt(i)).getId();
+            if ((groupId.equals(testProject.getGroupId())) || (groupId.equals(testProject.getManagerGroupId()))) {
+                return (true);
             }
         }
-        return( false );
+        return (false);
     }
     
     /**
@@ -467,9 +460,10 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
     public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
         String cacheKey = getCacheKey(null, currentUser, new CmsProject(currentProject.getId(), -1), resource.getResourceName());
         Boolean access = (Boolean)m_accessCache.get(cacheKey);
+        
         if (access != null) {
             return access.booleanValue();
-        } else {
+        } else {                       
             if ( (resource == null) 
                  || !accessProject(currentUser, currentProject, resource.getProjectId()) 
                  || ( !accessOther(resource, C_ACCESS_PUBLIC_READ) 
@@ -479,7 +473,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
                 m_accessCache.put(cacheKey, new Boolean(false));
                 return false;
             }
-
+            
             // check the rights for all
             CmsResource res = resource; // save the original resource name to be used if an error occurs.
             while (res.getParent() != null) {
@@ -489,7 +483,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
                     }
-                    throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
+                    throw new CmsException(getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
                 }
                 if ( !accessOther(res, C_ACCESS_PUBLIC_READ) 
                      && !accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ) 
@@ -609,7 +603,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
         }
 
         // check, if the resource is locked by the current user
-        if(resource.isLockedBy() != currentUser.getId()) {
+        if(!resource.isLockedBy().equals(currentUser.getId())) {
             // resource is not locked by the current user, no writing allowed
             return(false);
         } else {
@@ -645,7 +639,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 
                 // is the resource locked?
-                if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+                if( resource.isLocked() && ( !resource.isLockedBy().equals(currentUser.getId()) ) ) {
                     // resource locked by anopther user, no creation allowed
 
                     return(false);
@@ -737,7 +731,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 
                 // is the resource locked?
-                if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+                if( resource.isLocked() && (!resource.isLockedBy().equals(currentUser.getId()) ) ) {
                     // resource locked by anopther user, no creation allowed
                     return(false);
                 }
@@ -783,7 +777,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
                     m_dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS, suffixes);
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + extension,
+                throw new CmsException("[" + getClass().getName() + "] " + extension,
                     CmsException.C_NO_ACCESS);
             }
         }
@@ -818,10 +812,10 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
             if(name.length() > 1) {
                 return( m_UserAccess.createGroup(name, description, flags, parent) );
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+                throw new CmsException("[" + getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name,
+            throw new CmsException("[" + getClass().getName() + "] " + name,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -866,11 +860,11 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
                 addUserToGroup(currentUser, currentProject, newUser.getName(),defaultGroup.getName());
                 return newUser;
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + name,
+                throw new CmsException("[" + getClass().getName() + "] " + name,
                     CmsException.C_SHORT_PASSWORD);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name,
+            throw new CmsException("[" + getClass().getName() + "] " + name,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -920,7 +914,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
             addUserToGroup(currentUser, currentProject, newUser.getName(), group.getName());
             return newUser;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name,
+            throw new CmsException("[" + getClass().getName() + "] " + name,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -964,13 +958,13 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
                     // update the cache
                     m_userGroupsCache.clear();
                 } else {
-                    throw new CmsException("[" + this.getClass().getName() + "]" + groupname, CmsException.C_NO_GROUP);
+                    throw new CmsException("[" + getClass().getName() + "]" + groupname, CmsException.C_NO_GROUP);
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "]" + username, CmsException.C_NO_USER);
+                throw new CmsException("[" + getClass().getName() + "]" + username, CmsException.C_NO_USER);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
+            throw new CmsException("[" + getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
         }
     }
 }
@@ -1023,15 +1017,15 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
                         // update the cache
                         m_userGroupsCache.clear();
                     } else {
-                        throw new CmsException("["+this.getClass().getName()+"]"+group,CmsException.C_NO_GROUP);
+                        throw new CmsException("["+getClass().getName()+"]"+group,CmsException.C_NO_GROUP);
                     }
                 } else {
-                    throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
+                    throw new CmsException("["+getClass().getName()+"]"+name,CmsException.C_NO_USER);
                 }
 
                 return newUser;
         } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + name,
+                throw new CmsException("[" + getClass().getName() + "] " + name,
                     CmsException.C_SHORT_PASSWORD);
         }
 
@@ -1088,7 +1082,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
                     // update the cache
                     m_userGroupsCache.clear();
                 } else {
-                    throw new CmsException("["+this.getClass().getName()+"]"+group,CmsException.C_NO_GROUP);
+                    throw new CmsException("["+getClass().getName()+"]"+group,CmsException.C_NO_GROUP);
                 }
                 // if an additional groupname is given and the group does not belong to
                 // Users, Administrators or Projectmanager add the user to this group
@@ -1100,15 +1094,15 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
                         // update the cache
                         m_userGroupsCache.clear();
                     } else {
-                        throw new CmsException("["+this.getClass().getName()+"]"+additionalGroup,CmsException.C_NO_GROUP);
+                        throw new CmsException("["+getClass().getName()+"]"+additionalGroup,CmsException.C_NO_GROUP);
                     }
                 }
             } else {
-                throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
+                throw new CmsException("["+getClass().getName()+"]"+name,CmsException.C_NO_USER);
             }
             return newUser;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name,
+            throw new CmsException("[" + getClass().getName() + "] " + name,
                                  CmsException.C_SHORT_PASSWORD);
         }
     }
@@ -1166,7 +1160,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 
         // has the user write-access? and is he owner or admin?
         if( accessWrite(currentUser, currentProject, resource) &&
-            ( (resource.getOwnerId() == currentUser.getId()) ||
+            ( (resource.getOwnerId().equals(currentUser.getId())) ||
               isAdmin(currentUser, currentProject))) {
             CmsGroup group = readGroup(currentUser, currentProject, newGroup);
             resource.setGroupId(group.getId());
@@ -1189,7 +1183,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
             // inform about the file-system-change
             fileSystemChanged(false);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -1231,9 +1225,9 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 
         // has the user write-access?
         if( accessWrite(currentUser, currentProject, resource)||
-            ((resource.isLockedBy() == currentUser.getId() &&
+            ((resource.isLockedBy().equals(currentUser.getId()) &&
               resource.getLockedInProject() == currentProject.getId()) &&
-                (resource.getOwnerId() == currentUser.getId()||isAdmin(currentUser, currentProject))) ) {
+                (resource.getOwnerId().equals(currentUser.getId()) ||isAdmin(currentUser, currentProject))) ) {
 
             // write-acces  was granted - write the file.
 
@@ -1259,7 +1253,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
             // inform about the file-system-change
             fileSystemChanged(false);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -1297,8 +1291,8 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
     }
 
     // has the user write-access? and is he owner or admin?
-    if (((resource.getOwnerId() == currentUser.getId()) || isAdmin(currentUser, currentProject)) &&
-            (resource.isLockedBy() == currentUser.getId() &&
+    if (((resource.getOwnerId().equals(currentUser.getId())) || isAdmin(currentUser, currentProject)) &&
+            (resource.isLockedBy().equals(currentUser.getId()) &&
              resource.getLockedInProject() == currentProject.getId())) {
         CmsUser owner = readUser(currentUser, currentProject, newOwner);
         resource.setUserId(owner.getId());
@@ -1322,7 +1316,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         // inform about the file-system-change
         fileSystemChanged(false);
     } else {
-        throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NO_ACCESS);
+        throw new CmsException("[" + getClass().getName() + "] " + filename, CmsException.C_NO_ACCESS);
     }
 }
 
@@ -1365,7 +1359,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             fileSystemChanged( isFolder );
         } 
         else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourceName, CmsException.C_NO_ACCESS);
+            throw new CmsException("[" + getClass().getName() + "] " + resourceName, CmsException.C_NO_ACCESS);
         }
     }
     
@@ -1418,7 +1412,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // inform about the file-system-change
             fileSystemChanged(isFolder);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -1457,7 +1451,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 
         // has the user write-access? and is he owner or admin?
         if( accessWrite(currentUser, currentProject, resource) &&
-            ( (resource.getOwnerId() == currentUser.getId()) ||
+            ( (resource.getOwnerId().equals(currentUser.getId())) ||
               isAdmin(currentUser, currentProject))) {
 
             // write-acces  was granted - write the file.
@@ -1473,7 +1467,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // inform about the file-system-change
             fileSystemChanged(false);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -1555,11 +1549,11 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 // inform about the file-system-change
                 fileSystemChanged(file.isFolder());
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + source,
+                throw new CmsException("[" + getClass().getName() + "] " + source,
                     CmsException.C_NO_ACCESS);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + destination,
+            throw new CmsException("[" + getClass().getName() + "] " + destination,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -1611,11 +1605,11 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 // inform about the file-system-change
                 fileSystemChanged(true);
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + source,
+                throw new CmsException("[" + getClass().getName() + "] " + source,
                     CmsException.C_ACCESS_DENIED);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + destination,
+            throw new CmsException("[" + getClass().getName() + "] " + destination,
                 CmsException.C_ACCESS_DENIED);
         }
 
@@ -1689,7 +1683,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             }
         } else {
             // no changes on the onlineproject!
-            throw new CmsException("[" + this.getClass().getName() + "] " + currentProject.getName(), CmsException.C_NO_ACCESS);
+            throw new CmsException("[" + getClass().getName() + "] " + currentProject.getName(), CmsException.C_NO_ACCESS);
         }
     }
     /**
@@ -1718,7 +1712,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // count locks
             return m_dbAccess.countLockedResources(project);
         } else {
-             throw new CmsException("[" + this.getClass().getName() + "] " + id,
+             throw new CmsException("[" + getClass().getName() + "] " + id,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -1817,7 +1811,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 
             return file ;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + newFileName,
+            throw new CmsException("[" + getClass().getName() + "] " + newFileName,
                 CmsException.C_NO_ACCESS);
         }
 
@@ -1870,7 +1864,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // write-acces  was granted - create the folder.
             CmsFolder newFolder = m_VfsAccess.createFolder(currentUser, currentProject,
                                                           cmsFolder.getResourceId(),
-                                                          C_UNKNOWN_ID,
+                                                          CmsUUID.getNullUUID(),
                                                           newFolderName,
                                                           0);
             // update the access flags
@@ -1899,7 +1893,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // return the folder
             return newFolder ;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + newFolderName,
+            throw new CmsException("[" + getClass().getName() + "] " + newFolderName,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -1938,66 +1932,56 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
      * or if the filename is not valid. The CmsException will also be thrown, if the
      * user has not the rights for this resource.
      */
-    public CmsResource importResource(CmsUser currentUser, CmsProject currentProject,
-                                       String newResourceName,
-                                       int resourceType, Map propertyinfos, int launcherType,
-                                       String launcherClassname,
-                                       String ownername, String groupname, int accessFlags,
-                                       long lastmodified, byte[] filecontent)
-        throws CmsException {
-
+    public CmsResource importResource(CmsUser currentUser, CmsProject currentProject, String newResourceName, int resourceType, Map propertyinfos, int launcherType, String launcherClassname, String ownername, String groupname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
         // extract folder information
         String folderName = null;
         String resourceName = null;
 
         boolean isFolder = (resourceType == C_TYPE_FOLDER);
-        if(isFolder){
+        if (isFolder) {
             // append C_FOLDER_SEPARATOR if required
-            if (! newResourceName.endsWith(C_FOLDER_SEPARATOR)) newResourceName += C_FOLDER_SEPARATOR;            
+            if (!newResourceName.endsWith(C_FOLDER_SEPARATOR))
+                newResourceName += C_FOLDER_SEPARATOR;
             // extract folder information
-            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPARATOR, newResourceName.length()-2)+1);
-            resourceName = newResourceName.substring(folderName.length(), newResourceName.length()-1);
+            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPARATOR, newResourceName.length() - 2) + 1);
+            resourceName = newResourceName.substring(folderName.length(), newResourceName.length() - 1);
         } else {
-            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPARATOR, newResourceName.length())+1);
+            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPARATOR, newResourceName.length()) + 1);
             resourceName = newResourceName.substring(folderName.length(), newResourceName.length());
         }
-                    
+        
         // checks, if the filename is valid, if not it throws a exception
         validFilename(resourceName);
-
+        
         CmsFolder parentFolder = readFolder(currentUser, currentProject, folderName);
-        if( accessCreate(currentUser, currentProject, (CmsResource)parentFolder) ) {
-			// try to read owner and group
-			CmsUser owner = this.readUser(currentUser, currentProject, ownername);
-			CmsGroup group = this.readGroup(currentUser, currentProject, groupname);
-			// create a new CmsResourceObject
-			if(filecontent == null){
-				filecontent = new byte[0];
-			}
-			CmsResource newResource = new CmsResource(C_UNKNOWN_ID,parentFolder.getResourceId(),
-			                        C_UNKNOWN_ID, newResourceName,
-                                    resourceType, 0,
-                                    owner.getId(), group.getId(), currentProject.getId(),
-                                    accessFlags, C_STATE_NEW, currentUser.getId(),
-                                    launcherType, launcherClassname,
-                                    lastmodified, lastmodified,
-                                    currentUser.getId(),filecontent.length, currentProject.getId());
-            newResource.setDateLastModified(lastmodified);
+        
+        if (accessCreate(currentUser, currentProject, (CmsResource) parentFolder)) {
+            // try to read owner and group
+            CmsUser owner = this.readUser(currentUser, currentProject, ownername);
+            CmsGroup group = this.readGroup(currentUser, currentProject, groupname);
+                        
+            // create a new CmsResourceObject
+            if (filecontent == null) {
+                filecontent = new byte[0];
+            }
             
+            CmsResource newResource = new CmsResource(CmsUUID.getNullUUID(), parentFolder.getResourceId(), CmsUUID.getNullUUID(), newResourceName, resourceType, 0, owner.getId(), group.getId(), currentProject.getId(), accessFlags, C_STATE_NEW, currentUser.getId(), launcherType, launcherClassname, lastmodified, lastmodified, currentUser.getId(), filecontent.length, currentProject.getId());
+            newResource.setDateLastModified(lastmodified);
+
             // write-acces  was granted - create the folder.
             newResource = m_VfsAccess.createResource(currentProject, onlineProject(currentUser, currentProject), newResource, filecontent, currentUser.getId(), isFolder);
-            
+
             this.clearResourceCache(newResourceName, currentProject, currentUser);
             // write metainfos for the folder
-            m_VfsAccess.writeProperties(propertyinfos, currentProject.getId(), newResource, newResource.getType(),true);
+            m_VfsAccess.writeProperties(propertyinfos, currentProject.getId(), newResource, newResource.getType(), true);
 
             // inform about the file-system-change
             fileSystemChanged(true);
+            
             // return the folder
             return newResource;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + newResourceName,
-                CmsException.C_NO_ACCESS);
+            throw new CmsException("[" + getClass().getName() + "] " + newResourceName, CmsException.C_NO_ACCESS);
         }
     }
         
@@ -2022,7 +2006,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
     if (isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject))
     {
         if (C_PROJECT_ONLINE.equals(name)){
-            throw new CmsException ("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+            throw new CmsException ("[" + getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
         // read the needed groups from the cms
         CmsGroup group = readGroup(currentUser, currentProject, groupname);
@@ -2034,7 +2018,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
     }
     else
     {
-        throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+        throw new CmsException("[" + getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
     }
 }
 
@@ -2059,7 +2043,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
     if (isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject))
     {
         if (C_PROJECT_ONLINE.equals(name)){
-            throw new CmsException ("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+            throw new CmsException ("[" + getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
         // read the needed groups from the cms
         CmsGroup group = readGroup(currentUser, currentProject, groupname);
@@ -2071,7 +2055,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
     }
     else
     {
-        throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+        throw new CmsException("[" + getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
     }
 }
 
@@ -2096,7 +2080,7 @@ public CmsProject createDirectPublishProject(CmsUser currentUser, CmsProject cur
     if (isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, currentProject))
     {
         if (C_PROJECT_ONLINE.equals(name)){
-            throw new CmsException ("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+            throw new CmsException ("[" + getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
         }
         // read the needed groups from the cms
         CmsGroup group = readGroup(currentUser, currentProject, groupname);
@@ -2108,7 +2092,7 @@ public CmsProject createDirectPublishProject(CmsUser currentUser, CmsProject cur
     }
     else
     {
-        throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+        throw new CmsException("[" + getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
     }
 }
 
@@ -2142,7 +2126,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
     }
     else
     {
-        throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+        throw new CmsException("[" + getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
     }
 }
     /**
@@ -2217,7 +2201,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                                                                         currentProject,
                                                                         resourcetype).getResourceType()) );
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name,
+            throw new CmsException("[" + getClass().getName() + "] " + name,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -2296,7 +2280,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         CmsGroup role = m_UserAccess.readGroup(roleName);
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
-        int agentId = C_UNKNOWN_ID;
+        CmsUUID agentId = CmsUUID.getNullUUID();
         validTaskname(taskname);   // check for valid Filename
         try {
             agentId = m_UserAccess.readUser(agentName, C_USER_TYPE_SYSTEMUSER).getId();
@@ -2333,7 +2317,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         CmsResource res = readFileHeader(currentUser,currentProject, resource);
         // check the security
         if( ! accessWrite(currentUser, currentProject, res) ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + resource,
+             throw new CmsException("[" + getClass().getName() + "] " + resource,
                 CmsException.C_NO_ACCESS);
         }
 
@@ -2398,10 +2382,10 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
 
         } else {
             if(file.getState() == C_STATE_DELETED){
-                throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+                throw new CmsException("[" + getClass().getName() + "] " + filename,
                     CmsException.C_RESOURCE_DELETED);
             }
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -2459,7 +2443,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             fileSystemChanged(true);
 
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + foldername,
+            throw new CmsException("[" + getClass().getName() + "] " + foldername,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -2516,7 +2500,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             // inform about the file-system-change
             fileSystemChanged(isFolder);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -2554,7 +2538,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 throw new CmsException(delgroup, CmsException.C_GROUP_NOT_EMPTY);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + delgroup,
+            throw new CmsException("[" + getClass().getName() + "] " + delgroup,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -2645,7 +2629,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             m_dbAccess.deleteProject(deleteProject);
             m_projectCache.remove(new Integer(id));
         } else {
-             throw new CmsException("[" + this.getClass().getName() + "] " + id,
+             throw new CmsException("[" + getClass().getName() + "] " + id,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -2671,7 +2655,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
 
         // check the security
         if( ! accessWrite(currentUser, currentProject, res) ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + resource,
+             throw new CmsException("[" + getClass().getName() + "] " + resource,
                 CmsException.C_NO_ACCESS);
         }
         // read the metadefinition
@@ -2697,7 +2681,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             m_propertyCache.clear();
         } else {
             // yes - throw exception
-             throw new CmsException("[" + this.getClass().getName() + "] " + resource,
+             throw new CmsException("[" + getClass().getName() + "] " + resource,
                 CmsException.C_UNKNOWN_EXCEPTION);
         }
     }
@@ -2726,7 +2710,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             m_dbAccess.deletePropertydefinition(
                 readPropertydefinition(currentUser,currentProject,name,resourcetype));
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name,
+            throw new CmsException("[" + getClass().getName() + "] " + name,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -2745,7 +2729,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void deleteUser(CmsUser currentUser, CmsProject currentProject,
-                           int userId)
+                           CmsUUID userId)
         throws CmsException {
         CmsUser user = readUser(currentUser,currentProject,userId);
         deleteUser(currentUser,currentProject,user.getName());
@@ -2777,7 +2761,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             // delete user from cache
             clearUserCache(user);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
+            throw new CmsException("[" + getClass().getName() + "] " + username,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -2792,7 +2776,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void deleteWebUser(CmsUser currentUser, CmsProject currentProject,
-                           int userId)
+                           CmsUUID userId)
         throws CmsException {
         CmsUser user = readUser(currentUser,currentProject,userId);
         m_UserAccess.deleteUser(user.getName());
@@ -2855,7 +2839,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         if(isAdmin(currentUser, currentProject)) {
             new CmsExport(cms, exportFile, exportPaths, false, false);
         } else {
-             throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+             throw new CmsException("[" + getClass().getName() + "] exportResources",
                  CmsException.C_NO_ACCESS);
         }
     }
@@ -2880,7 +2864,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         if(isAdmin(currentUser, currentProject)) {
             new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged);
         } else {
-             throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+             throw new CmsException("[" + getClass().getName() + "] exportResources",
                  CmsException.C_NO_ACCESS);
         }
     }
@@ -2908,7 +2892,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         if(isAdmin(currentUser, currentProject)) {
             new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged, null, exportUserdata, contentAge, report);
         } else {
-             throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+             throw new CmsException("[" + getClass().getName() + "] exportResources",
                  CmsException.C_NO_ACCESS);
         }
     }
@@ -2933,7 +2917,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         if(isAdmin(currentUser, currentProject)) {
             new CmsExportModuledata(cms, exportFile, exportChannels, exportModules, report);
         } else {
-             throw new CmsException("[" + this.getClass().getName() + "] exportModuledata",
+             throw new CmsException("[" + getClass().getName() + "] exportModuledata",
                  CmsException.C_NO_ACCESS);
         }
     }
@@ -3140,7 +3124,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                         m_resourceTypes.put((String)resTypeNames.elementAt(i), resTypeClass);
                     }catch(Exception e){
                         e.printStackTrace();
-                        throw new CmsException("[" + this.getClass().getName() + "] Error while getting ResourceType: " + (String)resTypeNames.elementAt(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION );
+                        throw new CmsException("[" + getClass().getName() + "] Error while getting ResourceType: " + (String)resTypeNames.elementAt(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION );
                     }
                 }
             }
@@ -3191,7 +3175,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
             return m_dbAccess.getChild(groupname);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + groupname,
+            throw new CmsException("[" + getClass().getName() + "] " + groupname,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -3237,7 +3221,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         }
         return allChilds;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + groupname,
+            throw new CmsException("[" + getClass().getName() + "] " + groupname,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -3476,7 +3460,7 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
         if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
             return m_UserAccess.getGroups();
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(),
+            throw new CmsException("[" + getClass().getName() + "] " + currentUser.getName(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -3556,7 +3540,7 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
     public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String groupname) throws CmsException
     {
         CmsGroup group = readGroup(currentUser, currentProject, groupname);
-        if (group.getParentId() == C_UNKNOWN_ID)
+        if (group.getParentId().isNullUUID())
         {
             return null;
         }
@@ -3642,7 +3626,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
     }
     if (offlineFolder == null) {
         // the folder is not existent
-        throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_NOT_FOUND);
+        throw new CmsException("[" + getClass().getName() + "] " + folder, CmsException.C_NOT_FOUND);
     } else {
         // try to read from cache
         String cacheKey = getCacheKey(currentUser.getName() + "_resources", currentUser, currentProject, offlineFolder.getResourceName());
@@ -3734,7 +3718,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             }
         }
         // was not found - throw exception
-        throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
+        throw new CmsException("[" + getClass().getName() + "] " + resourceType,
             CmsException.C_NOT_FOUND);
     }
     /**
@@ -3759,13 +3743,13 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         try {
             I_CmsResourceType type = (I_CmsResourceType)getAllResourceTypes(currentUser, currentProject).get(resourceType);
             if(type == null) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
+                throw new CmsException("[" + getClass().getName() + "] " + resourceType,
                     CmsException.C_NOT_FOUND);
             }
             return type;
         } catch(NullPointerException exc) {
             // was not found - throw exception
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
+            throw new CmsException("[" + getClass().getName() + "] " + resourceType,
                 CmsException.C_NOT_FOUND);
         }
     }
@@ -3902,7 +3886,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
             return m_UserAccess.getUsers(C_USER_TYPE_SYSTEMUSER);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(),
+            throw new CmsException("[" + getClass().getName() + "] " + currentUser.getName(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -3924,7 +3908,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
             return m_UserAccess.getUsers(type);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(),
+            throw new CmsException("[" + getClass().getName() + "] " + currentUser.getName(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -3947,7 +3931,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
             return m_UserAccess.getUsers(type,namestart);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(),
+            throw new CmsException("[" + getClass().getName() + "] " + currentUser.getName(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -3970,7 +3954,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
             return m_UserAccess.getUsersOfGroup(groupname, C_USER_TYPE_SYSTEMUSER);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + groupname,
+            throw new CmsException("[" + getClass().getName() + "] " + groupname,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -4001,7 +3985,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                                                  wasLoggedIn, nMax);
         } else {
             throw new CmsException(
-                "[" + this.getClass().getName() + "] " + currentUser.getName(),
+                "[" + getClass().getName() + "] " + currentUser.getName(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -4098,7 +4082,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             }
             return folders;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + foldername,
+            throw new CmsException("[" + getClass().getName() + "] " + foldername,
                 CmsException.C_ACCESS_DENIED);
         }
     }
@@ -4121,7 +4105,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         if(isAdmin(currentUser, currentProject)) {
             new CmsImportFolder(importFile, importPath, cms);
         } else {
-             throw new CmsException("[" + this.getClass().getName() + "] importResources",
+             throw new CmsException("[" + getClass().getName() + "] importResources",
                  CmsException.C_NO_ACCESS);
         }
     }
@@ -4155,7 +4139,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                 imp.importResources();
             }
         } else {
-             throw new CmsException("[" + this.getClass().getName() + "] importResources",
+             throw new CmsException("[" + getClass().getName() + "] importResources",
                  CmsException.C_NO_ACCESS);
         }
     }
@@ -4255,7 +4239,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
     public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
         // is the user owner of the project?
-        if( currentUser.getId() == currentProject.getOwnerId() ) {
+        if( currentUser.getId().equals(currentProject.getOwnerId()) ) {
             // YES
             return true;
         }
@@ -4268,8 +4252,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 
         for(int i = 0; i < groups.size(); i++) {
             // is this a managergroup for this project?
-            if( ((CmsGroup)groups.elementAt(i)).getId() ==
-                currentProject.getManagerGroupId() ) {
+            if( ((CmsGroup)groups.elementAt(i)).getId().equals(currentProject.getManagerGroupId()) ) {
                 // this group is manager of the project
                 return true;
             }
@@ -4404,7 +4387,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             if(cmsResource.isLocked()) {
                 // if the force switch is not set, throw an exception
                 if (force==false) {
-                    throw new CmsException("["+this.getClass().getName()+"] "+resourcename,CmsException.C_LOCKED);
+                    throw new CmsException("["+getClass().getName()+"] "+resourcename,CmsException.C_LOCKED);
                 }
             }
 
@@ -4445,7 +4428,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                 }
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourcename,
+            throw new CmsException("[" + getClass().getName() + "] " + resourcename,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -4484,7 +4467,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             return(newUser);
         } else {
             // No Access!
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
+            throw new CmsException("[" + getClass().getName() + "] " + username,
                 CmsException.C_NO_ACCESS );
         }
     }
@@ -4522,7 +4505,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             return(newUser);
         } else {
             // No Access!
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
+            throw new CmsException("[" + getClass().getName() + "] " + username,
                 CmsException.C_NO_ACCESS );
         }
     }
@@ -4614,7 +4597,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             // inform about the file-system-change
             fileSystemChanged(file.isFolder());
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + source, CmsException.C_NO_ACCESS);
+            throw new CmsException("[" + getClass().getName() + "] " + source, CmsException.C_NO_ACCESS);
         }
     }
 /**
@@ -4667,7 +4650,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
         isUser(currentUser, currentProject)) {
         new CmsStaticExport(cms, startpoints, true, projectResources, allExportedLinks, changedResources, report);
     } else {
-         throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+         throw new CmsException("[" + getClass().getName() + "] exportResources",
              CmsException.C_NO_ACCESS);
     }
 }
@@ -4692,7 +4675,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
             isUser(currentUser, currentProject)) {
             new CmsStaticExport(cms, linksToExport);
         } else {
-             throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+             throw new CmsException("[" + getClass().getName() + "] exportResources",
                  CmsException.C_NO_ACCESS);
         }
     }
@@ -4712,70 +4695,65 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public synchronized CmsPublishedResources publishProject(CmsObject cms, CmsUser currentUser,
-                    CmsProject currentProject, int id, I_CmsReport report) throws CmsException {
+    public synchronized CmsPublishedResources publishProject(CmsObject cms, CmsUser currentUser, CmsProject currentProject, int id, I_CmsReport report) throws CmsException {
 
         CmsProject publishProject = readProject(currentUser, currentProject, id);
         CmsPublishedResources allChanged = new CmsPublishedResources();
         Vector changedResources = new Vector();
         Vector changedModuleMasters = new Vector();
 
-
         // check the security
-        if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) &&
-            (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED) && (id != C_PROJECT_ONLINE_ID)) {
-            try{
-                changedResources = m_dbAccess.publishProject(currentUser, id,
-                                    onlineProject(currentUser, currentProject), isHistoryEnabled(cms),
-                                    report, m_registry.getExportpoints());
+        if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) && (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED) && (id != C_PROJECT_ONLINE_ID)) {
+            try {
+                changedResources = m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject), isHistoryEnabled(cms), report, m_registry.getExportpoints());
+                
                 // now publish the module masters
                 Vector publishModules = new Vector();
                 cms.getRegistry().getModulePublishables(publishModules, null);
+                
                 int versionId = 0;
                 long publishDate = System.currentTimeMillis();
-                if(isHistoryEnabled(cms)){
+                
+                if (isHistoryEnabled(cms)) {
                     versionId = m_dbAccess.getBackupVersionId();
+                    
                     // get the version_id for the currently published version
-                    if(versionId > 1){
+                    if (versionId > 1) {
                         versionId--;
                     }
-                    try{
+                    
+                    try {
                         publishDate = m_dbAccess.readBackupProject(versionId).getPublishingDate();
-                    } catch (CmsException e){
+                    } catch (CmsException e) {
                         // nothing to do
                     }
-                    if(publishDate == 0){
+                    
+                    if (publishDate == 0) {
                         publishDate = System.currentTimeMillis();
                     }
                 }
-                for(int i = 0; i < publishModules.size(); i++){
+                
+                for (int i = 0; i < publishModules.size(); i++) {
                     // call the publishProject method of the class with parameters:
                     // cms, m_enableHistory, project_id, version_id, publishDate, subId,
                     // the vector changedResources and the vector changedModuleMasters
-                    try{
+                    try {
                         // The changed masters are added to the vector changedModuleMasters, so after the last module
                         // was published the vector contains the changed masters of all published modules
-                        Class.forName((String)publishModules.elementAt(i)).getMethod("publishProject",
-                                                new Class[] {CmsObject.class, Boolean.class, Integer.class, Integer.class,
-                                                Long.class, Vector.class, Vector.class}).invoke(null, new Object[] {cms,
-                                                new Boolean(isHistoryEnabled(cms)), new Integer(id), new Integer(versionId), new Long(publishDate),
-                                                changedResources, changedModuleMasters});
-                    } 
-                    catch (ClassNotFoundException ec) {    
-                        report.println(report.key("report.publish_class_for_module_does_not_exist_1") +
-                            (String)publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
-                        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error calling publish class of module " + (String)publishModules.elementAt(i) + "!: " + ec.getMessage());
-                        }                                         
-                    }
-                    catch(Exception ex){
+                        Class.forName((String) publishModules.elementAt(i)).getMethod("publishProject", new Class[] { CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class }).invoke(null, new Object[] { cms, new Boolean(isHistoryEnabled(cms)), new Integer(id), new Integer(versionId), new Long(publishDate), changedResources, changedModuleMasters });
+                    } catch (ClassNotFoundException ec) {
+                        report.println(report.key("report.publish_class_for_module_does_not_exist_1") + (String) publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
+                        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error calling publish class of module " + (String) publishModules.elementAt(i) + "!: " + ec.getMessage());
+                        }
+                    } catch (Exception ex) {
                         report.println(ex);
-                        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error when publish data of module " + (String)publishModules.elementAt(i)+"!: " + ex.getMessage());
+                        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error when publish data of module " + (String) publishModules.elementAt(i) + "!: " + ex.getMessage());
                         }
                     }
                 }
-            } catch (CmsException e){
+            } catch (CmsException e) {
                 throw e;
             } finally {
                 this.clearResourceCache();
@@ -4785,16 +4763,16 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                 // the project was stored in the backuptables for history
                 //new projectmechanism: the project can be still used after publishing
                 // it will be deleted if the project_flag = C_PROJECT_STATE_TEMP
-                if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY){
+                if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY) {
                     m_dbAccess.deleteProject(publishProject);
-                    try{
+                    try {
                         m_projectCache.remove(new Integer(id));
-                    } catch (Exception e){
-                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(A_OpenCms.C_OPENCMS_CACHE,"Could not remove project "+id+" from cache");
+                    } catch (Exception e) {
+                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                            A_OpenCms.log(A_OpenCms.C_OPENCMS_CACHE, "Could not remove project " + id + " from cache");
                         }
                     }
-                    if(id == currentProject.getId()){
+                    if (id == currentProject.getId()) {
                         cms.getRequestContext().setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
                     }
 
@@ -4815,10 +4793,12 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                 }
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
+            throw new CmsException("[" + getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
         }
+        
         allChanged.setChangedResources(changedResources);
         allChanged.setChangedModuleMasters(changedModuleMasters);
+        
         return allChanged;
     }
 
@@ -4891,7 +4871,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
             // access to all subfolders was granted - return the file-history.
             return(m_VfsAccess.readAllFileHeaders(currentProject.getId(), filename));
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                  CmsException.C_ACCESS_DENIED);
         }
      }
@@ -4926,7 +4906,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
             // access to all subfolders was granted - return the file-history.
             return(m_VfsAccess.readAllFileHeadersForHist(filename));
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                  CmsException.C_ACCESS_DENIED);
         }
      }
@@ -5009,7 +4989,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @param pageId The resourceId (offline) of the page whose links should be deleted
      */
-    public void deleteLinkEntrys(int pageId)throws CmsException{
+    public void deleteLinkEntrys(CmsUUID pageId)throws CmsException{
         m_dbAccess.deleteLinkEntrys(pageId);
     }
 
@@ -5019,7 +4999,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @param pageId The resourceId (offline) of the page whose liks should be traced.
      * @param linkTarget A vector of strings (the linkdestinations).
      */
-    public void createLinkEntrys(int pageId, Vector linkTargets)throws CmsException{
+    public void createLinkEntrys(CmsUUID pageId, Vector linkTargets)throws CmsException{
         m_dbAccess.createLinkEntrys(pageId, linkTargets);
     }
 
@@ -5029,7 +5009,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @param pageId The resourceId (offline) of the page whose liks should be read.
      */
-    public Vector readLinkEntrys(int pageId)throws CmsException{
+    public Vector readLinkEntrys(CmsUUID pageId)throws CmsException{
         return m_dbAccess.readLinkEntrys(pageId);
     }
 
@@ -5038,7 +5018,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @param pageId The resourceId (online) of the page whose links should be deleted
      */
-    public void deleteOnlineLinkEntrys(int pageId)throws CmsException{
+    public void deleteOnlineLinkEntrys(CmsUUID pageId)throws CmsException{
         m_dbAccess.deleteOnlineLinkEntrys(pageId);
     }
 
@@ -5048,7 +5028,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @param pageId The resourceId (online) of the page whose liks should be traced.
      * @param linkTarget A vector of strings (the linkdestinations).
      */
-    public void createOnlineLinkEntrys(int pageId, Vector linkTarget)throws CmsException{
+    public void createOnlineLinkEntrys(CmsUUID pageId, Vector linkTarget)throws CmsException{
         m_dbAccess.createOnlineLinkEntrys(pageId, linkTarget);
     }
 
@@ -5058,7 +5038,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      *
      * @param pageId The resourceId (online) of the page whose liks should be read.
      */
-    public Vector readOnlineLinkEntrys(int pageId)throws CmsException{
+    public Vector readOnlineLinkEntrys(CmsUUID pageId)throws CmsException{
         return m_dbAccess.readOnlineLinkEntrys(pageId);
     }
 
@@ -5219,7 +5199,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
             // acces to all subfolders was granted - return the file.
             return cmsFile;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
+            throw new CmsException("[" + getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
         }
     }
     
@@ -5255,7 +5235,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
             // acces to all subfolders was granted - return the file.
             return cmsFile;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
+            throw new CmsException("[" + getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
         }
     }
     
@@ -5316,7 +5296,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                 // acces to all subfolders was granted - return the file-header.
                 return cmsFile;
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
+                throw new CmsException("[" + getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
             }
         } catch (CmsException exc) {
             throw exc;
@@ -5366,12 +5346,12 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
             // the resource was not readable
             throw exc;
         }
-   
+      
         if( accessRead(currentUser, currentProject, cmsFile) ) {
            // acces to all subfolders was granted - return the file-header.
            return cmsFile;
        } else {
-           throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+           throw new CmsException("[" + getClass().getName() + "] " + filename,
                 CmsException.C_ACCESS_DENIED);
        }
     }
@@ -5425,7 +5405,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
             // acces to all subfolders was granted - return the file-header.
             return cmsFile;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                  CmsException.C_ACCESS_DENIED);
         }
      }
@@ -5555,7 +5535,7 @@ protected CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, i
     }
     if (cmsFolder != null) {
         if (!accessRead(currentUser, currentProject, (CmsResource) cmsFolder))
-            throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_ACCESS_DENIED);
+            throw new CmsException("[" + getClass().getName() + "] " + folder, CmsException.C_ACCESS_DENIED);
     }
     return cmsFolder;
 }
@@ -5609,6 +5589,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
     if (folder == null) return null;
     if (! folder.endsWith(C_FOLDER_SEPARATOR)) folder += C_FOLDER_SEPARATOR;
     CmsFolder cmsFolder = null;
+    
     // read the resource from the currentProject, or the online-project
     try {
         String cacheKey = getCacheKey(null, currentUser, currentProject, folder);
@@ -5622,15 +5603,16 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
     } catch (CmsException exc) {
         throw exc;
     }
+    
     if (accessRead(currentUser, currentProject, (CmsResource) cmsFolder)) {
         // acces to all subfolders was granted - return the folder.
         if ((cmsFolder.getState() == C_STATE_DELETED) && (!includeDeleted)) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
+            throw new CmsException("[" + getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
         } else {
             return cmsFolder;
         }
     } else {
-        throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_ACCESS_DENIED);
+        throw new CmsException("[" + getClass().getName() + "] " + folder, CmsException.C_ACCESS_DENIED);
     }
 }
 
@@ -5655,7 +5637,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
  * The CmsException will also be thrown, if the user has not the rights
  * for this resource.
  */
-public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int folderid, boolean includeDeleted) throws CmsException {
+public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, CmsUUID folderid, boolean includeDeleted) throws CmsException {
     CmsFolder cmsFolder = null;
     // read the resource from the currentProject, or the online-project
     try {
@@ -5666,12 +5648,12 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
     if (accessRead(currentUser, currentProject, (CmsResource) cmsFolder)) {
         // acces to all subfolders was granted - return the folder.
         if ((cmsFolder.getState() == C_STATE_DELETED) && (!includeDeleted)) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
+            throw new CmsException("[" + getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
         } else {
             return cmsFolder;
         }
     } else {
-        throw new CmsException("[" + this.getClass().getName() + "] " + folderid, CmsException.C_ACCESS_DENIED);
+        throw new CmsException("[" + getClass().getName() + "] " + folderid, CmsException.C_ACCESS_DENIED);
     }
 }
     /**
@@ -5730,7 +5712,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
             } catch(CmsException exc) {
                 if(exc.getType() == CmsException.C_NO_GROUP) {
                     // the group does not exist any more - return a dummy-group
-                    return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, project.getGroupId() + "", "deleted group", 0);
+                    return new CmsGroup(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), project.getGroupId() + "", "deleted group", 0);
                 }
             }
             m_groupCache.put(new CacheId(group), group);
@@ -5762,7 +5744,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
                 group=m_UserAccess.readGroup(resource.getGroupId()) ;
             } catch(CmsException exc) {
                 if(exc.getType() == CmsException.C_NO_GROUP) {
-                    return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, resource.getGroupId() + "", "deleted group", 0);
+                    return new CmsGroup(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), resource.getGroupId() + "", "deleted group", 0);
                 }
             }
             m_groupCache.put(new CacheId(group), group);
@@ -5828,7 +5810,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @throws CmsException  Throws CmsException if operation was not succesful
      */
     public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
-                              int groupid)
+                              CmsUUID groupid)
         throws CmsException {
         return m_UserAccess.readGroup(groupid);
     }
@@ -5856,7 +5838,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
             } catch(CmsException exc) {
                 if(exc.getType() == CmsException.C_NO_GROUP) {
                     // the group does not exist any more - return a dummy-group
-                    return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, project.getManagerGroupId() + "", "deleted group", 0);
+                    return new CmsGroup(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), project.getManagerGroupId() + "", "deleted group", 0);
                 }
             }
             m_groupCache.put(new CacheId(group), group);
@@ -5989,15 +5971,15 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-        public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
-          CmsProject project=null;
-          project=(CmsProject)m_projectCache.get(new Integer(id));
-          if (project==null) {
-             project=m_dbAccess.readProject(id);
-             m_projectCache.put(new Integer(id), project);
-         }
-         return project;
-     }
+        public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {                     
+            CmsProject project = null;
+            project = (CmsProject) m_projectCache.get(new Integer(id));
+            if (project == null) {
+                project = m_dbAccess.readProject(id);
+                m_projectCache.put(new Integer(id), project);
+            }
+            return project;
+        }
      /**
      * Reads a project from the Cms.
      *
@@ -6047,32 +6029,35 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      *
      * @return a Vector of resources.
      */
-    public Vector readProjectView(CmsUser currentUser, CmsProject currentProject, int projectId, String filter)
-            throws CmsException {
+    public Vector readProjectView(CmsUser currentUser, CmsProject currentProject, int projectId, String filter) throws CmsException {
         CmsProject project = readProject(currentUser, currentProject, projectId);
         Vector retValue = new Vector();
         String whereClause = new String();
-        if("new".equalsIgnoreCase(filter)){
-            whereClause = " AND STATE="+C_STATE_NEW;
-        } else if ("changed".equalsIgnoreCase(filter)){
-            whereClause = " AND STATE="+C_STATE_CHANGED;
-        } else if ("deleted".equalsIgnoreCase(filter)){
-            whereClause = " AND STATE="+C_STATE_DELETED;
-        } else if ("locked".equalsIgnoreCase(filter)){
-            whereClause = " AND LOCKED_BY != "+C_UNKNOWN_ID;
+        
+        if ("new".equalsIgnoreCase(filter)) {
+            whereClause = " AND STATE=" + C_STATE_NEW;
+        } else if ("changed".equalsIgnoreCase(filter)) {
+            whereClause = " AND STATE=" + C_STATE_CHANGED;
+        } else if ("deleted".equalsIgnoreCase(filter)) {
+            whereClause = " AND STATE=" + C_STATE_DELETED;
+        } else if ("locked".equalsIgnoreCase(filter)) {
+            whereClause = " AND LOCKED_BY != " + C_UNKNOWN_ID;
         } else {
-            whereClause = " AND STATE != "+C_STATE_UNCHANGED;
+            whereClause = " AND STATE != " + C_STATE_UNCHANGED;
         }
+        
         Vector resources = m_dbAccess.readProjectView(currentProject.getId(), projectId, whereClause);
+        
         // check the security
-        for(int i = 0; i < resources.size(); i++) {
-            if( accessRead(currentUser, project, (CmsResource) resources.elementAt(i)) ) {
+        for (int i = 0; i < resources.size(); i++) {
+            if (accessRead(currentUser, project, (CmsResource) resources.elementAt(i))) {
                 retValue.addElement(resources.elementAt(i));
             }
         }
 
         return retValue;
     }
+    
      /**
      * Reads the backupinformation of a project from the Cms.
      *
@@ -6127,7 +6112,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
 
         // check the security
         if( ! accessRead(currentUser, currentProject, res) ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + resource,
+             throw new CmsException("[" + getClass().getName() + "] " + resource,
                 CmsException.C_NO_ACCESS);
         }
         
@@ -6234,7 +6219,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
 
         // check the security
         if( ! accessRead(currentUser, currentProject, res) ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + resource,
+             throw new CmsException("[" + getClass().getName() + "] " + resource,
                 CmsException.C_NO_ACCESS);
         }
         
@@ -6446,7 +6431,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @return User
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, int id)
+    public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, CmsUUID id)
         throws CmsException {
 
         try {
@@ -6459,7 +6444,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
             }
             return user;
         } catch (CmsException ex) {
-            return new CmsUser(C_UNKNOWN_ID, CmsUUID.getNullUUID(), id + "", "deleted user");
+            return new CmsUser(CmsUUID.getNullUUID(), id + "", "deleted user");
         }
     }
     /**
@@ -6474,17 +6459,17 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @return User
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, String username)
+    public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, String userName)
         throws CmsException {
 
         CmsUser user = null;
         // try to read the user from cache
-        user = (CmsUser)m_userCache.get(new CacheId(username + C_USER_TYPE_SYSTEMUSER));
+        user = (CmsUser)m_userCache.get(new CacheId(userName + C_USER_TYPE_SYSTEMUSER));
         if(user == null){
-            user = (CmsUser)m_userCache.get(new CacheId(username + C_USER_TYPE_SYSTEMANDWEBUSER));
+            user = (CmsUser)m_userCache.get(new CacheId(userName + C_USER_TYPE_SYSTEMANDWEBUSER));
         }
         if (user == null) {
-            user = m_UserAccess.readUser(username, C_USER_TYPE_SYSTEMUSER);
+            user = m_UserAccess.readUser(userName, C_USER_TYPE_SYSTEMUSER);
             m_userCache.put(new CacheId(user), user);
         }
         return user;
@@ -6646,7 +6631,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 
         // check the length of the recovery password.
         if(recoveryPassword.length() < C_PASSWORD_MINIMUMSIZE) {
-            throw new CmsException("[" + this.getClass().getName() + "] no recovery password.");
+            throw new CmsException("[" + getClass().getName() + "] no recovery password.");
         }
 
         m_UserAccess.recoverPassword(username, recoveryPassword, newPassword);
@@ -6672,7 +6657,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
         // test if this user is existing in the group
         if (!userInGroup(currentUser,currentProject,username,groupname)) {
            // user already there, throw exception
-           throw new CmsException("[" + this.getClass().getName() + "] remove " +  username+ " from " +groupname,
+           throw new CmsException("[" + getClass().getName() + "] remove " +  username+ " from " +groupname,
                 CmsException.C_NO_USER);
         }
 
@@ -6693,13 +6678,13 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
                     m_UserAccess.removeUserFromGroup(user.getId(),group.getId());
                     m_userGroupsCache.clear();
                   } else {
-                    throw new CmsException("["+this.getClass().getName()+"]",CmsException.C_NO_DEFAULT_GROUP);
+                    throw new CmsException("["+getClass().getName()+"]",CmsException.C_NO_DEFAULT_GROUP);
                   }
                 } else {
-                    throw new CmsException("["+this.getClass().getName()+"]"+groupname,CmsException.C_NO_GROUP);
+                    throw new CmsException("["+getClass().getName()+"]"+groupname,CmsException.C_NO_GROUP);
                 }
             } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
+            throw new CmsException("[" + getClass().getName() + "] " + username,
                 CmsException.C_NO_ACCESS);
             }
         }
@@ -6751,7 +6736,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         copyFile(currentUser, currentProject, oldname, path + newname);
         deleteFile(currentUser, currentProject, oldname);
     } else {
-        throw new CmsException("[" + this.getClass().getName() + "] " + oldname, CmsException.C_NO_ACCESS);
+        throw new CmsException("[" + getClass().getName() + "] " + oldname, CmsException.C_NO_ACCESS);
     }
 }
     /**
@@ -6785,8 +6770,8 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         // read the backup file
         backupFile = readFileForHist(currentUser, currentProject, versionId, filename);
         // try to read the owner and the group
-        int ownerId = currentUser.getId();
-        int groupId = currentUser.getDefaultGroupId();
+        CmsUUID ownerId = currentUser.getId();
+        CmsUUID groupId = currentUser.getDefaultGroupId();
         try{
             ownerId = readUser(currentUser, currentProject, backupFile.getOwnerName()).getId();
         } catch(CmsException exc){
@@ -6833,7 +6818,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                         int taskId, String name)
         throws CmsException {
         if( (name == null) || name.length() == 0) {
-            throw new CmsException("[" + this.getClass().getName() + "] " +
+            throw new CmsException("[" + getClass().getName() + "] " +
                 name, CmsException.C_BAD_NAME);
         }
         CmsTask task = m_dbAccess.readTask(taskId);
@@ -6863,7 +6848,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         // Check the security
         if( isAdmin(currentUser, currentProject) ) {
             CmsGroup group = readGroup(currentUser, currentProject, groupName);
-            int parentGroupId = C_UNKNOWN_ID;
+            CmsUUID parentGroupId = CmsUUID.getNullUUID();
 
             // if the group exists, use its id, else set to unknown.
             if( parentGroupName != null ) {
@@ -6875,7 +6860,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             // write the changes to the cms
             writeGroup(currentUser,currentProject,group);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + groupName,
+            throw new CmsException("[" + getClass().getName() + "] " + groupName,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -6904,7 +6889,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         if( isAdmin(currentUser, currentProject) ) {
             m_UserAccess.setPassword(username, newPassword);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
+            throw new CmsException("[" + getClass().getName() + "] " + username,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -7106,7 +7091,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 Map propertyInfos = m_VfsAccess.readProperties(onlineProject.getId(),onlineFolder,onlineFolder.getType());
                 m_VfsAccess.writeProperties(propertyInfos,currentProject.getId(),restoredFolder,restoredFolder.getType());
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + restoredFolder.getAbsolutePath(),
+                throw new CmsException("[" + getClass().getName() + "] " + restoredFolder.getAbsolutePath(),
                     CmsException.C_NO_ACCESS);
             }
         } else {
@@ -7136,7 +7121,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 Map propertyInfos = m_VfsAccess.readProperties(onlineProject.getId(),onlineFile,onlineFile.getType());
                 m_VfsAccess.writeProperties(propertyInfos,currentProject.getId(),restoredFile,restoredFile.getType());
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + restoredFile.getAbsolutePath(),
+                throw new CmsException("[" + getClass().getName() + "] " + restoredFile.getAbsolutePath(),
                     CmsException.C_NO_ACCESS);
             }
         }        
@@ -7174,7 +7159,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             this.clearResourceCache();
             m_projectCache.clear();
         } else {
-             throw new CmsException("[" + this.getClass().getName() + "] " + id,
+             throw new CmsException("[" + getClass().getName() + "] " + id,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -7220,7 +7205,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 if (cmsResource.isLockedBy()==currentUser.getId()) {
 
                 // unlock the resource
-                cmsResource.setLocked(C_UNKNOWN_ID);
+                cmsResource.setLocked(CmsUUID.getNullUUID());
 
                 //update resource
                 m_dbAccess.updateLockstate(cmsResource, cmsResource.getLockedInProject());
@@ -7228,7 +7213,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 // update the cache
                 this.clearResourceCache(resourcename, currentProject, currentUser);
             } else {
-                 throw new CmsException("[" + this.getClass().getName() + "] " +
+                 throw new CmsException("[" + getClass().getName() + "] " +
                     resourcename + CmsException.C_NO_ACCESS);
             }
         }
@@ -7256,7 +7241,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 }
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourcename,
+            throw new CmsException("[" + getClass().getName() + "] " + resourcename,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -7299,14 +7284,14 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
     protected void validFilename( String filename )
         throws CmsException {
         if (filename == null) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                 CmsException.C_BAD_NAME);
         }
 
         int l = filename.trim().length();
 
         if (l == 0 || filename.startsWith(".")) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+            throw new CmsException("[" + getClass().getName() + "] " + filename,
                 CmsException.C_BAD_NAME);
         }
 
@@ -7320,7 +7305,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 (c != '_') && (c != '~') &&
                 (c != '$')
                 ) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+                throw new CmsException("[" + getClass().getName() + "] " + filename,
                     CmsException.C_BAD_NAME);
             }
         }
@@ -7336,14 +7321,14 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
     protected void validTaskname( String taskname )
         throws CmsException {
         if (taskname == null) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + taskname,
+            throw new CmsException("[" + getClass().getName() + "] " + taskname,
                 CmsException.C_BAD_NAME);
         }
 
         int l = taskname.length();
 
         if (l == 0) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + taskname,
+            throw new CmsException("[" + getClass().getName() + "] " + taskname,
                 CmsException.C_BAD_NAME);
         }
 
@@ -7360,7 +7345,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 (c != ' ') && (c != 'ß') &&
                 (c != '/') && (c != '(') && (c != ')') && (c != '\'')
                 ) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + taskname,
+                throw new CmsException("[" + getClass().getName() + "] " + taskname,
                     CmsException.C_BAD_NAME);
             }
         }
@@ -7376,7 +7361,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
  */
 protected void validName(String name, boolean blank) throws CmsException {
     if (name == null || name.length() == 0 || name.trim().length() == 0) {
-        throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+        throw new CmsException("[" + getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
     }
     // throw exception if no blanks are allowed
     if (!blank) {
@@ -7384,7 +7369,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         for (int i = 0; i < l; i++) {
             char c = name.charAt(i);
             if (c == ' ') {
-                throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+                throw new CmsException("[" + getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
             }
         }
     }
@@ -7399,7 +7384,7 @@ protected void validName(String name, boolean blank) throws CmsException {
     (c != '-') && (c != '.') &&
     (c != '_') &&   (c != '~')
     ) {
-    throw new CmsException("[" + this.getClass().getName() + "] " + name,
+    throw new CmsException("[" + getClass().getName() + "] " + name,
     CmsException.C_BAD_NAME);
     }
     }
@@ -7431,7 +7416,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             }
 
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + path,
+            throw new CmsException("[" + getClass().getName() + "] " + path,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -7479,7 +7464,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             // inform about the file-system-change
             fileSystemChanged(false);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(),
+            throw new CmsException("[" + getClass().getName() + "] " + file.getAbsolutePath(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -7529,18 +7514,18 @@ protected void validName(String name, boolean blank) throws CmsException {
 			
 			// if owner, group, accessFlags or resourcetype must be changed,
 			// check if the current user is owner of the resource or administrator
-			if((resource.getOwnerId() != owner.getId()) ||
+			if((!resource.getOwnerId().equals(owner.getId())) ||
 			    	(resource.getGroupId() != group.getId()) ||
 			    	(resource.getAccessFlags() != accessFlags) ||
 			    	(resource.getType() != resourceType)){
-				if((resource.getOwnerId() == currentUser.getId()) ||
+				if((resource.getOwnerId().equals(currentUser.getId())) ||
               			isAdmin(currentUser, currentProject)){
 					resource.setUserId(owner.getId());
 					resource.setGroupId(group.getId());
 					resource.setAccessFlags(accessFlags);
 					resource.setType(resourceType);
 			    } else {
-			    	throw new CmsException("[" + this.getClass().getName() + "] change owner, group, access or type of " + resource.getAbsolutePath(),
+			    	throw new CmsException("[" + getClass().getName() + "] change owner, group, access or type of " + resource.getAbsolutePath(),
                 	CmsException.C_NO_ACCESS);
 			    }
 			}	
@@ -7548,10 +7533,8 @@ protected void validName(String name, boolean blank) throws CmsException {
             if (resource.getState()==C_STATE_UNCHANGED) {
                 resource.setState(C_STATE_CHANGED);
             }			
-            System.err.println( "writing resource: " + resourcename );
             m_VfsAccess.writeResource(currentProject, resource, filecontent, true, currentUser.getId());
             // write the properties
-            System.err.println( "writing properties: " + resourcename );
             m_VfsAccess.writeProperties(properties, currentProject.getId(),resource, resource.getType(),true);
             // update the cache
             this.clearResourceCache(resource.getResourceName(), currentProject, currentUser);
@@ -7559,7 +7542,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             // inform about the file-system-change
             fileSystemChanged(false);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + resource.getAbsolutePath(),
+            throw new CmsException("[" + getClass().getName() + "] " + resource.getAbsolutePath(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -7593,7 +7576,7 @@ protected void validName(String name, boolean blank) throws CmsException {
                     m_dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS, extensions);
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + extensions.size(),
+                throw new CmsException("[" + getClass().getName() + "] " + extensions.size(),
                     CmsException.C_NO_ACCESS);
             }
         }
@@ -7636,7 +7619,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             m_accessCache.clear();
             fileSystemChanged(false);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(),
+            throw new CmsException("[" + getClass().getName() + "] " + file.getAbsolutePath(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -7658,7 +7641,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             m_UserAccess.writeGroup(group);
             m_groupCache.put(new CacheId(group), group);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + group.getName(),
+            throw new CmsException("[" + getClass().getName() + "] " + group.getName(),
                 CmsException.C_NO_ACCESS);
         }
 
@@ -7687,7 +7670,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 
         // check the security
         if( ! accessWrite(currentUser, currentProject, res) ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + resource,
+             throw new CmsException("[" + getClass().getName() + "] " + resource,
                 CmsException.C_NO_ACCESS);
         }
 
@@ -7728,7 +7711,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 
         // check the security
         if( ! accessWrite(currentUser, currentProject, res) ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + resource,
+             throw new CmsException("[" + getClass().getName() + "] " + resource,
                 CmsException.C_NO_ACCESS);
         }
 
@@ -7773,7 +7756,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             m_propertyDefVectorCache.clear();
             return( m_dbAccess.writePropertydefinition(propertydef) );
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + propertydef.getName(),
+            throw new CmsException("[" + getClass().getName() + "] " + propertydef.getName(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -7848,7 +7831,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             clearUserCache(user);
             m_userCache.put(new CacheId(user), user);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(),
+            throw new CmsException("[" + getClass().getName() + "] " + user.getName(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -7878,7 +7861,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             clearUserCache(user);
             m_userCache.put(new CacheId(user), user);
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(),
+            throw new CmsException("[" + getClass().getName() + "] " + user.getName(),
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -7951,15 +7934,15 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     protected boolean isWebgroup(CmsGroup group) throws CmsException{
         try{
-            int user = m_UserAccess.readGroup(C_GROUP_USERS).getId();
-            int admin = m_UserAccess.readGroup(C_GROUP_ADMIN).getId();
-            int manager = m_UserAccess.readGroup(C_GROUP_PROJECTLEADER).getId();
-            if((group.getId() == user) || (group.getId() == admin) || (group.getId() == manager)){
+            CmsUUID user = m_UserAccess.readGroup(C_GROUP_USERS).getId();
+            CmsUUID admin = m_UserAccess.readGroup(C_GROUP_ADMIN).getId();
+            CmsUUID manager = m_UserAccess.readGroup(C_GROUP_PROJECTLEADER).getId();
+            if((group.getId().equals(user)) || (group.getId().equals(admin)) || (group.getId().equals(manager))){
                 return false;
             } else {
-                int parentId = group.getParentId();
+                CmsUUID parentId = group.getParentId();
                 // check if the group belongs to Users, Administrators or Projectmanager
-                if (parentId != C_UNKNOWN_ID){
+                if (!parentId.isNullUUID()){
                     // check is the parentgroup is a webgroup
                     return isWebgroup(m_UserAccess.readGroup(parentId));
                 }
@@ -8116,7 +8099,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param userId The id of the user to change
      * @param userType The new usertype of the user
      */
-    public void changeUserType(CmsUser currentUser, CmsProject currentProject, int userId, int userType) throws CmsException{
+    public void changeUserType(CmsUser currentUser, CmsProject currentProject, CmsUUID userId, int userType) throws CmsException{
         CmsUser theUser = m_UserAccess.readUser(userId);
         changeUserType(currentUser, currentProject, theUser, userType);
     }
@@ -8331,7 +8314,7 @@ protected void validName(String name, boolean blank) throws CmsException {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
                 }
-                throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
+                throw new CmsException(getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
             }
             if (!accessOther(res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
                 !accessOwner(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
@@ -8424,30 +8407,30 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     private class CacheId extends Object {
         
-        public String m_string = null;
-        public Integer m_integer = null;
+        public String m_name = null;
+        public CmsUUID m_uuid = null;
         
         public CacheId(String str) {
-            m_string = str;
+            m_name = str;
         }
         
-        public CacheId(int i) {
-            m_integer = new Integer(i);
+        public CacheId(CmsUUID uuid) {
+            m_uuid = uuid;
         }
         
-        public CacheId(String str, int i) {
-            m_string = str;
-            m_integer = new Integer(i);            
+        public CacheId(String name,CmsUUID uuid) {
+            m_name = name;
+            m_uuid = uuid;            
         }
         
         public CacheId(CmsUser user) {
-            m_string = user.getName() + user.getType();
-            m_integer = new Integer(user.getId());
+            m_name = user.getName() + user.getType();
+            m_uuid = user.getId();
         }
         
         public CacheId(CmsGroup group) {
-            m_string = group.getName();
-            m_integer = new Integer(group.getId());
+            m_name = group.getName();
+            m_uuid = group.getId();
         }
         
         /**
@@ -8458,12 +8441,12 @@ protected void validName(String name, boolean blank) throws CmsException {
             if (! (o instanceof CacheId)) return false;
             CacheId other = (CacheId)o;
             boolean result;
-            if (m_integer != null) {
-                result = m_integer.equals(other.m_integer);
+            if (m_uuid != null) {
+                result = m_uuid.equals(other.m_uuid);
                 if (result) return true;
             }
-            if (m_string != null) {
-                result = m_string.equals(other.m_string);
+            if (m_name != null) {
+                result = m_name.equals(other.m_name);
                 if (result) return true;
             }
             return false;
@@ -8471,8 +8454,8 @@ protected void validName(String name, boolean blank) throws CmsException {
     }
     
     /**
-     * Rebuilds the internal datastructure to join links with their targets. Each target saves the total count of
-     * links pointing to itself. Each links saves the ID of it's target.
+     * Rebuilds the internal datastructure to join links with their targets. Each target saves the 
+     * total count of links pointing to itself. Each links saves the ID of it's target.
      * 
      * @param cms the current user's CmsObject instance
      * @param theUser the current user
@@ -8487,7 +8470,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     public ArrayList joinLinksToTargets(CmsObject cms, CmsUser theUser, CmsProject theProject, I_CmsReport theReport) throws CmsException {
         if (CmsAdminVfsLinkManagement.DEBUG) {
-            System.err.println( "[" + this.getClass().getName() + ".joinLinksToTargets()] enter" );
+            System.err.println( "[" + getClass().getName() + ".joinLinksToTargets()] enter" );
         }        
         
         ArrayList brokenLinks = new ArrayList(0);
@@ -8522,7 +8505,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         int fetchedLinkCount = m_VfsAccess.fetchAllVfsLinks(theProject, linkIDs, linkContents, linkResources, resourceTypeLinkID);
         
         if (CmsAdminVfsLinkManagement.DEBUG) {
-            System.err.println( "[" + this.getClass().getName() + "] found " + fetchedLinkCount + " VFS links in project " + theProject.getName() );
+            System.err.println( "[" + getClass().getName() + "] found " + fetchedLinkCount + " VFS links in project " + theProject.getName() );
         }
         
         // skip any further actions if no VFS links were fetched
@@ -8582,7 +8565,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         }
 
         if (CmsAdminVfsLinkManagement.DEBUG) {
-            System.err.println( "[" + this.getClass().getName() + "] found " + dummy + " resources with VFS links in project " + theProject.getName() );
+            System.err.println( "[" + getClass().getName() + "] found " + dummy + " resources with VFS links in project " + theProject.getName() );
         }
 
         //////////////////////////
@@ -8639,7 +8622,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         }
         
         if (CmsAdminVfsLinkManagement.DEBUG) {
-            System.err.println( "[" + this.getClass().getName() + ".joinLinksToTargets()] exit" );
+            System.err.println( "[" + getClass().getName() + ".joinLinksToTargets()] exit" );
         }          
         
         return brokenLinks;

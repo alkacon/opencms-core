@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterDataSet.java,v $
-* Date   : $Date: 2002/01/31 10:19:13 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,11 @@
 
 package com.opencms.defaults.master;
 
+import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
+
 import java.io.Serializable;
 import java.util.Vector;
-import com.opencms.core.I_CmsConstants;
 
 /**
  * This class defines the dataset of the master module. It carries a lot of
@@ -38,24 +40,24 @@ import com.opencms.core.I_CmsConstants;
  * should only be used within this mastermodule.
  *
  * @author A. Schouten $
- * $Revision: 1.6 $
- * $Date: 2002/01/31 10:19:13 $
+ * $Revision: 1.7 $
+ * $Date: 2003/05/15 12:39:34 $
  */
 public class CmsMasterDataSet implements Serializable {
 
     //// members for "core-handling" ////
 
     /** The primary key of this master module. */
-    public int m_masterId;
+    public CmsUUID m_masterId;
 
     /** Defines the "type" of the module */
     public int m_subId;
 
     /** The id of the owner */
-    public int m_userId;
+    public CmsUUID m_userId;
 
     /** The id of the group */
-    public int m_groupId;
+    public CmsUUID m_groupId;
 
     /** The project, this cd belongs to */
     public int m_lockedInProject;
@@ -68,10 +70,10 @@ public class CmsMasterDataSet implements Serializable {
     public int m_state;
 
     /** The user-id who had locked this ressource or -1 */
-    public int m_lockedBy;
+    public CmsUUID m_lockedBy;
 
     /** The user who has lastly changed this cd */
-    public int m_lastModifiedBy;
+    public CmsUUID m_lastModifiedBy;
 
     /** The date when this cd was created as long-value */
     public long m_dateCreated;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,15 @@
 package com.opencms.file;
 
 
+import com.opencms.flex.util.CmsUUID;
+
 import java.io.*;
 
 /**
  * Describes a backup resource in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsBackupResource extends CmsResource implements Cloneable,Serializable {
 
@@ -91,23 +93,23 @@ public class CmsBackupResource extends CmsResource implements Cloneable,Serializ
       * @param lastModifiedByName The name of user who changed the file.
       * @param size The size of the file content.
       */
-     public CmsBackupResource(int versionId, int resourceId, int parentId, int fileId,
+     public CmsBackupResource(int versionId, CmsUUID resourceId, CmsUUID parentId, CmsUUID fileId,
                               String resourceName, int resourceType, int resourceFlags,
-                              int user, String userName, int group, String groupName,
+                              CmsUUID userId, String userName, CmsUUID groupId, String groupName,
                               int projectId, int accessFlags, int state,
                               int launcherType, String launcherClassname,
                               long dateCreated, long dateLastModified,
-                              int resourceLastModifiedBy, String lastModifiedByName,
+                              CmsUUID resourceLastModifiedByUserId, String lastModifiedByName,
                               byte[] fileContent,int size, int lockedInProject){
 
         // create the CmsResource.
         super(resourceId, parentId, fileId,
               resourceName,resourceType,resourceFlags,
-              user,group,projectId,
-              accessFlags,state,C_UNKNOWN_ID,
+              userId,groupId,projectId,
+              accessFlags,state,CmsUUID.getNullUUID(),
               launcherType,launcherClassname,
               dateCreated,dateLastModified,
-              resourceLastModifiedBy,size, lockedInProject);
+              resourceLastModifiedByUserId,size, lockedInProject);
 
         // set content and size.
         m_fileContent=fileContent;

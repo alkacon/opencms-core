@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/05/13 12:44:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/05/15 12:39:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.flex.cache;
 
 import com.opencms.file.CmsObject;
+import com.opencms.flex.util.CmsUUID;
 
 import java.util.Iterator;
 
@@ -46,7 +47,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsFlexCacheKey {
     
@@ -63,7 +64,7 @@ public class CmsFlexCacheKey {
     public String m_uri = null;
     
     /** Cache key variable: The user id */
-    public int m_user = -1;
+    public CmsUUID m_user = null;
     
     /** Cache key variable: List of groups */
     public java.util.Set m_groups = null;
@@ -116,7 +117,7 @@ public class CmsFlexCacheKey {
                 
         Resource = getKeyName(target, online);     
         Variation = "never";
-                       
+        
         m_isRequest = true;
         // Fetch the cms from the request
         CmsObject cms = ((CmsFlexController)request.getAttribute(CmsFlexController.ATTRIBUTE_NAME)).getCmsObject();        
@@ -249,7 +250,7 @@ public class CmsFlexCacheKey {
             str.append(");");
         }
         
-        if (m_user > 0) {
+        if (m_user != null) {
             str.append("user=(");
             str.append(key.m_user);
             str.append(");");
@@ -360,9 +361,9 @@ public class CmsFlexCacheKey {
                 str.append(");");
             }
         }
-        if (m_user >= 0) {
+        if (m_user != null) {
             // Add user data
-            if (m_user == Integer.MAX_VALUE) {
+            if (m_user.isNullUUID()) {
                 str.append("user;");
             } else {
                 str.append("user=(");
@@ -492,7 +493,7 @@ public class CmsFlexCacheKey {
                         // being != null is enough
                         break;
                     case 3: // user
-                        m_user = Integer.MAX_VALUE;
+                        m_user = CmsUUID.getNullUUID();
                         // being > 0 is enough
                         break;
                     case 4: // groups

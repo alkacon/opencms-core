@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.CmsXmlControlFile;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -47,7 +48,7 @@ import java.util.Vector;
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.50 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.51 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -699,8 +700,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         }
         
         // linkmanagement: delete the links of the old page and create them for the new one
-        int oldId = file.getResourceId();
-        int newId = cms.readFileHeader(destination).getResourceId();
+        CmsUUID oldId = file.getResourceId();
+        CmsUUID newId = cms.readFileHeader(destination).getResourceId();
         cms.createLinkEntrys(newId, cms.readLinkEntrys(oldId));
         cms.deleteLinkEntrys(oldId);
 
@@ -729,8 +730,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         }
         
         // linkmanagement: delete the links of the old page and create them for the new one
-        int oldId = file.getFileId();
-        int newId = cms.readFileHeader(file.getParent()+newname).getFileId();
+        CmsUUID oldId = file.getFileId();
+        CmsUUID newId = cms.readFileHeader(file.getParent()+newname).getFileId();
         cms.createLinkEntrys(newId, cms.readLinkEntrys(oldId));
         cms.deleteLinkEntrys(oldId);
     }

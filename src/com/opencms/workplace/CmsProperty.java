@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/03/04 17:26:34 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2003/03/04 17:26:34 $
+ * @version $Revision: 1.36 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -140,7 +140,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         // select the displayed template
         // check if the file is locked by the current user.
         // if so, display a different dialog with more functions is shown
-        if(file.isLockedBy() == cms.getRequestContext().currentUser().getId()) {
+        if(file.isLockedBy().equals(cms.getRequestContext().currentUser().getId())) {
             if(edit != null) {
 
                 // display the edit property dialog

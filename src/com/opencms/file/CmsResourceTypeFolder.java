@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -803,8 +803,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             }
             // check changes of the owner, group and access
             if(importedResource.getAccessFlags() != Integer.parseInt(access) ||
-                   importedResource.getOwnerId() != resowner.getId() ||
-                   importedResource.getGroupId() != resgroup.getId()){
+                   (!importedResource.getOwnerId().equals(resowner.getId())) ||
+                   (!importedResource.getGroupId().equals(resgroup.getId()))){
                 changed = true;            
             }
             // check changes of the resourcetype

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/07 11:43:25 $
-* Version: $Revision: 1.202 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.203 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.file;
 import com.opencms.core.CmsException;
 import com.opencms.file.genericSql.CmsVfsAccess;
 import com.opencms.file.genericSql.I_CmsUserAccess;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.I_CmsReport;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.202 $ $Date: 2003/05/07 11:43:25 $
+ * @version $Revision: 1.203 $ $Date: 2003/05/15 12:39:34 $
  *
  */
 
@@ -968,7 +969,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void deleteUser(CmsUser currentUser, CmsProject currentProject,
-                           int userId)
+                           CmsUUID userId)
         throws CmsException;
     /**
      * Deletes a user from the Cms.
@@ -997,7 +998,7 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void deleteWebUser(CmsUser currentUser, CmsProject currentProject,
-                           int userId)
+                           CmsUUID userId)
         throws CmsException;
      /**
      * Destroys the resource borker and required modules and connections.
@@ -2079,7 +2080,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
  *
  * @param pageId The resourceId (offline) of the page whose links should be deleted
  */
-public void deleteLinkEntrys(int pageId)throws CmsException;
+public void deleteLinkEntrys(CmsUUID pageId)throws CmsException;
 
 /**
  * creates a link entry for each of the link targets in the linktable.
@@ -2087,7 +2088,7 @@ public void deleteLinkEntrys(int pageId)throws CmsException;
  * @param pageId The resourceId (offline) of the page whose liks should be traced.
  * @param linkTarget A vector of strings (the linkdestinations).
  */
-public void createLinkEntrys(int pageId, Vector linkTargets)throws CmsException;
+public void createLinkEntrys(CmsUUID pageId, Vector linkTargets)throws CmsException;
 
 /**
  * returns a Vector (Strings) with the link destinations of all links on the page with
@@ -2095,14 +2096,14 @@ public void createLinkEntrys(int pageId, Vector linkTargets)throws CmsException;
  *
  * @param pageId The resourceId (offline) of the page whose liks should be read.
  */
-public Vector readLinkEntrys(int pageId)throws CmsException;
+public Vector readLinkEntrys(CmsUUID pageId)throws CmsException;
 
 /**
  * deletes all entrys in the online link table that belong to the pageId
  *
  * @param pageId The resourceId (online) of the page whose links should be deleted
  */
-public void deleteOnlineLinkEntrys(int pageId)throws CmsException;
+public void deleteOnlineLinkEntrys(CmsUUID pageId)throws CmsException;
 
 /**
  * creates a link entry for each of the link targets in the online linktable.
@@ -2110,7 +2111,7 @@ public void deleteOnlineLinkEntrys(int pageId)throws CmsException;
  * @param pageId The resourceId (online) of the page whose liks should be traced.
  * @param linkTarget A vector of strings (the linkdestinations).
  */
-public void createOnlineLinkEntrys(int pageId, Vector linkTarget)throws CmsException;
+public void createOnlineLinkEntrys(CmsUUID pageId, Vector linkTargets)throws CmsException;
 
 /**
  * returns a Vector (Strings) with the link destinations of all links on the page with
@@ -2118,7 +2119,7 @@ public void createOnlineLinkEntrys(int pageId, Vector linkTarget)throws CmsExcep
  *
  * @param pageId The resourceId (online) of the page whose liks should be read.
  */
-public Vector readOnlineLinkEntrys(int pageId)throws CmsException;
+public Vector readOnlineLinkEntrys(CmsUUID pageId)throws CmsException;
 
 /**
  * serches for broken links in the online project.
@@ -2507,7 +2508,7 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      * for this resource.
      */
     public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
-                                int folderid, boolean includeDeleted)
+                                CmsUUID folderId, boolean includeDeleted)
         throws CmsException ;
      /**
       * Reads all given tasks from a user for a project.
@@ -2604,7 +2605,7 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      * @throws CmsException  Throws CmsException if operation was not succesful
      */
     public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
-                              int groupid)
+                              CmsUUID groupId)
         throws CmsException;
     /**
      * Reads the managergroup of a project from the OpenCms.
@@ -2986,7 +2987,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsUser readUser(CmsUser currentUser, CmsProject currentProject,
-                              int id)
+                              CmsUUID userId)
         throws CmsException ;
     /**
      * Returns a user object.<P/>
@@ -3001,7 +3002,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsUser readUser(CmsUser currentUser, CmsProject currentProject,
-                              String username)
+                              String userName)
         throws CmsException;
      /**
      * Returns a user object.<P/>
@@ -3739,7 +3740,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @param userId The id of the user to change
      * @param userType The new usertype of the user
      */
-    public void changeUserType(CmsUser currentUser, CmsProject currentProject, int userId, int userType) throws CmsException;
+    public void changeUserType(CmsUser currentUser, CmsProject currentProject, CmsUUID userId, int userType) throws CmsException;
 
     /**
      * Changes the user type of the user

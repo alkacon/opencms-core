@@ -7,8 +7,7 @@ PRIMARY KEY (SYSTEMPROPERTY_ID),
 UNIQUE (SYSTEMPROPERTY_NAME) );
 
 CREATE TABLE CMS_USERS
-( USER_ID int not null,
-USER_UUID VARCHAR2(36) NOT NULL,
+( USER_ID VARCHAR2(36) not null,
 USER_NAME VARCHAR2(64) not null,
 USER_PASSWORD VARCHAR2(32) not null,
 USER_RECOVERY_PASSWORD VARCHAR2(32) not null,
@@ -20,18 +19,18 @@ USER_LASTLOGIN DATE not null,
 USER_LASTUSED DATE not null,
 USER_FLAGS int not null,
 USER_INFO blob,
-USER_DEFAULT_GROUP_ID int not null,
+USER_DEFAULT_GROUP_ID VARCHAR2(36) not null,
 USER_ADDRESS VARCHAR2(100) not null ,
 USER_SECTION VARCHAR2(50) not null ,
 USER_TYPE int not null,
 primary key(USER_ID),
-unique (USER_NAME,USER_UUID) );
+unique (USER_NAME) );
 
 CREATE TABLE CMS_PROJECTS
 ( PROJECT_ID int not null,
-USER_ID int not null,
-GROUP_ID int not null,
-MANAGERGROUP_ID int not null,
+USER_ID VARCHAR2(36) not null,
+GROUP_ID VARCHAR2(36) not null,
+MANAGERGROUP_ID VARCHAR2(36) not null,
 TASK_ID int not null,
 PROJECT_NAME VARCHAR2(64) not null,
 PROJECT_DESCRIPTION VARCHAR2(255) not null,
@@ -46,13 +45,13 @@ CREATE TABLE CMS_BACKUP_PROJECTS
  PROJECT_ID int not null,
  PROJECT_NAME VARCHAR2(64) not null,
  PROJECT_PUBLISHDATE date,
- PROJECT_PUBLISHED_BY int not null,
+ PROJECT_PUBLISHED_BY VARCHAR2(36) not null,
  PROJECT_PUBLISHED_BY_NAME VARCHAR2(167),
- USER_ID int not null,
+ USER_ID VARCHAR2(36) not null,
  USER_NAME VARCHAR2(167),
- GROUP_ID int not null,
+ GROUP_ID VARCHAR2(36) not null,
  GROUP_NAME VARCHAR2(64),
- MANAGERGROUP_ID int not null,
+ MANAGERGROUP_ID VARCHAR2(36) not null,
  MANAGERGROUP_NAME VARCHAR2(64),
  PROJECT_DESCRIPTION VARCHAR2(255) not null,
  PROJECT_CREATEDATE date not null,
@@ -95,7 +94,7 @@ unique(PROPERTYDEF_NAME, RESOURCE_TYPE) );
 CREATE TABLE CMS_PROPERTIES
 ( PROPERTY_ID int not null,
 PROPERTYDEF_ID int not null,
-RESOURCE_ID int not null,
+RESOURCE_ID VARCHAR2(36) not null,
 PROPERTY_VALUE VARCHAR2(255) not null,
 primary key(PROPERTY_ID),
 unique(PROPERTYDEF_ID, RESOURCE_ID) );
@@ -103,7 +102,7 @@ unique(PROPERTYDEF_ID, RESOURCE_ID) );
 CREATE TABLE CMS_ONLINE_PROPERTIES
 ( PROPERTY_ID int not null,
 PROPERTYDEF_ID int not null,
-RESOURCE_ID int not null,
+RESOURCE_ID VARCHAR2(36) not null,
 PROPERTY_VALUE VARCHAR2(255) not null,
 primary key(PROPERTY_ID),
 unique(PROPERTYDEF_ID, RESOURCE_ID) );
@@ -111,68 +110,68 @@ unique(PROPERTYDEF_ID, RESOURCE_ID) );
 CREATE TABLE CMS_BACKUP_PROPERTIES
 ( PROPERTY_ID int not null,
 PROPERTYDEF_ID int not null,
-RESOURCE_ID int not null,
+RESOURCE_ID VARCHAR2(36) not null,
 PROPERTY_VALUE VARCHAR2(255) not null,
 VERSION_ID int,
 primary key(PROPERTY_ID),
 unique(PROPERTYDEF_ID, RESOURCE_ID) );
 
 CREATE TABLE CMS_RESOURCES
-(RESOURCE_ID int not null,
- PARENT_ID int not null,
+(RESOURCE_ID VARCHAR2(36) not null,
+ PARENT_ID VARCHAR2(36) not null,
  RESOURCE_NAME VARCHAR2(248) not null,
  RESOURCE_TYPE int not null,
  RESOURCE_FLAGS int not null,
- USER_ID int not null,
- GROUP_ID int not null,
+ USER_ID VARCHAR2(36) not null,
+ GROUP_ID VARCHAR2(36) not null,
  PROJECT_ID int not null,
- FILE_ID int not null,
+ FILE_ID VARCHAR2(36) not null,
  ACCESS_FLAGS int not null,
  STATE int not null,
- LOCKED_BY int not null,
+ LOCKED_BY VARCHAR2(36) not null,
  LAUNCHER_TYPE int not null,
  LAUNCHER_CLASSNAME VARCHAR2(255) not null,
  DATE_CREATED DATE not null,
  DATE_LASTMODIFIED DATE not null,
  RESOURCE_SIZE int not null,
- RESOURCE_LASTMODIFIED_BY int not null,
+ RESOURCE_LASTMODIFIED_BY VARCHAR2(36) not null,
  primary key(RESOURCE_ID),
  unique(RESOURCE_NAME));
 
 CREATE TABLE CMS_ONLINE_RESOURCES
-(RESOURCE_ID int not null,
- PARENT_ID int not null,
+(RESOURCE_ID VARCHAR2(36) not null,
+ PARENT_ID VARCHAR2(36) not null,
  RESOURCE_NAME VARCHAR2(248) not null,
  RESOURCE_TYPE int not null,
  RESOURCE_FLAGS int not null,
- USER_ID int not null,
- GROUP_ID int not null,
+ USER_ID VARCHAR2(36) not null,
+ GROUP_ID VARCHAR2(36) not null,
  PROJECT_ID int not null,
- FILE_ID int not null,
+ FILE_ID VARCHAR2(36) not null,
  ACCESS_FLAGS int not null,
  STATE int not null,
- LOCKED_BY int not null,
+ LOCKED_BY VARCHAR2(36) not null,
  LAUNCHER_TYPE int not null,
  LAUNCHER_CLASSNAME VARCHAR2(255) not null,
  DATE_CREATED DATE not null,
  DATE_LASTMODIFIED DATE not null,
  RESOURCE_SIZE int not null,
- RESOURCE_LASTMODIFIED_BY int not null,
+ RESOURCE_LASTMODIFIED_BY VARCHAR2(36) not null,
  primary key(RESOURCE_ID),
  unique(RESOURCE_NAME));
 
 CREATE TABLE CMS_BACKUP_RESOURCES
-(RESOURCE_ID int not null,
- PARENT_ID int not null,
+(RESOURCE_ID VARCHAR2(36) not null,
+ PARENT_ID VARCHAR2(36) not null,
  RESOURCE_NAME VARCHAR2(248) not null,
  RESOURCE_TYPE int not null,
  RESOURCE_FLAGS int not null,
- USER_ID int not null,
+ USER_ID VARCHAR2(36) not null,
  USER_NAME VARCHAR2(167),
  GROUP_NAME VARCHAR2(64),
- GROUP_ID int not null,
+ GROUP_ID VARCHAR2(36) not null,
  PROJECT_ID int not null,
- FILE_ID int not null,
+ FILE_ID VARCHAR2(36) not null,
  ACCESS_FLAGS int not null,
  STATE int not null,
  LAUNCHER_TYPE int not null,
@@ -180,31 +179,31 @@ CREATE TABLE CMS_BACKUP_RESOURCES
  DATE_CREATED DATE not null,
  DATE_LASTMODIFIED DATE not null,
  RESOURCE_SIZE int not null,
- RESOURCE_LASTMODIFIED_BY int not null,
+ RESOURCE_LASTMODIFIED_BY VARCHAR2(36) not null,
  RESOURCE_LASTMODIFIED_BY_NAME VARCHAR2(167),
  VERSION_ID int not null,
  primary key(RESOURCE_ID),
  unique(VERSION_ID,RESOURCE_NAME,DATE_LASTMODIFIED) );
 
 CREATE TABLE CMS_FILES
-(FILE_ID int not null,
+(FILE_ID VARCHAR2(36) not null,
  FILE_CONTENT blob not null,
  primary key (FILE_ID));
 
 CREATE TABLE CMS_ONLINE_FILES
-(FILE_ID int not null,
+(FILE_ID VARCHAR2(36) not null,
  FILE_CONTENT blob not null,
  primary key (FILE_ID));
 
 CREATE TABLE CMS_BACKUP_FILES
-(FILE_ID int not null,
+(FILE_ID VARCHAR2(36) not null,
  FILE_CONTENT blob not null,
  VERSION_ID int,
  primary key (FILE_ID));
 
 CREATE TABLE CMS_GROUPS
-(GROUP_ID int not null,
-PARENT_GROUP_ID int not null,
+(GROUP_ID VARCHAR2(36) not null,
+PARENT_GROUP_ID VARCHAR2(36) not null,
 GROUP_NAME VARCHAR2(64) not null,
 GROUP_DESCRIPTION VARCHAR2(255) not null,
 GROUP_FLAGS int not null,
@@ -230,18 +229,18 @@ CREATE TABLE CMS_EXPORT_DEPENDENCIES
  unique(LINK_ID, RESOURCENAME));
 
 CREATE TABLE CMS_LINKS
-(PAGE_ID int not null,
+(PAGE_ID VARCHAR2(36) NOT NULL,
  LINK_DEST VARCHAR2(255),
  unique(PAGE_ID, LINK_DEST));
 
 CREATE TABLE CMS_ONLINE_LINKS
-(PAGE_ID int not null,
+(PAGE_ID VARCHAR2(36) NOT NULL,
  LINK_DEST VARCHAR2(255),
  unique(PAGE_ID, LINK_DEST));
 
 CREATE TABLE CMS_GROUPUSERS
-(GROUP_ID int not null,
-USER_ID int not null,
+(GROUP_ID VARCHAR2(36) not null,
+USER_ID VARCHAR2(36) not null,
 GROUPUSER_FLAGS int not null );
 
 CREATE TABLE CMS_Task
@@ -249,16 +248,16 @@ CREATE TABLE CMS_Task
 endtime date, 
 escalationtyperef int, 
 id int NOT NULL, 
-initiatoruserref int, 
+initiatoruserref VARCHAR2(36), 
 milestoneref int, 
 name varchar(254), 
-originaluserref int, 
-agentuserref int, 
+originaluserref VARCHAR2(36), 
+agentuserref VARCHAR2(36), 
 parent int, 
 percentage varchar(50), 
 permission varchar(50), 
 priorityref int DEFAULT '2', 
-roleref int, 
+roleref VARCHAR2(36), 
 root int, 
 starttime date, 
 state int, 
@@ -277,7 +276,7 @@ id int NOT NULL,
 name varchar(50), 
 permission varchar(50), 
 priorityref int, 
-roleref int, 
+roleref VARCHAR2(36), 
 PRIMARY KEY (id) );
 
 CREATE TABLE CMS_TaskLog 
@@ -682,7 +681,7 @@ VERSION_ID NUMBER not null,
 primary key(MEDIA_ID, VERSION_ID));
 
 create table CMS_WEBUSERS
-(  USER_ID                  INT not null,
+(  USER_ID                  VARCHAR2(36) not null,
    USER_MEMBER_ID           VARCHAR(255),
    USER_SALUTATION          VARCHAR(255),
    USER_TITLE               VARCHAR(255),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/07 11:43:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/15 12:39:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.I_CmsResourceBroker;
+import com.opencms.flex.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -51,7 +52,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/07 11:43:25 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -75,7 +76,7 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      * @param usedStatement Specifies which tables must be used: offline, online or backup
      * 
      */
-    public void createFileContent(int fileId, byte[] fileContent, int versionId, String usedPool, String usedStatement) throws CmsException {
+    public void createFileContent(CmsUUID fileId, byte[] fileContent, int versionId, String usedPool, String usedStatement) throws CmsException {
         PreparedStatement statement = null;
         Connection con = null;
         try {
@@ -83,7 +84,7 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
             // first insert new file without file_content, then update the file_content
             // these two steps are necessary because of using BLOBs in the Oracle DB
             statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_FILESFORINSERT" + usedStatement));
-            statement.setInt(1, fileId);
+            statement.setString(1, fileId.toString());
             if ("_BACKUP".equals(usedStatement)) {
                 statement.setInt(2, versionId);
             }
@@ -157,7 +158,7 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      * @param usedPool The name of the database pool to use
      * @param usedStatement Specifies which tables must be used: offline, online or backup
      */
-    public void writeFileContent(int fileId, byte[] fileContent, String usedPool, String usedStatement) throws CmsException {
+    public void writeFileContent(CmsUUID fileId, byte[] fileContent, String usedPool, String usedStatement) throws CmsException {
         PreparedStatement statement = null;
         PreparedStatement nextStatement = null;
         PreparedStatement trimStatement = null;
@@ -167,7 +168,7 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
             // update the file content in the FILES database.
             con = DriverManager.getConnection(usedPool);
             statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_FILESFORUPDATE" + usedStatement));
-            statement.setInt(1, fileId);
+            statement.setString(1, fileId.toString());
             con.setAutoCommit(false);
             res = statement.executeQuery();
             try {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/04/14 06:35:59 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.defaults.master.genericsql.CmsDbAccess;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
+import com.opencms.flex.util.CmsUUID;
 
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -50,8 +51,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.28 $
- * $Date: 2003/04/14 06:35:59 $
+ * $Revision: 1.29 $
+ * $Date: 2003/05/15 12:39:34 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -142,14 +143,14 @@ public abstract class CmsMasterContent
      */
     protected void initValues() {
         m_dataSet = new CmsMasterDataSet();
-        m_dataSet.m_masterId = I_CmsConstants.C_UNKNOWN_ID;
+        m_dataSet.m_masterId = CmsUUID.getNullUUID();
         m_dataSet.m_subId = I_CmsConstants.C_UNKNOWN_ID;
-        m_dataSet.m_lockedBy = I_CmsConstants.C_UNKNOWN_ID;
+        m_dataSet.m_lockedBy = CmsUUID.getNullUUID();
         m_dataSet.m_versionId = I_CmsConstants.C_UNKNOWN_ID;
         m_dataSet.m_userName = null;
         m_dataSet.m_groupName = null;
         m_dataSet.m_lastModifiedByName = null;
-        m_dataSet.m_userId = I_CmsConstants.C_UNKNOWN_ID;
+        m_dataSet.m_userId = CmsUUID.getNullUUID();
         setAccessFlags(I_CmsConstants.C_ACCESS_DEFAULT_FLAGS);
     }
 
@@ -250,7 +251,7 @@ public abstract class CmsMasterContent
      * @param cms the CmsObject to use.
      * @param group the id of the new group.
      */
-    public void chgrp(CmsObject cms, int group) throws Exception {
+    public void chgrp(CmsObject cms, CmsUUID group) throws Exception {
         m_dataSet.m_groupId = group;
         getDbAccessObject(getSubId()).changePermissions(m_cms, this, m_dataSet);
     }
@@ -261,7 +262,7 @@ public abstract class CmsMasterContent
      * @param cms the CmsObject to use.
      * @param owner the id of the new owner.
      */
-    public void chown(CmsObject cms, int owner) throws Exception {
+    public void chown(CmsObject cms, CmsUUID owner) throws Exception {
         m_dataSet.m_userId = owner;
         getDbAccessObject(getSubId()).changePermissions(m_cms, this, m_dataSet);
     }
@@ -283,7 +284,7 @@ public abstract class CmsMasterContent
      * @param cms the CmsObject to use.
      * @return int The id of the new content definition
      */
-    public int copy(CmsObject cms) throws Exception {
+    public CmsUUID copy(CmsObject cms) throws Exception {
         // insert the new cd with the copied dataset
         return getDbAccessObject(getSubId()).copy(cms, this, (CmsMasterDataSet)m_dataSet.clone(), this.getMedia(), this.getChannels());
     }
@@ -297,7 +298,7 @@ public abstract class CmsMasterContent
         // add or delete channels according to current selection
         updateChannels();
         // is this a new row or an existing row?
-        if(m_dataSet.m_masterId == I_CmsConstants.C_UNKNOWN_ID) {
+        if(m_dataSet.m_masterId.isNullUUID()) {
             // this is a new row - call the create statement
             getDbAccessObject(getSubId()).insert(m_cms, this, m_dataSet);
         } else {
@@ -362,7 +363,7 @@ public abstract class CmsMasterContent
      * @param cms the CmsObject to use.
      * @return a int with the Id
      */
-    public int getId() {
+    public CmsUUID getId() {
         return m_dataSet.m_masterId;
     }
 
@@ -370,23 +371,25 @@ public abstract class CmsMasterContent
      * Gets the lockstate.
      * @return a int with the user who has locked the ressource.
      */
-    public int getLockstate() {
-        int retValue = -2; // no writeaccess for this user
+    public CmsUUID getLockstate() {
+        CmsUUID lockedByUserId = CmsUUID.getNullUUID();
+        
         try {
             if(hasWriteAccess(m_cms)) {
-                retValue = m_dataSet.m_lockedBy;
+                lockedByUserId = m_dataSet.m_lockedBy;
             }
         } catch(CmsException exc) {
-            // ignore this exception - no writeaccess
+            // NOOP
         }
-        return retValue;
+        
+        return lockedByUserId;
     }
 
     /**
      * Sets the lockstates
      * @param the lockstate for the actual entry.
      */
-    public void setLockstate(int lockstate) {
+    public void setLockstate(CmsUUID lockstate) {
         m_lockstateWasChanged = true;
         m_dataSet.m_lockedBy = lockstate;
     }
@@ -394,7 +397,7 @@ public abstract class CmsMasterContent
     /**
      * Gets the owner of this contentdefinition.
      */
-    public int getOwner() {
+    public CmsUUID getOwner() {
         return m_dataSet.m_userId;
     }
 
@@ -420,7 +423,7 @@ public abstract class CmsMasterContent
     /**
      * Sets the owner of this contentdefinition.
      */
-    public void setOwner(int id) {
+    public void setOwner(CmsUUID id) {
         m_dataSet.m_userId = id;
     }
 
@@ -446,15 +449,15 @@ public abstract class CmsMasterContent
     /**
      * Gets the groupid
      */
-    public int getGroupId() {
+    public CmsUUID getGroupId() {
         return m_dataSet.m_groupId;
     }
 
     /**
      * Sets the group.
      */
-    public void setGroup(int id) {
-        m_dataSet.m_groupId = id;
+    public void setGroup(CmsUUID groupId) {
+        m_dataSet.m_groupId = groupId;
     }
 
     /**
@@ -715,7 +718,7 @@ public abstract class CmsMasterContent
      *
      * @return int The id of the user who has modified the cd
      */
-    public int getLastModifiedBy() {
+    public CmsUUID getLastModifiedBy() {
         return m_dataSet.m_lastModifiedBy;
     }
 
@@ -1013,7 +1016,7 @@ public abstract class CmsMasterContent
             return(true);
         }
         // is the resource owned by this user?
-        if(resource.getOwnerId() == currentUser.getId()) {
+        if(resource.getOwnerId().equals(currentUser.getId())) {
             if( (resource.getAccessFlags() & flags) == flags ) {
                 return true ;
             }

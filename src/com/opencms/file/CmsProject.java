@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
-* Date   : $Date: 2003/05/07 11:43:25 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.file;
 
 import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.SqlHelper;
 
 import java.sql.ResultSet;
@@ -43,7 +44,7 @@ import java.sql.Timestamp;
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.37 $ $Date: 2003/05/07 11:43:25 $
+ * @version $Revision: 1.38 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsProject implements I_CmsConstants, Cloneable{
 
@@ -55,17 +56,17 @@ public class CmsProject implements I_CmsConstants, Cloneable{
     /**
      * The user_id of the owner.
      */
-    private int m_ownerId = C_UNKNOWN_ID;
+    private CmsUUID m_ownerId;
 
     /**
      * The group_id of the group, who may access the project.
      */
-    private int m_groupId = C_UNKNOWN_ID;
+    private CmsUUID m_groupId;
 
     /**
      * The manager group_id of the group, who may manage the project.
      */
-    private int m_managergroupId = C_UNKNOWN_ID;
+    private CmsUUID m_managergroupId;
 
     /**
      * The task_id for this project.
@@ -85,7 +86,7 @@ public class CmsProject implements I_CmsConstants, Cloneable{
      /**
      * The manager group  of this resource.
      */
-    private int m_managerGroupId;
+    private CmsUUID m_managerGroupId;
 
     /**
      * The creation date of this project.
@@ -106,7 +107,7 @@ public class CmsProject implements I_CmsConstants, Cloneable{
      * Construct a new CmsProject.
      */
     public CmsProject(int projectId, String name, String description, int taskId,
-                      int ownerId, int group, int managerGroup, int flags,
+                      CmsUUID ownerId, CmsUUID groupId, CmsUUID managerGroupId, int flags,
                       Timestamp createdate, int type) {
 
         m_id = projectId;
@@ -114,10 +115,10 @@ public class CmsProject implements I_CmsConstants, Cloneable{
         m_description = description;
         m_taskId = taskId;
         m_ownerId = ownerId;
-        m_groupId = group;
-        m_groupId=group;
-        m_managergroupId = managerGroup;
-        m_managerGroupId=managerGroup;
+        m_groupId = groupId;
+        m_groupId=groupId;
+        m_managergroupId = managerGroupId;
+        m_managerGroupId=managerGroupId;
         m_flags = flags;
         m_type = type;
         if( createdate != null) {
@@ -145,9 +146,9 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
                             res.getString(m_cq.get("C_PROJECTS_PROJECT_NAME")),
                             res.getString(m_cq.get("C_PROJECTS_PROJECT_DESCRIPTION")),
                             res.getInt(m_cq.get("C_PROJECTS_TASK_ID")),
-                            res.getInt(m_cq.get("C_PROJECTS_USER_ID")),
-                            res.getInt(m_cq.get("C_PROJECTS_GROUP_ID")),
-                            res.getInt(m_cq.get("C_PROJECTS_MANAGERGROUP_ID")),
+                            new CmsUUID(res.getString(m_cq.get("C_PROJECTS_USER_ID"))),
+                            new CmsUUID(res.getString(m_cq.get("C_PROJECTS_GROUP_ID"))),
+                            new CmsUUID(res.getString(m_cq.get("C_PROJECTS_MANAGERGROUP_ID"))),
                             res.getInt(m_cq.get("C_PROJECTS_PROJECT_FLAGS")),
                             SqlHelper.getTimestamp(res,m_cq.get("C_PROJECTS_PROJECT_CREATEDATE")),
                             res.getInt(m_cq.get("C_PROJECTS_PROJECT_TYPE")));
@@ -215,7 +216,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
      *
      * @return the groupid of this project.
      */
-    public int getGroupId() {
+    public CmsUUID getGroupId() {
         return(m_groupId);
     }
     /**
@@ -239,7 +240,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
      *
      * @return the manager groupid of this project.
      */
-    public int getManagerGroupId() {
+    public CmsUUID getManagerGroupId() {
         return( m_managergroupId );
     }
     /**
@@ -255,7 +256,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
      *
      * @return the userid of the project owner.
      */
-    public int getOwnerId() {
+    public CmsUUID getOwnerId() {
         return(m_ownerId);
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2003/04/02 12:44:10 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import com.opencms.defaults.A_CmsBackoffice;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.CmsXmlLanguageFile;
@@ -182,14 +183,14 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 throw new CmsException(err.getMessage());
             }
             // gets the already existing ouputchannel's content definition.
-            cd = new CmsChannelContent(cms,new Integer(id));
+            cd = new CmsChannelContent(cms,new CmsUUID(id));
             parentName=cd.getParentName();
             idvalue=cd.getChannelId();
             resid=""+cd.getId();
             channelname=cd.getChannelName();
             title=cd.getTitle();
-            owner=new Integer(cd.getOwner()).toString();
-            group=new Integer(cd.getGroupId()).toString();
+            owner=cd.getOwner().toString();
+            group=cd.getGroupId().toString();
             accessFlags=cd.getAccessFlags();
         }else if(cd==null){            
             //create a new ouputchannels content definition.
@@ -206,8 +207,8 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             cd.setParentName(parentName);
             cd.setChannelName(channelname);
             cd.setTitle(title);
-            cd.setGroup(new Integer(group).intValue());
-            cd.setOwner(new Integer(owner).intValue());
+            cd.setGroup(new CmsUUID(group));
+            cd.setOwner(new CmsUUID(owner));
             cd.setAccessFlags(accessFlags);
         }
         //get values of the user for new entry
@@ -219,10 +220,10 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         String groupOptions="";
         for (int i=0; i<cmsGroups.size(); i++) {
             String groupName=((CmsGroup)cmsGroups.elementAt(i)).getName();
-            int groupId=((CmsGroup)cmsGroups.elementAt(i)).getId();
+            CmsUUID groupId=((CmsGroup)cmsGroups.elementAt(i)).getId();
             template.setData("name",groupName);
-            template.setData("value",(new Integer(groupId)).toString());
-            if (!group.equals("") && (cms.readGroup(Integer.parseInt(group)).getName()).equals(groupName)) {
+            template.setData("value",groupId.toString());
+            if (!group.equals("") && (cms.readGroup(new CmsUUID(group)).getName()).equals(groupName)) {
                 template.setData("check","selected");
             }else if(idvalue.equals(C_UNKNOWN_ID+"") && groupName.equals(defaultGroup)){
                 template.setData("check","selected");
@@ -237,10 +238,10 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         Vector cmsUsers=cms.getUsers();
         for (int i=0;i<cmsUsers.size();i++) {
             String userName=((CmsUser)cmsUsers.elementAt(i)).getName();
-            int userId=((CmsUser)cmsUsers.elementAt(i)).getId();
+            CmsUUID userId=((CmsUser)cmsUsers.elementAt(i)).getId();
             template.setData("name",userName);
-            template.setData("value",(new Integer(userId)).toString());
-            if (!owner.equals("") && (cms.readUser(Integer.parseInt(owner)).getName()).equals(userName)) {
+            template.setData("value",userId.toString());
+            if (!owner.equals("") && (cms.readUser(new CmsUUID(owner)).getName()).equals(userName)) {
                 template.setData("check","selected");
             }else if(idvalue.equals(C_UNKNOWN_ID+"") && userName.equals(defaultUser)){
                 template.setData("check","selected");

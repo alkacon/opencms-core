@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/07 11:43:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/15 12:39:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceBroker;
 import com.opencms.file.I_CmsResourceType;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.Encoder;
-import com.opencms.util.SqlHelper;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  * MySQL implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/07 11:43:25 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/15 12:39:35 $
  */
 public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -117,7 +117,7 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
+    public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
         if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Resourcename too long(>" + C_MAX_LENGTH_RESOURCE_NAME + ") ", CmsException.C_BAD_NAME);
         }
@@ -149,8 +149,12 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
             usedPool = m_poolName;
             usedStatement = "";
         }
-        int resourceId = nextId(m_SqlQueries.get("C_TABLE_RESOURCES" + usedStatement));
-        int fileId = nextId(m_SqlQueries.get("C_TABLE_FILES" + usedStatement));
+        
+        //int resourceId = nextId(m_SqlQueries.get("C_TABLE_RESOURCES" + usedStatement));
+        //int fileId = nextId(m_SqlQueries.get("C_TABLE_FILES" + usedStatement));
+        
+        CmsUUID resourceId = new CmsUUID();
+        CmsUUID fileId = new CmsUUID();
 
         PreparedStatement statement = null;
         PreparedStatement statementFileWrite = null;
@@ -160,28 +164,28 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
             con = DriverManager.getConnection(usedPool);
             statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_WRITE" + usedStatement));
             // write new resource to the database
-            statement.setInt(1, resourceId);
-            statement.setInt(2, parentId);
+            statement.setString(1, resourceId.toString());
+            statement.setString(2, parentId.toString());
             statement.setString(3, filename);
             statement.setInt(4, resourceType.getResourceType());
             statement.setInt(5, flags);
-            statement.setInt(6, user.getId());
-            statement.setInt(7, user.getDefaultGroupId());
+            statement.setString(6, user.getId().toString());
+            statement.setString(7, user.getDefaultGroupId().toString());
             statement.setInt(8, project.getId());
-            statement.setInt(9, fileId);
+            statement.setString(9, fileId.toString());
             statement.setInt(10, C_ACCESS_DEFAULT_FLAGS);
             statement.setInt(11, state);
-            statement.setInt(12, C_UNKNOWN_ID);
+            statement.setString(12, CmsUUID.getNullUUID().toString());
             statement.setInt(13, resourceType.getLauncherType());
             statement.setString(14, resourceType.getLauncherClass());
             statement.setTimestamp(15, new Timestamp(System.currentTimeMillis()));
             statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
             statement.setInt(17, contents.length);
-            statement.setInt(18, user.getId());
+            statement.setString(18, user.getId().toString());
             statement.executeUpdate();
 
             statementFileWrite = con.prepareStatement(m_SqlQueries.get("C_FILES_WRITE" + usedStatement));
-            statementFileWrite.setInt(1, fileId);
+            statementFileWrite.setString(1, fileId.toString());
             statementFileWrite.setBytes(2, contents);
             statementFileWrite.executeUpdate();
         } catch (SQLException e) {
@@ -242,11 +246,14 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
         }
         try {
             con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_FILES_READ" + usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_FILES_READ" + usedStatement));       
+            
             statement.setString(1, filename);
             statement.setInt(2, projectId);
             res = statement.executeQuery();
+            
             if (res.next()) {
+                /*
                 int resId = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_ID"));
                 int parentId = res.getInt(m_SqlQueries.get("C_RESOURCES_PARENT_ID"));
                 int resType = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_TYPE"));
@@ -267,6 +274,10 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
                 int resProjectId = res.getInt(m_SqlQueries.get("C_RESOURCES_PROJECT_ID"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId, resProjectId, accessFlags, state, lockedBy, launcherType, launcherClass, created, modified, modifiedBy, content, resSize, lockedInProject);
+                */
+                
+                file = createCmsFileFromResultSet(res,projectId,filename);
+                
                 // check if this resource is marked as deleted
                 if (file.getState() == C_STATE_DELETED) {
                     throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
@@ -318,6 +329,7 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
             statement.setInt(2, projectId);
             res = statement.executeQuery();
             if (res.next()) {
+                /*
                 int resId = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_ID"));
                 int parentId = res.getInt(m_SqlQueries.get("C_RESOURCES_PARENT_ID"));
                 int resType = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_TYPE"));
@@ -338,6 +350,10 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
                 int resProjectId = res.getInt(m_SqlQueries.get("C_RESOURCES_PROJECT_ID"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId, resProjectId, accessFlags, state, lockedBy, launcherType, launcherClass, created, modified, modifiedBy, content, resSize, lockedInProject);
+                */
+                
+                file = createCmsFileFromResultSet(res,projectId,filename);
+                
                 // check if this resource is marked as deleted
                 if (file.getState() == C_STATE_DELETED && !includeDeleted) {
                     throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);

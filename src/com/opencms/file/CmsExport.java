@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/03/25 08:52:21 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2003/05/15 12:39:34 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.file;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
@@ -69,7 +70,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.53 $ $Date: 2003/03/25 08:52:21 $
+ * @version $Revision: 1.54 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -851,8 +852,8 @@ public class CmsExport implements I_CmsConstants, Serializable {
         name = group.getName();
         description = group.getDescription();
         flags = Integer.toString(group.getFlags());
-        int parentId = group.getParentId();
-        if (parentId != C_UNKNOWN_ID) {
+        CmsUUID parentId = group.getParentId();
+        if (!parentId.isNullUUID()) {
             parentgroup = m_cms.getParent(name).getName();
         } else {
             parentgroup = "";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/04/01 15:20:17 $
-* Version: $Revision: 1.268 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.269 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.file;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.flex.util.CmsResourceTranslator;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.launcher.CmsLauncherManager;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
@@ -65,7 +66,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.268 $
+ * @version $Revision: 1.269 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1379,7 +1380,7 @@ public void deletePropertydefinition(String name, String resourcetype) throws Cm
  *
  * @throws CmsException if operation was not successful.
  */
-public void deleteUser(int userId) throws CmsException {
+public void deleteUser(CmsUUID userId) throws CmsException {
     m_rb.deleteUser(m_context.currentUser(), m_context.currentProject(), userId);
 }
 /**
@@ -1402,7 +1403,7 @@ public void deleteUser(String username) throws CmsException {
  *
  * @throws CmsException if operation was not successful.
  */
-public void deleteWebUser(int userId) throws CmsException {
+public void deleteWebUser(CmsUUID userId) throws CmsException {
     m_rb.deleteWebUser(m_context.currentUser(), m_context.currentProject(), userId);
 }
 /**
@@ -2412,123 +2413,132 @@ public CmsProject onlineProject() throws CmsException {
 public void publishProject(int id) throws CmsException {
     publishProject(id, new CmsShellReport());
 }
-/**
- * Publishes a project.
- *
- * @param id the id of the project to be published.
- * @param report A report object to provide the loggin messages.
- *
- * @return a Vector of resources, that have been changed.
- *
- * @throws CmsException if operation was not successful.
- */
-public void publishProject(int id, I_CmsReport report) throws CmsException {
-    clearcache();
-    CmsPublishedResources allChanged = new CmsPublishedResources();
-    Vector changedResources = null;
-    Vector changedModuleMasters = null;
-    boolean success = false;
-    CmsProject theProject = readProject(id);
-    try{
-        // first we remember the new resources for the link management
-        Vector newRes  = readProjectView(id, "new");
-        updateOnlineProjectLinks(readProjectView(id, "deleted"), readProjectView(id, "changed"), null, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
-        allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id, report);
-        // update the online links table for the new resources (now they are there)
-        updateOnlineProjectLinks(null, null, newRes, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
-        newRes = null;
-        changedResources = allChanged.getChangedResources();
-        changedModuleMasters = allChanged.getChangedModuleMasters();        
-        if (getOnlineElementCache() != null) getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
+
+    /**
+     * Publishes a project.
+     *
+     * @param id the id of the project to be published.
+     * @param report A report object to provide the loggin messages.
+     *
+     * @return a Vector of resources, that have been changed.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public void publishProject(int id, I_CmsReport report) throws CmsException {
         clearcache();
-        // do static export if the static-export is enabled in opencms.properties
-        if (getStaticExportProperties().isStaticExportEnabled()){
-            try{
-                int oldId = m_context.currentProject().getId();
-                m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
-                // the return value for the search
-                Vector linkChanges = new Vector();
-                // the return value for cluster server to syncronize the export
-                Vector allExportedLinks = new Vector();
-                this.exportStaticResources(getStaticExportProperties().getStartPoints(),
-                                 linkChanges, allExportedLinks, allChanged, report);
-                m_context.setCurrentProject(oldId);
-                Utils.getModulPublishMethods(this, linkChanges);
-                this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_STATIC_EXPORT, allExportedLinks);
-            } catch (Exception ex){
-                if (DEBUG > 0) {
-                    System.err.println("Error while exporting static resources:");
-                    ex.printStackTrace();
+        CmsPublishedResources allChanged = new CmsPublishedResources();
+        Vector changedResources = null;
+        Vector changedModuleMasters = null;
+        boolean success = false;
+        CmsProject theProject = readProject(id);
+        
+        try {            
+            // first we remember the new resources for the link management
+            Vector newRes = readProjectView(id, "new");
+            updateOnlineProjectLinks(readProjectView(id, "deleted"), readProjectView(id, "changed"), null, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
+            allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id, report);
+            
+            // update the online links table for the new resources (now they are there)
+            updateOnlineProjectLinks(null, null, newRes, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
+            newRes = null;
+            changedResources = allChanged.getChangedResources();
+            changedModuleMasters = allChanged.getChangedModuleMasters();
+            
+            if (getOnlineElementCache() != null) {
+                getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
+            }
+            clearcache();
+            
+            // do static export if the static-export is enabled in opencms.properties
+            if (getStaticExportProperties().isStaticExportEnabled()) {
+                try {
+                    int oldId = m_context.currentProject().getId();
+                    m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
+                    
+                    // the return value for the search
+                    Vector linkChanges = new Vector();
+                    // the return value for cluster server to syncronize the export
+                    Vector allExportedLinks = new Vector();
+                    
+                    this.exportStaticResources(getStaticExportProperties().getStartPoints(), linkChanges, allExportedLinks, allChanged, report);
+                    m_context.setCurrentProject(oldId);
+                    Utils.getModulPublishMethods(this, linkChanges);
+                    this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_STATIC_EXPORT, allExportedLinks);
+                } catch (Exception ex) {
+                    if (DEBUG > 0) {
+                        System.err.println("Error while exporting static resources:");
+                        ex.printStackTrace();
+                    }
+                    
+                    if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/0] Error while exporting static resources.");
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/0] Exception was: " + ex);
+                    }
                 }
-                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/0] Error while exporting static resources.");
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/0] Exception was: " + ex);
-                }            
-            }
-        }else{
-            if("false_ssl".equalsIgnoreCase(getStaticExportProperties().getStaticExportEnabledValue())){
-                // just generate the link rules, in case there were properties changed
-                int oldId = m_context.currentProject().getId();
-                m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
-                new CmsStaticExport(this, null, false, null, null, null, null);
-                m_context.setCurrentProject(oldId);
-            }
-        }
-        success = true;
-    }catch (Exception e){
-        String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + id + " Time:" + new Date();
-        String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
-        if (DEBUG > 0) {              
-            System.err.println("###################################");
-            System.err.println(stamp1);
-            System.err.println(stamp2);
-            e.printStackTrace();
-            System.err.println("Vector of changed resources:");
-            if(changedResources != null){
-                for(int i=0; i<changedResources.size(); i++){
-                    System.err.println("    -- "+i+" -->"+(String)changedResources.elementAt(i)+"<--");
+            } else {
+                if ("false_ssl".equalsIgnoreCase(getStaticExportProperties().getStaticExportEnabledValue())) {
+                    // just generate the link rules, in case there were properties changed
+                    int oldId = m_context.currentProject().getId();
+                    m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
+                    new CmsStaticExport(this, null, false, null, null, null, null);
+                    m_context.setCurrentProject(oldId);
                 }
             }
-        }
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp1);
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp2);
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
-        }
-    }finally{
-        if(changedResources == null || changedResources.size()<1){
-            String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + id + " Time:" + new Date();
-            String stamp2 = "[" + this.getClass().getName() + ".publishProject()/2] User: " + m_context.currentUser().toString();
-            String stamp3 = "[" + this.getClass().getName() + ".publishProject()/2] Vector was null or empty";
+            success = true;
+        } catch (Exception e) {
+            String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + id + " Time:" + new Date();
+            String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
             if (DEBUG > 0) {
                 System.err.println("###################################");
                 System.err.println(stamp1);
                 System.err.println(stamp2);
-                System.err.println(stamp3);
+                e.printStackTrace();
+                System.err.println("Vector of changed resources:");
+                if (changedResources != null) {
+                    for (int i = 0; i < changedResources.size(); i++) {
+                        System.err.println("    -- " + i + " -->" + (String) changedResources.elementAt(i) + "<--");
+                    }
+                }
             }
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp1);
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp2);
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp3);
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp1);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp2);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
             }
-            success = false;
+        } finally {
+            if (changedResources == null || changedResources.size() < 1) {
+                String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + id + " Time:" + new Date();
+                String stamp2 = "[" + this.getClass().getName() + ".publishProject()/2] User: " + m_context.currentUser().toString();
+                String stamp3 = "[" + this.getClass().getName() + ".publishProject()/2] Vector was null or empty";
+                if (DEBUG > 0) {
+                    System.err.println("###################################");
+                    System.err.println(stamp1);
+                    System.err.println(stamp2);
+                    System.err.println(stamp3);
+                }
+                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp1);
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp2);
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp3);
+                }
+                success = false;
+            }
+            if (!success) {
+                if (getOnlineElementCache() != null)
+                    getOnlineElementCache().clearCache();
+            }
+            // set current project to online project if the published project was temporary
+            // and the published project is still the current project
+            if (theProject.getId() == m_context.currentProject().getId() && (theProject.getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
+                m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
+            }
         }
-        if(!success){
-            if (getOnlineElementCache() != null) getOnlineElementCache().clearCache();
-        }
-        // set current project to online project if the published project was temporary
-        // and the published project is still the current project
-        if(theProject.getId() == m_context.currentProject().getId() &&
-             (theProject.getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
-            m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
-        }
+
+        CmsProject onlineProject = this.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        this.joinLinksToTargets(onlineProject, report);
+
+        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT, theProject);
     }
-    
-    CmsProject onlineProject = this.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-    this.joinLinksToTargets(onlineProject, report);
-        
-    this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT, theProject);
-}
 
 /**
  * Publishes a single resource.
@@ -2700,7 +2710,7 @@ public Vector readAllPropertydefinitions(String resourcetype) throws CmsExceptio
  *
  * @param pageId The resourceId (offline) of the page whose links should be deleted
  */
-public void deleteLinkEntrys(int pageId)throws CmsException{
+public void deleteLinkEntrys(CmsUUID pageId)throws CmsException{
     m_rb.deleteLinkEntrys(pageId);
 }
 
@@ -2710,7 +2720,7 @@ public void deleteLinkEntrys(int pageId)throws CmsException{
  * @param pageId The resourceId (offline) of the page whose liks should be traced.
  * @param linkTarget A vector of strings (the linkdestinations).
  */
-public void createLinkEntrys(int pageId, Vector linkTargets)throws CmsException{
+public void createLinkEntrys(CmsUUID pageId, Vector linkTargets)throws CmsException{
     m_rb.createLinkEntrys(pageId, linkTargets);
 }
 
@@ -2720,7 +2730,7 @@ public void createLinkEntrys(int pageId, Vector linkTargets)throws CmsException{
  *
  * @param pageId The resourceId (offline) of the page whose liks should be read.
  */
-public Vector readLinkEntrys(int pageId)throws CmsException{
+public Vector readLinkEntrys(CmsUUID pageId)throws CmsException{
     return m_rb.readLinkEntrys(pageId);
 }
 
@@ -2729,7 +2739,7 @@ public Vector readLinkEntrys(int pageId)throws CmsException{
  *
  * @param pageId The resourceId (online) of the page whose links should be deleted
  */
-public void deleteOnlineLinkEntrys(int pageId)throws CmsException{
+public void deleteOnlineLinkEntrys(CmsUUID pageId)throws CmsException{
     m_rb.deleteOnlineLinkEntrys(pageId);
 }
 
@@ -2739,8 +2749,8 @@ public void deleteOnlineLinkEntrys(int pageId)throws CmsException{
  * @param pageId The resourceId (online) of the page whose liks should be traced.
  * @param linkTarget A vector of strings (the linkdestinations).
  */
-public void createOnlineLinkEntrys(int pageId, Vector linkTarget)throws CmsException{
-    m_rb.createOnlineLinkEntrys(pageId, linkTarget);
+public void createOnlineLinkEntrys(CmsUUID pageId, Vector linkTargets)throws CmsException{
+    m_rb.createOnlineLinkEntrys(pageId, linkTargets);
 }
 
 /**
@@ -2749,7 +2759,7 @@ public void createOnlineLinkEntrys(int pageId, Vector linkTarget)throws CmsExcep
  *
  * @param pageId The resourceId (online) of the page whose liks should be read.
  */
-public Vector readOnlineLinkEntrys(int pageId)throws CmsException{
+public Vector readOnlineLinkEntrys(CmsUUID pageId)throws CmsException{
     return m_rb.readOnlineLinkEntrys(pageId);
 }
 
@@ -3077,8 +3087,8 @@ public CmsFolder readFolder(String folderName) throws CmsException {
  * @throws CmsException if the user does not have the permissions
  * to read this folder, or if the folder couldn't be read
  */
-public CmsFolder readFolder(int folderid, boolean includeDeleted) throws CmsException {
-    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), folderid, includeDeleted));
+public CmsFolder readFolder(CmsUUID folderId, boolean includeDeleted) throws CmsException {
+    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), folderId, includeDeleted));
 }
 
 /**
@@ -3133,8 +3143,8 @@ public CmsGroup readGroup(CmsTask task) throws CmsException {
  *
  * @throws CmsException if operation was not successful.
  */
-public CmsGroup readGroup(String groupname) throws CmsException {
-    return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), groupname));
+public CmsGroup readGroup(String groupName) throws CmsException {
+    return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), groupName));
 }
 /**
  * Reads a group of the Cms.
@@ -3144,8 +3154,8 @@ public CmsGroup readGroup(String groupname) throws CmsException {
  *
  * @throws CmsException if operation was not successful.
  */
-public CmsGroup readGroup(int groupid) throws CmsException {
-    return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), groupid));
+public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
+    return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), groupId));
 }
 /**
  * Reads the managergroup of a project from the Cms.
@@ -3452,8 +3462,8 @@ public Vector readTasksForUser(int projectId, String userName, int tasktype, Str
  *
  * @throws CmsException if operation was not successful
  */
-public CmsUser readUser(int id) throws CmsException {
-    return (m_rb.readUser(m_context.currentUser(), m_context.currentProject(), id));
+public CmsUser readUser(CmsUUID userId) throws CmsException {
+    return (m_rb.readUser(m_context.currentUser(), m_context.currentProject(), userId));
 }
 /**
  * Returns a user in the Cms.
@@ -4164,7 +4174,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * @param userId The id of the user to change
      * @param userType The new type of the user
      */
-    public void changeUserType(int userId, int userType) throws CmsException{
+    public void changeUserType(CmsUUID userId, int userType) throws CmsException{
         m_rb.changeUserType(m_context.currentUser(), m_context.currentProject(), userId, userType);
     }
 
@@ -4382,6 +4392,8 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * @throws CmsException
      */     
     public ArrayList joinLinksToTargets(CmsUser theUser, CmsProject theProject, I_CmsReport theReport) throws CmsException {
+        // TODO: the following code requires a change of the database schema first!
+        /*
         theReport.println(theReport.key("report.link_check_vfs_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         
         if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID && this.getOnlineElementCache() != null) {
@@ -4396,6 +4408,9 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
         theReport.println(theReport.key("report.link_check_vfs_end"), I_CmsReport.C_FORMAT_HEADLINE);
         
         return brokenLinks;
+        */
+        
+        return new ArrayList(0);
     }
     
     /**
@@ -4405,8 +4420,11 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * @return an ArrayList with the resources names of all links pointint to the specified resource
      * @throws CmsException
      */
-    public ArrayList fetchVfsLinksForResource( String theResourceName ) throws CmsException {        
-        return m_rb.fetchVfsLinksForResource( m_context.currentUser(), m_context.currentProject(), this.getSiteRoot(theResourceName) );
+    public ArrayList fetchVfsLinksForResource( String theResourceName ) throws CmsException {
+        // TODO: the following code requires a change of the database schema first!        
+        //return m_rb.fetchVfsLinksForResource( m_context.currentUser(), m_context.currentProject(), this.getSiteRoot(theResourceName) );
+        
+        return new ArrayList(0);
     }
     
     /**
@@ -4418,8 +4436,12 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * @throws CmsException
      */
     public int doDecrementLinkCountForResource( String theResourceName ) throws CmsException {    
-        //System.err.println( this.getClass().getName() + " decrementing link count of: " + theResourceName );   
-        return m_rb.decrementLinkCountForResource( m_context.currentProject(), this.getSiteRoot(theResourceName) );  
+        //System.err.println( this.getClass().getName() + " decrementing link count of: " + theResourceName );
+        
+        // TODO: the following code requires a change of the database schema first!       
+        //return m_rb.decrementLinkCountForResource( m_context.currentProject(), this.getSiteRoot(theResourceName) );
+        
+        return 0;  
     }  
     
     /**
@@ -4431,8 +4453,12 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * @throws CmsException
      */    
     public int doIncrementLinkCountForResource( String theResourceName ) throws CmsException {  
-        //System.err.println( this.getClass().getName() + " incrementing link count of: " + theResourceName );              
-        return m_rb.incrementLinkCountForResource( m_context.currentProject(), this.getSiteRoot(theResourceName) ); 
+        //System.err.println( this.getClass().getName() + " incrementing link count of: " + theResourceName );
+        
+        // TODO: the following code requires a change of the database schema first!              
+        //return m_rb.incrementLinkCountForResource( m_context.currentProject(), this.getSiteRoot(theResourceName) );
+        
+        return 0; 
     }  
     
     /**
@@ -4445,7 +4471,9 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      */
     public void linkResourceToTarget( String theLinkResourceName, String theTargetResourceName ) throws CmsException {         
         //System.err.println( this.getClass().getName() + " linking " + theLinkResourceName + " with " +  theTargetResourceName );
-        m_rb.linkResourceToTarget( m_context.currentProject(), this.getSiteRoot(theLinkResourceName), this.getSiteRoot(theTargetResourceName) );
+        
+        // TODO: the following code requires a change of the database schema first!
+        //m_rb.linkResourceToTarget( m_context.currentProject(), this.getSiteRoot(theLinkResourceName), this.getSiteRoot(theTargetResourceName) );
     }   
     
 }

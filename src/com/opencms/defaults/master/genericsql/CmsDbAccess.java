@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/04/23 08:40:01 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.Utils;
 
 import java.io.ByteArrayInputStream;
@@ -140,9 +141,10 @@ public class CmsDbAccess {
             // this is the onlineproject - don't write into this project directly
             throw new CmsException("Can't write to the online project", CmsException.C_NO_ACCESS);
         }
-        int newMasterId = CmsIdGenerator.nextId(m_poolName, "CMS_MODULE_MASTER");
+        //int newMasterId = CmsIdGenerator.nextId(m_poolName, "CMS_MODULE_MASTER");
+        CmsUUID newMasterId = new CmsUUID();
         int projectId = cms.getRequestContext().currentProject().getId();
-        int currentUserId = cms.getRequestContext().currentUser().getId();
+        CmsUUID currentUserId = cms.getRequestContext().currentUser().getId();
         long currentTime = new java.util.Date().getTime();
         // filling some default-values for new dataset's
         dataset.m_masterId = newMasterId;
@@ -182,7 +184,7 @@ public class CmsDbAccess {
      * @param channelToAdd a Vector of channels to add.
      * @return int The id of the new content definition
      */
-    public int copy(CmsObject cms, CmsMasterContent content,
+    public CmsUUID copy(CmsObject cms, CmsMasterContent content,
                        CmsMasterDataSet dataset, Vector mediaToAdd, Vector channelToAdd)
         throws CmsException {
         if(isOnlineProject(cms)) {
@@ -198,9 +200,10 @@ public class CmsDbAccess {
             // no write access
             throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
         }
-        int newMasterId = CmsIdGenerator.nextId(m_poolName, "CMS_MODULE_MASTER");
+        //int newMasterId = CmsIdGenerator.nextId(m_poolName, "CMS_MODULE_MASTER");
+        CmsUUID newMasterId = new CmsUUID();
         int projectId = cms.getRequestContext().currentProject().getId();
-        int currentUserId = cms.getRequestContext().currentUser().getId();
+        CmsUUID currentUserId = cms.getRequestContext().currentUser().getId();
         long currentTime = new java.util.Date().getTime();
         // filling some default-values for new dataset's
         dataset.m_masterId = newMasterId;
@@ -246,10 +249,13 @@ public class CmsDbAccess {
             // no write access
             throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
         }
+        /*
         if(dataset.m_lockedBy <= -1) {
             // unlock the cd
             dataset.m_lockedBy = -1;
         } else {
+        */
+        if (!dataset.m_lockedBy.isNullUUID()) {
             // lock the ressource into the current project
             dataset.m_lockedInProject = cms.getRequestContext().currentProject().getId();
         }
@@ -259,9 +265,9 @@ public class CmsDbAccess {
         try {
             con = DriverManager.getConnection(m_poolName);
             stmnt = sqlPrepare(con, "update_lockstate_offline");
-            stmnt.setInt(1, dataset.m_lockedBy);
+            stmnt.setString(1, dataset.m_lockedBy.toString());
             stmnt.setInt(2, dataset.m_lockedInProject);
-            stmnt.setInt(3, dataset.m_masterId);
+            stmnt.setString(3, dataset.m_masterId.toString());
             stmnt.setInt(4, content.getSubId());
             stmnt.executeUpdate();
         } catch(SQLException exc) {
@@ -289,7 +295,7 @@ public class CmsDbAccess {
         }
         // read the lockstate
         readLockstate(dataset, content.getSubId());
-        if((dataset.m_lockedBy != cms.getRequestContext().currentUser().getId())) {
+        if(!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId())) {
             // is not locked by this user
             throw new CmsException("Not locked by this user", CmsException.C_NO_ACCESS);
         }
@@ -303,7 +309,7 @@ public class CmsDbAccess {
         }
 
         long currentTime = new java.util.Date().getTime();
-        int currentUserId = cms.getRequestContext().currentUser().getId();
+        CmsUUID currentUserId = cms.getRequestContext().currentUser().getId();
         // updateing some values for updated dataset
         if(dataset.m_state != I_CmsConstants.C_STATE_NEW) {
             // if the state is not new then set the state to changed
@@ -318,7 +324,7 @@ public class CmsDbAccess {
             con = DriverManager.getConnection(m_poolName);
             stmnt = sqlPrepare(con, "update_offline");
             int rowcounter = sqlFillValues(stmnt, content.getSubId(), dataset);
-            stmnt.setInt(rowcounter++, dataset.m_masterId);
+            stmnt.setString(rowcounter++, dataset.m_masterId.toString());
             stmnt.setInt(rowcounter++, content.getSubId());
             stmnt.executeUpdate();
             // after inserting the row, we have to update media and channel tables
@@ -386,13 +392,13 @@ public class CmsDbAccess {
         try {
             con = DriverManager.getConnection(m_poolName);
             stmnt = sqlPrepare(con, "read_lockstate_offline");
-            stmnt.setInt(1, dataset.m_masterId);
+            stmnt.setString(1, dataset.m_masterId.toString());
             stmnt.setInt(2, subId);
             res = stmnt.executeQuery();
             if(res.next()) {
                 // update the values
                 dataset.m_lockedInProject = res.getInt(1);
-                dataset.m_lockedBy = res.getInt(2);
+                dataset.m_lockedBy = new CmsUUID( res.getString(2) );
             } else {
                 // no values found - this is a new row
             }
@@ -429,13 +435,13 @@ public class CmsDbAccess {
         try {
             con = DriverManager.getConnection(poolToUse);
             stmnt = sqlPrepare(con, statement_key);
-            stmnt.setInt(1, content.getId());
+            stmnt.setString(1, content.getId().toString());
             res = stmnt.executeQuery();
             while(res.next()) {
                 int i = 1;
                 retValue.add(new CmsMasterMedia (
                     res.getInt(i++),
-                    res.getInt(i++),
+                    new CmsUUID( res.getString(i++) ),
                     res.getInt(i++),
                     res.getInt(i++),
                     res.getInt(i++),
@@ -482,7 +488,7 @@ public class CmsDbAccess {
         try {
             con = DriverManager.getConnection(poolToUse);
             stmnt = sqlPrepare(con, statement_key);
-            stmnt.setInt(1, content.getId());
+            stmnt.setString(1, content.getId().toString());
             res = stmnt.executeQuery();
             while(res.next()) {
                 // get the channel id
@@ -568,7 +574,7 @@ public class CmsDbAccess {
         }
         // read the lockstate
         readLockstate(dataset, content.getSubId());
-        if((dataset.m_lockedBy != cms.getRequestContext().currentUser().getId())) {
+        if((!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId()))) {
             // is not locked by this user
             throw new CmsException("Not locked by this user", CmsException.C_NO_ACCESS);
         }
@@ -589,7 +595,7 @@ public class CmsDbAccess {
             try {
                 con = DriverManager.getConnection(m_poolName);
                 stmnt = sqlPrepare(con, statement_key);
-                stmnt.setInt(1, dataset.m_masterId);
+                stmnt.setString(1, dataset.m_masterId.toString());
                 stmnt.setInt(2, content.getSubId());
                 if(stmnt.executeUpdate() != 1) {
                     // no line deleted - row wasn't found
@@ -606,14 +612,14 @@ public class CmsDbAccess {
         } else {
             // set state to deleted and update the line
             dataset.m_state = I_CmsConstants.C_STATE_DELETED;
-            dataset.m_lockedBy = I_CmsConstants.C_UNKNOWN_ID;
+            dataset.m_lockedBy = CmsUUID.getNullUUID();
             PreparedStatement stmnt = null;
             Connection con = null;
             try {
                 con = DriverManager.getConnection(m_poolName);
                 stmnt = sqlPrepare(con, "update_offline");
                 int rowcounter = sqlFillValues(stmnt, content.getSubId(), dataset);
-                stmnt.setInt(rowcounter++, dataset.m_masterId);
+                stmnt.setString(rowcounter++, dataset.m_masterId.toString());
                 stmnt.setInt(rowcounter++, content.getSubId());
                 stmnt.executeUpdate();
             } catch(SQLException exc) {
@@ -654,7 +660,7 @@ public class CmsDbAccess {
             con = DriverManager.getConnection(m_poolName);
             stmnt = sqlPrepare(con, "update_offline");
             int rowcounter = sqlFillValues(stmnt, content.getSubId(), dataset);
-            stmnt.setInt(rowcounter++, dataset.m_masterId);
+            stmnt.setString(rowcounter++, dataset.m_masterId.toString());
             stmnt.setInt(rowcounter++, content.getSubId());
             stmnt.executeUpdate();
         } catch(SQLException exc) {
@@ -683,7 +689,7 @@ public class CmsDbAccess {
         }
         // read the lockstate
         readLockstate(dataset, content.getSubId());
-        if((dataset.m_lockedBy != cms.getRequestContext().currentUser().getId())) {
+        if (!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId())) {
             // is not locked by this user
             throw new CmsException("Not locked by this user", CmsException.C_NO_ACCESS);
         }
@@ -706,13 +712,13 @@ public class CmsDbAccess {
         try {
             con = DriverManager.getConnection(m_poolName);
             stmnt = sqlPrepare(con, "update_permissions_offline");
-            stmnt.setInt(1, dataset.m_userId);
-            stmnt.setInt(2, dataset.m_groupId);
+            stmnt.setString(1, dataset.m_userId.toString());
+            stmnt.setString(2, dataset.m_groupId.toString());
             stmnt.setInt(3, dataset.m_accessFlags);
             stmnt.setInt(4, dataset.m_state);
-            stmnt.setInt(5, dataset.m_lastModifiedBy);
+            stmnt.setString(5, dataset.m_lastModifiedBy.toString());
             stmnt.setTimestamp(6, new Timestamp(dataset.m_dateLastModified));
-            stmnt.setInt(7, dataset.m_masterId);
+            stmnt.setString(7, dataset.m_masterId.toString());
             stmnt.setInt(8, content.getSubId());
             stmnt.executeUpdate();
         } catch(SQLException exc) {
@@ -942,15 +948,15 @@ public class CmsDbAccess {
         // columncounter
         int i = 1;
         //// COREDATA ////
-        stmnt.setInt(i++,dataset.m_masterId);
+        stmnt.setString(i++,dataset.m_masterId.toString());
         stmnt.setInt(i++,subId);
-        stmnt.setInt(i++,dataset.m_userId);
-        stmnt.setInt(i++,dataset.m_groupId);
+        stmnt.setString(i++,dataset.m_userId.toString());
+        stmnt.setString(i++,dataset.m_groupId.toString());
         stmnt.setInt(i++,dataset.m_lockedInProject);
         stmnt.setInt(i++,dataset.m_accessFlags);
         stmnt.setInt(i++,dataset.m_state);
-        stmnt.setInt(i++,dataset.m_lockedBy);
-        stmnt.setInt(i++,dataset.m_lastModifiedBy);
+        stmnt.setString(i++,dataset.m_lockedBy.toString());
+        stmnt.setString(i++,dataset.m_lastModifiedBy.toString());
         stmnt.setTimestamp(i++,new Timestamp(dataset.m_dateCreated));
         stmnt.setTimestamp(i++,new Timestamp(dataset.m_dateLastModified));
         //// USERDATA ////
@@ -992,17 +998,17 @@ public class CmsDbAccess {
         // columncounter
         int i = 1;
         //// COREDATA ////
-        dataset.m_masterId = res.getInt(i++);
+        dataset.m_masterId = new CmsUUID( res.getString(i++) );
         res.getInt(i++); // we don't have to store the sub-id
-        dataset.m_userId = res.getInt(i++);
-        dataset.m_groupId = res.getInt(i++);
+        dataset.m_userId = new CmsUUID(res.getString(i++));
+        dataset.m_groupId = new CmsUUID(res.getString(i++));
         dataset.m_lockedInProject = res.getInt(i++);
         // compute project based on the current project and the channels
         dataset.m_projectId = computeProjectId(cms, dataset);
         dataset.m_accessFlags = res.getInt(i++);
         dataset.m_state = res.getInt(i++);
-        dataset.m_lockedBy =res.getInt(i++);
-        dataset.m_lastModifiedBy = res.getInt(i++);
+        dataset.m_lockedBy = new CmsUUID(res.getString(i++));
+        dataset.m_lastModifiedBy = new CmsUUID(res.getString(i++));
         dataset.m_dateCreated = res.getTimestamp(i++).getTime();
         dataset.m_dateLastModified = res.getTimestamp(i++).getTime();
         //// USERDATA ////
@@ -1043,7 +1049,7 @@ public class CmsDbAccess {
 
             // the owner and the administrtor has always access
             try {
-                if( (cms.getRequestContext().currentUser().getId() == dataset.m_userId) ||
+                if( (cms.getRequestContext().currentUser().getId().equals(dataset.m_userId)) ||
                      cms.isAdmin()) {
                      return offlineProjectId;
                 }
@@ -1061,7 +1067,7 @@ public class CmsDbAccess {
                 cms.setContextToCos();
                 con = DriverManager.getConnection(poolToUse);
                 stmnt = sqlPrepare(con, statement_key);
-                stmnt.setInt(1, dataset.m_masterId);
+                stmnt.setString(1, dataset.m_masterId.toString());
                 res = stmnt.executeQuery();
                 while(res.next()) {
                     // get the channel id
@@ -1311,14 +1317,14 @@ public class CmsDbAccess {
      * @param masterId - the masterId to delete the media for
      * @throws SQLException if an sql-error occur
      */
-    protected void deleteAllMedia(int masterId) throws SQLException {
+    protected void deleteAllMedia(CmsUUID masterId) throws SQLException {
         String statement_key = "delete_all_media_offline";
         PreparedStatement stmnt = null;
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
             stmnt = sqlPrepare(con, statement_key);
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, masterId.toString());
             stmnt.executeUpdate();
         } finally {
             sqlClose(con, stmnt, null);
@@ -1330,14 +1336,14 @@ public class CmsDbAccess {
      * @param masterId - the masterId to delete the media for
      * @throws SQLException if an sql-error occur
      */
-    protected void deleteAllChannels(int masterId) throws SQLException {
+    protected void deleteAllChannels(CmsUUID masterId) throws SQLException {
         String statement_key = "delete_all_channel_offline";
         PreparedStatement stmnt = null;
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
             stmnt = sqlPrepare(con, statement_key);
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, masterId.toString());
             stmnt.executeUpdate();
         } finally {
             sqlClose(con, stmnt, null);
@@ -1354,7 +1360,7 @@ public class CmsDbAccess {
      * @throws SQLException
      * @throws CmsException
      */
-    protected void updateMedia(int masterId, Vector mediaToAdd,
+    protected void updateMedia(CmsUUID masterId, Vector mediaToAdd,
                                Vector mediaToUpdate, Vector mediaToDelete)
         throws SQLException, CmsException {
         // add new media
@@ -1385,7 +1391,7 @@ public class CmsDbAccess {
                 media.setMasterId(masterId);
                 int rowCounter = sqlFillValues(stmnt, media);
                 stmnt.setInt(rowCounter++, media.getId());
-                stmnt.setInt(rowCounter++, masterId);
+                stmnt.setString(rowCounter++, masterId.toString());
                 stmnt.executeUpdate();
             }
         } finally {
@@ -1400,7 +1406,7 @@ public class CmsDbAccess {
             for(int i = 0; i < mediaToDelete.size(); i++) {
                 CmsMasterMedia media = (CmsMasterMedia) mediaToDelete.get(i);
                 stmnt.setInt(1, media.getId());
-                stmnt.setInt(2, masterId);
+                stmnt.setString(2, masterId.toString());
                 stmnt.executeUpdate();
             }
         } finally {
@@ -1417,7 +1423,7 @@ public class CmsDbAccess {
      * @param channelToDelete vector of channels to delete
      * @throws SQLException
      */
-    protected void updateChannels(CmsObject cms, int masterId, Vector channelToAdd,
+    protected void updateChannels(CmsObject cms, CmsUUID masterId, Vector channelToAdd,
         Vector channelToDelete) throws SQLException {
         // add new channel
         PreparedStatement stmnt = null;
@@ -1427,7 +1433,7 @@ public class CmsDbAccess {
             stmnt = sqlPrepare(con, "insert_channel_offline");
             for(int i = 0; i < channelToAdd.size(); i++) {
                 try {
-                    stmnt.setInt(1, masterId);
+                    stmnt.setString(1, masterId.toString());
                     cms.setContextToCos();
                     stmnt.setInt(2, Integer.parseInt(cms.readProperty(channelToAdd.get(i)+"",
                         I_CmsConstants.C_PROPERTY_CHANNELID)));
@@ -1454,7 +1460,7 @@ public class CmsDbAccess {
             stmnt = sqlPrepare(con, "delete_channel_offline");
             for(int i = 0; i < channelToDelete.size(); i++) {
                 try {
-                    stmnt.setInt(1, masterId);
+                    stmnt.setString(1, masterId.toString());
                     cms.setContextToCos();
                     stmnt.setInt(2, Integer.parseInt(cms.readProperty(channelToDelete.get(i)+"",
                          I_CmsConstants.C_PROPERTY_CHANNELID)));
@@ -1486,7 +1492,7 @@ public class CmsDbAccess {
         throws SQLException {
         int i = 1;
         stmnt.setInt(i++, media.getId());
-        stmnt.setInt(i++, media.getMasterId());
+        stmnt.setString(i++, media.getMasterId().toString());
         stmnt.setInt(i++, media.getPosition());
         stmnt.setInt(i++, media.getWidth());
         stmnt.setInt(i++, media.getHeight());
@@ -1509,7 +1515,7 @@ public class CmsDbAccess {
      * @param subId The sub_id
      * @return Vector A vector with all versions of the master
      */
-    public Vector getHistory(CmsObject cms, Class contentDefinitionClass, int masterId, int subId) throws CmsException{
+    public Vector getHistory(CmsObject cms, Class contentDefinitionClass, CmsUUID masterId, int subId) throws CmsException{
         Vector retVector = new Vector();
         Vector allBackup = new Vector();
         PreparedStatement stmnt = null;
@@ -1518,7 +1524,7 @@ public class CmsDbAccess {
         try {
             con = DriverManager.getConnection(m_backupPoolName);
             stmnt = sqlPrepare(con, "read_all_backup");
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, masterId.toString());
             stmnt.setInt(2, subId);
             // gets all versions of the master in the backup table
             res = stmnt.executeQuery();
@@ -1551,7 +1557,7 @@ public class CmsDbAccess {
      * @return CmsMasterContent A content definition of the version
      */
     public CmsMasterContent getVersionFromHistory(CmsObject cms, Class contentDefinitionClass,
-                                                  int masterId, int subId, int versionId) throws CmsException{
+                                                  CmsUUID masterId, int subId, int versionId) throws CmsException{
         CmsMasterContent content = null;
         CmsMasterDataSet dataset = this.getVersionFromHistory(cms, masterId, subId, versionId);
         Constructor constructor;
@@ -1586,7 +1592,7 @@ public class CmsDbAccess {
      * @param versionId The version id
      * @return Vector A vector with all versions of the master
      */
-    public CmsMasterDataSet getVersionFromHistory(CmsObject cms, int masterId, int subId, int versionId) throws CmsException{
+    public CmsMasterDataSet getVersionFromHistory(CmsObject cms, CmsUUID masterId, int subId, int versionId) throws CmsException{
         CmsMasterDataSet dataset = new CmsMasterDataSet();
         PreparedStatement stmnt = null;
         ResultSet res = null;
@@ -1594,7 +1600,7 @@ public class CmsDbAccess {
         try {
             con = DriverManager.getConnection(m_backupPoolName);
             stmnt = sqlPrepare(con, "read_backup");
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, masterId.toString());
             stmnt.setInt(2, subId);
             stmnt.setInt(3, versionId);
             // gets the master in the backup table with the given versionid
@@ -1659,7 +1665,7 @@ public class CmsDbAccess {
             dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
         }
         // check if the group exists
-        int groupId = 0;
+        CmsUUID groupId = CmsUUID.getNullUUID();
         try {
             groupId = cms.readGroup(backup.m_groupId).getId();
         } catch (CmsException exc){
@@ -1667,7 +1673,7 @@ public class CmsDbAccess {
         }
         dataset.m_groupId = groupId;
         // check if the user exists
-        int userId = 0;
+        CmsUUID userId = CmsUUID.getNullUUID();
         try {
             userId = cms.readUser(backup.m_userId).getId();
         } catch (CmsException exc){
@@ -1686,14 +1692,14 @@ public class CmsDbAccess {
         try {
             con = DriverManager.getConnection(m_backupPoolName);
             stmnt = sqlPrepare(con, "read_media_backup");
-            stmnt.setInt(1, dataset.m_masterId);
+            stmnt.setString(1, dataset.m_masterId.toString());
             stmnt.setInt(2, versionId);
             res = stmnt.executeQuery();
             while (res.next()){
                 int i = 1;
                 CmsMasterMedia media = new CmsMasterMedia (
                                             res.getInt(i++),
-                                            res.getInt(i++),
+                                            new CmsUUID( res.getString(i++) ),
                                             res.getInt(i++),
                                             res.getInt(i++),
                                             res.getInt(i++),
@@ -1855,7 +1861,7 @@ public class CmsDbAccess {
             stmnt = sqlPrepare(con, "update_state_offline");
             stmnt.setInt(1, I_CmsConstants.C_STATE_UNCHANGED);
             stmnt.setInt(2, I_CmsConstants.C_UNKNOWN_ID);
-            stmnt.setInt(3, dataset.m_masterId);
+            stmnt.setString(3, dataset.m_masterId.toString());
             stmnt.setInt(4, subId);
             stmnt.executeUpdate();
         } catch (SQLException exc) {
@@ -1872,14 +1878,14 @@ public class CmsDbAccess {
     /**
      * @todo: add description here
      */
-    protected void publishDeleteData(int masterId, int subId, String table) throws CmsException {
+    protected void publishDeleteData(CmsUUID masterId, int subId, String table) throws CmsException {
         PreparedStatement stmnt = null;
         Connection con = null;
         // delete channel relation
         try {
             con = DriverManager.getConnection(m_onlinePoolName);
             stmnt = sqlPrepare(con, "delete_all_channel_" + table);
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, masterId.toString());
             stmnt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
@@ -1892,7 +1898,7 @@ public class CmsDbAccess {
             stmnt = null;
             con = DriverManager.getConnection(m_onlinePoolName);
             stmnt = sqlPrepare(con, "delete_all_media_" + table);
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, masterId.toString());
             stmnt.executeUpdate();
         } catch(SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
@@ -1905,7 +1911,7 @@ public class CmsDbAccess {
             con = null;
             con = DriverManager.getConnection(m_onlinePoolName);
             stmnt = sqlPrepare(con, "delete_" + table);
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, masterId.toString());
             stmnt.setInt(2, subId);
             stmnt.executeUpdate();
         } catch(SQLException exc) {
@@ -1924,7 +1930,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection con = null;
         Connection con2 = null;
-        int masterId = dataset.m_masterId;
+        CmsUUID masterId = dataset.m_masterId;
+        
         // copy the row
         try {
             stmnt = null;
@@ -1934,7 +1941,7 @@ public class CmsDbAccess {
             dataset.m_projectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
             dataset.m_lockedInProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
             dataset.m_state = I_CmsConstants.C_STATE_UNCHANGED;
-            dataset.m_lockedBy = I_CmsConstants.C_UNKNOWN_ID;
+            dataset.m_lockedBy = CmsUUID.getNullUUID();
             sqlFillValues(stmnt, subId, dataset);
             stmnt.executeUpdate();
         } catch(SQLException exc) {
@@ -1950,14 +1957,14 @@ public class CmsDbAccess {
             con = null;
             con = DriverManager.getConnection(m_poolName);
             stmnt = sqlPrepare(con, "read_media_offline");
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, masterId.toString());
             res = stmnt.executeQuery();
             while(res.next()) {
                 // create a new dataset to fill the values
                 int i = 1;
                 CmsMasterMedia mediaset = new CmsMasterMedia (
                                                 res.getInt(i++),
-                                                res.getInt(i++),
+                                                new CmsUUID( res.getString(i++) ),
                                                 res.getInt(i++),
                                                 res.getInt(i++),
                                                 res.getInt(i++),
@@ -1996,7 +2003,7 @@ public class CmsDbAccess {
             con = DriverManager.getConnection(m_poolName);
             // read all channel relations for master from offline
             stmnt = sqlPrepare(con, "read_channel_offline");
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, masterId.toString());
             res = stmnt.executeQuery();
             while (res.next()){
                 // insert all channel relations for master into online
@@ -2005,7 +2012,7 @@ public class CmsDbAccess {
                     con2 = null;
                     con2 = DriverManager.getConnection(m_onlinePoolName);
                     stmnt2 = sqlPrepare(con2, "insert_channel_online");
-                    stmnt2.setInt(1, masterId);
+                    stmnt2.setString(1, masterId.toString());
                     stmnt2.setInt(2, res.getInt(1));
                     stmnt2.executeUpdate();
                 } catch (SQLException ex){
@@ -2031,7 +2038,8 @@ public class CmsDbAccess {
         ResultSet res = null;
         Connection con = null;
         Connection con2 = null;
-        int masterId = dataset.m_masterId;
+        CmsUUID masterId = dataset.m_masterId;
+        
         // copy the row
         try {
             stmnt = null;
@@ -2039,7 +2047,7 @@ public class CmsDbAccess {
             con = DriverManager.getConnection(m_backupPoolName);
             stmnt = sqlPrepare(con, "insert_backup");
             // correct the data in the dataset
-            dataset.m_lockedBy = I_CmsConstants.C_UNKNOWN_ID;
+            dataset.m_lockedBy = CmsUUID.getNullUUID();
             dataset.m_dateCreated = publishDate;
             // get the name of the owner
             String ownerName = "";
@@ -2085,14 +2093,14 @@ public class CmsDbAccess {
             con = null;
             con = DriverManager.getConnection(m_poolName);
             stmnt = sqlPrepare(con, "read_media_offline");
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, masterId.toString());
             res = stmnt.executeQuery();
             while(res.next()) {
                 // create a new dataset to fill the values
                 int i = 1;
                 CmsMasterMedia mediaset = new CmsMasterMedia (
                                                 res.getInt(i++),
-                                                res.getInt(i++),
+                                                new CmsUUID( res.getString(i++) ),
                                                 res.getInt(i++),
                                                 res.getInt(i++),
                                                 res.getInt(i++),

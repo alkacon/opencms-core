@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2003/04/01 13:29:17 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/05/15 12:39:35 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,27 +28,30 @@
 
 package com.opencms.defaults;
 
-import com.opencms.template.*;
-import com.opencms.file.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.exceptions.CmsPlausibilizationException;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsUser;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.template.I_CmsContent;
 
-import java.util.*;
-import java.lang.reflect.*;
-import com.opencms.core.*;
-import com.opencms.core.exceptions.*;
+import java.lang.reflect.Method;
+import java.util.Vector;
 
 /**
  * Abstract class for the content definition
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public abstract class A_CmsContentDefinition implements I_CmsContent, I_CmsConstants {
 
 /**
  * The owner  of this resource.
  */
- private int m_user;
+ private CmsUUID m_UserId;
 
 /**
  * The group  of this resource.
@@ -140,8 +143,8 @@ public static Vector getFilterMethods(CmsObject cms) {
  * the isLockable method with true.
  * @return a int with the lockstate
  */
-public int getLockstate() {
-    return -1;
+public CmsUUID getLockstate() {
+    return CmsUUID.getNullUUID();
 }
 /**
  * gets the unique Id of a content definition instance
@@ -171,7 +174,7 @@ public static boolean isLockable() {
  * if you have overwritten the isLockable method with true.
  * @param lockstate the lockstate for the actual entry
  */
-public void setLockstate(int lockstate) {
+public void setLockstate(CmsUUID lockedByUserId) {
 }
 /**
  * abstract write method
@@ -199,16 +202,16 @@ public boolean isWriteable() {
  * set the owner of the CD
  * @param id of the owner
  */
-public void setOwner(int userId) {
-    m_user = userId;
+public void setOwner(CmsUUID userId) {
+    m_UserId = userId;
 }
 
 /**
  * get the owner of the CD
  * @return id of the owner (int)
  */
-public int getOwner() {
-    return m_user;
+public CmsUUID getOwner() {
+    return m_UserId;
 }
 
 /**
@@ -266,7 +269,7 @@ protected boolean hasWriteAccess(CmsObject cms) throws CmsException {
     CmsUser currentUser = cms.getRequestContext().currentUser();
     // check, if the resource is locked by the current user
 
-    if( isLockable() && (getLockstate() != currentUser.getId()) ) {
+    if( isLockable() && (!getLockstate().equals(currentUser.getId())) ) {
         // resource is not locked by the current user, no writing allowed
         return(false);
     }
@@ -298,7 +301,7 @@ protected boolean accessOwner(CmsObject cms, CmsUser currentUser,
         return(true);
     }
     // is the resource owned by this user?
-    if(getOwner() == currentUser.getId()) {
+    if(getOwner().equals(currentUser.getId())) {
         if( (getAccessFlags() & flags) == flags ) {
             return true ;
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsMountPoint.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,8 @@
 
 package com.opencms.file;
 
-import com.opencms.core.*;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
 
 /**
  * Describes a mountpoint. A mountpoint defines the type of a filesystem
@@ -36,7 +37,7 @@ import com.opencms.core.*;
  * filesystem of  the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.8 $ $Date: 2003/05/15 12:39:34 $
  */
 
 public class CmsMountPoint implements I_CmsConstants {
@@ -84,13 +85,13 @@ public class CmsMountPoint implements I_CmsConstants {
      * The default user for all resources of this mountpoint.
      * Only used if for mountpoints of the type C_MOUTNTPOINT_FILESYSTEM.
      */
-    private int m_user=C_UNKNOWN_ID;
+    private CmsUUID m_userId;
     
      /**
      * The default group for all resources of this mountpoint.
      * Only used if for mountpoints of the type C_MOUTNTPOINT_FILESYSTEM.
      */
-    private int m_group=C_UNKNOWN_ID;
+    private CmsUUID m_groupId;
     
      /**
      * The default project for all resources of this mountpoint.
@@ -144,8 +145,8 @@ public class CmsMountPoint implements I_CmsConstants {
         m_mountpath = mountpath;
         m_system=name;
         m_resourceType=type;
-        m_user=user.getId();
-        m_group=group.getId();
+        m_userId=user.getId();
+        m_groupId=group.getId();
         m_project=project.getId();
         m_mountpointType=C_MOUNTPOINT_FILESYSTEM;
         m_flags=flags;
@@ -218,8 +219,8 @@ public class CmsMountPoint implements I_CmsConstants {
      * @return The default user id that is returned for all files at this mount point
      * or C_UNKNOWN_ID.
      */
-    public int getGroup() {
-      return m_group;
+    public CmsUUID getGroup() {
+      return m_groupId;
     }
      /**
      * Returns the default launcher class name of a CmsMountPoint Object.
@@ -299,8 +300,8 @@ public class CmsMountPoint implements I_CmsConstants {
      * @return The default user id that is returned for all files at this mount point
      * or C_UNKNOWN_ID.
      */
-    public int getUser() {
-      return m_user;
+    public CmsUUID getUser() {
+      return m_userId;
     }
     /**
      * Returns a string-representation for this object.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,12 +29,14 @@
 package com.opencms.file;
 
 import com.opencms.core.*;
+import com.opencms.flex.util.CmsUUID;
+
 import java.io.*;
 /**
  * Describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.16 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsFolder extends CmsResource implements I_CmsConstants,
                                                       Cloneable,
@@ -59,21 +61,21 @@ public class CmsFolder extends CmsResource implements I_CmsConstants,
       * @param dateLastModified The date of the last modification of the resource.
       * @param resourceLastModifiedBy The user who changed the file.
       */
-     public CmsFolder(int resourceId, int parentId,int fileId,
+     public CmsFolder(CmsUUID resourceId, CmsUUID parentId,CmsUUID fileId,
                         String resourceName, int resourceType, int resourceFlags,
-                        int user, int group, int projectId,
-                        int accessFlags, int state, int lockedBy,
+                        CmsUUID userId, CmsUUID groupId, int projectId,
+                        int accessFlags, int state, CmsUUID lockedByUserId,
                         long dateCreated, long dateLastModified
-                        ,int resourceLastModifiedBy, int lockedInProject){
+                        ,CmsUUID resourceLastModifiedByUserId, int lockedInProject){
 
         // create the CmsResource.
         super(resourceId, parentId,fileId,resourceName,
               resourceType,resourceFlags,
-              user,group,projectId,
-              accessFlags,state,lockedBy,
+              userId,groupId,projectId,
+              accessFlags,state,lockedByUserId,
               C_UNKNOWN_LAUNCHER_ID,C_UNKNOWN_LAUNCHER,
               dateCreated,dateLastModified,
-              resourceLastModifiedBy,-1, lockedInProject);
+              resourceLastModifiedByUserId,-1, lockedInProject);
    }
     /**
     * Clones the CmsFolder by creating a new CmsFolder.

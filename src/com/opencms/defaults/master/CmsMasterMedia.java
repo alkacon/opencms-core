@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterMedia.java,v $
-* Date   : $Date: 2003/01/20 23:59:27 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,14 +31,15 @@ package com.opencms.defaults.master;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
+import com.opencms.flex.util.CmsUUID;
 
 /**
  * An instance of this module describes a modulemedia entry in the database.
  * It carries a set of data to read and write.
  *
  * @author A. Schouten $
- * $Revision: 1.4 $
- * $Date: 2003/01/20 23:59:27 $
+ * $Revision: 1.5 $
+ * $Date: 2003/05/15 12:39:34 $
  */
 public class CmsMasterMedia {
 
@@ -46,7 +47,7 @@ public class CmsMasterMedia {
     private int m_id;
 
     /** Foreign key to the media master */
-    private int m_masterId;
+    private CmsUUID m_masterId;
 
     /** The position of this media */
     private int m_position;
@@ -93,7 +94,7 @@ public class CmsMasterMedia {
      */
     public CmsMasterMedia() {
         m_id = I_CmsConstants.C_UNKNOWN_ID;
-        m_masterId = I_CmsConstants.C_UNKNOWN_ID;
+        m_masterId = CmsUUID.getNullUUID();
         m_position = I_CmsConstants.C_UNKNOWN_ID;
         m_width = I_CmsConstants.C_UNKNOWN_ID;
         m_height = I_CmsConstants.C_UNKNOWN_ID;
@@ -128,7 +129,7 @@ public class CmsMasterMedia {
     /**
      * Constructs a new instance with some default values.
      */
-    public CmsMasterMedia(int id, int masterId, int position, int width,
+    public CmsMasterMedia(int id, CmsUUID masterId, int position, int width,
                           int height, int size, String mimetype, int type,
                           String title, String name, String description,
                           byte[] media) {
@@ -170,7 +171,7 @@ public class CmsMasterMedia {
         return m_id;
     }
 
-    public int getMasterId() {
+    public CmsUUID getMasterId() {
         return m_masterId;
     }
 
@@ -226,8 +227,8 @@ public class CmsMasterMedia {
      * Never set this on yourself!
      * It will be computed by the mastermodule
      */
-    public void setMasterId(int id) {
-        m_masterId = id;
+    public void setMasterId(CmsUUID masterId) {
+        m_masterId = masterId;
     }
 
     public void setPosition(int pos) {

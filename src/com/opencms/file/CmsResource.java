@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.file;
 
 import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
 
 import java.io.Serializable;
 
@@ -37,24 +38,24 @@ import java.io.Serializable;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.44 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.45 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
     
      /**
       * The database ID
       */
-     private int m_resourceId;
+     private CmsUUID m_resourceId;
 
      /**
       * The database Parent ID
       */
-     private int m_parentId;
+     private CmsUUID m_parentId;
 
      /**
       * The database Parent ID
       */
-     private int m_fileId;
+     private CmsUUID m_fileId;
 
      /**
       * The name of this resource.
@@ -79,12 +80,12 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
       /**
       * The owner  of this resource.
       */
-     private int m_user;
+     private CmsUUID m_userId;
 
      /**
       * The group  of this resource.
       */
-     private int m_group;
+     private CmsUUID m_groupId;
 
      /**
       * The access flags of this resource.
@@ -124,7 +125,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      /**
       * The user id of the usrer who locked this resource.
       */
-     private int m_lockedBy;
+     private CmsUUID m_lockedByUserId;
 
      /**
       * The type of the launcher which is used to process this resource.
@@ -139,7 +140,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      /**
       * The UserId of the user who modified this resource last.
       */
-     private int m_resourceLastModifiedBy;
+     private CmsUUID m_resourceLastModifiedByUserId;
 
      /**
       * The projectId of the project where the resource was locked or modified in
@@ -166,14 +167,14 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
       * @param dateLastModified The date of the last modification of the resource.
       * @param resourceLastModifiedBy The user who changed the file.
       */
-     public CmsResource(int resourceId, int parentId,
-                        int fileId,String resourceName,
+     public CmsResource(CmsUUID resourceId, CmsUUID parentId,
+                        CmsUUID fileId,String resourceName,
                         int resourceType, int resourceFlags,
-                        int user, int group, int projectId,
-                        int accessFlags, int state, int lockedBy,
+                        CmsUUID userId, CmsUUID groupId, int projectId,
+                        int accessFlags, int state, CmsUUID lockedByUserId,
                         int launcherType, String launcherClassname,
                         long dateCreated, long dateLastModified,
-                        int resourceLastModifiedBy,int size, int lockedInProject){
+                        CmsUUID resourceLastModifiedByUserId,int size, int lockedInProject){
 
         m_resourceId = resourceId;
         m_parentId = parentId;
@@ -181,17 +182,17 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
         m_resourceName=resourceName;
         m_resourceType=resourceType;
         m_resourceFlags=resourceFlags;
-        m_user=user;
-        m_group=group;
+        m_userId=userId;
+        m_groupId=groupId;
         m_projectId=projectId;
         m_accessFlags=accessFlags;
         m_launcherType=launcherType;
         m_launcherClassname=launcherClassname;
         m_state=state;
-        m_lockedBy=lockedBy;
+        m_lockedByUserId=lockedByUserId;
         m_dateCreated=dateCreated;
         m_dateLastModified=dateLastModified;
-        m_resourceLastModifiedBy = resourceLastModifiedBy;
+        m_resourceLastModifiedByUserId = resourceLastModifiedByUserId;
         m_size=size;
         m_lockedInProject=lockedInProject;
         m_isTouched = false;
@@ -203,11 +204,11 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
     public Object clone() {
         return new CmsResource(m_resourceId, m_parentId,m_fileId,
                                m_resourceName, m_resourceType, m_resourceFlags,
-                               m_user, m_group, m_projectId,
-                               m_accessFlags, m_state, m_lockedBy,
+                               m_userId, m_groupId, m_projectId,
+                               m_accessFlags, m_state, m_lockedByUserId,
                                m_launcherType, m_launcherClassname,
                                m_dateCreated, m_dateLastModified,
-                               m_resourceLastModifiedBy,m_size, m_lockedInProject);
+                               m_resourceLastModifiedByUserId,m_size, m_lockedInProject);
     }
     /**
      * Compares the overgiven object with this object.
@@ -306,7 +307,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @return the File id of this resource.
      */
-     public int getFileId(){
+     public CmsUUID getFileId(){
         return m_fileId;
      }
     /**
@@ -343,8 +344,8 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @return the groupid of this resource.
      */
-     public int getGroupId() {
-         return  m_group;
+     public CmsUUID getGroupId() {
+         return  m_groupId;
       }
     /**
      * Gets the launcher classname for this resource.
@@ -377,28 +378,28 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @return the name of this resource.
      */
-     public String getName() {
-         String name= null;
-         String absoluteName = getAbsolutePath();
-         // check if this is a file
-         if (!absoluteName.endsWith("/")) {
-             name=absoluteName.substring(absoluteName.lastIndexOf("/")+1,
-                                           absoluteName.length());
-         }else{
-              name=absoluteName.substring(0,absoluteName.length()-1);
-              name=name.substring(name.lastIndexOf("/")+1,
-                                  name.length());
-         }
+    public String getName() {
+        String name = null;
+        String absoluteName = getAbsolutePath();
+        
+        // check if this is a file
+        if (!absoluteName.endsWith("/")) {
+            name = absoluteName.substring(absoluteName.lastIndexOf("/") + 1, absoluteName.length());
+        } else {
+            name = absoluteName.substring(0, absoluteName.length() - 1);
+            name = name.substring(name.lastIndexOf("/") + 1, name.length());
+        }
 
-         return name;
-     }
+        return name;
+    }
+    
     /**
      * Returns the userid of the resource owner.
      *
      * @return the userid of the resource owner.
      */
-    public int getOwnerId() {
-         return m_user;
+    public CmsUUID getOwnerId() {
+         return m_userId;
       }
       
     /**
@@ -539,7 +540,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @return the Parent database id of this resource.
      */
-    public int getParentId() {
+    public CmsUUID getParentId() {
         return m_parentId;
     }
           
@@ -557,7 +558,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @return the database id of this resource.
      */
-     public int getResourceId(){
+     public CmsUUID getResourceId(){
         return m_resourceId;
      }
     /**
@@ -565,8 +566,8 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @return the userId from the user who made the last change.
      */
-     public int getResourceLastModifiedBy(){
-        return m_resourceLastModifiedBy;
+     public CmsUUID getResourceLastModifiedBy(){
+        return m_resourceLastModifiedByUserId;
      }
     /**
      * Returns the state of this resource.<BR/>
@@ -635,22 +636,22 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @return true, if this resource is locked by a user, else it returns false.
      */
-      public boolean isLocked() {
-          boolean isLocked=true;
-          //check if the user id in the locked by field is the unknown user id.
-          if (m_lockedBy == C_UNKNOWN_ID) {
-              isLocked=false;
-          }
-          return isLocked;
-      }
+    public boolean isLocked() {
+        boolean isLocked = true;
+        //check if the user id in the locked by field is the unknown user id.
+        if (m_lockedByUserId.isNullUUID()) {
+            isLocked = false;
+        }
+        return isLocked;
+    }
     /**
      * Returns the user idthat locked this resource.
      *
      * @return the user id that locked this resource.
      * If this resource is free it returns the unknown user id.
      */
-      public int isLockedBy() {
-        return m_lockedBy;
+      public CmsUUID isLockedBy() {
+        return m_lockedByUserId;
       }
      /**
      * Sets the accessflags of this resource.
@@ -665,7 +666,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @param The File id of this resource.
      */
-    public void setFileId(int fileId){
+    public void setFileId(CmsUUID fileId){
         m_fileId = fileId;
     }
      /**
@@ -681,8 +682,8 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @param The new groupId of this resource.
      */
-      public void setGroupId(int group) {
-          m_group= group;
+      public void setGroupId(CmsUUID groupId) {
+          m_groupId= groupId;
       }
      /**
      * Sets launcher classname for this resource.
@@ -705,15 +706,15 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @param The new the user id that locked this resource.
      */
-     public void setLocked(int id) {
-          m_lockedBy=id;
+     public void setLocked(CmsUUID userId) {
+          m_lockedByUserId=userId;
       }
      /**
      * Sets the parent database id for this resource.
      *
      * @param The new database id of this resource.
      */
-    public void setParentId(int parentId){
+    public void setParentId(CmsUUID parentId){
         m_parentId = parentId;
     }
     /**
@@ -721,8 +722,8 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @param The userId from the user who changes the resource.
      */
-    void setResourceLastModifiedBy(int resourceLastModifiedBy){
-        m_resourceLastModifiedBy = resourceLastModifiedBy;
+    void setResourceLastModifiedBy(CmsUUID resourceLastModifiedByUserId){
+        m_resourceLastModifiedByUserId = resourceLastModifiedByUserId;
     }
       /**
      * Sets the state of this resource.
@@ -745,8 +746,8 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      *
      * @param The new userId of this resource.
      */
-    public  void setUserId(int user) {
-          m_user = user;
+    public  void setUserId(CmsUUID userId) {
+          m_userId = userId;
       }
 
     /**
@@ -785,9 +786,9 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
         output.append(" , Project=");
         output.append(m_projectId);
         output.append(" , User=");
-        output.append(m_user);
+        output.append(m_userId);
         output.append(" , Group=");
-        output.append(m_group);
+        output.append(m_groupId);
         output.append(" : Access=");
         output.append(getFlagString());
         output.append(" : Resource-type=");

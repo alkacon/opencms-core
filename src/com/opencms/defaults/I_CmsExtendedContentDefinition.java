@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/05/15 12:39:35 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 package com.opencms.defaults;
 
 import com.opencms.file.CmsObject;
+import com.opencms.flex.util.CmsUUID;
 
 import java.util.Vector;
 
@@ -43,7 +44,7 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @return int The unique id of the cd
      */
-    public int getId();
+    public CmsUUID getId();
 
     /**
      * Returns the projectId of the content definition.
@@ -91,7 +92,7 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @return int The id of the user who has modified the cd
      */
-    public int getLastModifiedBy();
+    public CmsUUID getLastModifiedBy();
 
     /**
      * Returns the name of the user who has modified the content definition
@@ -119,14 +120,14 @@ public interface I_CmsExtendedContentDefinition {
      *
      * @return int The ownerId of the cd
      */
-    public int getOwner();
+    public CmsUUID getOwner();
 
     /**
      * Returns the groupId of the content definition
      *
      * @return int The groupId of the cd
      */
-    public int getGroupId();
+    public CmsUUID getGroupId();
 
     /**
      * Returns the access flags of the content definition
@@ -167,7 +168,7 @@ public interface I_CmsExtendedContentDefinition {
      * @param cms The CmsObject
      * @param owner The id of the new owner
      */
-    public void chown(CmsObject cms, int owner) throws Exception;
+    public void chown(CmsObject cms, CmsUUID ownerId) throws Exception;
 
     /**
      * Change group method
@@ -176,7 +177,7 @@ public interface I_CmsExtendedContentDefinition {
      * @param cms The CmsObject
      * @param group The id of the new group
      */
-    public void chgrp(CmsObject cms, int group) throws Exception;
+    public void chgrp(CmsObject cms, CmsUUID groupId) throws Exception;
 
     /**
      * Change access flags method
@@ -194,7 +195,7 @@ public interface I_CmsExtendedContentDefinition {
      * @param cms The CmsObject
      * @return int The id of the new content definition
      */
-    public int copy(CmsObject cms) throws Exception;
+    public CmsUUID copy(CmsObject cms) throws Exception;
 
     /**
      * History method

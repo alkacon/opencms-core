@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/03/19 08:43:10 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.core;
 
 import com.opencms.file.*;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.CmsShellReport;
 
 import java.io.File;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.67 $ $Date: 2003/03/19 08:43:10 $
+ * @version $Revision: 1.68 $ $Date: 2003/05/15 12:39:34 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -892,7 +893,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void deleteWebUser(String userId) {
         try {
-            m_cms.deleteWebUser(Integer.parseInt(userId));
+            m_cms.deleteWebUser(new CmsUUID(userId));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -2442,9 +2443,9 @@ class CmsShellCommands implements I_CmsConstants {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public void readGroupById(String groupid) {
+    public void readGroupById(String groupId) {
         try {
-            System.out.println(m_cms.readGroup(Integer.parseInt(groupid)));
+            System.out.println(m_cms.readGroup(new CmsUUID(groupId)));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -3578,8 +3579,8 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void changeUserTypeByUserid(String userId, String userType){
         try{
-            m_cms.changeUserType(Integer.parseInt(userId), Integer.parseInt(userType));
-            CmsUser user = m_cms.readUser(Integer.parseInt(userId));
+            m_cms.changeUserType(new CmsUUID(userId), Integer.parseInt(userType));
+            CmsUser user = m_cms.readUser(new CmsUUID(userId));
             System.out.println(user.toString());
         } catch (Exception e){
             CmsShell.printException(e);

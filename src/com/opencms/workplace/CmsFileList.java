@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Encoder;
 
@@ -61,7 +62,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.60 $ $Date: 2003/03/02 18:43:54 $
+ * @version $Revision: 1.61 $ $Date: 2003/05/15 12:39:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -332,7 +333,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     contextMenu += C_CONTEXT_LOCK;
 
                     // is this resource locked by the current user
-                    if(cms.getRequestContext().currentUser().getId() == res.isLockedBy()) {
+                    if(cms.getRequestContext().currentUser().getId().equals(res.isLockedBy())) {
                         contextMenu += C_CONTEXT_LOCKUSER;
                     }
                 }
@@ -515,8 +516,8 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     if((filelist & C_FILELIST_LOCKED) != 0) {
 
                         // get the locked by
-                        int lockedby = res.isLockedBy();
-                        if(lockedby == C_UNKNOWN_ID) {
+                        CmsUUID lockedby = res.isLockedBy();
+                        if(lockedby.isNullUUID()) {
                             template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, "");
                         }
                         else {
@@ -618,8 +619,8 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     if((filelist & C_FILELIST_ACCESS) != 0) {
 
                         // get the locked by
-                        int lockedby = file.isLockedBy();
-                        if(lockedby == C_UNKNOWN_ID) {
+                        CmsUUID lockedby = file.isLockedBy();
+                        if(lockedby.isNullUUID()) {
                             template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, "");
                         }
                         else {
@@ -683,10 +684,10 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
         // the file is locked
         if(file.isLocked()) {
-            int locked = file.isLockedBy();
+            CmsUUID locked = file.isLockedBy();
 
             // it is locked by the actuel user
-            if(cms.getRequestContext().currentUser().getId() == locked) {
+            if(cms.getRequestContext().currentUser().getId().equals(locked)) {
                 template.fastSetXmlData(C_LOCKEDBY, lang.getLanguageValue("explorer.lockedby") + cms.getRequestContext().currentUser().getName());
                 output.append(C_LOCKED_VALUE_OWN);
             }

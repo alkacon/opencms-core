@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/04/02 12:44:10 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.defaults.I_CmsExtendedContentDefinition;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.template.I_CmsContent;
 
 import java.util.Hashtable;
@@ -53,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.18 $
- * $Date: 2003/04/02 12:44:10 $
+ * $Revision: 1.19 $
+ * $Date: 2003/05/15 12:39:34 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -102,12 +103,12 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * The groupid of the channel
      */
-    private int m_groupid;
+    private CmsUUID m_GroupId;
 
     /**
      * The userid of the channel
      */
-    private int m_userid;
+    private CmsUUID m_UserId;
 
     /**
      * The accessflags of the channel
@@ -134,8 +135,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * @param resourceid the resource id of the channel to read.
      * @throws CmsException if the data couldn't be read from the database.
      */
-    public CmsChannelContent(CmsObject cms, String resourceid) throws CmsException {
-        new CmsChannelContent(cms, new Integer(resourceid));
+    public CmsChannelContent(CmsObject cms, String channelId) throws CmsException {
+        new CmsChannelContent(cms, new CmsUUID(channelId));
     }
     /**
      * Constructor to read a existing contentdefinition from the database. The
@@ -147,22 +148,23 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * @param channelname the name of the channel to read.
      * @throws CmsException if the data couldn't be read from the database.
      */
-    public CmsChannelContent(CmsObject cms, Integer resourceid) throws CmsException {
+    public CmsChannelContent(CmsObject cms, CmsUUID channelId) throws CmsException {
         m_cms = cms;
         initValues();
         m_cms.setContextToCos();
-        try{
-            m_channel = (CmsResource) m_cms.readFolder(resourceid.intValue(), true);
+
+        try {
+            m_channel = (CmsResource) m_cms.readFolder(channelId, true);
             m_channelname = m_channel.getName();
             m_parentchannel = m_channel.getParent();
-            m_groupid = m_channel.getGroupId();
-            m_userid = m_channel.getOwnerId();
+            m_GroupId = m_channel.getGroupId();
+            m_UserId = m_channel.getOwnerId();
             m_accessflags = m_channel.getAccessFlags();
             m_properties = m_cms.readProperties(m_channel.getAbsolutePath());
-            m_channelId = (String)m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
-        } catch (CmsException exc){
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Could not get channel "+resourceid);
+            m_channelId = (String) m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
+        } catch (CmsException exc) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Could not get channel " + channelId);
             }
         } finally {
             m_cms.setContextToVfs();
@@ -180,8 +182,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_channel = resource;
         m_channelname = resource.getName();
         m_parentchannel = resource.getParent();
-        m_groupid = resource.getGroupId();
-        m_userid = resource.getOwnerId();
+        m_GroupId = resource.getGroupId();
+        m_UserId = resource.getOwnerId();
         m_accessflags = resource.getAccessFlags();
         try{
             m_properties = cms.readProperties(resource.getAbsolutePath());
@@ -204,16 +206,16 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_channelId = I_CmsConstants.C_UNKNOWN_ID+"";
         m_channelname = "";
         m_parentchannel = "";
-        m_groupid = m_cms.getRequestContext().currentGroup().getId();
-        m_userid = m_cms.getRequestContext().currentUser().getId();
+        m_GroupId = m_cms.getRequestContext().currentGroup().getId();
+        m_UserId = m_cms.getRequestContext().currentUser().getId();
         m_accessflags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         // create the resource object for the channel:
         // int resourceId, int parentId, int fileId, String resourceName, int resourceType,
         // int resourceFlags, int user, int group, int projectId, int accessFlags, int state,
         // int lockedBy, int launcherType, String launcherClassname, long dateCreated,
         // long dateLastModified, int resourceLastModifiedBy,int size, int lockedInProject
-        m_channel = new CmsResource(I_CmsConstants.C_UNKNOWN_ID, I_CmsConstants.C_UNKNOWN_ID,
-                                     I_CmsConstants.C_UNKNOWN_ID, "", I_CmsConstants.C_TYPE_FOLDER, 0,
+        m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
+                                     CmsUUID.getNullUUID(), "", I_CmsConstants.C_TYPE_FOLDER, 0,
                                      m_cms.getRequestContext().currentUser().getId(),
                                      m_cms.getRequestContext().currentGroup().getId(),
                                      m_cms.getRequestContext().currentProject().getId(),
@@ -294,7 +296,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * @param cms the CmsObject to use.
      * @param owner the new owner of the cd.
      */
-    public void chown(CmsObject cms, int owner) {
+    public void chown(CmsObject cms, CmsUUID owner) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
         }
@@ -306,7 +308,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * @param cms the CmsObject to use.
      * @param group the new group of the cd.
      */
-    public void chgrp(CmsObject cms, int group) {
+    public void chgrp(CmsObject cms, CmsUUID group) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Permissions of Channels can be changed only in EditBackoffice!");
         }
@@ -329,11 +331,11 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * @param cms the CmsObject to use.
      * @return int The id of the new content definition
      */
-    public int copy(CmsObject cms) {
+    public CmsUUID copy(CmsObject cms) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Channels can be copied!");
         }
-        return -1;
+        return CmsUUID.getNullUUID();
     }
 
     /**
@@ -381,7 +383,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
                 // check if the lockstate has changed
                 if(newChannel.isLockedBy() != this.getLockstate() ||
                     newChannel.getLockedInProject() != cms.getRequestContext().currentProject().getId()){
-                    if(this.getLockstate() == I_CmsConstants.C_UNKNOWN_ID){
+                    if(this.getLockstate().isNullUUID()){
                         // unlock the channel
                         cms.unlockResource(newChannel.getAbsolutePath());
                     } else {
@@ -429,7 +431,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      *
      * @return int The unique id
      */
-    public int getId() {
+    public CmsUUID getId() {
         return m_channel.getResourceId();
     }
 
@@ -498,7 +500,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Gets the lockstate.
      * @return a int with the user who has locked the ressource.
      */
-    public int getLockstate() {
+    public CmsUUID getLockstate() {
         return m_channel.isLockedBy();
     }
 
@@ -506,7 +508,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Sets the lockstates
      * @param the lockstate for the actual entry.
      */
-    public void setLockstate(int lockstate) {
+    public void setLockstate(CmsUUID lockstate) {
         m_channel.setLocked(lockstate);
     }
 
@@ -526,15 +528,15 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * Gets the owner of this contentdefinition.
      */
-    public int getOwner() {
-        return m_userid;
+    public CmsUUID getOwner() {
+        return m_UserId;
     }
 
     /**
      * Sets the owner of this contentdefinition.
      */
-    public void setOwner(int id) {
-        m_userid = id;
+    public void setOwner(CmsUUID id) {
+        m_UserId = id;
     }
 
     /**
@@ -553,15 +555,15 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * Gets the groupid
      */
-    public int getGroupId() {
-        return m_groupid;
+    public CmsUUID getGroupId() {
+        return m_GroupId;
     }
 
     /**
      * Sets the group.
      */
-    public void setGroup(int id) {
-        m_groupid = id;
+    public void setGroup(CmsUUID groupId) {
+        m_GroupId = groupId;
     }
 
     /**
@@ -630,7 +632,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     /**
      * Gets the id of the user who has modified the channel
      */
-    public int getLastModifiedBy(){
+    public CmsUUID getLastModifiedBy(){
         return m_channel.getResourceLastModifiedBy();
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mssql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/07 11:43:26 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/05/15 12:39:35 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.file.I_CmsResourceBroker;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.SqlHelper;
 
 import java.sql.Connection;
@@ -53,7 +54,7 @@ import source.org.apache.java.util.Configurations;
  * the database.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2003/05/07 11:43:26 $ *
+ * @version $Revision: 1.7 $ $Date: 2003/05/15 12:39:35 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -113,15 +114,15 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
                                                     res.getInt("PROJECT_ID"),
                                                     res.getString("PROJECT_NAME"),
                                                     SqlHelper.getTimestamp(res,"PROJECT_PUBLISHDATE"),
-                                                    res.getInt("PROJECT_PUBLISHED_BY"),
+                                                    new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
                                                     res.getString("PROJECT_PUBLISHED_BY_NAME"),
                                                     res.getString("PROJECT_DESCRIPTION"),
                                                     res.getInt("TASK_ID"),
-                                                    res.getInt("USER_ID"),
+                                                    new CmsUUID(res.getString("USER_ID")),
                                                     res.getString("USER_NAME"),
-                                                    res.getInt("GROUP_ID"),
+                                                    new CmsUUID(res.getString("GROUP_ID")),
                                                     res.getString("GROUP_NAME"),
-                                                    res.getInt("MANAGERGROUP_ID"),
+                                                    new CmsUUID(res.getString("MANAGERGROUP_ID")),
                                                     res.getString("MANAGERGROUP_NAME"),
                                                     SqlHelper.getTimestamp(res,"PROJECT_CREATEDATE"),
                                                     res.getInt("PROJECT_TYPE"),

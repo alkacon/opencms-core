@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupProject.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.file;
 
+import com.opencms.flex.util.CmsUUID;
+
 import java.sql.Timestamp;
 import java.util.Vector;
 
@@ -36,7 +38,7 @@ import java.util.Vector;
  * one resource.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsBackupProject extends CmsProject implements Cloneable{
 
@@ -48,7 +50,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable{
     /**
      * The user-id of the publisher
      */
-    private int m_publishedBy = C_UNKNOWN_ID;
+    private CmsUUID m_publishedByUserId;
 
     /**
      * The version of the published project
@@ -83,21 +85,21 @@ public class CmsBackupProject extends CmsProject implements Cloneable{
     /**
      * Construct a new CmsProject including publishing data.
      */
-    public CmsBackupProject(int versionId, int projectId, String name, Timestamp publishingdate, int publishedBy,
+    public CmsBackupProject(int versionId, int projectId, String name, Timestamp publishingdate, CmsUUID publishedByUserId,
                       String publishedByName, String description, int taskId,
-                      int ownerId, String ownerName, int group, String groupName,
-                      int managerGroup, String managerGroupName, Timestamp createdate, int type,
+                      CmsUUID ownerId, String ownerName, CmsUUID groupId, String groupName,
+                      CmsUUID managerGroupId, String managerGroupName, Timestamp createdate, int type,
                       Vector projectresources) {
 
         super(projectId, name, description, taskId,
-              ownerId, group, managerGroup, 0,
+              ownerId, groupId, managerGroupId, 0,
               createdate, type);
 
         m_versionId = versionId;
         m_ownerName = ownerName;
         m_groupName = groupName;
         m_managerGroupName=managerGroupName;
-        m_publishedBy = publishedBy;
+        m_publishedByUserId = publishedByUserId;
         m_publishedByName = publishedByName;
 
         if( publishingdate != null) {
@@ -115,7 +117,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable{
     public Object clone() {
         CmsBackupProject project=new CmsBackupProject(this.m_versionId, this.getId(),
                                        new String (this.getName()), new Timestamp(this.m_publishingdate),
-                                       this.m_publishedBy, new String(this.m_publishedByName),
+                                       this.m_publishedByUserId, new String(this.m_publishedByName),
                                        new String(this.getDescription()),this.getTaskId(),
                                        this.getOwnerId(), new String(this.m_ownerName),this.getGroupId(),
                                        new String(this.m_groupName), this.getManagerGroupId(),
@@ -146,8 +148,8 @@ public class CmsBackupProject extends CmsProject implements Cloneable{
      *
      * @return the published-by value.
      */
-    public int getPublishedBy() {
-        return m_publishedBy;
+    public CmsUUID getPublishedBy() {
+        return m_publishedByUserId;
     }
     /**
      * Returns the publishing date of this project.

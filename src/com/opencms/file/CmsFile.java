@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,13 +28,15 @@
 
 package com.opencms.file;
 
-import java.io.*;
+import com.opencms.flex.util.CmsUUID;
+
+import java.io.Serializable;
 
 /**
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.17 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsFile extends CmsResource implements Cloneable,Serializable {
 
@@ -66,23 +68,23 @@ public class CmsFile extends CmsResource implements Cloneable,Serializable {
       * @param resourceLastModifiedBy The user who changed the file.
       * @param size The size of the file content.
       */
-     public CmsFile(int resourceId, int parentId, int fileId,
+     public CmsFile(CmsUUID resourceId, CmsUUID parentId, CmsUUID fileId,
                         String resourceName, int resourceType, int resourceFlags,
-                        int user, int group, int projectId,
-                        int accessFlags, int state, int lockedBy,
+                        CmsUUID userId, CmsUUID groupId, int projectId,
+                        int accessFlags, int state, CmsUUID lockedByUserId,
                         int launcherType, String launcherClassname,
                         long dateCreated, long dateLastModified,
-                        int resourceLastModifiedBy,
+                        CmsUUID resourceLastModifiedByUserId,
                         byte[] fileContent,int size, int lockedInProject){
 
         // create the CmsResource.
         super(resourceId, parentId, fileId,
               resourceName,resourceType,resourceFlags,
-              user,group,projectId,
-              accessFlags,state,lockedBy,
+              userId,groupId,projectId,
+              accessFlags,state,lockedByUserId,
               launcherType,launcherClassname,
               dateCreated,dateLastModified,
-              resourceLastModifiedBy,size, lockedInProject);
+              resourceLastModifiedByUserId,size, lockedInProject);
 
         // set content and size.
         m_fileContent=fileContent;
@@ -143,4 +145,5 @@ public class CmsFile extends CmsResource implements Cloneable,Serializable {
             m_size=m_fileContent.length;
         }
     }
+    
 }

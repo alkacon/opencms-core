@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTaskLog.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,13 +30,14 @@ package com.opencms.file;
 
 
 import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
 
 
 /**
  * Describes a tasklog in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.10 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.11 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsTaskLog implements I_CmsConstants {
 
@@ -59,7 +60,7 @@ public class CmsTaskLog implements I_CmsConstants {
     /**
      * The Id Of the corresponding user.
      */
-    private int     m_User = C_UNKNOWN_ID;
+    private CmsUUID     m_UserId;
     
     /**
      * The Type of the TaskLog. 0=SystemLog, 1=UserLog
@@ -70,12 +71,12 @@ public class CmsTaskLog implements I_CmsConstants {
     /**
      * Constructor, creates a new CmsTaskLog object.
      */
-    public CmsTaskLog(int id, String comment, int task, int user, 
+    public CmsTaskLog(int id, String comment, int task, CmsUUID userId, 
                       java.sql.Timestamp starttime, int type){
         m_Id = id;
         m_Comment = comment;
         m_Task = task;
-        m_User = user; 
+        m_UserId = userId; 
         m_StartTime = starttime;
         m_Type = type;
     }
@@ -123,8 +124,8 @@ public class CmsTaskLog implements I_CmsConstants {
     public int getType(){
         return m_Type;
     }
-    public int getUser(){
-        return m_User;
+    public CmsUUID getUser(){
+        return m_UserId;
     }
     /**
      * Returns a string-representation for this object.

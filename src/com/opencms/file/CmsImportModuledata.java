@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/03/25 16:35:07 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/05/15 12:39:34 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Encoder;
@@ -65,7 +66,7 @@ import org.w3c.dom.NodeList;
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $ $Date: 2003/03/25 16:35:07 $
+ * @version $Revision: 1.13 $ $Date: 2003/05/15 12:39:34 $
  */
 public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Serializable {
 
@@ -218,8 +219,8 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
                                      new Class[] {CmsObject.class, CmsMasterDataSet.class},
                                      new Object[] {m_cms, newDataset});
         try{
-            int userId = newMaster.getOwner();
-            int groupId = newMaster.getGroupId();
+            CmsUUID userId = newMaster.getOwner();
+            CmsUUID groupId = newMaster.getGroupId();
             // first insert the new master
             newMaster.importMaster();
             // now update the master because user and group might be changed
@@ -253,10 +254,10 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
         // get the information from the dataset and add it to the dataset
         // first add the subid
         newDataset.m_subId = subId;
-        newDataset.m_masterId = C_UNKNOWN_ID;
+        newDataset.m_masterId = CmsUUID.getNullUUID();
         // get the id of the user or set the owner to the current user
         username = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_USER);
-        int userId = m_cms.getRequestContext().currentUser().getId();
+        CmsUUID userId = m_cms.getRequestContext().currentUser().getId();
         try{
             if((username != null) && !("".equals(username.trim()))){
                 userId = m_cms.readUser(username).getId();
@@ -266,7 +267,7 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
         newDataset.m_userId = userId;
         // get the id of the group or set the group to the current user
         groupname = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_GROUP);
-        int groupId = m_cms.getRequestContext().currentGroup().getId();
+        CmsUUID groupId = m_cms.getRequestContext().currentGroup().getId();
         try{
             if((groupname != null) && !("".equals(groupname.trim()))){
                 groupId = m_cms.readGroup(groupname).getId();
