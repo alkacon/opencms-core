@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/06/29 13:41:41 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2001/07/05 07:30:49 $
+* Version: $Revision: 1.57 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.56 $ $Date: 2001/06/29 13:41:41 $
+ * @version $Revision: 1.57 $ $Date: 2001/07/05 07:30:49 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -294,14 +294,18 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * Prints a copyright information to all log-files.
      */
     private void printCopyrightInformation(CmsObject cms) {
-        System.err.println(cms.version());
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && isLogging()) {
-            this.log(C_OPENCMS_INFO, cms.version());
-        }
         String copy[] = cms.copyright();
+
+        // log to error-stream
+        System.err.println(cms.version());
         for(int i = 0;i < copy.length;i++) {
             System.err.println(copy[i]);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && isLogging()) {
+        }
+
+        // log with opencms-logger
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && isLogging()) {
+            this.log(C_OPENCMS_INFO, cms.version());
+            for(int i = 0;i < copy.length;i++) {
                 this.log(C_OPENCMS_INFO, copy[i]);
             }
         }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/07/03 13:12:57 $
-* Version: $Revision: 1.169 $
+* Date   : $Date: 2001/07/05 07:30:49 $
+* Version: $Revision: 1.170 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.169 $ $Date: 2001/07/03 13:12:57 $
+ * @version $Revision: 1.170 $ $Date: 2001/07/05 07:30:49 $
  */
 public interface I_CmsConstants {
 
@@ -50,7 +50,7 @@ public interface I_CmsConstants {
      * The copyright message for OpenCms.
      */
     static String C_COPYRIGHT[] =  {
-        "", "Copyright (C) 2000 The OpenCms Group", "OpenCms comes with ABSOLUTELY NO WARRANTY",
+        "", "Copyright (C) 2000, 2001 The OpenCms Group", "OpenCms comes with ABSOLUTELY NO WARRANTY",
         "This is free software, and you are welcome to", "redistribute it under certain conditions.",
         "Please see the GNU General Public Licence for", "further details.",
         ""
