@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/06 14:46:21 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/10/07 13:16:39 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.34 $ $Date: 2003/10/06 14:46:21 $
+ * @version $Revision: 1.35 $ $Date: 2003/10/07 13:16:39 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -470,6 +470,7 @@ public interface I_CmsProjectDriver {
      * @param currentProject the current project
      * @param publishId the ID of the current publishing process
      * @param tagId the current backup ID
+     * @param contentDefinitionName the package/class name of the content definition 
      * @param masterId the content ID of the published module data
      * @param subId the module ID of the published module data
      * @param state the state of the resource *before* it was published

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/06 14:49:55 $
- * Version: $Revision: 1.263 $
+ * Date   : $Date: 2003/10/07 13:16:58 $
+ * Version: $Revision: 1.264 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.263 $ $Date: 2003/10/06 14:49:55 $
+ * @version $Revision: 1.264 $ $Date: 2003/10/07 13:16:58 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8187,12 +8187,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         List publishedResources = null;
         CmsPublishedResource currentPublishedResource = null;
         String currentExportKey = null;
+        boolean printReportHeader = false;
 
         try {
-            if (report != null) {
-                report.println(report.key("report.export_points_write_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-            }
-
             publishedResources = getProjectDriver().readPublishedResources(context.currentProject().getId(), publishHistoryId);
             exportPoints = m_registry.getExportpoints();
             discAccess = new CmsExportPointDriver(exportPoints);
@@ -8203,6 +8200,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 currentExportKey = checkExportPoint(currentPublishedResource.getRootPath(), exportPoints);
 
                 if (currentExportKey != null) {
+                    if (!printReportHeader && report != null) {
+                        printReportHeader = true;
+                        report.println(report.key("report.export_points_write_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                    }
+                                        
                     if (currentPublishedResource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
                         // export the folder                        
                         if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
@@ -8241,7 +8243,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 OpenCms.getLog(this).error("Error writing export points", e);
             }
         } finally {
-            if (report != null) {
+            if (printReportHeader && report != null) {
                 report.println(report.key("report.export_points_write_end"), I_CmsReport.C_FORMAT_HEADLINE);
             }
         }
