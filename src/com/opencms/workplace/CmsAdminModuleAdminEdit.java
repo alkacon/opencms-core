@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2001/01/16 15:37:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/01/18 08:53:39 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -71,40 +71,40 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 	 *  @param type the type that the value should have..
 	 *  @param value the value to check.
 	 */
-	private boolean checkType(String type, String value) {
+	private String checkType(String type, String value) {
 		type = type.toLowerCase();
 		try {
 			if("string".equals(type) ) {
 				if( (value != null) && (value.indexOf("\"") <0)) {
-					return true;
+					return value;
 				} else {
-					return false;
+					return null;
 				}				
 			} else if("int".equals(type) || "integer".equals(type)) {
-				Integer.parseInt(value);
-				return true;
+				value = "" + Integer.parseInt(value);
+				return value;
 			} else if("float".equals(type)) {
-				Float.valueOf(value);
-				return true;
+				value = "" + Float.valueOf(value);
+				return value;
 			} else if("boolean".equals(type)) {
-				Boolean.valueOf(value);
-				return true;
+				value = "" + Boolean.valueOf(value);
+				return value;
 			} else if("long".equals(type)) {
-				Long.valueOf(value);
-				return true;
+				value = "" + Long.valueOf(value);
+				return value;
 			} else if("double".equals(type)) {
-				Double.valueOf(value);
-				return true;
+				value = "" + Double.valueOf(value);
+				return value;
 			} else if("byte".equals(type)) {
-				Byte.valueOf(value);
-				return true;
+				value = "" + Byte.valueOf(value);
+				return value;
 			} else {
 				// the type dosen't exist
-				return false;
+				return null;
 			}
 		} catch(Exception exc) {
 			// the type of the value was wrong
-			return false;
+			return null;
 		}
 	}
 	/**
@@ -151,7 +151,8 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 				String type = (String)parameters.get("TYP");
 				String value = (String)parameters.get("WERT");
 				//  check if all fields are filled out and if the value is correct
-				if ((checkName(name)) && (checkType(type, value))){
+				String newValue = checkType(type, value);
+				if ((checkName(name)) && (newValue != null)){
 					paraNames.addElement(name);
 					paraDescr.addElement(description);
 					paraTyp.addElement(type);
@@ -192,7 +193,8 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 				// set property
 				String type = getStringValue((String)parameters.get("TYP"));
 				String value = getStringValue((String)parameters.get("WERT"));
-				if (checkType(type, value)){
+				String newValue = checkType(type, value);
+				if (newValue != null){
 					int i = paraNames.indexOf(prop);
 					paraNames.removeElementAt(i);
 					paraDescr.removeElementAt(i);
@@ -201,7 +203,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 					paraNames.addElement(prop);
 					paraDescr.addElement(getStringValue((String)parameters.get("BESCHREIBUNG")));
 					paraTyp.addElement(type);
-					paraVal.addElement(value);
+					paraVal.addElement(newValue);
 					templateSelector = "done";
 				}else{
 					session.putValue("parametername", prop);
