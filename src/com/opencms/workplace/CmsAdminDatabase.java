@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/02/14 14:25:48 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.21 $ $Date: 2002/02/14 14:25:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -85,6 +85,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         String existingFile = (String)parameters.get("existingfile");
         String action = (String)parameters.get("action");
         String allResources = (String)parameters.get("ALLRES");
+        String allModules = (String)parameters.get("ALLMOD");
         if(action == null) {
 
             // This is an initial request of the database administration page
@@ -169,22 +170,50 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                 session.putValue(C_DATABASE_THREAD, doExport);
                 xmlTemplateDocument.setData("time", "10");
                 templateSelector = "wait";
-            }
-            else {
-                if("import".equals(action)) {
 
-                    // start the thread for: import
-                    // first clear the session entry if necessary
-                    if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-                        session.removeValue(C_SESSION_THREAD_ERROR);
+            } else if("exportmoduledata".equals(action)) {
+                // export the channels and moduledata from database
+                Vector channelNames = parseResources(allResources);
+                String[] exportChannels = new String[channelNames.size()];
+                CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
+                for(int i = 0;i < channelNames.size();i++) {
+                    // modify the foldername if nescessary (the root folder is always given
+                    // as a nice name)
+                    if(lang.getLanguageValue("title.rootfolder").equals(channelNames.elementAt(i))) {
+                        channelNames.setElementAt("/", i);
                     }
-                    Thread doImport = new CmsAdminDatabaseImportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
-                            + existingFile, session);
-                    doImport.start();
-                    session.putValue(C_DATABASE_THREAD, doImport);
-                    xmlTemplateDocument.setData("time", "10");
-                    templateSelector = "wait";
+                    exportChannels[i] = (String)channelNames.elementAt(i);
                 }
+                // get the selected modulenames
+                Vector moduleNames = parseResources(allModules);
+                String[] exportModules = new String[moduleNames.size()];
+                for(int i = 0;i < moduleNames.size();i++) {
+                    exportModules[i] = (String)moduleNames.elementAt(i);
+                }
+                // start the thread for: exportmodules
+                // first clear the session entry if necessary
+                if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
+                    session.removeValue(C_SESSION_THREAD_ERROR);
+                }
+                Thread doExport = new CmsAdminDatabaseExportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
+                        + fileName, exportChannels, exportModules, session);
+                doExport.start();
+                session.putValue(C_DATABASE_THREAD, doExport);
+                xmlTemplateDocument.setData("time", "10");
+                templateSelector = "wait";
+
+            } else if("import".equals(action)) {
+                // start the thread for: import
+                // first clear the session entry if necessary
+                if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
+                    session.removeValue(C_SESSION_THREAD_ERROR);
+                }
+                Thread doImport = new CmsAdminDatabaseImportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
+                            + existingFile, session);
+                doImport.start();
+                session.putValue(C_DATABASE_THREAD, doImport);
+                xmlTemplateDocument.setData("time", "10");
+                templateSelector = "wait";
             }
         }
         catch(CmsException exc) {
@@ -259,6 +288,36 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
+    }
+
+    /**
+     * Gets all exportable modules for a select box
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index representing the current value in the vectors.
+     * @exception CmsException
+     */
+    public int getModules(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
+            Vector values, Hashtable parameters) throws CmsException {
+        // get all exportable modules
+        Hashtable modules = new Hashtable();
+        cms.getRegistry().getModuleExportables(modules);
+        Enumeration keys = modules.keys();
+        // fill the names and values
+        while(keys.hasMoreElements()) {
+            String name = (String)keys.nextElement();
+            String value = (String)modules.get(name);
+            names.addElement(name);
+            values.addElement(value);
+        }
+        return 0;
     }
 
     /** Parse the string which holds all resources

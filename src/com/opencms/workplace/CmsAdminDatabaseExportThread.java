@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseExportThread.java,v $
-* Date   : $Date: 2001/09/06 06:53:33 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/02/14 14:25:48 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,6 +49,8 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
 
     private String[] m_exportPaths;
 
+    private String[] m_exportModules;
+
     private boolean m_excludeSystem;
 
     private boolean m_excludeUnchanged;
@@ -56,6 +58,8 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
     private boolean m_exportUserdata;
 
     private I_CmsSession m_session;
+
+    private boolean m_moduledataExport;
 
     /**
      * Insert the method's description here.
@@ -72,6 +76,22 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
         m_excludeUnchanged = excludeUnchanged;
         m_exportUserdata = exportUserdata;
         m_session = session;
+        m_moduledataExport = false;
+    }
+
+    /**
+     * Insert the method's description here.
+     * Creation date: (13.09.00 09:52:24)
+     */
+
+    public CmsAdminDatabaseExportThread(CmsObject cms, String fileName,
+            String[] exportChannels, String[] exportModules, I_CmsSession session) {
+        m_cms = cms;
+        m_exportPaths = exportChannels;
+        m_exportModules = exportModules;
+        m_fileName = fileName;
+        m_session = session;
+        m_moduledataExport = true;
     }
 
     public void run() {
@@ -80,7 +100,11 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
          // !I_CmsSession session = m_cms.getRequestContext().getSession(true);
         try {
             // do the export
-            m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged, m_exportUserdata);
+            if(m_moduledataExport){
+                m_cms.exportModuledata(m_fileName, m_exportPaths, m_exportModules);
+            } else {
+                m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged, m_exportUserdata);
+            }
         }
         catch(CmsException e) {
             m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
