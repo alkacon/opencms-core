@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2002/02/27 15:09:38 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/11/16 13:19:00 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ import java.io.*;
 import java.util.*;
 import org.w3c.dom.*;
 import com.opencms.htmlconverter.*;
-//HACK for Hanjo: parametermodification
 import java.net.*;
 
 /**

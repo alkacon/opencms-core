@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
-* Date   : $Date: 2002/10/30 10:22:36 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/11/16 13:16:32 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.ServletException;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher {
         
@@ -153,7 +153,7 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
     public void include(CmsFlexRequest req, CmsFlexResponse res) 
     throws ServletException, java.io.IOException {
         
-        // TODO: Currently all requesty are looked for in the cms only -> what about include calls to resources outside of cms???
+        // TODO: currently all include() calls are looked for in the VFS only, implement a way to included elements outside the VFS
                 
         if (DEBUG > 0) System.err.println("FlexDispatcher: Include called with target=" + m_target + " (ext_target=" + m_ext_target + ")");      
         

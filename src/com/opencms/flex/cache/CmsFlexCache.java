@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2002/10/30 10:21:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2002/11/16 13:16:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,8 @@ import com.opencms.file.CmsObject;
  * For every entry a key is saved which contains the resource name and the variation.
  * </ul>
  *
- * <b>TODO:</b>
+ * <b>TODO: partial cache flushing
+ * </b>
  * Currenty the whole cache is flushed if something is published.
  * Implement partial cache flushing, i.e. remove only changed elements at publish
  * or change event (in case of offline resources).<br>
@@ -79,7 +80,7 @@ import com.opencms.file.CmsObject;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -88,15 +89,13 @@ import com.opencms.file.CmsObject;
  */
 public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I_CmsEventListener {
     
-    /** Initial Cache size, this should be a prime number for best results in the hash algorithms */
-    public static final int C_INITIAL_CAPACITY_CACHE = 509;
-    // Alternatives: 127 257 509 1021 2039 4099 8191
-    // TODO: Check is this should be a constructor variable,
-    // maybe related to the number of resources in the site.
+    /** Initial Cache size, this should be a power of 2 because of the Java collections implementation */
+    public static final int C_INITIAL_CAPACITY_CACHE = 512;
+    // Some prime numbers: 127 257 509 1021 2039 4099 8191
     
-    /** Initial size for variation lists */
-    public static final int C_INITIAL_CAPACITY_VARIATIONS = 7;
-    // Alternatives: 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71
+    /** Initial size for variation lists, should be a power of 2 */
+    public static final int C_INITIAL_CAPACITY_VARIATIONS = 8;
+    // Some prime numbers: 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71
     
     /** Suffix to append to online cache entries */
     public static String C_CACHE_ONLINESUFFIX = " [online]";
@@ -471,9 +470,6 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * Implements the CmsEvent interface.
      * The FlexCache uses the events to clear itself in case a project is published.<p>
      *
-     * <b>TODO:</b>
-     * Implement "partial" cache clearing, clear only items that have changed etc.
-     *
      * @param event CmsEvent that has occurred
      */
     public void cmsEvent(com.opencms.flex.CmsEvent event) {
@@ -804,7 +800,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.8 $ 
+     * @version $Revision: 1.9 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         

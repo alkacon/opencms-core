@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/09/19 12:33:23 $
-* Version: $Revision: 1.100 $
+* Date   : $Date: 2002/11/16 13:19:16 $
+* Version: $Revision: 1.101 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.100 $ $Date: 2002/09/19 12:33:23 $
+ * @version $Revision: 1.101 $ $Date: 2002/11/16 13:19:16 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -59,6 +59,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
     /** Error string to be inserted for corrupt subtemplates for guest user requests. */
     private final static String C_ERRORTEXT = "ERROR!";
+    
+    /** Element descriptior */
+    private static final String C_ELEMENT = "_ELEMENT_";
 
     /**
      * Template cache for storing cacheable results of the subtemplates.
@@ -1404,8 +1407,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         // all parameters are now parsed. Finally give the own subelement name
         // as parameter
-        // TODO: replace _ELEMENT_ by a constant
-        parameterHashtable.put("_ELEMENT_", tagcontent);
+        parameterHashtable.put(C_ELEMENT, tagcontent);
 
         // Try to get the result from the cache
         //if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2002/08/21 11:29:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/11/16 13:16:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Iterator;
  * to avoid method calling overhead (a cache is about speed, isn't it :)
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexCacheKey {
     
@@ -259,7 +259,7 @@ public class CmsFlexCacheKey {
                         if (key.m_params.containsKey(o)) {
                             str.append(o);
                             str.append("=");
-                            // TODO: Check for more then 1 value
+                            // TODO: handle multiple occurences of the same parameter value
                             String[] values = (String[])key.m_params.get(o);
                             str.append(values[0]);
                             if (i.hasNext()) str.append(",");
@@ -272,7 +272,7 @@ public class CmsFlexCacheKey {
                         Object o = i.next();
                         str.append(o);
                         str.append("=");
-                        // TODO: Check for more then 1 value
+                        // TODO: handle multiple occurences of the same parameter value
                         String[] values = (String[])key.m_params.get(o);
                         str.append(values[0]);
                         if (i.hasNext()) str.append(",");
@@ -388,7 +388,7 @@ public class CmsFlexCacheKey {
                     Object o = i.next();
                     str.append(o);
                     try {
-                        // TODO: Handle multiple occurences of the same parameter value
+                        // TODO: handle multiple occurences of the same parameter value
                         String param[] = (String[])m_params.get(o);
                         if (! "&?&".equals(param[0])) {
                             str.append("=");
