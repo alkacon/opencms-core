@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/11/01 12:23:49 $
- * Version: $Revision: 1.584 $
+ * Date   : $Date: 2004/11/05 19:23:52 $
+ * Version: $Revision: 1.585 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,11 @@ OpenCms 5.x.x Caladan - xxx, 2004
 ! Added new resource types for image, download, link and html galleries
 ! Added XML content handler interface for special action in the XML content lifecycle
 ! Default implementation of XML contnet handler is org.opencms.xml.content.CmsDefaultXmlContentHandler
+! Resource "type change" dialog can now also change the type of a folder (e.g. to a gallery type)
+! Added new "Image gallery" dialog for WYSIWYG editor (also available as XML content widget) 
+* Fixed issue with deleted users or groups causing "orphan" ACE entries 
+ (causing NPE errors in the Workplace permission dialog)
+* Fixed issue with upload applet not working in root site "/"
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
 ! Added 'templateone' default module as an extended template demo

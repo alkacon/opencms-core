@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/08/20 09:52:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/05 19:15:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -381,6 +381,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append(port);
         applet.append(path);
         applet.append(CmsWorkplace.C_FILE_EXPLORER_FILELIST);
+        // append some parameters to prevent caching of URL by Applet
+        applet.append("?time=" + System.currentTimeMillis());
         applet.append("\">\n");
         applet.append("<param name=error value=\"");
         applet.append(scheme);
@@ -390,7 +392,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append(port);
         applet.append(path);
         applet.append("/system/workplace/action/explorer_files_new_upload.html\">\n");
-        applet.append("<param name=\"browserCookie\" value=\"JSESSIONID=");
+        applet.append("<param name=\"sessionId\" value=\"");
         applet.append(sessionId);
         applet.append("\">\n");
         applet.append("<param name=\"filelist\" value=\"");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2004/06/18 13:56:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/05 19:20:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,11 @@ import javax.swing.JApplet;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.MultipartPostMethod;
 
 /**
@@ -230,7 +233,9 @@ public class FileUploadApplet extends JApplet implements Runnable {
             boolean ok = true;
             while (ok) {
                 ok = true;
-                //System.out.println("Version 1.37");
+                
+                // System.out.println("Version 1.40");
+                                
                 m_message = "";
                 m_resources = 0;
                 m_step = 0;
@@ -536,6 +541,9 @@ public class FileUploadApplet extends JApplet implements Runnable {
         }
     }
 
+    /** The JSESSIONID cookie header name. */
+    public static final String C_JSESSIONID = "JSESSIONID";
+    
     /**
      * Uploads the zipfile to the OpenCms.<p>
      * 
@@ -555,13 +563,23 @@ public class FileUploadApplet extends JApplet implements Runnable {
             filePost.addParameter("unzipfile", "true");
             filePost.addParameter("uploadfolder", m_uploadFolder);
 
-            filePost.setQueryString(getParameter("browserCookie"));
-
-            filePost.addRequestHeader("Cookie", getParameter("browserCookie"));
-
+            String sessionId = getParameter("sessionId");
+            
+            // add jsessionid query string
+            String query = ";" + C_JSESSIONID.toLowerCase() + "=" + sessionId;                         
+            filePost.setQueryString(query);
+            
             HttpClient client = new HttpClient();
-
             client.setConnectionTimeout(5000);
+            
+            // add the session cookie
+            HttpState initialState = new HttpState();
+            Cookie sessionCookie = new Cookie(filePost.getHostConfiguration().getHost(), C_JSESSIONID, sessionId, "/", null, false);
+            initialState.addCookie(sessionCookie);
+            initialState.setCookiePolicy(CookiePolicy.COMPATIBILITY);
+            client.setState(initialState);            
+            
+            // no execute the file upload
             int status = client.executeMethod(filePost);
 
             if (status == HttpStatus.SC_OK) {
