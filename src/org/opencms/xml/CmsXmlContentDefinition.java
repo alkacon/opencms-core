@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/12/10 15:24:54 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/12/14 14:07:30 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -290,10 +290,10 @@ public class CmsXmlContentDefinition implements Cloneable {
         String name2 = complex2.attributeValue(XSD_ATTRIBUTE_NAME);
 
         if (!(listName.equals(name1) || listName.equals(name2))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: List name must be equal to one of the complex type names");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: List name '" + listName + "' must be equal to one of the complex type names '" + name1 + "' or '" + name2 + "'");
         }
         if (!(typeName.equals(name1) || typeName.equals(name2))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Type name must be equal to one of the complex type names");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Type name '" + typeName + "' must be equal to one of the complex type names '" + name1 + "' or '" + name2 + "'");
         }
 
         // determine which is the "list" and which is the "type" element
@@ -311,23 +311,23 @@ public class CmsXmlContentDefinition implements Cloneable {
         // check if the list element is defined correctly
         Element listSequence = (Element)listElement.elements().get(0);
         if (!XSD_NODE_SEQUENCE.equals(listSequence.getQName())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: sequence node expected");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: 'sequence' node expected");
         }
         Element listSequenceElement = (Element)listSequence.elements().get(0);
         if (!XSD_NODE_ELEMENT.equals(listSequenceElement.getQName())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: element node expected");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: 'element' node expected");
         }
         if (!name.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_NAME))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: wrong name");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: 'sequence' name attribute value must be '" + name + "'");
         }
         if (!typeName.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_TYPE))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: wrong type name");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: 'sequence' type attribute value must be '" + typeName + "'");
         }
         if (!XSD_ATTRIBUTE_VALUE_ZERO.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_MIN_OCCURS))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: minOccurs must be zero");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: minOccurs of sequence node must be '0'");
         }
         if (!XSD_ATTRIBUTE_VALUE_UNBOUNDED.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_MAX_OCCURS))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: maxOccurs must be unbounded");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: maxOccurs of sequence node must be 'unbounded'");
         }
 
         // now check the type definition list
