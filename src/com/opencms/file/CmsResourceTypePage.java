@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/21 16:08:42 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2003/07/21 17:03:05 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.84 $
+ * @version $Revision: 1.85 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -299,7 +299,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         // So there could be some data in the parser's cache.
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
-        CmsXmlControlFile.clearFileCache(currentProject + ":" + resourcename);
+        CmsXmlControlFile.clearFileCache(currentProject + ":" +  cms.getRequestContext().addSiteRoot(resourcename));
     }
 
     /**
@@ -323,7 +323,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         // So there could be some data in the parser's cache.
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
-        CmsXmlControlFile.clearFileCache(currentProject + ":" + resourcename);
+        CmsXmlControlFile.clearFileCache(currentProject + ":" +  cms.getRequestContext().addSiteRoot(resourcename));
 
         // linkmanagement: create the links of the restored page
         CmsPageLinks linkObject = cms.getPageLinks(cms.readAbsolutePath(file));
@@ -520,7 +520,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         // So there could be some data in the parser's cache.
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
-        CmsXmlControlFile.clearFileCache(currentProject + ":" + resourcename);
+        CmsXmlControlFile.clearFileCache(currentProject + ":" + cms.getRequestContext().addSiteRoot(resourcename));
     }
 
     /**

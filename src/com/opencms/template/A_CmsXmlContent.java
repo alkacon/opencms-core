@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2003/07/21 17:03:05 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.80 $ $Date: 2003/07/19 01:51:37 $
+ * @version $Revision: 1.81 $ $Date: 2003/07/21 17:03:05 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels {
 
@@ -268,7 +268,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     public static void clearFileCache(A_CmsXmlContent doc) {
         if (doc != null) {
             String currentProject = doc.m_cms.getRequestContext().currentProject().getName();
-            m_filecache.remove(currentProject + ":" + doc.getAbsoluteFilename());
+            String filename = doc.m_cms.getRequestContext().addSiteRoot(doc.getAbsoluteFilename());
+            m_filecache.remove(currentProject + ":" + filename);
         }
     }
 
@@ -959,7 +960,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         Document parsedContent = null;
         m_cms = cms;
         m_filename = filename;
-        parsedContent = loadCachedDocument(filename);
+        parsedContent = loadCachedDocument(cms.getRequestContext().addSiteRoot(filename));
         if (parsedContent == null) {
             byte[] fileContent = file.getContents();
             if (fileContent == null || fileContent.length <= 1) {
@@ -981,7 +982,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             else {
                 parsedContent = parse(fileContent);
             }
-            m_filecache.put(currentProject + ":" + filename, parsedContent.cloneNode(true));
+            m_filecache.put(currentProject + ":" + cms.getRequestContext().addSiteRoot(filename), parsedContent.cloneNode(true));
         }
         init(cms, parsedContent, filename);
     }
@@ -1024,12 +1025,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         Document parsedContent = null;
         m_cms = cms;
         m_filename = filename;
-        parsedContent = loadCachedDocument(filename);
+        parsedContent = loadCachedDocument(cms.getRequestContext().addSiteRoot(filename));
         if (parsedContent == null) {
             CmsFile file = cms.readFile(filename);
             
             parsedContent = parse(file.getContents());
-            m_filecache.put(currentProject + ":" + filename, parsedContent.cloneNode(true));
+            m_filecache.put(currentProject + ":" + cms.getRequestContext().addSiteRoot(filename), parsedContent.cloneNode(true));
         }
         else {
 
@@ -1813,7 +1814,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */
     public void removeFromFileCache() {
         String currentProject = m_cms.getRequestContext().currentProject().getName();
-        m_filecache.remove(currentProject + ":" + getAbsoluteFilename());
+        m_filecache.remove(currentProject + ":" + m_cms.getRequestContext().addSiteRoot(getAbsoluteFilename()));
     }
 
     /**
@@ -2074,7 +2075,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 
         // update the internal parsed content cache with the new file data.
         String currentProject = m_cms.getRequestContext().currentProject().getName();
-        m_filecache.put(currentProject + ":" + filename, m_content.cloneNode(true));
+        m_filecache.put(currentProject + ":" + m_cms.getRequestContext().addSiteRoot(filename), m_content.cloneNode(true));
     }
 
     /**
