@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/01/24 09:42:40 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2001/01/30 08:49:00 $
+* Version: $Revision: 1.30 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2001/01/24 09:42:40 $
+ * @version $Revision: 1.30 $ $Date: 2001/01/30 08:49:00 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
     
@@ -618,14 +618,14 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             if(s.charAt(index) == '>') {
                 
                 //tempContent.append("]</CODE>");
-                tempContent.append("]");
+                tempContent.append("]]");
                 lastindex = index + 1;
             }
             else {
                 if(s.charAt(index) == '<') {
                     
                     //tempContent.append("<CODE>[");
-                    tempContent.append("[");
+                    tempContent.append("[[");
                     lastindex = index + 1;
                 }
                 else {
@@ -675,7 +675,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         StringBuffer tempContent = new StringBuffer();
         
         //int index = s.indexOf(search);
-        int index = min(s.indexOf("["), s.indexOf("]"));
+        int index = min(s.indexOf("[["), s.indexOf("]]"));
         index = min(index, s.indexOf("&quot;"));
         int lastindex = 0;
         while(index != -1) {
@@ -683,12 +683,12 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             tempContent.append(sub);
             if(s.charAt(index) == ']') {
                 tempContent.append("><![CDATA[");
-                lastindex = index + 1;
+                lastindex = index + 2;
             }
             else {
                 if(s.charAt(index) == '[') {
                     tempContent.append("]]><");
-                    lastindex = index + 1;
+                    lastindex = index + 2;
                 }
                 else {
                     tempContent.append("\"");
@@ -697,7 +697,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             }
             
             //index = s.indexOf(search, index+1);
-            index = min(s.indexOf("[", index + 1), min(s.indexOf("]", index + 1), s.indexOf("&quot;", index + 1)));
+            index = min(s.indexOf("[[", index + 1), min(s.indexOf("]]", index + 1), s.indexOf("&quot;", index + 1)));
         }
         tempContent.append(s.substring(lastindex));
         return new String(tempContent);
