@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/CmsAccessControlList.java,v $
- * Date   : $Date: 2003/06/02 15:33:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/04 12:08:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,15 +30,14 @@
  */
 package com.opencms.security;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
-
-import com.opencms.file.CmsUser;
 
 /**
  * An access control list contains a permission set for a distinct resource
  * that is calculated on the permissions given by various access control entries
  * 
- * @version $Revision: 1.1 $ $Date: 2003/06/02 15:33:07 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/04 12:08:56 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -103,11 +102,23 @@ public class CmsAccessControlList {
 	 * 
 	 * @return the current permission set of the list
 	 */
-	public int getPermissions(CmsUser principal){
+	public int getPermissions(I_CmsPrincipal principal){
 		PrincipalPermissions permissions = (PrincipalPermissions)m_permissions.get(principal.getId());
 		if (permissions == null)
 			return 0;
-			
+
 		return permissions.getPermissions();
+	}
+	
+	public String getPermissionString(I_CmsPrincipal principal){
+		PrincipalPermissions permissions = (PrincipalPermissions)m_permissions.get(principal.getId());
+		if (permissions == null)
+			return "";
+			
+		return CmsAccessControlEntry.toPermissionString(permissions.m_allowed,permissions.m_denied,0);		
+	}
+	
+	public Enumeration getPrincipals() {
+		return m_permissions.keys();
 	}
 }

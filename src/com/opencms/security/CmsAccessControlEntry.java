@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2003/06/02 10:59:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/04 12:08:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,13 @@
  */
 package com.opencms.security;
 
+import java.util.StringTokenizer;
+
+import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/06/02 10:59:17 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/04 12:08:56 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
@@ -43,7 +46,7 @@ import com.opencms.flex.util.CmsUUID;
  * The access control entry contains two binary permission sets, the first grants permissions
  * and the second revokes permissions explicitly (second should have precedence)
  * 
- * @version $Revision: 1.2 $ $Date: 2003/06/02 10:59:17 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/04 12:08:56 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {
@@ -175,5 +178,57 @@ public class CmsAccessControlEntry {
 	public CmsUUID getPrincipal() {
 		
 		return m_principal;
+	}
+	
+	public String getPermissionString() {
+	
+		return CmsAccessControlEntry.toPermissionString(m_allowed, m_denied, m_flags);
+	}
+	
+	public String toString() {
+		
+		return "[Ace:] " + "ResourceId=" + m_resource + ", PrincipalId=" + m_principal + ", Allowed=" + m_allowed + ", Denied=" + m_denied + ", Flags=" + m_flags;
+	}
+	
+	public static String toPermissionString (int allowed, int denied, int flags){
+		StringBuffer p = new StringBuffer("");
+		p.append(((allowed & I_CmsConstants.C_ACCESS_READ)>0)    ? "+r":""); 
+		p.append(((allowed & I_CmsConstants.C_ACCESS_WRITE)>0)   ? "+w":"");
+		p.append(((allowed & I_CmsConstants.C_ACCESS_VISIBLE)>0) ? "+v":"");
+		p.append(((denied  & I_CmsConstants.C_ACCESS_READ)>0)    ? "-r":""); 
+		p.append(((denied  & I_CmsConstants.C_ACCESS_WRITE)>0)   ? "-w":"");
+		p.append(((denied  & I_CmsConstants.C_ACCESS_VISIBLE)>0) ? "-v":"");
+		p.append(((flags   & I_CmsConstants.C_ACCESS_VISIBLE)>0) ? "+i":"");
+		return p.toString();		
+	}
+	
+	public static int readPermissionString(String permissionString, int perm[]) {
+		StringTokenizer tok = new StringTokenizer(permissionString, "+-", true);
+		int flags = 0;
+		
+		while(tok.hasMoreElements()) {
+			String prefix = tok.nextToken();
+			String suffix = tok.nextToken();
+			switch (suffix.charAt(0)) {
+				case 'R': case 'r':
+					if (prefix.charAt(0) == '+') perm[0] |= I_CmsConstants.C_ACCESS_READ;
+					if (prefix.charAt(0) == '-') perm[1] |= I_CmsConstants.C_ACCESS_READ;
+					break;
+				case 'W': case 'w':
+					if (prefix.charAt(0) == '+') perm[0] |= I_CmsConstants.C_ACCESS_WRITE;
+					if (prefix.charAt(0) == '-') perm[1] |= I_CmsConstants.C_ACCESS_WRITE;				
+					break;
+				case 'V': case 'v':
+					if (prefix.charAt(0) == '+') perm[0] |= I_CmsConstants.C_ACCESS_VISIBLE;
+					if (prefix.charAt(0) == '-') perm[1] |= I_CmsConstants.C_ACCESS_VISIBLE;
+					break;
+				case 'I': case 'i':
+					if (prefix.charAt(0) == '+') flags |= I_CmsConstants.C_ACCESSFLAGS_INHERITED;
+					if (prefix.charAt(0) == '-') flags &= ~I_CmsConstants.C_ACCESSFLAGS_INHERITED;
+					break;
+			}
+		}
+		
+		return flags;
 	}
 }
