@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/07/08 12:29:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/08 15:18:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -87,113 +87,6 @@ public class CmsTouch extends CmsDialog {
         this(new CmsJspActionElement(context, req, res));
     }        
     
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        
-        // set the action for the JSP switch 
-        if (DIALOG_TYPE.equals(getParamAction())) {
-            setAction(ACTION_TOUCH);                            
-        } else if (DIALOG_WAIT.equals(getParamAction())) {
-            setAction(ACTION_WAIT);
-        } else {                        
-            setAction(ACTION_DEFAULT);
-            // build title for touch dialog     
-            setParamTitle(key("title.touch") + ": " + CmsResource.getName(getParamFile()));
-        }      
-    }
-    
-    /**
-     * Creates the "recursive" checkbox for touching subresources of folders.<p>
-     *  
-     * @return the String with the checkbox input field or an empty String for folders.
-     */
-    public String buildCheckRecursive() {
-        StringBuffer retValue = new StringBuffer(256);
-        boolean showCheckBox = false;
-    
-        // determine if current resource is a folder
-        if (CmsResource.isFolder(getParamFile())) {
-            showCheckBox = true;
-        }
-        
-        // show the checkbox only for folders
-        if (showCheckBox) {
-            retValue.append("<tr>\n\t<td colspan=\"2\" style=\"white-space: nowrap;\" unselectable=\"on\">");
-            retValue.append("<input type=\"checkbox\" name=\""+PARAM_RECURSIVE+"\" value=\"true\">&nbsp;"+key("input.changesubresources"));
-            retValue.append("</td>\n</tr>\n");
-        }
-        return retValue.toString();
-    }
-        
-    /**
-     * Performs the resource touching, will be called by the JSP page.<p>
-     * 
-     * @throws JspException if problems including sub-elements occur
-     */
-    public void actionTouch() throws JspException {
-        // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        try {
-            if (performTouchOperation())  {
-                // if no exception is caused and "true" is returned copy operation was successful
-                getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_FILELIST);
-            } else  {
-                // "false" returned, display "please wait" screen
-                getJsp().include(CmsWorkplaceAction.C_PATH_JSP_WORKPLACE_COMMONS + "wait.jsp");
-            }    
-        } catch (CmsException e) {
-            // prepare common message part
-            String message = "<p>\n" 
-                + key("title.touch") + ": " + getParamFile() + "\n</p>\n"; 
-                
-            // error during touching, show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
-            setParamMessage(message + key("error.message." + getParamDialogtype()));
-            getJsp().include(CmsWorkplaceAction.C_PATH_JSP_WORKPLACE_COMMONS + "error.html");
-      
-        }
-    }
-    
-    /**
-     * Performs the resource touching.<p>
-     * 
-     * @return true, if the resource was touched, otherwise false
-     * @throws CmsException if touching is not successful
-     */
-    private boolean performTouchOperation() throws CmsException {
-
-        // on recursive folder touch display "please wait" screen, not for simple file touching
-        if (CmsResource.isFolder(getParamFile()) && "true".equals(getParamRecursive()) && ! DIALOG_WAIT.equals(getParamAction())) {
-            // return false, this will trigger the "please wait" screen
-            return false;
-        }
-
-        // get the current resource name
-        String filename = getParamFile();
-
-        // get the new timestamp for the resource(s) from request parameter
-        long timeStamp;
-        try {
-            timeStamp = Long.parseLong(getParamNewtimestampmillis());
-        } catch (Exception e) {
-            timeStamp = -1;
-        }
-
-        // get the flag if the touch is recursive from request parameter
-        boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());     
-  
-        // now touch the resource(s)
-        if (timeStamp != -1) {
-            getCms().touch(filename, timeStamp, touchRecursive);      
-        }
-        return true;
-}
     
     /**
      * Returns the value of the recursive parameter, 
@@ -257,6 +150,113 @@ public class CmsTouch extends CmsDialog {
      */
     public void setParamNewtimestampmillis(String value) {
         m_paramNewtimestampmillis = value;
-    }  
+    }      
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        
+        // set the action for the JSP switch 
+        if (DIALOG_TYPE.equals(getParamAction())) {
+            setAction(ACTION_TOUCH);                            
+        } else if (DIALOG_WAIT.equals(getParamAction())) {
+            setAction(ACTION_WAIT);
+        } else {                        
+            setAction(ACTION_DEFAULT);
+            // build title for touch dialog     
+            setParamTitle(key("title.touch") + ": " + CmsResource.getName(getParamFile()));
+        }      
+    }
+    
+    /**
+     * Creates the "recursive" checkbox for touching subresources of folders.<p>
+     *  
+     * @return the String with the checkbox input field or an empty String for folders.
+     */
+    public String buildCheckRecursive() {
+        StringBuffer retValue = new StringBuffer(256);
+        boolean showCheckBox = false;
+    
+        // determine if current resource is a folder
+        if (CmsResource.isFolder(getParamFile())) {
+            showCheckBox = true;
+        }
+        
+        // show the checkbox only for folders
+        if (showCheckBox) {
+            retValue.append("<tr>\n\t<td colspan=\"2\" style=\"white-space: nowrap;\" unselectable=\"on\">");
+            retValue.append("<input type=\"checkbox\" name=\""+PARAM_RECURSIVE+"\" value=\"true\">&nbsp;"+key("input.changesubresources"));
+            retValue.append("</td>\n</tr>\n");
+        }
+        return retValue.toString();
+    }
+        
+    /**
+     * Performs the resource touching, will be called by the JSP page.<p>
+     * 
+     * @throws JspException if problems including sub-elements occur
+     */
+    public void actionTouch() throws JspException {
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        try {
+            if (performTouchOperation())  {
+                // if no exception is caused and "true" is returned the touch operation was successful
+                getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_FILELIST);
+            } else  {
+                // "false" returned, display "please wait" screen
+                getJsp().include(CmsWorkplaceAction.C_PATH_JSP_WORKPLACE_COMMONS + "wait.jsp");
+            }    
+        } catch (CmsException e) {
+            // prepare common message part
+            String message = "<p>\n" 
+                + key("title.touch") + ": " + getParamFile() + "\n</p>\n"; 
+                
+            // error during touching, show error dialog
+            setParamErrorstack(e.getStackTraceAsString());
+            setParamMessage(message + key("error.message." + getParamDialogtype()));
+            getJsp().include(CmsWorkplaceAction.C_PATH_JSP_WORKPLACE_COMMONS + "error.html");
+      
+        }
+    }
+    
+    /**
+     * Performs the resource touching.<p>
+     * 
+     * @return true, if the resource was touched, otherwise false
+     * @throws CmsException if touching is not successful
+     */
+    private boolean performTouchOperation() throws CmsException {
 
+        // on recursive folder touch display "please wait" screen, not for simple file touching
+        if (CmsResource.isFolder(getParamFile()) && "true".equals(getParamRecursive()) && ! DIALOG_WAIT.equals(getParamAction())) {
+            // return false, this will trigger the "please wait" screen
+            return false;
+        }
+
+        // get the current resource name
+        String filename = getParamFile();
+
+        // get the new timestamp for the resource(s) from request parameter
+        long timeStamp;
+        try {
+            timeStamp = Long.parseLong(getParamNewtimestampmillis());
+        } catch (Exception e) {
+            timeStamp = -1;
+        }
+
+        // get the flag if the touch is recursive from request parameter
+        boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());     
+  
+        // now touch the resource(s)
+        if (timeStamp != -1) {
+            getCms().touch(filename, timeStamp, touchRecursive);      
+        }
+        return true;
+    }
 }

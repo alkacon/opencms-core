@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/07/08 12:29:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/08 15:18:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -207,16 +207,17 @@ public class CmsMove extends CmsDialog {
         try {
             targetRes = getCms().readFileHeader(target);
         } catch (CmsException e) {}
-        if (!DIALOG_CONFIRMED.equals(getParamAction()) && targetRes != null) {
-            throw new CmsException("The target already exists", CmsException.C_FILE_EXISTS);
-        }
-        
-        
-        // delete existing target resource if confirmed by the user
-        if (DIALOG_CONFIRMED.equals(getParamAction())) {
-            getCms().deleteResource(target);
-        }
-        
+
+        if (targetRes != null) {
+            if (DIALOG_CONFIRMED.equals(getParamAction())) {
+                // delete existing target resource if confirmed by the user
+                getCms().deleteResource(target);
+            } else {
+                // throw exception to indicate that the target exists
+                throw new CmsException("The target already exists", CmsException.C_FILE_EXISTS);
+            }
+        } 
+                
         // move the resource
         getCms().moveResource(getParamFile(), target);
         return true;

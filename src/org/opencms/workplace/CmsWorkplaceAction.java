@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2003/07/08 12:29:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/08 15:18:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -86,8 +86,7 @@ public class CmsWorkplaceAction {
         if (session == null) return;
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
         if (settings == null) return;
-        settings = CmsWorkplace.initWorkplaceSettings(cms, settings);
-        // CmsWorkplace.storeSettings(session, settings);        
+        settings = CmsWorkplace.initWorkplaceSettings(cms, settings);    
     }
     
     /**
