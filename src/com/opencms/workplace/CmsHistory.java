@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2001/02/12 10:47:43 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/02/22 15:29:06 $
+* Version: $Revision: 1.19 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2001/02/12 10:47:43 $
+ * @version $Revision: 1.19 $ $Date: 2001/02/22 15:29:06 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -163,7 +163,9 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                         long updated = cms.readProject(file).getPublishingDate();
                         String userName = cms.readUser(file.getResourceLastModifiedBy()).getName();
                         long lastModified = file.getDateLastModified();
-                        String output = projectName + ": " +Utils.getNiceDate(updated) + ", " + userName + " (" +Utils.getNiceDate(lastModified)+")";
+                        String output = Utils.getNiceDate(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                        + Utils.getNiceDate(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                        + userName;
                         names.addElement(output);
                         values.addElement(projectId);
                     }

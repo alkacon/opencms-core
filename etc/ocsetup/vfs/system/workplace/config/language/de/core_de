@@ -495,7 +495,7 @@
 			<group>Gruppe</group>
 			<groupsprojectmanager>Projektleiter</groupsprojectmanager>
 			<groupsprojectworker>Projektmitarbeiter</groupsprojectworker>
-			<historyheader>Projekt: Veröffentlicht am, Bearbeitet von (Zuletzt bearbeitet am)</historyheader>
+			<historyheader><![CDATA[Zuletzt bearbeitet am&nbsp;&nbsp;&nbsp;&nbsp;Veröffentlicht am&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bearbeitet von]]></historyheader>
 			<imagelist>Bilderliste</imagelist>
 			<inactive>nicht aktiv</inactive>
 			<link>Verknüpfung</link>

@@ -492,7 +492,7 @@
 			<group>Group</group>
 			<groupsprojectmanager>Manager Group</groupsprojectmanager>
 			<groupsprojectworker>User Group</groupsprojectworker>
-			<historyheader>Project: Published at, Edited by (Last edited at)</historyheader>
+			<historyheader><![CDATA[Last edited at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edited by]]></historyheader>
 		 	<imagelist>Imagelist</imagelist>
 			<inactive>inactive</inactive>
 			<link>Link</link>
