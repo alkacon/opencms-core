@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/01/12 10:06:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/22 14:12:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,24 +31,35 @@
 
 package com.opencms.file;
 
+import org.opencms.loader.CmsXmlPageLoader;
+import org.opencms.lock.CmsLock;
+import org.opencms.main.OpenCms;
+import org.opencms.page.CmsPageException;
+import org.opencms.page.CmsXmlPage;
+import org.opencms.staticexport.CmsLink;
+import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.validation.I_CmsHtmlLinkValidatable;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 
-import org.opencms.loader.CmsXmlPageLoader;
-import org.opencms.lock.CmsLock;
-
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Describes the resource type "xmlpage".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
-public class CmsResourceTypeXmlPage extends A_CmsResourceType {
+public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
 
     /** The type id of this resource */
     public static final int C_RESOURCE_TYPE_ID = 10;
@@ -117,4 +128,70 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType {
     public boolean isDirectEditable() {
         return true;
     }
+    
+    /**
+     * @see org.opencms.validation.I_CmsHtmlLinkValidatable#findLinks(com.opencms.file.CmsObject, com.opencms.file.CmsResource)
+     */
+    public List findLinks(CmsObject cms, CmsResource resource) {
+        List links = (List) new ArrayList();
+        CmsFile file = null;
+        CmsXmlPage xmlPage = null;
+        Set languages = null;
+        String languageName = null;
+        List elementNames = null;
+        String elementName = null;
+        CmsLinkTable linkTable = null;
+        String linkName = null;
+        CmsLink link = null;
+
+        try {
+            file = cms.readFile(cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error reading file content of " + resource.getRootPath(), e);
+            }
+
+            return Collections.EMPTY_LIST;
+        }
+
+        try {
+            xmlPage = CmsXmlPage.read(cms, file);
+            languages = xmlPage.getLanguages();
+
+            // iterate over all languages
+            Iterator i = languages.iterator();
+            while (i.hasNext()) {
+                languageName = (String) i.next();
+                elementNames = xmlPage.getNames(languageName);
+
+                // iterate over all body elements per language
+                Iterator j = elementNames.iterator();
+                while (j.hasNext()) {
+                    elementName = (String) j.next();
+                    linkTable = xmlPage.getLinkTable(elementName, languageName);
+
+                    // iterate over all links inside a body element
+                    Iterator k = linkTable.iterator();
+                    while (k.hasNext()) {
+                        linkName = (String) k.next();
+                        link = linkTable.getLink(linkName);
+
+                        // external links are ommitted
+                        if (link.isInternal()) {
+                            links.add(link.getTarget());
+                        }
+                    }
+                }
+            }
+        } catch (CmsPageException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error processing HTML content of " + resource.getRootPath(), e);
+            }
+
+            return Collections.EMPTY_LIST;
+        }
+
+        return links;
+    }
+    
 }

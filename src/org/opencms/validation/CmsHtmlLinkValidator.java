@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/01/21 10:30:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/22 14:12:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,39 +33,34 @@ package org.opencms.validation;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsPageException;
-import org.opencms.page.CmsXmlPage;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.staticexport.CmsLink;
-import org.opencms.staticexport.CmsLinkTable;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypePlain;
-import com.opencms.file.CmsResourceTypeXmlPage;
+import com.opencms.file.I_CmsResourceType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
- * Validates HTML links (hrefs and img attribs. in anchor and image tags) in the (body) content of 
- * resources from the OpenCms VFS.<p>
+ * Validates HTML links in the (body) content of Cms resources in the OpenCms VFS. HTML links are 
+ * considered as href attribs in anchor tags and src attribs in image tags.<p>
  * 
- * Only plain (text) files and XML pages are supported by this validator currently.<p>
+ * Validating links means to answer the question, whether we would have broken links in the 
+ * online project if a file or a list of files would get published. External links to targets 
+ * outside the OpenCms VFS don't get validated.<p>
+ * 
+ * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/01/21 10:30:34 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/22 14:12:02 $
+ * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
 
@@ -121,13 +116,13 @@ public class CmsHtmlLinkValidator extends Object {
      */
     public Map validateResources(CmsObject cms, List offlineFiles, I_CmsReport report) {
         CmsResource resource = null;
-        int resourceType = I_CmsConstants.C_UNKNOWN_ID;
         List brokenLinks = null;
         Map offlineFilesLookup = null;
         List links = null;
         Map invalidResources = (Map) new HashMap();
         String resourceName = null;
         int index = I_CmsConstants.C_UNKNOWN_ID;
+        I_CmsResourceType resourceType = null;
 
         report.println(report.key("report.linkvalidation.begin"), I_CmsReport.C_FORMAT_HEADLINE);
 
@@ -143,41 +138,33 @@ public class CmsHtmlLinkValidator extends Object {
         while (i.hasNext()) {
             brokenLinks = null;
             resource = (CmsResource) i.next();
-            resourceType = resource.getType();
             resourceName = resource.getRootPath();
 
-            if (resource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                // continue if the current resource is deleted
-                continue;
-            }
+            try {
+                if ((resourceType = cms.getResourceType(resource.getType())) instanceof I_CmsHtmlLinkValidatable) {
+                    report.print(report.key("report.linkvalidation.file"), I_CmsReport.C_FORMAT_NOTE);
+                    report.print(resourceName);
+                    report.print(report.key("report.dots"));
 
-            if (resourceType != CmsResourceTypePlain.C_RESOURCE_TYPE_ID && resourceType != CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
-                // continue if the current resource type won't get handled here
-                continue;
-            }
+                    links = ((I_CmsHtmlLinkValidatable) resourceType).findLinks(cms, resource);
 
-            report.print(report.key("report.linkvalidation.file"), I_CmsReport.C_FORMAT_NOTE);
-            report.print(resourceName);
-            report.print(report.key("report.dots"));
+                    if (links.size() > 0) {
+                        brokenLinks = validateLinks(links, offlineFilesLookup);
+                    }
 
-            // the (body) content of plain and xml page resources gets validated            
-            if (resourceType == CmsResourceTypePlain.C_RESOURCE_TYPE_ID) {
-                links = findPlainLinks(cms, resource);
-            } else if (resourceType == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
-                links = findXmlPageLinks(cms, resource);
-            }
-
-            if (links.size() > 0) {
-                brokenLinks = validateLinks(links, offlineFilesLookup);
-            }
-
-            if (brokenLinks != null && brokenLinks.size() > 0) {
-                // the resource contains broken links
-                invalidResources.put(resourceName, brokenLinks);
-                report.println(report.key("report.linkvalidation.file.has_broken_links"), I_CmsReport.C_FORMAT_WARNING);
-            } else {
-                // the resource contains *NO* broken links
-                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    if (brokenLinks != null && brokenLinks.size() > 0) {
+                        // the resource contains broken links
+                        invalidResources.put(resourceName, brokenLinks);
+                        report.println(report.key("report.linkvalidation.file.has_broken_links"), I_CmsReport.C_FORMAT_WARNING);
+                    } else {
+                        // the resource contains *NO* broken links
+                        report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    }
+                }
+            } catch (CmsException e) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error retrieving resource type of " + resourceName, e);
+                }
             }
         }
 
@@ -204,14 +191,9 @@ public class CmsHtmlLinkValidator extends Object {
         while (i.hasNext()) {
             link = ((String) i.next()).trim();
             isValidLink = true;
-            
+
             if (validatedLinks.contains(link)) {
                 // skip links that are already validated
-                continue;
-            }
-
-            if (link.startsWith("http") || link.startsWith("HTTP")) {
-                // skip external WWW resources
                 continue;
             }
 
@@ -239,135 +221,11 @@ public class CmsHtmlLinkValidator extends Object {
             if (!isValidLink) {
                 brokenLinks.add(link);
             }
-            
+
             validatedLinks.add(link);
         }
 
         return brokenLinks;
-    }
-
-    /**
-     * Returns a list with the URIs of all linked resources (either via href attribs or img tags) 
-     * inside the specified file content string.<p>
-     * 
-     * @param cms the current user's Cms object
-     * @param resource a CmsResource with links
-     * @return a list with the URIs of all linked resources (either via href attribs or img tags)
-     */
-    protected List findPlainLinks(CmsObject cms, CmsResource resource) {
-        List links = (List) new ArrayList();
-        String link = null;
-        Pattern pattern = null;
-        Matcher matcher = null;
-        String encoding = null;
-        String defaultEncoding = null;
-        CmsFile file = null;
-        String content = null;
-
-        try {
-            file = m_driverManager.readFile(cms.getRequestContext(), resource.getRootPath());
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error reading file content of " + resource.getRootPath(), e);
-            }
-
-            return Collections.EMPTY_LIST;
-        }
-
-        try {
-            defaultEncoding = cms.getRequestContext().getEncoding();
-            encoding = m_driverManager.readProperty(cms.getRequestContext(), resource.getRootPath(), cms.getRequestContext().getAdjustedSiteRoot(resource.getRootPath()), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, defaultEncoding);
-            content = new String(file.getContents(), encoding);
-        } catch (Exception e) {
-            content = new String(file.getContents());
-        }
-
-        // regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags
-        // don't forget to update the group index on the matcher after changing the regex!
-        int flags = Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL;
-        pattern = Pattern.compile("<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>", flags);
-
-        matcher = pattern.matcher(content);
-        while (matcher.find()) {
-            link = matcher.group(6);
-
-            if (link.length() > 0 && !link.startsWith("]") && !link.endsWith("[")) {
-                // skip href or src attribs split inside CDATA sections by the XML template mechanism
-                links.add(link);
-            }
-        }
-
-        return links;
-    }
-
-    /**
-     * Returns a list with the URIs of all linked resources (either via href attribs or img tags)
-     * listed in the link table of a XML page.<p>
-     * 
-     * @param cms the current user's Cms object
-     * @param resource a CmsResource with links
-     * @return a list with the URIs of all linked resources (either via href attribs or img tags)
-     */
-    protected List findXmlPageLinks(CmsObject cms, CmsResource resource) {
-        List links = (List) new ArrayList();
-        CmsFile file = null;
-        CmsXmlPage xmlPage = null;
-        Set languages = null;
-        String languageName = null;
-        List elementNames = null;
-        String elementName = null;
-        CmsLinkTable linkTable = null;
-        String linkName = null;
-        CmsLink link = null;
-
-        try {
-            file = m_driverManager.readFile(cms.getRequestContext(), resource.getRootPath());
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error reading file content of " + resource.getRootPath(), e);
-            }
-
-            return Collections.EMPTY_LIST;
-        }
-
-        try {
-            xmlPage = CmsXmlPage.read(cms, file);
-            languages = xmlPage.getLanguages();
-
-            // iterate over all languages
-            Iterator i = languages.iterator();
-            while (i.hasNext()) {
-                languageName = (String) i.next();
-                elementNames = xmlPage.getNames(languageName);
-
-                // iterate over all body elements per language
-                Iterator j = elementNames.iterator();
-                while (j.hasNext()) {
-                    elementName = (String) j.next();
-                    linkTable = xmlPage.getLinkTable(elementName, languageName);
-
-                    // iterate over all links inside a body element
-                    Iterator k = linkTable.iterator();
-                    while (k.hasNext()) {
-                        linkName = (String) k.next();
-                        link = linkTable.getLink(linkName);
-
-                        // external links are ommitted
-                        if (link.isInternal()) {
-                            links.add(link.getTarget());
-                        }
-                    }
-                }
-            }
-        } catch (CmsPageException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error processing HTML content of " + resource.getRootPath(), e);
-            }
-
-            return Collections.EMPTY_LIST;
-        }
-
-        return links;
     }
 
 }
