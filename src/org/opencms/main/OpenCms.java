@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/03/19 17:45:01 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/10 12:30:27 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public final class OpenCms {
     
@@ -232,6 +232,27 @@ public final class OpenCms {
      */
     public static CmsRegistry getRegistry() {
         return OpenCmsCore.getInstance().getRegistry();
+    }
+    
+    /**
+     * Returns the current OpenCms run level.<p>
+     * 
+     * The following runlevels are defined:
+     * <dl>
+     * <dt>Runlevel 1:</dt><dd>
+     * OpenCms instance available, but configuration has not been processed. 
+     * No database or VFS available.</dd>
+     * <dt>Runlevel 2:</dt><dd>
+     * OpenCms database and VFS available, but http processing (i.e. servlet) not initialized.
+     * This is the runlevel the OpenCms shell operates in.</dd>
+     * <dt>Runlevel 3:</dt><dd>
+     * OpenCms fully initialized. This is the "default" when OpenCms is in normal operation.</dd>
+     * </ol>
+     * 
+     * @return the OpenCms run level
+     */
+    public static int getRunLevel() {
+        return OpenCmsCore.getInstance().getRunLevel();
     }
 
     /** 
