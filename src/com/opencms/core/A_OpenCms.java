@@ -1,11 +1,10 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2001/01/24 09:41:40 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2001/02/01 21:41:43 $
+* Version: $Revision: 1.13 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +12,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -37,33 +36,33 @@ import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 
 /**
- * Abstract class for the main class of the OpenCms system. 
+ * Abstract class for the main class of the OpenCms system.
  * <p>
- * It is used to read a requested resource from the OpenCms System and forward it to 
+ * It is used to read a requested resource from the OpenCms System and forward it to
  * a launcher, which is performs the output of the requested resource. <br>
- * 
+ *
  * The OpenCms class is independent of access module to the OpenCms (e.g. Servlet,
  * Command Shell), therefore this class is <b>not</b> responsible for user authentification.
  * This is done by the access module to the OpenCms.
- *   
+ *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2001/01/24 09:41:40 $  
- * 
+ * @version $Revision: 1.13 $ $Date: 2001/02/01 21:41:43 $
+ *
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
-    
+
     /** Reference to the system log */
     private static CmsLog c_cmsLog = null;
-    
+
     /** Indicates if the system log is initialized */
     protected static boolean c_servletLogging = false;
-    
+
     /**
      * Destructor, called when the the servlet is shut down.
      */
     abstract void destroy() throws CmsException;
-    
+
     /**
      * Initializes the logging mechanism of the Jserv
      * @param configurations the configurations needed at initialization.
@@ -72,20 +71,20 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
         c_cmsLog = new CmsLog("log", config);
         c_servletLogging = true;
     }
-    
+
     /**
-     * This method gets the requested document from the OpenCms and returns it to the 
+     * This method gets the requested document from the OpenCms and returns it to the
      * calling module.
-     * 
+     *
      * @param cms The CmsObject containing all information about the requested document
      * and the requesting user.
      * @return CmsFile object.
      */
     abstract CmsFile initResource(CmsObject cms) throws CmsException,IOException;
-    
+
     /**
      * Inits a new user and sets it into the overgiven cms-object.
-     * 
+     *
      * @param cms the cms-object to use.
      * @param cmsReq the cms-request for this http-request.
      * @param cmsRes the cms-response for this http-request.
@@ -93,9 +92,9 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param group The name of the current group.
      * @param project The id of the current project.
      */
-    abstract public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, 
+    abstract public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes,
         String user, String group, int project) throws CmsException;
-    
+
     /**
      * Checks if the system logging is active.
      * @return <code>true</code> if the logging is active, <code>false</code> otherwise.
@@ -108,7 +107,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
             return true;
         }
     }
-    
+
     /**
      * Logs a message into the OpenCms logfile.
      * If the logfile was not initialized (e.g. due tue a missing
@@ -125,43 +124,43 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
             System.err.println(message);
         }
     }
-    
+
     /**
-     * This method loads old sessiondata from the database. It is used 
+     * This method loads old sessiondata from the database. It is used
      * for sessionfailover.
-     * 
+     *
      * @param oldSessionId the id of the old session.
      * @return the old sessiondata.
      */
     abstract Hashtable restoreSession(String oldSessionId) throws CmsException;
-    
+
     /**
      * Sets the mimetype of the response.<br>
      * The mimetype is selected by the file extension of the requested document.
-     * If no available mimetype is found, it is set to the default 
+     * If no available mimetype is found, it is set to the default
      * "application/octet-stream".
-     * 
+     *
      * @param cms The actual OpenCms object.
      * @param file The requested document.
-     * 
+     *
      */
     abstract void setResponse(CmsObject cms, CmsFile file);
-    
+
     /**
-     * Selects the appropriate launcher for a given file by analyzing the 
-     * file's launcher id and calls the initlaunch() method to initiate the 
+     * Selects the appropriate launcher for a given file by analyzing the
+     * file's launcher id and calls the initlaunch() method to initiate the
      * generating of the output.
-     * 
+     *
      * @param cms CmsObject containing all document and user information
      * @param file CmsFile object representing the selected file.
      * @exception CmsException
      */
     abstract public void showResource(CmsObject cms, CmsFile file) throws CmsException;
-    
+
     /**
-     * This method stores sessiondata into the database. It is used 
+     * This method stores sessiondata into the database. It is used
      * for sessionfailover.
-     * 
+     *
      * @param sessionId the id of the session.
      * @param isNew determines, if the session is new or not.
      * @return data the sessionData.

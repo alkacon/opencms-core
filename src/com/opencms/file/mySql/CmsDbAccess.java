@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/01 17:00:13 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2001/02/01 21:41:45 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.47 $ $Date: 2001/02/01 17:00:13 $ *
+ * @version $Revision: 1.48 $ $Date: 2001/02/01 21:41:45 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -1101,59 +1101,7 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename) thr
 	}
 	return file;
 }
-/**
- * Reads a session from the database.
- *
- * @param sessionId, the id og the session to read.
- * @return the read session as Hashtable.
- * @exception thorws CmsException if something goes wrong.
- */
-public Hashtable readSession(String sessionId) throws CmsException {
-	PreparedStatement statement = null;
-	ResultSet res = null;
-	Hashtable session = null;
-	Connection con = null;
-	try {
-		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareStatement(m_cq.C_SESSION_READ);
-		statement.setString(1, sessionId);
-		statement.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT));
-		res = statement.executeQuery();
 
-		// create new Cms user object
-		if (res.next()) {
-			// read the additional infos.
-			byte[] value = res.getBytes(1);
-			// now deserialize the object
-			ByteArrayInputStream bin = new ByteArrayInputStream(value);
-			ObjectInputStream oin = new ObjectInputStream(bin);
-			session = (Hashtable) oin.readObject();
-		} else {
-			deleteSessions();
-		}
-	} catch (SQLException e) {
-		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		// close all db-resources
-		if(statement != null) {
-			 try {
-				 statement.close();
-			 } catch(SQLException exc) {
-				 // nothing to do here
-			 }
-		}
-		if(con != null) {
-			 try {
-				 con.close();
-			 } catch(SQLException exc) {
-				 // nothing to do here
-			 }
-		}
-	}
-	return session;
-}
 /**
  * Reads a task from the Cms.
  *

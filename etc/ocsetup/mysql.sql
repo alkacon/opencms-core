@@ -118,6 +118,7 @@ create table CMS_SYSTEMID               (TABLE_KEY varchar(255) not null,
 create table CMS_SESSIONS               (SESSION_ID varchar(255) not null,
                                          SESSION_LASTUSED datetime not null,
 										 SESSION_DATA mediumblob not null,
+										 index session_lastused (SESSION_LASTUSED),
                                          primary key(SESSION_ID));
 										 
 #
