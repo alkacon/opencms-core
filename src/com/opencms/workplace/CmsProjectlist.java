@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
- * Date   : $Date: 2000/06/09 09:40:46 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/08/08 14:08:32 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/06/09 09:40:46 $
+ * @version $Revision: 1.17 $ $Date: 2000/08/08 14:08:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -53,78 +53,64 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 	 * Javascriptmethod, to call for contextlink
 	 */
 	private static final String C_PROJECT_LOCK = "project_lock";
-            
+			
 	/**
 	 * Javascriptmethod, to call for contextlink
 	 */
 	private static final String C_PROJECT_UNLOCK = "project_unlock";
-            
-    /**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }
-
+			
 	/**
-     * Handling of the special workplace <CODE>&lt;PROJECTLIST&gt;</CODE> tags.
-     * <P>
-     * Returns the processed code with the actual elements.
-     * <P>
-     * Projectlists can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
-     * <CODE>&lt;PROJECTLIST /&gt;</CODE>
-     * 
-     * @param cms CmsObject Object for accessing resources.
-     * @param n XML element containing the <code>&lt;ICON&gt;</code> tag.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param callingObject reference to the calling object <em>(not used here)</em>.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @param lang CmsXmlLanguageFile conataining the currently valid language file.
-     * @return Processed button.
-     * @exception CmsException
-     */    
-    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        // Read projectlist parameters
-        String listMethod = n.getAttribute(C_PROJECTLIST_METHOD);
-        
-        // Get list definition and language values
-        CmsXmlWpTemplateFile listdef = getProjectlistDefinitions(cms);
-        
-        // call the method for generating projectlist elements
-        Method callingMethod = null;
-		Vector list = new Vector();
-        try {
-            callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class});
-            list = (Vector)callingMethod.invoke(callingObject, new Object[] {cms, lang});
-        } catch(NoSuchMethodException exc) {
-            // The requested method was not found.
-            throwException("Could not find method " + listMethod + " in calling class " + callingObject.getClass().getName() + " for generating projectlist content.", CmsException.C_NOT_FOUND);
-        } catch(InvocationTargetException targetEx) {
-            // the method could be invoked, but throwed a exception
-            // itself. Get this exception and throw it again.              
-            Throwable e = targetEx.getTargetException();
-            if(!(e instanceof CmsException)) {
-                // Only print an error if this is NO CmsException
-                throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
-            } else {
-                // This is a CmsException
-                // Error printing should be done previously.
-                throw (CmsException)e;
-            }
-        } catch(Exception exc2) {
-            throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
-        }
+	 * Handling of the special workplace <CODE>&lt;PROJECTLIST&gt;</CODE> tags.
+	 * <P>
+	 * Returns the processed code with the actual elements.
+	 * <P>
+	 * Projectlists can be referenced in any workplace template by <br>
+	 * // TODO: insert correct syntax here!
+	 * <CODE>&lt;PROJECTLIST /&gt;</CODE>
+	 * 
+	 * @param cms CmsObject Object for accessing resources.
+	 * @param n XML element containing the <code>&lt;ICON&gt;</code> tag.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+	 * @param callingObject reference to the calling object <em>(not used here)</em>.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @param lang CmsXmlLanguageFile conataining the currently valid language file.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */    
+	public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+		// Read projectlist parameters
+		String listMethod = n.getAttribute(C_PROJECTLIST_METHOD);
 		
-        /** StringBuffer for the generated output */
-        StringBuffer result = new StringBuffer();
+		// Get list definition and language values
+		CmsXmlWpTemplateFile listdef = getProjectlistDefinitions(cms);
+		
+		// call the method for generating projectlist elements
+		Method callingMethod = null;
+		Vector list = new Vector();
+		try {
+			callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class});
+			list = (Vector)callingMethod.invoke(callingObject, new Object[] {cms, lang});
+		} catch(NoSuchMethodException exc) {
+			// The requested method was not found.
+			throwException("Could not find method " + listMethod + " in calling class " + callingObject.getClass().getName() + " for generating projectlist content.", CmsException.C_NOT_FOUND);
+		} catch(InvocationTargetException targetEx) {
+			// the method could be invoked, but throwed a exception
+			// itself. Get this exception and throw it again.              
+			Throwable e = targetEx.getTargetException();
+			if(!(e instanceof CmsException)) {
+				// Only print an error if this is NO CmsException
+				throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+			} else {
+				// This is a CmsException
+				// Error printing should be done previously.
+				throw (CmsException)e;
+			}
+		} catch(Exception exc2) {
+			throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+		}
+		
+		/** StringBuffer for the generated output */
+		StringBuffer result = new StringBuffer();
 		String state = C_PROJECTLIST_STATE_UNLOCKED;
 		String snaplock = listdef.getProcessedDataValue(C_TAG_PROJECTLIST_SNAPLOCK,
 														   callingObject, parameters);
@@ -156,8 +142,20 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 			result.append(listdef.getProcessedDataValue(C_TAG_PROJECTLIST_DEFAULT, callingObject, parameters));
 		}		
 		return result.toString();
-    }
-
+	}
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}
 	/**
 	 * Method to set details about a project into xml-datas.
 	 * @param cms The cms-object.

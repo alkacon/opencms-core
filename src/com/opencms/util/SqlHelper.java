@@ -1,7 +1,9 @@
+package com.opencms.util;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/SqlHelper.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/08/08 14:08:29 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.util;
-
 import com.opencms.core.*;
 import java.sql.*;
 
@@ -35,7 +35,7 @@ import java.sql.*;
  * This is a helper class for sql queries.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.7 $ $Date: 2000/08/08 14:08:29 $
  */
 public class SqlHelper {
 	

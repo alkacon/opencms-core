@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpButtonsDefFile.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/08 14:08:34 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
@@ -43,140 +43,125 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/08 14:08:34 $
  */
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent 
-        implements I_CmsLogChannels, I_CmsWpConstants {
+		implements I_CmsLogChannels, I_CmsWpConstants {
 
-    /**
-     * Default constructor.
-     */
-    public CmsXmlWpButtonsDefFile() throws CmsException {
-        super();
-    }
-    
-    /**
-     * Constructor for creating a new object containing the content
-     * of the given filename.
-     * 
-     * @param cms CmsObject object for accessing system resources.
-     * @param filename Name of the body file that shoul be read.
-     */        
-    public CmsXmlWpButtonsDefFile(CmsObject cms, String filename) throws CmsException {
-        super();
-        init(cms, filename);
-    }
-
-    /**
-     * Constructor for creating a new object containing the content
-     * of the given filename.
-     * 
-     * @param cms CmsObject object for accessing system resources.
-     * @param filename Name of the body file that shoul be read.
-     */        
-    public CmsXmlWpButtonsDefFile(CmsObject cms, CmsFile file) throws CmsException {
-        super();
-        init(cms, file);
-    }        
-        
-    /**
-     * Gets the expected tagname for the XML documents of this content type
-     * @return Expected XML tagname.
-     */
-    public String getXmlDocumentTagName() {
-        return "WP_BUTTONS";
-    }
-    
-    /**
-     * Gets a description of this content type.
-     * @return Content type description.
-     */
-    public String getContentDescription() {
-        return "OpenCms workplace buttons definition";
-    }    
-
-    /**
-     * Gets the processed data for a button.
-     * @return Processed button.
-     * @exception CmsException
-     */
-    public String getButton(String name, String action, String alt, String href, Object callingObject) throws CmsException {
-        setData("name", name);
-        setData("action", action);
-        setData("alt", alt);
-        setData("href", href);
-        return getProcessedDataValue("defaultbutton", callingObject);                
-    }        
-
-    /**
-     * Gets the processed data for a deactivated button.
-     * @return Processed button.
-     * @exception CmsException
-     */
-    public String getDeactivatedButton(String name, String action, String alt, String href, Object callingObject) throws CmsException {
-        setData("name", name);
-        setData("action", action);
-        setData("alt", alt);
-        setData("href", href);
-        return getProcessedDataValue("deactivatedbutton", callingObject);                
-    }        
-    
-    /**
-     * Gets the processed data for a javascript button.
-     * @return Processed button.
-     * @exception CmsException
-     */
-    public String getJavascriptButton(String name, String action, String alt, String href, Object callingObject) throws CmsException {
-        setData("name", name);
-        setData("action", action);
-        setData("alt", alt);
-        setData("href", href);
-        return getProcessedDataValue("javascriptbutton", callingObject);                
-    }       
-    
-    
-    
-    
-    /**
-     * Gets the processed data for a button separator.
-     * @return Processed button separator.
-     * @exception CmsException
-     */
-    public String getButtonSeparator(Object callingObject) throws CmsException {
-        return getProcessedDataValue("buttonseparator", callingObject);
-    }    
-    
-     /**
-     * Gets the processed data for a submit button.
-     * @return Processed button.
-     * @exception CmsException
-     */
-    public String getButtonSubmit(String name, String action, 
-                                  String value, String style, String width)
-        throws CmsException {
-        setData(C_BUTTON_NAME, name);
-        setData(C_BUTTON_ACTION, action);
-        setData(C_BUTTON_VALUE, value);
-        setData(C_BUTTON_STYLE, style);
-        setData(C_BUTTON_WIDTH,width);
-        return getProcessedDataValue("submitbutton");                
-    }  
-
-    /**
-     * Gets the processed data for a text button.
-     * @return Processed button.
-     * @exception CmsException
-     */
-    public String getButtonText(String name, String action, 
-                                  String value, String style, String width)
-        throws CmsException {
-        setData(C_BUTTON_NAME, name);
-        setData(C_BUTTON_ACTION, action);
-        setData(C_BUTTON_VALUE, value);
-        setData(C_BUTTON_STYLE, style);
-        setData(C_BUTTON_WIDTH, width);
-        return getProcessedDataValue("textbutton");                
-    }  
-
-
+	/**
+	 * Default constructor.
+	 */
+	public CmsXmlWpButtonsDefFile() throws CmsException {
+		super();
+	}
+	/**
+	 * Constructor for creating a new object containing the content
+	 * of the given filename.
+	 * 
+	 * @param cms CmsObject object for accessing system resources.
+	 * @param filename Name of the body file that shoul be read.
+	 */        
+	public CmsXmlWpButtonsDefFile(CmsObject cms, CmsFile file) throws CmsException {
+		super();
+		init(cms, file);
+	}
+	/**
+	 * Constructor for creating a new object containing the content
+	 * of the given filename.
+	 * 
+	 * @param cms CmsObject object for accessing system resources.
+	 * @param filename Name of the body file that shoul be read.
+	 */        
+	public CmsXmlWpButtonsDefFile(CmsObject cms, String filename) throws CmsException {
+		super();
+		init(cms, filename);
+	}
+	/**
+	 * Gets the processed data for a button.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */
+	public String getButton(String name, String action, String alt, String href, Object callingObject) throws CmsException {
+		setData("name", name);
+		setData("action", action);
+		setData("alt", alt);
+		setData("href", href);
+		return getProcessedDataValue("defaultbutton", callingObject);                
+	}
+	/**
+	 * Gets the processed data for a button separator.
+	 * @return Processed button separator.
+	 * @exception CmsException
+	 */
+	public String getButtonSeparator(Object callingObject) throws CmsException {
+		return getProcessedDataValue("buttonseparator", callingObject);
+	}
+	 /**
+	 * Gets the processed data for a submit button.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */
+	public String getButtonSubmit(String name, String action, 
+								  String value, String style, String width)
+		throws CmsException {
+		setData(C_BUTTON_NAME, name);
+		setData(C_BUTTON_ACTION, action);
+		setData(C_BUTTON_VALUE, value);
+		setData(C_BUTTON_STYLE, style);
+		setData(C_BUTTON_WIDTH,width);
+		return getProcessedDataValue("submitbutton");                
+	}
+	/**
+	 * Gets the processed data for a text button.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */
+	public String getButtonText(String name, String action, 
+								  String value, String style, String width)
+		throws CmsException {
+		setData(C_BUTTON_NAME, name);
+		setData(C_BUTTON_ACTION, action);
+		setData(C_BUTTON_VALUE, value);
+		setData(C_BUTTON_STYLE, style);
+		setData(C_BUTTON_WIDTH, width);
+		return getProcessedDataValue("textbutton");                
+	}
+	/**
+	 * Gets a description of this content type.
+	 * @return Content type description.
+	 */
+	public String getContentDescription() {
+		return "OpenCms workplace buttons definition";
+	}
+	/**
+	 * Gets the processed data for a deactivated button.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */
+	public String getDeactivatedButton(String name, String action, String alt, String href, Object callingObject) throws CmsException {
+		setData("name", name);
+		setData("action", action);
+		setData("alt", alt);
+		setData("href", href);
+		return getProcessedDataValue("deactivatedbutton", callingObject);                
+	}
+	/**
+	 * Gets the processed data for a javascript button.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */
+	public String getJavascriptButton(String name, String action, String alt, String href, Object callingObject) throws CmsException {
+		setData("name", name);
+		setData("action", action);
+		setData("alt", alt);
+		setData("href", href);
+		return getProcessedDataValue("javascriptbutton", callingObject);                
+	}
+	/**
+	 * Gets the expected tagname for the XML documents of this content type
+	 * @return Expected XML tagname.
+	 */
+	public String getXmlDocumentTagName() {
+		return "WP_BUTTONS";
+	}
 }

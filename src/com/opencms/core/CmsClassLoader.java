@@ -1,7 +1,9 @@
+package com.opencms.core;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
- * Date   : $Date: 2000/07/11 08:49:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/08/08 14:08:20 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -83,8 +85,6 @@
  *
  */
 
-package com.opencms.core;
-
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -111,158 +111,212 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/07/11 08:49:56 $
+ * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:20 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 
-    /** Boolean for additional debug output control */
-    private static final boolean C_DEBUG = false;
+	/** Boolean for additional debug output control */
+	private static final boolean C_DEBUG = false;
 
-    /**
-     * Generation counter, incremented for each classloader as they are
-     * created.
-     */
-    static private int generationCounter = 0;
+	/**
+	 * Generation counter, incremented for each classloader as they are
+	 * created.
+	 */
+	static private int generationCounter = 0;
 
-    /**
-     * Generation number of the classloader, used to distinguish between
-     * different instances.
-     */
-    private int generation;
+	/**
+	 * Generation number of the classloader, used to distinguish between
+	 * different instances.
+	 */
+	private int generation;
 
-    /**
-     * Cache of the loaded classes. This contains Classes keyed
-     * by class names.
-     */
-    private Hashtable cache;
+	/**
+	 * Cache of the loaded classes. This contains Classes keyed
+	 * by class names.
+	 */
+	private Hashtable cache;
 
-    /**
-     * The classpath which this classloader searches for class definitions.
-     * Each element of the vector should be a String that desribes a cms folder.
-     */
-    private Vector repository;
-    
-    private CmsObject m_cms;
-    
-    /**
-     * Creates a new class loader that will load classes from specified
-     * class repositories.
-     *
-     * @param cms CmsObject Object to get access to system resources
-     * @param classRepository An set of Strings indicating directories.
-     * @param parent Parent classloader that should be called first before 
-     *        trying to load classes from the opencms system.
-     * @throw java.lang.IllegalArgumentException if the objects contained
-     *        in the vector are not valid cms folders.
-     */
-    public CmsClassLoader(CmsObject cms, Vector classRepository, ClassLoader parent)
-        throws IllegalArgumentException { 
+	/**
+	 * The classpath which this classloader searches for class definitions.
+	 * Each element of the vector should be a String that desribes a cms folder.
+	 */
+	private Vector repository;
+	
+	private CmsObject m_cms;
+	
+	/**
+	 * Creates a new class loader that will load classes from specified
+	 * class repositories.
+	 *
+	 * @param cms CmsObject Object to get access to system resources
+	 * @param classRepository An set of Strings indicating directories.
+	 * @param parent Parent classloader that should be called first before 
+	 *        trying to load classes from the opencms system.
+	 * @throw java.lang.IllegalArgumentException if the objects contained
+	 *        in the vector are not valid cms folders.
+	 */
+	public CmsClassLoader(CmsObject cms, Vector classRepository, ClassLoader parent)
+		throws IllegalArgumentException { 
 
-        // Create the cache of loaded classes
-        cache = new Hashtable();
+		// Create the cache of loaded classes
+		cache = new Hashtable();
 
-        // Verify that all the repository are valid.
-        
-        if(classRepository == null) {
-            classRepository = new Vector();
-        }
-        
-        Enumeration e = classRepository.elements();
-        while(e.hasMoreElements()) {
-            Object o = e.nextElement();
-            String file;
+		// Verify that all the repository are valid.
+		
+		if(classRepository == null) {
+			classRepository = new Vector();
+		}
+		
+		Enumeration e = classRepository.elements();
+		while(e.hasMoreElements()) {
+			Object o = e.nextElement();
+			String file;
 
-            // Check to see if element is a File instance.
-            try {
-                file = (String)o;
-            } catch (ClassCastException objectIsNotFile) {
-                throw new IllegalArgumentException("Object " + o
-                    + " is not a valid \"String\" instance");
-            }
+			// Check to see if element is a File instance.
+			try {
+				file = (String)o;
+			} catch (ClassCastException objectIsNotFile) {
+				throw new IllegalArgumentException("Object " + o
+					+ " is not a valid \"String\" instance");
+			}
 
-            // Check to see if we have proper access.
-            try {
-                cms.readFolder(file);
-            } catch (Exception exc) {
-                throw new IllegalArgumentException("Repository "
-                    + file + " could not be accessed while initializing class loader.");
-           }
+			// Check to see if we have proper access.
+			try {
+				cms.readFolder(file);
+			} catch (Exception exc) {
+				throw new IllegalArgumentException("Repository "
+					+ file + " could not be accessed while initializing class loader.");
+		   }
 			
-        }
+		}
 
 
-        // Store the class repository for use
-        this.repository = classRepository;
+		// Store the class repository for use
+		this.repository = classRepository;
 
-        // Increment and store generation counter
-        this.generation = generationCounter++;
-        
-        this.m_cms = cms;        
-    }
- 
-    /**
-     * Resolves the specified name to a Class. The method loadClass()
-     * is called by the virtual machine.  As an abstract method,
-     * loadClass() must be defined in a subclass of ClassLoader.
-     *
-     * @param      name the name of the desired Class.
-     * @param      resolve true if the Class needs to be resolved;
-     *             false if the virtual machine just wants to determine
-     *             whether the class exists or not
-     * @return     the resulting Class.
-     * @exception  ClassNotFoundException  if the class loader cannot
-     *             find a the requested class.
-     */
-    protected synchronized Class loadClass(String name, boolean resolve)
-        throws ClassNotFoundException { 
+		// Increment and store generation counter
+		this.generation = generationCounter++;
+		
+		this.m_cms = cms;        
+	}
+	/**
+	 * Loads all the bytes of an InputStream.
+	 */
+	private void copyStream(InputStream in, OutputStream out)
+		throws IOException
+	{
+		synchronized (in) {
+			synchronized (out) {
+				byte[] buffer = new byte[256];
+				while (true) {
+					int bytesRead = in.read(buffer);
+					if (bytesRead == -1) break;
+					out.write(buffer,0,bytesRead);
+				}
+			}
+		}
+	}
+	/**
+	 * Find a resource with a given name.  The return is a URL to the
+	 * resource. Doing a getContent() on the URL may return an Image,
+	 * an AudioClip,or an InputStream.
+	 * <P>
+	 * To be implemented
+	 * 
+	 * @param   name    the name of the resource, to be used as is.
+	 * @return  an URL on the resource, or null if not found.
+	 */
+	public URL getResource(String name) {
+		return null;
+	}
+	/**
+	 * Get an InputStream on a given resource.  Will return null if no
+	 * resource with this name is found.
+	 * <p>
+	 * To be implemented.
+	 *
+	 * @see     java.lang.Class#getResourceAsStream(String)
+	 * @param   name    the name of the resource, to be used as is.
+	 * @return  an InputStream on the resource, or null if not found.
+	 */
+	public InputStream getResourceAsStream(String name) {
+		return null;
+	}
+	/**
+	 * Test if a file is a ZIP or JAR archive.
+	 *
+	 * @param file the file to be tested.
+	 * @return true if the file is a ZIP/JAR archive, false otherwise.
+	 */
+	private boolean isZipOrJarArchive(String file) {
+		boolean isArchive = false;
+		if(file.endsWith(".zip")||file.endsWith(".jar"))
+			isArchive = true;
+		return isArchive;
+	}
+	/**
+	 * Resolves the specified name to a Class. The method loadClass()
+	 * is called by the virtual machine.  As an abstract method,
+	 * loadClass() must be defined in a subclass of ClassLoader.
+	 *
+	 * @param      name the name of the desired Class.
+	 * @param      resolve true if the Class needs to be resolved;
+	 *             false if the virtual machine just wants to determine
+	 *             whether the class exists or not
+	 * @return     the resulting Class.
+	 * @exception  ClassNotFoundException  if the class loader cannot
+	 *             find a the requested class.
+	 */
+	protected synchronized Class loadClass(String name, boolean resolve)
+		throws ClassNotFoundException { 
 
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsClassLoader] Class " + name + " requested.");
-        }
-        
-        Class c = null;
-        CmsFile classFile = null;
-                
-        // first try to load the class using the parent class loader.
-        try {
-            c = Class.forName(name);
-        } catch(ClassNotFoundException e) {
-            // to continue set c back to null
-            c = null;
-        }
-            
-        if(c != null) {
-            return c;
-        }
-              
-        // OK. The parent loader didn't find the class.
-        // Let's have a look in our own class cache
-        
-        c = (Class)cache.get(name);
-        if(c != null) {
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_DEBUG, "BINGO! Class " + name + "was found in cache.");
-            }
-            // bingo! the class is already loaded and is
-            // stored in our classcache
-            if(resolve) {
-                resolveClass(c);
-            }
-            return c;
-        }
-        if(A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG,"Class " + name + "was NOT found in cache.");
-        }
-        
-        // No class found.
-        // Then we have to search in the OpenCMS System.
-       
-        Enumeration allRepositories = repository.elements();
+		if(C_DEBUG && A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsClassLoader] Class " + name + " requested.");
+		}
+		
+		Class c = null;
+		CmsFile classFile = null;
+				
+		// first try to load the class using the parent class loader.
+		try {
+			c = Class.forName(name);
+		} catch(ClassNotFoundException e) {
+			// to continue set c back to null
+			c = null;
+		}
+			
+		if(c != null) {
+			return c;
+		}
+			  
+		// OK. The parent loader didn't find the class.
+		// Let's have a look in our own class cache
+		
+		c = (Class)cache.get(name);
+		if(c != null) {
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(C_OPENCMS_DEBUG, "BINGO! Class " + name + "was found in cache.");
+			}
+			// bingo! the class is already loaded and is
+			// stored in our classcache
+			if(resolve) {
+				resolveClass(c);
+			}
+			return c;
+		}
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_DEBUG,"Class " + name + "was NOT found in cache.");
+		}
+		
+		// No class found.
+		// Then we have to search in the OpenCMS System.
+	   
+		Enumeration allRepositories = repository.elements();
 		String filename = null;
 		byte[] myClassData = null;
 		
-        while(allRepositories.hasMoreElements()) {
+		while(allRepositories.hasMoreElements()) {
 			filename = (String)allRepositories.nextElement();
 			
 			if (isZipOrJarArchive(filename)) {
@@ -289,54 +343,40 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 					throw new ClassNotFoundException(name);
 				}
 			}
-        }
+		}
 
-        // Class data successfully read. Now define a new class using this data
-        if(myClassData != null) {
-            try {
-                c = defineClass(null, myClassData, 0, myClassData.length);
-            } catch(ClassFormatError e) {
-                throw new ClassNotFoundException(filename + " seems to be no class file. Sorry.");
-            } catch(Exception e) {
-                throw new ClassNotFoundException(e.toString());
-            } catch(Error e) {
-                throw new ClassNotFoundException("Something really bad happened while loading class " + filename);
-            } 
+		// Class data successfully read. Now define a new class using this data
+		if(myClassData != null) {
+			try {
+				c = defineClass(null, myClassData, 0, myClassData.length);
+			} catch(ClassFormatError e) {
+				throw new ClassNotFoundException(filename + " seems to be no class file. Sorry.");
+			} catch(Exception e) {
+				throw new ClassNotFoundException(e.toString());
+			} catch(Error e) {
+				throw new ClassNotFoundException("Something really bad happened while loading class " + filename);
+			} 
 			
-            cache.put(name, c);
-            if(resolve) {
-                resolveClass(c);
+			cache.put(name, c);
+			if(resolve) {
+				resolveClass(c);
 			}
 			
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_DEBUG,"Classloader returned class " + name + " successfully!");
 			}
-            return c;
-        }
-        throw new ClassNotFoundException(name);
-    }       
-
-	/**
-     * Test if a file is a ZIP or JAR archive.
-     *
-     * @param file the file to be tested.
-     * @return true if the file is a ZIP/JAR archive, false otherwise.
-     */
-    private boolean isZipOrJarArchive(String file) {
-        boolean isArchive = false;
-        if(file.endsWith(".zip")||file.endsWith(".jar"))
-			isArchive = true;
-        return isArchive;
-    }
-	
+			return c;
+		}
+		throw new ClassNotFoundException(name);
+	}
 	 /**
-     * Tries to load the class from a zip file.
-     *
-     * @param file The zipfile that contains classes.
-     * @param name The classname
-     * @param cache The cache entry to set the file if successful.
-     */
-    private byte[] loadClassFromZipFile(CmsFile file, String name)
+	 * Tries to load the class from a zip file.
+	 *
+	 * @param file The zipfile that contains classes.
+	 * @param name The classname
+	 * @param cache The cache entry to set the file if successful.
+	 */
+	private byte[] loadClassFromZipFile(CmsFile file, String name)
 			throws IOException
 	{
 		String className = name.replace('.', '/') + ".class"; 
@@ -360,51 +400,4 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 			zipStream.close();
 		}
 	}
-	
-    /**
-     * Loads all the bytes of an InputStream.
-     */
-    private void copyStream(InputStream in, OutputStream out)
-        throws IOException
-    {
-		synchronized (in) {
-			synchronized (out) {
-				byte[] buffer = new byte[256];
-				while (true) {
-					int bytesRead = in.read(buffer);
-					if (bytesRead == -1) break;
-					out.write(buffer,0,bytesRead);
-				}
-			}
-		}
-    }
-
-    /**
-     * Get an InputStream on a given resource.  Will return null if no
-     * resource with this name is found.
-     * <p>
-     * To be implemented.
-     *
-     * @see     java.lang.Class#getResourceAsStream(String)
-     * @param   name    the name of the resource, to be used as is.
-     * @return  an InputStream on the resource, or null if not found.
-     */
-    public InputStream getResourceAsStream(String name) {
-        return null;
-    }
-
-
-    /**
-     * Find a resource with a given name.  The return is a URL to the
-     * resource. Doing a getContent() on the URL may return an Image,
-     * an AudioClip,or an InputStream.
-     * <P>
-     * To be implemented
-     * 
-     * @param   name    the name of the resource, to be used as is.
-     * @return  an URL on the resource, or null if not found.
-     */
-    public URL getResource(String name) {
-        return null;
-    }
 }

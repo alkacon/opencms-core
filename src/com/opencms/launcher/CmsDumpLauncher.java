@@ -1,7 +1,9 @@
+package com.opencms.launcher;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
- * Date   : $Date: 2000/08/02 15:56:36 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/08 14:08:28 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,15 +28,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.launcher;
-
 import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
 
 import org.w3c.dom.*;
 import org.xml.sax.*;
-        
+		
 import java.util.*;      
 import javax.servlet.http.*;
 
@@ -47,11 +47,19 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/08/02 15:56:36 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/08 14:08:28 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher { 	
-        
-    /**
+		
+ 
+	/**
+	 * Gets the ID that indicates the type of the launcher.
+	 * @return launcher ID
+	 */
+	public int getLauncherId() {
+	    return C_TYPE_DUMP;
+	}
+	/**
  	 * Unitary method to start generating the output.
  	 * Every launcher has to implement this method.
  	 * In it possibly the selected file will be analyzed, and the
@@ -63,50 +71,42 @@ public class CmsDumpLauncher extends A_CmsLauncher {
 	 * @param file CmsFile Object with the selected resource to be shown
 	 * @param startTemplateClass Name of the template class to start with.
 	 * @param openCms a instance of A_OpenCms for redirect-needs
-     * @exception CmsException
+	 * @exception CmsException
 	 */	
 	protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
-        
-        byte[] result = null;
+		
+		byte[] result = null;
 
-        String templateClass = startTemplateClass;
-        if(templateClass == null || "".equals(templateClass)
-           || (startTemplateClass.equals(C_UNKNOWN_LAUNCHER)) ) {            
-            templateClass = "com.opencms.template.CmsDumpTemplate";
-        }
-         
-        Object tmpl = getTemplateClass(cms, templateClass);
-               
-        if(!(tmpl instanceof com.opencms.template.I_CmsDumpTemplate)) {
-            String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a Cms dump template class.";
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
-            }
-            throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
-        }
-                
-        Hashtable newParameters = new Hashtable();
-            
-        try {
-            result = this.callCanonicalRoot(cms, (com.opencms.template.I_CmsTemplate)tmpl, file, newParameters);
-        } catch (CmsException e) {
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "There were errors while building output for template file \"" + file.getAbsolutePath() + "\" and template class \"" + templateClass + "\". See above for details.");
-            }
-            throw e;
-        }
-            
-        if(result != null) {
+		String templateClass = startTemplateClass;
+		if(templateClass == null || "".equals(templateClass)
+		   || (startTemplateClass.equals(C_UNKNOWN_LAUNCHER)) ) {            
+			templateClass = "com.opencms.template.CmsDumpTemplate";
+		}
+		 
+		Object tmpl = getTemplateClass(cms, templateClass);
+			   
+		if(!(tmpl instanceof com.opencms.template.I_CmsDumpTemplate)) {
+			String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a Cms dump template class.";
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+			}
+			throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
+		}
+				
+		Hashtable newParameters = new Hashtable();
+			
+		try {
+			result = this.callCanonicalRoot(cms, (com.opencms.template.I_CmsTemplate)tmpl, file, newParameters);
+		} catch (CmsException e) {
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "There were errors while building output for template file \"" + file.getAbsolutePath() + "\" and template class \"" + templateClass + "\". See above for details.");
+			}
+			throw e;
+		}
+			
+		if(result != null) {
 			// cms.getRequestContext().getResponse().setLastModified(file.getDateLastModified());
-            writeBytesToResponse(cms, result);
-        }
-    }
-
-    /**
-     * Gets the ID that indicates the type of the launcher.
-     * @return launcher ID
-     */
-    public int getLauncherId() {
-	    return C_TYPE_DUMP;
-    }
- }
+			writeBytesToResponse(cms, result);
+		}
+	}
+}  

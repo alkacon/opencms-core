@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
  /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/05/25 15:10:40 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2000/08/08 14:08:34 $
+ * Version: $Revision: 1.95 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,187 +28,185 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 /**
  * Interface defining all constants used in OpenCms
  * workplace classes and elements.
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.94 $ $Date: 2000/05/25 15:10:40 $
+ * @version $Revision: 1.95 $ $Date: 2000/08/08 14:08:34 $
  */
 public interface I_CmsWpConstants {
 
-    /** Constant for the current language */
-    public final static String C_CURRENT_LANGUAGE = "de";
-    
+	/** Constant for the current language */
+	public final static String C_CURRENT_LANGUAGE = "de";
+	
 	/** Parameter for creating projects: copy content to project */
 	public static final String C_CONTENTPATH = "/content/";
 
-    /** Parameter for the default language */
+	/** Parameter for the default language */
 	public static final String C_DEFAULT_LANGUAGE = "de";
-    
-    /** Parameter for content templates folder */
+	
+	/** Parameter for content templates folder */
 	public static final String C_CONTENTTEMPLATEPATH = C_CONTENTPATH+"templates/";
-    
-    /** Parameter for content body folder */
+	
+	/** Parameter for content body folder */
 	public static final String C_CONTENTBODYPATH = C_CONTENTPATH+"bodys/";
 	
 	// Parameters that are used in html requests
 	
-    /** Parameter for foldername  */
-    public static final String C_PARA_FOLDER="folder";
-    
-    /** Parameter for foldertree  */
-    public static final String C_PARA_FOLDERTREE="foldertree";
+	/** Parameter for foldername  */
+	public static final String C_PARA_FOLDER="folder";
+	
+	/** Parameter for foldertree  */
+	public static final String C_PARA_FOLDERTREE="foldertree";
    
-    /** Parameter for filelist  */
-    public static final String C_PARA_FILELIST="filelist";
+	/** Parameter for filelist  */
+	public static final String C_PARA_FILELIST="filelist";
 
-    /** Parameter for url */
-    public static final String C_PARA_URL="URL";
-    
-    /** Parameter for previous filelist  */
-    public static final String C_PARA_PREVIOUSLIST="previous";
+	/** Parameter for url */
+	public static final String C_PARA_URL="URL";
+	
+	/** Parameter for previous filelist  */
+	public static final String C_PARA_PREVIOUSLIST="previous";
 
-    /** Parameter for viewfile  */
-    public static final String C_PARA_VIEWFILE="viewfile";
+	/** Parameter for viewfile  */
+	public static final String C_PARA_VIEWFILE="viewfile";
 	
 	 /** Parameter for starttaskid  */
-    public static final String C_PARA_STARTTASKID="startTaskId";
+	public static final String C_PARA_STARTTASKID="startTaskId";
 	
 	 /** Parameter for startprojectid  */
-    public static final String C_PARA_STARTPROJECTID="startProjectId";
-    
-    /** Parameter for view name */
-    public static final String C_PARA_VIEW = "view";
-    
-    /** Parameter for page number */
-    public static final String C_PARA_PAGE = "page";
-    
-    /** Parameter for filter */
-    public static final String C_PARA_FILTER = "filter";    
-    
-    /** Parameter for maximum pages */
-    public static final String C_PARA_MAXPAGE = "maxpage";    
+	public static final String C_PARA_STARTPROJECTID="startProjectId";
+	
+	/** Parameter for view name */
+	public static final String C_PARA_VIEW = "view";
+	
+	/** Parameter for page number */
+	public static final String C_PARA_PAGE = "page";
+	
+	/** Parameter for filter */
+	public static final String C_PARA_FILTER = "filter";    
+	
+	/** Parameter for maximum pages */
+	public static final String C_PARA_MAXPAGE = "maxpage";    
 
-    /** Parameter for locking pages */
-    public static final String C_PARA_LOCK = "lock";  
+	/** Parameter for locking pages */
+	public static final String C_PARA_LOCK = "lock";  
 
-    /** Parameter for unlocking pages */
-    public static final String C_PARA_UNLOCK = "unlock"; 
-    
-    /** Parameter for a filename */
-    public static final String C_PARA_FILE = "file";  
+	/** Parameter for unlocking pages */
+	public static final String C_PARA_UNLOCK = "unlock"; 
+	
+	/** Parameter for a filename */
+	public static final String C_PARA_FILE = "file";  
 
    /** Parameter for a link */
-    public static final String C_PARA_LINK = "link";  
-    
-    /** Parameter for a filecontent */
-    public static final String C_PARA_FILECONTENT = "filecontent";  
-    
-    /** Parameter for a deleting a file */
-    public static final String C_PARA_DELETE = "delete";
-    
-    /** Parameter for a name*/
-    public static final String C_PARA_NAME = "name";  
-    
-    /** Parameter for a new file*/
-    public static final String C_PARA_NEWFILE = "newfile";  
+	public static final String C_PARA_LINK = "link";  
+	
+	/** Parameter for a filecontent */
+	public static final String C_PARA_FILECONTENT = "filecontent";  
+	
+	/** Parameter for a deleting a file */
+	public static final String C_PARA_DELETE = "delete";
+	
+	/** Parameter for a name*/
+	public static final String C_PARA_NAME = "name";  
+	
+	/** Parameter for a new file*/
+	public static final String C_PARA_NEWFILE = "newfile";  
  
-    /** Parameter for a new folder*/
-    public static final String C_PARA_NEWFOLDER = "newfolder";  
-    
-    /** Parameter for a flag */
-    public static final String C_PARA_FLAGS = "flags";  
+	/** Parameter for a new folder*/
+	public static final String C_PARA_NEWFOLDER = "newfolder";  
+	
+	/** Parameter for a flag */
+	public static final String C_PARA_FLAGS = "flags";  
 
-    /** Parameter for a title */
-    public static final String C_PARA_TITLE = "title";  
+	/** Parameter for a title */
+	public static final String C_PARA_TITLE = "title";  
 
-    /** Parameter for a template */
-    public static final String C_PARA_TEMPLATE = "template";
-    
-    /** Parameter for a navigation title */
-    public static final String C_PARA_NAVTEXT = "navtitle";
-    
-    /** Parameter for a navigation position */
-    public static final String C_PARA_NAVPOS = "navpos";  
-    
-    /** Parameter for a new owner*/
-    public static final String C_PARA_NEWOWNER = "newowner";  
+	/** Parameter for a template */
+	public static final String C_PARA_TEMPLATE = "template";
+	
+	/** Parameter for a navigation title */
+	public static final String C_PARA_NAVTEXT = "navtitle";
+	
+	/** Parameter for a navigation position */
+	public static final String C_PARA_NAVPOS = "navpos";  
+	
+	/** Parameter for a new owner*/
+	public static final String C_PARA_NEWOWNER = "newowner";  
 
-    /** Parameter for a new group*/
-    public static final String C_PARA_NEWGROUP = "newgroup";  
+	/** Parameter for a new group*/
+	public static final String C_PARA_NEWGROUP = "newgroup";  
 
-    /** Parameter for a new accessflags*/
-    public static final String C_PARA_NEWACCESS = "newaccess";  
+	/** Parameter for a new accessflags*/
+	public static final String C_PARA_NEWACCESS = "newaccess";  
  
-    /** Parameter for a new type*/
-    public static final String C_PARA_NEWTYPE = "newtype";  
+	/** Parameter for a new type*/
+	public static final String C_PARA_NEWTYPE = "newtype";  
 
-    /** Parameter for a formname*/
-    public static final String C_PARA_FORMNAME = "formname";  
+	/** Parameter for a formname*/
+	public static final String C_PARA_FORMNAME = "formname";  
    
    /** Parameter for a variable*/
-    public static final String C_PARA_VARIABLE = "variable";  
+	public static final String C_PARA_VARIABLE = "variable";  
 
-    /** Parameter for a project*/
-    public static final String C_PARA_PROJECT = "project";  
+	/** Parameter for a project*/
+	public static final String C_PARA_PROJECT = "project";  
 
-    /** Parameter for a panel*/
-    public static final String C_PARA_PANEL = "panel";  
+	/** Parameter for a panel*/
+	public static final String C_PARA_PANEL = "panel";  
 
-    /** Parameter for the previous panel*/
-    public static final String C_PARA_OLDPANEL = "oldpanel";  
+	/** Parameter for the previous panel*/
+	public static final String C_PARA_OLDPANEL = "oldpanel";  
 
-    /** Parameter for the old password */
-    public static final String C_PARA_OLDPWD = "oldpwd";  
-    
-    /** Parameter for the new password */
-    public static final String C_PARA_NEWPWD = "newpwd";
-    
-    /** Parameter for the password repead */
-    public static final String C_PARA_NEWPWDREPEAT = "newpwdrepeat";
-    
-    /** Parameter for submitting data */
-    public static final String C_PARA_SUBMIT = "SUBMIT";
+	/** Parameter for the old password */
+	public static final String C_PARA_OLDPWD = "oldpwd";  
+	
+	/** Parameter for the new password */
+	public static final String C_PARA_NEWPWD = "newpwd";
+	
+	/** Parameter for the password repead */
+	public static final String C_PARA_NEWPWDREPEAT = "newpwdrepeat";
+	
+	/** Parameter for submitting data */
+	public static final String C_PARA_SUBMIT = "SUBMIT";
 
-    /** Parameter for the ok value */
-    public static final String C_PARA_OK = "OK";
+	/** Parameter for the ok value */
+	public static final String C_PARA_OK = "OK";
 
-    /** Parameter for the default value */
-    public static final String C_PARA_DEFAULT= "DEFAULT";   
-    
-    /** Parameter for the explorersettings value */
-    public static final String C_PARA_EXPLORERSETTINGS = "EXPLORERSETTINGS";
+	/** Parameter for the default value */
+	public static final String C_PARA_DEFAULT= "DEFAULT";   
+	
+	/** Parameter for the explorersettings value */
+	public static final String C_PARA_EXPLORERSETTINGS = "EXPLORERSETTINGS";
 
-    /** Parameter for the tasksettings value */
-    public static final String C_PARA_TASKSETTINGS = "TASKSETTINGS";
+	/** Parameter for the tasksettings value */
+	public static final String C_PARA_TASKSETTINGS = "TASKSETTINGS";
 
-    /** Parameter for the startsettings value */
-    public static final String C_PARA_STARTSETTINGS = "STARTSETTINGS";
+	/** Parameter for the startsettings value */
+	public static final String C_PARA_STARTSETTINGS = "STARTSETTINGS";
 
-    /** Parameter for the usersettings value */
-    public static final String C_PARA_USERSETTINGS = "USERSETTINGS";
-    
-    /** Parameter for text/html editor content */
-    public static final String C_PARA_CONTENT = "content";
+	/** Parameter for the usersettings value */
+	public static final String C_PARA_USERSETTINGS = "USERSETTINGS";
+	
+	/** Parameter for text/html editor content */
+	public static final String C_PARA_CONTENT = "content";
 
-    /** Parameter for action commands */
-    public static final String C_PARA_ACTION = "action";
-    
-    /** Parameter for java script filenames */
-    public static final String C_PARA_JSFILE = "jsfile";
+	/** Parameter for action commands */
+	public static final String C_PARA_ACTION = "action";
+	
+	/** Parameter for java script filenames */
+	public static final String C_PARA_JSFILE = "jsfile";
 
-    /** Parameter for properties */
-    public static final String C_PARA_PROPERTYDEF = "property";
-    
-    /** Parameter for initial load */
-    public static final String C_PARA_INITIAL = "initial";
-    
-    // Filenames of workplace files
-        
+	/** Parameter for properties */
+	public static final String C_PARA_PROPERTYDEF = "property";
+	
+	/** Parameter for initial load */
+	public static final String C_PARA_INITIAL = "initial";
+	
+	// Filenames of workplace files
+		
 	/** The filename to the icontemplate */
 	public static final String C_ICON_TEMPLATEFILE = "icontemplate";
 	
@@ -216,9 +216,9 @@ public interface I_CmsWpConstants {
 	//** The filename to the filetypelist template */
 	public static final String C_FILETYPELIST_TEMPLATEFILE = "filetypelisttemplate";
 	
-    /** The filename to the taskdocu template */
+	/** The filename to the taskdocu template */
 	public static final String C_TASKDOCU_TEMPLATEFILE = "tasklistdoctemplate";
-    
+	
 	/** The filename to the projectlisttemplate */
 	public static final String C_TASKLIST_TEMPLATEFILE = "tasklisttemplate";
 	
@@ -227,60 +227,60 @@ public interface I_CmsWpConstants {
 
 	/** The filename to the prefs scroller template file */
 	public static final String C_PREFSSCROLLER_TEMPLATEFILE = "prefsscrollerTemplate";
-            
+			
 	/** The explorer tree. */
-    public static final String C_WP_EXPLORER_TREE="explorer_tree.html";
+	public static final String C_WP_EXPLORER_TREE="explorer_tree.html";
 
-    /** The explorer file list. */
-    public static final String C_WP_EXPLORER_FILELIST="explorer_files.html";    
+	/** The explorer file list. */
+	public static final String C_WP_EXPLORER_FILELIST="explorer_files.html";    
 
   	/** The folder tree. */
-    public static final String C_WP_FOLDER_TREE="folder_tree.html";
+	public static final String C_WP_FOLDER_TREE="folder_tree.html";
 
-    /** The workplace */
-    public static final String C_WP_RELOAD="workplace_reload.html";
+	/** The workplace */
+	public static final String C_WP_RELOAD="workplace_reload.html";
 
-    /** The preferences update */
-    public static final String C_PREFERENCES_UPDATE="preferences_update.html";
-    
-    /** The preferences user panel */
-    public static final String C_WP_EXPLORER_PREFERENCES="preferences.html?panel=user";
-    
-    // Filenames of special templates
-    
-    /** Name of the template containing button definitions */
-    public static final String C_BUTTONTEMPLATE = "ButtonTemplate";
+	/** The preferences update */
+	public static final String C_PREFERENCES_UPDATE="preferences_update.html";
+	
+	/** The preferences user panel */
+	public static final String C_WP_EXPLORER_PREFERENCES="preferences.html?panel=user";
+	
+	// Filenames of special templates
+	
+	/** Name of the template containing button definitions */
+	public static final String C_BUTTONTEMPLATE = "ButtonTemplate";
  
-    /** Name of the template containing label definitions */
-    public static final String C_LABELTEMPLATE = "labelTemplate";
+	/** Name of the template containing label definitions */
+	public static final String C_LABELTEMPLATE = "labelTemplate";
 
-    /** Name of the template containing panel bar definitions */
-    public static final String C_PANELTEMPLATE = "panelTemplate";
-    
-     /**
-     *  Name of the template containing input field definitions
-     */
-    public static final String C_INPUTTEMPLATE = "inputTemplate";
-    
-     /**
-     *  Name of the template containing error field definitions
-     */
-    public static final String C_ERRORTEMPLATE = "errorTemplate";    
+	/** Name of the template containing panel bar definitions */
+	public static final String C_PANELTEMPLATE = "panelTemplate";
+	
+	 /**
+	 *  Name of the template containing input field definitions
+	 */
+	public static final String C_INPUTTEMPLATE = "inputTemplate";
+	
+	 /**
+	 *  Name of the template containing error field definitions
+	 */
+	public static final String C_ERRORTEMPLATE = "errorTemplate";    
 
-     /**
-     *  Name of the template containing messagebox definitions
-     */
-    public static final String C_BOXTEMPLATE = "messageboxTemplate";    
+	 /**
+	 *  Name of the template containing messagebox definitions
+	 */
+	public static final String C_BOXTEMPLATE = "messageboxTemplate";    
 
-     /**
-     *  Name of the template containing radiobutton definitions
-     */
-    public static final String C_RADIOTEMPLATE = "radioTemplate";    
-    
-    
-    
-    // Constants for editors
-    
+	 /**
+	 *  Name of the template containing radiobutton definitions
+	 */
+	public static final String C_RADIOTEMPLATE = "radioTemplate";    
+	
+	
+	
+	// Constants for editors
+	
    /** Save action */
    public static final String C_EDIT_ACTION_SAVE = "save";   
 
@@ -289,13 +289,13 @@ public interface I_CmsWpConstants {
    
    /** Exit action */
    public static final String C_EDIT_ACTION_EXIT = "exit";   
-    
-    
-    // tag defnitions
+	
+	
+	// tag defnitions
 	
    /** Name of the label tag in the label definition template */
    public static final String C_TAG_PROJECTLIST_DEFAULT = "defaultprojectlist";   
-    
+	
    /** Name of the label tag in the label definition template */
    public static final String C_TAG_PROJECTLIST_SNAPLOCK = "snaplock";   
    
@@ -304,20 +304,20 @@ public interface I_CmsWpConstants {
    
    /** Name of the label tag in the input definiton template */
    public static final String C_TAG_INPUTFIELD="inputfield";
-    
+	
    /** Name of the password tag in the input definiton template */
    public static final String C_TAG_PASSWORD="password";
    
    /** Name of the startup tag in the input definiton template */
    public static final String C_TAG_STARTUP="STARTUP";
-      
-    /** Name of the submitbutton tag in the button definiton template */
+	  
+	/** Name of the submitbutton tag in the button definiton template */
    public static final String C_TAG_SUBMITBUTTON="submitbutton";
 
-    /** Name of the errorbox tag in the error definiton template */
+	/** Name of the errorbox tag in the error definiton template */
    public static final String C_TAG_ERRORBOX="errorbox";
 
-    /** Name of the errorbox tag in the error definiton template */
+	/** Name of the errorbox tag in the error definiton template */
    public static final String C_TAG_MESSAGEBOX="messagepage";
    
    /** Name of the select start tag in the input definiton template */
@@ -337,7 +337,7 @@ public interface I_CmsWpConstants {
 
    /** Name of the (select) selected option tag in the input definiton template */
    public static final String C_TAG_SELECTBOX_SELOPTION="selectbox.seloption";
-      
+	  
    /** Name of the error´page tag in the error definiton template */
    public static final String C_TAG_ERRORPAGE="errorpagedefinition";
 
@@ -363,450 +363,450 @@ public interface I_CmsWpConstants {
    public static final String C_TAG_PANEL_TEXTINACTIVE="paneldef.textinactive";
    
    
-    // Parameters for buttons
-    
-    /** Name of the button */
-    public static final String C_BUTTON_NAME = "name";
-    
-    /** Action for the button */
-    public static final String C_BUTTON_ACTION = "action";
-    
-    /** Alt text of the button */
-    public static final String C_BUTTON_ALT = "alt";
-    
-    /** href text of the button */
-    public static final String C_BUTTON_HREF = "href";
+	// Parameters for buttons
+	
+	/** Name of the button */
+	public static final String C_BUTTON_NAME = "name";
+	
+	/** Action for the button */
+	public static final String C_BUTTON_ACTION = "action";
+	
+	/** Alt text of the button */
+	public static final String C_BUTTON_ALT = "alt";
+	
+	/** href text of the button */
+	public static final String C_BUTTON_HREF = "href";
 
-    /** Value of the button */
-    public static final String C_BUTTON_VALUE = "value";
-    
-    /** Style of the button */
-    public static final String C_BUTTON_STYLE = "class";
-    
-    /** width of the button */
-    public static final String C_BUTTON_WIDTH = "width";
+	/** Value of the button */
+	public static final String C_BUTTON_VALUE = "value";
+	
+	/** Style of the button */
+	public static final String C_BUTTON_STYLE = "class";
+	
+	/** width of the button */
+	public static final String C_BUTTON_WIDTH = "width";
 
-    /** method that should be used for deciding to (de)activate the button */
-    public static final String C_BUTTON_METHOD = "method";
-    
-    // Parameters for icons
-    
-    /** Name of the icon */
-    public static final String C_ICON_NAME = "name";
-    
-    /** Action for the icon */
-    public static final String C_ICON_ACTION = "action";
+	/** method that should be used for deciding to (de)activate the button */
+	public static final String C_BUTTON_METHOD = "method";
+	
+	// Parameters for icons
+	
+	/** Name of the icon */
+	public static final String C_ICON_NAME = "name";
+	
+	/** Action for the icon */
+	public static final String C_ICON_ACTION = "action";
 
    /** Label of the icon */
-    public static final String C_ICON_LABEL = "label";
-    
-    /** href text of the icon */
-    public static final String C_ICON_HREF = "href";
+	public static final String C_ICON_LABEL = "label";
+	
+	/** href text of the icon */
+	public static final String C_ICON_HREF = "href";
 
-    /** href target of the icon */
-    public static final String C_ICON_TARGET = "target";
+	/** href target of the icon */
+	public static final String C_ICON_TARGET = "target";
 
-    /** method that should be used for deciding to (de)activate the icon */
-    public static final String C_ICON_ACTIVE_METHOD = "activemethod";
+	/** method that should be used for deciding to (de)activate the icon */
+	public static final String C_ICON_ACTIVE_METHOD = "activemethod";
 
 	/** method that should be used for deciding whether the icon is visible */
-    public static final String C_ICON_VISIBLE_METHOD = "visiblemethod";
+	public static final String C_ICON_VISIBLE_METHOD = "visiblemethod";
 
-    // Parameters for labels
+	// Parameters for labels
 
-    /** Name of the value */
-    public static final String C_LABEL_VALUE = "value";
-    
-    // Parameters for radiobuttons
+	/** Name of the value */
+	public static final String C_LABEL_VALUE = "value";
+	
+	// Parameters for radiobuttons
   
-    /** Name of the radio buttons */
-    public static final String C_RADIO_RADIONAME = "radioname";
-    
-    /** Name of the radio button value */
-    public static final String C_RADIO_NAME = "name";
+	/** Name of the radio buttons */
+	public static final String C_RADIO_RADIONAME = "radioname";
+	
+	/** Name of the radio button value */
+	public static final String C_RADIO_NAME = "name";
 
-    /** Name of the radio button link */
-    public static final String C_RADIO_LINK = "link";
+	/** Name of the radio button link */
+	public static final String C_RADIO_LINK = "link";
   
-    /** Name of the radio button image name */
-    public static final String C_RADIO_IMAGENAME = "image";
+	/** Name of the radio button image name */
+	public static final String C_RADIO_IMAGENAME = "image";
 
-    /** Datablock conatining the image option*/
-    public static final String C_RADIO_IMAGEOPTION = "optionalimage";
+	/** Datablock conatining the image option*/
+	public static final String C_RADIO_IMAGEOPTION = "optionalimage";
 
-    /** Datablock conatining the optional entry for the image*/
-    public static final String C_RADIO_IMAGEENTRY = "imageentry";
+	/** Datablock conatining the optional entry for the image*/
+	public static final String C_RADIO_IMAGEENTRY = "imageentry";
 
-    /** Datablock conatining the "checked" option*/
-    public static final String C_RADIO_SELECTEDOPTION = "optionalselected";
+	/** Datablock conatining the "checked" option*/
+	public static final String C_RADIO_SELECTEDOPTION = "optionalselected";
 
-    /** Datablock conatining the optional entry for the "checked" option */
-    public static final String C_RADIO_SELECTEDENTRY = "selectedentry";
-    
-    /** Method of the radio buttons */
-    public static final String C_RADIO_METHOD = "method";
+	/** Datablock conatining the optional entry for the "checked" option */
+	public static final String C_RADIO_SELECTEDENTRY = "selectedentry";
+	
+	/** Method of the radio buttons */
+	public static final String C_RADIO_METHOD = "method";
 
-    /** Name of the radio ordering information */
-    public static final String C_RADIO_ORDER = "order";
-    
-    
-    
-    // Parameters for input fields
-    
-    /** Name of the input field */
-    public static final String C_INPUT_NAME = "name";
-    
-    /** Style class of the input field  */
-    public static final String C_INPUT_CLASS = "class";
+	/** Name of the radio ordering information */
+	public static final String C_RADIO_ORDER = "order";
+	
+	
+	
+	// Parameters for input fields
+	
+	/** Name of the input field */
+	public static final String C_INPUT_NAME = "name";
+	
+	/** Style class of the input field  */
+	public static final String C_INPUT_CLASS = "class";
 
-    /**  Size of the input field  */
-    public static final String C_INPUT_SIZE = "size";
-    
-    /**  Length of the input field  */
-    public static final String C_INPUT_LENGTH = "length";    
+	/**  Size of the input field  */
+	public static final String C_INPUT_SIZE = "size";
+	
+	/**  Length of the input field  */
+	public static final String C_INPUT_LENGTH = "length";    
 
-    /**  Value of the input field  */
-    public static final String C_INPUT_VALUE = "value";    
-    
-    /**  Method of the input field  */
-    public static final String C_INPUT_METHOD = "method";    
-    
-    /**  Action of the input field  */
-    public static final String C_INPUT_ACTION = "action";    
-    
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_METHOD = "method";    
+	/**  Value of the input field  */
+	public static final String C_INPUT_VALUE = "value";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_IDX = "idx";    
+	/**  Method of the input field  */
+	public static final String C_INPUT_METHOD = "method";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_MENU = "menu";    
+	/**  Action of the input field  */
+	public static final String C_INPUT_ACTION = "action";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_LOCKSTATE = "lockstate";    
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_METHOD = "method";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_NAME = "name";    
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_IDX = "idx";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_NAME_ESCAPED = "name_escaped";    
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_MENU = "menu";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_PROJECTID = "id";    
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_LOCKSTATE = "lockstate";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_DESCRIPTION = "description";
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_NAME = "name";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_STATE = "STATE";    
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_NAME_ESCAPED = "name_escaped";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_STATE_LOCKED = "project.state.FILESLOCKED";    
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_PROJECTID = "id";    
+	
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_DESCRIPTION = "description";
+	
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_STATE = "STATE";    
+	
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_STATE_LOCKED = "project.state.FILESLOCKED";    
 
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_STATE_UNLOCKED = "project.state.FILESUNLOCKED";    
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_STATE_UNLOCKED = "project.state.FILESUNLOCKED";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_PROJECTMANAGER = "projectmanager";    
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_PROJECTMANAGER = "projectmanager";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_PROJECTWORKER = "projectworker";
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_PROJECTWORKER = "projectworker";
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_DATECREATED = "datecreated";    
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_DATECREATED = "datecreated";    
 	
-    /**  Method of the projectlist field  */
-    public static final String C_PROJECTLIST_OWNER = "owner";    
+	/**  Method of the projectlist field  */
+	public static final String C_PROJECTLIST_OWNER = "owner";    
 	
-    // Parameters for error boxes and error pages
-    
-    /** Title of the error box */
-    public static final String C_ERROR_TITLE = "title";
-    
-    /** Message of the error box */
-    public static final String C_ERROR_MESSAGE = "message";
+	// Parameters for error boxes and error pages
+	
+	/** Title of the error box */
+	public static final String C_ERROR_TITLE = "title";
+	
+	/** Message of the error box */
+	public static final String C_ERROR_MESSAGE = "message";
 
-     /** Reason of the error box */
-    public static final String C_ERROR_REASON = "reason";
-    
-     /** Suggestion of the error box */
-    public static final String C_ERROR_SUGGESTION = "suggestion";    
+	 /** Reason of the error box */
+	public static final String C_ERROR_REASON = "reason";
+	
+	 /** Suggestion of the error box */
+	public static final String C_ERROR_SUGGESTION = "suggestion";    
 
-    /** Link of the error box */
-    public static final String C_ERROR_LINK = "ref";    
+	/** Link of the error box */
+	public static final String C_ERROR_LINK = "ref";    
 
-    /** Static text in the error box */
-    public static final String C_ERROR_MSG_REASON = "msgreason";    
+	/** Static text in the error box */
+	public static final String C_ERROR_MSG_REASON = "msgreason";    
    
-    /** Button label of the error box */
-    public static final String C_ERROR_MSG_BUTTON = "msgbutton";    
+	/** Button label of the error box */
+	public static final String C_ERROR_MSG_BUTTON = "msgbutton";    
 
-    /** Button label of the error box */
-    public static final String C_ERROR_MSG_DETAILS = "details";    
+	/** Button label of the error box */
+	public static final String C_ERROR_MSG_DETAILS = "details";    
 	
-    // Parameters for error boxes and error pages
-    
-    /** Title of the messagebox */
-    public static final String C_MESSAGE_TITLE = "title";
+	// Parameters for error boxes and error pages
+	
+	/** Title of the messagebox */
+	public static final String C_MESSAGE_TITLE = "title";
  
-    /** First message of the messagebox */
-    public static final String C_MESSAGE_MESSAGE1 = "message1";
+	/** First message of the messagebox */
+	public static final String C_MESSAGE_MESSAGE1 = "message1";
 
-    /** Second message of the messagebox */
-    public static final String C_MESSAGE_MESSAGE2 = "message2";
-    
-    /** First button of the messagebox */
-    public static final String C_MESSAGE_BUTTON1 = "button1";
-    
-    /** Second button of the messagebox */
-    public static final String C_MESSAGE_BUTTON2 = "button2";
-    
-    /** Link on button1 of the messagebox */
-    public static final String C_MESSAGE_LINK1 = "link1";
+	/** Second message of the messagebox */
+	public static final String C_MESSAGE_MESSAGE2 = "message2";
+	
+	/** First button of the messagebox */
+	public static final String C_MESSAGE_BUTTON1 = "button1";
+	
+	/** Second button of the messagebox */
+	public static final String C_MESSAGE_BUTTON2 = "button2";
+	
+	/** Link on button1 of the messagebox */
+	public static final String C_MESSAGE_LINK1 = "link1";
   
-    /** Link on button2 of the messagebox */
-    public static final String C_MESSAGE_LINK2 = "link2";
+	/** Link on button2 of the messagebox */
+	public static final String C_MESSAGE_LINK2 = "link2";
 	
 	/** Link on button2 of the messagebox */
-    public static final String C_MESSAGE_FILENAME = "filename";
-    
-    // Parameters for select boxes
-    
-    /** Name of the select box */
-    public static final String C_SELECTBOX_NAME = "name";
-    
-    /** Size of the select box */
-    public static final String C_SELECTBOX_SIZE = "size";
-
-    /** Div flag of the select box */
-    public static final String C_SELECTBOX_DIV = "div";
-   
-    /** Stylesheet class string of the select box */
-    public static final String C_SELECTBOX_CLASS = "class";
-
-    /** Stylesheet class name of the select box */
-    public static final String C_SELECTBOX_CLASSNAME = "classname";
-    
-    /** Width of the select box */
-    public static final String C_SELECTBOX_WIDTH = "width";
-
-    /** Onchange of the select box */
-    public static final String C_SELECTBOX_ONCHANGE = "onchange";
-    
-    /** Method of the select box */
-    public static final String C_SELECTBOX_METHOD = "method";
-    
-    /** option name of the select box */
-    public static final String C_SELECTBOX_OPTIONNAME = "name";
-    
-    /** option value of the select box */
-    public static final String C_SELECTBOX_OPTIONVALUE = "value";
-        
-    /** option values for font select boxes */
-    public static final String[] C_SELECTBOX_FONTS = 
-            { "Arial", "Arial Narrow", "System", "Times New Roman", "Verdana" };
-
-    /** option values for font select boxes */
-    public static final String[] C_SELECTBOX_FONTSTYLES = 
-            { "Normal", "Überschrift 1", "Überschrift 2", "Überschrift 3", "Überschrift 4", 
-              "Überschrift 5", "Überschrift 6" };
-
-    /** option values for font select boxes */
-    public static final String[] C_SELECTBOX_FONTSIZES = 
-            { "1", "2", "3", "4", "5", "6", "7"};
-
-    /** option values for editor view select boxes */
-    public static final String[] C_SELECTBOX_EDITORVIEWS = 
-            { "edithtml", "edit"};
-
-    public static final int[] C_SELECTBOX_EDITORVIEWS_ALLOWED = 
-            { 3, 2 };
-    
-    /** classes of the different option values for editor view select boxes */
-    public static final String[] C_SELECTBOX_EDITORVIEWS_CLASSES = 
-            { "com.opencms.workplace.CmsEditor", "com.opencms.workplace.CmsEditor"};
-
-    /** templates of the different option values for editor view select boxes */
-    public static final String[] C_SELECTBOX_EDITORVIEWS_TEMPLATES = 
-            { "edit_html_main", "edit_text_main"};
-        
-    /** default selected option value for editor view select boxes */
-    public static final int[] C_SELECTBOX_EDITORVIEWS_DEFAULT = {0, 1};
-    
-    
-    // Parameters for panel bars
-    
-    /** Link URL for each panel */
-    public static final String C_PANEL_LINK = "link";
-    
-    /** Text for each panel */
-    public static final String C_PANEL_NAME = "panelname";
-    
-    
-    /** Panel defintion for explorer settings */
-    public static final String C_PANEL_EXPLORER = "explorer";
-
-    /** Panel defintion for task settings */
-    public static final String C_PANEL_TASK = "task";
-  
-    /** Panel defintion for start settings */
-    public static final String C_PANEL_START = "start";
-    
-    /** Panel defintion for user settings */
-    public static final String C_PANEL_USER = "user";
-    
-    // Parameters for file list
-    
-    /** method value of the file list */
-    public static final String C_FILELIST_METHOD ="method";
-
-    /** method value of the file list */
-    public static final String C_FILELIST_DISPLAYMETHOD ="namedisplaymethod";
-        
-    /** template value for the file list */
-    public static final String C_FILELIST_TEMPLATE="template";
-
-    /** customized template value for the file list */
-    public static final String C_FILELIST_CUSTOMTEMPLATE="customtemplate";
-    
-    /** The name column*/
-    public final static String C_FILELIST_COLUMN_NAME="COLUMN_NAME";
+	public static final String C_MESSAGE_FILENAME = "filename";
 	
-    /** The title column*/
-    public final static String C_FILELIST_COLUMN_TITLE="COLUMN_TITLE";
-    
-    /** The type column*/
-    public final static String C_FILELIST_COLUMN_TYPE="COLUMN_TYPE";
-    
-    /** The changed column*/
-    public final static String C_FILELIST_COLUMN_CHANGED="COLUMN_CHANGED";
+	// Parameters for select boxes
+	
+	/** Name of the select box */
+	public static final String C_SELECTBOX_NAME = "name";
+	
+	/** Size of the select box */
+	public static final String C_SELECTBOX_SIZE = "size";
 
-    /** The size column*/
-    public final static String C_FILELIST_COLUMN_SIZE="COLUMN_SIZE";
-    
-    /** The state column*/
-    public final static String C_FILELIST_COLUMN_STATE="COLUMN_STATE";
+	/** Div flag of the select box */
+	public static final String C_SELECTBOX_DIV = "div";
+   
+	/** Stylesheet class string of the select box */
+	public static final String C_SELECTBOX_CLASS = "class";
 
-    /** The owner column*/
-    public final static String C_FILELIST_COLUMN_OWNER="COLUMN_OWNER";
-    
-    /** The group column*/
-    public final static String C_FILELIST_COLUMN_GROUP="COLUMN_GROUP";
+	/** Stylesheet class name of the select box */
+	public static final String C_SELECTBOX_CLASSNAME = "classname";
+	
+	/** Width of the select box */
+	public static final String C_SELECTBOX_WIDTH = "width";
 
-    /** The access column*/
-    public final static String C_FILELIST_COLUMN_ACCESS="COLUMN_ACCESS";
+	/** Onchange of the select box */
+	public static final String C_SELECTBOX_ONCHANGE = "onchange";
+	
+	/** Method of the select box */
+	public static final String C_SELECTBOX_METHOD = "method";
+	
+	/** option name of the select box */
+	public static final String C_SELECTBOX_OPTIONNAME = "name";
+	
+	/** option value of the select box */
+	public static final String C_SELECTBOX_OPTIONVALUE = "value";
+		
+	/** option values for font select boxes */
+	public static final String[] C_SELECTBOX_FONTS = 
+			{ "Arial", "Arial Narrow", "System", "Times New Roman", "Verdana" };
 
-    /** The locked column*/
-    public final static String C_FILELIST_COLUMN_LOCKED="COLUMN_LOCKED";
+	/** option values for font select boxes */
+	public static final String[] C_SELECTBOX_FONTSTYLES = 
+			{ "Normal", "Überschrift 1", "Überschrift 2", "Überschrift 3", "Überschrift 4", 
+			  "Überschrift 5", "Überschrift 6" };
 
-    /** The customizable column*/
-    public final static String C_FILELIST_COLUMN_CUSTOMIZED="COLUMN_CUSTOMIZED";
+	/** option values for font select boxes */
+	public static final String[] C_SELECTBOX_FONTSIZES = 
+			{ "1", "2", "3", "4", "5", "6", "7"};
 
-    /** The stylesheet class to be used for a file or folder entry */
-    public final static String C_FILELIST_CLASS_VALUE="OUTPUT_CLASS";
-    
-    /** The customizable value column*/
-    public final static String C_FILELIST_COLUMN_CUSTOMIZED_VALUE="COLUMN_CUSTOMIZED_VALUE";
+	/** option values for editor view select boxes */
+	public static final String[] C_SELECTBOX_EDITORVIEWS = 
+			{ "edithtml", "edit"};
 
-    /** The link for a file or folder entry */
-    public final static String C_FILELIST_LINK_VALUE="LINK_VALUE";    
-    
-    /** The suffic for file list values */
-    public final static String C_FILELIST_SUFFIX_VALUE="_VALUE";
+	public static final int[] C_SELECTBOX_EDITORVIEWS_ALLOWED = 
+			{ 3, 2 };
+	
+	/** classes of the different option values for editor view select boxes */
+	public static final String[] C_SELECTBOX_EDITORVIEWS_CLASSES = 
+			{ "com.opencms.workplace.CmsEditor", "com.opencms.workplace.CmsEditor"};
 
-    /** The lock value column */
-    public final static String C_FILELIST_LOCK_VALUE="LOCK_VALUE";
-    
-    /** The name value column */
-    public final static String C_FILELIST_NAME_VALUE="NAME_VALUE";
-    
-    /** The title value column */
-    public final static String C_FILELIST_TITLE_VALUE="TITLE_VALUE";
+	/** templates of the different option values for editor view select boxes */
+	public static final String[] C_SELECTBOX_EDITORVIEWS_TEMPLATES = 
+			{ "edit_html_main", "edit_text_main"};
+		
+	/** default selected option value for editor view select boxes */
+	public static final int[] C_SELECTBOX_EDITORVIEWS_DEFAULT = {0, 1};
+	
+	
+	// Parameters for panel bars
+	
+	/** Link URL for each panel */
+	public static final String C_PANEL_LINK = "link";
+	
+	/** Text for each panel */
+	public static final String C_PANEL_NAME = "panelname";
+	
+	
+	/** Panel defintion for explorer settings */
+	public static final String C_PANEL_EXPLORER = "explorer";
 
-    /** The icon value column */
-    public final static String C_FILELIST_ICON_VALUE="ICON_VALUE";
-    
-    /** The type value column */
-    public final static String C_FILELIST_TYPE_VALUE="TYPE_VALUE";
+	/** Panel defintion for task settings */
+	public static final String C_PANEL_TASK = "task";
   
-    /** The changed value column */
-    public final static String C_FILELIST_CHANGED_VALUE="CHANGED_VALUE";
+	/** Panel defintion for start settings */
+	public static final String C_PANEL_START = "start";
+	
+	/** Panel defintion for user settings */
+	public static final String C_PANEL_USER = "user";
+	
+	// Parameters for file list
+	
+	/** method value of the file list */
+	public static final String C_FILELIST_METHOD ="method";
 
-    /** The size value column */
-    public final static String C_FILELIST_SIZE_VALUE="SIZE_VALUE";
+	/** method value of the file list */
+	public static final String C_FILELIST_DISPLAYMETHOD ="namedisplaymethod";
+		
+	/** template value for the file list */
+	public static final String C_FILELIST_TEMPLATE="template";
 
-    /** The state value column */
-    public final static String C_FILELIST_STATE_VALUE="STATE_VALUE";
-    
-    /** The owner value column */
-    public final static String C_FILELIST_OWNER_VALUE="OWNER_VALUE";
+	/** customized template value for the file list */
+	public static final String C_FILELIST_CUSTOMTEMPLATE="customtemplate";
+	
+	/** The name column*/
+	public final static String C_FILELIST_COLUMN_NAME="COLUMN_NAME";
+	
+	/** The title column*/
+	public final static String C_FILELIST_COLUMN_TITLE="COLUMN_TITLE";
+	
+	/** The type column*/
+	public final static String C_FILELIST_COLUMN_TYPE="COLUMN_TYPE";
+	
+	/** The changed column*/
+	public final static String C_FILELIST_COLUMN_CHANGED="COLUMN_CHANGED";
 
-    /** The group value column */
-    public final static String C_FILELIST_GROUP_VALUE="GROUP_VALUE";
+	/** The size column*/
+	public final static String C_FILELIST_COLUMN_SIZE="COLUMN_SIZE";
+	
+	/** The state column*/
+	public final static String C_FILELIST_COLUMN_STATE="COLUMN_STATE";
 
-    /** The access value column */
-    public final static String C_FILELIST_ACCESS_VALUE="ACCESS_VALUE";
+	/** The owner column*/
+	public final static String C_FILELIST_COLUMN_OWNER="COLUMN_OWNER";
+	
+	/** The group column*/
+	public final static String C_FILELIST_COLUMN_GROUP="COLUMN_GROUP";
 
-    /** The lockedby value column */
-    public final static String C_FILELIST_LOCKED_VALUE="LOCKED_VALUE";
-    
-    
+	/** The access column*/
+	public final static String C_FILELIST_COLUMN_ACCESS="COLUMN_ACCESS";
 
-    // Constants for language file control
-            
-    /** Prefix for button texts in the language file */
-    public static final String C_LANG_BUTTON = "button";
-    
-    /** Prefix for button texts in the language file */
-    public static final String C_LANG_ICON = "icon";
+	/** The locked column*/
+	public final static String C_FILELIST_COLUMN_LOCKED="COLUMN_LOCKED";
 
-    /** Prefix for label texts in the language file */
-    public static final String C_LANG_LABEL = "label";
+	/** The customizable column*/
+	public final static String C_FILELIST_COLUMN_CUSTOMIZED="COLUMN_CUSTOMIZED";
 
-    /** Prefix for label texts in the language file */
-    public static final String C_LANG_TITLE = "title";
-    
-    // Constants for user default preferences
-    
-    /** Number of images to be shown per page in the picture browser */
-    public static final int C_PICBROWSER_MAXIMAGES = 15;
+	/** The stylesheet class to be used for a file or folder entry */
+	public final static String C_FILELIST_CLASS_VALUE="OUTPUT_CLASS";
+	
+	/** The customizable value column*/
+	public final static String C_FILELIST_COLUMN_CUSTOMIZED_VALUE="COLUMN_CUSTOMIZED_VALUE";
+
+	/** The link for a file or folder entry */
+	public final static String C_FILELIST_LINK_VALUE="LINK_VALUE";    
+	
+	/** The suffic for file list values */
+	public final static String C_FILELIST_SUFFIX_VALUE="_VALUE";
+
+	/** The lock value column */
+	public final static String C_FILELIST_LOCK_VALUE="LOCK_VALUE";
+	
+	/** The name value column */
+	public final static String C_FILELIST_NAME_VALUE="NAME_VALUE";
+	
+	/** The title value column */
+	public final static String C_FILELIST_TITLE_VALUE="TITLE_VALUE";
+
+	/** The icon value column */
+	public final static String C_FILELIST_ICON_VALUE="ICON_VALUE";
+	
+	/** The type value column */
+	public final static String C_FILELIST_TYPE_VALUE="TYPE_VALUE";
+  
+	/** The changed value column */
+	public final static String C_FILELIST_CHANGED_VALUE="CHANGED_VALUE";
+
+	/** The size value column */
+	public final static String C_FILELIST_SIZE_VALUE="SIZE_VALUE";
+
+	/** The state value column */
+	public final static String C_FILELIST_STATE_VALUE="STATE_VALUE";
+	
+	/** The owner value column */
+	public final static String C_FILELIST_OWNER_VALUE="OWNER_VALUE";
+
+	/** The group value column */
+	public final static String C_FILELIST_GROUP_VALUE="GROUP_VALUE";
+
+	/** The access value column */
+	public final static String C_FILELIST_ACCESS_VALUE="ACCESS_VALUE";
+
+	/** The lockedby value column */
+	public final static String C_FILELIST_LOCKED_VALUE="LOCKED_VALUE";
+	
+	
+
+	// Constants for language file control
+			
+	/** Prefix for button texts in the language file */
+	public static final String C_LANG_BUTTON = "button";
+	
+	/** Prefix for button texts in the language file */
+	public static final String C_LANG_ICON = "icon";
+
+	/** Prefix for label texts in the language file */
+	public static final String C_LANG_LABEL = "label";
+
+	/** Prefix for label texts in the language file */
+	public static final String C_LANG_TITLE = "title";
+	
+	// Constants for user default preferences
+	
+	/** Number of images to be shown per page in the picture browser */
+	public static final int C_PICBROWSER_MAXIMAGES = 15;
 	
 	/** Number of images to be shown per page in the download browser */
-    public static final int C_DOWNBROWSER_MAXENTRIES = 30;
-    
-    /** Name of the filelist preferences */
-    public static final String C_USERPREF_FILELIST ="filelist";
-    
-    /** Flag for displaying the title column */
-    public static final int C_FILELIST_TITLE = 1;
-    
-    /** Flag for displaying the filetype column */
-    public static final int C_FILELIST_TYPE = 2;
-    
-    /** Flag for displaying the changed column */
-    public static final int C_FILELIST_CHANGED = 4;
-    
-    /** Flag for displaying the size column */
-    public static final int C_FILELIST_SIZE = 8;
-    
-    /** Flag for displaying the state column */
-    public static final int C_FILELIST_STATE = 16;
-    
-    /** Flag for displaying the owner column */
-    public static final int C_FILELIST_OWNER = 32;
-    
-    /** Flag for displaying the group column */
-    public static final int C_FILELIST_GROUP = 64;
-    
-    /** Flag for displaying the access column */
-    public static final int C_FILELIST_ACCESS = 128;
-    
-    /** Flag for displaying the locked column */
-    public static final int C_FILELIST_LOCKED = 256;
+	public static final int C_DOWNBROWSER_MAXENTRIES = 30;
+	
+	/** Name of the filelist preferences */
+	public static final String C_USERPREF_FILELIST ="filelist";
+	
+	/** Flag for displaying the title column */
+	public static final int C_FILELIST_TITLE = 1;
+	
+	/** Flag for displaying the filetype column */
+	public static final int C_FILELIST_TYPE = 2;
+	
+	/** Flag for displaying the changed column */
+	public static final int C_FILELIST_CHANGED = 4;
+	
+	/** Flag for displaying the size column */
+	public static final int C_FILELIST_SIZE = 8;
+	
+	/** Flag for displaying the state column */
+	public static final int C_FILELIST_STATE = 16;
+	
+	/** Flag for displaying the owner column */
+	public static final int C_FILELIST_OWNER = 32;
+	
+	/** Flag for displaying the group column */
+	public static final int C_FILELIST_GROUP = 64;
+	
+	/** Flag for displaying the access column */
+	public static final int C_FILELIST_ACCESS = 128;
+	
+	/** Flag for displaying the locked column */
+	public static final int C_FILELIST_LOCKED = 256;
   
-    /** Flag for displaying the name column */
-    public static final int C_FILELIST_NAME = 512;
+	/** Flag for displaying the name column */
+	public static final int C_FILELIST_NAME = 512;
 	
 	/** Parameter of user management */    
 	public static final String C_USERS_NAME = "USERNAME";
@@ -882,15 +882,15 @@ public interface I_CmsWpConstants {
 
 	/** Constant for task-log */
 	public static final int C_TASKLOGTYPE_PRIORITYCHANGED = 109;
-    
-      
-    /** The prefix for the icon images */
-    public final static String C_ICON_PREFIX="ic_file_";                  
-    
-    /** The extension for the icon images */
-    public final static String C_ICON_EXTENSION=".gif";        
+	
+	  
+	/** The prefix for the icon images */
+	public final static String C_ICON_PREFIX="ic_file_";                  
+	
+	/** The extension for the icon images */
+	public final static String C_ICON_EXTENSION=".gif";        
 
-    /** The default icon */
-    public final static String C_ICON_DEFAULT="ic_file_othertype.gif";
+	/** The default icon */
+	public final static String C_ICON_DEFAULT="ic_file_othertype.gif";
  
 }

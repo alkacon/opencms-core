@@ -1,7 +1,9 @@
+package com.opencms.core;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/SimpleServlet.java,v $
- * Date   : $Date: 2000/08/02 13:34:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/08/08 14:08:21 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -25,8 +27,6 @@
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-package com.opencms.core;
 
 import java.io.*;
 import java.util.*;
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.1 $ $Date: 2000/08/02 13:34:53 $  
+* @version $Revision: 1.2 $ $Date: 2000/08/08 14:08:21 $  
 * 
 * */
 
@@ -87,5 +87,5 @@ public class SimpleServlet extends HttpServlet {
 		writer.println("Session is new?: " + session.isNew());
 		writer.println("Your session creation time: " + session.getCreationTime());
 		writer.println("Your requested session id was: " + req.getRequestedSessionId());
-    }
+	}
 }

@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpLabelDefFile.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/08/08 14:08:34 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
@@ -41,68 +41,62 @@ import java.util.*;
  *  Content definition for the workplace label element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.7 $ $Date: 2000/08/08 14:08:34 $
  **/
 public class CmsXmlWpLabelDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
-                                                                     I_CmsWpConstants {
+																	 I_CmsWpConstants {
 
-    /**
-     * Default constructor.
-     */
-    public CmsXmlWpLabelDefFile() throws CmsException {
-        super();
-    }
-    
-    /**
-     * Constructor for creating a new object containing the content
-     * of the given filename.
-     * 
-     * @param cms CmsObject object for accessing system resources.
-     * @param filename Name of the body file that shoul be read.
-     */        
-    public CmsXmlWpLabelDefFile(CmsObject cms, String filename) throws CmsException {
-        super();
-        init(cms, filename);
-    }
-
-    /**
-     * Constructor for creating a new object containing the content
-     * of the given filename.
-     * 
-     * @param cms CmsObject object for accessing system resources.
-     * @param filename Name of the body file that shoul be read.
-     */        
-    public CmsXmlWpLabelDefFile(CmsObject cms, CmsFile file) throws CmsException {
-        super();
-        init(cms, file);
-    }        
-    
-    /**
-     * Gets the expected tagname for the XML documents of this content type
-     * @return Expected XML tagname.
-     */
-    public String getXmlDocumentTagName() {
-        return "WP_LABELS";
-    }
-    
-    /**
-     * Gets a description of this content type.
-     * @return Content type description.
-     */
-    public String getContentDescription() {
-        return "OpenCms workplace labels";
-    }
-    
-    /**
-     * Gets the processed data for a label.
-     * @param value The value of this label.
-     * @return Processed label.
-     * @exception CmsException
-     */
-     public String getLabel(String value)
-        throws CmsException {
-        setData(C_LABEL_VALUE, value);
-        return getProcessedDataValue(C_TAG_LABEL);                
-    }     
-
+	/**
+	 * Default constructor.
+	 */
+	public CmsXmlWpLabelDefFile() throws CmsException {
+		super();
+	}
+	/**
+	 * Constructor for creating a new object containing the content
+	 * of the given filename.
+	 * 
+	 * @param cms CmsObject object for accessing system resources.
+	 * @param filename Name of the body file that shoul be read.
+	 */        
+	public CmsXmlWpLabelDefFile(CmsObject cms, CmsFile file) throws CmsException {
+		super();
+		init(cms, file);
+	}
+	/**
+	 * Constructor for creating a new object containing the content
+	 * of the given filename.
+	 * 
+	 * @param cms CmsObject object for accessing system resources.
+	 * @param filename Name of the body file that shoul be read.
+	 */        
+	public CmsXmlWpLabelDefFile(CmsObject cms, String filename) throws CmsException {
+		super();
+		init(cms, filename);
+	}
+	/**
+	 * Gets a description of this content type.
+	 * @return Content type description.
+	 */
+	public String getContentDescription() {
+		return "OpenCms workplace labels";
+	}
+	/**
+	 * Gets the processed data for a label.
+	 * @param value The value of this label.
+	 * @return Processed label.
+	 * @exception CmsException
+	 */
+	 public String getLabel(String value)
+		throws CmsException {
+		setData(C_LABEL_VALUE, value);
+		return getProcessedDataValue(C_TAG_LABEL);                
+	}
+	/**
+	 * Gets the expected tagname for the XML documents of this content type
+	 * @return Expected XML tagname.
+	 */
+	public String getXmlDocumentTagName() {
+		return "WP_LABELS";
+	}
 }

@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsPropertydefinition.java,v $
- * Date   : $Date: 2000/06/22 15:57:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/08/08 14:08:23 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,13 +28,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 /**
  * This class describes a Propertydefinition in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/06/22 15:57:41 $
+ * @version $Revision: 1.5 $ $Date: 2000/08/08 14:08:23 $
  */
 public class CmsPropertydefinition implements Cloneable {
 	/**
@@ -69,16 +69,29 @@ public class CmsPropertydefinition implements Cloneable {
 		m_resourceType = resourcetype;
 		m_propertydefinitionType = type;
 	}
-
-	/**
-	 * Returns the name of this Propertydefinition.
-	 * 
-	 * @return name The name of the Propertydefinition.
-	 */
-	public String getName() {
-		return m_name;
+	/** 
+	* Clones the CmsPropertydefinition by creating a new CmsPropertydefinition.
+	* @return Cloned CmsPropertydefinition.
+	*/
+	public Object clone() {
+		return new CmsPropertydefinition(m_id, m_name, m_resourceType,m_propertydefinitionType);
 	}
-	
+	/**
+	 * Compares the overgiven object with this object.
+	 * 
+	 * @return true, if the object is identically else it returns false.
+	 */
+	public boolean equals(Object obj) {
+		boolean equal=false;
+		// check if the object is a CmsPropertydefinition object
+		if (obj instanceof CmsPropertydefinition) {
+			// same ID than the current project?
+			if (((CmsPropertydefinition)obj).getId() == m_id){
+				equal = true;
+			}
+		}
+		return equal;
+	}
 	/**
 	 * Returns the id of a Propertydefinition. This method has the package-visibility.
 	 * 
@@ -87,17 +100,14 @@ public class CmsPropertydefinition implements Cloneable {
 	public int getId() {
 		return m_id;
 	}
-	
 	/**
-	 * Gets the resourcetype for this Propertydefinition.
+	 * Returns the name of this Propertydefinition.
 	 * 
-	 * @return the resourcetype of this Propertydefinition.
+	 * @return name The name of the Propertydefinition.
 	 */
-	public int getType() {
-		return m_resourceType;
+	public String getName() {
+		return m_name;
 	}
-
-
 	/**
 	 * Gets the type for this Propertydefinition.
 	 * The type may be C_PROPERTYDEF_TYPE_NORMAL, C_PROPERTYDEF_TYPE_OPTIONAL or
@@ -108,7 +118,14 @@ public class CmsPropertydefinition implements Cloneable {
 	public int getPropertydefType() {
 		return m_propertydefinitionType;
 	}
-	
+	/**
+	 * Gets the resourcetype for this Propertydefinition.
+	 * 
+	 * @return the resourcetype of this Propertydefinition.
+	 */
+	public int getType() {
+		return m_resourceType;
+	}
 	/**
 	 * Sets the type for this Propertydefinition.
 	 * The type may be C_PROPERTYDEF_TYPE_NORMAL, C_PROPERTYDEF_TYPE_OPTIONAL or
@@ -119,7 +136,6 @@ public class CmsPropertydefinition implements Cloneable {
 	public void setPropertydefType(int type) {
 		m_propertydefinitionType = type;
 	}
-	
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
@@ -127,41 +143,15 @@ public class CmsPropertydefinition implements Cloneable {
 	 * @return string-representation for this object.
 	 */
 	public String toString() {
-        StringBuffer output=new StringBuffer();
-        output.append("[Propertydefinition]:");
-        output.append(m_name);
-        output.append(" , Id=");
-        output.append(m_id);
-        output.append(" , ResourceType=");
-        output.append(getType());
-        output.append(" , PropertydefType=");
-        output.append(getPropertydefType());
-        return output.toString();
+		StringBuffer output=new StringBuffer();
+		output.append("[Propertydefinition]:");
+		output.append(m_name);
+		output.append(" , Id=");
+		output.append(m_id);
+		output.append(" , ResourceType=");
+		output.append(getType());
+		output.append(" , PropertydefType=");
+		output.append(getPropertydefType());
+		return output.toString();
 	}
-	
-	/**
-	 * Compares the overgiven object with this object.
-	 * 
-	 * @return true, if the object is identically else it returns false.
-	 */
-	public boolean equals(Object obj) {
-        boolean equal=false;
-        // check if the object is a CmsPropertydefinition object
-        if (obj instanceof CmsPropertydefinition) {
-            // same ID than the current project?
-            if (((CmsPropertydefinition)obj).getId() == m_id){
-                equal = true;
-            }
-        }
-        return equal;
-	}
-
-    /** 
-    * Clones the CmsPropertydefinition by creating a new CmsPropertydefinition.
-    * @return Cloned CmsPropertydefinition.
-    */
-    public Object clone() {
-        return new CmsPropertydefinition(m_id, m_name, m_resourceType,m_propertydefinitionType);
-    }    
-
 }

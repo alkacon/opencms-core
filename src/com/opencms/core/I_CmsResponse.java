@@ -1,7 +1,9 @@
+package com.opencms.core;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
- * Date   : $Date: 2000/08/02 15:56:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/08 14:08:21 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.core;
-
 import java.io.*;
 
 /**
@@ -41,102 +41,91 @@ import java.io.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.5 $ $Date: 2000/08/02 15:56:36 $  
+ * @version $Revision: 1.6 $ $Date: 2000/08/08 14:08:21 $  
  */
 public interface I_CmsResponse { 
-    
+	
 
-    /**
-     * Returns an OutputStream for writing the response data. 
-     * 
-     * @return OutputStream for writing data.
-     * @exception Throws IOException if an error occurs.
-     */
-    public OutputStream getOutputStream()
-        throws IOException;
-    
-    /**
-     * Sets the length of the content being returned by the server.
-     * 
-     * @param len Number of bytes to be returned by the response.
-     */
-    public void setContentLength(int len);
-    
-    /**
-     * Sets the content type of the response to the specified type.
-     * 
-     * @param type The contnent type of the response.
-     */
-    public void setContentType(String type);
-    
-    /**
-     * Sets the error code that is returnd by the response. The error code is specified
-     * by a numeric value.
-     * 
-     * @param code The error code to be set.
-     * @exception Throws IOException if an error occurs.
-     */
-    public void sendError(int code) 
-        throws IOException;
-    
-    /**
-     * Sets the error code and a additional message that is returnd by the response. 
-     * The error code is specified by a numeric value.
-     * 
-     * @param code The error code to be set.
-     * @param msg Additional error message.
-     * @exception Throws IOException if an error occurs.
-     */
-    public void sendError(int code, String msg)
-        throws IOException;
-    
-    /**
-     * Sets a redirect to send the responst to. 
-     * 
-     * @param location The location the response is send to.
-     * @param msg Additional error message.
-     * @exception Throws IOException if an error occurs.
-     */
-    public void sendCmsRedirect(String location)
-        throws IOException;
-    
 	/**
-     *  Helper function for a redirect to the cluster url. 
-     * 
-     * @param location a complete url, eg. http://servername/servlets/opencms/index.html 
-     * @exception Throws IOException if an error occurs.
-     */
-    public void sendRedirect(String location)
-        throws IOException;
-	
-    /**
-     * Sets the last modified header-field in the response.
-     * 
-     * @param time The last-modified time.
-     */
-    public void setLastModified(long time);
-	
-    /**
-     * Sets a header-field in the response.
-     * 
-     * @param key The key for the header.
-     * @param value The value for the header.
-     */
+	 * Returns the original response that was used to create the CmsResponse.
+	 * 
+	 * @return The original response of the CmsResponse.
+	 */
+	public Object getOriginalResponse();
+	/**
+	 * Returns the type of the response that was used to create the CmsResponse.
+	 * The returned int must be one of the constants defined above in this interface.
+	 * 
+	 * @return The type of the CmsResponse.
+	 */
+	public int getOriginalResponseType();
+	/**
+	 * Returns an OutputStream for writing the response data. 
+	 * 
+	 * @return OutputStream for writing data.
+	 * @exception Throws IOException if an error occurs.
+	 */
+	public OutputStream getOutputStream()
+		throws IOException;
+	/**
+	 * Sets a redirect to send the responst to. 
+	 * 
+	 * @param location The location the response is send to.
+	 * @param msg Additional error message.
+	 * @exception Throws IOException if an error occurs.
+	 */
+	public void sendCmsRedirect(String location)
+		throws IOException;
+	/**
+	 * Sets the error code that is returnd by the response. The error code is specified
+	 * by a numeric value.
+	 * 
+	 * @param code The error code to be set.
+	 * @exception Throws IOException if an error occurs.
+	 */
+	public void sendError(int code) 
+		throws IOException;
+	/**
+	 * Sets the error code and a additional message that is returnd by the response. 
+	 * The error code is specified by a numeric value.
+	 * 
+	 * @param code The error code to be set.
+	 * @param msg Additional error message.
+	 * @exception Throws IOException if an error occurs.
+	 */
+	public void sendError(int code, String msg)
+		throws IOException;
+	/**
+	 *  Helper function for a redirect to the cluster url. 
+	 * 
+	 * @param location a complete url, eg. http://servername/servlets/opencms/index.html 
+	 * @exception Throws IOException if an error occurs.
+	 */
+	public void sendRedirect(String location)
+		throws IOException;
+	/**
+	 * Sets the length of the content being returned by the server.
+	 * 
+	 * @param len Number of bytes to be returned by the response.
+	 */
+	public void setContentLength(int len);
+	/**
+	 * Sets the content type of the response to the specified type.
+	 * 
+	 * @param type The contnent type of the response.
+	 */
+	public void setContentType(String type);
+	/**
+	 * Sets a header-field in the response.
+	 * 
+	 * @param key The key for the header.
+	 * @param value The value for the header.
+	 */
 	public void setHeader(String key, String value);
-	
-    /**
-     * Returns the type of the response that was used to create the CmsResponse.
-     * The returned int must be one of the constants defined above in this interface.
-     * 
-     * @return The type of the CmsResponse.
-     */
-    public int getOriginalResponseType();
-
-    /**
-     * Returns the original response that was used to create the CmsResponse.
-     * 
-     * @return The original response of the CmsResponse.
-     */
-    public Object getOriginalResponse();
-    
+	/**
+	 * Sets the last modified header-field in the response.
+	 * 
+	 * @param time The last-modified time.
+	 */
+	public void setLastModified(long time);
 }

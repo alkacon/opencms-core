@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/07/14 14:53:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/08/08 14:08:31 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -43,8 +43,8 @@ import java.io.*;
 /**
  * This class is used to send a mail, it uses Threads to send it.
  *
- * @author $Author: m.emmerich $
- * @version $Name:  $ $Revision: 1.8 $ $Date: 2000/07/14 14:53:56 $
+ * @author $Author: h.riege $
+ * @version $Name:  $ $Revision: 1.9 $ $Date: 2000/08/08 14:08:31 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -57,9 +57,142 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	private final String c_CONTENT;	
 	private final String c_TYPE;
 	private final CmsObject c_CMS;
-    
-    private String m_defaultSender = null;
 	
+	private String m_defaultSender = null;
+	
+	/**
+	 * Constructor, that creates an Email Object.
+	 * 
+	 * @param cms Cms object
+	 * @param from User object that contains the address of sender.
+	 * @param to User object that contains the address of recipient.
+	 * @param subject Subject of email.
+	 * @param content Content of email.
+	 * @param type ContentType of email.
+	 */	
+	public CmsMail(CmsObject cms,CmsUser from, CmsUser[] to, String subject, String content, String type)
+		throws CmsException{
+		// Get WORKPLACE.INI
+		System.err.println(from);
+		System.err.println(to);
+		System.err.println(subject);
+		System.err.println(content);
+		System.err.println(type);
+		CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);		
+
+		
+		// check sender email address
+		String fromAddress = from.getEmail();
+		if(fromAddress == null || fromAddress.equals("")) {
+			fromAddress = conf.getDefaultMailSender();
+		}
+
+		if(fromAddress == null || fromAddress.equals("")) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
+		}
+
+		if (fromAddress.indexOf("@")==-1 || fromAddress.indexOf(".")==-1) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsException.C_BAD_NAME);
+		}
+		
+
+		// check recipient email address
+		Vector v=new Vector(to.length);
+
+		for(int i=0;i<to.length;i++) {
+			if (to[i].getEmail()==null) {
+				continue;
+			}
+			if (to[i].getEmail().equals("")){
+				continue;
+			}
+			if (to[i].getEmail().indexOf("@")==-1 || to[i].getEmail().indexOf(".")==-1) {
+				throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(),CmsException.C_BAD_NAME);
+			}
+			v.addElement(to[i].getEmail());
+		}
+
+		String users[]=new String[v.size()];
+		for(int i=0;i<v.size();i++) {
+			users[i]=(String)v.elementAt(i);
+		}
+		if (users.length==0){
+			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
+		}
+
+		c_TO=users;
+		c_FROM=fromAddress;
+		c_SUBJECT=(subject==null?"":subject);
+		c_CONTENT=(content==null?"":content);
+		c_MAILSERVER=conf.getMailServer();
+		c_TYPE=type;
+		c_CMS=cms;
+   
+	}
+	/**
+	 * Constructor, that creates an Email Object.
+	 * 
+	 * @param cms Cms object.
+	 * @param from User object that contains the address of sender.
+	 * @param to Group object that contains the address of recipient.
+	 * @param subject Subject of email.
+	 * @param content Content of email.	
+	 * @param type ContentType of email.
+	 */	
+	public CmsMail(CmsObject cms,CmsUser from, CmsGroup to, String subject, String content, String type)
+		throws CmsException{
+		System.err.println(from);
+		System.err.println(to);
+		System.err.println(subject);
+		System.err.println(content);
+		System.err.println(type);
+		// Get WORKPLACE.INI
+		CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);		
+
+		// check sender email address
+		String fromAddress = from.getEmail();
+		if(fromAddress == null || fromAddress.equals("")) {
+			fromAddress = conf.getDefaultMailSender();
+		}
+
+		if(fromAddress == null || fromAddress.equals("")) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
+		}
+
+		if (fromAddress.indexOf("@")==-1 || fromAddress.indexOf(".")==-1) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsException.C_BAD_NAME);
+		}
+		// check recipient email address
+		Vector vu=cms.getUsersOfGroup(to.getName());
+		Vector v=new Vector(vu.size());
+		for(int i=0;i<vu.size();i++) {
+			String address=((CmsUser)vu.elementAt(i)).getEmail();
+			if (address==null) {
+				continue;
+			}
+			if (address.equals("")) {
+				continue;
+			}
+			if (address.indexOf("@")==-1 || address.indexOf(".")==-1) {
+				throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + address,CmsException.C_BAD_NAME);
+			}
+			v.addElement(address);
+		}
+		String users[]=new String[v.size()];
+		for(int i=0;i<v.size();i++) {
+			users[i]=(String)v.elementAt(i);
+		}
+		if (users.length==0){
+			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
+		}
+		c_TO=users;
+		c_FROM=fromAddress;
+		c_SUBJECT=(subject==null?"":subject);
+		c_CONTENT=(content==null?"":content);
+		c_MAILSERVER=conf.getMailServer();
+		c_TYPE=type;
+		c_CMS=cms;
+	}
 	/**
 	 * Constructor, that creates an Email Object.
 	 * 
@@ -112,144 +245,6 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		c_TYPE=type;
 		c_CMS=cms;			
 	}
-	
-	/**
-	 * Constructor, that creates an Email Object.
-	 * 
-	 * @param cms Cms object
-	 * @param from User object that contains the address of sender.
-	 * @param to User object that contains the address of recipient.
-	 * @param subject Subject of email.
-	 * @param content Content of email.
-	 * @param type ContentType of email.
-	 */	
-	public CmsMail(CmsObject cms,CmsUser from, CmsUser[] to, String subject, String content, String type)
-		throws CmsException{
-        // Get WORKPLACE.INI
-        System.err.println(from);
-        System.err.println(to);
-        System.err.println(subject);
-        System.err.println(content);
-        System.err.println(type);
-        CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);		
-
-        
-        // check sender email address
-        String fromAddress = from.getEmail();
-        if(fromAddress == null || fromAddress.equals("")) {
-            fromAddress = conf.getDefaultMailSender();
-        }
-
-        if(fromAddress == null || fromAddress.equals("")) {
-			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
-		}
-
-        if (fromAddress.indexOf("@")==-1 || fromAddress.indexOf(".")==-1) {
-			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsException.C_BAD_NAME);
-		}
-        
-
-		// check recipient email address
-		Vector v=new Vector(to.length);
-
-		for(int i=0;i<to.length;i++) {
-			if (to[i].getEmail()==null) {
-				continue;
-			}
-			if (to[i].getEmail().equals("")){
-				continue;
-			}
-			if (to[i].getEmail().indexOf("@")==-1 || to[i].getEmail().indexOf(".")==-1) {
-				throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(),CmsException.C_BAD_NAME);
-			}
-			v.addElement(to[i].getEmail());
-		}
-
-		String users[]=new String[v.size()];
-		for(int i=0;i<v.size();i++) {
-			users[i]=(String)v.elementAt(i);
-		}
-		if (users.length==0){
-			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
-		}
-
-		c_TO=users;
-		c_FROM=fromAddress;
-		c_SUBJECT=(subject==null?"":subject);
-		c_CONTENT=(content==null?"":content);
-		c_MAILSERVER=conf.getMailServer();
-		c_TYPE=type;
-		c_CMS=cms;
-   
-	}
-	
-	
-	/**
-	 * Constructor, that creates an Email Object.
-	 * 
-	 * @param cms Cms object.
-	 * @param from User object that contains the address of sender.
-	 * @param to Group object that contains the address of recipient.
-	 * @param subject Subject of email.
-	 * @param content Content of email.	
-	 * @param type ContentType of email.
-	 */	
-	public CmsMail(CmsObject cms,CmsUser from, CmsGroup to, String subject, String content, String type)
-		throws CmsException{
-        System.err.println(from);
-        System.err.println(to);
-        System.err.println(subject);
-        System.err.println(content);
-        System.err.println(type);
-        // Get WORKPLACE.INI
-        CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);		
-
-        // check sender email address
-        String fromAddress = from.getEmail();
-        if(fromAddress == null || fromAddress.equals("")) {
-            fromAddress = conf.getDefaultMailSender();
-        }
-
-        if(fromAddress == null || fromAddress.equals("")) {
-			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
-		}
-
-        if (fromAddress.indexOf("@")==-1 || fromAddress.indexOf(".")==-1) {
-			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsException.C_BAD_NAME);
-		}
-		// check recipient email address
-		Vector vu=cms.getUsersOfGroup(to.getName());
-		Vector v=new Vector(vu.size());
-		for(int i=0;i<vu.size();i++) {
-			String address=((CmsUser)vu.elementAt(i)).getEmail();
-			if (address==null) {
-				continue;
-			}
-			if (address.equals("")) {
-				continue;
-			}
-			if (address.indexOf("@")==-1 || address.indexOf(".")==-1) {
-				throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + address,CmsException.C_BAD_NAME);
-			}
-			v.addElement(address);
-		}
-		String users[]=new String[v.size()];
-		for(int i=0;i<v.size();i++) {
-			users[i]=(String)v.elementAt(i);
-		}
-		if (users.length==0){
-			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
-		}
-		c_TO=users;
-		c_FROM=fromAddress;
-		c_SUBJECT=(subject==null?"":subject);
-		c_CONTENT=(content==null?"":content);
-		c_MAILSERVER=conf.getMailServer();
-		c_TYPE=type;
-		c_CMS=cms;
-	}
-	
-	
 	/**
 	 * This method starts sending an email.
 	 */
@@ -315,9 +310,9 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		} catch(Exception e) {
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_DEBUG, "Error in sending email:"+ e.getMessage());
-            }
+			}
 			
 		}
 		
-	}    
+	}
 }

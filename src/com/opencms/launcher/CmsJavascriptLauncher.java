@@ -1,7 +1,9 @@
+package com.opencms.launcher;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsJavascriptLauncher.java,v $
- * Date   : $Date: 2000/06/05 13:37:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/08/08 14:08:28 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.launcher;
-
 import com.opencms.core.*;
 import com.opencms.file.*;
 
@@ -35,11 +35,18 @@ import com.opencms.file.*;
  * Document the purpose of this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/06/05 13:37:57 $
+ * @version $Revision: 1.5 $ $Date: 2000/08/08 14:08:28 $
  */
 class CmsJavascriptLauncher extends A_CmsLauncher {
 
-    /**
+	/**
+	 * Gets the ID that indicates the type of the launcher.
+	 * @return launcher ID
+	 */
+	public int getLauncherId() {
+	    return C_TYPE_JAVASCRIPT;
+	}
+	/**
  	 * Unitary method to start generating the output.
  	 * Every launcher has to implement this method.
  	 * In it possibly the selected file will be analyzed, and the
@@ -51,16 +58,8 @@ class CmsJavascriptLauncher extends A_CmsLauncher {
 	 * @param file CmsFile Object with the selected resource to be shown
 	 * @param startTemplateClass Name of the template class to start with.
 	 * @param openCms a instance of A_OpenCms for redirect-needs
-     * @exception CmsException
+	 * @exception CmsException
 	 */	
 	protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
-    }
-    
-    /**
-     * Gets the ID that indicates the type of the launcher.
-     * @return launcher ID
-     */
-    public int getLauncherId() {
-	    return C_TYPE_JAVASCRIPT;
-    }
+	}
 }

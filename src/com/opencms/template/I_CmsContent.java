@@ -1,7 +1,9 @@
+package com.opencms.template;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsContent.java,v $
- * Date   : $Date: 2000/06/30 07:32:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/08 14:08:29 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,15 +28,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.template; 
-
 /**
  * Common interface for OpenCms content classes.
  * Almost empty.
  * Classes for each customized content type have to be implemetented.
  * 
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2000/06/30 07:32:54 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/08 14:08:29 $
  */
 public interface I_CmsContent extends Cloneable { 
 }

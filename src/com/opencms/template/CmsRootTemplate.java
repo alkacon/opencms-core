@@ -1,7 +1,9 @@
+package com.opencms.template;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
- * Date   : $Date: 2000/08/02 15:56:36 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/08/08 14:08:29 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.template;
-
 import com.opencms.core.*;
 import com.opencms.launcher.*;
 import com.opencms.file.*;
@@ -42,33 +42,33 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2000/08/02 15:56:36 $
+ * @version $Revision: 1.16 $ $Date: 2000/08/08 14:08:29 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
-    
-    /**
-     * Gets the processed content of the requested master template by calling
-     * the given template class.
-     * <P>
-     * If the result is cacheable, the complete output will be stored
-     * in the template cache for later re-use.
-     * 
-     * @param cms CmsObject object for accessing system resources.
-     * @param templateClass Instance of the template class to be called.
-     * @param masterTemplate CmsFile object of the master template file.
-     * @param cache templateCache to be used.
-     * @param parameters Hashtable with all template class parameters.
-     * 
-     * @return Byte array containing the results of the master template.
-     */
-    public byte[] getMasterTemplate(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate,
-            com.opencms.launcher.I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
-        
-        byte[] result;
-        //String cacheKey = cms.getUrl();
-        Object cacheKey = templateClass.getKey(cms, masterTemplate.getAbsolutePath(), parameters, null);
-    
-        boolean cacheable = templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null);
+	
+	/**
+	 * Gets the processed content of the requested master template by calling
+	 * the given template class.
+	 * <P>
+	 * If the result is cacheable, the complete output will be stored
+	 * in the template cache for later re-use.
+	 * 
+	 * @param cms CmsObject object for accessing system resources.
+	 * @param templateClass Instance of the template class to be called.
+	 * @param masterTemplate CmsFile object of the master template file.
+	 * @param cache templateCache to be used.
+	 * @param parameters Hashtable with all template class parameters.
+	 * 
+	 * @return Byte array containing the results of the master template.
+	 */
+	public byte[] getMasterTemplate(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate,
+			com.opencms.launcher.I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
+		
+		byte[] result;
+		//String cacheKey = cms.getUrl();
+		Object cacheKey = templateClass.getKey(cms, masterTemplate.getAbsolutePath(), parameters, null);
+	
+		boolean cacheable = templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null);
 		
 		if( cacheable) {
 			// set max-age to 5 minutes. In this time a proxy may cache this content.
@@ -78,24 +78,24 @@ public class CmsRootTemplate implements I_CmsLogChannels, I_CmsConstants {
 			cms.getRequestContext().getResponse().setHeader("Cache-Control", "no-cache");
 		}
 		
-        if(cacheable
-                && cache.has(cacheKey) 
-                && ! templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null)) {
-            result = cache.get(cacheKey);
-        } else {
-            try {
-                result = templateClass.getContent(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters);
-          } catch(CmsException e) {
-                cache.clearCache(cacheKey);
-                if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsRootTemplate] Could not get contents of master template " + masterTemplate.getName());
-                }
-                throw e;
-            }
-            if(cacheable) {
-                cache.put(cacheKey, result);
-            }
-       }         
-        return result;
-    }
+		if(cacheable
+				&& cache.has(cacheKey) 
+				&& ! templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null)) {
+			result = cache.get(cacheKey);
+		} else {
+			try {
+				result = templateClass.getContent(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters);
+		  } catch(CmsException e) {
+				cache.clearCache(cacheKey);
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(C_OPENCMS_INFO, "[CmsRootTemplate] Could not get contents of master template " + masterTemplate.getName());
+				}
+				throw e;
+			}
+			if(cacheable) {
+				cache.put(cacheKey, result);
+			}
+	   }         
+		return result;
+	}
 }

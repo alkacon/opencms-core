@@ -1,7 +1,9 @@
+package com.opencms.core;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
- * Date   : $Date: 2000/05/10 16:01:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/08 14:08:20 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -25,8 +27,6 @@
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-package com.opencms.core;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -61,13 +61,30 @@ class CmsMultipartInputStreamHandler
    * @param totalExpected Number of bytes expected to be read 
    */
   public CmsMultipartInputStreamHandler(ServletInputStream in,
-                                     String boundary,
-                                     int totalExpected) {
-    m_in = in;
-    m_boundary = boundary;
-    m_totalExpected = totalExpected;
-  }
-
+									 String boundary,
+									 int totalExpected) {
+	m_in = in;
+	m_boundary = boundary;
+	m_totalExpected = totalExpected;
+  }  
+  /** A pass-through to ServletInputStream.read() that keeps track
+  * how many bytes have been read and stops reading when the 
+  * Content-Length limit has been reached.
+  * 
+  * @return value of the next byte or -1 if no byte could be read.
+  * @exception IOException Throws IOException if any error with the input stream occurs.
+  */
+  public int read() throws IOException {
+	  if (totalRead >= m_totalExpected) {
+		  return -1;
+	  } else {
+		  int result = m_in.read();
+		  if (result > -1) {
+			  totalRead++;
+		  }
+		  return result;
+	  }
+  }  
   /** Reads the next line of input.  Returns null to indicate the end
   * of stream.
   * 
@@ -76,32 +93,31 @@ class CmsMultipartInputStreamHandler
   */
   
   public String readLine() throws IOException {
-    StringBuffer sbuf = new StringBuffer();
-    int result;
-    String line;
-    
-    // loop only if the buffer was filled
-    do {
-      // this.readLine() does +=
-      result = this.readLine(buf, 0, buf.length); 
-      if (result != -1) {
-        sbuf.append(new String(buf, 0, result, "ISO-8859-1"));
-      }
-    } while (result == buf.length); 
-    
-    if (sbuf.length() == 0) {
-      // nothing read, must be at the end of stream
-      return null; 
-    }
-        
-    // cut off the trailing newline
-    if(m_newLine == 0) {
-        m_newLine = (result > 1 && (buf[result-2] == '\r' || buf[result-2] == '\n')) ? 2 : 1;
-    }
-    sbuf.setLength(sbuf.length() - m_newLine);
-    return sbuf.toString();
-  }
-
+	StringBuffer sbuf = new StringBuffer();
+	int result;
+	String line;
+	
+	// loop only if the buffer was filled
+	do {
+	  // this.readLine() does +=
+	  result = this.readLine(buf, 0, buf.length); 
+	  if (result != -1) {
+		sbuf.append(new String(buf, 0, result, "ISO-8859-1"));
+	  }
+	} while (result == buf.length); 
+	
+	if (sbuf.length() == 0) {
+	  // nothing read, must be at the end of stream
+	  return null; 
+	}
+		
+	// cut off the trailing newline
+	if(m_newLine == 0) {
+		m_newLine = (result > 1 && (buf[result-2] == '\r' || buf[result-2] == '\n')) ? 2 : 1;
+	}
+	sbuf.setLength(sbuf.length() - m_newLine);
+	return sbuf.toString();
+  }  
   /** A pass-through to ServletInputStream.readLine() that keeps track
   * how many bytes have been read and stops reading when the 
   * Content-Length limit has been reached.
@@ -113,34 +129,15 @@ class CmsMultipartInputStreamHandler
   * @exception IOException Throws IOException if any error with the input stream occurs.
   */
   public int readLine(byte b[], int off, int len) throws IOException {
-    if (totalRead >= m_totalExpected) {
-      return -1;
-    }
-    else {
-      int result = m_in.readLine(b, off, len);
-      if (result > 0) {
-        totalRead += result;
-      }
-      return result;
-    }
-  }
-  
-  /** A pass-through to ServletInputStream.read() that keeps track
-  * how many bytes have been read and stops reading when the 
-  * Content-Length limit has been reached.
-  * 
-  * @return value of the next byte or -1 if no byte could be read.
-  * @exception IOException Throws IOException if any error with the input stream occurs.
-  */
-  public int read() throws IOException {
-      if (totalRead >= m_totalExpected) {
-          return -1;
-      } else {
-          int result = m_in.read();
-          if (result > -1) {
-              totalRead++;
-          }
-          return result;
-      }
-  }          
+	if (totalRead >= m_totalExpected) {
+	  return -1;
+	}
+	else {
+	  int result = m_in.readLine(b, off, len);
+	  if (result > 0) {
+		totalRead += result;
+	  }
+	  return result;
+	}
+  }  
 }

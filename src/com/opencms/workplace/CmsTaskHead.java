@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
- * Date   : $Date: 2000/08/02 13:34:57 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/08 14:08:32 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/08/02 13:34:57 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/08 14:08:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -54,36 +54,44 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
 	private static final String C_SPACER = "------------------------------------------------";
 	
 	/**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }    
-
-    /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
+	 * User method to get the checked value.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param tagcontent Unused in this special case of a user method. Can be ignored.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
+	 * @param userObj Hashtable with parameters <em>(not used here)</em>.
+	 * @return String with the pics URL.
+	 * @exception CmsException
+	 */    
+	public Object checked(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+		throws CmsException {
+		I_CmsSession session = cms.getRequestContext().getSession(true);
+		Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
+		
+		// was the allprojects checkbox checked?
+		if((allProjects != null) && (((Boolean)allProjects).booleanValue())) {
+			return "checked";
+		} else {
+			return "";
+		}
+	}
+	/**
+	 * Gets the content of a defined section in a given template file and its subtemplates
+	 * with the given parameters. 
+	 * 
+	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		if(C_DEBUG && A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+		}
 		
 		I_CmsSession session = cms.getRequestContext().getSession(true);
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
@@ -116,56 +124,32 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
 		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }
-
-    /**
-     * User method to get the checked value.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
-     * @param userObj Hashtable with parameters <em>(not used here)</em>.
-     * @return String with the pics URL.
-     * @exception CmsException
-     */    
-    public Object checked(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+	}
+	/**
+	 * Gets all filters available in the task screen.
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * <P>
+	 * <code>names</code> will contain language specific view descriptions
+	 * and <code>values</code> will contain the correspondig URL for each
+	 * of these views after returning from this method.
+	 * <P>
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param lang reference to the currently valid language file
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the user's current filter view in the vectors.
+	 * @exception CmsException
+	 */
+	public Integer getFilters(CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters) 
 		throws CmsException {
-		I_CmsSession session = cms.getRequestContext().getSession(true);
-		Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
 		
-		// was the allprojects checkbox checked?
-		if((allProjects != null) && (((Boolean)allProjects).booleanValue())) {
-			return "checked";
-		} else {
-			return "";
-		}
-    }
-
-    /**
-     * Gets all filters available in the task screen.
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * <P>
-     * <code>names</code> will contain language specific view descriptions
-     * and <code>values</code> will contain the correspondig URL for each
-     * of these views after returning from this method.
-     * <P>
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param lang reference to the currently valid language file
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the user's current filter view in the vectors.
-     * @exception CmsException
-     */
-    public Integer getFilters(CmsObject cms, CmsXmlLanguageFile lang, Vector values, Vector names, Hashtable parameters) 
-		throws CmsException {
-        
-        // Let's see if we have a session
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+		// Let's see if we have a session
+		I_CmsSession session = cms.getRequestContext().getSession(true);
 		String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
 
 		int selected = 0;
@@ -244,5 +228,18 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
 		}
 		
 		return(new Integer(selected));
-    }
+	}
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}
 }

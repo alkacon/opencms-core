@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButtonText.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/08/08 14:08:30 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -42,45 +42,45 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TEXTBUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.5 $ $Date: 2000/08/08 14:08:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsButtonText extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
-            
-    /**
-     * Handling of the special workplace <CODE>&lt;TEXTBUTTON&gt;</CODE> tags.
-     * <P>
-     * Reads the code of a button from the buttons definition file
-     * and returns the processed code with the actual elements.
-     * <P>
-     * Text Buttons can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
-     * <CODE>&lt;TEXTBUTTON name="..." action="..." alt="..."/&gt;</CODE>
-     * 
-     * @param cms CmsObject Object for accessing resources.
-     * @param n XML element containing the <code>&lt;TEXTBUTTON&gt;</code> tag.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param callingObject reference to the calling object <em>(not used here)</em>.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @param lang CmsXmlLanguageFile conataining the currently valid language file.
-     * @return Processed button.
-     * @exception CmsException
-     */    
-    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        // Read button parameters
-        String buttonName = n.getAttribute(C_BUTTON_NAME);
-        String buttonAction = n.getAttribute(C_BUTTON_ACTION);
-        String buttonValue = n.getAttribute(C_BUTTON_VALUE);
-        String buttonStyle = n.getAttribute(C_BUTTON_STYLE);
-        String buttonWidth = n.getAttribute(C_BUTTON_WIDTH);
-        
-        // Get button definition and language values
-        CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
-        buttonValue = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonValue);
-        
-        // get the processed button.
-        String result = buttondef.getButtonText(buttonName, buttonAction, buttonValue,
-                                                  buttonStyle, buttonWidth);
-        return result; 
-    }           
+			
+	/**
+	 * Handling of the special workplace <CODE>&lt;TEXTBUTTON&gt;</CODE> tags.
+	 * <P>
+	 * Reads the code of a button from the buttons definition file
+	 * and returns the processed code with the actual elements.
+	 * <P>
+	 * Text Buttons can be referenced in any workplace template by <br>
+	 * // TODO: insert correct syntax here!
+	 * <CODE>&lt;TEXTBUTTON name="..." action="..." alt="..."/&gt;</CODE>
+	 * 
+	 * @param cms CmsObject Object for accessing resources.
+	 * @param n XML element containing the <code>&lt;TEXTBUTTON&gt;</code> tag.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+	 * @param callingObject reference to the calling object <em>(not used here)</em>.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @param lang CmsXmlLanguageFile conataining the currently valid language file.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */    
+	public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+		// Read button parameters
+		String buttonName = n.getAttribute(C_BUTTON_NAME);
+		String buttonAction = n.getAttribute(C_BUTTON_ACTION);
+		String buttonValue = n.getAttribute(C_BUTTON_VALUE);
+		String buttonStyle = n.getAttribute(C_BUTTON_STYLE);
+		String buttonWidth = n.getAttribute(C_BUTTON_WIDTH);
+		
+		// Get button definition and language values
+		CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
+		buttonValue = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonValue);
+		
+		// get the processed button.
+		String result = buttondef.getButtonText(buttonName, buttonAction, buttonValue,
+												  buttonStyle, buttonWidth);
+		return result; 
+	}
 }

@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
- * Date   : $Date: 2000/06/08 13:19:11 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/08/08 14:08:22 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,66 +28,63 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 import com.opencms.core.*;
 import java.io.*;
 /**
  * This class describes a folder in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/06/08 13:19:11 $
+ * @version $Revision: 1.11 $ $Date: 2000/08/08 14:08:22 $
  */
 public class CmsFolder extends CmsResource implements I_CmsConstants,
-                                                      Cloneable,
-                                                      Serializable {
-     
-     /**
-      * Constructor, creates a new CmsFolder object.
-      * 
-      * @param resourceId The database Id.
-      * @param parentId The database Id of the parent folder.
-      * @param fileId The id of the content.
-      * @param resourceName The name (including complete path) of the resouce.
-      * @param resourceType The type of this resource.
-      * @param rescourceFlags The flags of thei resource.
-      * @param userId The id of the user of this resource.
-      * @param groupId The id of the group of this resource.
-      * @param projectId The project id this resource belongs to.
-      * @param accessFlags The access flags of this resource.
-      * @param state The state of this resource. 
-      * @param lockedBy The user id of the user who has locked this resource.
-      * @param dateCreated The creation date of this resource.
-      * @param dateLastModified The date of the last modification of the resource.
-      * @param resourceLastModifiedBy The user who changed the file.
-      */
-     public CmsFolder(int resourceId, int parentId,int fileId,
+													  Cloneable,
+													  Serializable {
+	 
+	 /**
+	  * Constructor, creates a new CmsFolder object.
+	  * 
+	  * @param resourceId The database Id.
+	  * @param parentId The database Id of the parent folder.
+	  * @param fileId The id of the content.
+	  * @param resourceName The name (including complete path) of the resouce.
+	  * @param resourceType The type of this resource.
+	  * @param rescourceFlags The flags of thei resource.
+	  * @param userId The id of the user of this resource.
+	  * @param groupId The id of the group of this resource.
+	  * @param projectId The project id this resource belongs to.
+	  * @param accessFlags The access flags of this resource.
+	  * @param state The state of this resource. 
+	  * @param lockedBy The user id of the user who has locked this resource.
+	  * @param dateCreated The creation date of this resource.
+	  * @param dateLastModified The date of the last modification of the resource.
+	  * @param resourceLastModifiedBy The user who changed the file.
+	  */
+	 public CmsFolder(int resourceId, int parentId,int fileId,
 						String resourceName, int resourceType, int resourceFlags,
-                        int user, int group, int projectId,
-                        int accessFlags, int state, int lockedBy,
-                        long dateCreated, long dateLastModified
-                        ,int resourceLastModifiedBy){
-        
-        // create the CmsResource.
-        super(resourceId, parentId,fileId,resourceName,
+						int user, int group, int projectId,
+						int accessFlags, int state, int lockedBy,
+						long dateCreated, long dateLastModified
+						,int resourceLastModifiedBy){
+		
+		// create the CmsResource.
+		super(resourceId, parentId,fileId,resourceName,
 			  resourceType,resourceFlags,
-              user,group,projectId,
-              accessFlags,state,lockedBy,
-              C_UNKNOWN_LAUNCHER_ID,C_UNKNOWN_LAUNCHER,
-              dateCreated,dateLastModified,
-              resourceLastModifiedBy,-1);         
-   }
-    
-    /** 
-    * Clones the CmsFolder by creating a new CmsFolder.
-    * @return Cloned CmsFolder.
-    */
-    public Object clone() {
-        return new CmsFolder(this.getResourceId(), this.getParentId(), this.getFileId(), 
+			  user,group,projectId,
+			  accessFlags,state,lockedBy,
+			  C_UNKNOWN_LAUNCHER_ID,C_UNKNOWN_LAUNCHER,
+			  dateCreated,dateLastModified,
+			  resourceLastModifiedBy,-1);         
+   }   
+	/** 
+	* Clones the CmsFolder by creating a new CmsFolder.
+	* @return Cloned CmsFolder.
+	*/
+	public Object clone() {
+		return new CmsFolder(this.getResourceId(), this.getParentId(), this.getFileId(), 
 							 new String(this.getAbsolutePath()),this.getType(),
-                             this.getFlags(), this.getOwnerId(), this.getGroupId(),
-                             this.getProjectId(),this.getAccessFlags(), 
-                             this.getState(),this.isLockedBy(),this.getDateCreated(),
-                             this.getDateLastModified(), this.getResourceLastModifiedBy());                             
-    }
+							 this.getFlags(), this.getOwnerId(), this.getGroupId(),
+							 this.getProjectId(),this.getAccessFlags(), 
+							 this.getState(),this.isLockedBy(),this.getDateCreated(),
+							 this.getDateLastModified(), this.getResourceLastModifiedBy());                             
+	}
 }

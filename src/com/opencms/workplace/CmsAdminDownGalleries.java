@@ -1,6 +1,8 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
- * Date   : $Date: 2000/08/02 13:34:55 $
+ * Date   : $Date: 2000/08/08 14:08:30 $
  * Version: $ $
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -25,8 +27,6 @@
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -41,47 +41,33 @@ import javax.servlet.http.*;
  * <p> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.7 $ $Date: 2000/08/02 13:34:55 $
+ * @version $Revision: 1.8 $ $Date: 2000/08/08 14:08:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
-      
-    /**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }    
-
-    /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-       
+	  
+	/**
+	 * Gets the content of a defined section in a given template file and its subtemplates
+	 * with the given parameters. 
+	 * 
+	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+	   
 		I_CmsSession session = cms.getRequestContext().getSession(true);
-        CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
    
 		// clear session values on first load
-        String initial=(String)parameters.get(C_PARA_INITIAL);
-        if (initial != null) {
-            // remove all session values
-            session.removeValue(C_PARA_FOLDER); 
-        }
+		String initial=(String)parameters.get(C_PARA_INITIAL);
+		if (initial != null) {
+			// remove all session values
+			session.removeValue(C_PARA_FOLDER); 
+		}
 		// getting the URL to which we need to return when we're done
 		String lasturl = getLastUrl(cms, parameters); 
 		
@@ -124,15 +110,15 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
 					flag ^= C_ACCESS_PUBLIC_WRITE;	
 				}  
 				cms.chmod(folder.getAbsolutePath(), flag);
-            } catch (CmsException ex) {  
+			} catch (CmsException ex) {  
 				xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(ex));
 				templateSelector="error"; 
-            } 
+			} 
 		} else if ("upload".equals(action)) { 
 			// get filename and file content if available
 			String filename=null;
 			byte[] filecontent=new byte[0];
-        
+		
 			// get the filename
 			Enumeration files=cms.getRequestContext().getRequest().getFileNames();
 			while (files.hasMoreElements()) {
@@ -142,7 +128,7 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
 			    session.putValue(C_PARA_FILE,filename);
 			}        
 			filename=(String)session.getValue(C_PARA_FILE);
-        
+		
 			// get the filecontent
 			if (filename != null) {
 			    filecontent=cms.getRequestContext().getRequest().getFile(filename);
@@ -154,38 +140,38 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
 			if ("0".equals(step)) {
 				templateSelector="";	
 			} else if ("1".equals(step)) { 
-                // display the select filetype screen
+				// display the select filetype screen
 				if (filename != null) {
-                   // check if the file size is 0
-                   if (filecontent.length == 0) {
-                       templateSelector="error";
-                       xmlTemplateDocument.setData("details", filename);                        
-                   } else {   
+				   // check if the file size is 0
+				   if (filecontent.length == 0) {
+					   templateSelector="error";
+					   xmlTemplateDocument.setData("details", filename);                        
+				   } else {   
 						xmlTemplateDocument.setData("MIME",filename);
 						xmlTemplateDocument.setData("SIZE","Not yet available");
 						xmlTemplateDocument.setData("FILESIZE",new Integer(filecontent.length).toString()+" Bytes");
 						xmlTemplateDocument.setData("FILENAME", filename);	
 						templateSelector="step1";   
-                   }
-                } 
+				   }
+				} 
 			 } else if ("2".equals(step)) {
 				// check if a new filename is given
-                if (newname != null) {
-                    filename=newname;
+				if (newname != null) {
+					filename=newname;
 				} 
 				CmsFile file=cms.createFile(foldername, filename, filecontent, C_TYPE_PLAIN_NAME); 
 				 
 				if (title!= null) {
 					String filepath= file.getAbsolutePath();
-                    cms.lockResource(filepath);
-                    cms.writeProperty(filepath, C_PROPERTY_TITLE,title); 
-                } 
+					cms.lockResource(filepath);
+					cms.writeProperty(filepath, C_PROPERTY_TITLE,title); 
+				} 
 				
 				try { 
 					cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+lasturl);
 				} catch (Exception ex) { 
-                    throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+ lasturl, CmsException.C_UNKNOWN_EXCEPTION,ex);
-                }
+					throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+ lasturl, CmsException.C_UNKNOWN_EXCEPTION,ex);
+				}
 				
 			 }
 		}
@@ -193,86 +179,65 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
 		xmlTemplateDocument.setData("link_value", foldername); 
 		xmlTemplateDocument.setData("lasturl", lasturl); 
 		
-        // Finally start the processing
+		// Finally start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }
- 
-   /** 
-    * From interface <code>I_CmsFileListUsers</code>.
-    * <P>    
-    * Collects all folders and files that are displayed in the file list.
-    * @param cms The CmsObject.
-    * @return A vector of folder and file objects.
-    * @exception Throws CmsException if something goes wrong.
-    */
-    public Vector getFiles(CmsObject cms) 
-        throws CmsException {
-        Vector galleries = new Vector();
-        Vector folders = cms.getSubFolders(getConfigFile(cms).getDownGalleryPath());  
-		int numFolders = folders.size(); 
-        for(int i=0; i<numFolders; i++) {
-            CmsResource currFolder = (CmsResource)folders.elementAt(i); 
-            galleries.addElement(currFolder);            
-        }                                                            
-        return galleries;
-    }
-       
-    /**
-     * From interface <code>I_CmsFileListUsers</code>.
-     * <P>    
-     * Used to modify the bit pattern for hiding and showing columns in
-     * the file list.
-     * @param cms Cms object for accessing system resources.
-     * @param prefs Old bit pattern.
-     * @return New modified bit pattern.
-     * @see I_CmsFileListUsers
-     */
-    public int modifyDisplayedColumns(CmsObject cms, int prefs) {  
-        prefs = ((prefs & C_FILELIST_NAME) == 0) ? prefs : (prefs - C_FILELIST_NAME);
-        prefs = ((prefs & C_FILELIST_TITLE) == 0) ? prefs : (prefs - C_FILELIST_TITLE);
-        prefs = ((prefs & C_FILELIST_TYPE) == 0) ? prefs : (prefs - C_FILELIST_TYPE);
-		prefs = ((prefs & C_FILELIST_SIZE) == 0) ? prefs : (prefs - C_FILELIST_SIZE);
-        return prefs;
-    }
-    
-    /**
-     * From interface <code>I_CmsFileListUsers</code>.
-     * <P>    
-     * Fills all customized columns with the appropriate settings for the given file 
-     * list entry. Any column filled by this method may be used in the customized template
-     * for the file list.
-     * @param cms Cms object for accessing system resources.
-     * @param filelist Template file containing the definitions for the file list together with
-     * the included customized defintions.
-     * @param res CmsResource Object of the current file list entry.
-     * @param lang Current language file.
-     * @exception CmsException if access to system resources failed.
-     * @see I_CmsFileListUsers
-     */
-    public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang) 
-        throws CmsException {
+	}
+	/**
+	 * From interface <code>I_CmsFileListUsers</code>.
+	 * <P>    
+	 * Fills all customized columns with the appropriate settings for the given file 
+	 * list entry. Any column filled by this method may be used in the customized template
+	 * for the file list.
+	 * @param cms Cms object for accessing system resources.
+	 * @param filelist Template file containing the definitions for the file list together with
+	 * the included customized defintions.
+	 * @param res CmsResource Object of the current file list entry.
+	 * @param lang Current language file.
+	 * @exception CmsException if access to system resources failed.
+	 * @see I_CmsFileListUsers
+	 */
+	public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang) 
+		throws CmsException {
 		CmsXmlWpConfigFile config=this.getConfigFile(cms);
 		filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPictureUrl()+"ic_file_download.gif"); 
 		filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getName()); 
 		String title = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE);
 		filelistTemplate.setData(C_FILELIST_TITLE_VALUE, title);
-	}      
-
+	}
+   /** 
+	* From interface <code>I_CmsFileListUsers</code>.
+	* <P>    
+	* Collects all folders and files that are displayed in the file list.
+	* @param cms The CmsObject.
+	* @return A vector of folder and file objects.
+	* @exception Throws CmsException if something goes wrong.
+	*/
+	public Vector getFiles(CmsObject cms) 
+		throws CmsException {
+		Vector galleries = new Vector();
+		Vector folders = cms.getSubFolders(getConfigFile(cms).getDownGalleryPath());  
+		int numFolders = folders.size(); 
+		for(int i=0; i<numFolders; i++) {
+			CmsResource currFolder = (CmsResource)folders.elementAt(i); 
+			galleries.addElement(currFolder);            
+		}                                                            
+		return galleries;
+	}
 	/**
-     * Gets all groups for a select box
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the current value in the vectors.
-     * @exception CmsException
-     */
-    
+	 * Gets all groups for a select box
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the current value in the vectors.
+	 * @exception CmsException
+	 */
+	
 	public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
@@ -289,6 +254,36 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
 			values.addElement(name);
 		}
 		 
-        return new Integer(retValue);
-    } 
+		return new Integer(retValue);
+	}
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}
+	/**
+	 * From interface <code>I_CmsFileListUsers</code>.
+	 * <P>    
+	 * Used to modify the bit pattern for hiding and showing columns in
+	 * the file list.
+	 * @param cms Cms object for accessing system resources.
+	 * @param prefs Old bit pattern.
+	 * @return New modified bit pattern.
+	 * @see I_CmsFileListUsers
+	 */
+	public int modifyDisplayedColumns(CmsObject cms, int prefs) {  
+		prefs = ((prefs & C_FILELIST_NAME) == 0) ? prefs : (prefs - C_FILELIST_NAME);
+		prefs = ((prefs & C_FILELIST_TITLE) == 0) ? prefs : (prefs - C_FILELIST_TITLE);
+		prefs = ((prefs & C_FILELIST_TYPE) == 0) ? prefs : (prefs - C_FILELIST_TYPE);
+		prefs = ((prefs & C_FILELIST_SIZE) == 0) ? prefs : (prefs - C_FILELIST_SIZE);
+		return prefs;
+	}
 }

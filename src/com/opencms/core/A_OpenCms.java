@@ -1,7 +1,9 @@
+package com.opencms.core;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2000/08/02 13:34:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/08 14:08:20 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.core;
-
 import java.io.*;
 import java.util.*;
 
@@ -49,96 +49,40 @@ import source.org.apache.java.util.*;
 *   
 * @author Alexander Lucas
 * @author Michael Emmerich
-* @version $Revision: 1.9 $ $Date: 2000/08/02 13:34:53 $  
+* @version $Revision: 1.10 $ $Date: 2000/08/08 14:08:20 $  
 * 
 */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
-    /** Reference to the system log */
-    private static CmsLog c_cmsLog = null;
+	/** Reference to the system log */
+	private static CmsLog c_cmsLog = null;
 
-    /** Indicates if the system log is initialized */
-    protected static boolean c_servletLogging = false;
-    
-    /**
-     * This method gets the requested document from the OpenCms and returns it to the 
-     * calling module.
-     * 
-     * @param cms The CmsObject containing all information about the requested document
-     * and the requesting user.
-     * @return CmsFile object.
-     */
-     abstract CmsFile initResource(CmsObject cms) 
-        throws CmsException, IOException;
-     
-     /**
-     * Selects the appropriate launcher for a given file by analyzing the 
-     * file's launcher id and calls the initlaunch() method to initiate the 
-     * generating of the output.
-     * 
-     * @param cms CmsObject containing all document and user information
-     * @param file CmsFile object representing the selected file.
-     * @exception CmsException
-     */
-    abstract public void showResource(CmsObject cms, CmsFile file) throws CmsException;
-    
-     /**
-     * Sets the mimetype of the response.<br>
-     * The mimetype is selected by the file extension of the requested document.
-     * If no available mimetype is found, it is set to the default 
-     * "application/octet-stream".
-     * 
-     * @param cms The actual OpenCms object.
-     * @param file The requested document.
-     * 
-     */
-    abstract void setResponse(CmsObject cms, CmsFile file);
-    
-    
-     /**
-     * Destructor, called when the the servlet is shut down.
-     */
-    abstract void destroy()
-          throws CmsException;
-    
-        
-    /**
-     * Initializes the logging mechanism of the Jserv
-     * @param configurations the configurations needed at initialization.
-     */
-    public static void initializeServletLogging(Configurations config) {
-        c_cmsLog = new CmsLog("log", config);
-        c_servletLogging = true;
-    }
-    
-    /**
-     * Checks if the system logging is active.
-     * @return <code>true</code> if the logging is active, <code>false</code> otherwise.
-     */
-    public static boolean isLogging() {
-        if(c_servletLogging) {
-            return c_cmsLog.isActive();
-        } else {
-            return true;
-        }
-    }
-    
-    /**
-     * Logs a message into the OpenCms logfile.
-     * If the logfile was not initialized (e.g. due tue a missing
-     * ServletConfig while working with the console)
-     * any log output will be written to the apache error log.
-     * @param channel The channel the message is logged into
-     * @message The message to be logged,
-     */
-    public static void log(String channel, String message) {
-        if(c_servletLogging) {
-            c_cmsLog.log(channel, message);
-        } else {            
-            System.err.println(message);
-        }
-    }
+	/** Indicates if the system log is initialized */
+	protected static boolean c_servletLogging = false;
 	
+	 /**
+	 * Destructor, called when the the servlet is shut down.
+	 */
+	abstract void destroy()
+		  throws CmsException;  
+	/**
+	 * Initializes the logging mechanism of the Jserv
+	 * @param configurations the configurations needed at initialization.
+	 */
+	public static void initializeServletLogging(Configurations config) {
+		c_cmsLog = new CmsLog("log", config);
+		c_servletLogging = true;
+	}
+	/**
+	 * This method gets the requested document from the OpenCms and returns it to the 
+	 * calling module.
+	 * 
+	 * @param cms The CmsObject containing all information about the requested document
+	 * and the requesting user.
+	 * @return CmsFile object.
+	 */
+	 abstract CmsFile initResource(CmsObject cms) 
+		throws CmsException, IOException;
 	/**
 	 * Inits a new user and sets it into the overgiven cms-object.
 	 * 
@@ -151,7 +95,32 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
 	 */
 	abstract public void initUser(CmsObject cms,I_CmsRequest cmsReq,I_CmsResponse cmsRes,String user,String group,int project)
 		throws CmsException;
-	
+	/**
+	 * Checks if the system logging is active.
+	 * @return <code>true</code> if the logging is active, <code>false</code> otherwise.
+	 */
+	public static boolean isLogging() {
+		if(c_servletLogging) {
+			return c_cmsLog.isActive();
+		} else {
+			return true;
+		}
+	}
+	/**
+	 * Logs a message into the OpenCms logfile.
+	 * If the logfile was not initialized (e.g. due tue a missing
+	 * ServletConfig while working with the console)
+	 * any log output will be written to the apache error log.
+	 * @param channel The channel the message is logged into
+	 * @message The message to be logged,
+	 */
+	public static void log(String channel, String message) {
+		if(c_servletLogging) {
+			c_cmsLog.log(channel, message);
+		} else {            
+			System.err.println(message);
+		}
+	}
 	/**
 	 * This method loads old sessiondata from the database. It is used 
 	 * for sessionfailover.
@@ -161,7 +130,27 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
 	 */
 	abstract Hashtable restoreSession(String oldSessionId) 
 		throws CmsException;
-
+	 /**
+	 * Sets the mimetype of the response.<br>
+	 * The mimetype is selected by the file extension of the requested document.
+	 * If no available mimetype is found, it is set to the default 
+	 * "application/octet-stream".
+	 * 
+	 * @param cms The actual OpenCms object.
+	 * @param file The requested document.
+	 * 
+	 */
+	abstract void setResponse(CmsObject cms, CmsFile file);
+	 /**
+	 * Selects the appropriate launcher for a given file by analyzing the 
+	 * file's launcher id and calls the initlaunch() method to initiate the 
+	 * generating of the output.
+	 * 
+	 * @param cms CmsObject containing all document and user information
+	 * @param file CmsFile object representing the selected file.
+	 * @exception CmsException
+	 */
+	abstract public void showResource(CmsObject cms, CmsFile file) throws CmsException;
 	/**
 	 * This method stores sessiondata into the database. It is used 
 	 * for sessionfailover.

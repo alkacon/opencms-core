@@ -1,7 +1,9 @@
+package com.opencms.core;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
- * Date   : $Date: 2000/08/08 07:23:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/08/08 14:08:21 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.core;
-
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * session-failover in distributed-server environments.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/08/08 07:23:59 $  
+ * @version $Revision: 1.12 $ $Date: 2000/08/08 14:08:21 $  
  */
 public class CmsSession implements I_CmsSession, I_CmsConstants {
 	
@@ -67,7 +67,15 @@ public class CmsSession implements I_CmsSession, I_CmsConstants {
 			m_session.putValue(C_SESSION_DATA, m_sessionData);
 		}
 	}
-	
+	/**
+	 * Gets a value from the session.
+	 * 
+	 * @param name the key.
+	 * @return the object for this key.
+	 */
+	public Object getValue(String name) {
+		return m_sessionData.get(name);
+	}
 	/**
 	 * Puts a value into the session
 	 * 
@@ -79,17 +87,6 @@ public class CmsSession implements I_CmsSession, I_CmsConstants {
 		// indicate, that the session should be stored after the request.
 		m_session.putValue(C_SESSION_IS_DIRTY, new Boolean(true));
 	}
-	
-	/**
-	 * Gets a value from the session.
-	 * 
-	 * @param name the key.
-	 * @return the object for this key.
-	 */
-	public Object getValue(String name) {
-		return m_sessionData.get(name);
-	}
-	
 	/**
 	 * Removes a value from the session.
 	 * 

@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/08/02 13:34:55 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/08/08 14:08:30 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -27,8 +29,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.31 $ $Date: 2000/08/02 13:34:55 $
+ * @version $Revision: 1.32 $ $Date: 2000/08/08 14:08:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -69,54 +69,117 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 	/** Session key */
 	private static String C_NEWRESOURCES = "ALLRES";
 
-    /**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }    
-
-    /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
+	 /** Check whether some of the resources are redundant because a superfolder has also
+	  *  been selected. 
+	  *  
+	  * @param resources containts the full pathnames of all the resources
+	  * @return A vector with the same resources, but the paths in the return value are disjoint 
+	  */
+	 
+	private void checkRedundancies(Vector resources){ 
+		int i,j;
+		
+		if (resources == null) {
+			return;
+		}
+		
+		Vector redundant = new Vector(); 
+		int n=resources.size(); 
+		if (n<2) {
+			// no check needed, because there is only one resource or
+			// no resources selected, return empty Vector 
+			return;	 
+		}  
+		for (i=0; i<n; i++) {
+			redundant.addElement(new Boolean(false));
+		}
+		for (i=0; i<n-1; i++) {
+			for (j=i+1; j<n; j++) { 
+				if (((String) resources.elementAt(i)).length() < ((String) resources.elementAt(j)).length()) {
+					if (((String) resources.elementAt(j)).startsWith((String) resources.elementAt(i))) {
+						redundant.setElementAt(new Boolean(true), j);
+					}
+				} else {
+					if (((String) resources.elementAt(i)).startsWith((String) resources.elementAt(j))) {
+						redundant.setElementAt(new Boolean(true), i);	
+					}
+				}
+			}
+		} 
+		for (i=n-1; i>=0; i--) {
+			if (((Boolean) redundant.elementAt(i)).booleanValue()) {
+				resources.removeElementAt(i);
+			}
+		}   
+	}
+	 /** 
+	  * Check if this resource should is writeable.
+	  * @param cms The CmsObject
+	  * @param res The resource to be checked.
+	  * @return True or false.
+	  * @exception CmsException if something goes wrong.
+	  */
+	 private boolean checkWriteable(CmsObject cms, String resPath) {
+		 boolean access=false;
+		 int accessflags;
+		 
+		 try {
+			CmsResource res = cms.readFolder(resPath);
+			accessflags=res.getAccessFlags();
+		 
+			boolean groupAccess = false;
+			Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
+			while((!groupAccess) && allGroups.hasMoreElements()) {
+			    groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
+			}
+		 
+			if ( ((accessflags & C_ACCESS_PUBLIC_WRITE) > 0) ||
+				  (cms.getRequestContext().isAdmin()) ||
+			     (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_WRITE) > 0) ||
+			     ( groupAccess && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {    
+			   
+			    access=true;
+			}
+		 } catch (CmsException e) {
+			access=false;	 
+		 }
+			   
+		 return access;
+	 } 
+	/**
+	 * Gets the content of a defined section in a given template file and its subtemplates
+	 * with the given parameters. 
+	 * 
+	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		if(C_DEBUG && A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+		}
 		I_CmsSession session= cms.getRequestContext().getSession(true);
 		CmsRequestContext reqCont = cms.getRequestContext();   
 		CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);   
 		 
 		// clear session values on first load 
-        String initial=(String)parameters.get(C_PARA_INITIAL); 
+		String initial=(String)parameters.get(C_PARA_INITIAL); 
 		
-        if (initial!= null) {
-            // remove all session values
-            session.removeValue(C_NEWNAME);
-            session.removeValue(C_NEWGROUP); 
+		if (initial!= null) {
+			// remove all session values
+			session.removeValue(C_NEWNAME);
+			session.removeValue(C_NEWGROUP); 
 			session.removeValue(C_NEWDESCRIPTION);
-            session.removeValue(C_NEWMANAGERGROUP); 
+			session.removeValue(C_NEWMANAGERGROUP); 
 			session.removeValue(C_NEWFOLDER);  
 			session.removeValue(C_NEWRESOURCES);
-            session.removeValue("lasturl");
-        }
+			session.removeValue("lasturl");
+		}
 		
 		String newName, newGroup, newDescription, newManagerGroup, newFolder;
 		String action = new String();
@@ -162,8 +225,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			allResources = "";  
 		}  
 		
-        reqCont.setCurrentProject(cms.onlineProject().getId());
-        
+		reqCont.setCurrentProject(cms.onlineProject().getId());
+		
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
 		if (parameters.get("submitform") != null) { 
@@ -229,7 +292,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 				}    
 				if(!"errornewproject".equals(templateSelector)) {   
 					// finally create the project
-         			CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
+		 			CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
 					// change the current project
 					reqCont.setCurrentProject(project.getId());
 					// copy the resources to the project   
@@ -250,7 +313,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 				}
 			} catch(CmsException exc) { 
 				xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
-       			templateSelector = "errornewproject";
+	   			templateSelector = "errornewproject";
 			}
 		} 
 		// after an error the form data is retrieved and filled into the template
@@ -259,23 +322,22 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }
-	
-    /**
-     * Gets all groups, that may work for a project.
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the current value in the vectors.
-     * @exception CmsException
-     */
-    public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+	}
+	/**
+	 * Gets all groups, that may work for a project.
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the current value in the vectors.
+	 * @exception CmsException
+	 */
+	public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
@@ -301,24 +363,23 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 				n++; // count the number of ProjectCoWorkers
 			}
 		}   
-        return new Integer(retValue);
-    }
-
-    /**
-     * Gets all groups, that may manage a project.
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the current value in the vectors.
-     * @exception CmsException
-     */
-    public Integer getManagerGroups(CmsObject cms, CmsXmlLanguageFile lang, 
+		return new Integer(retValue);
+	}
+	/**
+	 * Gets all groups, that may manage a project.
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the current value in the vectors.
+	 * @exception CmsException
+	 */
+	public Integer getManagerGroups(CmsObject cms, CmsXmlLanguageFile lang, 
 									Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
@@ -345,9 +406,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 				n++; // count the number of project managers
 			}
 		} 
-        return new Integer(retValue);
-    } 
-	
+		return new Integer(retValue);
+	}
 	public Integer getSelectedResources(CmsObject cms, CmsXmlLanguageFile lang, 
 									Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
@@ -360,49 +420,26 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			}
 		}
 		// no current folder, set index to -1
-        return new Integer(-1);
-    }
-
-     /** 
-      * Check if this resource should is writeable.
-      * @param cms The CmsObject
-      * @param res The resource to be checked.
-      * @return True or false.
-      * @exception CmsException if something goes wrong.
-      */
-     private boolean checkWriteable(CmsObject cms, String resPath) {
-         boolean access=false;
-		 int accessflags;
-		 
-		 try {
-			CmsResource res = cms.readFolder(resPath);
-			accessflags=res.getAccessFlags();
-         
-			boolean groupAccess = false;
-			Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-			while((!groupAccess) && allGroups.hasMoreElements()) {
-			    groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
-			}
-         
-			if ( ((accessflags & C_ACCESS_PUBLIC_WRITE) > 0) ||
-				  (cms.getRequestContext().isAdmin()) ||
-			     (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_WRITE) > 0) ||
-			     ( groupAccess && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {    
-			   
-			    access=true;
-			}
-		 } catch (CmsException e) {
-			access=false;	 
-		 }
-               
-         return access;
-     }
-	 
+		return new Integer(-1);
+	}
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}
 	  /** Parse the string which holds all resources
-      *  
-      * @param resources containts the full pathnames of all the resources, separated by semicolons
-      * @return A vector with the same resources
-      */
+	  *  
+	  * @param resources containts the full pathnames of all the resources, separated by semicolons
+	  * @return A vector with the same resources
+	  */
 	 
 	private Vector parseResources(String resources){
 		 
@@ -416,49 +453,5 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			}
 		}  
 		return ret;
-	}
-	 
-	 /** Check whether some of the resources are redundant because a superfolder has also
-	  *  been selected. 
-      *  
-      * @param resources containts the full pathnames of all the resources
-      * @return A vector with the same resources, but the paths in the return value are disjoint 
-      */
-	 
-	private void checkRedundancies(Vector resources){ 
-		int i,j;
-		
-		if (resources == null) {
-			return;
-		}
-		
-		Vector redundant = new Vector(); 
-		int n=resources.size(); 
-		if (n<2) {
-			// no check needed, because there is only one resource or
-			// no resources selected, return empty Vector 
-			return;	 
-		}  
-		for (i=0; i<n; i++) {
-			redundant.addElement(new Boolean(false));
-		}
-		for (i=0; i<n-1; i++) {
-			for (j=i+1; j<n; j++) { 
-				if (((String) resources.elementAt(i)).length() < ((String) resources.elementAt(j)).length()) {
-					if (((String) resources.elementAt(j)).startsWith((String) resources.elementAt(i))) {
-						redundant.setElementAt(new Boolean(true), j);
-					}
-				} else {
-					if (((String) resources.elementAt(i)).startsWith((String) resources.elementAt(j))) {
-						redundant.setElementAt(new Boolean(true), i);	
-					}
-				}
-			}
-		} 
-		for (i=n-1; i>=0; i--) {
-			if (((Boolean) redundant.elementAt(i)).booleanValue()) {
-				resources.removeElementAt(i);
-			}
-		}   
 	}
 }

@@ -1,7 +1,9 @@
+package com.opencms.examples.news;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/I_CmsNewsConstants.java,v $
- * Date   : $Date: 2000/07/11 08:49:57 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/08 14:08:22 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.examples.news;
-
 /**
  * This interface is a pool for constants used in the news examples. 
  * All news classes may implement this class to get access to this constants.
@@ -41,102 +41,102 @@ package com.opencms.examples.news;
  *             with the newer classes.  
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/07/11 08:49:57 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/08 14:08:22 $
  */
 public interface I_CmsNewsConstants {
-    
-    /** Path to the news configuration file */
-    public static final String C_NEWS_INI = "/news/news.ini";
-    
-    /** Folder for news content XML files */
-    public static final String C_NEWS_FOLDER_CONTENT = "/content/news/";
-    
-    /** Folder for correspondig pages to display news */
-    public static final String C_NEWS_FOLDER_PAGE = "/news/";                            
+	
+	/** Path to the news configuration file */
+	public static final String C_NEWS_INI = "/news/news.ini";
+	
+	/** Folder for news content XML files */
+	public static final String C_NEWS_FOLDER_CONTENT = "/content/news/";
+	
+	/** Folder for correspondig pages to display news */
+	public static final String C_NEWS_FOLDER_PAGE = "/news/";                            
 
-    /** Name of the news list definition file */
-    public static final String C_NEWS_NEWSLISTDEF = "newsListDefinition";     
+	/** Name of the news list definition file */
+	public static final String C_NEWS_NEWSLISTDEF = "newsListDefinition";     
 
 
-    /** Text of the "active" state */
-    public static final String C_NEWS_STATE_ACTIVE = "active";     
+	/** Text of the "active" state */
+	public static final String C_NEWS_STATE_ACTIVE = "active";     
 
-    /** Text of the "inactive" state */
-    public static final String C_NEWS_STATE_INACTIVE = "inactive";     
-    
-    
-    // Names for XML elements in news file of the content type
-    // CmsNewsTemplateFile
-    
-    /** Name of the author XML tag */
-    public static final String C_NEWS_XML_AUTHOR = "author";     
-    
-    /** Name of the date XML tag */
-    public static final String C_NEWS_XML_DATE = "date";     
+	/** Text of the "inactive" state */
+	public static final String C_NEWS_STATE_INACTIVE = "inactive";     
+	
+	
+	// Names for XML elements in news file of the content type
+	// CmsNewsTemplateFile
+	
+	/** Name of the author XML tag */
+	public static final String C_NEWS_XML_AUTHOR = "author";     
+	
+	/** Name of the date XML tag */
+	public static final String C_NEWS_XML_DATE = "date";     
 
-    /** Name of the headline XML tag */
-    public static final String C_NEWS_XML_HEADLINE = "headline";     
+	/** Name of the headline XML tag */
+	public static final String C_NEWS_XML_HEADLINE = "headline";     
 
-    /** Name of the shorttext XML tag */
-    public static final String C_NEWS_XML_SHORTTEXT = "shorttext";     
+	/** Name of the shorttext XML tag */
+	public static final String C_NEWS_XML_SHORTTEXT = "shorttext";     
 
-    /** Name of the text XML tag */
-    public static final String C_NEWS_XML_TEXT = "text";     
+	/** Name of the text XML tag */
+	public static final String C_NEWS_XML_TEXT = "text";     
 
-    /** Name of the external link XML tag */
-    public static final String C_NEWS_XML_EXTLINK = "extlink";         
+	/** Name of the external link XML tag */
+	public static final String C_NEWS_XML_EXTLINK = "extlink";         
 
-    /** Name of the XML tag for "news active"*/
-    public static final String C_NEWS_XML_ACTIVE = "active";         
+	/** Name of the XML tag for "news active"*/
+	public static final String C_NEWS_XML_ACTIVE = "active";         
 
-    /** Name of the XML tag for "news inactive"*/
-    public static final String C_NEWS_XML_INACTIVE = "inactive";
-    
+	/** Name of the XML tag for "news inactive"*/
+	public static final String C_NEWS_XML_INACTIVE = "inactive";
+	
 	/** Default protocol to be used in the URL (external link) */   
 	public final static String C_URL_PROTOCOL="http://"; 
-    
-    // Names for news parameters used in session storage and
-    // in HTTP requests.
-    
-    /** Name of the file parameter in the URL and the session strage. */
-    public static final String C_NEWS_PARAM_FILE = "file";
+	
+	// Names for news parameters used in session storage and
+	// in HTTP requests.
+	
+	/** Name of the file parameter in the URL and the session strage. */
+	public static final String C_NEWS_PARAM_FILE = "file";
 
-    /** Name of the date parameter in the HTTP get request and the session strage. */
-    public static final String C_NEWS_PARAM_DATE = "date";
+	/** Name of the date parameter in the HTTP get request and the session strage. */
+	public static final String C_NEWS_PARAM_DATE = "date";
 
-    /** Name of the headline parameter in the HTTP get request and the session strage. */
-    public static final String C_NEWS_PARAM_HEADLINE = "headline";
-    
-    /** Name of the shorttext parameter in the HTTP get request and the session strage. */
-    public static final String C_NEWS_PARAM_SHORTTEXT = "shorttext";
+	/** Name of the headline parameter in the HTTP get request and the session strage. */
+	public static final String C_NEWS_PARAM_HEADLINE = "headline";
+	
+	/** Name of the shorttext parameter in the HTTP get request and the session strage. */
+	public static final String C_NEWS_PARAM_SHORTTEXT = "shorttext";
 
-    /** Name of the text parameter in the HTTP get request and the session strage. */
-    public static final String C_NEWS_PARAM_TEXT = "text";
-    
-    /** Name of the external link parameter in the HTTP get request and the session strage. */
-    public static final String C_NEWS_PARAM_EXTLINK = "extlink";
+	/** Name of the text parameter in the HTTP get request and the session strage. */
+	public static final String C_NEWS_PARAM_TEXT = "text";
+	
+	/** Name of the external link parameter in the HTTP get request and the session strage. */
+	public static final String C_NEWS_PARAM_EXTLINK = "extlink";
 
-    /** Name of the state parameter in the HTTP get request and the session strage. */
-    public static final String C_NEWS_PARAM_STATE = "state";    
+	/** Name of the state parameter in the HTTP get request and the session strage. */
+	public static final String C_NEWS_PARAM_STATE = "state";    
 
-    /** Name of the action parameter in URL and the session strage.*/
-    public static final String C_NEWS_PARAM_ACTION = "action";    
+	/** Name of the action parameter in URL and the session strage.*/
+	public static final String C_NEWS_PARAM_ACTION = "action";    
 
-    /** Name of the author parameter in session storage */
-    public static final String C_NEWS_PARAM_AUTHOR = "author";        
+	/** Name of the author parameter in session storage */
+	public static final String C_NEWS_PARAM_AUTHOR = "author";        
 
-    /** Name of the newsfolder parameter in the newspage file. */
-    public static final String C_NEWS_PARAM_NEWSFOLDER = "folder";    
+	/** Name of the newsfolder parameter in the newspage file. */
+	public static final String C_NEWS_PARAM_NEWSFOLDER = "folder";    
 
-    /** Name of the read parameter in the newspage file. */
-    public static final String C_NEWS_PARAM_READ = "read";        
+	/** Name of the read parameter in the newspage file. */
+	public static final String C_NEWS_PARAM_READ = "read";        
 	
 	/** Number of articles displayed on one WML deck. */
-    public static final String C_NEWS_WML_MAXARTICLES = "4";   
+	public static final String C_NEWS_WML_MAXARTICLES = "4";   
 	
 	/** Default navigation deck index */
-    public final static String C_NEWS_WML_FIRSTNAVDECK = "0";
+	public final static String C_NEWS_WML_FIRSTNAVDECK = "0";
 	
 	/** Default title for WML decks */
-    public final static String C_NEWS_WML_DECKTITLE = "OpenCms created";
+	public final static String C_NEWS_WML_DECKTITLE = "OpenCms created";
 }

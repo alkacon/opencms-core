@@ -1,7 +1,9 @@
+package com.opencms.xmlmodules.news;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/xmlmodules/news/Attic/I_CmsNewsConstants.java,v $
- * Date   : $Date: 2000/07/11 15:01:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/08 14:08:34 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.xmlmodules.news;
-
 import com.opencms.xmlmodules.I_CmsModuleConstants;
 
 /**
@@ -38,38 +38,38 @@ import com.opencms.xmlmodules.I_CmsModuleConstants;
  * into a <code>news.ini</code> file.
  * 
  * @author Matthias Schreiber
- * @version $Revision: 1.2 $ $Date: 2000/07/11 15:01:18 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/08 14:08:34 $
  */
 public interface I_CmsNewsConstants extends I_CmsModuleConstants {
-    
+	
 	/** Name of the current XML module */
-    public static final String C_XMLMODULE_NAME = "news"; 
+	public static final String C_XMLMODULE_NAME = "news"; 
 	
-    /** Path to the news configuration file */
-    public static final String C_INI_FILE = C_XMLMODULE_PATH + "news/module.ini"; 
-    
-    /** Folder for news content XML files */
-    public static final String C_FOLDER_CONTENT = "/content/news/"; 
-    
-    /** Folder for correspondig pages to display news */
-    public static final String C_FOLDER_PAGE = "/news/";                          
+	/** Path to the news configuration file */
+	public static final String C_INI_FILE = C_XMLMODULE_PATH + "news/module.ini"; 
 	
-    /** XML tag used for the news list entry definition */
-    public final static String C_TAG_LISTENTRY = "newslistentry"; 
+	/** Folder for news content XML files */
+	public static final String C_FOLDER_CONTENT = "/content/news/"; 
+	
+	/** Folder for correspondig pages to display news */
+	public static final String C_FOLDER_PAGE = "/news/";                          
+	
+	/** XML tag used for the news list entry definition */
+	public final static String C_TAG_LISTENTRY = "newslistentry"; 
 	
 	/** Name of the default bodytemplate file used for news */
-    public static final String C_BODYTEMPLATE_FILE = "newsModuleTemplate"; 
+	public static final String C_BODYTEMPLATE_FILE = "newsModuleTemplate"; 
 
 	/** Class for processing the bodytemplate */
-    public static final String C_BODYTEMPLATE_CLASS = "com.opencms.xmlmodules.news.CmsNewsContent";  
+	public static final String C_BODYTEMPLATE_CLASS = "com.opencms.xmlmodules.news.CmsNewsContent";  
 	
 	/** Special tags for the news-module application */
 	
-    /** Name of the shorttext XML tag */
-    public static final String C_XML_SHORTTEXT = "shorttext";  
+	/** Name of the shorttext XML tag */
+	public static final String C_XML_SHORTTEXT = "shorttext";  
 
-    /** Name of the external link XML tag */
-    public static final String C_XML_EXTLINK = "extlink";       
+	/** Name of the external link XML tag */
+	public static final String C_XML_EXTLINK = "extlink";       
 	
 
 }

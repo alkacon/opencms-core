@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButtonSeparator.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/08 14:08:30 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -42,33 +42,33 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTONSEPARATOR&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.10 $ $Date: 2000/08/08 14:08:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsButtonSeparator extends A_CmsWpElement implements I_CmsWpElement {    
-        
-    /**
-     * Handling of the special workplace <CODE>&lt;BUTTONSEPARATOR&gt;</CODE> tags.
-     * <P>
-     * Reads the code of a button separator from the buttons definition file
-     * and returns the processed code with the actual elements.
-     * <P>
-     * Button separators can be referenced in any workplace template by <br>
-     * <CODE>&lt;BUTTONSEPARATOR/&gt;</CODE>
-     * 
-     * @param cms CmsObject Object for accessing resources.
-     * @param n XML element containing the <code>&lt;BUTTONSEPARATOR&gt;</code> tag <em>(not used here)</em>.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param callingObject reference to the calling object.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @param lang CmsXmlLanguageFile conataining the currently valid language file <em>(not used here)</em>.
-     * @return Processed button separator.
-     * @exception CmsException
-     */    
-    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+		
+	/**
+	 * Handling of the special workplace <CODE>&lt;BUTTONSEPARATOR&gt;</CODE> tags.
+	 * <P>
+	 * Reads the code of a button separator from the buttons definition file
+	 * and returns the processed code with the actual elements.
+	 * <P>
+	 * Button separators can be referenced in any workplace template by <br>
+	 * <CODE>&lt;BUTTONSEPARATOR/&gt;</CODE>
+	 * 
+	 * @param cms CmsObject Object for accessing resources.
+	 * @param n XML element containing the <code>&lt;BUTTONSEPARATOR&gt;</code> tag <em>(not used here)</em>.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+	 * @param callingObject reference to the calling object.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @param lang CmsXmlLanguageFile conataining the currently valid language file <em>(not used here)</em>.
+	 * @return Processed button separator.
+	 * @exception CmsException
+	 */    
+	public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 
-        CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
-        String result = buttondef.getButtonSeparator(callingObject);
-        return result; 
-    }                      
+		CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
+		String result = buttondef.getButtonSeparator(callingObject);
+		return result; 
+	}
 }

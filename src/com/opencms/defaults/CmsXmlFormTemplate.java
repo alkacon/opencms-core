@@ -1,7 +1,9 @@
+package com.opencms.defaults;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplate.java,v $
- * Date   : $Date: 2000/06/25 08:26:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/08 14:08:21 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.defaults;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -45,24 +45,24 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/06/25 08:26:24 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/08 14:08:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlFormTemplate extends CmsXmlTemplate  {
-        
-    
-    /**
-     * Reads in the template file and starts the XML parser for the expected
-     * content type <class>CmsXmlFormTemplateFile</code>
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        CmsXmlFormTemplateFile xmlTemplateDocument = new CmsXmlFormTemplateFile(cms, templateFile);       
-        return xmlTemplateDocument;
-    }        
+		
+	
+	/**
+	 * Reads in the template file and starts the XML parser for the expected
+	 * content type <class>CmsXmlFormTemplateFile</code>
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		CmsXmlFormTemplateFile xmlTemplateDocument = new CmsXmlFormTemplateFile(cms, templateFile);       
+		return xmlTemplateDocument;
+	}
 }

@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
- * Date   : $Date: 2000/08/02 13:34:55 $
- * Version: $Revision: 1.9 $Selector
+ * Date   : $Date: 2000/08/08 14:08:30 $
+ * Version: $Revision: 1.10 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -27,8 +29,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -43,46 +43,89 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.9 $ $Date: 2000/08/02 13:34:55 $
+ * @version $Revision: 1.10 $ $Date: 2000/08/08 14:08:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants {
 
-    /**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }    
-
-    /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
+	 /**
+	 * change the groups of the user
+	 * <P>
+	 * the Vector newGroups holds all groups, which theUser will be in afterwards
+	 * the amount of database access is kept small with this funcion  
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param theUser the user whose data will be changed
+	 * @param defaultGroupName String which holds the name of the default group theUser should get 
+	 * @param newGroups Vector of Strings with the names of the new groups of theUser
+	 * @exception CmsException
+	 */
+	
+	private void changeGroups(CmsObject cms, CmsUser theUser, String defaultGroupName, Vector newGroups) 
+		throws CmsException {
+		String username = (String) theUser.getName();
+		Vector oldGroups = cms.getGroupsOfUser(username);
+		Vector oldGroupnames = new Vector();
+		
+		if (defaultGroupName == null) {
+			throw new CmsException("method 'changeGroups': default group set to null", 
+									CmsException.C_NO_DEFAULT_GROUP);
+		}
+	 
+		theUser.setDefaultGroup(cms.readGroup(defaultGroupName));
+		cms.writeUser(theUser);  // update in the database
+		theUser = (CmsUser) cms.readUser(username);
+		if (oldGroups != null) {
+			for (int z=0; z < oldGroups.size(); z++) {
+				oldGroupnames.addElement(((CmsGroup) oldGroups.elementAt(z)).getName());
+			}
+			String oldDefaultGroup = theUser.getDefaultGroup().getName();
+			
+			oldGroupnames.removeElement(oldDefaultGroup);
+			// delete the user from the groups which are not in newGroups
+			for (int z=0; z < oldGroupnames.size(); z++) {
+				String groupname = (String) oldGroupnames.elementAt(z);			
+				if (!newGroups.contains(groupname)) {
+					try {
+						cms.removeUserFromGroup(username, groupname);
+					} catch (CmsException e) {
+						// can happen when this group has been deleted _indirectly_ before
+					}
+				}
+			} 
+		}	
+		if (newGroups != null) { 
+			// now add the user to the new groups, which he not yet belongs to
+			for (int z=0; z < newGroups.size(); z++) {
+				String groupname = (String) newGroups.elementAt(z);
+				if (! cms.userInGroup(username, groupname)){	
+					cms.addUserToGroup(username, groupname);
+				}
+			}
+		}	
+		cms.writeUser(theUser);  // update in the database
+		theUser = (CmsUser) cms.readUser(username);
+	}
+	/**
+	 * Gets the content of a defined section in a given template file and its subtemplates
+	 * with the given parameters. 
+	 * 
+	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		if(C_DEBUG && A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+		}
 		I_CmsSession session= cms.getRequestContext().getSession(true);
-        CmsRequestContext reqCont = cms.getRequestContext();   	
+		CmsRequestContext reqCont = cms.getRequestContext();   	
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
-    
+	
 		boolean userYetChanged=true;
 		boolean userYetEstablished=true;
 		// find out which template (=perspective) should be used 
@@ -506,55 +549,22 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }
-	
-    /**
-     * Gets all users
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the current value in the vectors.
-     * @exception CmsException
-     */
-	
-    public Integer getUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
-		throws CmsException {
-		// get all users
-		Vector users = cms.getUsers();
-		int retValue = -1; 
-		
-		// fill the names and values
-		for(int z = 0; z < users.size(); z++) {
-			String name = ((CmsUser)users.elementAt(z)).getName();
-			names.addElement(name);
-			values.addElement(name);
-		}
-		if (users.size() > 0)
-			retValue = 0;  // preselect first user
-        return new Integer(retValue);
-    }
-	
+	}
 	/**
-     * Gets all groups, that may work for a project.
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the current value in the vectors.
-     * @exception CmsException
-     */
-    
+	 * Gets all groups, that may work for a project.
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the current value in the vectors.
+	 * @exception CmsException
+	 */
+	
 	public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
@@ -571,106 +581,55 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 			values.addElement(name);
 		}
 		
-        return new Integer(retValue);
-    }
+		return new Integer(retValue);
+	}
 	/**
-     * Gets all groups, that have not yet been selected for the user
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the current value in the vectors.
-     * @exception CmsException
-     */
-    
-	public Integer getNotSelectedGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
-		throws CmsException {
-	 
-		int retValue = -1;
-		I_CmsSession session= cms.getRequestContext().getSession(true);
-       	Vector notSelectedGroups =(Vector) session.getValue("notSelectedGroups");
-		
-		if (notSelectedGroups != null){
-			// fill the names and values
-			for(int z = 0; z < notSelectedGroups.size(); z++) {
-				String name = (String) notSelectedGroups.elementAt(z);
-				if(C_GROUP_USERS.equals(name)) {
-					retValue = z;
-				}
-				names.addElement(name);
-				values.addElement(name);
-			} 
-		}
-		// no current group, set index to -1
-        return new Integer(retValue);
-	}	
-
-	 /**
-     * Gets all groups that have been selected for the user to be in
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the default Group of the user
-     * @exception CmsException
-     */
+	 * Gets all groups in which the user is, i.e. the selected ones and the indirect ones
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the default Group of the user
+	 * @exception CmsException
+	 */
 	
-	public Integer getSelectedGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
-		throws CmsException {
-		 
-		int retValue = -1;
+	public Integer getGroupsOfUser(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+		throws CmsException {  
 		I_CmsSession session= cms.getRequestContext().getSession(true);
-       	
+	   	
 		String defaultGroup =(String) session.getValue("DEFAULTGROUP");
 		if (defaultGroup == null) {
 			defaultGroup = "";
 		}
-		Vector selectedGroups =(Vector) session.getValue("selectedGroups");
 		
-		if (selectedGroups != null) {
-			for(int z = 0; z < selectedGroups.size(); z++) {
-				String name =  (String) selectedGroups.elementAt(z);
-				if (name.equals(defaultGroup)) {
-					retValue=z;
-				}
-				names.addElement(name);
-				values.addElement(name);
-			} 
-		} else {
-			selectedGroups = new Vector();
-		}	
-        return new Integer(retValue);
-    }
-	
+		getSelectedGroups(cms, lang, names, values, parameters); 
+		getIndirectGroups(cms, lang, names, values, parameters); 
+		
+		return new Integer(names.indexOf(defaultGroup)); 
+	}
 	 /**
-     * Gets all groups in which the user is but not the direct ones
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the default Group of the user
-     * @exception CmsException
-     */
+	 * Gets all groups in which the user is but not the direct ones
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the default Group of the user
+	 * @exception CmsException
+	 */
 	
 	public Integer getIndirectGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException { 
 		I_CmsSession session= cms.getRequestContext().getSession(true);
-       	
+	   	
 		Vector selectedGroups =(Vector) session.getValue("selectedGroups");
 		Vector indirectGroups = new Vector();
 		String groupname, superGroupName;
@@ -702,94 +661,127 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 				names.addElement(name);
 				values.addElement(name);
 			}  
-        return new Integer(-1); // none preselected
-    }
-	
+		return new Integer(-1); // none preselected
+	}
 	/**
-     * Gets all groups in which the user is, i.e. the selected ones and the indirect ones
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the default Group of the user
-     * @exception CmsException
-     */
+	 * Gets all groups, that have not yet been selected for the user
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the current value in the vectors.
+	 * @exception CmsException
+	 */
 	
-	public Integer getGroupsOfUser(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
-		throws CmsException {  
+	public Integer getNotSelectedGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+		throws CmsException {
+	 
+		int retValue = -1;
 		I_CmsSession session= cms.getRequestContext().getSession(true);
-       	
+	   	Vector notSelectedGroups =(Vector) session.getValue("notSelectedGroups");
+		
+		if (notSelectedGroups != null){
+			// fill the names and values
+			for(int z = 0; z < notSelectedGroups.size(); z++) {
+				String name = (String) notSelectedGroups.elementAt(z);
+				if(C_GROUP_USERS.equals(name)) {
+					retValue = z;
+				}
+				names.addElement(name);
+				values.addElement(name);
+			} 
+		}
+		// no current group, set index to -1
+		return new Integer(retValue);
+	}
+	 /**
+	 * Gets all groups that have been selected for the user to be in
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the default Group of the user
+	 * @exception CmsException
+	 */
+	
+	public Integer getSelectedGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+		throws CmsException {
+		 
+		int retValue = -1;
+		I_CmsSession session= cms.getRequestContext().getSession(true);
+	   	
 		String defaultGroup =(String) session.getValue("DEFAULTGROUP");
 		if (defaultGroup == null) {
 			defaultGroup = "";
 		}
+		Vector selectedGroups =(Vector) session.getValue("selectedGroups");
 		
-		getSelectedGroups(cms, lang, names, values, parameters); 
-		getIndirectGroups(cms, lang, names, values, parameters); 
-		
-        return new Integer(names.indexOf(defaultGroup)); 
-    }
-	
-	
-	 /**
-     * change the groups of the user
-     * <P>
-     * the Vector newGroups holds all groups, which theUser will be in afterwards
-     * the amount of database access is kept small with this funcion  
-     * @param cms CmsObject Object for accessing system resources.
-     * @param theUser the user whose data will be changed
-     * @param defaultGroupName String which holds the name of the default group theUser should get 
-     * @param newGroups Vector of Strings with the names of the new groups of theUser
-     * @exception CmsException
-     */
-	
-	private void changeGroups(CmsObject cms, CmsUser theUser, String defaultGroupName, Vector newGroups) 
-		throws CmsException {
-		String username = (String) theUser.getName();
-		Vector oldGroups = cms.getGroupsOfUser(username);
-		Vector oldGroupnames = new Vector();
-		
-		if (defaultGroupName == null) {
-			throw new CmsException("method 'changeGroups': default group set to null", 
-									CmsException.C_NO_DEFAULT_GROUP);
-		}
-	 
-		theUser.setDefaultGroup(cms.readGroup(defaultGroupName));
-		cms.writeUser(theUser);  // update in the database
-		theUser = (CmsUser) cms.readUser(username);
-		if (oldGroups != null) {
-			for (int z=0; z < oldGroups.size(); z++) {
-				oldGroupnames.addElement(((CmsGroup) oldGroups.elementAt(z)).getName());
-			}
-			String oldDefaultGroup = theUser.getDefaultGroup().getName();
-			
-			oldGroupnames.removeElement(oldDefaultGroup);
-			// delete the user from the groups which are not in newGroups
-			for (int z=0; z < oldGroupnames.size(); z++) {
-				String groupname = (String) oldGroupnames.elementAt(z);			
-				if (!newGroups.contains(groupname)) {
-					try {
-						cms.removeUserFromGroup(username, groupname);
-					} catch (CmsException e) {
-						// can happen when this group has been deleted _indirectly_ before
-					}
+		if (selectedGroups != null) {
+			for(int z = 0; z < selectedGroups.size(); z++) {
+				String name =  (String) selectedGroups.elementAt(z);
+				if (name.equals(defaultGroup)) {
+					retValue=z;
 				}
+				names.addElement(name);
+				values.addElement(name);
 			} 
+		} else {
+			selectedGroups = new Vector();
 		}	
-		if (newGroups != null) { 
-			// now add the user to the new groups, which he not yet belongs to
-			for (int z=0; z < newGroups.size(); z++) {
-				String groupname = (String) newGroups.elementAt(z);
-				if (! cms.userInGroup(username, groupname)){	
-					cms.addUserToGroup(username, groupname);
-				}
-			}
-		}	
-		cms.writeUser(theUser);  // update in the database
-		theUser = (CmsUser) cms.readUser(username);
+		return new Integer(retValue);
+	}
+	/**
+	 * Gets all users
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the current value in the vectors.
+	 * @exception CmsException
+	 */
+	
+	public Integer getUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+		throws CmsException {
+		// get all users
+		Vector users = cms.getUsers();
+		int retValue = -1; 
+		
+		// fill the names and values
+		for(int z = 0; z < users.size(); z++) {
+			String name = ((CmsUser)users.elementAt(z)).getName();
+			names.addElement(name);
+			values.addElement(name);
+		}
+		if (users.size() > 0)
+			retValue = 0;  // preselect first user
+		return new Integer(retValue);
+	}
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
 	}
 }

@@ -1,7 +1,9 @@
+package com.opencms.template;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsJavascriptTemplate.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/08 14:08:29 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -25,8 +27,6 @@
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-package com.opencms.template;
 
 /** Document the purpose of this class.
  *

@@ -1,7 +1,9 @@
+package com.opencms.core;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsLogChannels.java,v $
- * Date   : $Date: 2000/04/04 09:57:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/08 14:08:21 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,38 +28,36 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.core;
-
 /**
  * Common interface for OpenCms logging.
  * Constants used for logging purposes are defined here.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/04/04 09:57:24 $
+ * @version $Revision: 1.6 $ $Date: 2000/08/08 14:08:21 $
  */
 public interface I_CmsLogChannels { 
-    /** Debugging messages */
-    public static final String C_OPENCMS_INIT = "opencms_init";
+	/** Debugging messages */
+	public static final String C_OPENCMS_INIT = "opencms_init";
 
 	/** Debugging messages */
-    public static final String C_OPENCMS_DEBUG = "opencms_debug";
+	public static final String C_OPENCMS_DEBUG = "opencms_debug";
 
 	/** Cache messages */
-    public static final String C_OPENCMS_CACHE = "opencms_cache";
-    
-    /** Informational messages */
-    public static final String C_OPENCMS_INFO = "opencms_info";    
-    
-    /** Critical messages that stop further processing */
-    public static final String C_OPENCMS_CRITICAL = "opencms_critical";    
-    
-    
-    /** Debugging messages */
-    public static final String C_MODULE_DEBUG = "module_debug";
+	public static final String C_OPENCMS_CACHE = "opencms_cache";
+	
+	/** Informational messages */
+	public static final String C_OPENCMS_INFO = "opencms_info";    
+	
+	/** Critical messages that stop further processing */
+	public static final String C_OPENCMS_CRITICAL = "opencms_critical";    
+	
+	
+	/** Debugging messages */
+	public static final String C_MODULE_DEBUG = "module_debug";
 
-    /** Informational messages */
-    public static final String C_MODULE_INFO = "module_info";    
-    
-    /** Critical messages that stop further processing */
-    public static final String C_MODULE_CRITICAL = "module_critical";         
+	/** Informational messages */
+	public static final String C_MODULE_INFO = "module_info";    
+	
+	/** Critical messages that stop further processing */
+	public static final String C_MODULE_CRITICAL = "module_critical";         
 }

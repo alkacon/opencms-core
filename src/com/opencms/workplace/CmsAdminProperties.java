@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/08/08 14:08:30 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -42,62 +42,48 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.5 $ $Date: 2000/08/08 14:08:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsConstants {
 
 	/** XML datablock tag used for setting the resource type name */
-    private static final String C_TAG_RESTYPE = "restype";
+	private static final String C_TAG_RESTYPE = "restype";
 	
 	/** XML datablock tag used for setting an entry in the list of datatypes */
-    private static final String C_TYPELISTENTRY = "typelistentry";
+	private static final String C_TYPELISTENTRY = "typelistentry";
 
-    /** XML datablock tag used for setting all collected entries */
-    private static final String C_TAG_ALLENTRIES = "allentries";
+	/** XML datablock tag used for setting all collected entries */
+	private static final String C_TAG_ALLENTRIES = "allentries";
 
-    /** XML datablock tag used for getting a processed resource type entry */
-    private static final String C_TAG_RESTYPEENTRY = "restypeentry";
+	/** XML datablock tag used for getting a processed resource type entry */
+	private static final String C_TAG_RESTYPEENTRY = "restypeentry";
 
-    /** XML datablock tag used for getting a processed separator entry */
-    private static final String C_TAG_SEPARATORENTRY = "separatorentry";
+	/** XML datablock tag used for getting a processed separator entry */
+	private static final String C_TAG_SEPARATORENTRY = "separatorentry";
 
-    /** XML datablock tag used for getting the complete and processed content to be returned */
-    private static final String C_TAG_SCROLLERCONTENT = "scrollercontent";
+	/** XML datablock tag used for getting the complete and processed content to be returned */
+	private static final String C_TAG_SCROLLERCONTENT = "scrollercontent";
   
 	
 	
-    /**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }    
-
-    /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
+	/**
+	 * Gets the content of a defined section in a given template file and its subtemplates
+	 * with the given parameters. 
+	 * 
+	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		if(C_DEBUG && A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+		}
 		
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
    
@@ -152,72 +138,69 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
 		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }
-	
+	}
 	/**
-     * Used by the <code>&lt;PREFSSCROLLER&gt;</code> tag for getting
-     * the content of the scroller window.
-     * <P>
-     * Gets all available resource types and returns a list
-     * using the datablocks defined in the own template file.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param lang reference to the currently valid language file
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the user's current filter view in the vectors.
-     * @exception CmsException
-     */
+	 * Used by the <code>&lt;PREFSSCROLLER&gt;</code> tag for getting
+	 * the content of the scroller window.
+	 * <P>
+	 * Gets all available resource types and returns a list
+	 * using the datablocks defined in the own template file.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param lang reference to the currently valid language file
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the user's current filter view in the vectors.
+	 * @exception CmsException
+	 */
 	
 	public String getDatatypes(CmsObject cms, A_CmsXmlContent doc, CmsXmlLanguageFile lang, Hashtable parameters, Object callingObj) 
 		throws CmsException {
 		
 		StringBuffer result = new StringBuffer();
-        
-        CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
-        Enumeration allResTypes = cms.getAllResourceTypes().elements();
-        
-        // Loop through all resource types
-        while(allResTypes.hasMoreElements()) {
-            CmsResourceType currResType = (CmsResourceType)allResTypes.nextElement();
+		
+		CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
+		Enumeration allResTypes = cms.getAllResourceTypes().elements();
+		
+		// Loop through all resource types
+		while(allResTypes.hasMoreElements()) {
+			CmsResourceType currResType = (CmsResourceType)allResTypes.nextElement();
 			result.append(getResourceEntry(cms, doc, lang, parameters, callingObj, currResType));
 			if (allResTypes.hasMoreElements()) {
 				result.append(templateFile.getProcessedDataValue(C_TAG_SEPARATORENTRY, callingObj));
 			}
-        }
-     
-        templateFile.setData(C_TAG_ALLENTRIES, result.toString());        
-        return templateFile.getProcessedDataValue(C_TAG_SCROLLERCONTENT, callingObj);
+		}
+	 
+		templateFile.setData(C_TAG_ALLENTRIES, result.toString());        
+		return templateFile.getProcessedDataValue(C_TAG_SCROLLERCONTENT, callingObj);
 	}
-	
-	
 	/**
-     *   
-     * gets the HTML code for entry in the lists of resources.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param doc the template file which is used
-     * @param lang reference to the currently valid language file
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @param callingObject Object for accessing system resources.
-     * @param resType resource type (file type) 
-     * @return String which holds a HTML table
-     * @exception CmsException
-     */
+	 *   
+	 * gets the HTML code for entry in the lists of resources.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param doc the template file which is used
+	 * @param lang reference to the currently valid language file
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @param callingObject Object for accessing system resources.
+	 * @param resType resource type (file type) 
+	 * @return String which holds a HTML table
+	 * @exception CmsException
+	 */
 	
 	private String getResourceEntry(CmsObject cms, A_CmsXmlContent doc, 
 									CmsXmlLanguageFile lang, Hashtable parameters, 
 									Object callingObject, CmsResourceType resType) 
-            throws CmsException {
-            StringBuffer output=new StringBuffer();  
-             
-            CmsXmlWpTemplateFile templateFile = (CmsXmlWpTemplateFile)doc;
+			throws CmsException {
+			StringBuffer output=new StringBuffer();  
+			 
+			CmsXmlWpTemplateFile templateFile = (CmsXmlWpTemplateFile)doc;
 			
 			Vector properties = cms.readAllPropertydefinitions(resType.getResourceName()); 
 			
 			templateFile.setData(C_TAG_RESTYPE, resType.getResourceName());
 			// TODO: this escape function doesn't handle properly multiple blancs
 			templateFile.setData(C_TAG_RESTYPE+"_esc", Encoder.escapeWBlanks(resType.getResourceName()));
-            output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject)); 
+			output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject)); 
 			
 			for (int z=0; z < properties.size(); z++) {
 				CmsPropertydefinition propdef = (CmsPropertydefinition) properties.elementAt(z); 
@@ -225,6 +208,19 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
 				templateFile.setData("PROPERTY_NAME_ESC", Encoder.escapeWBlanks(propdef.getName())); 
 				output.append(templateFile.getProcessedDataValue(C_TYPELISTENTRY, callingObject)); 
 			} 
-            return output.toString();
-     }         
+			return output.toString();
+	 } 
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}
 }

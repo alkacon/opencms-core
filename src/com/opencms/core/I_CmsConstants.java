@@ -1,7 +1,9 @@
+package com.opencms.core;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/08/08 07:27:32 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2000/08/08 14:08:21 $
+ * Version: $Revision: 1.95 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.core;
-
 /**
  * This interface is a pool for cms-constants. All classes may implement this
  * class to get access to this contsnats.
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.94 $ $Date: 2000/08/08 07:27:32 $
+ * @version $Revision: 1.95 $ $Date: 2000/08/08 14:08:21 $
  */
 public interface I_CmsConstants
 {
@@ -92,15 +92,15 @@ public interface I_CmsConstants
 	 */
 	 static final int C_FLAG_GROUP_ROLE = 8;	
 
-     /** Path to the workplace ini file */     
-     static final String C_WORKPLACE_INI = "/system/workplace/config/workplace.ini";
-     
-     /** Path to the workplace ini file */     
-     static final String C_PATH_INTERNAL_TEMPLATES = "/content/internal/";
-     
-     /** prefix for temporary files */
-     public static final String C_TEMP_PREFIX = "~";
-          
+	 /** Path to the workplace ini file */     
+	 static final String C_WORKPLACE_INI = "/system/workplace/config/workplace.ini";
+	 
+	 /** Path to the workplace ini file */     
+	 static final String C_PATH_INTERNAL_TEMPLATES = "/content/internal/";
+	 
+	 /** prefix for temporary files */
+	 public static final String C_TEMP_PREFIX = "~";
+		  
 	 /**
 	  * The last index, that was used for resource-types.
 	  */
@@ -116,26 +116,26 @@ public interface I_CmsConstants
 	 */
 	 final static String C_TYPE_FOLDER_NAME		= "folder";
 
-     /** The resource type-name for an image. */
+	 /** The resource type-name for an image. */
 	 final static String C_TYPE_IMAGE_NAME		= "image";    
-     
+	 
 	 /**
 	 * The resource type-name for a page file.
 	 */
 	 final static String C_TYPE_PAGE_NAME		= "page";
 
-    /**
-     * The resource type-name for a newspage file.
-     */
-    final static String C_TYPE_NEWSPAGE_NAME = "newspage";
-    
-    /**
-     * The resource type-name for plain files.
-     */
-    final static String C_TYPE_PLAIN_NAME = "plain";
-    
-    
-    
+	/**
+	 * The resource type-name for a newspage file.
+	 */
+	final static String C_TYPE_NEWSPAGE_NAME = "newspage";
+	
+	/**
+	 * The resource type-name for plain files.
+	 */
+	final static String C_TYPE_PLAIN_NAME = "plain";
+	
+	
+	
 	/**
 	 * This constant signs a normal "classic" propertydefinition.
 	 */
@@ -155,26 +155,26 @@ public interface I_CmsConstants
 	 */
 	static final int C_PROPERTYDEF_TYPE_MANDATORY	= 2;
 
-    /**
-     * Property for resource title
-     */
-    static final String C_PROPERTY_TITLE="Title";
+	/**
+	 * Property for resource title
+	 */
+	static final String C_PROPERTY_TITLE="Title";
 
-     /**
-     * Property for resource navigation title
-     */
-    static final String C_PROPERTY_NAVTEXT="NavText";
+	 /**
+	 * Property for resource navigation title
+	 */
+	static final String C_PROPERTY_NAVTEXT="NavText";
    
-    /**
-     * Property for resource navigation position
-     */
-    static final String C_PROPERTY_NAVPOS="NavPos";
+	/**
+	 * Property for resource navigation position
+	 */
+	static final String C_PROPERTY_NAVPOS="NavPos";
 	
 	/**
-     * Property for template type
-     */
-    static final String C_PROPERTY_TEMPLATETYPE="TemplateType";
-    
+	 * Property for template type
+	 */
+	static final String C_PROPERTY_TEMPLATETYPE="TemplateType";
+	
 	/**
 	 * This is the group for guests.
 	 */
@@ -227,20 +227,20 @@ public interface I_CmsConstants
 	 */
 	 final static String C_ADDITIONAL_INFO_TOWN	= "USER_TOWN";
 	 
-     /**
+	 /**
 	 * Key for additional info flags.
 	 */
 	 final static String C_ADDITIONAL_INFO_PREFERENCES	= "USER_PREFERENCES";
-     
-     /** Key for additional info explorer settings. */
+	 
+	 /** Key for additional info explorer settings. */
 	 final static String C_ADDITIONAL_INFO_EXPLORERSETTINGS ="USER_EXPLORERSETTINGS";
    
-     /** Key for additional info task settings. */
+	 /** Key for additional info task settings. */
 	 final static String C_ADDITIONAL_INFO_TASKSETTINGS ="USER_TASKSETTINGS";
-        
-     /** Key for additional info start settings. */
+		
+	 /** Key for additional info start settings. */
 	 final static String C_ADDITIONAL_INFO_STARTSETTINGS ="USER_STARTSETTINGS";
-     
+	 
 	/**
 	 * This constant is used to order the tasks by date.
 	 */
@@ -399,57 +399,57 @@ public interface I_CmsConstants
 	 * Is set, if the resource was deleted in this project.
 	 */	
 	 static final int C_STATE_DELETED		= 3;
-     
-     /**
-      * This value will be returned for int's withaout a value.
-      */
-     static final int C_UNKNOWN_INT         = -1;
-     
-     /**
-      * This value will be returned for long's withaout a value.
-      */
-     static final int C_UNKNOWN_LONG        = -1;  
-     
-     /**
-      * This is the id for an undefined launcher.
-      */
-     static final int C_UNKNOWN_LAUNCHER_ID  = -1;
+	 
+	 /**
+	  * This value will be returned for int's withaout a value.
+	  */
+	 static final int C_UNKNOWN_INT         = -1;
+	 
+	 /**
+	  * This value will be returned for long's withaout a value.
+	  */
+	 static final int C_UNKNOWN_LONG        = -1;  
+	 
+	 /**
+	  * This is the id for an undefined launcher.
+	  */
+	 static final int C_UNKNOWN_LAUNCHER_ID  = -1;
 
-      /**
-      * This is the classname for an undefined launcher.
-      */
-     static final String C_UNKNOWN_LAUNCHER  = "UNKNOWN";
-     
-     /**
-      * This is the defintion for a filesystem mountpoint.
-      */
-     static final int C_MOUNTPOINT_FILESYSTEM=1;
+	  /**
+	  * This is the classname for an undefined launcher.
+	  */
+	 static final String C_UNKNOWN_LAUNCHER  = "UNKNOWN";
+	 
+	 /**
+	  * This is the defintion for a filesystem mountpoint.
+	  */
+	 static final int C_MOUNTPOINT_FILESYSTEM=1;
 
-      /**
-      * This is the defintion for a database mountpoint.
-      */
-     static final int C_MOUNTPOINT_MYSQL=2;
-     
-     /**
-      * A string in the configuration-file.
-      */
-     static final String C_EXPORTPOINT = "exportpoint.";
+	  /**
+	  * This is the defintion for a database mountpoint.
+	  */
+	 static final int C_MOUNTPOINT_MYSQL=2;
+	 
+	 /**
+	  * A string in the configuration-file.
+	  */
+	 static final String C_EXPORTPOINT = "exportpoint.";
 
-      /**
-      * A string in the configuration-file.
-      */
-     static final String C_EXPORTPOINT_PATH = "exportpoint.path.";
-     
-     
+	  /**
+	  * A string in the configuration-file.
+	  */
+	 static final String C_EXPORTPOINT_PATH = "exportpoint.path.";
+	 
+	 
 	 /**
 	  * The folder - seberator in this system
 	  */
-     static final String C_FOLDER_SEPERATOR = "/";
+	 static final String C_FOLDER_SEPERATOR = "/";
 	 
-     /**
-      * The name of the rood folder
-      */
-     static final String C_ROOT = C_FOLDER_SEPERATOR;
+	 /**
+	  * The name of the rood folder
+	  */
+	 static final String C_ROOT = C_FOLDER_SEPERATOR;
 	 
 	 /**
 	  * The name of the exportpath-systemproperty.
@@ -460,12 +460,12 @@ public interface I_CmsConstants
 	  * The name of the mountpoint-systemproperty.
 	  */
 	 static final String C_SYSTEMPROPERTY_MOUNTPOINT = "MOUNTPOINT";
-    
-      /**
+	
+	  /**
 	  * The name of the mimetypes-systemproperty.
 	  */
 	 static final String C_SYSTEMPROPERTY_MIMETYPES = "MIMETYPES";
-     
+	 
 	 /**
 	  * The name of the resourcetype-systemproperty.
 	  */
@@ -476,43 +476,43 @@ public interface I_CmsConstants
 	  */
 	 static final String C_SYSTEMPROPERTY_EXTENSIONS = "EXTENSIONS";
  
-    /**
-     * The key for the username in the user information hashtable.
-     */
-    static final String C_SESSION_USERNAME="USERNAME";
-    
-    /**
-     * The key for the current usergroup the user information hashtable.
-     */
-    static final String C_SESSION_CURRENTGROUP="CURRENTGROUP";    
-    
-     /**
-     * The key for the project in the user information hashtable.
-     */
-    static final String C_SESSION_PROJECT="PROJECT";
-     
-     /**
-     * The key for the dirty-flag in the session.
-     */
-    static final String C_SESSION_IS_DIRTY="_core_session_is_dirty_";
+	/**
+	 * The key for the username in the user information hashtable.
+	 */
+	static final String C_SESSION_USERNAME="USERNAME";
+	
+	/**
+	 * The key for the current usergroup the user information hashtable.
+	 */
+	static final String C_SESSION_CURRENTGROUP="CURRENTGROUP";    
+	
+	 /**
+	 * The key for the project in the user information hashtable.
+	 */
+	static final String C_SESSION_PROJECT="PROJECT";
+	 
+	 /**
+	 * The key for the dirty-flag in the session.
+	 */
+	static final String C_SESSION_IS_DIRTY="_core_session_is_dirty_";
 	
 	/**
 	 * The key for the original session to store the session data.
 	 */
 	static final String C_SESSION_DATA = "_session_data_";
 	
-    /** Identifier for request type http */
-    public static final int C_REQUEST_HTTP = 0;
-    
-    /** Identifier for request type console */
-    public static final int C_REQUEST_CONSOLE = 1;
-    
-    
-    /** Identifier for request type http */
-    public static final int C_RESPONSE_HTTP = 0;
-    
-    /** Identifier for request type console */
-    public static final int C_RESPONSE_CONSOLE = 1;
+	/** Identifier for request type http */
+	public static final int C_REQUEST_HTTP = 0;
+	
+	/** Identifier for request type console */
+	public static final int C_REQUEST_CONSOLE = 1;
+	
+	
+	/** Identifier for request type http */
+	public static final int C_RESPONSE_HTTP = 0;
+	
+	/** Identifier for request type console */
+	public static final int C_RESPONSE_CONSOLE = 1;
 
 	/** Task type value of getting all tasks  */
 	public static final int C_TASKS_ALL    = 1;
@@ -622,25 +622,25 @@ public interface I_CmsConstants
 	
 	/**User type value for the task log */
 	public static final int C_TASKLOG_USER   = 1;	
-    
-    /** state values of task messages when accepted */
+	
+	/** state values of task messages when accepted */
 	public static final int C_TASK_MESSAGES_ACCEPTED   = 1;
 
-    /** state values of task messages when forwared */
+	/** state values of task messages when forwared */
 	public static final int C_TASK_MESSAGES_FORWARDED = 2;
-    
-    /** state values of task messages when completed */
+	
+	/** state values of task messages when completed */
 	public static final int C_TASK_MESSAGES_COMPLETED = 4;
-    
-    /** state values of task messages when members */
+	
+	/** state values of task messages when members */
 	public static final int C_TASK_MESSAGES_MEMBERS = 8;
 
 	    
-    public final static String C_FILE="FILE";    
-    public final static String C_FOLDER="FOLDER";
-    public final static String C_USER="USER";
-    public final static String C_GROUP="GROUP"; 
-    
+	public final static String C_FILE="FILE";    
+	public final static String C_FOLDER="FOLDER";
+	public final static String C_USER="USER";
+	public final static String C_GROUP="GROUP"; 
+	
 
 	/**
 	 * Values for the database import and export
@@ -673,11 +673,11 @@ public interface I_CmsConstants
 	final static String C_TFTYPE = "TYPE";
 	/** XML tag to defines the resource typename */
 	final static String C_TFTYPENAME = "TYPENAME";
-    /** XML tag to defines user acces */
+	/** XML tag to defines user acces */
 	final static String C_TFUSER = "USER";
-    /** XML tag to defines group acces */
+	/** XML tag to defines group acces */
 	final static String C_TFGROUP = "GROUP";
-    /** XML tag to defines file acces */
+	/** XML tag to defines file acces */
 	final static String C_TFACCESS = "ACCESFLAG";
 	
 	/** XML tag to defines the resource property */
@@ -740,35 +740,35 @@ public interface I_CmsConstants
 	final static String C_TUINFOKEY = "INFOKEY";
 	/** XML tag to defines additional user info value */
 	final static String C_TUINFOVALUE = "INFOVALUE";
-    
-       // Contants for preferences
-    	
-    /** Task preferenses filter */
+	
+	   // Contants for preferences
+		
+	/** Task preferenses filter */
 	public static final String  C_TASK_FILTER = "TaskFilter";
-    
-    /** Task preferenses view all */
+	
+	/** Task preferenses view all */
 	public static final String  C_TASK_VIEW_ALL = "TaskViewAll";
-    
-    /** Task preferenses message flags */
+	
+	/** Task preferenses message flags */
 	public static final String C_TASK_MESSAGES  = "TaskMessages";
-    
-    /** Start preferenses Language */
+	
+	/** Start preferenses Language */
 	public static final String  C_START_LANGUAGE = "StartLanguage";
-    
-    /** Start preferenses Project */
+	
+	/** Start preferenses Project */
 	public static final String  C_START_PROJECT = "StartProject";
-    
-    /** Start preferenses View */
+	
+	/** Start preferenses View */
 	public static final String  C_START_VIEW = "StartView";
-    
-    /** Start preferenses DefaultGroup */
+	
+	/** Start preferenses DefaultGroup */
 	public static final String  C_START_DEFAULTGROUP = "StartDefaultGroup";
-    
-    /** Start preferenses AccessFlags */
+	
+	/** Start preferenses AccessFlags */
 	public static final String  C_START_ACCESSFLAGS = "StartAccessFlags";
 
-    /** Template element name used for the canonical root template */
-    public static final String C_ROOT_TEMPLATE_NAME = "root";
+	/** Template element name used for the canonical root template */
+	public static final String C_ROOT_TEMPLATE_NAME = "root";
 
 	// Constants for import/export
 	
@@ -847,19 +847,18 @@ public interface I_CmsConstants
 	 */
 	public static String C_CONFIGURATION_RESOURCEBROKER = "resourcebroker";
 
-    /**
+	/**
 	 * A string in the configuration-file.
 	 */
 	public static String C_CONFIGURATION_CACHE = "cache";
-    
+	
 	/**
 	 * A string in the configuration-file.
 	 */
 	public static String C_CONFIGURATION_CLASS = "class";
-    
-     /**
+	
+	 /**
 	 * A string in the configuration-file.
 	 */
 	public static String C_CLUSTERURL = "clusterurl";
 }
-

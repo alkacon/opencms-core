@@ -1,7 +1,9 @@
+package com.opencms.core;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/08/02 13:34:53 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/08/08 14:08:21 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
-package com.opencms.core;
 
 import java.io.*;
 import java.util.*;
@@ -55,65 +55,65 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.34 $ $Date: 2000/08/02 13:34:53 $  
+* @version $Revision: 1.35 $ $Date: 2000/08/08 14:08:21 $  
 * 
 * */
 
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels 
 {
 
-    /**
-     * Definition of the index page
-     */
-    private static String C_INDEX ="index.html";
-    
-    /**
-     * The default mimetype
-     */
-     //private static String C_DEFAULT_MIMETYPE="application/octet-stream";
-    private static String C_DEFAULT_MIMETYPE="text/html";
+	/**
+	 * Definition of the index page
+	 */
+	private static String C_INDEX ="index.html";
+	
+	/**
+	 * The default mimetype
+	 */
+	 //private static String C_DEFAULT_MIMETYPE="application/octet-stream";
+	private static String C_DEFAULT_MIMETYPE="text/html";
 
 	/**
 	 * The resource-broker to access the database.
 	 */
 	private static I_CmsResourceBroker c_rb;
-     
-     /**
-      * The session storage for all active users.
-      */
-     private CmsCoreSession m_sessionStorage;
+	 
+	 /**
+	  * The session storage for all active users.
+	  */
+	 private CmsCoreSession m_sessionStorage;
  
-     /**
-      * Reference to the OpenCms launcer manager
-      */
-     private CmsLauncherManager m_launcherManager;
-     
-     /**
-      * Hashtable with all available Mimetypes.
-      */
-     private Hashtable m_mt=new Hashtable();
+	 /**
+	  * Reference to the OpenCms launcer manager
+	  */
+	 private CmsLauncherManager m_launcherManager;
+	 
+	 /**
+	  * Hashtable with all available Mimetypes.
+	  */
+	 private Hashtable m_mt=new Hashtable();
 	 
 	 /**
 	  * Indicates, if the session-failover should be enabled or not.
 	  */
 	 private boolean m_sessionFailover = false;
-     
-     /**
-      * Constructor, creates a new OpenCms object.
-      * 
-      * It gets the configurations and inits a rb via the CmsRbManager.
-      * 
-      * @param conf The configurations from the property-file.
-      */
-     OpenCms(Configurations conf) 
+	 
+	 /**
+	  * Constructor, creates a new OpenCms object.
+	  * 
+	  * It gets the configurations and inits a rb via the CmsRbManager.
+	  * 
+	  * @param conf The configurations from the property-file.
+	  */
+	 OpenCms(Configurations conf) 
 		 throws Exception {
-        // invoke the ResourceBroker via the initalizer
-        try {
+		// invoke the ResourceBroker via the initalizer
+		try {
 			
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] creating first cms-object");
 			}
-            CmsObject cms=new CmsObject();
+			CmsObject cms=new CmsObject();
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the main resource-broker");
 			}
@@ -125,7 +125,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 			c_rb = CmsRbManager.init(conf);
 
 			printCopyrightInformation(cms);
-            // initalize the Hashtable with all available mimetypes
+			// initalize the Hashtable with all available mimetypes
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] read mime types");
 			}
@@ -134,140 +134,94 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] found " + m_mt.size() + " mime-type entrys");			
 			}
-        } catch (Exception e) {
+		} catch (Exception e) {
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
 			}
 			throw e;
-        }
-        
-        // try to initialize the launchers.
-        try {
+		}
+		
+		// try to initialize the launchers.
+		try {
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize launchers...");			
 			}
-            m_launcherManager = new CmsLauncherManager();
-        } catch (Exception e) {
+			m_launcherManager = new CmsLauncherManager();
+		} catch (Exception e) {
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
 			}
-        }            
-     }
-     
-     /**
-     * This method gets the requested document from the OpenCms and returns it to the 
-     * calling module.
-     * 
-     * @param cms The CmsObject containing all information about the requested document
-     * and the requesting user.
-     * @return CmsFile object.
-     */
-     CmsFile initResource(CmsObject cms) 
-        throws CmsException, IOException {
-          
-        CmsFile file=null;
-        
-        //check if the requested resource is a folder
-        // if this is the case, redirect to the according index.html
-        String resourceName=cms.getRequestContext().getUri();
-        if (resourceName.endsWith("/")) {
-             resourceName+=C_INDEX;
-             cms.getRequestContext().getResponse().sendCmsRedirect(resourceName);
-        }
-        
-        try {
-            //read the requested file
-            file =cms.readFile(cms.getRequestContext().getUri());
-        } catch (CmsException e ) {
-            if (e.getType() == CmsException.C_NOT_FOUND) {
-                
-                // there was no file found with this name. 
-                // it is possible that the requested resource was a folder, so try to access an
-                // index.html there
-                resourceName=cms.getRequestContext().getUri();
-                // test if the requested file is already the index.html
-                if (!resourceName.endsWith(C_INDEX)) {
-                    // check if the requested file ends with an "/"
-                    if (!resourceName.endsWith("/")) {
-                       resourceName+="/";
-                     }
-                     //redirect the request to the index.html
-                    resourceName+=C_INDEX;
-                    cms.getRequestContext().getResponse().sendCmsRedirect(resourceName);
-                } else {
-                    // throw the CmsException.
-                    throw e;
-                }
-           } else {
-               // throw the CmsException.
-              throw e;
-          }
-        }
-        if (file != null) {
-            // test if this file is only available for internal access operations
-            if ((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) >0) {
-            throw new CmsException (CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE]+cms.getRequestContext().getUri(),
-                                    CmsException.C_INTERNAL_FILE);
-            }
-        }
-            
-        return file;
-    }
-
-     
-    /**
-     * Selects the appropriate launcher for a given file by analyzing the 
-     * file's launcher id and calls the initlaunch() method to initiate the 
-     * generating of the output.
-     * 
-     * @param cms CmsObject containing all document and user information
-     * @param file CmsFile object representing the selected file.
-     * @exception CmsException
-     */
-    public void showResource(CmsObject cms, CmsFile file) throws CmsException { 
-        int launcherId = file.getLauncherType();
-        String startTemplateClass = file.getLauncherClassname();
-        I_CmsLauncher launcher = m_launcherManager.getLauncher(launcherId);
-        if(launcher == null) {
-            String errorMessage = "Could not launch file " + file.getName() 
-                + ". Launcher for requested launcher ID " + launcherId + " could not be found.";
-            if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_INFO, "[OpenCms] " + errorMessage);
-            }
-            throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
-        }
-        launcher.initlaunch(cms, file, startTemplateClass, this);
-    }
-        
-    /**
-     * Sets the mimetype of the response.<br>
-     * The mimetype is selected by the file extension of the requested document.
-     * If no available mimetype is found, it is set to the default 
-     * "application/octet-stream".
-     * 
-     * @param cms The actual OpenCms object.
-     * @param file The requested document.
-     * 
-     */
-    void setResponse(CmsObject cms, CmsFile file){
-        String ext=null;
-        String mimetype=null;
-        int lastDot=file.getName().lastIndexOf(".");
-        // check if there was a file extension
-        if ((lastDot>0) && (!file.getName().endsWith("."))){
-         ext=file.getName().substring(lastDot+1,file.getName().length());   
-         mimetype=(String)m_mt.get(ext);
-         // was there a mimetype fo this extension?
-         if (mimetype != null) {
-             cms.getRequestContext().getResponse().setContentType(mimetype);
-         } else {
-             cms.getRequestContext().getResponse().setContentType(C_DEFAULT_MIMETYPE);
-         }
-        } else {
-             cms.getRequestContext().getResponse().setContentType(C_DEFAULT_MIMETYPE);
-        }
-    }
-	
+		}            
+	 } 
+	/**
+	 * Destructor, called when the the servlet is shut down.
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void destroy() 
+		throws CmsException {
+		CmsObject cms=new CmsObject();
+		cms.init(c_rb);
+		cms.destroy();
+	}
+	 /**
+	 * This method gets the requested document from the OpenCms and returns it to the 
+	 * calling module.
+	 * 
+	 * @param cms The CmsObject containing all information about the requested document
+	 * and the requesting user.
+	 * @return CmsFile object.
+	 */
+	 CmsFile initResource(CmsObject cms) 
+		throws CmsException, IOException {
+		  
+		CmsFile file=null;
+		
+		//check if the requested resource is a folder
+		// if this is the case, redirect to the according index.html
+		String resourceName=cms.getRequestContext().getUri();
+		if (resourceName.endsWith("/")) {
+			 resourceName+=C_INDEX;
+			 cms.getRequestContext().getResponse().sendCmsRedirect(resourceName);
+		}
+		
+		try {
+			//read the requested file
+			file =cms.readFile(cms.getRequestContext().getUri());
+		} catch (CmsException e ) {
+			if (e.getType() == CmsException.C_NOT_FOUND) {
+				
+				// there was no file found with this name. 
+				// it is possible that the requested resource was a folder, so try to access an
+				// index.html there
+				resourceName=cms.getRequestContext().getUri();
+				// test if the requested file is already the index.html
+				if (!resourceName.endsWith(C_INDEX)) {
+					// check if the requested file ends with an "/"
+					if (!resourceName.endsWith("/")) {
+					   resourceName+="/";
+					 }
+					 //redirect the request to the index.html
+					resourceName+=C_INDEX;
+					cms.getRequestContext().getResponse().sendCmsRedirect(resourceName);
+				} else {
+					// throw the CmsException.
+					throw e;
+				}
+		   } else {
+			   // throw the CmsException.
+			  throw e;
+		  }
+		}
+		if (file != null) {
+			// test if this file is only available for internal access operations
+			if ((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) >0) {
+			throw new CmsException (CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE]+cms.getRequestContext().getUri(),
+									CmsException.C_INTERNAL_FILE);
+			}
+		}
+			
+		return file;
+	}
 	/**
 	 * Inits a new user and sets it into the overgiven cms-object.
 	 * 
@@ -282,37 +236,24 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 		throws CmsException {
 		cms.init(c_rb, cmsReq, cmsRes, user, group, project);
 	}
-	
 	/**
 	 * Prints a copyright information to all log-files.
 	 */
 	private void printCopyrightInformation(CmsObject cms) {
 		System.err.println(cms.version());
-        if(c_servletLogging) {
-            this.log(C_OPENCMS_INFO, cms.version());
-        }
+		if(c_servletLogging) {
+			this.log(C_OPENCMS_INFO, cms.version());
+		}
 		
 		String copy[] = cms.copyright();
 		
 		for(int i = 0; i < copy.length; i++) {
 			System.err.println(copy[i]);
-            if(c_servletLogging) {
-                this.log(C_OPENCMS_INFO, copy[i]);
-            }
+			if(c_servletLogging) {
+				this.log(C_OPENCMS_INFO, copy[i]);
+			}
 		}
 	}
-    
-    /**
-     * Destructor, called when the the servlet is shut down.
-     * @exception CmsException Throws CmsException if something goes wrong.
-     */
-    public void destroy() 
-        throws CmsException {
-        CmsObject cms=new CmsObject();
-		cms.init(c_rb);
-        cms.destroy();
-    }
-    
 	/**
 	 * This method loads old sessiondata from the database. It is used 
 	 * for sessionfailover.
@@ -331,7 +272,57 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 			return null;
 		}
 	}
-	
+	/**
+	 * Sets the mimetype of the response.<br>
+	 * The mimetype is selected by the file extension of the requested document.
+	 * If no available mimetype is found, it is set to the default 
+	 * "application/octet-stream".
+	 * 
+	 * @param cms The actual OpenCms object.
+	 * @param file The requested document.
+	 * 
+	 */
+	void setResponse(CmsObject cms, CmsFile file){
+		String ext=null;
+		String mimetype=null;
+		int lastDot=file.getName().lastIndexOf(".");
+		// check if there was a file extension
+		if ((lastDot>0) && (!file.getName().endsWith("."))){
+		 ext=file.getName().substring(lastDot+1,file.getName().length());   
+		 mimetype=(String)m_mt.get(ext);
+		 // was there a mimetype fo this extension?
+		 if (mimetype != null) {
+			 cms.getRequestContext().getResponse().setContentType(mimetype);
+		 } else {
+			 cms.getRequestContext().getResponse().setContentType(C_DEFAULT_MIMETYPE);
+		 }
+		} else {
+			 cms.getRequestContext().getResponse().setContentType(C_DEFAULT_MIMETYPE);
+		}
+	}
+	/**
+	 * Selects the appropriate launcher for a given file by analyzing the 
+	 * file's launcher id and calls the initlaunch() method to initiate the 
+	 * generating of the output.
+	 * 
+	 * @param cms CmsObject containing all document and user information
+	 * @param file CmsFile object representing the selected file.
+	 * @exception CmsException
+	 */
+	public void showResource(CmsObject cms, CmsFile file) throws CmsException { 
+		int launcherId = file.getLauncherType();
+		String startTemplateClass = file.getLauncherClassname();
+		I_CmsLauncher launcher = m_launcherManager.getLauncher(launcherId);
+		if(launcher == null) {
+			String errorMessage = "Could not launch file " + file.getName() 
+				+ ". Launcher for requested launcher ID " + launcherId + " could not be found.";
+			if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(C_OPENCMS_INFO, "[OpenCms] " + errorMessage);
+			}
+			throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+		}
+		launcher.initlaunch(cms, file, startTemplateClass, this);
+	}
 	/**
 	 * This method stores sessiondata into the database. It is used 
 	 * for sessionfailover.

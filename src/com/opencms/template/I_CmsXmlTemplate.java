@@ -1,7 +1,9 @@
+package com.opencms.template;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/08 14:08:29 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.template;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 
@@ -50,40 +50,39 @@ import java.util.*;
  * of templates (eg. type I_CmsDumpTemplate) as subtemplate.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.6 $ $Date: 2000/08/08 14:08:29 $
  */
 public interface I_CmsXmlTemplate extends I_CmsTemplate {
-    
-    /**
-     * Handles any occurence of an "ELEMENT" tag.
-     * <P>
-     * Every XML template class should use CmsXmlTemplateFile as
-     * the interface to the XML file. Since CmsXmlTemplateFile is
-     * an extension of A_CmsXmlContent by the additional tag
-     * "ELEMENT" this user method ist mandatory.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
-     * @param userObj Hashtable with parameters.
-     * @return String or byte[] with the content of this subelement.
-     * @exception CmsException
-     */
-    public Object templateElement(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
-            throws CmsException;
-    
-    /**
-     * Reads in the template file and starts the XML parser for the expected
-     * content type.
-     * <P>
-     * Every extending class not using CmsXmlTemplateFile as content type
-     * should override this method.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException;        
+	
+	/**
+	 * Reads in the template file and starts the XML parser for the expected
+	 * content type.
+	 * <P>
+	 * Every extending class not using CmsXmlTemplateFile as content type
+	 * should override this method.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException;
+	/**
+	 * Handles any occurence of an "ELEMENT" tag.
+	 * <P>
+	 * Every XML template class should use CmsXmlTemplateFile as
+	 * the interface to the XML file. Since CmsXmlTemplateFile is
+	 * an extension of A_CmsXmlContent by the additional tag
+	 * "ELEMENT" this user method ist mandatory.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param tagcontent Unused in this special case of a user method. Can be ignored.
+	 * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
+	 * @param userObj Hashtable with parameters.
+	 * @return String or byte[] with the content of this subelement.
+	 * @exception CmsException
+	 */
+	public Object templateElement(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+			throws CmsException;
 }

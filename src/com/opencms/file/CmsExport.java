@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/06/09 07:17:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/08 14:08:22 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/06/09 07:17:09 $
+ * @version $Revision: 1.6 $ $Date: 2000/08/08 14:08:22 $
  */
 public class CmsExport implements I_CmsConstants {
 	
@@ -93,7 +93,6 @@ public class CmsExport implements I_CmsConstants {
 		throws CmsException {
 		this(exportFile, exportPath, cms, false);
 	}
-	
 	/**
 	 * This constructs a new CmsImport-object which imports the resources.
 	 * 
@@ -129,66 +128,58 @@ public class CmsExport implements I_CmsConstants {
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}
-	
 	/**
-	 * Gets the import resource and stores it in object-member.
+	 * Adds a element to the xml-document.
+	 * @param element The element to add the subelement to.
+	 * @param name The name of the new subelement.
+	 * @param value The value of the element.
 	 */
-	private void getExportResource() 
-		throws CmsException {
-		try {
-			// add zip-extension, if needed
-			if( !m_exportFile.toLowerCase().endsWith(".zip") ) {
-				m_exportFile += ".zip";
-			}
-			
-			// create the export-zipstream
-			m_exportZipStream = new ZipOutputStream(new FileOutputStream(m_exportFile));
-			
-		} catch(Exception exc) {
-			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-		}
+	private void addCdataElement(Element element, String name, String value) {
+		Element newElement = m_docXml.createElement(name);
+		element.appendChild(newElement);
+		CDATASection text = m_docXml.createCDATASection(value);
+		newElement.appendChild(text);
 	}
-	
 	/**
-	 * Creates the xml-file and appends the initial tags to it.
+	 * Adds a element to the xml-document.
+	 * @param element The element to add the subelement to.
+	 * @param name The name of the new subelement.
+	 * @param value The value of the element.
 	 */
-	private void getXmlConfigFile() 
+	private void addElement(Element element, String name, String value) {
+		Element newElement = m_docXml.createElement(name);
+		element.appendChild(newElement);
+		Text text = m_docXml.createTextNode(value);
+		newElement.appendChild(text);
+	}
+	/**
+	 * Exports one single file with all its data and content.
+	 * 
+	 * @param file the file to be exported,
+	 * @exception throws a CmsException if something goes wrong.
+	 */
+	private void exportFile(CmsFile file) 
 		throws CmsException {
+		String source = getSourceFilename(file.getAbsolutePath());
+		
+		System.out.print("Exporting " + source + " ...");
 		
 		try {
-			
-			// creates the document
-			m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_EXPORT);
-			// abbends the initital tags
-
-			// add some comments here
-			Node exportNode = m_docXml.getFirstChild();
-			exportNode.appendChild( m_docXml.createComment("Creator   : " + m_cms.getRequestContext().currentUser().getName()));
-			exportNode.appendChild( m_docXml.createComment("Createdate: " + Utils.getNiceDate(new Date().getTime())));
-			
-			m_filesElement = m_docXml.createElement(C_EXPORT_TAG_FILES);
-			m_docXml.getDocumentElement().appendChild(m_filesElement);
-
-		} catch(Exception exc) {
-			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-		}
-	}
-	
-	/**
-	 * Writes the xml-config file (manifest) to the zip-file.
-	 */
-	private void writeXmlConfigFile() 
-		throws CmsException {
-		try {
-			ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
+			// create the manifest-entrys
+			writeXmlEntrys((CmsResource) file);
+			// store content in zip-file
+			ZipEntry entry = new ZipEntry(source);
 			m_exportZipStream.putNextEntry(entry);
-			A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream);
+			m_exportZipStream.write(file.getContents());
 			m_exportZipStream.closeEntry();
 		} catch(Exception exc) {
+			System.out.println("Error");
+			exc.printStackTrace();
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
+		
+		System.out.println("OK");
 	}
-	
 	/**
 	 * Exports all needed sub-resources to the zip-file.
 	 * 
@@ -228,36 +219,75 @@ public class CmsExport implements I_CmsConstants {
 			}
 		}		
 	}
-
 	/**
-	 * Exports one single file with all its data and content.
-	 * 
-	 * @param file the file to be exported,
-	 * @exception throws a CmsException if something goes wrong.
+	 * Gets the import resource and stores it in object-member.
 	 */
-	private void exportFile(CmsFile file) 
+	private void getExportResource() 
 		throws CmsException {
-		String source = getSourceFilename(file.getAbsolutePath());
-		
-		System.out.print("Exporting " + source + " ...");
-		
 		try {
-			// create the manifest-entrys
-			writeXmlEntrys((CmsResource) file);
-			// store content in zip-file
-			ZipEntry entry = new ZipEntry(source);
-			m_exportZipStream.putNextEntry(entry);
-			m_exportZipStream.write(file.getContents());
-			m_exportZipStream.closeEntry();
+			// add zip-extension, if needed
+			if( !m_exportFile.toLowerCase().endsWith(".zip") ) {
+				m_exportFile += ".zip";
+			}
+			
+			// create the export-zipstream
+			m_exportZipStream = new ZipOutputStream(new FileOutputStream(m_exportFile));
+			
 		} catch(Exception exc) {
-			System.out.println("Error");
-			exc.printStackTrace();
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
-		
-		System.out.println("OK");
 	}
+	/**
+	 * Substrings the source-filename, so it is shrinked to the needed part for
+	 * import/export.
+	 * @param absoluteName The absolute path of the resource.
+	 * @return The shrinked path.
+	 */
+	private String getSourceFilename(String absoluteName) {
+		String path = absoluteName.substring(m_exportPath.length());
+		if(path.endsWith("/")) {
+			path = path.substring(0, path.length() - 1);
+		}
+		return path;
+	}
+	/**
+	 * Creates the xml-file and appends the initial tags to it.
+	 */
+	private void getXmlConfigFile() 
+		throws CmsException {
+		
+		try {
+			
+			// creates the document
+			m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_EXPORT);
+			// abbends the initital tags
 
+			// add some comments here
+			Node exportNode = m_docXml.getFirstChild();
+			exportNode.appendChild( m_docXml.createComment("Creator   : " + m_cms.getRequestContext().currentUser().getName()));
+			exportNode.appendChild( m_docXml.createComment("Createdate: " + Utils.getNiceDate(new Date().getTime())));
+			
+			m_filesElement = m_docXml.createElement(C_EXPORT_TAG_FILES);
+			m_docXml.getDocumentElement().appendChild(m_filesElement);
+
+		} catch(Exception exc) {
+			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
+	}
+	/**
+	 * Writes the xml-config file (manifest) to the zip-file.
+	 */
+	private void writeXmlConfigFile() 
+		throws CmsException {
+		try {
+			ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
+			m_exportZipStream.putNextEntry(entry);
+			A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream);
+			m_exportZipStream.closeEntry();
+		} catch(Exception exc) {
+			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
+	}
 	/**
 	 * Writes the data for a resources (like acces-rights) to the manifest-xml-file.
 	 * @param resource The resource to get the data from.
@@ -311,45 +341,5 @@ public class CmsExport implements I_CmsConstants {
 			addCdataElement(property, C_EXPORT_TAG_VALUE, value);
 		}
 		
-	}
-
-	/**
-	 * Substrings the source-filename, so it is shrinked to the needed part for
-	 * import/export.
-	 * @param absoluteName The absolute path of the resource.
-	 * @return The shrinked path.
-	 */
-	private String getSourceFilename(String absoluteName) {
-		String path = absoluteName.substring(m_exportPath.length());
-		if(path.endsWith("/")) {
-			path = path.substring(0, path.length() - 1);
-		}
-		return path;
-	}
-
-	/**
-	 * Adds a element to the xml-document.
-	 * @param element The element to add the subelement to.
-	 * @param name The name of the new subelement.
-	 * @param value The value of the element.
-	 */
-	private void addElement(Element element, String name, String value) {
-		Element newElement = m_docXml.createElement(name);
-		element.appendChild(newElement);
-		Text text = m_docXml.createTextNode(value);
-		newElement.appendChild(text);
-	}
-
-	/**
-	 * Adds a element to the xml-document.
-	 * @param element The element to add the subelement to.
-	 * @param name The name of the new subelement.
-	 * @param value The value of the element.
-	 */
-	private void addCdataElement(Element element, String name, String value) {
-		Element newElement = m_docXml.createElement(name);
-		element.appendChild(newElement);
-		CDATASection text = m_docXml.createCDATASection(value);
-		newElement.appendChild(text);
 	}
 }

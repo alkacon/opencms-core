@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceType.java,v $
- * Date   : $Date: 2000/06/25 15:54:22 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/08/08 14:08:23 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 import java.util.*;
 import java.io.*;
 import com.opencms.core.*;
@@ -37,106 +37,101 @@ import com.opencms.core.*;
  * for a resource this resource-type is needed.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/06/25 15:54:22 $
+ * @version $Revision: 1.11 $ $Date: 2000/08/08 14:08:23 $
  */
 public class CmsResourceType implements I_CmsConstants, Serializable {	
 	
-     /**
-      * The id of resource type.
-      */
+	 /**
+	  * The id of resource type.
+	  */
  	private int m_resourceType;
-    
-    /**
-     * The id of the launcher used by this resource.
-     */
-    private int m_launcherType;
-    
-    /**
-     * The resource type name.
-     */
-    private String m_resourceTypeName;
-    
-    /**
-     * The class name of the Java class launched by the launcher.
-     */
-    private String m_launcherClass;
-     
-    
-    /**
-     * Constructor, creates a new CmsResourceType object.
-     * 
-     * @param resourceType The id of the resource type.
-     * @param launcherType The id of the required launcher.
-     * @param resourceTypeName The printable name of the resource type.
-     * @param launcherClass The Java class that should be invoked by the launcher. 
-     * This value is <b> null </b> if the default invokation class should be used.
-     */
-    public CmsResourceType(int resourceType, int launcherType,
-                           String resourceTypeName, String launcherClass){
-        
-        m_resourceType=resourceType;
-        m_launcherType=launcherType;
-        m_resourceTypeName=resourceTypeName;
-        m_launcherClass=launcherClass;
-    }
-    
-	/**
-	 * Returns the type of this resource-type.
-	 * 
-	 * @return the type of this resource-type.
-	 */
-    public int getResourceType() {
-         return m_resourceType;
-     }
-    
-     /**
-	 * Returns the launcher type needed for this resource-type.
-	 * 
-	 * @return the launcher type for this resource-type.
-	 */
-     public int getLauncherType() {
-         return m_launcherType;
-     }
 	
 	/**
-	 * Returns the name for this resource-type.
-	 * 
-	 * @return the name for this resource-type.
+	 * The id of the launcher used by this resource.
 	 */
-     public String getResourceName() {
-         return m_resourceTypeName;
-     }
-    
-     /**
+	private int m_launcherType;
+	
+	/**
+	 * The resource type name.
+	 */
+	private String m_resourceTypeName;
+	
+	/**
+	 * The class name of the Java class launched by the launcher.
+	 */
+	private String m_launcherClass;
+	 
+	
+	/**
+	 * Constructor, creates a new CmsResourceType object.
+	 * 
+	 * @param resourceType The id of the resource type.
+	 * @param launcherType The id of the required launcher.
+	 * @param resourceTypeName The printable name of the resource type.
+	 * @param launcherClass The Java class that should be invoked by the launcher. 
+	 * This value is <b> null </b> if the default invokation class should be used.
+	 */
+	public CmsResourceType(int resourceType, int launcherType,
+						   String resourceTypeName, String launcherClass){
+		
+		m_resourceType=resourceType;
+		m_launcherType=launcherType;
+		m_resourceTypeName=resourceTypeName;
+		m_launcherClass=launcherClass;
+	}
+	 /**
 	 * Returns the name of the Java class loaded by the launcher.
 	 * This method returns <b>null</b> if the default class for this type is used.
 	 * 
 	 * @return the name of the Java class.
 	 */
-     public String getLauncherClass() {
-         if ((m_launcherClass == null) || (m_launcherClass.length()<1)) {
-            return C_UNKNOWN_LAUNCHER;             
-         } else {
-            return m_launcherClass;
-         }
-     }
-
+	 public String getLauncherClass() {
+		 if ((m_launcherClass == null) || (m_launcherClass.length()<1)) {
+			return C_UNKNOWN_LAUNCHER;             
+		 } else {
+			return m_launcherClass;
+		 }
+	 } 
+	 /**
+	 * Returns the launcher type needed for this resource-type.
+	 * 
+	 * @return the launcher type for this resource-type.
+	 */
+	 public int getLauncherType() {
+		 return m_launcherType;
+	 } 
+	/**
+	 * Returns the name for this resource-type.
+	 * 
+	 * @return the name for this resource-type.
+	 */
+	 public String getResourceName() {
+		 return m_resourceTypeName;
+	 } 
+	/**
+	 * Returns the type of this resource-type.
+	 * 
+	 * @return the type of this resource-type.
+	 */
+	public int getResourceType() {
+		 return m_resourceType;
+	 } 
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
 	 * 
 	 * @return string-representation for this object.
 	 */
-     public String toString() {
-        StringBuffer output=new StringBuffer();
-        output.append("[ResourceType]:");
-        output.append(m_resourceTypeName);
-        output.append(" , Id=");
-        output.append(m_resourceType);
-        output.append(" , launcherType=");
-        output.append(m_launcherType);
-        output.append(" , launcherClass=");
-        output.append(m_launcherClass);
-        return output.toString();
-      }
+	 public String toString() {
+		StringBuffer output=new StringBuffer();
+		output.append("[ResourceType]:");
+		output.append(m_resourceTypeName);
+		output.append(" , Id=");
+		output.append(m_resourceType);
+		output.append(" , launcherType=");
+		output.append(m_launcherType);
+		output.append(" , launcherClass=");
+		output.append(m_launcherClass);
+		return output.toString();
+	  }  
 }

@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTask.java,v $
- * Date   : $Date: 2000/07/14 08:08:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/08/08 14:08:23 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 import com.opencms.core.*;
 import java.util.*;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.11 $ $Date: 2000/07/14 08:08:22 $
+ * @version $Revision: 1.12 $ $Date: 2000/08/08 14:08:23 $
  */
 public class CmsTask implements I_CmsConstants {
 
@@ -147,7 +147,6 @@ public class CmsTask implements I_CmsConstants {
 	 */
 	public CmsTask(){
 	}
-	
 	/**
 	 * Constructor, creates a new CmsTask object.
 	 * 
@@ -184,292 +183,6 @@ public class CmsTask implements I_CmsConstants {
 		m_Milestone = milestone;
 		m_AutoFinish = autofinish;
 	}
-
-	/**
-	 * Returns the id of this task.
-	 * 
-	 * @return the id of this task.
-	 */
-	public int getId() {
-		return m_Id; 
-	}
-	
-	/**
-	 * Returns the name of this task.
-	 * 
-	 * @return the name of this task.
-	 */
-	public String getName() {
-		return m_Name; 
-	}
-	
-	/**
-	 * Returns the state of this task.
-	 * 
-	 * @return the state of this task.
-	 */
-	public int getState() {
-		return m_State;	
-	}
-	
-	/**
-	 * Returns the state of this task as an String.
-	 * 
-	 * @return the state of this task.
-	 */
-	public String getStateString() {
-		return State2String(m_State);	
-	}
-
-	/**
-	 * Returns the type of this task.
-	 * 
-	 * @return the type of this task.
-	 */
-	public int getTaskType(){
-		return m_TaskType;
-	}
-	
-	/**
-	 * Returns the root id of this task.
-	 * 
-	 * @return the root id of this task.
-	 */
-	public int getRoot(){
-		return m_Root;
-	}
-	
-	/**
-	 * Returns the parent id of this task.
-	 * 
-	 * @return the parent id of this task.
-	 */
-	public int getParent(){
-		return m_Parent;
-	}
-	
-	/**
-	 * Returns the initiator user id of this task.
-	 * 
-	 * @return the initiator user id of this task.
-	 */	
-	public int getInitiatorUser(){
-		return m_InitiatorUser;
-	}
-
-	/**
-	 * Returns the role group id of this task.
-	 * 
-	 * @return the role group id of this task.
-	 */
-	public int getRole(){
-		return m_Role;
-	}
-	
-	/**
-	 * Returns the agent user id of this task.
-	 * 
-	 * @return the agent user id of this task.
-	 */
-	public int getAgentUser(){
-		return m_AgentUser;
-	}	
-	
-	/**
-	 * Returns the original agent user id of this task.
-	 * 
-	 * @return the original agent user id of this task.
-	 */	
-	public int getOriginalUser(){
-		return m_OriginalUser;
-	}
-	
-	/**
-	 * Returns the starttime of this task.
-	 * 
-	 * @return the starttime of this task.
-	 */
-	public java.sql.Timestamp getStartTime(){
-		return m_StartTime;
-	}
-	
-	/**
-	 * Returns the wakeuptime of this task.
-	 * 
-	 * @return the wakeuptime of this task.
-	 */
-	public java.sql.Timestamp getWakeupTime(){
-		return m_WakeupTime;
-	}
-	
-	/**
-	 * Returns the timeout of this task.
-	 * 
-	 * @return the timeout of this task.
-	 */
-	public java.sql.Timestamp getTimeOut(){
-		return m_TimeOut;
-	}
-	
-	/**
-	 * Returns the endtime of this task.
-	 * 
-	 * @return the endtime of this task.
-	 */
-	public java.sql.Timestamp getEndTime(){
-		return m_EndTime;
-	}
-	
-	/**
-	 * Returns the percentage of this task.
-	 * 
-	 * @return the percentage of this task.
-	 */
-	public int getPercentage(){
-		return m_Percentage;
-	}
-	
-	/**
-	 * Returns the permission of this task.
-	 * 
-	 * @return the permission of this task.
-	 */	
-	public String getPermission(){
-		return m_Permission;
-	}
-	
-	/**
-	 * Returns the priority of this task.
-	 * 
-	 * @return the priority of this task.
-	 */	
-	public int getPriority(){
-		return m_Priority;
-	}
-	
-	/**
-	 * Returns the escalationtype of this task.
-	 * 
-	 * @return the escalationtype of this task.
-	 */	
-	public int getEscalationType(){
-		return m_EscalationType;
-	}
-
-	/**
-	 * Returns the htmllink of this task.
-	 * 
-	 * @return the htmllink of this task.
-	 */
-	public String getHtmlLink(){
-		return m_HtmlLink;
-	}
-	
-	/**
-	 * Returns the milestone id of this task.
-	 * 
-	 * @return the milestone id of this task.
-	 */
-	public int getMilestone(){
-		return m_Milestone;
-	}
-	
-	/**
-	 * Returns the autofinish flag id of this task.
-	 * 
-	 * @return the autofinish flag id of this task.
-	 */
-	public int getAutoFinish(){
-		return m_AutoFinish;
-	}
-	
-	public void setName(String taskname){
-		m_Name = taskname;
-	}
-	
-	public void setRoot(int root){
-		m_Root = root;
-	}
-	
-	public void setParent(int parent){
-		m_Parent = parent;
-	}
-	
-	public void setTaskType(int tasktype){
-		m_TaskType = tasktype;
-	}
-	
-	public void setRole(int role){
-		m_Role = role;
-	}
-	
-	public void setAgentUser(int agentuser){
-		m_AgentUser = agentuser;
-	}
-	
-	public void setOriginalUser(int originaluser){
-		m_OriginalUser = originaluser;
-	}
-	
-	public void setInitiatorUser(int initiatoruser){
-		m_InitiatorUser = initiatoruser;
-	}
-	
-	public void setWakeupTime(java.sql.Timestamp wakeuptime){
-		m_WakeupTime = wakeuptime;
-	}
-	
-	public void setTimeOut(java.sql.Timestamp timeout){
-		m_TimeOut = timeout;
-	}
-	
-	public void setPriority(int priority){
-		m_Priority = priority;
-	}
-	
-	public void setPercentage(int percentage){
-		m_Percentage = percentage;
-	}
-	
-	public void setState(int state){
-		m_State = state;
-	}
-
-	public void setStartTime(java.sql.Timestamp starttime){
-		m_StartTime = starttime;
-	}
-	
-	public void setMilestone(int milestone){
-		m_Milestone = milestone;
-	}
-	
-	/**
-	 * Returns a string-representation for this object.
-	 * This can be used for debugging.
-	 * 
-	 * @return string-representation for this object.
-	 */
-	public String toString() {
-		StringBuffer output=new StringBuffer();
-		output.append("[Task]:");
-		output.append(" Id=");
-		output.append(this.getId());
-		output.append(" Name=");
-		output.append(this.getName());
-		output.append(" Root=");
-		output.append(this.getRoot());
-		output.append(" State=");
-		output.append(this.getStateString());
-		output.append(" Owner=");
-		output.append(this.getInitiatorUser());
-		output.append(" Agent=");
-		output.append(this.getAgentUser());
-		output.append(" Role=");
-		output.append(this.getRole());
-		
-		return output.toString();
-	}
-	
 	/**
 	 * Compares the overgiven object with this object.
 	 * 
@@ -486,7 +199,227 @@ public class CmsTask implements I_CmsConstants {
 		}
 		return equal;
 	}
-	
+	/**
+	 * Returns the agent user id of this task.
+	 * 
+	 * @return the agent user id of this task.
+	 */
+	public int getAgentUser(){
+		return m_AgentUser;
+	}
+	/**
+	 * Returns the autofinish flag id of this task.
+	 * 
+	 * @return the autofinish flag id of this task.
+	 */
+	public int getAutoFinish(){
+		return m_AutoFinish;
+	}
+	/**
+	 * Returns the endtime of this task.
+	 * 
+	 * @return the endtime of this task.
+	 */
+	public java.sql.Timestamp getEndTime(){
+		return m_EndTime;
+	}
+	/**
+	 * Returns the escalationtype of this task.
+	 * 
+	 * @return the escalationtype of this task.
+	 */	
+	public int getEscalationType(){
+		return m_EscalationType;
+	}
+	/**
+	 * Returns the htmllink of this task.
+	 * 
+	 * @return the htmllink of this task.
+	 */
+	public String getHtmlLink(){
+		return m_HtmlLink;
+	}
+	/**
+	 * Returns the id of this task.
+	 * 
+	 * @return the id of this task.
+	 */
+	public int getId() {
+		return m_Id; 
+	}
+	/**
+	 * Returns the initiator user id of this task.
+	 * 
+	 * @return the initiator user id of this task.
+	 */	
+	public int getInitiatorUser(){
+		return m_InitiatorUser;
+	}
+	/**
+	 * Returns the milestone id of this task.
+	 * 
+	 * @return the milestone id of this task.
+	 */
+	public int getMilestone(){
+		return m_Milestone;
+	}
+	/**
+	 * Returns the name of this task.
+	 * 
+	 * @return the name of this task.
+	 */
+	public String getName() {
+		return m_Name; 
+	}
+	/**
+	 * Returns the original agent user id of this task.
+	 * 
+	 * @return the original agent user id of this task.
+	 */	
+	public int getOriginalUser(){
+		return m_OriginalUser;
+	}
+	/**
+	 * Returns the parent id of this task.
+	 * 
+	 * @return the parent id of this task.
+	 */
+	public int getParent(){
+		return m_Parent;
+	}
+	/**
+	 * Returns the percentage of this task.
+	 * 
+	 * @return the percentage of this task.
+	 */
+	public int getPercentage(){
+		return m_Percentage;
+	}
+	/**
+	 * Returns the permission of this task.
+	 * 
+	 * @return the permission of this task.
+	 */	
+	public String getPermission(){
+		return m_Permission;
+	}
+	/**
+	 * Returns the priority of this task.
+	 * 
+	 * @return the priority of this task.
+	 */	
+	public int getPriority(){
+		return m_Priority;
+	}
+	/**
+	 * Returns the role group id of this task.
+	 * 
+	 * @return the role group id of this task.
+	 */
+	public int getRole(){
+		return m_Role;
+	}
+	/**
+	 * Returns the root id of this task.
+	 * 
+	 * @return the root id of this task.
+	 */
+	public int getRoot(){
+		return m_Root;
+	}
+	/**
+	 * Returns the starttime of this task.
+	 * 
+	 * @return the starttime of this task.
+	 */
+	public java.sql.Timestamp getStartTime(){
+		return m_StartTime;
+	}
+	/**
+	 * Returns the state of this task.
+	 * 
+	 * @return the state of this task.
+	 */
+	public int getState() {
+		return m_State;	
+	}
+	/**
+	 * Returns the state of this task as an String.
+	 * 
+	 * @return the state of this task.
+	 */
+	public String getStateString() {
+		return State2String(m_State);	
+	}
+	/**
+	 * Returns the type of this task.
+	 * 
+	 * @return the type of this task.
+	 */
+	public int getTaskType(){
+		return m_TaskType;
+	}
+	/**
+	 * Returns the timeout of this task.
+	 * 
+	 * @return the timeout of this task.
+	 */
+	public java.sql.Timestamp getTimeOut(){
+		return m_TimeOut;
+	}
+	/**
+	 * Returns the wakeuptime of this task.
+	 * 
+	 * @return the wakeuptime of this task.
+	 */
+	public java.sql.Timestamp getWakeupTime(){
+		return m_WakeupTime;
+	}
+	public void setAgentUser(int agentuser){
+		m_AgentUser = agentuser;
+	}
+	public void setInitiatorUser(int initiatoruser){
+		m_InitiatorUser = initiatoruser;
+	}
+	public void setMilestone(int milestone){
+		m_Milestone = milestone;
+	}
+	public void setName(String taskname){
+		m_Name = taskname;
+	}
+	public void setOriginalUser(int originaluser){
+		m_OriginalUser = originaluser;
+	}
+	public void setParent(int parent){
+		m_Parent = parent;
+	}
+	public void setPercentage(int percentage){
+		m_Percentage = percentage;
+	}
+	public void setPriority(int priority){
+		m_Priority = priority;
+	}
+	public void setRole(int role){
+		m_Role = role;
+	}
+	public void setRoot(int root){
+		m_Root = root;
+	}
+	public void setStartTime(java.sql.Timestamp starttime){
+		m_StartTime = starttime;
+	}
+	public void setState(int state){
+		m_State = state;
+	}
+	public void setTaskType(int tasktype){
+		m_TaskType = tasktype;
+	}
+	public void setTimeOut(java.sql.Timestamp timeout){
+		m_TimeOut = timeout;
+	}
+	public void setWakeupTime(java.sql.Timestamp wakeuptime){
+		m_WakeupTime = wakeuptime;
+	}
 	private String State2String(int state)
 	{
 		String result = null;
@@ -528,5 +461,31 @@ public class CmsTask implements I_CmsConstants {
 			result = "Unkown";
 		}
 		return result;
+	}
+	/**
+	 * Returns a string-representation for this object.
+	 * This can be used for debugging.
+	 * 
+	 * @return string-representation for this object.
+	 */
+	public String toString() {
+		StringBuffer output=new StringBuffer();
+		output.append("[Task]:");
+		output.append(" Id=");
+		output.append(this.getId());
+		output.append(" Name=");
+		output.append(this.getName());
+		output.append(" Root=");
+		output.append(this.getRoot());
+		output.append(" State=");
+		output.append(this.getStateString());
+		output.append(" Owner=");
+		output.append(this.getInitiatorUser());
+		output.append(" Agent=");
+		output.append(this.getAgentUser());
+		output.append(" Role=");
+		output.append(this.getRole());
+		
+		return output.toString();
 	}
 }

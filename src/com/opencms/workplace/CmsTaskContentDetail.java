@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
- * Date   : $Date: 2000/08/08 07:24:00 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/08/08 14:08:32 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.20 $ $Date: 2000/08/08 07:24:00 $
+ * @version $Revision: 1.21 $ $Date: 2000/08/08 14:08:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -55,36 +55,43 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 	private final static String C_ALL_ROLES = "___all";
 	
 	/**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }    
-
-    /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
+	 * This private helper method generates a string-representation of a button.
+	 * @param xmlTemplateDocument The xml-document in which the buttons are defined.
+	 * @param name The name of the button to generate.
+	 * @param enabled True, if the button is enabled, else false.
+	 * @return the string-representation of the button.
+	 * @exception Throws CmsException, if something goes wrong.
+	 */
+	private String getButton(CmsXmlWpTemplateFile xmlTemplateDocument, String name, 
+							 boolean enabled) 
+		throws CmsException {
+		if(enabled) {
+			// the button is enabled
+			xmlTemplateDocument.setData("disabled", "");
+		} else {
+			// the button is disabled
+			xmlTemplateDocument.setData("disabled", "disabled");
+		}
+		// return the generated button
+		return xmlTemplateDocument.getProcessedDataValue(name, this);		
+	}
+	/**
+	 * Gets the content of a defined section in a given template file and its subtemplates
+	 * with the given parameters. 
+	 * 
+	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		if(C_DEBUG && A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+		}
 		
 		
 		CmsRequestContext context = cms.getRequestContext();
@@ -92,7 +99,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			(CmsXmlWpTemplateFile) getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		CmsTask task;
 		int taskid = -1;
-        I_CmsSession session= cms.getRequestContext().getSession(true);
+		I_CmsSession session= cms.getRequestContext().getSession(true);
 		
 		// getting the URL to which we need to return when we're done
 		String lastUrl;
@@ -225,16 +232,16 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 		long startTime;
 		long timeout;
 		GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(new Date(System.currentTimeMillis()));
-        cal.set(Calendar.HOUR,0);
-        cal.set(Calendar.MINUTE,0);
-        cal.set(Calendar.SECOND,0);
-        cal.set(Calendar.MILLISECOND,0);
-        
-        GregorianCalendar newcal = new GregorianCalendar(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),
-                                                         cal.get(Calendar.DAY_OF_MONTH),0,0,0);
-        
-        long now = newcal.getTime().getTime();
+		cal.setTime(new Date(System.currentTimeMillis()));
+		cal.set(Calendar.HOUR,0);
+		cal.set(Calendar.MINUTE,0);
+		cal.set(Calendar.SECOND,0);
+		cal.set(Calendar.MILLISECOND,0);
+		
+		GregorianCalendar newcal = new GregorianCalendar(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),
+														 cal.get(Calendar.DAY_OF_MONTH),0,0,0);
+		
+		long now = newcal.getTime().getTime();
 
 		try {
 			projectname = cms.readTask(task.getRoot()).getName();
@@ -440,31 +447,22 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			} catch(IOException exc) {
 				throw new CmsException("Could not redirect to " + lastUrl, exc);
 			}
-            return null;
+			return null;
 		}
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }
-
+	}
 	/**
-	 * This private helper method generates a string-representation of a button.
-	 * @param xmlTemplateDocument The xml-document in which the buttons are defined.
-	 * @param name The name of the button to generate.
-	 * @param enabled True, if the button is enabled, else false.
-	 * @return the string-representation of the button.
-	 * @exception Throws CmsException, if something goes wrong.
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
 	 */
-	private String getButton(CmsXmlWpTemplateFile xmlTemplateDocument, String name, 
-							 boolean enabled) 
-		throws CmsException {
-		if(enabled) {
-			// the button is enabled
-			xmlTemplateDocument.setData("disabled", "");
-		} else {
-			// the button is disabled
-			xmlTemplateDocument.setData("disabled", "disabled");
-		}
-		// return the generated button
-		return xmlTemplateDocument.getProcessedDataValue(name, this);		
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
 	}
 }

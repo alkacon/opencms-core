@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsFileListUsers.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/08 14:08:34 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
@@ -41,39 +41,37 @@ import java.util.*;
  * <code>&lt;FILELIST&gt;</code> has to implement this interface.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/08 14:08:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * @see com.opencms.workplace.CmsFileList
  */
 public interface I_CmsFileListUsers {
-    /** 
-     * Collect all folders and files that are displayed in the file list.
-     * @param cms The CmsObject.
-     * @return A vector of folder and file objects.
-     * @exception Throws CmsException if something goes wrong.
-     */
-    public Vector getFiles(CmsObject cms) throws CmsException;
-
-    /**
-     * Fill all customized columns with the appropriate settings for the given file 
-     * list entry. Any column filled by this method may be used in the customized template
-     * for the file list.
-     * @param cms Cms object for accessing system resources.
-     * @param filelist Template file containing the definitions for the file list together with
-     * the included customized defintions.
-     * @param res CmsResource Object of the current file list entry.
-     * @param lang Current language file.
-     * @exception CmsException if access to system resources failed.
-     */
-    public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang)
-            throws CmsException;
-
-    /**
-     * Used to modify the bit pattern for hiding and showing columns in
-     * the file list.
-     * @param cms Cms object for accessing system resources.
-     * @param prefs Old bit pattern.
-     * @return New modified bit pattern.
-     */
-    public int modifyDisplayedColumns(CmsObject cms, int prefs);     
+	/**
+	 * Fill all customized columns with the appropriate settings for the given file 
+	 * list entry. Any column filled by this method may be used in the customized template
+	 * for the file list.
+	 * @param cms Cms object for accessing system resources.
+	 * @param filelist Template file containing the definitions for the file list together with
+	 * the included customized defintions.
+	 * @param res CmsResource Object of the current file list entry.
+	 * @param lang Current language file.
+	 * @exception CmsException if access to system resources failed.
+	 */
+	public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang)
+			throws CmsException;
+	/** 
+	 * Collect all folders and files that are displayed in the file list.
+	 * @param cms The CmsObject.
+	 * @return A vector of folder and file objects.
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public Vector getFiles(CmsObject cms) throws CmsException;
+	/**
+	 * Used to modify the bit pattern for hiding and showing columns in
+	 * the file list.
+	 * @param cms Cms object for accessing system resources.
+	 * @param prefs Old bit pattern.
+	 * @return New modified bit pattern.
+	 */
+	public int modifyDisplayedColumns(CmsObject cms, int prefs);
 }

@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCachedObject.java,v $
- * Date   : $Date: 2000/06/23 13:24:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/08/08 14:08:22 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,14 +28,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 /**
  * This class defines one individual object stored in the DBCacheFile and method to access it
  * 
  * @author Michael Emmerich
  * @author Andreas Schoutem
- * @version $Revision: 1.7 $ $Date: 2000/06/23 13:24:19 $
+ * @version $Revision: 1.8 $ $Date: 2000/08/08 14:08:22 $
  */
 public class CmsCachedObject implements Cloneable
 {
@@ -51,7 +51,6 @@ public class CmsCachedObject implements Cloneable
 		m_contents=contents;
 		m_timestamp = System.currentTimeMillis();
 	}
-	
 	/**
 	 * Creates a new CmsCachedObject.
 	 *  
@@ -63,23 +62,45 @@ public class CmsCachedObject implements Cloneable
 		m_contents=contents;
 		m_timestamp = timestamp;
 	}
-	
 	/**
-	 * Gets the last access time for this CmsCacheObject.
-	 *
-	 *  @return The last access time.
+	 * Clones the CachedObject. 
+	 * This is needed to return only clones of the objects stored in the cache
+	 * @param content Flag for cloning the file content, too.
 	 */
-	public long getTimestamp() {
-		return m_timestamp;
+
+	public  Object clone() {
+		// spceial clone-method for each content
+		// if there is an easy way to do this - it may be replaced
+		if(m_contents == null) {
+			return new CmsCachedObject(null);
+		} else if(m_contents instanceof Boolean) {
+			return new CmsCachedObject(new Boolean(((Boolean)m_contents).booleanValue()));
+		} else if(m_contents instanceof CmsResource) {
+			return new CmsCachedObject(((CmsResource)m_contents).clone());
+		} else if(m_contents instanceof CmsFile) {
+			return new CmsCachedObject(((CmsFile)m_contents).clone());
+		} else if(m_contents instanceof CmsFolder) {
+			return new CmsCachedObject(((CmsFolder)m_contents).clone());
+		} else if(m_contents instanceof CmsUser) {
+			return new CmsCachedObject(((CmsUser)m_contents).clone());
+		} else if(m_contents instanceof CmsGroup) {
+			return new CmsCachedObject(((CmsGroup)m_contents).clone());
+		} else if(m_contents instanceof CmsProject) {
+			return new CmsCachedObject(((CmsProject)m_contents).clone());
+		} else if(m_contents instanceof CmsPropertydefinition) {
+			return new CmsCachedObject(((CmsPropertydefinition)m_contents).clone());
+		} else if(m_contents instanceof java.util.Vector) {
+			return new CmsCachedObject(((java.util.Vector)m_contents).clone());
+		} else if(m_contents instanceof java.util.Hashtable) {
+			return new CmsCachedObject(((java.util.Hashtable)m_contents).clone());
+		} else if(m_contents instanceof String) {
+			return new CmsCachedObject( new String((String)m_contents));
+		} else {
+			System.err.println( m_contents.getClass().getName() );
+			throw new InternalError();
+
+		}
 	}
-	
-	/**
-	 * Sets the last access time for this CmsCacheObject.
-	 */
-	public void setTimestamp() {
-		m_timestamp=System.currentTimeMillis();
-	}
-	
 	/**
 	 * Gets the contents of this CmsCacheObject.
 	 * The last access time of the Cache object is set tu the current system time.
@@ -90,31 +111,18 @@ public class CmsCachedObject implements Cloneable
 		m_timestamp=System.currentTimeMillis();
 		return m_contents;
 	}
-	
-    /**
-	 * Clones the CachedObject. 
-	 * This is needed to return only clones of the objects stored in the cache
-	 * @param content Flag for cloning the file content, too.
+	/**
+	 * Gets the last access time for this CmsCacheObject.
+	 *
+	 *  @return The last access time.
 	 */
-
-	public  Object clone() {		// spceial clone-method for each content		// if there is an easy way to do this - it may be replaced
-		if(m_contents == null) {			return new CmsCachedObject(null);
-		} else if(m_contents instanceof Boolean) {			return new CmsCachedObject(new Boolean(((Boolean)m_contents).booleanValue()));
-		} else if(m_contents instanceof CmsResource) {			return new CmsCachedObject(((CmsResource)m_contents).clone());
-		} else if(m_contents instanceof CmsFile) {			return new CmsCachedObject(((CmsFile)m_contents).clone());
-		} else if(m_contents instanceof CmsFolder) {			return new CmsCachedObject(((CmsFolder)m_contents).clone());
-		} else if(m_contents instanceof CmsUser) {			return new CmsCachedObject(((CmsUser)m_contents).clone());
-		} else if(m_contents instanceof CmsGroup) {			return new CmsCachedObject(((CmsGroup)m_contents).clone());
-		} else if(m_contents instanceof CmsProject) {			return new CmsCachedObject(((CmsProject)m_contents).clone());
-        } else if(m_contents instanceof CmsPropertydefinition) {			return new CmsCachedObject(((CmsPropertydefinition)m_contents).clone());
-		} else if(m_contents instanceof java.util.Vector) {
-            return new CmsCachedObject(((java.util.Vector)m_contents).clone());
-		} else if(m_contents instanceof java.util.Hashtable) {
-            return new CmsCachedObject(((java.util.Hashtable)m_contents).clone());
-		} else if(m_contents instanceof String) {			return new CmsCachedObject( new String((String)m_contents));
-		} else {
-			System.err.println( m_contents.getClass().getName() );			throw new InternalError();
-
-		}
-	}}
-
+	public long getTimestamp() {
+		return m_timestamp;
+	}
+	/**
+	 * Sets the last access time for this CmsCacheObject.
+	 */
+	public void setTimestamp() {
+		m_timestamp=System.currentTimeMillis();
+	}
+}

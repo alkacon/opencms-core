@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
- * Date   : $Date: 2000/08/02 13:34:57 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/08/08 14:08:32 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -42,42 +42,28 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/08/02 13:34:57 $
+ * @version $Revision: 1.16 $ $Date: 2000/08/08 14:08:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
 	
 	/**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }    
-
-    /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
+	 * Gets the content of a defined section in a given template file and its subtemplates
+	 * with the given parameters. 
+	 * 
+	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		if(C_DEBUG && A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+		}
 		
 		I_CmsSession session = cms.getRequestContext().getSession(true);
 		String taskid=(String)session.getValue(C_PARA_STARTTASKID);
@@ -93,23 +79,64 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 					A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName()+ " " + e.getMessage());
 				}
 			}
-            return null;
+			return null;
 		}
 		
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }
-
-    /**
-     * Gets the tasks.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @return Vector representing the tasks.
-     * @exception CmsException
-     */
-    public Vector taskList(CmsObject cms, CmsXmlLanguageFile lang)
+	}
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}
+	/**
+	 * Reads alls tasks for all roles of a user.
+	 * @param cms The cms object.
+	 * @param project The name of the project.
+	 * @param taskType The type of the task to read.
+	 * @param orderBy A order criteria.
+	 * @param groupBy A sort criteria.
+	 * @return a vector of tasks.
+	 * @exception Throws a exception, if something goes wrong.
+	 */
+	private Vector readTasksForRole(CmsObject cms, int project, int taskType, String orderBy, String groupBy)
+		throws CmsException {
+		String name = cms.getRequestContext().currentUser().getName();
+		Vector groups = cms.getGroupsOfUser(name);
+		CmsGroup group;
+		Vector tasks;
+		Vector allTasks = new Vector();
+		
+		for(int i = 0; i < groups.size(); i++) {
+			group = (CmsGroup) groups.elementAt(i);
+			tasks = cms.readTasksForRole(project, group.getName(), taskType, orderBy, groupBy);
+			
+			// join the vectors
+			for(int z = 0; z < tasks.size(); z++) {
+				allTasks.addElement(tasks.elementAt(z));
+			}
+		}
+		return allTasks;
+	}
+	/**
+	 * Gets the tasks.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @return Vector representing the tasks.
+	 * @exception CmsException
+	 */
+	public Vector taskList(CmsObject cms, CmsXmlLanguageFile lang)
 		throws CmsException {
 		String orderBy = "";
 		String groupBy = "";
@@ -181,35 +208,5 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 		} else {
 			return retValue;
 		}
-    }
-	
-	/**
-	 * Reads alls tasks for all roles of a user.
-	 * @param cms The cms object.
-	 * @param project The name of the project.
-	 * @param taskType The type of the task to read.
-	 * @param orderBy A order criteria.
-	 * @param groupBy A sort criteria.
-	 * @return a vector of tasks.
-	 * @exception Throws a exception, if something goes wrong.
-	 */
-	private Vector readTasksForRole(CmsObject cms, int project, int taskType, String orderBy, String groupBy)
-		throws CmsException {
-		String name = cms.getRequestContext().currentUser().getName();
-		Vector groups = cms.getGroupsOfUser(name);
-		CmsGroup group;
-		Vector tasks;
-		Vector allTasks = new Vector();
-		
-		for(int i = 0; i < groups.size(); i++) {
-			group = (CmsGroup) groups.elementAt(i);
-			tasks = cms.readTasksForRole(project, group.getName(), taskType, orderBy, groupBy);
-			
-			// join the vectors
-			for(int z = 0; z < tasks.size(); z++) {
-				allTasks.addElement(tasks.elementAt(z));
-			}
-		}
-		return allTasks;
 	}
 }

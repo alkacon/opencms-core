@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/06/27 15:56:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/08 14:08:22 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
@@ -41,7 +41,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/06/27 15:56:27 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/08 14:08:22 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -99,7 +99,83 @@ public class CmsImport implements I_CmsConstants {
 		// import the resources
 		importResources();
 	}
-	
+	/**
+	 * Creates missing property definitions if needed.
+	 * 
+	 * @param name the name of the property.
+	 * @param propertyType the type of the property.
+	 * @param resourceType the type of the resource.
+	 * 
+	 * @exception throws CmsException if something goes wrong.
+	 */
+	private void createPropertydefinition(String name, String propertyType, String resourceType) 
+		throws CmsException {
+		
+		// does the propertydefinition exists already?
+		try {
+			m_cms.readPropertydefinition(name, resourceType);
+		} catch(CmsException exc) {
+			// no: create it
+			m_cms.createPropertydefinition(name, resourceType, Integer.parseInt(propertyType));
+		}
+	}
+	/**
+	 * Returns a byte-array containing the content of the file.
+	 * 
+	 * @param filename The name of the file to read.
+	 * @return bytes[] The content of the file.
+	 */
+	private byte[] getFileBytes(String filename) 
+		throws Exception{
+		// is this a zip-file?
+		if(m_importZip != null) {
+			// yes
+			ZipEntry entry = m_importZip.getEntry(filename);
+			InputStream stream = m_importZip.getInputStream(entry);
+			
+			int charsRead = 0;
+			int size = new Long(entry.getSize()).intValue();
+			byte[] buffer = new byte[size];
+			while(charsRead < size) {
+				charsRead += stream.read(buffer, charsRead, size - charsRead);
+			}
+			stream.close();
+			return buffer;			
+		} else {
+			// no - use directory
+			File file = new File(m_importResource, filename);
+			FileInputStream fileStream = new FileInputStream(file);
+
+			int charsRead = 0;
+			int size = new Long(file.length()).intValue();
+			byte[] buffer = new byte[size];
+			while(charsRead < size) {
+				charsRead += fileStream.read(buffer, charsRead, size - charsRead);
+			}
+			fileStream.close();
+			return buffer;
+		}
+	}
+	/**
+	 * Returns a buffered reader for this resource using the importFile as root.
+	 * 
+	 * @param filename The name of the file to read.
+	 * @return BufferedReader The filereader for this file.
+	 */
+	private BufferedReader getFileReader(String filename) 
+		throws Exception{
+		// is this a zip-file?
+		if(m_importZip != null) {
+			// yes
+			ZipEntry entry = m_importZip.getEntry(filename);
+			InputStream stream = m_importZip.getInputStream(entry);
+			return new BufferedReader( new InputStreamReader(stream));
+		} else {
+			// no - use directory
+			File xmlFile = new File(m_importResource, filename);
+			return new BufferedReader(new FileReader(xmlFile));
+		}
+	}
 	/**
 	 * Gets the import resource and stores it in object-member.
 	 */
@@ -117,7 +193,21 @@ public class CmsImport implements I_CmsConstants {
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}
-	
+	/**
+	 * Returns the text for this node.
+	 * 
+	 * @param elem the parent-element.
+	 * @param tag the tagname to get the value from.
+	 * @return the value of the tag.
+	 */
+	private String getTextNodeValue(Element elem, String tag) {
+		try {
+			return elem.getElementsByTagName(tag).item(0).getFirstChild().getNodeValue();
+		} catch(Exception exc) {
+			// ignore the exception and return null
+			return null;
+		}
+	}
 	/**
 	 * Gets the xml-config file from the import resource and stroes it in object-member.
 	 */
@@ -125,15 +215,80 @@ public class CmsImport implements I_CmsConstants {
 		throws CmsException {
 		
 		try {
-         	BufferedReader xmlReader = getFileReader(C_EXPORT_XMLFILENAME);
+		 	BufferedReader xmlReader = getFileReader(C_EXPORT_XMLFILENAME);
   			m_docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
  			xmlReader.close();
 		 } catch(Exception exc) {
-       
+	   
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}
-	
+	/**
+	 * Imports a file into the cms.
+	 * @param source the path to the source-file
+	 * @param destination the path to the destination-file in the cms
+	 * @param type the resource-type of the file
+	 * @param user the owner of the file
+	 * @param group the group of the file
+	 * @param access the access-flags of the file
+	 * @param properties a hashtable with properties for this resource
+	 */
+	private void importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties) {
+		// print out the information for shell-users
+		System.out.print("Importing ");
+		System.out.print(source + ", ");	
+		System.out.print(destination + ", ");	
+		System.out.print(type + ", ");	
+		System.out.print(user + ", ");	
+		System.out.print(group + ", ");	
+		System.out.print(access + "... ");
+		
+		try {			
+			String path = m_importPath + destination.substring(0,destination.lastIndexOf("/")+1);
+			String name = destination.substring((destination.lastIndexOf("/")+1),destination.length());
+			String fullname=null;;
+	        int state=C_STATE_NEW;
+			
+			if(source == null) {
+				// this is a directory
+				try {
+				   CmsFolder cmsfolder= m_cms.createFolder(path, name, properties);  
+				   fullname = cmsfolder.getAbsolutePath();                             
+				   state=C_STATE_NEW;
+				} catch (CmsException e) {
+					// an exception is thrown if the folder already exists
+				   state=C_STATE_CHANGED;
+				}
+
+			} else {
+				// this is a file
+				// first delete the file, so it can be overwritten
+				try {         
+					   m_cms.deleteFile(path+name);	
+					   state=C_STATE_CHANGED;
+				} catch(CmsException exc) {
+					   state=C_STATE_NEW;
+					   // ignore the exception, the file dosen't exist
+				}
+				// now create the file
+		  
+				fullname = m_cms.createFile(path, name, getFileBytes(source), type, properties).getAbsolutePath();
+			
+			}
+		  
+			if (fullname!=null) {
+				m_cms.chmod(fullname, Integer.parseInt(access));
+			    m_cms.chgrp(fullname, group);
+			    m_cms.chown(fullname, user); 
+				m_cms.chstate(fullname,state);
+			}
+			System.out.println("OK");
+		} catch(Exception exc) {
+			// an error while importing the file
+			System.out.println("Error");
+			exc.printStackTrace();
+		}		
+	}
 	/**
 	 * Imports the resources and writes them to the cms.
 	 */
@@ -178,7 +333,7 @@ public class CmsImport implements I_CmsConstants {
 					// store these informations
 					if( (name != null) && (value != null) ) {
 						properties.put(name, value);
-       					createPropertydefinition(name, propertyType, type);
+	   					createPropertydefinition(name, propertyType, type);
 					}
 				}
 				
@@ -191,168 +346,5 @@ public class CmsImport implements I_CmsConstants {
 		}		
 		// all is done, unlock the resource
 		m_cms.unlockResource(m_importPath);
-	}
-
-	/**
-	 * Imports a file into the cms.
-	 * @param source the path to the source-file
-	 * @param destination the path to the destination-file in the cms
-	 * @param type the resource-type of the file
-	 * @param user the owner of the file
-	 * @param group the group of the file
-	 * @param access the access-flags of the file
-	 * @param properties a hashtable with properties for this resource
-	 */
-	private void importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties) {
-		// print out the information for shell-users
-		System.out.print("Importing ");
-		System.out.print(source + ", ");	
-		System.out.print(destination + ", ");	
-		System.out.print(type + ", ");	
-		System.out.print(user + ", ");	
-		System.out.print(group + ", ");	
-		System.out.print(access + "... ");
-		
-		try {			
-			String path = m_importPath + destination.substring(0,destination.lastIndexOf("/")+1);
-			String name = destination.substring((destination.lastIndexOf("/")+1),destination.length());
-			String fullname=null;;
-	        int state=C_STATE_NEW;
-            
-			if(source == null) {
-				// this is a directory
-                try {
-                   CmsFolder cmsfolder= m_cms.createFolder(path, name, properties);  
-                   fullname = cmsfolder.getAbsolutePath();                             
-                   state=C_STATE_NEW;
-                } catch (CmsException e) {
-                    // an exception is thrown if the folder already exists
-                   state=C_STATE_CHANGED;
-                }
-
-			} else {
-				// this is a file
-				// first delete the file, so it can be overwritten
-				try {         
-                       m_cms.deleteFile(path+name);	
-                       state=C_STATE_CHANGED;
-                } catch(CmsException exc) {
-                       state=C_STATE_NEW;
-                       // ignore the exception, the file dosen't exist
-				}
-				// now create the file
-          
-                fullname = m_cms.createFile(path, name, getFileBytes(source), type, properties).getAbsolutePath();
-			
-			}
-          
-            if (fullname!=null) {
-                m_cms.chmod(fullname, Integer.parseInt(access));
-			    m_cms.chgrp(fullname, group);
-			    m_cms.chown(fullname, user); 
-                m_cms.chstate(fullname,state);
-            }
-			System.out.println("OK");
-		} catch(Exception exc) {
-			// an error while importing the file
-			System.out.println("Error");
-			exc.printStackTrace();
-		}		
-	}	
-	
-	/**
-	 * Creates missing property definitions if needed.
-	 * 
-	 * @param name the name of the property.
-	 * @param propertyType the type of the property.
-	 * @param resourceType the type of the resource.
-	 * 
-	 * @exception throws CmsException if something goes wrong.
-	 */
-	private void createPropertydefinition(String name, String propertyType, String resourceType) 
-		throws CmsException {
-		
-		// does the propertydefinition exists already?
-		try {
-			m_cms.readPropertydefinition(name, resourceType);
-		} catch(CmsException exc) {
-			// no: create it
-    		m_cms.createPropertydefinition(name, resourceType, Integer.parseInt(propertyType));
-		}
-	}
-	
-	/**
-	 * Returns the text for this node.
-	 * 
-	 * @param elem the parent-element.
-	 * @param tag the tagname to get the value from.
-	 * @return the value of the tag.
-	 */
-	private String getTextNodeValue(Element elem, String tag) {
-		try {
-			return elem.getElementsByTagName(tag).item(0).getFirstChild().getNodeValue();
-		} catch(Exception exc) {
-			// ignore the exception and return null
-			return null;
-		}
-	}
-
-	/**
-	 * Returns a buffered reader for this resource using the importFile as root.
-	 * 
-	 * @param filename The name of the file to read.
-	 * @return BufferedReader The filereader for this file.
-	 */
-	private BufferedReader getFileReader(String filename) 
-		throws Exception{
-		// is this a zip-file?
-		if(m_importZip != null) {
-			// yes
-			ZipEntry entry = m_importZip.getEntry(filename);
-			InputStream stream = m_importZip.getInputStream(entry);
-			return new BufferedReader( new InputStreamReader(stream));
-		} else {
-			// no - use directory
-			File xmlFile = new File(m_importResource, filename);
-			return new BufferedReader(new FileReader(xmlFile));
-		}
-	}
-
-	/**
-	 * Returns a byte-array containing the content of the file.
-	 * 
-	 * @param filename The name of the file to read.
-	 * @return bytes[] The content of the file.
-	 */
-	private byte[] getFileBytes(String filename) 
-		throws Exception{
-		// is this a zip-file?
-		if(m_importZip != null) {
-			// yes
-			ZipEntry entry = m_importZip.getEntry(filename);
-			InputStream stream = m_importZip.getInputStream(entry);
-			
-			int charsRead = 0;
-			int size = new Long(entry.getSize()).intValue();
-			byte[] buffer = new byte[size];
-			while(charsRead < size) {
-				charsRead += stream.read(buffer, charsRead, size - charsRead);
-			}
-			stream.close();
-			return buffer;			
-		} else {
-			// no - use directory
-			File file = new File(m_importResource, filename);
-			FileInputStream fileStream = new FileInputStream(file);
-
-			int charsRead = 0;
-			int size = new Long(file.length()).intValue();
-			byte[] buffer = new byte[size];
-			while(charsRead < size) {
-				charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-			}
-			fileStream.close();
-			return buffer;
-		}
 	}
 }

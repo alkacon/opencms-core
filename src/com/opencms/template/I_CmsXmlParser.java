@@ -1,7 +1,9 @@
+package com.opencms.template;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlParser.java,v $
- * Date   : $Date: 2000/04/04 10:02:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/08 14:08:29 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.template;
-
 import java.io.*;
 import org.w3c.dom.*;
 
@@ -38,57 +38,52 @@ import org.w3c.dom.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/04/04 10:02:14 $
+ * @version $Revision: 1.6 $ $Date: 2000/08/08 14:08:29 $
  */
 public interface I_CmsXmlParser {
 
-    /** Encoding used for XML documents */
-    public final static String C_XML_ENCODING = "ISO-8859-1";
-    
-    /** Line width used for XML documents */
-    public final static int C_XML_LINE_WIDTH = 80;
-        
-    /**
-     * Parses the given text.
-     * @param in Reader with the input text.
-     * @return Parsed text as DOM document.
-     * @exception Exception
-     */
-    public Document parse(Reader in) throws Exception;
-    
-    /**
-     * Creates an empty DOM XML document.
-     * @return Empty document.
-     */
-    public Document createEmptyDocument(String docNod) throws Exception;
-    
-    /**
-     * Used to import a node from a foreign document.
-     * @param doc Destination document that should import the node.
-     * @param node Node to be imported.
-     * @return New node that belongs to the document <code>doc</code>
-     */
-    public Node importNode(Document doc, Node node);    
-    
-    /**
-     * Gets a description of the parser.
-     * @return Parser description.
-     */
-    public String toString();     
-    
-    /**
-     * Calls a XML printer for converting a XML DOM document
-     * to a String.
-     * @param doc Document to be printed.
-     * @param out Writer to print to.
-     */
-    public void getXmlText(Document doc, Writer out);
-
-    /**
-     * Calls a XML printer for converting a XML DOM document
-     * to a String.
-     * @param doc Document to be printed.
-     * @param out OutputStream to print to.
-     */
-    public void getXmlText(Document doc, OutputStream out);
+	/** Encoding used for XML documents */
+	public final static String C_XML_ENCODING = "ISO-8859-1";
+	
+	/** Line width used for XML documents */
+	public final static int C_XML_LINE_WIDTH = 80;
+		
+	/**
+	 * Creates an empty DOM XML document.
+	 * @return Empty document.
+	 */
+	public Document createEmptyDocument(String docNod) throws Exception;
+	/**
+	 * Calls a XML printer for converting a XML DOM document
+	 * to a String.
+	 * @param doc Document to be printed.
+	 * @param out OutputStream to print to.
+	 */
+	public void getXmlText(Document doc, OutputStream out);
+	/**
+	 * Calls a XML printer for converting a XML DOM document
+	 * to a String.
+	 * @param doc Document to be printed.
+	 * @param out Writer to print to.
+	 */
+	public void getXmlText(Document doc, Writer out);
+	/**
+	 * Used to import a node from a foreign document.
+	 * @param doc Destination document that should import the node.
+	 * @param node Node to be imported.
+	 * @return New node that belongs to the document <code>doc</code>
+	 */
+	public Node importNode(Document doc, Node node);
+	/**
+	 * Parses the given text.
+	 * @param in Reader with the input text.
+	 * @return Parsed text as DOM document.
+	 * @exception Exception
+	 */
+	public Document parse(Reader in) throws Exception;
+	/**
+	 * Gets a description of the parser.
+	 * @return Parser description.
+	 */
+	public String toString();
 }

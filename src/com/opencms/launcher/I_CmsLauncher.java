@@ -1,7 +1,9 @@
+package com.opencms.launcher;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/I_CmsLauncher.java,v $
- * Date   : $Date: 2000/07/11 08:49:57 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/08/08 14:08:29 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.launcher;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 
@@ -38,18 +38,23 @@ import javax.servlet.http.*;
  * Classes for each customized launcher have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/07/11 08:49:57 $
+ * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:29 $
  */
 public interface I_CmsLauncher { 
-    
+	
 	/** Constants used as launcher IDs */
-    public final static int 
+	public final static int 
    		C_TYPE_DUMP = 1,
 		C_TYPE_JAVASCRIPT = 2,
 		C_TYPE_XML = 3,
-    	C_TYPE_LINK = 4,
+		C_TYPE_LINK = 4,
 		C_TYPE_PDF = 5;
 
+	/**
+	 * Gets the ID that indicates the type of the launcher.
+	 * @return launcher ID
+	 */
+	public int getLauncherId();
 	/**
 	 * Start launch method called by the OpenCms system to show a resource	 
 	 *  
@@ -57,14 +62,7 @@ public interface I_CmsLauncher {
 	 * @param file CmsFile Object with the selected resource to be shown.
 	 * @param startTemplateClass Name of the template class to start with.
 	 * @param openCms a instance of A_OpenCms for redirect-needs
-     * @exception CmsException
+	 * @exception CmsException
 	 */
-    public void initlaunch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException;
-	
-    /**
-     * Gets the ID that indicates the type of the launcher.
-     * @return launcher ID
-     */
-    public int getLauncherId();
+	public void initlaunch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException;
 }
-

@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButtonJavascript.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/08/08 14:08:30 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -43,45 +43,45 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;JAVASCRIPTBUTTON&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.4 $ $Date: 2000/08/08 14:08:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsButtonJavascript extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
-            
-    /**
-     * Handling of the special workplace <CODE>&lt;JAVASCRIPTBUTTON&gt;</CODE> tags.
-     * <P>
-     * Reads the code of a javascript button from the buttons definition file
-     * and returns the processed code with the actual elements.
-     * <P>
-     * Buttons can be referenced in any workplace template by <br>
-     * <CODE>&lt;JAVASCRIPTBUTTON name="..." action="..." alt="..."/&gt;</CODE>
-     * 
-     * @param cms CmsObject Object for accessing resources.
-     * @param n XML element containing the <code>&lt;JAVASCRIPTBUTTON&gt;</code> tag.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param callingObject reference to the calling object <em>(not used here)</em>.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @param lang CmsXmlLanguageFile conataining the currently valid language file.
-     * @return Processed button.
-     * @exception CmsException
-     */    
-    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        // Read button parameters
-        String buttonName = n.getAttribute(C_BUTTON_NAME);
-        String buttonAction = n.getAttribute(C_BUTTON_ACTION);
-        String buttonAlt = n.getAttribute(C_BUTTON_ALT);
-        String buttonHref = n.getAttribute(C_BUTTON_HREF);
-        if(buttonHref == null || "".equals(buttonHref)) {
-            buttonHref = "";
-        }
-        
-        // Get button definition and language values
-        CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
-        buttonAlt = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonAlt);
-        
-        // get the processed button.
-        String result = buttondef.getJavascriptButton(buttonName, buttonAction, buttonAlt, buttonHref, callingObject);
-        return result; 
-    }           
+			
+	/**
+	 * Handling of the special workplace <CODE>&lt;JAVASCRIPTBUTTON&gt;</CODE> tags.
+	 * <P>
+	 * Reads the code of a javascript button from the buttons definition file
+	 * and returns the processed code with the actual elements.
+	 * <P>
+	 * Buttons can be referenced in any workplace template by <br>
+	 * <CODE>&lt;JAVASCRIPTBUTTON name="..." action="..." alt="..."/&gt;</CODE>
+	 * 
+	 * @param cms CmsObject Object for accessing resources.
+	 * @param n XML element containing the <code>&lt;JAVASCRIPTBUTTON&gt;</code> tag.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+	 * @param callingObject reference to the calling object <em>(not used here)</em>.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @param lang CmsXmlLanguageFile conataining the currently valid language file.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */    
+	public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+		// Read button parameters
+		String buttonName = n.getAttribute(C_BUTTON_NAME);
+		String buttonAction = n.getAttribute(C_BUTTON_ACTION);
+		String buttonAlt = n.getAttribute(C_BUTTON_ALT);
+		String buttonHref = n.getAttribute(C_BUTTON_HREF);
+		if(buttonHref == null || "".equals(buttonHref)) {
+			buttonHref = "";
+		}
+		
+		// Get button definition and language values
+		CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
+		buttonAlt = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonAlt);
+		
+		// get the processed button.
+		String result = buttondef.getJavascriptButton(buttonName, buttonAction, buttonAlt, buttonHref, callingObject);
+		return result; 
+	}
 }

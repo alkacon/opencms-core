@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsInputPassword.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/08 14:08:31 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -43,39 +43,39 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PASSWORD&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.6 $ $Date: 2000/08/08 14:08:31 $
  */
 public class CmsInputPassword extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
-    
-    /**
-     * Handling of the <CODE>&lt;PASSWORD&gt;</CODE> tags.
-     * <P>
-     * Reads the code of a password input field from the input definition file
-     * and returns the processed code with the actual elements.
-     * <P>
-     * Password input fields can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
-     * <CODE>&lt;PASSWORD name="..." action="..." alt="..."/&gt;</CODE>
-     * 
-     * @param cms CmsObject Object for accessing resources.
-     * @param n XML element containing the <code>&lt;PASSWORD&gt;</code> tag.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param callingObject reference to the calling object.
-     * @param parameters Hashtable containing all user parameters.
-     * @param lang CmsXmlLanguageFile conataining the currently valid language file.
-     * @return Processed button.
-     * @exception CmsException
-     */    
-    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        String styleClass= n.getAttribute(C_INPUT_CLASS);
-        String name=n.getAttribute(C_INPUT_NAME);
-        String size=n.getAttribute(C_INPUT_SIZE);
-        String length=n.getAttribute(C_INPUT_LENGTH);
+	
+	/**
+	 * Handling of the <CODE>&lt;PASSWORD&gt;</CODE> tags.
+	 * <P>
+	 * Reads the code of a password input field from the input definition file
+	 * and returns the processed code with the actual elements.
+	 * <P>
+	 * Password input fields can be referenced in any workplace template by <br>
+	 * // TODO: insert correct syntax here!
+	 * <CODE>&lt;PASSWORD name="..." action="..." alt="..."/&gt;</CODE>
+	 * 
+	 * @param cms CmsObject Object for accessing resources.
+	 * @param n XML element containing the <code>&lt;PASSWORD&gt;</code> tag.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+	 * @param callingObject reference to the calling object.
+	 * @param parameters Hashtable containing all user parameters.
+	 * @param lang CmsXmlLanguageFile conataining the currently valid language file.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */    
+	public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+		String styleClass= n.getAttribute(C_INPUT_CLASS);
+		String name=n.getAttribute(C_INPUT_NAME);
+		String size=n.getAttribute(C_INPUT_SIZE);
+		String length=n.getAttribute(C_INPUT_LENGTH);
 
-        
-        CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms); 
-        String result = inputdef.getPassword(styleClass,name,size,length);
+		
+		CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms); 
+		String result = inputdef.getPassword(styleClass,name,size,length);
 
-        return result; 
-    }                    
+		return result; 
+	}
 }

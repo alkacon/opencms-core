@@ -1,8 +1,10 @@
+package com.opencms.web;
+
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungSmall.java,v $ 
- * Author : $Author: a.schouten $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.9 $
+ * Author : $Author: h.riege $
+ * Date   : $Date: 2000/08/08 14:08:29 $
+ * Version: $Revision: 1.10 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -22,8 +24,6 @@
  * THIS SOFTWARE OR ITS DERIVATIVES.
  */
 
-package com.opencms.web;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -41,8 +41,8 @@ import java.io.*;
  * This class is used to display the application form of mindfact and makes it
  * possible to send the application form as a mail.
  * 
- * @author $Author: a.schouten $
- * @version $Name:  $ $Revision: 1.9 $ $Date: 2000/06/05 13:37:58 $
+ * @author $Author: h.riege $
+ * @version $Name:  $ $Revision: 1.10 $ $Date: 2000/08/08 14:08:29 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
@@ -98,57 +98,153 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 	private static final String C_HASH_LINK="link";
 	
 	
-    /**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile,
-							   String elementName, Hashtable parameters,
-							   String templateSelector) {
-        return false;
-    }
-	    
-	
-    /**
-     * Reads in the template file and starts the XML parser for the expected
-     * content type <class>CmsXmlWpTemplateFile</code>
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        CmsXmlOnlineBewerbungContentDefinition xmlTemplateDocument = new CmsXmlOnlineBewerbungContentDefinition(cms, templateFile);       
-        return xmlTemplateDocument;
-    }        
-	
-	
-    /**
-     * Gets the content of a defined section in a given template file and its 
-     * subtemplates with the given parameters. 
-     * 
+	/**
+	 * This method checks the parameter, if there is an illegal charecter
+	 * then it returns an error.
+	 * 	 
+	 * @param value The String that must be checked.
+	 * @param parameter the name of feld that it is used to build an error message.
+	 * 
+	 * @exception Exception throws always the Exception.
+	*/
+	private void check(String value, String parameter) throws Exception {
+		
+		if (!value.equals("")) {
+			// TODO: use pattern correctly
+			// String pattern="01234567890 (abcdefghijklmnopqrstuvwxyz)[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{‰ˆ¸ƒ÷‹ﬂ}<.@:,;?$|!&+-#_=%*/>";
+			for (int i=0;i<value.length();i++) {
+				if (value.indexOf(value.charAt(i))==-1) {
+					throw new Exception(parameter);
+				}
+			}
+		}
+		
+	}
+	private String createSecret(){
+
+		String result = "";
+		
+		for(int i=0; i<16; i++) {
+			result = result + Integer.toString((int)Math.round(10 * Math.random()));
+		}
+		return result;
+	}
+	/**
+	 * This method checked the parameter, if there is a CmsXml tag then it
+	 * destroys it and return a Parameter ohne CmsXml tag.
+	 * 	 
+	 * @param parameter The String that must be checked.
+	 * @return It returns a string ohne CmsXml tag.
+	*/
+	private String destroyCmsXmlTag(String parameter){
+		// search if there is a CmsXml tag then remove it from parameter.
+		if (parameter!=null) {
+			parameter.replace('<','[');
+			parameter.replace('>',']');
+		}
+		return parameter;
+	}
+	/**
+	 * This method checks the value of parameters, if they are correct then it returns null,
+	 * otherwise it returns an error message.
+	 * 
+	 * @param req The clients request.
+	 * 
+	 * @return it returns an error message if all fields are'nt correct and null if the fields are correct.
+	 */
+	private String formIsCorrect(Hashtable parameters) throws CmsException {
+				
+		String errorMessage="";
+		
+		String[] parameter=new String[25];
+		String[] value=new String[25];
+		
+		// write the parameters and related messages in an array
+		
+		value[0]=destroyCmsXmlTag((String)parameters.get(C_TEXT));
+		value[0]=(value[0]==null?"":value[0]);
+		parameter[0]=C_ERR_TEXT;
+		
+		value[1]=destroyCmsXmlTag((String)parameters.get(C_SURNAME));
+		value[1]=(value[1]==null?"":value[1]);
+		parameter[1]=C_ERR_SURNAME;
+		
+		value[2]=destroyCmsXmlTag((String)parameters.get(C_CO));
+		value[2]=(value[2]==null?"":value[2]);
+		parameter[2]=C_ERR_CO;
+		
+		value[3]=destroyCmsXmlTag((String)parameters.get(C_EMAIL));
+		value[3]=(value[3]==null?"":value[3]);
+		parameter[3]=C_ERR_EMAIL;
+		
+		// check the parameters, if there is an error then build an error message
+		for (int i=0;i<4;i++) {
+			try {				
+				check(value[i],parameter[i]);
+			} catch (Exception e) {
+				errorMessage=errorMessage+e.getMessage()+", ";
+			}
+		}
+		
+		// text
+		if (value[0].trim().equals("")) {
+			if (errorMessage.indexOf(parameter[0])==-1) {
+				errorMessage=errorMessage+parameter[0]+", ";
+			}
+		}
+		
+		// Surname
+		if (value[1].trim().equals("") || value[1].length()>30) {
+			if (errorMessage.indexOf(parameter[1])==-1) {
+				errorMessage=errorMessage+parameter[1]+", ";
+			}
+		}
+		
+		// c/o
+		if (value[2].length()>30) {
+			if (errorMessage.indexOf(parameter[2])==-1) {
+				errorMessage=errorMessage+parameter[2]+", ";
+			}
+		}
+		
+		// Email
+		if (!value[3].trim().equals("")) {
+			if (value[3].indexOf('@')==-1 || value[3].indexOf('.')==-1) {
+				if (errorMessage.indexOf(parameter[3])==-1) {
+					errorMessage=errorMessage+parameter[3]+", ";
+				}
+			}
+		}
+		if (value[3].length()>30) {
+			if (errorMessage.indexOf(parameter[3])==-1) {
+				errorMessage=errorMessage+parameter[3]+", ";
+			}
+		}
+		
+		if (!errorMessage.equals("")) {
+			errorMessage=errorMessage.substring(0,errorMessage.lastIndexOf(","))+".";
+		}
+		
+		return errorMessage;
+	}
+	/**
+	 * Gets the content of a defined section in a given template file and its 
+	 * subtemplates with the given parameters. 
+	 * 
 	 * @see getContent(CmsObject cms, String templateFile, String elementName,   
 	 * Hashtable parameters)
 	 * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * 
-     * @return It returns an array of bytes that contains the page.
-     */
-    public byte[] getContent(CmsObject cms, String templateFile, String 
-                             elementName, Hashtable parameters, String 
-                             templateSelector) throws CmsException {
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * 
+	 * @return It returns an array of bytes that contains the page.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String 
+							 elementName, Hashtable parameters, String 
+							 templateSelector) throws CmsException {
 		
 		// read parameter values		
 		String errorMessage="";
@@ -291,133 +387,145 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 		datablock.setErrorMessage("");
 		return startProcessing(cms, datablock, elementName, parameters, null);
 	}
+	private int getLastInsertId(Connection con)
+		throws CmsException {
+		ResultSet res =null;
+		int id = -1;
 		
-	
-	/**
-	 * This method checked the parameter, if there is a CmsXml tag then it
-	 * destroys it and return a Parameter ohne CmsXml tag.
-	 * 	 
-	 * @param parameter The String that must be checked.
-	 * @return It returns a string ohne CmsXml tag.
-	*/
-	private String destroyCmsXmlTag(String parameter){
-		// search if there is a CmsXml tag then remove it from parameter.
-		if (parameter!=null) {
-			parameter.replace('<','[');
-			parameter.replace('>',']');
+		try {
+			PreparedStatement statementGetLastInsertId = con.prepareStatement("SELECT LAST_INSERT_ID() AS id");
+			res = statementGetLastInsertId.executeQuery();
+			id = res.getInt("id");
+		} catch (SQLException e){
+			throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
-		return parameter;
+		return id;
 	}
-	
 	/**
-	 * This method checks the value of parameters, if they are correct then it returns null,
-	 * otherwise it returns an error message.
+	 * Reads in the template file and starts the XML parser for the expected
+	 * content type <class>CmsXmlWpTemplateFile</code>
 	 * 
-	 * @param req The clients request.
-	 * 
-	 * @return it returns an error message if all fields are'nt correct and null if the fields are correct.
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
 	 */
-	private String formIsCorrect(Hashtable parameters) throws CmsException {
-				
-		String errorMessage="";
-		
-		String[] parameter=new String[25];
-		String[] value=new String[25];
-		
-		// write the parameters and related messages in an array
-		
-		value[0]=destroyCmsXmlTag((String)parameters.get(C_TEXT));
-		value[0]=(value[0]==null?"":value[0]);
-		parameter[0]=C_ERR_TEXT;
-		
-		value[1]=destroyCmsXmlTag((String)parameters.get(C_SURNAME));
-		value[1]=(value[1]==null?"":value[1]);
-		parameter[1]=C_ERR_SURNAME;
-		
-		value[2]=destroyCmsXmlTag((String)parameters.get(C_CO));
-		value[2]=(value[2]==null?"":value[2]);
-		parameter[2]=C_ERR_CO;
-		
-		value[3]=destroyCmsXmlTag((String)parameters.get(C_EMAIL));
-		value[3]=(value[3]==null?"":value[3]);
-		parameter[3]=C_ERR_EMAIL;
-		
-		// check the parameters, if there is an error then build an error message
-		for (int i=0;i<4;i++) {
-			try {				
-				check(value[i],parameter[i]);
-			} catch (Exception e) {
-				errorMessage=errorMessage+e.getMessage()+", ";
-			}
-		}
-		
-		// text
-		if (value[0].trim().equals("")) {
-			if (errorMessage.indexOf(parameter[0])==-1) {
-				errorMessage=errorMessage+parameter[0]+", ";
-			}
-		}
-		
-		// Surname
-		if (value[1].trim().equals("") || value[1].length()>30) {
-			if (errorMessage.indexOf(parameter[1])==-1) {
-				errorMessage=errorMessage+parameter[1]+", ";
-			}
-		}
-		
-		// c/o
-		if (value[2].length()>30) {
-			if (errorMessage.indexOf(parameter[2])==-1) {
-				errorMessage=errorMessage+parameter[2]+", ";
-			}
-		}
-		
-		// Email
-		if (!value[3].trim().equals("")) {
-			if (value[3].indexOf('@')==-1 || value[3].indexOf('.')==-1) {
-				if (errorMessage.indexOf(parameter[3])==-1) {
-					errorMessage=errorMessage+parameter[3]+", ";
-				}
-			}
-		}
-		if (value[3].length()>30) {
-			if (errorMessage.indexOf(parameter[3])==-1) {
-				errorMessage=errorMessage+parameter[3]+", ";
-			}
-		}
-		
-		if (!errorMessage.equals("")) {
-			errorMessage=errorMessage.substring(0,errorMessage.lastIndexOf(","))+".";
-		}
-		
-		return errorMessage;
+	public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		CmsXmlOnlineBewerbungContentDefinition xmlTemplateDocument = new CmsXmlOnlineBewerbungContentDefinition(cms, templateFile);       
+		return xmlTemplateDocument;
 	}
-		
-	
 	/**
-	 * This method checks the parameter, if there is an illegal charecter
-	 * then it returns an error.
-	 * 	 
-	 * @param value The String that must be checked.
-	 * @param parameter the name of feld that it is used to build an error message.
+	 * Indicates if the results of this class are cacheable.
 	 * 
-	 * @exception Exception throws always the Exception.
-	*/
-	private void check(String value, String parameter) throws Exception {
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile,
+							   String elementName, Hashtable parameters,
+							   String templateSelector) {
+		return false;
+	}
+	private String startWorkflow(CmsObject cms, Hashtable formData)
+		throws CmsException {
 		
-		if (!value.equals("")) {
-			// TODO: use pattern correctly
-			// String pattern="01234567890 (abcdefghijklmnopqrstuvwxyz)[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{‰ˆ¸ƒ÷‹ﬂ}<.@:,;?$|!&+-#_=%*/>";
-			for (int i=0;i<value.length();i++) {
-				if (value.indexOf(value.charAt(i))==-1) {
-					throw new Exception(parameter);
-				}
+		String secretkey = null;
+		CmsTask project = null;
+		
+		try {
+			// Connection for the DB insert
+			Class.forName("org.gjt.mm.mysql.Driver");						
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/opencms","root","");
+			Statement stmt = con.createStatement();
+			
+			secretkey = createSecret();
+			System.out.println(secretkey);
+			
+			String recname = (String)formData.get(C_HASH_SURNAME);
+			String recstreet = (String)formData.get(C_HASH_STREET);
+			String recpostalcode = (String)formData.get(C_HASH_PLZ);
+			String reccity = (String)formData.get(C_HASH_CITY);
+			String recphone = (String)formData.get(C_HASH_PRIVATEFON);
+			String recfax = (String)formData.get(C_HASH_FAX);
+			String recemail = (String)formData.get(C_HASH_EMAIL);
+			String receducation = "-";
+			String recbirthdate = (String)formData.get(C_HASH_BIRTHDATE);
+			String rectraining = "-";
+			String recexperience = (String)formData.get(C_HASH_OLDPOSITION);
+			String recstarttime = (String)formData.get(C_HASH_ENTRY);
+			String recjob = (String)formData.get(C_HASH_NEWPOSITION);
+			String co = (String)formData.get(C_HASH_CO);
+			String text = (String)formData.get(C_HASH_TEXT);
+			
+			
+			String insert = "INSERT INTO GlobeRecruitingData SET " +
+							"name='" + recname + "', " + 
+							"street='" + recstreet + "'," +
+							"postalcode='" + recpostalcode + "', " + 
+							"city='" + reccity + "', " +
+							"phone='" + recphone +"', " +
+							"fax='" + recfax +"', " +
+							"email='" + recemail + "', " + 
+							"education='" + receducation + "', " + 
+							"birthdate='" + recbirthdate +"', " +
+							"training='" + rectraining +"', " + 
+							"experience='" + recexperience + "', " + 
+							"rowversion=0," +
+							"starttime='" + recstarttime + "', " +
+							"incomingtime=CURRENT_TIMESTAMP, " + 
+							"job='" + recjob + "'," +
+							"secretkey='" + secretkey + "'";
+			
+
+			stmt.executeUpdate(insert);
+			
+			int recdataid = getLastInsertId(con);
+			
+			CmsGroup role = cms.readGroup("Personalabt.");
+			long timeout = System.currentTimeMillis()+ 241920000;
+			
+			// get the tasktypes for the recruiting workflow
+			int projtyperef = cms.getTaskType("recruiting");
+			int tasktyperef = cms.getTaskType("StartApplication");
+			int followingtasktyperef = cms.getTaskType("CheckApplication");
+			
+			String projname = "Messekontakt auf der CeBIT ";
+			String taskname = "Messekontakt von " + recname;
+			
+			String taskcomment = "Emailadresse: " + recemail + "<BR>\n";
+			taskcomment += "Firma: " + co + "<BR>\n";
+			taskcomment += "Text: " + text + "<BR>\n";
+			
+			project = cms.createProject(projname, projtyperef, null, timeout, 1);
+			
+			CmsTask newtask = cms.createTask(project.getId(), null, null, taskname, "", tasktyperef, timeout, 1);
+			cms.writeTaskLog(newtask.getId(), taskcomment, 100);
+
+
+			cms.endTask(newtask.getId());
+			cms.writeTaskLog(newtask.getId(), "Bewerbung eingegangen.",1);
+			
+			newtask = cms.createTask(project.getId(), null, role.getName(), taskname, "", followingtasktyperef, timeout, 1);
+			cms.setTaskPar(project.getId(), "Recruiting", Integer.toString(recdataid));
+			cms.writeTaskLog(newtask.getId(), taskcomment, 100);
+			
+		} catch (ClassNotFoundException e1) {
+			if (A_OpenCms.isLogging()) {
+				A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e1.getMessage());
 			}
-		}
-		
-	}	
-	
-	
+		} catch (SQLException e2){
+			  while((e2=e2.getNextException())!=null){
+				  if (A_OpenCms.isLogging()) {
+					  A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e2.getMessage());
+				  }
+			  }					
+		}		
+		return "http://etm.mindfact.com/extern/etm/recruiting/ApplicantInformation.asp?id=" + project.getId() +"&s=" + secretkey;
+	}
 	/**
 	 * This method writes the mail informations in database
 	 * 
@@ -518,128 +626,4 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 								
 		}
 	}
-	
-	private String startWorkflow(CmsObject cms, Hashtable formData)
-		throws CmsException {
-		
-		String secretkey = null;
-		CmsTask project = null;
-		
-		try {
-			// Connection for the DB insert
-			Class.forName("org.gjt.mm.mysql.Driver");						
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/opencms","root","");
-			Statement stmt = con.createStatement();
-			
-			secretkey = createSecret();
-			System.out.println(secretkey);
-			
-			String recname = (String)formData.get(C_HASH_SURNAME);
-			String recstreet = (String)formData.get(C_HASH_STREET);
-			String recpostalcode = (String)formData.get(C_HASH_PLZ);
-			String reccity = (String)formData.get(C_HASH_CITY);
-			String recphone = (String)formData.get(C_HASH_PRIVATEFON);
-			String recfax = (String)formData.get(C_HASH_FAX);
-			String recemail = (String)formData.get(C_HASH_EMAIL);
-			String receducation = "-";
-			String recbirthdate = (String)formData.get(C_HASH_BIRTHDATE);
-			String rectraining = "-";
-			String recexperience = (String)formData.get(C_HASH_OLDPOSITION);
-			String recstarttime = (String)formData.get(C_HASH_ENTRY);
-			String recjob = (String)formData.get(C_HASH_NEWPOSITION);
-			String co = (String)formData.get(C_HASH_CO);
-			String text = (String)formData.get(C_HASH_TEXT);
-			
-			
-			String insert = "INSERT INTO GlobeRecruitingData SET " +
-							"name='" + recname + "', " + 
-							"street='" + recstreet + "'," +
-							"postalcode='" + recpostalcode + "', " + 
-							"city='" + reccity + "', " +
-							"phone='" + recphone +"', " +
-							"fax='" + recfax +"', " +
-							"email='" + recemail + "', " + 
-							"education='" + receducation + "', " + 
-							"birthdate='" + recbirthdate +"', " +
-							"training='" + rectraining +"', " + 
-							"experience='" + recexperience + "', " + 
-							"rowversion=0," +
-							"starttime='" + recstarttime + "', " +
-							"incomingtime=CURRENT_TIMESTAMP, " + 
-							"job='" + recjob + "'," +
-							"secretkey='" + secretkey + "'";
-			
-
-			stmt.executeUpdate(insert);
-			
-			int recdataid = getLastInsertId(con);
-			
-			CmsGroup role = cms.readGroup("Personalabt.");
-			long timeout = System.currentTimeMillis()+ 241920000;
-			
-			// get the tasktypes for the recruiting workflow
-			int projtyperef = cms.getTaskType("recruiting");
-			int tasktyperef = cms.getTaskType("StartApplication");
-			int followingtasktyperef = cms.getTaskType("CheckApplication");
-			
-			String projname = "Messekontakt auf der CeBIT ";
-			String taskname = "Messekontakt von " + recname;
-			
-			String taskcomment = "Emailadresse: " + recemail + "<BR>\n";
-			taskcomment += "Firma: " + co + "<BR>\n";
-			taskcomment += "Text: " + text + "<BR>\n";
-			
-			project = cms.createProject(projname, projtyperef, null, timeout, 1);
-			
-			CmsTask newtask = cms.createTask(project.getId(), null, null, taskname, "", tasktyperef, timeout, 1);
-			cms.writeTaskLog(newtask.getId(), taskcomment, 100);
-
-
-			cms.endTask(newtask.getId());
-			cms.writeTaskLog(newtask.getId(), "Bewerbung eingegangen.",1);
-			
-			newtask = cms.createTask(project.getId(), null, role.getName(), taskname, "", followingtasktyperef, timeout, 1);
-			cms.setTaskPar(project.getId(), "Recruiting", Integer.toString(recdataid));
-			cms.writeTaskLog(newtask.getId(), taskcomment, 100);
-			
-		} catch (ClassNotFoundException e1) {
-			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e1.getMessage());
-			}
-		} catch (SQLException e2){
-			  while((e2=e2.getNextException())!=null){
-				  if (A_OpenCms.isLogging()) {
-					  A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e2.getMessage());
-				  }
-			  }					
-		}		
-		return "http://etm.mindfact.com/extern/etm/recruiting/ApplicantInformation.asp?id=" + project.getId() +"&s=" + secretkey;
-	}
-	
-	private int getLastInsertId(Connection con)
-		throws CmsException {
-		ResultSet res =null;
-		int id = -1;
-		
-		try {
-			PreparedStatement statementGetLastInsertId = con.prepareStatement("SELECT LAST_INSERT_ID() AS id");
-			res = statementGetLastInsertId.executeQuery();
-			id = res.getInt("id");
-		} catch (SQLException e){
-			throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
-		return id;
-	}
-
-	private String createSecret(){
-
-		String result = "";
-		
-		for(int i=0; i<16; i++) {
-			result = result + Integer.toString((int)Math.round(10 * Math.random()));
-		}
-		return result;
-	}	
 }
-
-

@@ -1,8 +1,10 @@
+package com.opencms.file.genericSql;
+
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/07/17 16:10:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/08 14:08:25 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-package com.opencms.file.genericSql;
 
 import java.sql.*;
 import java.util.*; 
@@ -95,11 +95,11 @@ public class CmsDbPool {
 	/**
 	 * Init the pool with a specified number of connections.
 	 * 
-     * @param driver - driver for the database
-     * @param url - the URL of the database to which to connect
-     * @param user - the username to connect to the db.
-     * @param passwd - the passwd of the user to connect to the db.
-     * @param maxConn - maximum connections
+	 * @param driver - driver for the database
+	 * @param url - the URL of the database to which to connect
+	 * @param user - the username to connect to the db.
+	 * @param passwd - the passwd of the user to connect to the db.
+	 * @param maxConn - maximum connections
 	 */
 	public CmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws CmsException {
 		this.m_driver = driver;
@@ -113,7 +113,7 @@ public class CmsDbPool {
 			Class.forName(m_driver);
 		}
 		catch (ClassNotFoundException e) {
-           	throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+		   	throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
 		}
 		// init the hashtables and vector(s)
 		m_prepStatements = new Stack();
@@ -124,7 +124,7 @@ public class CmsDbPool {
 			Connection conn = null;
 	
 			try {
-      			conn = DriverManager.getConnection(m_url, m_user, m_passwd);
+	  			conn = DriverManager.getConnection(m_url, m_user, m_passwd);
    				m_connections.addElement(conn);
 			}
 			catch (SQLException e) {
@@ -134,160 +134,6 @@ public class CmsDbPool {
 		}
 		initStatement();
 	}
-	
-	/**
-	 * Init the PreparedStatement on all connections.
-	 * 
-	 * @param key - the hashtable key
-	 * @param sql - a SQL statement that may contain one or more '?' IN parameter placeholders
-	 */
-	public void initPreparedStatement(Integer key, String sql) throws CmsException {
-		Connection conn = null;
-		
-		for (int i = 0; i < m_maxConn; i++) {
-			conn = (Connection) m_connections.elementAt(i);
-			Hashtable tmp = (Hashtable) m_prepStatements.elementAt(i);
-			
-			try {
-				PreparedStatement pstmt = conn.prepareStatement(sql);
-				tmp.put(key, pstmt);
-			}
-			catch (SQLException e) {
-				throw new CmsException(CmsException.C_SQL_ERROR, e);
-			}
-		}
-	}
-	
-	/**
-	 * Init a (Simple)Statement on all connections.
-	 * 
-	 */
-	public void initStatement() throws CmsException {
-		Connection conn = null;
-		
-		for (int i = 0; i < m_maxConn; i++) {
-			conn = (Connection) m_connections.elementAt(i);
-			Hashtable tmp = (Hashtable) m_prepStatements.elementAt(i);
-			
-			try {
-				Statement stmt = conn.createStatement();
-				tmp.put(C_SIMPLE_STATEMENT, stmt);
-			}
-			catch (SQLException e) {
-				throw new CmsException(CmsException.C_SQL_ERROR, e);
-			}
-		}
-	}
-
-	/**
-	 * Gets a PreparedStatement object and remove it from the list of available statements.
-	 * 
-	 * @param key - the hashtable key
-	 * @return a prepared statement matching the key
-	 */
-	public PreparedStatement getPreparedStatement(Integer key) throws CmsException {
-		
-        PreparedStatement pstmt = null;
-		synchronized(m_prepStatements) {
-			while(m_prepStatements.size() == 0) {
-				try {
-					if(A_OpenCms.isLogging()) {
-						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbPool] no connections available - have to wait.");
-					}
-					m_prepStatements.wait(100);					
-				} catch(InterruptedException exc) {
-				}
-			}
-			Hashtable pool = (Hashtable)m_prepStatements.pop();
-			pstmt = (PreparedStatement)pool.get(key);
-			m_usedStatementsCache.put(pstmt, pool);
-			m_prepStatements.notify();
-		}		
-		return pstmt;
-	}
-	
-	/**
-	 * Gets a following PreparedStatement object using the same connection as the firstStatement.
-	 * This is usefull vor locking tables and other statemnts that have to use the same connection.
-	 * This staments don't have to be put back - only the firstone must be given back to the pool.
-	 * 
-	 * @param key - the hashtable key
-	 * @return a prepared statement matching the key
-	 */
-	public PreparedStatement getNextPreparedStatement(PreparedStatement firstStatement, Integer key) throws CmsException {
-		
-        PreparedStatement pstmt = null;
-		Hashtable pool = (Hashtable)m_usedStatementsCache.get(firstStatement);
-		pstmt = (PreparedStatement)pool.get(key);
-		return pstmt;
-	}
-
-	
-	/**
-	 * Gets a (Simple)Statement object and remove it from the list of available statements.
-	 * 
-	 * @return a statement to execute queries on.
-	 */
-	public Statement getStatement() throws CmsException {
-		
-        Statement stmt = null;
-		synchronized(m_prepStatements) {
-			while(m_prepStatements.size() == 0) {
-				try {
-					if(A_OpenCms.isLogging()) {
-						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbPool] no connections available - have to wait.");
-					}
-					m_prepStatements.wait(100);					
-				} catch(InterruptedException exc) {
-				}
-			}
-			Hashtable pool = (Hashtable)m_prepStatements.pop();
-			stmt = (Statement)pool.get(C_SIMPLE_STATEMENT);
-			m_usedStatementsCache.put(stmt, pool);
-			m_prepStatements.notify();
-		}		
-		return stmt;
-	}
-	
-	/**
-	 * Add the given statement to the list of available statements.
-	 * 
-	 * @param pstmt - the statement
-	 */
-	public void putStatement(Statement stmt) {
-		synchronized(m_prepStatements) {
-			Hashtable pool = (Hashtable)(m_usedStatementsCache.remove(stmt));
-			if( pool != null ) {
-				m_prepStatements.push(pool);
-				m_prepStatements.notify();
-			} else {
-				if(A_OpenCms.isLogging()) {
-					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDbPool] putting back wrong statement: " + stmt);
-				}
-			}
-		}		
-	}
-	
-	/**
-	 * Add the given statement to the list of available statements.
-	 * 
-	 * @param key - the hashtable key
-	 * @param pstmt - the statement
-	 */
-	public void putPreparedStatement(Integer key, PreparedStatement pstmt) {
-		synchronized(m_prepStatements) {
-			Hashtable pool = (Hashtable)(m_usedStatementsCache.remove(pstmt));
-			if( pool != null ) {
-				m_prepStatements.push(pool);
-				m_prepStatements.notify();
-			} else {
-				if(A_OpenCms.isLogging()) {
-					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDbPool] putting back wrong prepared statement: " + pstmt);
-				}
-			}
-		}		
-	}
-	
 	/**
 	 * Destroys this db-pool.
 	 */
@@ -321,7 +167,114 @@ public class CmsDbPool {
 			}
 		}
 	}
-	
+	/**
+	 * Gets a following PreparedStatement object using the same connection as the firstStatement.
+	 * This is usefull vor locking tables and other statemnts that have to use the same connection.
+	 * This staments don't have to be put back - only the firstone must be given back to the pool.
+	 * 
+	 * @param key - the hashtable key
+	 * @return a prepared statement matching the key
+	 */
+	public PreparedStatement getNextPreparedStatement(PreparedStatement firstStatement, Integer key) throws CmsException {
+		
+		PreparedStatement pstmt = null;
+		Hashtable pool = (Hashtable)m_usedStatementsCache.get(firstStatement);
+		pstmt = (PreparedStatement)pool.get(key);
+		return pstmt;
+	}
+	/**
+	 * Gets a PreparedStatement object and remove it from the list of available statements.
+	 * 
+	 * @param key - the hashtable key
+	 * @return a prepared statement matching the key
+	 */
+	public PreparedStatement getPreparedStatement(Integer key) throws CmsException {
+		
+		PreparedStatement pstmt = null;
+		synchronized(m_prepStatements) {
+			while(m_prepStatements.size() == 0) {
+				try {
+					if(A_OpenCms.isLogging()) {
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbPool] no connections available - have to wait.");
+					}
+					m_prepStatements.wait(100);					
+				} catch(InterruptedException exc) {
+				}
+			}
+			Hashtable pool = (Hashtable)m_prepStatements.pop();
+			pstmt = (PreparedStatement)pool.get(key);
+			m_usedStatementsCache.put(pstmt, pool);
+			m_prepStatements.notify();
+		}		
+		return pstmt;
+	}
+	/**
+	 * Gets a (Simple)Statement object and remove it from the list of available statements.
+	 * 
+	 * @return a statement to execute queries on.
+	 */
+	public Statement getStatement() throws CmsException {
+		
+		Statement stmt = null;
+		synchronized(m_prepStatements) {
+			while(m_prepStatements.size() == 0) {
+				try {
+					if(A_OpenCms.isLogging()) {
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbPool] no connections available - have to wait.");
+					}
+					m_prepStatements.wait(100);					
+				} catch(InterruptedException exc) {
+				}
+			}
+			Hashtable pool = (Hashtable)m_prepStatements.pop();
+			stmt = (Statement)pool.get(C_SIMPLE_STATEMENT);
+			m_usedStatementsCache.put(stmt, pool);
+			m_prepStatements.notify();
+		}		
+		return stmt;
+	}
+	/**
+	 * Init the PreparedStatement on all connections.
+	 * 
+	 * @param key - the hashtable key
+	 * @param sql - a SQL statement that may contain one or more '?' IN parameter placeholders
+	 */
+	public void initPreparedStatement(Integer key, String sql) throws CmsException {
+		Connection conn = null;
+		
+		for (int i = 0; i < m_maxConn; i++) {
+			conn = (Connection) m_connections.elementAt(i);
+			Hashtable tmp = (Hashtable) m_prepStatements.elementAt(i);
+			
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				tmp.put(key, pstmt);
+			}
+			catch (SQLException e) {
+				throw new CmsException(CmsException.C_SQL_ERROR, e);
+			}
+		}
+	}
+	/**
+	 * Init a (Simple)Statement on all connections.
+	 * 
+	 */
+	public void initStatement() throws CmsException {
+		Connection conn = null;
+		
+		for (int i = 0; i < m_maxConn; i++) {
+			conn = (Connection) m_connections.elementAt(i);
+			Hashtable tmp = (Hashtable) m_prepStatements.elementAt(i);
+			
+			try {
+				Statement stmt = conn.createStatement();
+				tmp.put(C_SIMPLE_STATEMENT, stmt);
+			}
+			catch (SQLException e) {
+				throw new CmsException(CmsException.C_SQL_ERROR, e);
+			}
+		}
+	}
 	/**
 	 * This method sends a sql-query tzo each connection, to prvent them from closing by the database.
 	 */
@@ -336,6 +289,43 @@ public class CmsDbPool {
 					if(A_OpenCms.isLogging()) {
 						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDbPool] keepAlive() failed: " + com.opencms.util.Utils.getStackTrace(exc));
 					}
+				}
+			}
+		}		
+	}
+	/**
+	 * Add the given statement to the list of available statements.
+	 * 
+	 * @param key - the hashtable key
+	 * @param pstmt - the statement
+	 */
+	public void putPreparedStatement(Integer key, PreparedStatement pstmt) {
+		synchronized(m_prepStatements) {
+			Hashtable pool = (Hashtable)(m_usedStatementsCache.remove(pstmt));
+			if( pool != null ) {
+				m_prepStatements.push(pool);
+				m_prepStatements.notify();
+			} else {
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDbPool] putting back wrong prepared statement: " + pstmt);
+				}
+			}
+		}		
+	}
+	/**
+	 * Add the given statement to the list of available statements.
+	 * 
+	 * @param pstmt - the statement
+	 */
+	public void putStatement(Statement stmt) {
+		synchronized(m_prepStatements) {
+			Hashtable pool = (Hashtable)(m_usedStatementsCache.remove(stmt));
+			if( pool != null ) {
+				m_prepStatements.push(pool);
+				m_prepStatements.notify();
+			} else {
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDbPool] putting back wrong statement: " + stmt);
 				}
 			}
 		}		

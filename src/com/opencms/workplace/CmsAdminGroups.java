@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
- * Date   : $Date: 2000/08/02 13:34:55 $
- * Version: $Revision: 1.10 $Selector
+ * Date   : $Date: 2000/08/08 14:08:30 $
+ * Version: $Revision: 1.11 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -27,8 +29,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.10 $ $Date: 2000/08/02 13:34:55 $
+ * @version $Revision: 1.11 $ $Date: 2000/08/08 14:08:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -55,39 +55,25 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 
 	final static String C_NO_SUPERGROUP_SELECTED = "none_selected";
 		
-    /**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }    
-
-    /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
+	/**
+	 * Gets the content of a defined section in a given template file and its subtemplates
+	 * with the given parameters. 
+	 * 
+	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		if(C_DEBUG && A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+		}
 		I_CmsSession session= cms.getRequestContext().getSession(true);
-        CmsRequestContext reqCont = cms.getRequestContext();   	
+		CmsRequestContext reqCont = cms.getRequestContext();   	
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 		 
 		boolean groupYetChanged=true;
@@ -409,23 +395,22 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
  		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }
-	
+	}
 	/**
-     * Gets all groups for a select box
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the current value in the vectors.
-     * @exception CmsException
-     */
-    
+	 * Gets all groups for a select box
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the current value in the vectors.
+	 * @exception CmsException
+	 */
+	
 	public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
@@ -439,23 +424,84 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 			values.addElement(name);
 		}
 		 
-        return new Integer(retValue);
-    }
-	
+		return new Integer(retValue);
+	}
 	/**
-     * Gets all supergroups of the actual group (in session or in form data) for a selectbox
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters.
-     * @return Index representing the current value in the vectors.
-     * @exception CmsException
-     */
+	 * Gets all users, that have not yet been selected for the group
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the current value in the vectors.
+	 * @exception CmsException
+	 */
+	
+	public Integer getNotSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+		throws CmsException {
+	 
+		I_CmsSession session= cms.getRequestContext().getSession(true);
+	   	Vector notSelectedUsers =(Vector) session.getValue("notSelectedUsers");
+		
+		if (notSelectedUsers != null){
+			for(int z = 0; z < notSelectedUsers.size(); z++) {
+				String name = (String) notSelectedUsers.elementAt(z);
+				names.addElement(name);
+				values.addElement(name);
+			} 
+		}
+		return new Integer(-1); // nothing preselected
+	}
+	 /**
+	 * Gets all users that have been selected to be in the group
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the default Group of the user
+	 * @exception CmsException
+	 */
+	
+	public Integer getSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+		throws CmsException {
+		 
+		I_CmsSession session= cms.getRequestContext().getSession(true);
+		Vector selectedUsers =(Vector) session.getValue("selectedUsers");
+		
+		if (selectedUsers != null) {
+			for(int z = 0; z < selectedUsers.size(); z++) {
+				String name =  (String) selectedUsers.elementAt(z);
+				names.addElement(name);
+				values.addElement(name);
+			} 
+		} else {
+			selectedUsers = new Vector();
+		}	
+		return new Integer(-1);
+	}
+	/**
+	 * Gets all supergroups of the actual group (in session or in form data) for a selectbox
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters.
+	 * @return Index representing the current value in the vectors.
+	 * @exception CmsException
+	 */
 	
 	public Integer getSuperGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
@@ -493,71 +539,18 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 			}
 		}
 		return new Integer(retValue+1);  
-    }
-	
-	
-	
+	}
 	/**
-     * Gets all users, that have not yet been selected for the group
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the current value in the vectors.
-     * @exception CmsException
-     */
-    
-	public Integer getNotSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
-		throws CmsException {
-	 
-		I_CmsSession session= cms.getRequestContext().getSession(true);
-       	Vector notSelectedUsers =(Vector) session.getValue("notSelectedUsers");
-		
-		if (notSelectedUsers != null){
-			for(int z = 0; z < notSelectedUsers.size(); z++) {
-				String name = (String) notSelectedUsers.elementAt(z);
-				names.addElement(name);
-				values.addElement(name);
-			} 
-		}
-        return new Integer(-1); // nothing preselected
-	}	
-
-	 /**
-     * Gets all users that have been selected to be in the group
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the default Group of the user
-     * @exception CmsException
-     */
-	
-	public Integer getSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
-		throws CmsException {
-		 
-		I_CmsSession session= cms.getRequestContext().getSession(true);
-		Vector selectedUsers =(Vector) session.getValue("selectedUsers");
-		
-		if (selectedUsers != null) {
-			for(int z = 0; z < selectedUsers.size(); z++) {
-				String name =  (String) selectedUsers.elementAt(z);
-				names.addElement(name);
-				values.addElement(name);
-			} 
-		} else {
-			selectedUsers = new Vector();
-		}	
-        return new Integer(-1);
-    } 
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}
 }

@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
- * Date   : $Date: 2000/07/24 12:15:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/08/08 14:08:22 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
@@ -41,7 +41,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/07/24 12:15:23 $
+ * @version $Revision: 1.2 $ $Date: 2000/08/08 14:08:22 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 	
@@ -100,7 +100,44 @@ public class CmsImportFolder implements I_CmsConstants {
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}
-	
+	/**
+	 * Returns a byte-array containing the content of the file.
+	 * 
+	 * @param filename The name of the file to read.
+	 * @return bytes[] The content of the file.
+	 */
+	private byte[] getFileBytes(File file) 
+		throws Exception{
+		FileInputStream fileStream = new FileInputStream(file);
+
+		int charsRead = 0;
+		int size = new Long(file.length()).intValue();
+		byte[] buffer = new byte[size];
+		while(charsRead < size) {
+			charsRead += fileStream.read(buffer, charsRead, size - charsRead);
+		}
+		fileStream.close();
+		return buffer;
+	}
+	/**
+	 * Gets the file-type for the filename.
+	 */
+	private String getFileType(String filename) 
+		throws CmsException {
+		String suffix = filename.substring(filename.lastIndexOf('.')+1);
+		suffix = suffix.toLowerCase(); // file extension of filename
+		   
+		// read the known file extensions from the database
+		Hashtable extensions = m_cms.readFileExtensions(); 
+		String resType = new String();
+		if (extensions != null) {
+			resType = (String) extensions.get(suffix);	
+		}
+		if (resType == null) {
+			resType = "plain";	
+		}
+		return resType;
+	}
 	/**
 	 * Gets the import resource and stores it in object-member.
 	 */
@@ -118,7 +155,6 @@ public class CmsImportFolder implements I_CmsConstants {
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
 	}
-	
 	/**
 	 * Imports the resources from the folder to the importPath.
 	 * 
@@ -145,45 +181,5 @@ public class CmsImportFolder implements I_CmsConstants {
 				m_cms.createFile(importPath, currentFile.getName(), content, type);				
 			}
 		}
-	}
-	
-	/**
-	 * Gets the file-type for the filename.
-	 */
-	private String getFileType(String filename) 
-		throws CmsException {
-		String suffix = filename.substring(filename.lastIndexOf('.')+1);
-		suffix = suffix.toLowerCase(); // file extension of filename
-		   
-		// read the known file extensions from the database
-		Hashtable extensions = m_cms.readFileExtensions(); 
-		String resType = new String();
-		if (extensions != null) {
-			resType = (String) extensions.get(suffix);	
-		}
-		if (resType == null) {
-			resType = "plain";	
-		}
-		return resType;
-	}
-	
-	/**
-	 * Returns a byte-array containing the content of the file.
-	 * 
-	 * @param filename The name of the file to read.
-	 * @return bytes[] The content of the file.
-	 */
-	private byte[] getFileBytes(File file) 
-		throws Exception{
-		FileInputStream fileStream = new FileInputStream(file);
-
-		int charsRead = 0;
-		int size = new Long(file.length()).intValue();
-		byte[] buffer = new byte[size];
-		while(charsRead < size) {
-			charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-		}
-		fileStream.close();
-		return buffer;
 	}
 }

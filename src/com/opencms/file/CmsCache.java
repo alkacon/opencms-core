@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
- * Date   : $Date: 2000/06/23 08:01:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/08/08 14:08:22 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 import java.util.*;
 import com.opencms.core.*;
 /**
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * data read from the File DB.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/06/23 08:01:33 $
+ * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:22 $
  */
 
 public class CmsCache implements I_CmsConstants {
@@ -49,7 +49,7 @@ public class CmsCache implements I_CmsConstants {
 	 * @param cacheSize The size of the new cache
 	 */
 	public CmsCache(int cacheSize) {
-        // illegal cach size? Set Default
+		// illegal cach size? Set Default
 		if (cacheSize <=0) {
 			max_objects=10;    
 		} else {
@@ -58,7 +58,141 @@ public class CmsCache implements I_CmsConstants {
 		cache = new Hashtable(max_objects);
 		index = new Hashtable(max_objects);
 	}
+	 /**
+	 * Deletes all entries in a Cache.
+	 * This method is needed because of the problems caused by storing all subfolders and
+	 * files from a folder in a seperate subresource cache. Everytime a file or folder is 
+	 * updated, read or deleted the subresource cache must be cleared.
+	 */
+	public  void clear() {
+	  cache.clear();
+	  index.clear();
+	}
+	/**
+	 * Gets the contents of a CmsCachedObject form the cache.
+	 * If the object was found in the cache, it is updated to set its timestamp to the current
+	 * system time.
+	 * 
+	 * @param id The id of the Object to be taken from the cache.
+	 *
+	 * @return Contents of the CmsCachedObject stored in the cache
+	 */
+	public  Object get(int id) {
+		
+		CmsCachedObject cachedObject=null;
+		CmsCachedObject ret=null;
 	
+		// get key for object
+		String key = (String)index.get(new Integer(id));
+		if (key == null) {
+ 
+			return null;
+		}
+
+		// get object from cache
+		cachedObject=(CmsCachedObject)cache.get(key);  
+						
+		// not empty?
+		if (cachedObject != null) {
+			// update  timestamp
+		    cachedObject.setTimestamp(); 
+			ret=(CmsCachedObject)cachedObject.clone();				
+   			return (((CmsCachedObject)ret).getContents());
+			//return null;
+
+		} else {
+		   return null;
+		}
+	}
+	/**
+	 * Gets the contents of a CmsCachedObject form the cache.
+	 * If the object was found in the cache, it is updated to set its timestamp to the current
+	 * system time.
+	 * 
+	 * @param key The key of the Object to be taken from the cache.
+	 * @param content Flag for getting the file content.
+	 * @return Contents of the CmsCachedObject stored in the cache
+	 */
+	public  Object get(String key) {
+		CmsCachedObject cachedObject=null;
+		CmsCachedObject ret=null;
+	
+		// get object from cache
+		cachedObject=(CmsCachedObject)cache.get(key);  
+						
+		// not empty?
+		if (cachedObject != null) {
+			// update  timestamp
+		    cachedObject.setTimestamp(); 
+			ret=(CmsCachedObject)cachedObject.clone();	
+		   	return (((CmsCachedObject)ret).getContents());
+			//return null;
+
+		} else {
+		   return null;
+		}
+	}
+	/** 
+	 * Gets the Id of an object
+	 * @param value The object.
+	 * @return The Id of the object 
+	 */
+	private int getId(Object value){
+		if(value instanceof CmsFile) {
+			return ((CmsFile)value).getResourceId();
+		} else if(value instanceof CmsFolder) {
+			return ((CmsFolder)value).getResourceId();
+		} else if(value instanceof CmsUser) {
+			return ((CmsUser)value).getId();
+		} else if(value instanceof CmsGroup) {
+			return ((CmsGroup)value).getId();
+		} else if(value instanceof CmsProject) {
+			return ((CmsProject)value).getId();
+		} else {
+			return C_UNKNOWN_ID;
+		}
+	}
+	/** 
+	 * Gets the SringKey of an object
+	 * @param value The object.
+	 * @return The StringKey of the object 
+	 */
+	private String getStrKey(Object value){
+		if(value instanceof CmsFile) {
+			return C_FILE+((CmsFile)value).getProjectId()+((CmsFile)value).getAbsolutePath();
+		} else if(value instanceof CmsFolder) {
+			return C_FOLDER+((CmsFolder)value).getProjectId()+((CmsFolder)value).getAbsolutePath();
+		} else if(value instanceof CmsUser) {
+			return ((CmsUser)value).getName();
+		} else if(value instanceof CmsGroup) {
+			return ((CmsGroup)value).getName();
+		} else if(value instanceof CmsProject) {
+			return "p"+((CmsProject)value).getId();
+		} else {
+			return null;
+		}
+	}
+	/**
+	 * Put a new key/value pair into the CmsCache.
+	 * If the cache is full, the least recently used cache object is removed.
+	 * Don't use this for projects.
+	 * @param key The key for the new object stroed in the cache.
+	 * @param value The value of the new object stroed in the cache.
+	 */
+	public void put(int key, Object value) {
+		
+		String strKey = getStrKey(value);
+		if (strKey != null){
+			if (cache.size()<max_objects) {
+				cache.put(strKey,new CmsCachedObject(value));
+	
+			} else {
+				removeLRU();
+				cache.put(strKey,new CmsCachedObject(value));		
+			}
+		  	index.put(new Integer(key),strKey);
+		}
+	}
 	/**
 	 * Put a new key/value pair into the CmsCache.
 	 * If the cache is full, the least recently used cache object is removed.
@@ -78,158 +212,6 @@ public class CmsCache implements I_CmsConstants {
 			index.put(new Integer(id),strKey);
 		}		
 	}
-	
-	/**
-	 * Put a new key/value pair into the CmsCache.
-	 * If the cache is full, the least recently used cache object is removed.
-	 * Don't use this for projects.
-	 * @param key The key for the new object stroed in the cache.
-	 * @param value The value of the new object stroed in the cache.
-	 */
-	public void put(int key, Object value) {
-		
-		String strKey = getStrKey(value);
-		if (strKey != null){
-			if (cache.size()<max_objects) {
-				cache.put(strKey,new CmsCachedObject(value));
-	
-			} else {
-				removeLRU();
-				cache.put(strKey,new CmsCachedObject(value));		
-			}
-          	index.put(new Integer(key),strKey);
-		}
-	}
-	
-	/** 
-	 * Gets the SringKey of an object
-	 * @param value The object.
-	 * @return The StringKey of the object 
-	 */
-	private String getStrKey(Object value){
-		if(value instanceof CmsFile) {			return C_FILE+((CmsFile)value).getProjectId()+((CmsFile)value).getAbsolutePath();
-		} else if(value instanceof CmsFolder) {			return C_FOLDER+((CmsFolder)value).getProjectId()+((CmsFolder)value).getAbsolutePath();
-		} else if(value instanceof CmsUser) {			return ((CmsUser)value).getName();		} else if(value instanceof CmsGroup) {			return ((CmsGroup)value).getName();
-        } else if(value instanceof CmsProject) {
-            return "p"+((CmsProject)value).getId();		} else {
-			return null;
-		}
-	}
-	
-	/** 
-	 * Gets the Id of an object
-	 * @param value The object.
-	 * @return The Id of the object 
-	 */
-	private int getId(Object value){
-		if(value instanceof CmsFile) {			return ((CmsFile)value).getResourceId();
-		} else if(value instanceof CmsFolder) {			return ((CmsFolder)value).getResourceId();		} else if(value instanceof CmsUser) {			return ((CmsUser)value).getId();		} else if(value instanceof CmsGroup) {			return ((CmsGroup)value).getId();
-        } else if(value instanceof CmsProject) {
-            return ((CmsProject)value).getId();		} else {
-			return C_UNKNOWN_ID;
-		}
-	}
-	 
-	/**
-	 * Removes the least recent used object from the cache.
-	 */
-	private void removeLRU() {
-		long minTimestamp=-1;
-		Object keyLRUObject = null;
-		int indexKeyLRU = C_UNKNOWN_ID;
-        // get the keys of all cache objets
-		Enumeration keys = cache.keys(); 
-		while (keys.hasMoreElements()) {
-			Object key= keys.nextElement();
-			CmsCachedObject value = (CmsCachedObject) cache.get(key);  
-			//actual object with a older timestamp than the current oldest?
-            if ((minTimestamp == -1) || (minTimestamp > value.getTimestamp())) {
-				// this is the new least recent used cache object
-                minTimestamp = value.getTimestamp();  
-				keyLRUObject= key;
-				indexKeyLRU = getId(value);
-			}
-		}
-        // finally remove it from cache and if necessary from the index
-		cache.remove(keyLRUObject);
-		index.remove(new Integer(indexKeyLRU));  		
-	}
-	
-	/**
-	 * Gets the contents of a CmsCachedObject form the cache.
-	 * If the object was found in the cache, it is updated to set its timestamp to the current
-	 * system time.
-	 * 
-	 * @param key The key of the Object to be taken from the cache.
-	 * @param content Flag for getting the file content.
-	 * @return Contents of the CmsCachedObject stored in the cache
-	 */
-	public  Object get(String key) {
-		CmsCachedObject cachedObject=null;
-		CmsCachedObject ret=null;
-	
-		// get object from cache
-        cachedObject=(CmsCachedObject)cache.get(key);  
-						
-        // not empty?
-		if (cachedObject != null) {
-            // update  timestamp
-		    cachedObject.setTimestamp(); 
-			ret=(CmsCachedObject)cachedObject.clone();	
-           	return (((CmsCachedObject)ret).getContents());
-            //return null;
-
-		} else {
-		   return null;
-		}
-	}
-
-	/**
-	 * Gets the contents of a CmsCachedObject form the cache.
-	 * If the object was found in the cache, it is updated to set its timestamp to the current
-	 * system time.
-	 * 
-	 * @param id The id of the Object to be taken from the cache.
-	 *
-	 * @return Contents of the CmsCachedObject stored in the cache
-	 */
-	public  Object get(int id) {
-        
-		CmsCachedObject cachedObject=null;
-		CmsCachedObject ret=null;
-	
-		// get key for object
-		String key = (String)index.get(new Integer(id));
-		if (key == null) {
- 
-			return null;
-		}
-
-		// get object from cache
-        cachedObject=(CmsCachedObject)cache.get(key);  
-						
-        // not empty?
-		if (cachedObject != null) {
-            // update  timestamp
-		    cachedObject.setTimestamp(); 
-			ret=(CmsCachedObject)cachedObject.clone();				
-   			return (((CmsCachedObject)ret).getContents());
-            //return null;
-
-		} else {
-		   return null;
-		}
-	}
-
-	
-	/**
-	 * Removes a CmsCachedObject from the cache.
-	 * @param key The key of the Object to be removed from the cache.
-	 */
-	public  void remove(String key)	{
-	  cache.remove(key);
-	}
-	
 	/**
 	 * Removes a CmsCachedObject from the cache.
 	 * @param id The Id of the Object to be removed from the cache.
@@ -239,15 +221,35 @@ public class CmsCache implements I_CmsConstants {
 	  index.remove(new Integer(id));
 	  cache.remove(key);
 	}
-	
-	 /**
-	 * Deletes all entries in a Cache.
-	 * This method is needed because of the problems caused by storing all subfolders and
-	 * files from a folder in a seperate subresource cache. Everytime a file or folder is 
-	 * updated, read or deleted the subresource cache must be cleared.
+	/**
+	 * Removes a CmsCachedObject from the cache.
+	 * @param key The key of the Object to be removed from the cache.
 	 */
-	public  void clear() {
-      cache.clear();
-      index.clear();
-    }	
+	public  void remove(String key)	{
+	  cache.remove(key);
+	}
+	/**
+	 * Removes the least recent used object from the cache.
+	 */
+	private void removeLRU() {
+		long minTimestamp=-1;
+		Object keyLRUObject = null;
+		int indexKeyLRU = C_UNKNOWN_ID;
+		// get the keys of all cache objets
+		Enumeration keys = cache.keys(); 
+		while (keys.hasMoreElements()) {
+			Object key= keys.nextElement();
+			CmsCachedObject value = (CmsCachedObject) cache.get(key);  
+			//actual object with a older timestamp than the current oldest?
+			if ((minTimestamp == -1) || (minTimestamp > value.getTimestamp())) {
+				// this is the new least recent used cache object
+				minTimestamp = value.getTimestamp();  
+				keyLRUObject= key;
+				indexKeyLRU = getId(value);
+			}
+		}
+		// finally remove it from cache and if necessary from the index
+		cache.remove(keyLRUObject);
+		index.remove(new Integer(indexKeyLRU));  		
+	}
 }

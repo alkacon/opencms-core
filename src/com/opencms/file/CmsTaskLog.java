@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTaskLog.java,v $
- * Date   : $Date: 2000/06/05 13:37:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/08 14:08:23 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -27,8 +29,6 @@
  */
 
 
-package com.opencms.file;
-
 import com.opencms.core.*;
 import java.util.*;
 
@@ -37,7 +37,7 @@ import java.util.*;
  * This class describes a tasklog in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.5 $ $Date: 2000/06/05 13:37:56 $
+ * @version $Revision: 1.6 $ $Date: 2000/08/08 14:08:23 $
  */
 public class CmsTaskLog implements I_CmsConstants {
 
@@ -80,16 +80,22 @@ public class CmsTaskLog implements I_CmsConstants {
 		m_StartTime = starttime;
 		m_Type = type;
 	}
-	
 	/**
-	 * Returns the id of this task.
+	 * Compares the overgiven object with this object.
 	 * 
-	 * @return the id of this task.
+	 * @return true, if the object is identically else it returns false.
 	 */
-	public int getId() {
-		return m_Id; 
+	public boolean equals(Object obj) {
+		boolean equal=false;
+		// check if the object is a CmsUser object
+		if (obj instanceof CmsTaskLog) {
+			// same ID than the current Task Object?
+			if (((CmsTaskLog)obj).getId() == this.getId()){
+				equal = true;
+			}
+		}
+		return equal;
 	}
-	
 	/**
 	 * Returns the name of this task.
 	 * 
@@ -98,20 +104,23 @@ public class CmsTaskLog implements I_CmsConstants {
 	public String getComment() {
 		return m_Comment; 
 	}
-	
-	public int getUser(){
-		return m_User;
+	/**
+	 * Returns the id of this task.
+	 * 
+	 * @return the id of this task.
+	 */
+	public int getId() {
+		return m_Id; 
 	}
-	
 	public java.sql.Timestamp getStartTime(){
 		return m_StartTime;
 	}
-	
 	public int getType(){
 		return m_Type;
 	}
-	
-	
+	public int getUser(){
+		return m_User;
+	}
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
@@ -137,22 +146,5 @@ public class CmsTaskLog implements I_CmsConstants {
 			output.append(" Type=User");
 		}
 		return output.toString();
-	}
-	
-	/**
-	 * Compares the overgiven object with this object.
-	 * 
-	 * @return true, if the object is identically else it returns false.
-	 */
-	public boolean equals(Object obj) {
-		boolean equal=false;
-		// check if the object is a CmsUser object
-		if (obj instanceof CmsTaskLog) {
-			// same ID than the current Task Object?
-			if (((CmsTaskLog)obj).getId() == this.getId()){
-				equal = true;
-			}
-		}
-		return equal;
 	}
 }

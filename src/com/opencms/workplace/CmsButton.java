@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButton.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/08/08 14:08:30 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -43,81 +43,81 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.12 $ $Date: 2000/08/08 14:08:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsButton extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
-            
-    /**
-     * Handling of the special workplace <CODE>&lt;BUTTON&gt;</CODE> tags.
-     * <P>
-     * Reads the code of a button from the buttons definition file
-     * and returns the processed code with the actual elements.
-     * <P>
-     * Buttons can be referenced in any workplace template by <br>
-     * <CODE>&lt;BUTTON name="..." action="..." alt="..."/&gt;</CODE>
-     * 
-     * @param cms CmsObject Object for accessing resources.
-     * @param n XML element containing the <code>&lt;BUTTON&gt;</code> tag.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param callingObject reference to the calling object <em>(not used here)</em>.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @param lang CmsXmlLanguageFile conataining the currently valid language file.
-     * @return Processed button.
-     * @exception CmsException
-     */    
-    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        // Read button parameters
-        String buttonName = n.getAttribute(C_BUTTON_NAME);
-        String buttonAction = n.getAttribute(C_BUTTON_ACTION);
-        String buttonAlt = n.getAttribute(C_BUTTON_ALT);
-        String buttonHref = n.getAttribute(C_BUTTON_HREF);
-        String buttonMethod = n.getAttribute(C_BUTTON_METHOD);
-        
-        if(buttonHref == null || "".equals(buttonHref)) {
-            buttonHref = "";
-        }
-        
-        // call the method for activation decision
-        boolean activate=true;
-        
-        if(buttonMethod != null && ! "".equals(buttonMethod))
-        {
-            Method callMethod = null;
-            try {
-                callMethod = callingObject.getClass().getMethod(buttonMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
-                activate = ((Boolean)callMethod.invoke(callingObject, new Object[] {cms, lang, parameters})).booleanValue();
-            } catch(NoSuchMethodException exc) {
-            // The requested method was not found.
-            throwException("Could not find button activation method " + buttonMethod + " in calling class " + callingObject.getClass().getName() + " for generating icon.", CmsException.C_NOT_FOUND);
-            } catch(InvocationTargetException targetEx) {
-                // the method could be invoked, but throwed a exception
-                // itself. Get this exception and throw it again.              
-                Throwable e = targetEx.getTargetException();
-                if(!(e instanceof CmsException)) {
-                    // Only print an error if this is NO CmsException
-                    e.printStackTrace();
-                    throwException("Button activation method " + buttonMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
-                } else {
-                    // This is a CmsException
-                    // Error printing should be done previously.
-                    throw (CmsException)e;
-                }
-            } catch(Exception exc2) {
-                throwException("Button activation method " + buttonMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
-            }
-        }
-        
-        
-        // Get button definition and language values
-        CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
-        buttonAlt = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonAlt);
-        
-        // get the processed button.
-        if(activate) {
-            return buttondef.getButton(buttonName, buttonAction, buttonAlt, buttonHref, callingObject);
-        } else {
-            return buttondef.getDeactivatedButton(buttonName, buttonAction, buttonAlt, buttonHref, callingObject);
-        }
-    }           
+			
+	/**
+	 * Handling of the special workplace <CODE>&lt;BUTTON&gt;</CODE> tags.
+	 * <P>
+	 * Reads the code of a button from the buttons definition file
+	 * and returns the processed code with the actual elements.
+	 * <P>
+	 * Buttons can be referenced in any workplace template by <br>
+	 * <CODE>&lt;BUTTON name="..." action="..." alt="..."/&gt;</CODE>
+	 * 
+	 * @param cms CmsObject Object for accessing resources.
+	 * @param n XML element containing the <code>&lt;BUTTON&gt;</code> tag.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+	 * @param callingObject reference to the calling object <em>(not used here)</em>.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @param lang CmsXmlLanguageFile conataining the currently valid language file.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */    
+	public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+		// Read button parameters
+		String buttonName = n.getAttribute(C_BUTTON_NAME);
+		String buttonAction = n.getAttribute(C_BUTTON_ACTION);
+		String buttonAlt = n.getAttribute(C_BUTTON_ALT);
+		String buttonHref = n.getAttribute(C_BUTTON_HREF);
+		String buttonMethod = n.getAttribute(C_BUTTON_METHOD);
+		
+		if(buttonHref == null || "".equals(buttonHref)) {
+			buttonHref = "";
+		}
+		
+		// call the method for activation decision
+		boolean activate=true;
+		
+		if(buttonMethod != null && ! "".equals(buttonMethod))
+		{
+			Method callMethod = null;
+			try {
+				callMethod = callingObject.getClass().getMethod(buttonMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
+				activate = ((Boolean)callMethod.invoke(callingObject, new Object[] {cms, lang, parameters})).booleanValue();
+			} catch(NoSuchMethodException exc) {
+			// The requested method was not found.
+			throwException("Could not find button activation method " + buttonMethod + " in calling class " + callingObject.getClass().getName() + " for generating icon.", CmsException.C_NOT_FOUND);
+			} catch(InvocationTargetException targetEx) {
+				// the method could be invoked, but throwed a exception
+				// itself. Get this exception and throw it again.              
+				Throwable e = targetEx.getTargetException();
+				if(!(e instanceof CmsException)) {
+					// Only print an error if this is NO CmsException
+					e.printStackTrace();
+					throwException("Button activation method " + buttonMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+				} else {
+					// This is a CmsException
+					// Error printing should be done previously.
+					throw (CmsException)e;
+				}
+			} catch(Exception exc2) {
+				throwException("Button activation method " + buttonMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
+			}
+		}
+		
+		
+		// Get button definition and language values
+		CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
+		buttonAlt = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonAlt);
+		
+		// get the processed button.
+		if(activate) {
+			return buttondef.getButton(buttonName, buttonAction, buttonAlt, buttonHref, callingObject);
+		} else {
+			return buttondef.getDeactivatedButton(buttonName, buttonAction, buttonAlt, buttonHref, callingObject);
+		}
+	}
 }

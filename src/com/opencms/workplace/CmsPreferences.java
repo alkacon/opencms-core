@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2000/08/02 13:34:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/08/08 14:08:32 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -42,44 +42,42 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/08/02 13:34:57 $
+ * @version $Revision: 1.5 $ $Date: 2000/08/08 14:08:32 $
  */
 public class CmsPreferences extends CmsWorkplaceDefault implements I_CmsWpConstants,
-                                                             I_CmsConstants {
-           
+															 I_CmsConstants {
+		   
 
-     /**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }
-    
+	 /**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}
    /**
-     * User method to get the actual panel of the PReferences dialog.
-     * <P>
-     * @param cms CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
-     * @param userObj Hashtable with parameters <em>(not used here)</em>.
-     * @return String with the pics URL.
-     * @exception CmsException
-     * @see #commonPicsUrl
-     */    
-    public Object setPanel(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
-        throws CmsException {
-        
-        I_CmsSession session= cms.getRequestContext().getSession(true);
-        String panel=(String)session.getValue(C_PARA_OLDPANEL);
-      
-        return panel;
-    }
-
+	 * User method to get the actual panel of the PReferences dialog.
+	 * <P>
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param tagcontent Unused in this special case of a user method. Can be ignored.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
+	 * @param userObj Hashtable with parameters <em>(not used here)</em>.
+	 * @return String with the pics URL.
+	 * @exception CmsException
+	 * @see #commonPicsUrl
+	 */    
+	public Object setPanel(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+		throws CmsException {
+		
+		I_CmsSession session= cms.getRequestContext().getSession(true);
+		String panel=(String)session.getValue(C_PARA_OLDPANEL);
+	  
+		return panel;
+	}
 }

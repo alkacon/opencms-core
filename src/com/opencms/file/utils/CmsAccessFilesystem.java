@@ -1,7 +1,9 @@
+package com.opencms.file.utils;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsAccessFilesystem.java,v $
- * Date   : $Date: 2000/06/21 14:46:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/08 14:08:28 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file.utils;
-
 import java.util.*;
 import java.io.*;
 import java.sql.*;
@@ -38,89 +38,23 @@ import com.opencms.core.*;
 
 public class CmsAccessFilesystem implements I_CmsConstants {
 
-    /**
-    * This is the Hashtable of exportpoints.
-    */
-    private Hashtable m_exportpointStorage  = null;
-    
-    /**
-     * Constructor, creartes a new CmsAccessFilefilesystem object.
-     *
-     * @param mountpoint The mountpoint of this filesystem access module.
-     * 
-     * @exception CmsException Throws CmsException if connection fails.
-     * 
-     */
-    public CmsAccessFilesystem(Hashtable exportpoints)	
-        throws CmsException {
-        m_exportpointStorage = exportpoints;
-    }
-
 	/**
-	 * Creates or writes a file with the given content.
-     *
-	 * @param filename The complete name of the new file (including pathinformation).
-	 * @param contents The contents of the new file.
-	 * 
-	 * 
-     * @exception CmsException Throws CmsException if operation was not succesful
-     */    
-	 public void writeFile(String filename, String key, byte[] contents)
-							
-         throws CmsException {
-         
-             File discFile= new File (absoluteName(filename,key));
-             try {
-                 // write the new file to disk
-                 OutputStream s = new FileOutputStream(discFile);
-                 s.write(contents);
-                 s.close();
-             } catch (Exception e) {
-              // throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
-             }	
-     }
+	* This is the Hashtable of exportpoints.
+	*/
+	private Hashtable m_exportpointStorage  = null;
 	
 	/**
-	 * Creates a new folder 
+	 * Constructor, creartes a new CmsAccessFilefilesystem object.
+	 *
+	 * @param mountpoint The mountpoint of this filesystem access module.
 	 * 
-	 * @param foldername The complete path to the folder. 
-	 *  
+	 * @exception CmsException Throws CmsException if connection fails.
 	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 public void createFolder(String foldername, String key)
-         throws CmsException {
-
-          // create folder
-		  File discFolder=new File(absoluteName(foldername,key));
-          // check if this folder already exits
-		  if (!discFolder.exists())	{
-			boolean success=discFolder.mkdir();
-			if (!success) {
-			//	throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_FILESYSTEM_ERROR);
-			}
-          }
-     }
-
-     /**
-      * Deletes a file or folder in the filesytem. 
-      * 
-	  * @param filename The complete path of the file or folder.
-      * @exception CmsException Throws CmsException if operation was not succesful
-      */
-     public void removeResource(String filename, String key) 
-        throws CmsException{
-         
-         File discFile=new File(absoluteName(filename,key));
-		 // check if file exists
-         if (discFile.exists()){
-			boolean success=discFile.delete();
-			if (!success) {
-			//		 throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILESYSTEM_ERROR);
-			}
-         }
-     }
-
+	public CmsAccessFilesystem(Hashtable exportpoints)	
+		throws CmsException {
+		m_exportpointStorage = exportpoints;
+	}
 	/**
 	 * Calculates the absolute path in the filesystem.
 	 * 
@@ -135,6 +69,66 @@ public class CmsAccessFilesystem implements I_CmsConstants {
 		path = exportpath + filename.substring(exportpoint.length());
 		return path;
 	}
+	/**
+	 * Creates a new folder 
+	 * 
+	 * @param foldername The complete path to the folder. 
+	 *  
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	 public void createFolder(String foldername, String key)
+		 throws CmsException {
 
-
+		  // create folder
+		  File discFolder=new File(absoluteName(foldername,key));
+		  // check if this folder already exits
+		  if (!discFolder.exists())	{
+			boolean success=discFolder.mkdir();
+			if (!success) {
+			//	throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_FILESYSTEM_ERROR);
+			}
+		  }
+	 } 
+	 /**
+	  * Deletes a file or folder in the filesytem. 
+	  * 
+	  * @param filename The complete path of the file or folder.
+	  * @exception CmsException Throws CmsException if operation was not succesful
+	  */
+	 public void removeResource(String filename, String key) 
+		throws CmsException{
+		 
+		 File discFile=new File(absoluteName(filename,key));
+		 // check if file exists
+		 if (discFile.exists()){
+			boolean success=discFile.delete();
+			if (!success) {
+			//		 throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILESYSTEM_ERROR);
+			}
+		 }
+	 } 
+	/**
+	 * Creates or writes a file with the given content.
+	 *
+	 * @param filename The complete name of the new file (including pathinformation).
+	 * @param contents The contents of the new file.
+	 * 
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */    
+	 public void writeFile(String filename, String key, byte[] contents)
+							
+		 throws CmsException {
+		 
+			 File discFile= new File (absoluteName(filename,key));
+			 try {
+				 // write the new file to disk
+				 OutputStream s = new FileOutputStream(discFile);
+				 s.write(contents);
+				 s.close();
+			 } catch (Exception e) {
+			  // throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
+			 }	
+	 } 
 }

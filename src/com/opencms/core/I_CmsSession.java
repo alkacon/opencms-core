@@ -1,7 +1,9 @@
+package com.opencms.core;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsSession.java,v $
- * Date   : $Date: 2000/08/02 13:34:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/08/08 14:08:21 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.core;
-
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -39,17 +39,9 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/08/02 13:34:53 $  
+ * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:21 $  
  */
 public interface I_CmsSession  {
-	
-	/**
-	 * Puts a value into the session
-	 * 
-	 * @param name the key.
-	 * @param value a object to store the value.
-	 */
-	public void putValue(String name, Object value);
 	
 	/**
 	 * Gets a value from the session.
@@ -58,7 +50,13 @@ public interface I_CmsSession  {
 	 * @return the object for this key.
 	 */
 	public Object getValue(String name);
-	
+	/**
+	 * Puts a value into the session
+	 * 
+	 * @param name the key.
+	 * @param value a object to store the value.
+	 */
+	public void putValue(String name, Object value);
 	/**
 	 * Removes a value from the session.
 	 * 

@@ -1,8 +1,10 @@
+package com.opencms.web;
+
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlMailThread.java,v $ 
- * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/21 13:47:00 $
- * Version: $Revision: 1.3 $
+ * Author : $Author: h.riege $
+ * Date   : $Date: 2000/08/08 14:08:29 $
+ * Version: $Revision: 1.4 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -22,8 +24,6 @@
  * THIS SOFTWARE OR ITS DERIVATIVES.
  */
 
-package com.opencms.web;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -39,8 +39,8 @@ import java.io.*;
 /**
  * This class is used to send a mail, it used the Threads to send it.
  * 
- * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/02/21 13:47:00 $
+ * @author $Author: h.riege $
+ * @version $Name:  $ $Revision: 1.4 $ $Date: 2000/08/08 14:08:29 $
  * @see java.lang.Thread
  */
 public class CmsXmlMailThread extends Thread {
@@ -78,7 +78,6 @@ public class CmsXmlMailThread extends Thread {
 		c_SUBJECT=(String)mail.get(C_HASH_SUBJECT);
 		c_CONTENT=(String)mail.get(C_HASH_CONTENT);
 	}
-	
 	public void run() {
 		// Send the mail
 		// create some properties and get the default Session

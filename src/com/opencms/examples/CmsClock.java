@@ -1,7 +1,9 @@
+package com.opencms.examples;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsClock.java,v $
- * Date   : $Date: 2000/06/05 13:37:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/08 14:08:22 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -25,8 +27,6 @@
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-package com.opencms.examples;
 
 import com.opencms.template.*;
 import com.opencms.file.*;
@@ -54,21 +54,21 @@ import java.util.*;
  * also use a subset of this calls to generate e.g. only the date and not the time information.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/06/05 13:37:51 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/08 14:08:22 $
  */
 public class CmsClock extends CmsXmlTemplate {
 
-    /**
-     * Handles any occurence of this user method.
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param userObj Hashtable with parameters.
-     * @return String or byte[] with the content of this subelement.
-     * @exception CmsException
-     */
-    public Object get(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+	/**
+	 * Handles any occurence of this user method.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param tagcontent Unused in this special case of a user method. Can be ignored.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+	 * @param userObj Hashtable with parameters.
+	 * @return String or byte[] with the content of this subelement.
+	 * @exception CmsException
+	 */
+	public Object get(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
 		throws CmsException {
 		
 		// get the current time
@@ -96,34 +96,32 @@ public class CmsClock extends CmsXmlTemplate {
 			return "?" + tagcontent + "?";
 		}
 	}
-
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * <P>
+	 * This result is NOT cacheable, because a clock is dynamicaly.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		// not cacheable
+		return false;
+	}
 	/**
 	 * Private method to format an integer into a two-digit string.
 	 * @param value the int-value to format.
 	 * @return the formated string.
 	 */
 	private String twoDigit(int value) {
-         String ret= "0" + value;   
-         if (ret.length()==3) {
-             ret=ret.substring(1,3);
-         }
+		 String ret= "0" + value;   
+		 if (ret.length()==3) {
+			 ret=ret.substring(1,3);
+		 }
 		 return ret;
 	}
-	
-    /**
-     * Indicates if the results of this class are cacheable.
-     * <P>
-     * This result is NOT cacheable, because a clock is dynamicaly.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-		// not cacheable
-		return false;
-    }
 }

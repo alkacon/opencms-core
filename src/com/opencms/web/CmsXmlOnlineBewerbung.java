@@ -1,8 +1,10 @@
+package com.opencms.web;
+
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $ 
- * Author : $Author: a.schouten $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.18 $
+ * Author : $Author: h.riege $
+ * Date   : $Date: 2000/08/08 14:08:29 $
+ * Version: $Revision: 1.19 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -22,8 +24,6 @@
  * THIS SOFTWARE OR ITS DERIVATIVES.
  */
 
-package com.opencms.web;
-
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -41,8 +41,8 @@ import java.io.*;
  * This class is used to display the application form of mindfact and makes it
  * possible to send the application form as a mail.
  * 
- * @author $Author: a.schouten $
- * @version $Name:  $ $Revision: 1.18 $ $Date: 2000/06/05 13:37:58 $
+ * @author $Author: h.riege $
+ * @version $Name:  $ $Revision: 1.19 $ $Date: 2000/08/08 14:08:29 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -148,273 +148,72 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 	private static final String C_HASH_LINK="link";
 	
 	
-    /**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile,
-							   String elementName, Hashtable parameters,
-							   String templateSelector) {
-        return false;
-    }
-	    
-	
-    /**
-     * Reads in the template file and starts the XML parser for the expected
-     * content type <class>CmsXmlWpTemplateFile</code>
-     * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        CmsXmlOnlineBewerbungContentDefinition xmlTemplateDocument = new CmsXmlOnlineBewerbungContentDefinition(cms, templateFile);       
-        return xmlTemplateDocument;
-    }        
-	
-	
-    /**
-     * Gets the content of a defined section in a given template file and its 
-     * subtemplates with the given parameters. 
-     * 
-	 * @see getContent(CmsObject cms, String templateFile, String elementName,   
-	 * Hashtable parameters)
+	/**
+	 * This method checks the parameter, if there is an illegal charecter
+	 * then it returns an error.
+	 * 	 
+	 * @param value The String that must be checked.
+	 * @param parameter the name of feld that it is used to build an error message.
 	 * 
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * 
-     * @return It returns an array of bytes that contains the page.
-     */
-    public byte[] getContent(CmsObject cms, String templateFile, String 
-                             elementName, Hashtable parameters, String 
-                             templateSelector) throws CmsException {
+	 * @exception Exception throws always the Exception.
+	*/
+	private void check(String value, String parameter) throws Exception {
 		
-		// read parameter values		
-		String errorMessage="";
-		String text=destroyCmsXmlTag((String)parameters.get(C_TEXT));
-		String certificates=destroyCmsXmlTag((String)parameters.get(C_FILE1));
-		String certificatesContent=destroyCmsXmlTag((String)parameters.get(C_FILE1_CONTENT));
-		String oldPosition=destroyCmsXmlTag((String)parameters.get(C_OLDPOSITION));
-		String newPosition=destroyCmsXmlTag((String)parameters.get(C_NEWPOSITION));
-		String base=destroyCmsXmlTag((String)parameters.get(C_BASE));	
-		String entry=destroyCmsXmlTag((String)parameters.get(C_ENTRY));		
-		String salary=destroyCmsXmlTag((String)parameters.get(C_SALARY));		
-		String how=destroyCmsXmlTag((String)parameters.get(C_HOW));		
-		String anrede=destroyCmsXmlTag((String)parameters.get(C_ANREDE));		
-		String titel=destroyCmsXmlTag((String)parameters.get(C_TITEL));		
-		String firstname=destroyCmsXmlTag((String)parameters.get(C_FIRSTNAME));		
-		String surname=destroyCmsXmlTag((String)parameters.get(C_SURNAME));		
-		String birthdate=destroyCmsXmlTag((String)parameters.get(C_BIRTHDATE));
-		String citizen=destroyCmsXmlTag((String)parameters.get(C_CITIZEN));
-		String family=destroyCmsXmlTag((String)parameters.get(C_FAMILY));
-		String co=destroyCmsXmlTag((String)parameters.get(C_CO));
-		String street=destroyCmsXmlTag((String)parameters.get(C_STREET));
-		String plz=destroyCmsXmlTag((String)parameters.get(C_PLZ));
-		String city=destroyCmsXmlTag((String)parameters.get(C_CITY));
-		String companyFon=destroyCmsXmlTag((String)parameters.get(C_COMPANYFON));
-		String privateFon=destroyCmsXmlTag((String)parameters.get(C_PRIVATEFON));
-		String mobileFon=destroyCmsXmlTag((String)parameters.get(C_MOBILEFON));
-		String fax=destroyCmsXmlTag((String)parameters.get(C_FAX));
-		String email=destroyCmsXmlTag((String)parameters.get(C_EMAIL));
-		String url=destroyCmsXmlTag((String)parameters.get(C_URL));	
-		// errorNumber is the number of errors that is occured so it contains
-		// the number of site that it have to go back.
-		String errorNumber=destroyCmsXmlTag((String)parameters.get(C_ERRORNUMBER));
-		// action defines the way that this method must handle
-		String action=destroyCmsXmlTag((String)parameters.get(C_ACTION));
-		// convert null an ""
-		text=(text==null?"":text);
-		certificates=(certificates==null?"":certificates);
-		certificatesContent=(certificatesContent==null?"":certificatesContent);
-		oldPosition=(oldPosition==null?"":oldPosition);
-		newPosition=(newPosition==null?"":newPosition);
-		base=(base==null?"":base);
-		entry=(entry==null?"":entry);
-		salary=(salary==null?"":salary);
-		how=(how==null?"":how);
-		anrede=(anrede==null?"":anrede);		
-		titel=(titel==null?"":titel);
-		firstname=(firstname==null?"":firstname);
-		surname=(surname==null?"":surname);
-		birthdate=(birthdate==null?"":birthdate);
-		citizen=(citizen==null?"":citizen);
-		family=(family==null?"":family);
-		co=(co==null?"":co);
-		street=(street==null?"":street);
-		plz=(plz==null?"":plz);
-		city=(city==null?"":city);
-		companyFon=(companyFon==null?"":companyFon);
-		privateFon=(privateFon==null?"":privateFon);
-		mobileFon=(mobileFon==null?"":mobileFon);
-		fax=(fax==null?"":fax);
-		email=(email==null?"":email);
-		url=(url==null?"":url);
-		errorNumber=(errorNumber==null?"":errorNumber);
-		action=(action==null?"":action);		
-		if (certificates.equals("unknown")) {
-			 certificates="";
-		}		
-		// CententDefinition		
-		CmsXmlOnlineBewerbungContentDefinition datablock=(CmsXmlOnlineBewerbungContentDefinition)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);	
-		
-		datablock.setText(text);
-		datablock.setCertificates(certificates);
-		datablock.setOldPosition(oldPosition);	
-		datablock.setNewPosition(datablock.getOption(C_DATA_NEWPOSITION,newPosition));
-		datablock.setBase(datablock.getOption(C_DATA_BASE,base));
-		datablock.setEntry(entry);
-		datablock.setHow(datablock.getOption(C_DATA_HOW,how));
-		datablock.setAnrede(datablock.getOption(C_DATA_ANREDE,anrede));
-		datablock.setSalary(salary);
-		datablock.setTitel(titel);
-		datablock.setFirstname(firstname);
-		datablock.setSurname(surname);
-		datablock.setBirthdate(birthdate);
-		datablock.setCitizen(citizen);
-		datablock.setFamily(datablock.getOption(C_DATA_FAMILY,family));
-		datablock.setCo(co);
-		datablock.setStreet(street);
-		datablock.setPlz(plz);
-		datablock.setCity(city);
-		datablock.setCompanyFon(companyFon);
-		datablock.setPrivateFon(privateFon);
-		datablock.setMobileFon(mobileFon);
-		datablock.setFax(fax);
-		datablock.setEmail(email);
-		datablock.setUrl(url);
-		datablock.setAction(action);
-		datablock.setErrorNumber(errorNumber);
-		datablock.setErrorMessage(errorMessage);
-		
-		if (action.equals("sendMail")) {
-			
-			errorMessage=formIsCorrect(parameters);
-			
-			if (!errorMessage.equals("")) {				
-				errorNumber=new Integer((new Integer(errorNumber).intValue())-1).toString();
-				datablock.setErrorNumber(errorNumber);
-				
-				datablock.setErrorMessage(datablock.getError(errorMessage));
-				
-				return startProcessing(cms, datablock, elementName, parameters, null);
-				
-			} else {
-				
-				// save File
-				certificates=saveFile(certificates,certificatesContent);
-				
-				HttpServletRequest req=(HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-				
-				Hashtable mailInfo=new Hashtable();
-				// this is nessesary to build the "BewerbungText" datablock				
-				mailInfo.put(C_HASH_TEXT,(text.equals("")?"nicht angegeben":text));				
-				mailInfo.put(C_HASH_CERTIFICATES,(certificates.equals("")?"nicht angegeben":certificates));
-				mailInfo.put(C_HASH_OLDPOSITION,(oldPosition.equals("")?"nicht angegeben":oldPosition));
-				mailInfo.put(C_HASH_NEWPOSITION,((newPosition.equals("") || newPosition.equals("Bitte ausw‰hlen"))?"nicht angegeben":newPosition));	
-	 			mailInfo.put(C_HASH_BASE,((base.equals("") || base.equals("Bitte ausw‰hlen"))?"nicht angegeben":base));
-				mailInfo.put(C_HASH_ENTRY,(entry.equals("")?"nicht angegeben":entry));
-				mailInfo.put(C_HASH_SALARY,(salary.equals("")?"nicht angegeben":salary));
-				mailInfo.put(C_HASH_HOW,((how.equals("") || how.equals("Bitte ausw‰hlen"))?"nicht angegeben":how));
-				mailInfo.put(C_HASH_ANREDE,((anrede.equals("") || anrede.equals("Bitte ausw‰hlen"))?"nicht angegeben":anrede));
-				mailInfo.put(C_HASH_TITEL,(titel.equals("")?"nicht angegeben":titel));
-				mailInfo.put(C_HASH_FIRSTNAME,(firstname.equals("")?"nicht angegeben":firstname));
-				mailInfo.put(C_HASH_SURNAME,(surname.equals("")?"nicht angegeben":surname));
-				mailInfo.put(C_HASH_BIRTHDATE,(birthdate.equals("")?"nicht angegeben":birthdate));
-				mailInfo.put(C_HASH_CITIZEN,(citizen.equals("")?"nicht angegeben":citizen));
-				mailInfo.put(C_HASH_FAMILY,((family.equals("") || family.equals("Bitte ausw‰hlen"))?"nicht angegeben":family));
-				mailInfo.put(C_HASH_CO,(co.equals("")?"nicht angegeben":co));
-				mailInfo.put(C_HASH_STREET,(street.equals("")?"nicht angegeben":street));
-				mailInfo.put(C_HASH_PLZ,(plz.equals("")?"nicht angegeben":plz));
-				mailInfo.put(C_HASH_CITY,(city.equals("")?"nicht angegeben":city));
-				mailInfo.put(C_HASH_COMPANYFON,(companyFon.equals("")?"nicht angegeben":companyFon));
-				mailInfo.put(C_HASH_PRIVATEFON,(privateFon.equals("")?"nicht angegeben":privateFon));
-				mailInfo.put(C_HASH_MOBILEFON,(mobileFon.equals("")?"nicht angegeben":mobileFon));
-				mailInfo.put(C_HASH_FAX,(fax.equals("")?"nicht angegeben":fax));
-				mailInfo.put(C_HASH_EMAIL,(email.equals("")?"nicht angegeben":email));
-				mailInfo.put(C_HASH_URL,(url.equals("")?"nicht angegeben":url));
-				mailInfo.put(C_HASH_IP,req.getRemoteAddr());				
-				// write in database
-				String link=startWorkflow(cms,mailInfo);
-				mailInfo.put(C_HASH_LINK,link);
-				writeInDatabase(mailInfo);
-				// this is nessesary because of "nicht angegeben" must be send
-				// or displayed if the user has nothing entered.
-				datablock.setText((String)mailInfo.get(C_HASH_TEXT));
-				datablock.setCertificates((String)mailInfo.get(C_HASH_CERTIFICATES));
-				datablock.setOldPosition((String)mailInfo.get(C_HASH_OLDPOSITION));
-				datablock.setNewPosition((String)mailInfo.get(C_HASH_NEWPOSITION));
-				datablock.setBase((String)mailInfo.get(C_HASH_BASE));
-				datablock.setEntry((String)mailInfo.get(C_HASH_ENTRY));
-				datablock.setHow((String)mailInfo.get(C_HASH_HOW));
-				datablock.setSalary((String)mailInfo.get(C_HASH_SALARY));
-				datablock.setAnrede((String)mailInfo.get(C_HASH_ANREDE));
-				datablock.setTitel((String)mailInfo.get(C_HASH_TITEL));
-				datablock.setFirstname((String)mailInfo.get(C_HASH_FIRSTNAME));
-				datablock.setSurname((String)mailInfo.get(C_HASH_SURNAME));
-				datablock.setBirthdate((String)mailInfo.get(C_HASH_BIRTHDATE));
-				datablock.setCitizen((String)mailInfo.get(C_HASH_CITIZEN));
-				datablock.setFamily((String)mailInfo.get(C_HASH_FAMILY));
-				datablock.setCo((String)mailInfo.get(C_HASH_CO));
-				datablock.setStreet((String)mailInfo.get(C_HASH_STREET));
-				datablock.setPlz((String)mailInfo.get(C_HASH_PLZ));
-				datablock.setCity((String)mailInfo.get(C_HASH_CITY));
-				datablock.setCompanyFon((String)mailInfo.get(C_HASH_COMPANYFON));
-				datablock.setPrivateFon((String)mailInfo.get(C_HASH_PRIVATEFON));
-				datablock.setMobileFon((String)mailInfo.get(C_HASH_MOBILEFON));
-				datablock.setFax((String)mailInfo.get(C_HASH_FAX));
-				datablock.setEmail((String)mailInfo.get(C_HASH_EMAIL));
-				datablock.setUrl((String)mailInfo.get(C_HASH_URL));
-				
-				Hashtable mailTable=new Hashtable();
-				
-				String from=(String)datablock.getFrom();
-				String an=(String)datablock.getTo();
-				String cc=(String)datablock.getCc();
-				String bcc=(String)datablock.getBcc();
-				String host=(String)datablock.getMailserver();
-				String subject=(String)datablock.getSubject(firstname,surname);
-				String content=(String)datablock.getBewerbungsText(mailInfo);
-				
-				mailTable.put(C_HASH_CERTIFICATES,certificates);
-				mailTable.put(C_HASH_FROM,from);
-				mailTable.put(C_HASH_AN,an);
-				mailTable.put(C_HASH_CC,cc);
-				mailTable.put(C_HASH_BCC,bcc);
-				mailTable.put(C_HASH_HOST,host);
-				mailTable.put(C_HASH_SUBJECT,subject);
-				mailTable.put(C_HASH_CONTENT,content);
-				
-				// send mail
-				CmsXmlMailThread mailToCompany=new CmsXmlMailThread(mailTable);				
-				mailToCompany.start();
-				if (!email.equals("")) {
-					mailTable.put(C_HASH_AN,email);
-					CmsXmlMailThread mailToApplicant=new CmsXmlMailThread(mailTable);
-					mailToApplicant.start();
+		if (!value.equals("")) {
+			// TODO: use pattern correctly
+			// String pattern="01234567890 (abcdefghijklmnopqrstuvwxyz)[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{‰ˆ¸ƒ÷‹ﬂ}<.@:,;?$|!&+-#_=%*/>";
+			for (int i=0;i<value.length();i++) {
+				if (value.indexOf(value.charAt(i))==-1) {
+					throw new Exception(parameter);
 				}
-				return startProcessing(cms, datablock, elementName, parameters, "Answer");
 			}
 		}
-		// At the first call of this method there is no action defined.
-		// set the error number -2 to go back two site after mailing the application form
-		datablock.setErrorNumber("-2");
-		datablock.setAction("sendMail");
-		datablock.setErrorMessage("");
-		return startProcessing(cms, datablock, elementName, parameters, null);
-	}
 		
-	
+	}
+	private String createSecret(){
+
+		String result = "";
+		
+		for(int i=0; i<16; i++) {
+			result = result + Integer.toString((int)Math.round(10 * Math.random()));
+		}
+		return result;
+	}
+	/**
+	 * This method checks the date format, if there is an illegal chareckter then
+	 * it returns an error.
+	 * 	 
+	 * @param date The date that must be checked.
+	 * 
+	 * @return It returns true if the date is correct.
+	*/
+	private boolean dateIsCorrect(String date) {
+		
+		int day,month,year;
+		try {
+			day=new Integer(date.substring(0,2)).parseInt(date.substring(0,2));
+			month=new Integer(date.substring(3,5)).parseInt(date.substring(3,5));
+			year=new Integer(date.substring(6)).parseInt(date.substring(6));
+		} catch (Exception e) {
+			return false;
+		}
+		if (date.length()!=10) {
+			return false;
+		}
+		if (day<1 || day>31) {
+			return false;
+		}
+		if (month<1 || month>12) {
+			return false;
+		}
+		if (year<1900 || year>2900) {
+			return false;
+		}
+		if (date.charAt(2)!='.' || date.charAt(5)!='.') {
+			return false;
+		}
+		return true;
+	}
 	/**
 	 * This method checked the parameter, if there is a CmsXml tag then it
 	 * destroys it and return a Parameter ohne CmsXml tag.
@@ -430,7 +229,6 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		}
 		return parameter;
 	}
-	
 	/**
 	 * This method checks the value of parameters, if they are correct then it returns null,
 	 * otherwise it returns an error message.
@@ -775,69 +573,281 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		
 		return errorMessage;
 	}
-		
-	
 	/**
-	 * This method checks the parameter, if there is an illegal charecter
-	 * then it returns an error.
-	 * 	 
-	 * @param value The String that must be checked.
-	 * @param parameter the name of feld that it is used to build an error message.
+	 * Gets the content of a defined section in a given template file and its 
+	 * subtemplates with the given parameters. 
 	 * 
-	 * @exception Exception throws always the Exception.
-	*/
-	private void check(String value, String parameter) throws Exception {
+	 * @see getContent(CmsObject cms, String templateFile, String elementName,   
+	 * Hashtable parameters)
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * 
+	 * @return It returns an array of bytes that contains the page.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String 
+							 elementName, Hashtable parameters, String 
+							 templateSelector) throws CmsException {
 		
-		if (!value.equals("")) {
-			// TODO: use pattern correctly
-			// String pattern="01234567890 (abcdefghijklmnopqrstuvwxyz)[ABCDEFGHIJKLMNOPQRSTUVWXYZ]{‰ˆ¸ƒ÷‹ﬂ}<.@:,;?$|!&+-#_=%*/>";
-			for (int i=0;i<value.length();i++) {
-				if (value.indexOf(value.charAt(i))==-1) {
-					throw new Exception(parameter);
+		// read parameter values		
+		String errorMessage="";
+		String text=destroyCmsXmlTag((String)parameters.get(C_TEXT));
+		String certificates=destroyCmsXmlTag((String)parameters.get(C_FILE1));
+		String certificatesContent=destroyCmsXmlTag((String)parameters.get(C_FILE1_CONTENT));
+		String oldPosition=destroyCmsXmlTag((String)parameters.get(C_OLDPOSITION));
+		String newPosition=destroyCmsXmlTag((String)parameters.get(C_NEWPOSITION));
+		String base=destroyCmsXmlTag((String)parameters.get(C_BASE));	
+		String entry=destroyCmsXmlTag((String)parameters.get(C_ENTRY));		
+		String salary=destroyCmsXmlTag((String)parameters.get(C_SALARY));		
+		String how=destroyCmsXmlTag((String)parameters.get(C_HOW));		
+		String anrede=destroyCmsXmlTag((String)parameters.get(C_ANREDE));		
+		String titel=destroyCmsXmlTag((String)parameters.get(C_TITEL));		
+		String firstname=destroyCmsXmlTag((String)parameters.get(C_FIRSTNAME));		
+		String surname=destroyCmsXmlTag((String)parameters.get(C_SURNAME));		
+		String birthdate=destroyCmsXmlTag((String)parameters.get(C_BIRTHDATE));
+		String citizen=destroyCmsXmlTag((String)parameters.get(C_CITIZEN));
+		String family=destroyCmsXmlTag((String)parameters.get(C_FAMILY));
+		String co=destroyCmsXmlTag((String)parameters.get(C_CO));
+		String street=destroyCmsXmlTag((String)parameters.get(C_STREET));
+		String plz=destroyCmsXmlTag((String)parameters.get(C_PLZ));
+		String city=destroyCmsXmlTag((String)parameters.get(C_CITY));
+		String companyFon=destroyCmsXmlTag((String)parameters.get(C_COMPANYFON));
+		String privateFon=destroyCmsXmlTag((String)parameters.get(C_PRIVATEFON));
+		String mobileFon=destroyCmsXmlTag((String)parameters.get(C_MOBILEFON));
+		String fax=destroyCmsXmlTag((String)parameters.get(C_FAX));
+		String email=destroyCmsXmlTag((String)parameters.get(C_EMAIL));
+		String url=destroyCmsXmlTag((String)parameters.get(C_URL));	
+		// errorNumber is the number of errors that is occured so it contains
+		// the number of site that it have to go back.
+		String errorNumber=destroyCmsXmlTag((String)parameters.get(C_ERRORNUMBER));
+		// action defines the way that this method must handle
+		String action=destroyCmsXmlTag((String)parameters.get(C_ACTION));
+		// convert null an ""
+		text=(text==null?"":text);
+		certificates=(certificates==null?"":certificates);
+		certificatesContent=(certificatesContent==null?"":certificatesContent);
+		oldPosition=(oldPosition==null?"":oldPosition);
+		newPosition=(newPosition==null?"":newPosition);
+		base=(base==null?"":base);
+		entry=(entry==null?"":entry);
+		salary=(salary==null?"":salary);
+		how=(how==null?"":how);
+		anrede=(anrede==null?"":anrede);		
+		titel=(titel==null?"":titel);
+		firstname=(firstname==null?"":firstname);
+		surname=(surname==null?"":surname);
+		birthdate=(birthdate==null?"":birthdate);
+		citizen=(citizen==null?"":citizen);
+		family=(family==null?"":family);
+		co=(co==null?"":co);
+		street=(street==null?"":street);
+		plz=(plz==null?"":plz);
+		city=(city==null?"":city);
+		companyFon=(companyFon==null?"":companyFon);
+		privateFon=(privateFon==null?"":privateFon);
+		mobileFon=(mobileFon==null?"":mobileFon);
+		fax=(fax==null?"":fax);
+		email=(email==null?"":email);
+		url=(url==null?"":url);
+		errorNumber=(errorNumber==null?"":errorNumber);
+		action=(action==null?"":action);		
+		if (certificates.equals("unknown")) {
+			 certificates="";
+		}		
+		// CententDefinition		
+		CmsXmlOnlineBewerbungContentDefinition datablock=(CmsXmlOnlineBewerbungContentDefinition)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);	
+		
+		datablock.setText(text);
+		datablock.setCertificates(certificates);
+		datablock.setOldPosition(oldPosition);	
+		datablock.setNewPosition(datablock.getOption(C_DATA_NEWPOSITION,newPosition));
+		datablock.setBase(datablock.getOption(C_DATA_BASE,base));
+		datablock.setEntry(entry);
+		datablock.setHow(datablock.getOption(C_DATA_HOW,how));
+		datablock.setAnrede(datablock.getOption(C_DATA_ANREDE,anrede));
+		datablock.setSalary(salary);
+		datablock.setTitel(titel);
+		datablock.setFirstname(firstname);
+		datablock.setSurname(surname);
+		datablock.setBirthdate(birthdate);
+		datablock.setCitizen(citizen);
+		datablock.setFamily(datablock.getOption(C_DATA_FAMILY,family));
+		datablock.setCo(co);
+		datablock.setStreet(street);
+		datablock.setPlz(plz);
+		datablock.setCity(city);
+		datablock.setCompanyFon(companyFon);
+		datablock.setPrivateFon(privateFon);
+		datablock.setMobileFon(mobileFon);
+		datablock.setFax(fax);
+		datablock.setEmail(email);
+		datablock.setUrl(url);
+		datablock.setAction(action);
+		datablock.setErrorNumber(errorNumber);
+		datablock.setErrorMessage(errorMessage);
+		
+		if (action.equals("sendMail")) {
+			
+			errorMessage=formIsCorrect(parameters);
+			
+			if (!errorMessage.equals("")) {				
+				errorNumber=new Integer((new Integer(errorNumber).intValue())-1).toString();
+				datablock.setErrorNumber(errorNumber);
+				
+				datablock.setErrorMessage(datablock.getError(errorMessage));
+				
+				return startProcessing(cms, datablock, elementName, parameters, null);
+				
+			} else {
+				
+				// save File
+				certificates=saveFile(certificates,certificatesContent);
+				
+				HttpServletRequest req=(HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+				
+				Hashtable mailInfo=new Hashtable();
+				// this is nessesary to build the "BewerbungText" datablock				
+				mailInfo.put(C_HASH_TEXT,(text.equals("")?"nicht angegeben":text));				
+				mailInfo.put(C_HASH_CERTIFICATES,(certificates.equals("")?"nicht angegeben":certificates));
+				mailInfo.put(C_HASH_OLDPOSITION,(oldPosition.equals("")?"nicht angegeben":oldPosition));
+				mailInfo.put(C_HASH_NEWPOSITION,((newPosition.equals("") || newPosition.equals("Bitte ausw‰hlen"))?"nicht angegeben":newPosition));	
+	 			mailInfo.put(C_HASH_BASE,((base.equals("") || base.equals("Bitte ausw‰hlen"))?"nicht angegeben":base));
+				mailInfo.put(C_HASH_ENTRY,(entry.equals("")?"nicht angegeben":entry));
+				mailInfo.put(C_HASH_SALARY,(salary.equals("")?"nicht angegeben":salary));
+				mailInfo.put(C_HASH_HOW,((how.equals("") || how.equals("Bitte ausw‰hlen"))?"nicht angegeben":how));
+				mailInfo.put(C_HASH_ANREDE,((anrede.equals("") || anrede.equals("Bitte ausw‰hlen"))?"nicht angegeben":anrede));
+				mailInfo.put(C_HASH_TITEL,(titel.equals("")?"nicht angegeben":titel));
+				mailInfo.put(C_HASH_FIRSTNAME,(firstname.equals("")?"nicht angegeben":firstname));
+				mailInfo.put(C_HASH_SURNAME,(surname.equals("")?"nicht angegeben":surname));
+				mailInfo.put(C_HASH_BIRTHDATE,(birthdate.equals("")?"nicht angegeben":birthdate));
+				mailInfo.put(C_HASH_CITIZEN,(citizen.equals("")?"nicht angegeben":citizen));
+				mailInfo.put(C_HASH_FAMILY,((family.equals("") || family.equals("Bitte ausw‰hlen"))?"nicht angegeben":family));
+				mailInfo.put(C_HASH_CO,(co.equals("")?"nicht angegeben":co));
+				mailInfo.put(C_HASH_STREET,(street.equals("")?"nicht angegeben":street));
+				mailInfo.put(C_HASH_PLZ,(plz.equals("")?"nicht angegeben":plz));
+				mailInfo.put(C_HASH_CITY,(city.equals("")?"nicht angegeben":city));
+				mailInfo.put(C_HASH_COMPANYFON,(companyFon.equals("")?"nicht angegeben":companyFon));
+				mailInfo.put(C_HASH_PRIVATEFON,(privateFon.equals("")?"nicht angegeben":privateFon));
+				mailInfo.put(C_HASH_MOBILEFON,(mobileFon.equals("")?"nicht angegeben":mobileFon));
+				mailInfo.put(C_HASH_FAX,(fax.equals("")?"nicht angegeben":fax));
+				mailInfo.put(C_HASH_EMAIL,(email.equals("")?"nicht angegeben":email));
+				mailInfo.put(C_HASH_URL,(url.equals("")?"nicht angegeben":url));
+				mailInfo.put(C_HASH_IP,req.getRemoteAddr());				
+				// write in database
+				String link=startWorkflow(cms,mailInfo);
+				mailInfo.put(C_HASH_LINK,link);
+				writeInDatabase(mailInfo);
+				// this is nessesary because of "nicht angegeben" must be send
+				// or displayed if the user has nothing entered.
+				datablock.setText((String)mailInfo.get(C_HASH_TEXT));
+				datablock.setCertificates((String)mailInfo.get(C_HASH_CERTIFICATES));
+				datablock.setOldPosition((String)mailInfo.get(C_HASH_OLDPOSITION));
+				datablock.setNewPosition((String)mailInfo.get(C_HASH_NEWPOSITION));
+				datablock.setBase((String)mailInfo.get(C_HASH_BASE));
+				datablock.setEntry((String)mailInfo.get(C_HASH_ENTRY));
+				datablock.setHow((String)mailInfo.get(C_HASH_HOW));
+				datablock.setSalary((String)mailInfo.get(C_HASH_SALARY));
+				datablock.setAnrede((String)mailInfo.get(C_HASH_ANREDE));
+				datablock.setTitel((String)mailInfo.get(C_HASH_TITEL));
+				datablock.setFirstname((String)mailInfo.get(C_HASH_FIRSTNAME));
+				datablock.setSurname((String)mailInfo.get(C_HASH_SURNAME));
+				datablock.setBirthdate((String)mailInfo.get(C_HASH_BIRTHDATE));
+				datablock.setCitizen((String)mailInfo.get(C_HASH_CITIZEN));
+				datablock.setFamily((String)mailInfo.get(C_HASH_FAMILY));
+				datablock.setCo((String)mailInfo.get(C_HASH_CO));
+				datablock.setStreet((String)mailInfo.get(C_HASH_STREET));
+				datablock.setPlz((String)mailInfo.get(C_HASH_PLZ));
+				datablock.setCity((String)mailInfo.get(C_HASH_CITY));
+				datablock.setCompanyFon((String)mailInfo.get(C_HASH_COMPANYFON));
+				datablock.setPrivateFon((String)mailInfo.get(C_HASH_PRIVATEFON));
+				datablock.setMobileFon((String)mailInfo.get(C_HASH_MOBILEFON));
+				datablock.setFax((String)mailInfo.get(C_HASH_FAX));
+				datablock.setEmail((String)mailInfo.get(C_HASH_EMAIL));
+				datablock.setUrl((String)mailInfo.get(C_HASH_URL));
+				
+				Hashtable mailTable=new Hashtable();
+				
+				String from=(String)datablock.getFrom();
+				String an=(String)datablock.getTo();
+				String cc=(String)datablock.getCc();
+				String bcc=(String)datablock.getBcc();
+				String host=(String)datablock.getMailserver();
+				String subject=(String)datablock.getSubject(firstname,surname);
+				String content=(String)datablock.getBewerbungsText(mailInfo);
+				
+				mailTable.put(C_HASH_CERTIFICATES,certificates);
+				mailTable.put(C_HASH_FROM,from);
+				mailTable.put(C_HASH_AN,an);
+				mailTable.put(C_HASH_CC,cc);
+				mailTable.put(C_HASH_BCC,bcc);
+				mailTable.put(C_HASH_HOST,host);
+				mailTable.put(C_HASH_SUBJECT,subject);
+				mailTable.put(C_HASH_CONTENT,content);
+				
+				// send mail
+				CmsXmlMailThread mailToCompany=new CmsXmlMailThread(mailTable);				
+				mailToCompany.start();
+				if (!email.equals("")) {
+					mailTable.put(C_HASH_AN,email);
+					CmsXmlMailThread mailToApplicant=new CmsXmlMailThread(mailTable);
+					mailToApplicant.start();
 				}
+				return startProcessing(cms, datablock, elementName, parameters, "Answer");
 			}
 		}
-		
+		// At the first call of this method there is no action defined.
+		// set the error number -2 to go back two site after mailing the application form
+		datablock.setErrorNumber("-2");
+		datablock.setAction("sendMail");
+		datablock.setErrorMessage("");
+		return startProcessing(cms, datablock, elementName, parameters, null);
 	}
-	
-	
-	/**
-	 * This method checks the date format, if there is an illegal chareckter then
-	 * it returns an error.
-	 * 	 
-	 * @param date The date that must be checked.
-	 * 
-	 * @return It returns true if the date is correct.
-	*/
-	private boolean dateIsCorrect(String date) {
+	private int getLastInsertId(Connection con)
+		throws CmsException {
+		ResultSet res =null;
+		int id = -1;
 		
-		int day,month,year;
 		try {
-			day=new Integer(date.substring(0,2)).parseInt(date.substring(0,2));
-			month=new Integer(date.substring(3,5)).parseInt(date.substring(3,5));
-			year=new Integer(date.substring(6)).parseInt(date.substring(6));
-		} catch (Exception e) {
-			return false;
+			PreparedStatement statementGetLastInsertId = con.prepareStatement("SELECT LAST_INSERT_ID() AS id");
+			res = statementGetLastInsertId.executeQuery();
+			id = res.getInt("id");
+		} catch (SQLException e){
+			throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
-		if (date.length()!=10) {
-			return false;
-		}
-		if (day<1 || day>31) {
-			return false;
-		}
-		if (month<1 || month>12) {
-			return false;
-		}
-		if (year<1900 || year>2900) {
-			return false;
-		}
-		if (date.charAt(2)!='.' || date.charAt(5)!='.') {
-			return false;
-		}
-		return true;
+		return id;
 	}
-	
-	
+	/**
+	 * Reads in the template file and starts the XML parser for the expected
+	 * content type <class>CmsXmlWpTemplateFile</code>
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		CmsXmlOnlineBewerbungContentDefinition xmlTemplateDocument = new CmsXmlOnlineBewerbungContentDefinition(cms, templateFile);       
+		return xmlTemplateDocument;
+	}
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile,
+							   String elementName, Hashtable parameters,
+							   String templateSelector) {
+		return false;
+	}
 	/**
 	 * This method saves the attachment at the server
 	 * 
@@ -875,8 +885,102 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		}
 		return certificates;
 	}
-	
-	
+	private String startWorkflow(CmsObject cms, Hashtable formData)
+		throws CmsException {
+		
+		String secretkey = null;
+		CmsTask project = null;
+		
+		try {
+			// Connection for the DB insert
+			Class.forName("org.gjt.mm.mysql.Driver");						
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/opencms","root","");
+			Statement stmt = con.createStatement();
+			
+			secretkey = createSecret();
+			System.out.println(secretkey);
+			
+			String recname = (String)formData.get(C_HASH_FIRSTNAME) + " " +(String)formData.get(C_HASH_SURNAME);
+			String recstreet = (String)formData.get(C_HASH_STREET);
+			String recpostalcode = (String)formData.get(C_HASH_PLZ);
+			String reccity = (String)formData.get(C_HASH_CITY);
+			String recphone = (String)formData.get(C_HASH_PRIVATEFON);
+			String recfax = (String)formData.get(C_HASH_FAX);
+			String recemail = (String)formData.get(C_HASH_EMAIL);
+			String receducation = "-";
+			String recbirthdate = (String)formData.get(C_HASH_BIRTHDATE);
+			String rectraining = "-";
+			String recexperience = (String)formData.get(C_HASH_OLDPOSITION);
+			String recstarttime = (String)formData.get(C_HASH_ENTRY);
+			String recjob = (String)formData.get(C_HASH_NEWPOSITION);
+			String co = (String)formData.get(C_HASH_CO);
+			String text = (String)formData.get(C_HASH_TEXT);
+			
+			
+			String insert = "INSERT INTO GlobeRecruitingData SET " +
+							"name='" + recname + "', " + 
+							"street='" + recstreet + "'," +
+							"postalcode='" + recpostalcode + "', " + 
+							"city='" + reccity + "', " +
+							"phone='" + recphone +"', " +
+							"fax='" + recfax +"', " +
+							"email='" + recemail + "', " + 
+							"education='" + receducation + "', " + 
+							"birthdate='" + recbirthdate +"', " +
+							"training='" + rectraining +"', " + 
+							"experience='" + recexperience + "', " + 
+							"rowversion=0," +
+							"starttime='" + recstarttime + "', " +
+							"incomingtime=CURRENT_TIMESTAMP, " + 
+							"job='" + recjob + "'," +
+							"secretkey='" + secretkey + "'";
+			
+
+			stmt.executeUpdate(insert);
+			
+			int recdataid = getLastInsertId(con);
+			
+			CmsGroup role = cms.readGroup("Personalabt.");
+			long timeout = System.currentTimeMillis()+ 241920000;
+			
+			// get the tasktypes for the recruiting workflow
+			int projtyperef = cms.getTaskType("recruiting");
+			int tasktyperef = cms.getTaskType("StartApplication");
+			int followingtasktyperef = cms.getTaskType("CheckApplication");
+			
+			String projname = "Bewerbung als " + recjob;
+			String taskname = "Bewerbung von " + recname;
+			
+			String taskcomment = "Emailadresse: " + recemail + "<BR>\n";
+			taskcomment += "Firma: " + co + "<BR>\n";
+			taskcomment += "Text: " + text + "<BR>\n";
+			
+			project = cms.createProject(projname, projtyperef, null, timeout, 1);
+			
+			CmsTask newtask = cms.createTask(project.getId(), null, null, taskname, "", tasktyperef, timeout, 1);
+			cms.writeTaskLog(newtask.getId(), taskcomment, 100);
+
+
+			cms.endTask(newtask.getId());
+			cms.writeTaskLog(newtask.getId(), "Bewerbung eingegangen.",1);
+			
+			newtask = cms.createTask(project.getId(), null, role.getName(), taskname, "", followingtasktyperef, timeout, 1);
+			cms.setTaskPar(project.getId(), "Recruiting", Integer.toString(recdataid));
+			cms.writeTaskLog(newtask.getId(), taskcomment, 100);
+			
+		} catch (ClassNotFoundException e1) {
+			if (A_OpenCms.isLogging()) {
+				A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e1.getMessage());
+			}
+		} catch (SQLException e2){
+			  while((e2=e2.getNextException())!=null){
+				  if (A_OpenCms.isLogging()) {
+					  A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e2.getMessage());
+				  }
+			  }					
+		}		
+		return "http://etm.mindfact.com/extern/etm/recruiting/ApplicantInformation.asp?id=" + project.getId() +"&s=" + secretkey;
+	}
 	/**
 	 * This method writes the mail informations in database
 	 * 
@@ -977,128 +1081,4 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 								
 		}
 	}
-	
-	private String startWorkflow(CmsObject cms, Hashtable formData)
-		throws CmsException {
-		
-		String secretkey = null;
-		CmsTask project = null;
-		
-		try {
-			// Connection for the DB insert
-			Class.forName("org.gjt.mm.mysql.Driver");						
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/opencms","root","");
-			Statement stmt = con.createStatement();
-			
-			secretkey = createSecret();
-			System.out.println(secretkey);
-			
-			String recname = (String)formData.get(C_HASH_FIRSTNAME) + " " +(String)formData.get(C_HASH_SURNAME);
-			String recstreet = (String)formData.get(C_HASH_STREET);
-			String recpostalcode = (String)formData.get(C_HASH_PLZ);
-			String reccity = (String)formData.get(C_HASH_CITY);
-			String recphone = (String)formData.get(C_HASH_PRIVATEFON);
-			String recfax = (String)formData.get(C_HASH_FAX);
-			String recemail = (String)formData.get(C_HASH_EMAIL);
-			String receducation = "-";
-			String recbirthdate = (String)formData.get(C_HASH_BIRTHDATE);
-			String rectraining = "-";
-			String recexperience = (String)formData.get(C_HASH_OLDPOSITION);
-			String recstarttime = (String)formData.get(C_HASH_ENTRY);
-			String recjob = (String)formData.get(C_HASH_NEWPOSITION);
-			String co = (String)formData.get(C_HASH_CO);
-			String text = (String)formData.get(C_HASH_TEXT);
-			
-			
-			String insert = "INSERT INTO GlobeRecruitingData SET " +
-							"name='" + recname + "', " + 
-							"street='" + recstreet + "'," +
-							"postalcode='" + recpostalcode + "', " + 
-							"city='" + reccity + "', " +
-							"phone='" + recphone +"', " +
-							"fax='" + recfax +"', " +
-							"email='" + recemail + "', " + 
-							"education='" + receducation + "', " + 
-							"birthdate='" + recbirthdate +"', " +
-							"training='" + rectraining +"', " + 
-							"experience='" + recexperience + "', " + 
-							"rowversion=0," +
-							"starttime='" + recstarttime + "', " +
-							"incomingtime=CURRENT_TIMESTAMP, " + 
-							"job='" + recjob + "'," +
-							"secretkey='" + secretkey + "'";
-			
-
-			stmt.executeUpdate(insert);
-			
-			int recdataid = getLastInsertId(con);
-			
-			CmsGroup role = cms.readGroup("Personalabt.");
-			long timeout = System.currentTimeMillis()+ 241920000;
-			
-			// get the tasktypes for the recruiting workflow
-			int projtyperef = cms.getTaskType("recruiting");
-			int tasktyperef = cms.getTaskType("StartApplication");
-			int followingtasktyperef = cms.getTaskType("CheckApplication");
-			
-			String projname = "Bewerbung als " + recjob;
-			String taskname = "Bewerbung von " + recname;
-			
-			String taskcomment = "Emailadresse: " + recemail + "<BR>\n";
-			taskcomment += "Firma: " + co + "<BR>\n";
-			taskcomment += "Text: " + text + "<BR>\n";
-			
-			project = cms.createProject(projname, projtyperef, null, timeout, 1);
-			
-			CmsTask newtask = cms.createTask(project.getId(), null, null, taskname, "", tasktyperef, timeout, 1);
-			cms.writeTaskLog(newtask.getId(), taskcomment, 100);
-
-
-			cms.endTask(newtask.getId());
-			cms.writeTaskLog(newtask.getId(), "Bewerbung eingegangen.",1);
-			
-			newtask = cms.createTask(project.getId(), null, role.getName(), taskname, "", followingtasktyperef, timeout, 1);
-			cms.setTaskPar(project.getId(), "Recruiting", Integer.toString(recdataid));
-			cms.writeTaskLog(newtask.getId(), taskcomment, 100);
-			
-		} catch (ClassNotFoundException e1) {
-			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e1.getMessage());
-			}
-		} catch (SQLException e2){
-			  while((e2=e2.getNextException())!=null){
-				  if (A_OpenCms.isLogging()) {
-					  A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e2.getMessage());
-				  }
-			  }					
-		}		
-		return "http://etm.mindfact.com/extern/etm/recruiting/ApplicantInformation.asp?id=" + project.getId() +"&s=" + secretkey;
-	}
-	
-	private int getLastInsertId(Connection con)
-		throws CmsException {
-		ResultSet res =null;
-		int id = -1;
-		
-		try {
-			PreparedStatement statementGetLastInsertId = con.prepareStatement("SELECT LAST_INSERT_ID() AS id");
-			res = statementGetLastInsertId.executeQuery();
-			id = res.getInt("id");
-		} catch (SQLException e){
-			throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
-		return id;
-	}
-
-	private String createSecret(){
-
-		String result = "";
-		
-		for(int i=0; i<16; i++) {
-			result = result + Integer.toString((int)Math.round(10 * Math.random()));
-		}
-		return result;
-	}	
 }
-
-

@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbManager.java,v $
- * Date   : $Date: 2000/07/07 17:35:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/08 14:08:23 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 import com.opencms.core.*;
 import com.opencms.util.*;
 import java.util.*;
@@ -37,7 +37,7 @@ import source.org.apache.java.util.*;
  * Initializes the configuret ResourceBroker and starts its init-method.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/07/07 17:35:52 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/08 14:08:23 $
  */
 public class CmsRbManager implements I_CmsLogChannels, I_CmsConstants {
 
@@ -53,9 +53,9 @@ public class CmsRbManager implements I_CmsLogChannels, I_CmsConstants {
 		throws CmsException {
 		
 		String rbName = null;
-        String rbClassName = null;
+		String rbClassName = null;
 		Class rbClass = null;
-        I_CmsResourceBroker rbInstance = null;
+		I_CmsResourceBroker rbInstance = null;
 		
 		// read the name of the rb from the properties
 		rbName = (String)configurations.getString(C_CONFIGURATION_RESOURCEBROKER);
@@ -69,15 +69,15 @@ public class CmsRbManager implements I_CmsLogChannels, I_CmsConstants {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsRbManager] ressourcebroker-classname: " + rbClassName);
 		}
 
-        try {
+		try {
 			// try to get the class
-            rbClass = Class.forName(rbClassName);                          
+			rbClass = Class.forName(rbClassName);                          
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsRbManager] got rb-class");
 			}
 			
 			// try to create a instance
-            rbInstance = (I_CmsResourceBroker)rbClass.newInstance();
+			rbInstance = (I_CmsResourceBroker)rbClass.newInstance();
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsRbManager] created rb-instance");
 			}
@@ -90,11 +90,11 @@ public class CmsRbManager implements I_CmsLogChannels, I_CmsConstants {
 			
 			// return the configured resource-broker.
 			return(rbInstance);
-        } catch(Exception exc) {
+		} catch(Exception exc) {
 			String message = "Critical error while loading resourcebroker: " + Utils.getStackTrace(exc);
-            if(A_OpenCms.isLogging()) {
+			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_INIT, "[CmsRbManager] " + message);
-            }
+			}
 			throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
 		}
 	}

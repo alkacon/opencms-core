@@ -1,8 +1,10 @@
+package com.opencms.file.mySql;
+
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/07/17 10:20:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/08/08 14:08:27 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-
-package com.opencms.file.mySql;
 
 import java.sql.*;
 import java.util.*; 
@@ -95,11 +95,11 @@ public class CmsDbPool {
 	/**
 	 * Init the pool with a specified number of connections.
 	 * 
-     * @param driver - driver for the database
-     * @param url - the URL of the database to which to connect
-     * @param user - the username to connect to the db.
-     * @param passwd - the passwd of the user to connect to the db.
-     * @param maxConn - maximum connections
+	 * @param driver - driver for the database
+	 * @param url - the URL of the database to which to connect
+	 * @param user - the username to connect to the db.
+	 * @param passwd - the passwd of the user to connect to the db.
+	 * @param maxConn - maximum connections
 	 */
 	public CmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws CmsException {
 		this.m_driver = driver;
@@ -113,7 +113,7 @@ public class CmsDbPool {
 			Class.forName(m_driver);
 		}
 		catch (ClassNotFoundException e) {
-           	throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+		   	throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
 		}
 		// init the hashtables and vector(s)
 		m_prepStatements = new Hashtable();
@@ -125,7 +125,7 @@ public class CmsDbPool {
 			Connection conn = null;
 	
 			try {
-      			conn = DriverManager.getConnection(m_url, m_user, m_passwd);
+	  			conn = DriverManager.getConnection(m_url, m_user, m_passwd);
    				m_connections.addElement(conn);
 			}
 			catch (SQLException e) {
@@ -135,12 +135,132 @@ public class CmsDbPool {
 		// init IdConnection
 		try {
 			m_idConnection = DriverManager.getConnection(m_url, m_user, m_passwd);
-            m_connections.addElement(m_idConnection);
+			m_connections.addElement(m_idConnection);
 		}catch (SQLException e) {	
 			throw new CmsException(CmsException.C_SQL_ERROR, e);
 		}
 	}
+	/**
+	 * Returns a vector with all connections.
+	 * 
+	 * @return a vector with all connections
+	 */
+	public Vector getAllConnections() {
+		
+		return m_connections;
+	}
+	/**
+	 * Returns all statements.
+	 * 
+	 * @return all prepared statements
+	 */
+	public Hashtable getAllPreparedStatement() {
+		return m_prepStatements;
+	}
+	/**
+	 * Returns all statements matching the key.
+	 * 
+	 * @param key - the hashtable key
+	 * @return all prepared statements matching the key
+	 */
+	public Vector getAllPreparedStatement(String key) {
+		Vector temp = (Vector) m_prepStatements.get(key);
+		
+		return temp;
+	}
+	/**
+	 * Gets a PreparedStatement object for Id access.
+	 * 
+	 * @param key - the hashtable key
+	 * @return a prepared statement matching the key
+	 */
+	public PreparedStatement getIdStatement(Integer key){
+		return (PreparedStatement)m_prepStatements.get(key);
+	}
+	/**
+	 * Gets a PreparedStatement object and remove it from the list of available statements.
+	 * 
+	 * @param key - the hashtable key
+	 * @return a prepared statement matching the key
+	 */
+	public PreparedStatement getPreparedStatement(Integer key) throws CmsException {
 	
+		
+		PreparedStatement pstmt = null;
+		int num;
+		//synchronized ( m_prepStatements) {
+		Vector temp = (Vector) m_prepStatements.get(key);
+		
+		synchronized (temp) {
+			if (temp.size() > 0) {
+				pstmt =(PreparedStatement) temp.firstElement();
+				temp.removeElementAt(0);
+			}
+			else { 
+				String sql =(String) m_prepStatementsCache.get(key);
+
+				if (count > (m_maxConn - 1)) {
+					count = 0;
+				}
+				Connection conn = (Connection) m_connections.elementAt(count);
+				count++;
+				
+				try {
+					pstmt = conn.prepareStatement(sql);
+					pstmt.clearParameters();
+				}
+				catch (SQLException e) {
+					throw new CmsException(CmsException.C_SQL_ERROR, e);
+				} 
+			}
+			temp.notify();
+			//m_prepStatements.notify();
+		}
+		  
+		//System.err.println("**** --> key: "+key+" *** "+pstmt);
+		return pstmt;
+	}
+	/**
+	 * Gets a Statement object created on a random connection
+	 *  
+	 * @return a statement, that can be used for 'individual' queryies
+	 */
+	public Statement getStatement() throws CmsException {
+		// pick a number at random from 0,1, ... m_maxConn -1
+		int k = (int) (Math.random() * m_maxConn);  
+		
+		// should happen only with probability 0, but 'sure' is better than 'almost sure' ...
+		if (k==m_maxConn) {
+			k--;	
+		} 
+		Statement statement;
+		try {
+			Connection conn = (Connection) m_connections.elementAt(k);
+			statement = conn.createStatement();
+		} catch (SQLException e) {
+			throw new CmsException(CmsException.C_SQL_ERROR, e);
+		}
+		return statement;
+	}
+	/**
+	 * Init the IdPreparedStatement on the IdConnections and store the sql statement in an hashtable.
+	 * 
+	 * @param key - the hashtable key
+	 * @param sql - a SQL statement that may contain one or more '?' IN parameter placeholders
+	 */
+	public void initIdStatement(Integer key, String sql) throws CmsException {
+
+		m_prepStatementsCache.put(key, sql);
+		
+		try {
+			PreparedStatement pstmt = m_idConnection.prepareStatement(sql);
+			m_prepStatements.put(key, pstmt);
+			
+		} catch (SQLException e) {
+			throw new CmsException(CmsException.C_SQL_ERROR, e);
+		}
+		
+	}
 	/**
 	 * Init the PreparedStatement on all connections and store the sql statement in an hashtable.
 	 * 
@@ -166,104 +286,6 @@ public class CmsDbPool {
 		
 		m_prepStatements.put(key, temp);
 	}
-
-	/**
-	 * Init the IdPreparedStatement on the IdConnections and store the sql statement in an hashtable.
-	 * 
-	 * @param key - the hashtable key
-	 * @param sql - a SQL statement that may contain one or more '?' IN parameter placeholders
-	 */
-	public void initIdStatement(Integer key, String sql) throws CmsException {
-
-		m_prepStatementsCache.put(key, sql);
-		
-		try {
-			PreparedStatement pstmt = m_idConnection.prepareStatement(sql);
-			m_prepStatements.put(key, pstmt);
-			
-		} catch (SQLException e) {
-			throw new CmsException(CmsException.C_SQL_ERROR, e);
-		}
-		
-	}
-
-	/**
-	 * Gets a PreparedStatement object for Id access.
-	 * 
-	 * @param key - the hashtable key
-	 * @return a prepared statement matching the key
-	 */
-	public PreparedStatement getIdStatement(Integer key){
-		return (PreparedStatement)m_prepStatements.get(key);
-	}
-	
-	/**
-	 * Gets a PreparedStatement object and remove it from the list of available statements.
-	 * 
-	 * @param key - the hashtable key
-	 * @return a prepared statement matching the key
-	 */
-	public PreparedStatement getPreparedStatement(Integer key) throws CmsException {
-	
-        
-        PreparedStatement pstmt = null;
-		int num;
-        //synchronized ( m_prepStatements) {
-		Vector temp = (Vector) m_prepStatements.get(key);
-		
-		synchronized (temp) {
-			if (temp.size() > 0) {
-				pstmt =(PreparedStatement) temp.firstElement();
-				temp.removeElementAt(0);
-			}
-			else { 
-				String sql =(String) m_prepStatementsCache.get(key);
-
-				if (count > (m_maxConn - 1)) {
-					count = 0;
-				}
-				Connection conn = (Connection) m_connections.elementAt(count);
-				count++;
-				
-				try {
-					pstmt = conn.prepareStatement(sql);
-                    pstmt.clearParameters();
-				}
-				catch (SQLException e) {
-					throw new CmsException(CmsException.C_SQL_ERROR, e);
-				} 
-			}
-			temp.notify();
-            //m_prepStatements.notify();
-		}
-		  
-        //System.err.println("**** --> key: "+key+" *** "+pstmt);
-		return pstmt;
-	}
-	
-	/**
-	 * Gets a Statement object created on a random connection
-	 *  
-	 * @return a statement, that can be used for 'individual' queryies
-	 */
-	public Statement getStatement() throws CmsException {
-		// pick a number at random from 0,1, ... m_maxConn -1
-		int k = (int) (Math.random() * m_maxConn);  
-		
-		// should happen only with probability 0, but 'sure' is better than 'almost sure' ...
-		if (k==m_maxConn) {
-			k--;	
-		} 
-		Statement statement;
-		try {
-			Connection conn = (Connection) m_connections.elementAt(k);
-			statement = conn.createStatement();
-		} catch (SQLException e) {
-			throw new CmsException(CmsException.C_SQL_ERROR, e);
-		}
-		return statement;
-	}
-	
 	/**
 	 * Add the given statement to the list of available statements.
 	 * 
@@ -277,45 +299,12 @@ public class CmsDbPool {
 		 * kontrolliert werden, ob das Statement ein neu geschaffenes Statement ist.
 		 * Wenn ja, dann Statement verwerfen, ansonsten eintragen ...
 		 */
-        // System.err.println("**** <-- key: "+key+" *** "+pstmt);
+		// System.err.println("**** <-- key: "+key+" *** "+pstmt);
 		Vector temp = (Vector) m_prepStatements.get(key);
 		
 		synchronized (temp) {
 			temp.addElement(pstmt);
 			temp.notify();
-        }    
-	}
-	
-	
-	
-	/**
-	 * Returns a vector with all connections.
-	 * 
-	 * @return a vector with all connections
-	 */
-	public Vector getAllConnections() {
-		
-		return m_connections;
-	}
-	
-	/**
-	 * Returns all statements matching the key.
-	 * 
-	 * @param key - the hashtable key
-	 * @return all prepared statements matching the key
-	 */
-	public Vector getAllPreparedStatement(String key) {
-		Vector temp = (Vector) m_prepStatements.get(key);
-		
-		return temp;
-	}
-
-	/**
-	 * Returns all statements.
-	 * 
-	 * @return all prepared statements
-	 */
-	public Hashtable getAllPreparedStatement() {
-		return m_prepStatements;
+		}    
 	}
 }

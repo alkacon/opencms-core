@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/08/08 14:08:32 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -45,78 +45,64 @@ import java.lang.reflect.*;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.14 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.15 $ $Date: 2000/08/08 14:08:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
 	
-    /**
-     * Indicates if the results of this class are cacheable.
-     * 
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
-    }
-
 	/**
-     * Handling of the special workplace <CODE>&lt;TASKLIST&gt;</CODE> tags.
-     * <P>
-     * Returns the processed code with the actual elements.
-     * <P>
-     * Projectlists can be referenced in any workplace template by <br>
-     * <CODE>&lt;TASKLIST method="methodname"/&gt;</CODE>
-     * 
-     * @param cms CmsObject Object for accessing resources.
-     * @param n XML element containing the <code>&lt;ICON&gt;</code> tag.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param callingObject reference to the calling object <em>(not used here)</em>.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @param lang CmsXmlLanguageFile conataining the currently valid language file.
-     * @return Processed button.
-     * @exception CmsException
-     */    
-    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-         
+	 * Handling of the special workplace <CODE>&lt;TASKLIST&gt;</CODE> tags.
+	 * <P>
+	 * Returns the processed code with the actual elements.
+	 * <P>
+	 * Projectlists can be referenced in any workplace template by <br>
+	 * <CODE>&lt;TASKLIST method="methodname"/&gt;</CODE>
+	 * 
+	 * @param cms CmsObject Object for accessing resources.
+	 * @param n XML element containing the <code>&lt;ICON&gt;</code> tag.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+	 * @param callingObject reference to the calling object <em>(not used here)</em>.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @param lang CmsXmlLanguageFile conataining the currently valid language file.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */    
+	public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+		 
 		
-        // Get list definition values
-        CmsXmlWpTemplateFile listdef = getTaskListDefinitions(cms);
+		// Get list definition values
+		CmsXmlWpTemplateFile listdef = getTaskListDefinitions(cms);
 		CmsRequestContext context = cms.getRequestContext();
 		
-        String listMethod = n.getAttribute("method");
+		String listMethod = n.getAttribute("method");
 
-        // call the method for generating projectlist elements
-        Method callingMethod = null;
+		// call the method for generating projectlist elements
+		Method callingMethod = null;
 		Vector list = new Vector();
-        try {
-            callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class});
-            list = (Vector)callingMethod.invoke(callingObject, new Object[] {cms, lang});
-        } catch(NoSuchMethodException exc) {
-            // The requested method was not found.
-            throwException("Could not find method " + listMethod + " in calling class " + callingObject.getClass().getName() + " for generating lasklist content.", CmsException.C_NOT_FOUND);
-        } catch(InvocationTargetException targetEx) {
-            // the method could be invoked, but throwed a exception
-            // itself. Get this exception and throw it again.              
-            Throwable e = targetEx.getTargetException();
-            if(!(e instanceof CmsException)) {
-                // Only print an error if this is NO CmsException
-                throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
-            } else {
-                // This is a CmsException
-                // Error printing should be done previously.
-                throw (CmsException)e;
-            }
-        } catch(Exception exc2) {
-            throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
-        }
+		try {
+			callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {CmsObject.class, CmsXmlLanguageFile.class});
+			list = (Vector)callingMethod.invoke(callingObject, new Object[] {cms, lang});
+		} catch(NoSuchMethodException exc) {
+			// The requested method was not found.
+			throwException("Could not find method " + listMethod + " in calling class " + callingObject.getClass().getName() + " for generating lasklist content.", CmsException.C_NOT_FOUND);
+		} catch(InvocationTargetException targetEx) {
+			// the method could be invoked, but throwed a exception
+			// itself. Get this exception and throw it again.              
+			Throwable e = targetEx.getTargetException();
+			if(!(e instanceof CmsException)) {
+				// Only print an error if this is NO CmsException
+				throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+			} else {
+				// This is a CmsException
+				// Error printing should be done previously.
+				throw (CmsException)e;
+			}
+		} catch(Exception exc2) {
+			throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+		}
 		
-        /** StringBuffer for the generated output */
-        StringBuffer result = new StringBuffer();
+		/** StringBuffer for the generated output */
+		StringBuffer result = new StringBuffer();
 		String priority;
 		String projectname;
 		String stateIcon;
@@ -125,18 +111,18 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 		long startTime;
 		long timeout;
 	    GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(new Date(System.currentTimeMillis()));
-        cal.set(Calendar.HOUR,0);
-        cal.set(Calendar.MINUTE,0);
-        cal.set(Calendar.SECOND,0);
-        cal.set(Calendar.MILLISECOND,0);
-        
-        GregorianCalendar newcal = new GregorianCalendar(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),
-                                                         cal.get(Calendar.DAY_OF_MONTH),0,0,0);
-        
-        long now = newcal.getTime().getTime();
-              
-        for(int i = 0; i < list.size(); i++) {
+		cal.setTime(new Date(System.currentTimeMillis()));
+		cal.set(Calendar.HOUR,0);
+		cal.set(Calendar.MINUTE,0);
+		cal.set(Calendar.SECOND,0);
+		cal.set(Calendar.MILLISECOND,0);
+		
+		GregorianCalendar newcal = new GregorianCalendar(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),
+														 cal.get(Calendar.DAY_OF_MONTH),0,0,0);
+		
+		long now = newcal.getTime().getTime();
+			  
+		for(int i = 0; i < list.size(); i++) {
 			// get the actual project
 			CmsTask task = (CmsTask) list.elementAt(i);
 			CmsProject project = null;
@@ -299,5 +285,18 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			result.append(listdef.getProcessedDataValue("defaulttasklist", callingObject, parameters));
 		}		 
 		return result.toString();
-    }
+	}
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}
 }

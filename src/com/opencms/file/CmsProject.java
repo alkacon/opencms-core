@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/07/14 08:08:22 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/08/08 14:08:23 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 import com.opencms.core.*;
 import java.sql.*;
 
@@ -37,10 +37,10 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/07/14 08:08:22 $
+ * @version $Revision: 1.24 $ $Date: 2000/08/08 14:08:23 $
  */
 public class CmsProject implements I_CmsConstants,
-                                                        Cloneable{
+														Cloneable{
 	
 	/**
 	 * The id of this project.
@@ -77,11 +77,11 @@ public class CmsProject implements I_CmsConstants,
 	 */
 	private String m_description = null;
 	
-     /**
-     * The manager group  of this resource.
-     */
-    private int m_managerGroupId;
-    
+	 /**
+	 * The manager group  of this resource.
+	 */
+	private int m_managerGroupId;
+	
 	/**
 	 * The creation date of this project.
 	 */
@@ -119,9 +119,9 @@ public class CmsProject implements I_CmsConstants,
 		m_taskId = taskId;
 		m_ownerId = ownerId;
 		m_groupId = group;
-        m_groupId=group;
+		m_groupId=group;
 		m_managergroupId = managerGroup;
-        m_managerGroupId=managerGroup;
+		m_managerGroupId=managerGroup;
 		m_flags = flags;
 		m_publishedBy = publishedBy;
 		m_type = type;
@@ -136,38 +136,55 @@ public class CmsProject implements I_CmsConstants,
 			m_publishingdate = C_UNKNOWN_LONG;
 		}
 	}
-	
-	/**
-	 * Returns the name of this project.
-	 * 
-	 * @return the name of this project.
-	 */
-	public String getName() {
-		return(m_name);
+	/** 
+	* Clones the CmsProject by creating a new CmsProject Object.
+	* @return Cloned CmsProject.
+	*/
+	public Object clone() {
+		CmsProject project=new CmsProject(this.m_id,new String (this.m_name),
+									   new String(m_description),this.m_taskId,
+									   this.m_ownerId,this.m_groupId,this.m_managerGroupId,
+									   this.m_flags,new Timestamp(this.m_createdate),
+									   new Timestamp(this.m_publishingdate),this.m_publishedBy,
+									   this.m_type);
+		return project;    
 	}
-
+	/**
+	 * Compares the overgiven object with this object.
+	 * 
+	 * @return true, if the object is identically else it returns false.
+	 */
+	public boolean equals(Object obj) {
+		boolean equal=false;
+		// check if the object is a CmsProject object
+		if (obj instanceof CmsProject) {
+			// same ID than the current project?
+			if (((CmsProject)obj).getId() == m_id){
+				equal = true;
+			}
+		}
+		return equal;
+	}
+	/**
+	 * Returns the creation date of this project.
+	 * 
+	 * @return the creation date of this project.
+	 */
+	public long getCreateDate() {
+		return(m_createdate);
+	}
 	/**
 	 * Returns the description of this project.
 	 * 
 	 * @return description The description of this project.
 	 */
 	public String getDescription() {
-        if ((m_description== null) || (m_description.length()<1) ) {
-            return "OpenCms Project";
-        } else {
+		if ((m_description== null) || (m_description.length()<1) ) {
+			return "OpenCms Project";
+		} else {
 		    return m_description;
-        }
+		}
 	}
-
-	/**
-	 * Sets the description of this project.
-	 * 
-	 * @param description The description of this project.
-	 */
-	public void setDescription(String description) {
-		m_description = description;
-	}
-
 	/**
 	 * Returns the state of this project.<BR/>
 	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED, 
@@ -178,7 +195,86 @@ public class CmsProject implements I_CmsConstants,
 	public int getFlags() {
 		return(m_flags);
 	}
-	
+	/**
+	 * Returns the groupid of this project.
+	 * 
+	 * @return the groupid of this project.
+	 */
+	public int getGroupId() {
+		return(m_groupId);
+	}
+	/**
+	 * Returns the id of this project.
+	 * 
+	 * @return the id of this project.
+	 */	
+	public int getId() {
+		return(m_id);
+	}
+	/**
+	 * Returns the manager groupid of this project.
+	 * 
+	 * @return the manager groupid of this project.
+	 */
+	public int getManagerGroupId() {
+		return( m_managergroupId );
+	}
+	/**
+	 * Returns the name of this project.
+	 * 
+	 * @return the name of this project.
+	 */
+	public String getName() {
+		return(m_name);
+	}
+	/**
+	 * Returns the userid of the project owner.
+	 * 
+	 * @return the userid of the project owner.
+	 */
+	public int getOwnerId() {
+		return(m_ownerId);
+	}
+	/**
+	 * Gets the published-by value.
+	 * 
+	 * @return the published-by value.
+	 */
+	public int getPublishedBy() {
+		return m_publishedBy;
+	}
+	/**
+	 * Returns the publishing date of this project.
+	 * 
+	 * @return the publishing date of this project.
+	 */
+	public long getPublishingDate() {
+		return(m_publishingdate);
+	}
+	/**
+	 * Returns the taskid of this project.
+	 * 
+	 * @return the taskid of this project.
+	 */
+   public  int getTaskId() {
+		return(this.m_taskId);
+	}
+	/**
+	 * Gets the type.
+	 * 
+	 * @return the type.
+	 */
+	int getType() {
+		return m_type;
+	}
+	/**
+	 * Sets the description of this project.
+	 * 
+	 * @param description The description of this project.
+	 */
+	public void setDescription(String description) {
+		m_description = description;
+	}
 	/**
 	 * Sets the state of this project.<BR/>
 	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED, 
@@ -189,89 +285,6 @@ public class CmsProject implements I_CmsConstants,
 	public void setFlags(int flags) {
 		m_flags = flags;
 	}
-	
-	/**
-	 * Returns the id of this project.
-	 * 
-	 * @return the id of this project.
-	 */	
-    public int getId() {
-		return(m_id);
-	}
-	
-	
-	/**
-	 * Returns the userid of the project owner.
-	 * 
-	 * @return the userid of the project owner.
-	 */
-	public int getOwnerId() {
-		return(m_ownerId);
-	}
-	
-	/**
-	 * Returns the groupid of this project.
-	 * 
-	 * @return the groupid of this project.
-	 */
-    public int getGroupId() {
-		return(m_groupId);
-	}
-	
-	/**
-	 * Returns the manager groupid of this project.
-	 * 
-	 * @return the manager groupid of this project.
-	 */
-	public int getManagerGroupId() {
-		return( m_managergroupId );
-	}
-	
-	/**
-	 * Returns the taskid of this project.
-	 * 
-	 * @return the taskid of this project.
-	 */
-   public  int getTaskId() {
-		return(this.m_taskId);
-	}
-
-	/**
-	 * Returns the publishing date of this project.
-	 * 
-	 * @return the publishing date of this project.
-	 */
-	public long getPublishingDate() {
-		return(m_publishingdate);
-	}
-	
-	/**
-	 * Returns the creation date of this project.
-	 * 
-	 * @return the creation date of this project.
-	 */
-	public long getCreateDate() {
-		return(m_createdate);
-	}
-	
-	/**
-	 * Sets the publishing date of this project.
-	 * 
-	 * @param the publishing date of this project.
-	 */
-	public void setPublishingDate(long publishingDate) {
-		m_publishingdate = publishingDate;
-	}
-	
-	/**
-	 * Gets the published-by value.
-	 * 
-	 * @return the published-by value.
-	 */
-	public int getPublishedBy() {
-		return m_publishedBy;
-	}
-	
 	/**
 	 * Sets the published-by value.
 	 * 
@@ -280,16 +293,14 @@ public class CmsProject implements I_CmsConstants,
 	public void setPublishedBy(int id) {
 		m_publishedBy = id;
 	}
-       
 	/**
-	 * Gets the type.
+	 * Sets the publishing date of this project.
 	 * 
-	 * @return the type.
+	 * @param the publishing date of this project.
 	 */
-	int getType() {
-		return m_type;
+	public void setPublishingDate(long publishingDate) {
+		m_publishingdate = publishingDate;
 	}
-	
 	/**
 	 * Sets the type.
 	 * 
@@ -298,7 +309,6 @@ public class CmsProject implements I_CmsConstants,
 	void setType(int id) {
 		m_type = id;
 	}
-	
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
@@ -306,44 +316,13 @@ public class CmsProject implements I_CmsConstants,
 	 * @return string-representation for this object.
 	 */
 	public String toString() {
-        StringBuffer output=new StringBuffer();
-        output.append("[Project]:");
-        output.append(m_name);
-        output.append(" , Id=");
-        output.append(m_id);
-        output.append(" :");
-        output.append(m_description);
-        return output.toString();
+		StringBuffer output=new StringBuffer();
+		output.append("[Project]:");
+		output.append(m_name);
+		output.append(" , Id=");
+		output.append(m_id);
+		output.append(" :");
+		output.append(m_description);
+		return output.toString();
 	}
-	
-	/**
-	 * Compares the overgiven object with this object.
-	 * 
-	 * @return true, if the object is identically else it returns false.
-	 */
-    public boolean equals(Object obj) {
-        boolean equal=false;
-        // check if the object is a CmsProject object
-        if (obj instanceof CmsProject) {
-            // same ID than the current project?
-            if (((CmsProject)obj).getId() == m_id){
-                equal = true;
-            }
-        }
-        return equal;
-	}
-    
-    /** 
-    * Clones the CmsProject by creating a new CmsProject Object.
-    * @return Cloned CmsProject.
-    */
-    public Object clone() {
-        CmsProject project=new CmsProject(this.m_id,new String (this.m_name),
-                                       new String(m_description),this.m_taskId,
-                                       this.m_ownerId,this.m_groupId,this.m_managerGroupId,
-                                       this.m_flags,new Timestamp(this.m_createdate),
-                                       new Timestamp(this.m_publishingdate),this.m_publishedBy,
-									   this.m_type);
-        return project;    
-    }  
 }

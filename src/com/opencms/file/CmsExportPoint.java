@@ -1,7 +1,9 @@
+package com.opencms.file;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportPoint.java,v $
- * Date   : $Date: 2000/06/20 15:13:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/08/08 14:08:22 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
-
 import com.opencms.core.*;
 
 /**
@@ -36,21 +36,21 @@ import com.opencms.core.*;
  * filesystem of  the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/06/20 15:13:48 $
+ * @version $Revision: 1.2 $ $Date: 2000/08/08 14:08:22 $
  */
 
 public class CmsExportPoint implements I_CmsConstants {
-    /**
-     * Definition of the location of this exportpoint in the logical Cms fielsystem.
-     */
+	/**
+	 * Definition of the location of this exportpoint in the logical Cms fielsystem.
+	 */
 	private String m_exportpoint = null;
-    
-    /**
-     * The the exportpath of a exportpoint in a real filesystem.
-     *  
-     */
+	
+	/**
+	 * The the exportpath of a exportpoint in a real filesystem.
+	 *  
+	 */
 	private String m_exportpath = null;
-    
+	
 
 	 /**
 	 * Constructs a new CmsExportPoint. 
@@ -63,16 +63,6 @@ public class CmsExportPoint implements I_CmsConstants {
 		m_exportpoint = exportpoint;
 		m_exportpath = exportpath;
 	}
-    
-	
-	/**
-	 * Returns the exportpoint of a CmsExportPoint Object.
-	 * @return The exportpoint in the OpenCms filesystem.
-	 */
-	public String getExportpoint() {
-	  return m_exportpoint;
-	}
-	
 	/**
 	 * Returns the exportpath of a CmsExportPoint Object.
 	 * 
@@ -81,21 +71,25 @@ public class CmsExportPoint implements I_CmsConstants {
 	public String getExportPath() {
 		return m_exportpath;
 	}
-    
-
-    /**
+	/**
+	 * Returns the exportpoint of a CmsExportPoint Object.
+	 * @return The exportpoint in the OpenCms filesystem.
+	 */
+	public String getExportpoint() {
+	  return m_exportpoint;
+	}
+	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
 	 * 
 	 * @return string-representation for this object.
 	 */
 	public String toString() {
-        StringBuffer output=new StringBuffer();
-        output.append("[ExportPoint]:");
-        output.append(m_exportpoint);
-        output.append(" , Exportpath=");
-        output.append(m_exportpath);
-        return output.toString();
+		StringBuffer output=new StringBuffer();
+		output.append("[ExportPoint]:");
+		output.append(m_exportpoint);
+		output.append(" , Exportpath=");
+		output.append(m_exportpath);
+		return output.toString();
 	}
-	
 }

@@ -1,7 +1,9 @@
+package com.opencms.workplace;
+
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsInput.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/08 14:08:31 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,8 +28,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.workplace;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -43,37 +43,37 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;INPUT&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.10 $ $Date: 2000/08/08 14:08:31 $
  */
 public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
-    
-    /**
-     * Handling of the <CODE>&lt;INPUT&gt;</CODE> tags.
-     * <P>
-     * Reads the code of a input field from the input definition file
-     * and returns the processed code with the actual elements.
-     * <P>
-     * Input fields can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
-     * <CODE>&lt;INPUT name="..." action="..." alt="..."/&gt;</CODE>
-     * 
-     * @param cms CmsObject Object for accessing resources.
-     * @param n XML element containing the <code>&lt;INPUT&gt;</code> tag.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param callingObject reference to the calling object.
-     * @param parameters Hashtable containing all user parameters.
-     * @param lang CmsXmlLanguageFile conataining the currently valid language file.
-     * @return Processed button.
-     * @exception CmsException
-     */    
-    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        String styleClass= n.getAttribute(C_INPUT_CLASS);
-        String name=n.getAttribute(C_INPUT_NAME);
-        String size=n.getAttribute(C_INPUT_SIZE);
-        String length=n.getAttribute(C_INPUT_LENGTH);
-        String value=n.getAttribute(C_INPUT_VALUE);
-        String method=n.getAttribute(C_INPUT_METHOD);
-        String action=n.getAttribute(C_INPUT_ACTION);
+	
+	/**
+	 * Handling of the <CODE>&lt;INPUT&gt;</CODE> tags.
+	 * <P>
+	 * Reads the code of a input field from the input definition file
+	 * and returns the processed code with the actual elements.
+	 * <P>
+	 * Input fields can be referenced in any workplace template by <br>
+	 * // TODO: insert correct syntax here!
+	 * <CODE>&lt;INPUT name="..." action="..." alt="..."/&gt;</CODE>
+	 * 
+	 * @param cms CmsObject Object for accessing resources.
+	 * @param n XML element containing the <code>&lt;INPUT&gt;</code> tag.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+	 * @param callingObject reference to the calling object.
+	 * @param parameters Hashtable containing all user parameters.
+	 * @param lang CmsXmlLanguageFile conataining the currently valid language file.
+	 * @return Processed button.
+	 * @exception CmsException
+	 */    
+	public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+		String styleClass= n.getAttribute(C_INPUT_CLASS);
+		String name=n.getAttribute(C_INPUT_NAME);
+		String size=n.getAttribute(C_INPUT_SIZE);
+		String length=n.getAttribute(C_INPUT_LENGTH);
+		String value=n.getAttribute(C_INPUT_VALUE);
+		String method=n.getAttribute(C_INPUT_METHOD);
+		String action=n.getAttribute(C_INPUT_ACTION);
 		
 		if( (method != null) && (method.length() != 0) ) {
 			// call the method for generating value
@@ -105,10 +105,10 @@ public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
 		if(value==null) {
 			value = "";
 		}
-        
-        CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms); 
-        String result = inputdef.getInput(styleClass,name,size,length,value,action);
+		
+		CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms); 
+		String result = inputdef.getInput(styleClass,name,size,length,value,action);
 
-        return result; 
-    }                    
+		return result; 
+	}
 }
