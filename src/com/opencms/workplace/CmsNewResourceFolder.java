@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/03/28 13:26:07 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/03/28 16:12:03 $
+* Version: $Revision: 1.20 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2001/03/28 13:26:07 $
+ * @version $Revision: 1.20 $ $Date: 2001/03/28 16:12:03 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -579,13 +579,13 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             xmlTemplateDoc.setData("slogolink", "/"+ name +"/index.html");
             xmlTemplateDoc.setData("statnav", "AKTUELL");
             xmlTemplateDoc.setData("statlink", "");
-            xmlTemplateDoc.setData("bcoldyn", "#CCCCCC");
-            xmlTemplateDoc.setData("tcoldyn", "#000099");
+            xmlTemplateDoc.setData("bcoldyn", "#DDDDDD");
+            xmlTemplateDoc.setData("tcoldyn", "#333333");
             //xmlTemplateDoc.setData("bcollink", "#CCCCCC");
-            xmlTemplateDoc.setData("tcollink", "#000099");
-            xmlTemplateDoc.setData("bcolemail", "#CCCCCC");
+            xmlTemplateDoc.setData("tcollink", "#FF3300");
+            xmlTemplateDoc.setData("bcolemail", "#000099");
             //xmlTemplateDoc.setData("tcolemail", "#000099");
-            xmlTemplateDoc.setData("bcolsearch", "#CCCCCC");
+            xmlTemplateDoc.setData("bcolsearch", "#999999");
             //xmlTemplateDoc.setData("tcolsearch", "#000099");
         }else{
             // set the values which the user entered before he pressed the backbutton
