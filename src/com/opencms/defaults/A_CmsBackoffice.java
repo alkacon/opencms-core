@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/01/09 08:38:55 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2002/01/24 15:46:45 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -3134,7 +3134,6 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
   //String error=null;
   //  check if one of the exit buttons is used
 
-
   if (action!=null) {
     // there was no button selected, so the selectbox was used. Do a check of the input fileds.
     if ((!action.equals("save")) && (!action.equals("saveexit")) && (!action.equals("exit"))){
@@ -3142,6 +3141,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         cd.check(false);
       } catch (CmsPlausibilizationException plex) {
         // there was an error during plausibilization, so create an error text
+        // put value of last used templateselector in session
+        session.putValue("backofficepagetemplateselector",templateSelector);
         errorCodes=plex.getErrorCodes();
         //loop through all errors
         for (int i=0;i<errorCodes.size();i++) {
@@ -3245,7 +3246,15 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         template.setData("error",error);
 
       } catch (Exception ex) {
-
+        // there was an error saving the content definition so remove all nescessary values from the
+        // session
+        session.removeValue(this.getContentDefinitionClass().getName());
+        session.removeValue("backofficepageselectorvector");
+        session.removeValue("backofficepagetemplateselector");
+        session.removeValue("media");
+        session.removeValue("selectedmediaCD");
+        session.removeValue("media_position");
+        session.removeValue("weShallDisplayThePreviewButton");
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
           A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while saving data to Content Definition "+ex.toString());
         }
