@@ -220,7 +220,7 @@ function update_frames()
 	var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 	location.href=lasturl;
 	
-	if (window.top.body.explorer_tree)
+	//if (window.top.body.explorer_tree)
 		//window.top.body.explorer_tree.location.href='explorer_tree.html'; 
 }
 </SCRIPT> 
