@@ -607,6 +607,7 @@ DIV.kontextmenu
     POSITION: absolute;
     TOP: 0px;
     LEFT: 0px;
+    width: 150px;
     TEXT-INDENT: 2px;
     BACKGROUND-COLOR: #c0c0c0;
     VISIBILITY: hidden;   
