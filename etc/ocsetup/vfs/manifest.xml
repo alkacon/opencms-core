@@ -35,6 +35,14 @@
 			<access>383</access>
 			<properties/>
 		</file>
+        <file>
+            <destination>moduledemos</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties/>
+        </file>
 		<file>
 			<destination>pics</destination>
 			<type>folder</type>
@@ -91,6 +99,45 @@
 			<access>79</access>
 			<properties/>
 		</file>
+        <file>
+            <source>content/templates/empty</source>
+            <destination>content/templates/empty</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[empty template]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>moduledemos/index</source>
+            <destination>moduledemos/index</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>75</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>moduledemos/index.html</source>
+            <destination>moduledemos/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>367</access>
+            <properties/>
+        </file>
 		<file>
 			<source>xmlmodules/news/module.ini</source>
 			<destination>system/xmlmodules/news/module.ini</destination>

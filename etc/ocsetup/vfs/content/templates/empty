@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<XMLTEMPLATE>
+<TEMPLATE>
+<![CDATA[
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>]]><method name="getTitle"/><![CDATA[</title>
+</head>
+<BODY>
+<H1>Here starts the body</H1>
+<TABLE BGCOLOR="#B4B4B4">
+<TR>
+<TD>]]><ELEMENT name="body"/><![CDATA[</TD>
+</TR>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+</XMLTEMPLATE>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Moduledemo</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="../system/workplace/css/format.css">
+<!-- Ende Style -->
+<!-- Beginn Script -->
+
+
+<!-- Ende Script -->
+
+</head>
+
+<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="">
+
+<table cellspacing=1 cellpadding=1 border=0 width="686">
+	<tr bgcolor="#c0c0c0">
+		<td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><LABEL value="label.modulname" /><![CDATA[</p></td>
+	</tr>
+
+	]]><PROCESS>list</PROCESS><![CDATA[
+
+</table>
+
+</body>
+</html>
+
+]]>
+</TEMPLATE>
+<list_entry><![CDATA[
+	<tr>		
+		<td nowrap align="left" valign=top><p class=einzug><a href="]]><PROCESS>namelink</PROCESS><![CDATA[" class=task>]]><PROCESS>name</PROCESS><![CDATA[</a></td>
+	</tr>
+	]]>
+</list_entry>
+
+</WORKPLACE>
