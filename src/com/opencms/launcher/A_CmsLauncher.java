@@ -31,19 +31,22 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/21 10:35:27 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/25 14:01:19 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
- 	/** The template cache that holds all cached templates */
+    /** Boolean for additional debug output control */
+    private static final boolean C_DEBUG = true;
+
+    /** The template cache that holds all cached templates */
 	protected static I_CmsTemplateCache m_templateCache = new CmsTemplateCache();
 
     /** Default constructor to create a new launcher */
-    public A_CmsLauncher() {
+    /*public A_CmsLauncher() {
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Initialized successfully.");
         }
-    }
+    }*/
 
     /**
      * Gets the ID that indicates the type of the launcher.
@@ -73,8 +76,29 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
      * @exception CmsException
      */
     public void initlaunch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException {
-        // Check the clearcache parameter
         
+        // First some debugging output.
+        if(C_DEBUG && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Launcher started for " + file.getName());
+        }
+        
+        // Check all values to be valid        
+        String errorMessage = null;
+        
+        if(file==null) {
+            errorMessage = "Got \"null\" CmsFile object. :-(";
+        }
+        if(cms==null) {
+            errorMessage = "Actual cms object missing";
+        }                
+        if(errorMessage != null) {
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);                    
+            }        
+            throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
+        }        
+        
+        // Check the clearcache parameter        
         String clearcache = cms.getRequestContext().getRequest().getParameter("_clearcache");
         
         if(clearcache != null) {
@@ -124,11 +148,8 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
             com.opencms.template.CmsRootTemplate root = (CmsRootTemplate)CmsTemplateClassManager.getClassInstance(cms, "com.opencms.template.CmsRootTemplate");
             return root.getMasterTemplate(cms, templateClass, masterTemplate, m_templateCache, parameters);
         } catch(Exception e) {
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[A_CmsLauncher] cannot create root template.");
-            }            
             // There is no document we could show.
-            handleException(cms, e, "Cannot creat root template.");
+            handleException(cms, e, "Received error while calling canonical root for requested file " + masterTemplate.getName() + ". ");
         }
         return null;
     }	
@@ -155,16 +176,17 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorText);
             if(!(e instanceof CmsException)) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + e);
+                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Exception was NO CmsException: " + e);
+                e.printStackTrace();
             }
-            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Cannot create output. Must send error. Sorry.");
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
         }        
 
         // If the user is "Guest", we send an servlet error.
         // Otherwise we try to throw an exception.
         A_CmsRequestContext reqContext = cms.getRequestContext();        
         if(cms.anonymousUser().equals(reqContext.currentUser())) {
-            throw new CmsException(CmsException.C_SERVICE_UNAVAILABLE);
+            throw new CmsException(errorText, CmsException.C_SERVICE_UNAVAILABLE, e);
         } else {                        
             if(e instanceof CmsException) {
                 throw (CmsException)e;

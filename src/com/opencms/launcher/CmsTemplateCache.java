@@ -38,6 +38,7 @@ class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
      */    
 	public byte[] get(Object key) {
 	    return (byte[])templateCache.get(key);
+     //   return null;
     }
     
     /**
@@ -46,7 +47,7 @@ class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
      * @param content Template content to store.
      */
     public void put(Object key, byte[] content) {
-        templateCache.put(key, content);
+         templateCache.put(key, content);
     }
     
     /**
@@ -57,5 +58,6 @@ class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
      */
     public boolean has(Object key) {
         return templateCache.containsKey(key);
+       // return false;
     }
 }

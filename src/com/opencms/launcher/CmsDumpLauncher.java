@@ -19,7 +19,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/21 10:35:27 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/25 14:01:19 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher { 	
         
@@ -57,7 +57,7 @@ public class CmsDumpLauncher extends A_CmsLauncher {
             result = this.callCanonicalRoot(cms, (com.opencms.template.I_CmsTemplate)tmpl, file, newParameters);
         } catch (CmsException e) {
             if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Could not create document for template file \"" + file.getAbsolutePath() + "\" and template class + \"" + startTemplateClass + "\".");
+                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "There were errors while building output for template file \"" + file.getAbsolutePath() + "\" and template class \"" + templateClass + "\". See above for details.");
             }
             throw e;
         }

@@ -9,7 +9,7 @@ import java.util.*;
  * given launcher id.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/21 10:35:27 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/25 14:01:19 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
        
@@ -61,7 +61,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
                     // This is no critical error.
                     // We assume the launcher should not be integrated into the OpenCms system.
                     if(A_OpenCms.isLogging()) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[CmsLauncherManager] OpenCms launcher " + C_KNOWN_LAUNCHERS[i] + " not found. Ignoring.");
+                        A_OpenCms.log(C_OPENCMS_INFO, "[CmsLauncherManager] OpenCms launcher \"" + C_KNOWN_LAUNCHERS[i] + "\" not found. Ignoring.");
                     }
                     continue;
                 } else if(e instanceof ClassCastException) {
