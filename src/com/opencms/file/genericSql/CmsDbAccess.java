@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/01/25 16:41:12 $
-* Version: $Revision: 1.235 $
+* Date   : $Date: 2002/02/05 08:57:07 $
+* Version: $Revision: 1.236 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.235 $ $Date: 2002/01/25 16:41:12 $ *
+ * @version $Revision: 1.236 $ $Date: 2002/02/05 08:57:07 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -5216,9 +5216,28 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                               long publishDate, CmsUser currentUser) throws CmsException {
         Connection con = null;
         PreparedStatement statement = null;
-        CmsUser owner = readUser(project.getOwnerId());
-        CmsGroup group = readGroup(project.getGroupId());
-        CmsGroup managerGroup = readGroup(project.getManagerGroupId());
+        String ownerName = new String();
+        String group = new String();
+        String managerGroup = new String();
+        try{
+            CmsUser owner = readUser(project.getOwnerId());
+            ownerName = owner.getName()+" "+owner.getFirstname()+" "+owner.getLastname();
+        } catch (CmsException e){
+            // the owner could not be read
+            ownerName = "";
+        }
+        try{
+            group = readGroup(project.getGroupId()).getName();
+        } catch (CmsException e){
+            // the group could not be read
+            group = "";
+        }
+        try{
+            managerGroup = readGroup(project.getManagerGroupId()).getName();
+        } catch (CmsException e){
+            // the group could not be read
+            managerGroup = "";
+        }
         Vector projectresources = readAllProjectResources(project.getId());
         // write backup project to the database
         try {
@@ -5232,11 +5251,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setInt(5, currentUser.getId());
             statement.setString(6, currentUser.getName()+" "+currentUser.getFirstname()+" "+currentUser.getLastname());
             statement.setInt(7, project.getOwnerId());
-            statement.setString(8, owner.getName()+" "+owner.getFirstname()+" "+owner.getLastname());
+            statement.setString(8, ownerName);
             statement.setInt(9, project.getGroupId());
-            statement.setString(10, group.getName());
+            statement.setString(10, group);
             statement.setInt(11, project.getManagerGroupId());
-            statement.setString(12, managerGroup.getName());
+            statement.setString(12, managerGroup);
             statement.setString(13, project.getDescription());
             statement.setTimestamp(14, new Timestamp(project.getCreateDate()));
             statement.setInt(15, project.getType());
@@ -5290,9 +5309,29 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         PreparedStatement statement = null;
         ResultSet res = null;
-        CmsUser ownerName = readUser(resource.getOwnerId());
-        String groupName = readGroup(resource.getGroupId()).getName();
-        CmsUser lastModified = readUser(resource.getResourceLastModifiedBy());
+        String ownerName = null;
+        String groupName = new String();
+        String lastModifiedName = null;
+        try{
+            CmsUser owner = readUser(resource.getOwnerId());
+            ownerName = owner.getName()+" "+owner.getFirstname()+" "+owner.getLastname();
+        } catch (CmsException e){
+            // the user could not be read
+            ownerName = "";
+        }
+        try{
+            groupName = readGroup(resource.getGroupId()).getName();
+        } catch (CmsException e){
+            // the group could not be read
+            groupName = "";
+        }
+        try{
+            CmsUser lastModified = readUser(resource.getResourceLastModifiedBy());
+            lastModifiedName = lastModified.getName()+" "+lastModified.getFirstname()+" "+lastModified.getLastname();
+        } catch (CmsException e){
+            // the user could not be read
+            lastModifiedName = "";
+        }
         int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES_BACKUP"));
         int fileId = C_UNKNOWN_ID;
         // write backup resource to the database
@@ -5315,7 +5354,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setInt(4, resource.getType());
             statement.setInt(5, resource.getFlags());
             statement.setInt(6, resource.getOwnerId());
-            statement.setString(7, ownerName.getName()+" "+ownerName.getFirstname()+" "+ownerName.getLastname());
+            statement.setString(7, ownerName);
             statement.setInt(8, resource.getGroupId());
             statement.setString(9, groupName);
             statement.setInt(10, projectId);
@@ -5329,7 +5368,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setTimestamp(17, new Timestamp(resource.getDateLastModified()));
             statement.setInt(18, content.length);
             statement.setInt(19, resource.getResourceLastModifiedBy());
-            statement.setString(20, lastModified.getName()+" "+lastModified.getFirstname()+" "+lastModified.getLastname());
+            statement.setString(20, lastModifiedName);
             statement.setInt(21, versionId);
             statement.executeUpdate();
             statement.close();
