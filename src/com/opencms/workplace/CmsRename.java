@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2001/06/29 13:44:06 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/07/18 06:10:24 $
+* Version: $Revision: 1.36 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.35 $ $Date: 2001/06/29 13:44:06 $
+ * @version $Revision: 1.36 $ $Date: 2001/07/18 06:10:24 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -153,7 +153,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     catch(CmsException ex) {
 
                         // something went wrong, so remove all session parameters
-                        session.removeValue(C_PARA_FILE);
+                        //session.removeValue(C_PARA_FILE); don't delete this. We really need this to try again.
                         session.removeValue(C_PARA_NAME);
                         throw ex;
                     }
