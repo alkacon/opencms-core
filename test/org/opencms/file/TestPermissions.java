@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2004/12/07 16:19:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/07 17:45:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -56,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -159,6 +160,50 @@ public class TestPermissions extends OpenCmsTestCase {
         if (! cms.hasPublishPermissions(resource)) {
             fail("Publish permissions unavailable but should be available for user test1 because he is a project manager");
         }        
+        
+        // create a new folder
+        String folder = "/newfolder/";
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline")); 
+        
+        // create a new folder
+        cms.createResource(folder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);       
+        
+        // apply permissions to folder
+        cms.lockResource(folder);
+        // modify the resource permissions for the tests
+        // remove all "Users" group permissions 
+        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        // also for "Project managers" to avoid conflicts with other tests in this suite
+        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        // allow only read and write for user "test1"
+        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        // allow read, write and and direct publish for user "test2"
+        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        cms.unlockResource(folder); 
+        
+        resource = "/newfolder/newpage.html";
+        cms.createResource(resource, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, "This is a test".getBytes(), Collections.EMPTY_LIST);               
+        cms.unlockResource(resource); 
+        
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        if (cms.hasPublishPermissions(resource)) {
+            fail("Publish permissions available but should not be available for user test1");
+        }
+        
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        if (cms.hasPublishPermissions(resource)) {
+            fail("Publish permissions available but should be unavailable for user test2 because the parent folder is new");
+        }
+        if (! cms.hasPublishPermissions(folder)) {
+            fail("Publish permissions on new folder unavailable but should be available for user test2");
+        }
+        cms.publishResource(folder);
+        if (! cms.hasPublishPermissions(resource)) {
+            fail("Publish permissions unavailable but should be available for user test2 because the parent folder is now published");
+        }
     }  
  
     /**

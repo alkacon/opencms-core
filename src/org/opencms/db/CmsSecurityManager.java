@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/07 16:19:50 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/12/07 17:45:11 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -2086,11 +2086,13 @@ public final class CmsSecurityManager {
         // the current user either has to be a member of the administrators group
         hasPublishPermissions |= isAdmin(context);
 
-        // or he has to be a member of the project managers group
-        hasPublishPermissions |= isManagerOfProject(context);
+        if (!hasPublishPermissions) {
+            // or he has to be a member of the project managers group
+            hasPublishPermissions |= isManagerOfProject(context);
+        }
 
         if (directPublishResource != null) {
-
+            // this is a "direct publish" attempt
             try {
                 // or he has the explicit permission to direct publish a resource
                 hasPublishPermissions |= (PERM_ALLOWED == hasPermissions(
@@ -2099,6 +2101,17 @@ public final class CmsSecurityManager {
                     CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
                     true,
                     CmsResourceFilter.ALL));
+
+                // and the parent folder must not be new or deleted
+                String parentFolder = CmsResource.getParentFolder(directPublishResource.getRootPath());
+                if (parentFolder != null) {
+                    CmsResource parent = readResource(context, parentFolder, CmsResourceFilter.ALL);
+                    if ((parent.getState() == I_CmsConstants.C_STATE_DELETED)
+                        || (parent.getState() == I_CmsConstants.C_STATE_NEW)) {
+                        // parent folder is deleted or new - direct publish not allowed
+                        return false;
+                    }
+                }
 
             } catch (CmsException e) {
                 // any exception here means the user has no publish permissions

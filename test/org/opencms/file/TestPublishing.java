@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2004/11/25 13:04:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/12/07 17:45:11 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,25 +31,27 @@
  
 package org.opencms.file;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestLogAppender;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
+
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Unit tests for OpenCms publishing.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -241,7 +243,23 @@ public class TestPublishing extends OpenCmsTestCase {
         echo ("Publishing the resource directly");
         
         storeResources(cms, newFile);
-        cms.publishResource(newFile);
+        
+        boolean error;
+        try {
+            // this will generate an error in the log, ensure the test still continues
+            OpenCmsTestLogAppender.setBreakOnError(false);
+            cms.publishResource(newFile);
+            error = true;
+        } catch (CmsSecurityException e) {
+            error = false;
+        }
+        // reset log to stop test on error
+        OpenCmsTestLogAppender.setBreakOnError(true);
+        
+        if (error) {
+            fail("A resource in a new folder could be published without generating an error!");
+        }
+            
         assertFilter(cms, newFile, OpenCmsTestResourceFilter.FILTER_EQUAL);
         
         // direct publish of another sibling will not publish the new sibling
