@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2002/12/17 19:42:10 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/01/31 16:59:07 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.util;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.StringTokenizer;
@@ -59,6 +60,9 @@ public class Encoder {
 
     /** Flag to indicate if the Java 1.4 decoding method (with encoding parameter) is supported by the JVM */
     private static boolean C_NEW_DECODING_SUPPORTED = true;
+    
+    /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard */
+    public static final String C_URI_ENCODING = "UTF-8";
 
     /**
      * Constructor
@@ -78,11 +82,11 @@ public class Encoder {
      * since 1.3 does not support an explicit encoding parameter and always uses
      * the default system encoding.<p>
      * 
-     * @param source The string to encode
-     * @param encoding The encoding to use (if null, the system default is used)
+     * @param source the String to encode
+     * @param encoding the encoding to use (if null, the system default is used)
      * @param fallbackToDefaultDecoding If true, the method will fallback to the default encoding (Java 1.3 style), 
      * if false, the source String will be returned unencoded 
-     * @return The encoded source String
+     * @return the encoded source String
      */
     public static String encode(String source, String encoding, boolean fallbackToDefaultEncoding) {
         if (source == null) return null;
@@ -100,6 +104,16 @@ public class Encoder {
         }
         // Fallback to default encoding
         return URLEncoder.encode(source);
+    }
+    
+    /**
+     * Encodes a String using the default encoding.
+     * 
+     * @param source the String to encode
+     * @return String the encoded source String
+     */
+    public static String encode(String source) {
+        return encode(source, C_URI_ENCODING, true);
     }
 
     /**
@@ -138,6 +152,16 @@ public class Encoder {
         // Fallback to default decoding
         return URLDecoder.decode(source);        
     }
+    
+    /**
+     * Decodes a String using the default encoding.
+     * 
+     * @param source the String to decode
+     * @return String the decoded source String
+     */
+    public static String decode(String source) {
+        return decode(source, C_URI_ENCODING, true);
+    }    
 
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
@@ -288,5 +312,25 @@ public class Encoder {
             }
         }
         return decode(preparedSource.toString(), encoding, true);
+    }
+    
+    /**
+     * Changes the encoding of a byte array that represents a String.<p>
+     * 
+     * @param input the byte array to convert
+     * @param oldEncoding the current encoding of the byte array
+     * @param newEncoding the new encoding of the byte array
+     * @return byte[] the byte array encoded in the new encoding
+     */
+    public static byte[] changeEncoding(byte[] input, String oldEncoding, String newEncoding) {
+        if ((oldEncoding == null) || (newEncoding == null)) return input;
+        if (oldEncoding.trim().equalsIgnoreCase(newEncoding.trim())) return input;
+        byte[] result = input;
+        try {
+            result = (new String(input, oldEncoding)).getBytes(newEncoding);
+        } catch (UnsupportedEncodingException e) {
+            // return value will be input value
+        }
+        return result;
     }
 }
