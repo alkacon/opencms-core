@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/12/07 10:36:40 $
-* Version: $Revision: 1.294 $
+* Date   : $Date: 2001/12/11 14:13:59 $
+* Version: $Revision: 1.295 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.294 $ $Date: 2001/12/07 10:36:40 $
+ * @version $Revision: 1.295 $ $Date: 2001/12/11 14:13:59 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4355,7 +4355,7 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
  */
 public void exportStaticResources(CmsUser currentUser, CmsProject currentProject, CmsObject cms, Vector startpoints) throws CmsException {
 
-    if(isAdmin(currentUser, currentProject)) {
+    if(isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject)) {
         new CmsStaticExport(cms, startpoints);
     } else {
          throw new CmsException("[" + this.getClass().getName() + "] exportResources",
