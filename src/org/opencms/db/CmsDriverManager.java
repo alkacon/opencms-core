@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/18 10:00:38 $
- * Version: $Revision: 1.164 $
+ * Date   : $Date: 2003/08/18 11:14:21 $
+ * Version: $Revision: 1.165 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.164 $ $Date: 2003/08/18 10:00:38 $
+ * @version $Revision: 1.165 $ $Date: 2003/08/18 11:14:21 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7013,10 +7013,11 @@ public class CmsDriverManager extends Object {
 
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
 
+        long dateLastModified = resource.getDateLastModified();
         m_userDriver.removeAccessControlEntry(context.currentProject(), resource.getResourceAceId(), principal);
         clearAccessControlListCache();
         
-        touchResource(context, resource, System.currentTimeMillis(),context.currentUser().getId());
+        touchResource(context, resource, dateLastModified, context.currentUser().getId());
     }
 
     /**
@@ -7907,10 +7908,11 @@ public class CmsDriverManager extends Object {
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
 
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
-
+        
+        long dateLastModified = resource.getDateLastModified();
         m_userDriver.writeAccessControlEntry(context.currentProject(), acEntry);
         clearAccessControlListCache();
-        touchResource(context, resource, resource.getDateLastModified(), context.currentUser().getId());
+        touchResource(context, resource, dateLastModified, context.currentUser().getId());
     }
 
     /**
