@@ -64,17 +64,6 @@ default:
 
 <link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>commons/css_workplace.css">
 
-<style type="text/css">
-<!--
-.xmlTable { width:100%; }
-.xmlTd    { width: 100%; height: 22px; }
-.xmlLabel { font-family:verdana, sans-serif; font-size:11px; font-weight:bold; height: 22px; white-space: nowrap; }
-.xmlInput { font-family:verdana, sans-serif; font-size:11px; font-weight:normal; }
-.xmlInputSmall { width: 200px; }
-.xmlInputMedium { width: 400px; }
--->
-</style>
-
 <script type="text/javascript" src="<%= wp.getEditorResourceUri() %>edit.js"></script>
 <script type="text/javascript" src="<%= wp.getEditorResourceUri() %>help.js"></script>
 <%= wp.getXmlEditorIncludes() %>

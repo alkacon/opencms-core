@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/10/22 13:21:05 $
- * Version: $Revision: 1.572 $
+ * Date   : $Date: 2004/10/22 13:58:16 $
+ * Version: $Revision: 1.573 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,7 +24,7 @@ OpenCms 5.5.2 Caladan - October 22, 2004
 * Fixed issue with translated module name not correctly written to log
 * Fixed issues with legacy master module permissions and history
 * Fixed issue with Lucene search query not working with "OR" logic 
-* Fixed issue with old temporary file lock owend by wrong user
+* Fixed issue with old temporary file lock owned by wrong user
 * Fixed issue with cached page element in request attribute not being properly initialized
 ! Made XML content types configurable in opencms-vfs.xml
 ! Made XML content type filters configurable in opencms-vfs.xml
