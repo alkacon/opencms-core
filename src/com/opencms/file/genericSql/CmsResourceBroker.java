@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/04 08:46:23 $
- * Version: $Revision: 1.217 $
+ * Date   : $Date: 2001/01/04 09:47:49 $
+ * Version: $Revision: 1.218 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.217 $ $Date: 2001/01/04 08:46:23 $
+ * @version $Revision: 1.218 $ $Date: 2001/01/04 09:47:49 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -182,7 +182,9 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
 				
 				// read next resource
 				if(resource.getParent() != null) {
-					resource = readFolder(currentUser,currentProject, resource.getParent());
+					// resource = readFolder(currentUser,currentProject, resource.getParent());
+					// readFolder without checking access
+					resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getParent());
 				}
 			} else {
 				// last check was negative
@@ -192,6 +194,21 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
 		
 		// all checks are done positive
 		return(true);
+	}
+	/**
+	 * Checks, if the user may create this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
+								String resourceName) throws CmsException {
+			
+		CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName);
+		return accessCreate(currentUser, currentProject, resource);
 	}
 	/**
 	 * Checks, if the group may access this resource.
@@ -250,7 +267,9 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
 		
 		// read the parent folder
 		if(resource.getParent() != null) {
-			resource = readFolder(currentUser,currentProject, resource.getParent());
+			//resource = readFolder(currentUser,currentProject, resource.getParent());
+			// readFolder without checking access
+			resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getParent());
 		} else {
 			// no parent folder!
 			return true;
@@ -266,12 +285,29 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
 				
 			// read next resource
 			if(resource.getParent() != null) {
-				resource = readFolder(currentUser,currentProject, resource.getParent());
+				//resource = readFolder(currentUser,currentProject, resource.getParent());
+				// readFolder without checking access
+				resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getParent());
 			}
 		} while(resource.getParent() != null);
 		
 		// all checks are done positive
 		return(true);
+	}
+	/**
+	 * Checks, if the user may lock this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user may lock this resource, or not.
+	 */
+	public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
+							  String resourceName) throws CmsException {
+								  
+		CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName);
+		return accessLock(currentUser,currentProject,resource);
 	}
 /**
  * Checks, if others may access this resource.
@@ -398,8 +434,9 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 	CmsResource res = resource; // save the original resource name to be used if an error occurs.
 	while (res.getParent() != null)
 	{
-		//res = m_dbAccess.readFolder(res.getProjectId(), res.getParent());
-		res = readFolder(currentUser, currentProject, res.getParent());
+		// readFolder without checking access
+		res = m_dbAccess.readFolder(res.getProjectId(), res.getParent());
+		//res = readFolder(currentUser, currentProject, res.getParent());
 		
 		if (res == null)
 		{
@@ -415,6 +452,20 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 	m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(true));			
 	return true;
 	}
+}
+/**
+ * Checks, if the user may read this resource.
+ * NOTE: If the ressource is in the project you never have to fallback.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param resource The resource to check.
+ * 
+ * @return weather the user has access, or not.
+ */
+public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String resourceName) throws CmsException {
+	CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName);
+	return accessRead(currentUser, currentProject, resource);
 }
 	/**
 	 * Checks, if the user may unlock this resource.
@@ -447,7 +498,9 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 		
 		// read the parent folder
 		if(resource.getParent() != null) {
-			resource = readFolder(currentUser,currentProject, resource.getParent());
+			// readFolder without checking access
+			//resource = readFolder(currentUser,currentProject, resource.getParent());
+			resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getParent());
 		} else {
 			// no parent folder!
 			return true;
@@ -464,7 +517,9 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 				
 			// read next resource
 			if(resource.getParent() != null) {
-				resource = readFolder(currentUser,currentProject, resource.getParent());
+				// readFolder without checking access
+				//resource = readFolder(currentUser,currentProject, resource.getParent());
+				resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getParent());
 			}
 		} while(resource.getParent() != null);
 		
@@ -518,7 +573,9 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 
 		// read the parent folder
 		if(resource.getParent() != null) {
-			resource = readFolder(currentUser,currentProject, resource.getParent());
+			// readFolder without checking access
+			//resource = readFolder(currentUser,currentProject, resource.getParent());			
+			resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getParent());
 		} else {
 			// no parent folder!
 			return true;
@@ -539,7 +596,9 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 				
 				// read next resource
 				if(resource.getParent() != null) {
-					resource = readFolder(currentUser,currentProject, resource.getParent());
+					// readFolder without checking access
+					//resource = readFolder(currentUser,currentProject, resource.getParent());
+					resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getParent());
 				}
 			} else {
 				// last check was negative
@@ -549,6 +608,21 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 
 		// all checks are done positive
 		return(true);
+	}
+	/**
+	 * Checks, if the user may write this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
+							   String resourceName) throws CmsException {
+	
+		CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName);
+		return accessWrite(currentUser,currentProject,resource);
 	}
 	/**
 	 * adds a file extension to the list of known file extensions 
@@ -741,13 +815,15 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 							   String username, String groupname)
 		throws CmsException {
 
+/* ednfal: don't throw this exception because of problems in group administration
+there is a check in dbAccess, so the user is only added to group if he doesn't already exist
 		// test if this user is already in the group
 		if (userInGroup(currentUser,currentProject,username,groupname)) {
 		   // user already there, throw exception
 		   throw new CmsException("[" + this.getClass().getName() + "] add " +  username+ " to " +groupname, 
 				CmsException.C_USER_EXISTS);
 		}
-		
+*/		
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
 			CmsUser user;
