@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/03/15 13:57:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/03/16 13:39:27 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.util.*;
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/03/15 13:57:26 $
+ * @version $Revision: 1.7 $ $Date: 2000/03/16 13:39:27 $
  */
 public class Utils implements I_CmsConstants, I_CmsLogChannels {
 	/** Constant for sorting files upward by name */
@@ -128,7 +128,7 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
          }
          niceTime.append(day+".");
          niceTime.append(month+".");  
-         niceTime.append(year+" ");
+         niceTime.append(year);
          return niceTime.toString();
      }
      
