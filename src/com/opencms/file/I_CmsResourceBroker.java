@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/04 10:28:48 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2000/04/04 12:42:19 $
+ * Version: $Revision: 1.55 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.54 $ $Date: 2000/04/04 10:28:48 $
+ * @version $Revision: 1.55 $ $Date: 2000/04/04 12:42:19 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -927,6 +927,21 @@ interface I_CmsResourceBroker {
 						   A_CmsGroup group)
 		throws CmsException;
     
+    /**
+	 * Sets a new parent-group for an already existing group in the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param groupName The name of the group that should be written to the Cms.
+	 * @param parentGroupName The name of the parentGroup to set, or null if the parent 
+	 * group should be deleted.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	public void setParentGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   String groupName, String parentGroupName)
+		throws CmsException;
     
 	/**
 	 * Delete a group from the Cms.<BR/>
@@ -1079,6 +1094,25 @@ interface I_CmsResourceBroker {
 	 */
 	public void setPassword(A_CmsUser currentUser, A_CmsProject currentProject, 
 							String username, String oldPassword, String newPassword)
+		throws CmsException;
+	
+	/** 
+	 * Sets the password for a user.
+	 * 
+	 * Only a adminstrator can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void setPassword(A_CmsUser currentUser, A_CmsProject currentProject, 
+							String username, String newPassword)
 		throws CmsException;
 	
 	/**

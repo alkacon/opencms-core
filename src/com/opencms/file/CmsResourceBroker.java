@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/04 10:28:47 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2000/04/04 12:42:19 $
+ * Version: $Revision: 1.94 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.93 $ $Date: 2000/04/04 10:28:47 $
+ * @version $Revision: 1.94 $ $Date: 2000/04/04 12:42:19 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1447,8 +1447,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
-			return( m_userRb.addUser(name, password, group, description, 
- 									 additionalInfos, flags) );
+			// check the password minimumsize
+			if( (name.length() > 1) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
+				return( m_userRb.addUser(name, password, group, description, 
+										 additionalInfos, flags) );
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+					CmsException.C_SHORT_PASSWORD);
+			}
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + name, 
 				CmsException.C_NO_ACCESS);
@@ -1541,7 +1547,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
-			return( m_userRb.addGroup(name, description, flags, parent) );
+			// check the lenght of the groupname
+			if(name.length() > 1) {
+				return( m_userRb.addGroup(name, description, flags, parent) );
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+					CmsException.C_BAD_NAME);
+			}
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + name, 
 				CmsException.C_NO_ACCESS);
@@ -1571,6 +1583,42 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
     
+    /**
+	 * Sets a new parent-group for an already existing group in the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param groupName The name of the group that should be written to the Cms.
+	 * @param parentGroupName The name of the parentGroup to set, or null if the parent 
+	 * group should be deleted.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	public void setParentGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   String groupName, String parentGroupName)
+		throws CmsException {
+		
+		// Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			A_CmsGroup group = readGroup(currentUser, currentProject, groupName);
+			int parentGroupId = C_UNKNOWN_ID;
+			
+			// if the group exists, use its id, else set to unknown.
+			if( parentGroupName != null ) {
+				parentGroupId = readGroup(currentUser, currentProject, parentGroupName).getId();
+			}
+			
+			group.setParentId(parentGroupId);
+			
+			// write the changes to the cms
+			m_userRb.writeGroup(group);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + groupName, 
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
 	/**
 	 * Delete a group from the Cms.<BR/>
 	 * Only groups that contain no subgroups can be deleted.
@@ -1805,6 +1853,42 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
 
+	/** 
+	 * Sets the password for a user.
+	 * 
+	 * Only a adminstrator can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void setPassword(A_CmsUser currentUser, A_CmsProject currentProject, 
+							String username, String newPassword)
+		throws CmsException {
+		
+		// check the length of the new password.
+		if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_SHORT_PASSWORD);
+		}
+		
+		// read the user
+		A_CmsUser user = readUser(currentUser, currentProject, username);
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) && 
+			isAdmin(user, currentProject) ) {
+			m_userRb.setPassword(username, newPassword);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
     /**
 	 * Adds a new CmsMountPoint. 
 	 * A new mountpoint for a mysql filesystem is added.

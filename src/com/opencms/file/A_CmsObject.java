@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/04/04 10:28:47 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2000/04/04 12:42:19 $
+ * Version: $Revision: 1.60 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.59 $ $Date: 2000/04/04 10:28:47 $ 
+ * @version $Revision: 1.60 $ $Date: 2000/04/04 12:42:19 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1011,6 +1011,17 @@ public abstract class A_CmsObject {
 		throws CmsException;
 	
 	/** 
+	 * Sets the password for a user.
+	 * 
+	 * @param username The name of the user.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	abstract public void setPassword(String username, String newPassword)
+		throws CmsException;
+	
+	/** 
 	 * Adds a user to the Cms.
 	 * 
 	 * Only a adminstrator can add users to the cms.
@@ -1159,6 +1170,17 @@ public abstract class A_CmsObject {
 	abstract public void writeGroup(A_CmsGroup group)
 		throws CmsException;
 
+    /**
+	 * Sets a new parent-group for an already existing group in the Cms.<BR/>
+	 * 
+	 * @param groupName The name of the group that should be written to the Cms.
+	 * @param parentGroupName The name of the parentGroup to set, or null if the parent 
+	 * group should be deleted.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	abstract public void setParentGroup(String groupName, String parentGroupName)
+		throws CmsException;
+	
 	/**
 	 * Delete a group from the Cms.<BR/>
 	 * 

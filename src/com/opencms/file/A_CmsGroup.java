@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsGroup.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/04 12:42:19 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/04 12:42:19 $
  */
 abstract public class A_CmsGroup { 
 	
@@ -98,6 +98,13 @@ abstract public class A_CmsGroup {
 	 */
 	abstract public int getParentId();
 
+	/**
+	 * Sets the id of the parent group of the actual Cms group object, 
+	 * or C_UNKNOWN_ID.
+	 * 
+	 * @param id the id of the parent-group.
+	 */
+	abstract void setParentId(int id);
    
 		
 	/**
@@ -115,5 +122,11 @@ abstract public class A_CmsGroup {
 	 */
     abstract public boolean equals(Object obj);
 
+	/**
+	 * Sets the description of this group.
+	 * 
+	 * @param description The description of this group.
+	 */
+	abstract public void setDescription(String description);
 
 }

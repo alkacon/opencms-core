@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessGroupMySql.java,v $
- * Date   : $Date: 2000/04/03 10:48:29 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/04/04 12:42:19 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/04/03 10:48:29 $
+ * @version $Revision: 1.21 $ $Date: 2000/04/04 12:42:19 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -57,7 +57,7 @@ import com.opencms.core.*;
     /**
     * SQL Command for updating/wrting groups
     */   
-    private static final String C_GROUP_WRITE="UPDATE " + C_DATABASE_PREFIX + "GROUPS SET GROUP_DESCRIPTION = ?, GROUP_FLAGS = ? WHERE GROUP_ID = ? ";
+    private static final String C_GROUP_WRITE="UPDATE " + C_DATABASE_PREFIX + "GROUPS SET GROUP_DESCRIPTION = ?, GROUP_FLAGS = ?, PARENT_GROUP_ID = ? WHERE GROUP_ID = ? ";
 
     /**
     * SQL Command for reading groups.
@@ -408,7 +408,8 @@ import com.opencms.core.*;
 				
 				statementGroupWrite.setString(1,group.getDescription());
 				statementGroupWrite.setInt(2,group.getFlags());
-				statementGroupWrite.setInt(3,group.getId());
+				statementGroupWrite.setInt(3,group.getParentId());
+				statementGroupWrite.setInt(4,group.getId());
 				statementGroupWrite.executeUpdate();  
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] ",CmsException.C_NO_GROUP);	
