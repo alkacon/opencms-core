@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/05/07 14:46:58 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/08 13:08:15 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,30 +39,34 @@ import java.util.*;
  * used keys.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2001/05/07 14:46:58 $
+ * @version $Revision: 1.3 $ $Date: 2001/05/08 13:08:15 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
     /** Bitfield for storing external cache properties */
     public int m_cd;
 
-    // everthing to get the cache key
-    //
-    private boolean user = false;
-    //
-    private boolean group = false;
-    //
-    private Vector cacheGroups;
-    //
-    private boolean uri = false;
-    //
-    private Vector cacheParameter = null;
+    // indicates if the external cache properties should be automaticlay changed
+    private boolean m_changeCd = true;
 
-    //
-    private Vector dynamicParameter = null;
+    // everthing to get the cache key
+
+    // indicates if the username is part of the cache key
+    private boolean m_user = false;
+    // indicates if the groupname is part of the cache key
+    private boolean m_group = false;
+    //the groupnames for which the element is cacheable
+    private Vector m_cacheGroups;
+    //indicates if the uri is part of the cache key
+    private boolean m_uri = false;
+    //the parameters for which the element is cacheable
+    private Vector m_cacheParameter = null;
+
+    // if one of these parameters occures the element is dynamic
+    private Vector m_dynamicParameter = null;
 
     // the timeout object
-    private CmsTimeout timeout;
+    private CmsTimeout m_timeout;
 
     /** Flag for internal cacheable */
     public static final int C_CACHE_INTERNAL = 1;
@@ -108,6 +112,28 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
         m_cd |= proxyPub?C_CACHE_PROXY_PUBLIC:0;
         m_cd |= export?C_CACHE_EXPORT:0;
         m_cd |= stream?C_CACHE_STREAM:0;
+
+        m_changeCd = false;
+    }
+
+    /**
+     * Method for setting all caching properties given boolean
+     * values.
+     * @param internal Initial value for "internal cacheable" property.
+     * @param proxyPriv Initial value for "proxy private cacheable" property.
+     * @param proxyPub Initial value for "internal cacheable" property.
+     * @param export Initial value for "exportable" property.
+     * @param stream Initial value for "streamable" property.
+     */
+    public void setExternalCaching(boolean internal, boolean proxyPriv, boolean proxyPub, boolean export, boolean stream) {
+        m_cd = 0;
+        m_cd |= internal?C_CACHE_INTERNAL:0;
+        m_cd |= proxyPriv?C_CACHE_PROXY_PRIVATE:0;
+        m_cd |= proxyPub?C_CACHE_PROXY_PUBLIC:0;
+        m_cd |= export?C_CACHE_EXPORT:0;
+        m_cd |= stream?C_CACHE_STREAM:0;
+
+        m_changeCd = false;
     }
 
     /**
@@ -165,7 +191,14 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
      * @return timeout object.
      */
     public CmsTimeout getTimeout() {
-        return timeout;
+        return m_timeout;
+    }
+
+    /**
+     * set the timeout object(used if the element should be reloaded every x minutes.
+     */
+    public void setTimeout(CmsTimeout timeout) {
+        m_timeout = timeout;
     }
 
     /**
@@ -181,9 +214,9 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
             parameters = new Hashtable();
         }
         // first test the parameters which say it is dynamic
-        if((dynamicParameter != null) && (!dynamicParameter.isEmpty())){
-            for (int i=0; i<dynamicParameter.size(); i++){
-                String testparameter = (String)dynamicParameter.elementAt(i);
+        if((m_dynamicParameter != null) && (!m_dynamicParameter.isEmpty())){
+            for (int i=0; i < m_dynamicParameter.size(); i++){
+                String testparameter = (String)m_dynamicParameter.elementAt(i);
                 if(parameters.containsKey(testparameter)){
                     return null;
                 }
@@ -191,10 +224,10 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
         }
         CmsRequestContext reqContext = cms.getRequestContext();
         String groupKey = "";
-        if(group){
+        if(m_group){
             groupKey = reqContext.currentGroup().getName();
-            if((cacheGroups != null) && (!cacheGroups.isEmpty())){
-                if(!cacheGroups.contains(groupKey)){
+            if((m_cacheGroups != null) && (!m_cacheGroups.isEmpty())){
+                if(!m_cacheGroups.contains(groupKey)){
                     return null;
                 }
             }
@@ -202,16 +235,16 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
 
         // ok, a cachekey exists. lets put it together
         String key = "";
-        if(uri){
+        if(m_uri){
             key += reqContext.getUri();
         }
-        if(user){
+        if(m_user){
             key += reqContext.currentUser().getName();
         }
         key += groupKey;
-        if((cacheParameter != null) && ( !cacheParameter.isEmpty())){
-            for (int i=0; i<cacheParameter.size(); i++){
-                String para = (String)cacheParameter.elementAt(i);
+        if((m_cacheParameter != null) && ( !m_cacheParameter.isEmpty())){
+            for (int i=0; i < m_cacheParameter.size(); i++){
+                String para = (String)m_cacheParameter.elementAt(i);
                 if (parameters.containsKey(para)){
                     key += (String)parameters.get(para);
                 }
@@ -227,36 +260,50 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
      *
      */
     public void setCacheGroups(boolean groupCache){
-        group = groupCache;
+        m_group = groupCache;
     }
 
     /**
      *
      */
     public void setCacheGroups(Vector groupNames){
-        group = true;
-        cacheGroups = groupNames;
+        m_group = true;
+        m_cacheGroups = groupNames;
     }
 
     /**
      *
      */
     public void setCacheUser(boolean userCache){
-        user = userCache;
+        m_user = userCache;
+        autoSetExternalCache();
     }
 
     /**
      *
      */
     public void setCacheUri(boolean uriCache){
-        uri = uriCache;
+        m_uri = uriCache;
+        autoSetExternalCache();
     }
 
     /**
      *
      */
     public void setCacheParameters(Vector parameterNames){
-        cacheParameter = parameterNames;
+        m_cacheParameter = parameterNames;
+        autoSetExternalCache();
     }
 
+    /**
+     *
+     */
+    private void autoSetExternalCache(){
+        boolean proxPriv = m_uri && (m_cacheParameter == null || m_cacheParameter.isEmpty())
+                            && isInternalCacheable();
+        boolean proxPubl = proxPriv && m_user;
+        // ToDo: check the internal flag for export
+        boolean export = proxPubl; // && !flag(extenal);
+        setExternalCaching(isInternalCacheable(), proxPriv, proxPubl, export, isStreamable());
+    }
 }
