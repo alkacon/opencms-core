@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsQueries.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/05/07 11:43:25 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,10 +31,17 @@ package com.opencms.file.oraclesql;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
+import oracle.jdbc.driver.OracleResultSet;
+
 /**
- * Reads SQL queries from query.properties of this resource broker package. 
+ * Reads SQL queries from query.properties of this resource broker package.
+ * 
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.6 $ $Date: 2003/05/07 11:43:25 $ 
  */
 public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
 {
@@ -86,4 +93,21 @@ public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
         }
         return value;
     }
+    
+    /**
+     * Returns a byte array for a given table attribute in the result set.
+     * 
+     * @param res the result set
+     * @param columnName the name of the table attribute
+     * @return byte[]
+     * @throws SQLException
+     * @see com.opencms.file.genericSql.CmsQueries#getBytes(ResultSet, String)
+     */    
+    public byte[] getBytes(ResultSet res, String columnName) throws SQLException{       
+        oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(columnName);
+        byte[] content = new byte[(int) blob.length()];
+        content = blob.getBytes(1, (int) blob.length());
+        
+        return content;
+    }    
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/01/20 23:59:32 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/05/07 11:43:25 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,10 @@
 
 package com.opencms.file.oraclesql;
 
-import source.org.apache.java.util.*;
-import com.opencms.core.*;
+import com.opencms.core.CmsException;
+import com.opencms.file.genericSql.I_CmsUserAccess;
+
+import source.org.apache.java.util.Configurations;
 
 
 /**
@@ -42,7 +44,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.4 $ $Date: 2003/01/20 23:59:32 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/07 11:43:25 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -54,8 +56,12 @@ public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBr
      * @param configurations source.org.apache.java.util.Configurations
      * @throws com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated.
      */
-    public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations configurations) throws CmsException{
-        return new com.opencms.file.oraclesql.CmsDbAccess(configurations);
+    public com.opencms.file.genericSql.CmsDbAccess initAccess(Configurations configurations) throws CmsException{
+        m_VfsAccess = new com.opencms.file.oraclesql.CmsVfsAccess(configurations, this);
+        m_UserAccess = (I_CmsUserAccess) new com.opencms.file.oraclesql.CmsUserAccess(configurations, this);
+        m_dbAccess = new com.opencms.file.oraclesql.CmsDbAccess(configurations, this);
+    
+        return m_dbAccess;        
     }
 
     /**

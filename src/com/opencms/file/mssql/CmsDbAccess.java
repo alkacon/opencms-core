@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mssql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/01/21 13:27:35 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/05/07 11:43:26 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsBackupProject;
+import com.opencms.file.I_CmsResourceBroker;
 import com.opencms.util.SqlHelper;
 
 import java.sql.Connection;
@@ -52,7 +53,7 @@ import source.org.apache.java.util.Configurations;
  * the database.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2003/01/21 13:27:35 $ *
+ * @version $Revision: 1.6 $ $Date: 2003/05/07 11:43:26 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -60,10 +61,10 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsDbAccess(Configurations config)
+    public CmsDbAccess(Configurations config, I_CmsResourceBroker theResourceBroker)
         throws CmsException {
 
-        super(config);
+        super(config,theResourceBroker);
     }
 
     /**
@@ -98,13 +99,13 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
          try {
              // create the statement
              con = DriverManager.getConnection(m_poolNameBackup);
-             statement = con.prepareStatement(m_cq.get("C_PROJECTS_READLAST_BACKUP"));
+             statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READLAST_BACKUP"));
              res = statement.executeQuery();
              while(res.next()) {
                 int versionId = res.getInt("VERSION_ID");
                 Vector resources = new Vector();
                 try{
-                    resources = readBackupProjectResources(versionId);
+                    resources = m_ResourceBroker.getVfsAccess().readBackupProjectResources(versionId);
                 } catch (CmsException ex){
                     // no resources do nothing
                 }

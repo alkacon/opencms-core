@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mssql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/01/20 23:59:32 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/05/07 11:43:26 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2003/01/20 23:59:32 $
+ * @version $Revision: 1.4 $ $Date: 2003/05/07 11:43:26 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 /**
@@ -51,8 +51,8 @@ public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBr
  * @param configurations source.org.apache.java.util.Configurations
  * @throws com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated.
  */
-public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations configurations) throws CmsException
+public com.opencms.file.genericSql.CmsDbAccess initAccess(Configurations configurations) throws CmsException
 {
-    return new com.opencms.file.mssql.CmsDbAccess(configurations);
+    return new com.opencms.file.mssql.CmsDbAccess(configurations, this);
 }
 }

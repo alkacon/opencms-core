@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.201 $
+* Date   : $Date: 2003/05/07 11:43:25 $
+* Version: $Revision: 1.202 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 package com.opencms.file;
 
 import com.opencms.core.CmsException;
+import com.opencms.file.genericSql.CmsVfsAccess;
+import com.opencms.file.genericSql.I_CmsUserAccess;
 import com.opencms.report.I_CmsReport;
 
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.201 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.202 $ $Date: 2003/05/07 11:43:25 $
  *
  */
 
@@ -3927,5 +3929,8 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      */         
     public void linkResourceToTarget( CmsProject theProject, String theLinkResourceName, String theTargetResourceName ) 
         throws CmsException;
-                                                      
+                            
+    public CmsVfsAccess getVfsAccess();     
+    
+    public I_CmsUserAccess getUserAccess();                          
 }

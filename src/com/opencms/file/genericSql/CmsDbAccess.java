@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/18 01:52:03 $
-* Version: $Revision: 1.278 $
+* Date   : $Date: 2003/05/07 11:43:26 $
+* Version: $Revision: 1.279 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -45,8 +45,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -54,7 +52,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -75,12 +72,12 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.278 $ $Date: 2003/03/18 01:52:03 $ *
+ * @version $Revision: 1.279 $ $Date: 2003/05/07 11:43:26 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
-    protected static int C_RESTYPE_LINK_ID = 2;
-    protected static boolean C_USE_TARGET_DATE = true;    
+    public static int C_RESTYPE_LINK_ID = 2;
+    public static boolean C_USE_TARGET_DATE = true;    
 
     /**
      * The name of the pool to use
@@ -193,15 +190,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     protected int[] m_maxIds;
 
-    /**
-     * A digest to encrypt the passwords.
-     */
-    protected MessageDigest m_digest = null;
 
-    /**
-     * The file.encoding to code passwords after encryption with digest.
-     */
-    protected String m_digestFileEncoding = null;
 
     /**
      * Storage for all exportpoints.
@@ -211,7 +200,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
    /**
      * 'Constants' file.
      */
-   protected com.opencms.file.genericSql.CmsQueries m_cq;
+   protected com.opencms.file.genericSql.CmsQueries m_SqlQueries;
+   
+   protected I_CmsResourceBroker m_ResourceBroker;
 
    /**
     * TESTFIX (mfoley@iee.org) New Code:
@@ -235,17 +226,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param config The OpenCms configuration.
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsDbAccess(Configurations config) throws CmsException {
+    public CmsDbAccess(Configurations config, I_CmsResourceBroker theResourceBroker ) throws CmsException {
+        
+        m_ResourceBroker = theResourceBroker;
 
         // set configurations for the dbpool driver
         com.opencms.dbpool.CmsDriver.setConfigurations(config);
 
-        m_cq = getQueries();
+        m_SqlQueries = initQueries(config);
 
         String rbName = null;
-        String digest = null;
+        //String digest = null;
         boolean fillDefaults = true;
-
 
         if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database access init : ok" );
@@ -258,6 +250,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // all needed pools are read in the following method
         getConnectionPools(config, rbName);
 
+        /*
         digest = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST, "MD5");
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest configured    : " + digest);
@@ -282,6 +275,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Error setting digest : using clear passwords - " + e.getMessage());
             }
         }
+        */
 
         // have we to fill the default resource like root and guest?
         try {
@@ -352,7 +346,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
             // create the object
             con = DriverManager.getConnection(m_poolName);
-            statement=  con.prepareStatement(m_cq.get("C_SYSTEMPROPERTIES_WRITE"));
+            statement=  con.prepareStatement(m_SqlQueries.get("C_SYSTEMPROPERTIES_WRITE"));
             statement.setInt(1,nextId(C_TABLE_SYSTEMPROPERTIES));
             statement.setString(2,name);
             // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(3,value);
@@ -382,237 +376,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         return readSystemProperty(name);
      }
 
-    /**
-     * Adds a user to the database.
-     *
-     * @param name username
-     * @param password user-password
-     * @param description user-description
-     * @param firstname user-firstname
-     * @param lastname user-lastname
-     * @param email user-email
-     * @param lastlogin user-lastlogin
-     * @param lastused user-lastused
-     * @param flags user-flags
-     * @param additionalInfos user-additional-infos
-     * @param defaultGroup user-defaultGroup
-     * @param address user-defauladdress
-     * @param section user-section
-     * @param type user-type
-     *
-     * @return the created user.
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public CmsUser addUser(String name, String password, String description,
-                          String firstname, String lastname, String email,
-                          long lastlogin, long lastused, int flags, Hashtable additionalInfos,
-                          CmsGroup defaultGroup, String address, String section, int type)
-        throws CmsException {
-        int id = nextId(C_TABLE_USERS);
-        byte[] value=null;
 
-        Connection con = null;
-        PreparedStatement statement = null;
-
-        try {
-            // serialize the hashtable
-            ByteArrayOutputStream bout= new ByteArrayOutputStream();
-            ObjectOutputStream oout=new ObjectOutputStream(bout);
-            oout.writeObject(additionalInfos);
-            oout.close();
-            value=bout.toByteArray();
-
-            // write data to database
-            con = DriverManager.getConnection(m_poolName);
-
-            statement = con.prepareStatement(m_cq.get("C_USERS_ADD"));
-
-            statement.setInt(1,id);
-            statement.setString(2,name);
-            // crypt the password with MD5
-            statement.setString(3, digest(password));
-            statement.setString(4, digest(""));
-            statement.setString(5,checkNull(description));
-            statement.setString(6,checkNull(firstname));
-            statement.setString(7,checkNull(lastname));
-            statement.setString(8,checkNull(email));
-            statement.setTimestamp(9, new Timestamp(lastlogin));
-            statement.setTimestamp(10, new Timestamp(lastused));
-            statement.setInt(11,flags);
-            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(12,value);
-            m_doSetBytes(statement,12,value);
-            statement.setInt(13,defaultGroup.getId());
-            statement.setString(14,checkNull(address));
-            statement.setString(15,checkNull(section));
-            statement.setInt(16,type);
-            statement.executeUpdate();
-         }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        }
-        catch (IOException e){
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);
-        } finally {
-            // close all db-resources
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return readUser(id);
-    }
-
-    /**
-     * Adds a user to the database.
-     *
-     * @param name username
-     * @param password user-password
-     * @param recoveryPassword user-recoveryPassword
-     * @param description user-description
-     * @param firstname user-firstname
-     * @param lastname user-lastname
-     * @param email user-email
-     * @param lastlogin user-lastlogin
-     * @param lastused user-lastused
-     * @param flags user-flags
-     * @param additionalInfos user-additional-infos
-     * @param defaultGroup user-defaultGroup
-     * @param address user-defauladdress
-     * @param section user-section
-     * @param type user-type
-     *
-     * @return the created user.
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public CmsUser addImportUser(String name, String password, String recoveryPassword, String description,
-                          String firstname, String lastname, String email,
-                          long lastlogin, long lastused, int flags, Hashtable additionalInfos,
-                          CmsGroup defaultGroup, String address, String section, int type)
-        throws CmsException {
-        int id = nextId(C_TABLE_USERS);
-        byte[] value=null;
-
-        Connection con = null;
-        PreparedStatement statement = null;
-
-        try {
-            // serialize the hashtable
-            ByteArrayOutputStream bout= new ByteArrayOutputStream();
-            ObjectOutputStream oout=new ObjectOutputStream(bout);
-            oout.writeObject(additionalInfos);
-            oout.close();
-            value=bout.toByteArray();
-
-            // write data to database
-            con = DriverManager.getConnection(m_poolName);
-
-            statement = con.prepareStatement(m_cq.get("C_USERS_ADD"));
-
-            statement.setInt(1,id);
-            statement.setString(2,name);
-            statement.setString(3, checkNull(password));
-            statement.setString(4, checkNull(recoveryPassword));
-            statement.setString(5,checkNull(description));
-            statement.setString(6,checkNull(firstname));
-            statement.setString(7,checkNull(lastname));
-            statement.setString(8,checkNull(email));
-            statement.setTimestamp(9, new Timestamp(lastlogin));
-            statement.setTimestamp(10, new Timestamp(lastused));
-            statement.setInt(11,flags);
-            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(12,value);
-            m_doSetBytes(statement,12,value);
-            statement.setInt(13,defaultGroup.getId());
-            statement.setString(14,checkNull(address));
-            statement.setString(15,checkNull(section));
-            statement.setInt(16,type);
-            statement.executeUpdate();
-         }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        }
-        catch (IOException e){
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);
-        } finally {
-            // close all db-resources
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return readUser(id);
-    }
-
-    /**
-     * Adds a user to a group.<BR/>
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param userid The id of the user that is to be added to the group.
-     * @param groupid The id of the group.
-     * @throws CmsException Throws CmsException if operation was not succesfull.
-     */
-    public void addUserToGroup(int userid, int groupid)
-        throws CmsException {
-
-        Connection con = null;
-        PreparedStatement statement = null;
-
-        // check if user is already in group
-        if (!userInGroup(userid,groupid)) {
-            // if not, add this user to the group
-            try {
-                // create statement
-                con = DriverManager.getConnection(m_poolName);
-                statement = con.prepareStatement(m_cq.get("C_GROUPS_ADDUSERTOGROUP"));
-                // write the new assingment to the database
-                statement.setInt(1,groupid);
-                statement.setInt(2,userid);
-                // flag field is not used yet
-                statement.setInt(3,C_UNKNOWN_INT);
-                statement.executeUpdate();
-
-             } catch (SQLException e){
-
-                 throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-             } finally {
-                // close all db-resources
-                if(statement != null) {
-                     try {
-                         statement.close();
-                     } catch(SQLException exc) {
-                         // nothing to do here
-                     }
-                }
-                if(con != null) {
-                     try {
-                         con.close();
-                     } catch(SQLException exc) {
-                         // nothing to do here
-                     }
-                }
-            }
-        }
-    }
 
     /**
      * Private helper method for publihing into the filesystem.
@@ -638,10 +402,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
     /**
      * Checks, if the String was null or is empty. If this is so it returns " ".
-     *
      * This is for oracle-issues, because in oracle an empty string is the same as null.
+     * TODO: this method should be removed!
+     * 
      * @param value the String to check.
      * @return the value, or " " if needed.
+     * @deprecated
      */
     protected String checkNull(String value) {
         String ret = " ";
@@ -663,7 +429,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
 
-            statementDelete = con.prepareStatement(m_cq.get("C_RESOURCES_DELETE_LOST_ID"));
+            statementDelete = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_DELETE_LOST_ID"));
             statementDelete.executeUpdate();
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
@@ -685,32 +451,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
     }
 
-    /**
-     * Copies the file.
-     *
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param userId The id of the user who wants to copy the file.
-     * @param source The complete path of the sourcefile.
-     * @param parentId The parentId of the resource.
-     * @param destination The complete path of the destinationfile.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-     public void copyFile(CmsProject project,
-                          CmsProject onlineProject,
-                          int userId,
-                          String source,
-                          int parentId,
-                          String destination)
-         throws CmsException {
-         CmsFile file;
-
-         // read sourcefile
-         file=readFile(project.getId(),onlineProject.getId(),source);
-         // create destination file
-         createFile(project,onlineProject,file,userId,parentId,destination);
-     }
 
     /**
      * Counts the locked resources in this project.
@@ -742,7 +482,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             // create the statement
             con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_COUNTLOCKED"+usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_COUNTLOCKED"+usedStatement));
             statement.setInt(1,project.getId());
             res = statement.executeQuery();
             if(res.next()) {
@@ -799,7 +539,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             // create statement
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTIES_READALL_COUNT"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_READALL_COUNT"));
             statement.setInt(1, metadef.getId());
             result = statement.executeQuery();
 
@@ -839,631 +579,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         return returnValue;
     }
 
-    /**
-     * Creates a new file from an given CmsFile object and a new filename.
-     *
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param file The file to be written to the Cms.
-     * @param user The Id of the user who changed the resourse.
-     * @param parentId The parentId of the resource.
-     * @param filename The complete new name of the file (including pathinformation).
-     *
-     * @return file The created file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-     public CmsFile createFile(CmsProject project,
-                               CmsProject onlineProject,
-                               CmsFile file,
-                               int userId,
-                               int parentId, String filename)
-
-         throws CmsException {
-        String usedPool = null;
-        String usedStatement = null;
-        Connection con = null;
-        PreparedStatement statement = null;
-        // check the resource name
-        if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
-            throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
-        }
-        int state=0;
-        int modifiedBy = userId;
-        long dateModified = System.currentTimeMillis();
-        if (project.equals(onlineProject)) {
-            state= file.getState();
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-            modifiedBy = file.getResourceLastModifiedBy();
-            dateModified = file.getDateLastModified();
-        } else {
-            state=C_STATE_NEW;
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        // Test if the file is already there and marked as deleted.
-        // If so, delete it.
-        // If the file exists already and is not marked as deleted then throw exception
-        try {
-            readFileHeader(project.getId(), filename, false);
-            throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
-        } catch (CmsException e) {
-            // if the file is marked as deleted remove it!
-            if (e.getType() == CmsException.C_RESOURCE_DELETED) {
-                removeFile(project.getId(), filename);
-                state=C_STATE_CHANGED;
-                //throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
-            }
-            if (e.getType() == CmsException.C_FILE_EXISTS) {
-                throw e;
-            }
-        }
-        // first write the file content
-        int newFileId = nextId(m_cq.get("C_TABLE_FILES"+usedStatement));
-        int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES"+usedStatement));
-        // now write the resource
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // first write the file content
-            try {
-                createFileContent(newFileId, file.getContents(), 0, usedPool, usedStatement);
-                /*
-                statement = con.prepareStatement(m_cq.get("C_FILES_WRITE"+usedStatement));
-                statement.setInt(1, newFileId);
-                // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2, file.getContents());
-                m_doSetBytes(statement,2,file.getContents());
-                statement.executeUpdate();
-                statement.close();
-                */
-            } catch (CmsException se) {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsAccessFileMySql] " + se.getMessage());
-                }
-            }
-            // now write the file header
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE"+usedStatement));
-            statement.setInt(1, resourceId);
-            statement.setInt(2, parentId);
-            statement.setString(3, filename);
-            statement.setInt(4, file.getType());
-            statement.setInt(5, file.getFlags());
-            statement.setInt(6, file.getOwnerId());
-            statement.setInt(7, file.getGroupId());
-            statement.setInt(8, project.getId());
-            statement.setInt(9, newFileId);
-            statement.setInt(10, file.getAccessFlags());
-            statement.setInt(11, state);
-            statement.setInt(12, file.isLockedBy());
-            statement.setInt(13, file.getLauncherType());
-            statement.setString(14, file.getLauncherClassname());
-            statement.setTimestamp(15, new Timestamp(file.getDateCreated()));
-            statement.setTimestamp(16, new Timestamp(dateModified));
-            statement.setInt(17, file.getLength());
-            statement.setInt(18, modifiedBy);
-            statement.executeUpdate();
-            statement.close();
-         } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-         } finally {
-            // close all db-resources
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return readFile(project.getId(), onlineProject.getId(), filename);
-      }
-
-    /**
-     * Creates a new file with the given content and resourcetype.
-     *
-     * @param user The user who wants to create the file.
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param filename The complete name of the new file (including pathinformation).
-     * @param flags The flags of this resource.
-     * @param parentId The parentId of the resource.
-     * @param contents The contents of the new file.
-     * @param resourceType The resourceType of the new file.
-     *
-     * @return file The created file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
-
-        String usedPool = null;
-        String usedStatement = null;
-        //check the resource name
-        if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
-            throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
-        }
-        // it is not allowed, that there is no content in the file
-        // TODO: check if this can be done in another way:
-        if (contents.length == 0) {
-            contents = " ".getBytes();
-        }
-        int state = C_STATE_NEW;
-        if (project.equals(onlineProject)) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        // Test if the file is already there and marked as deleted.
-        // If so, delete it
-        try {
-            readFileHeader(project.getId(), filename, false);
-            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-        } catch (CmsException e) {
-            // if the file is maked as deleted remove it!
-            if (e.getType() == CmsException.C_RESOURCE_DELETED) {
-                removeFile(project.getId(), filename);
-                state = C_STATE_CHANGED;
-                //throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-            }
-            if (e.getType() == CmsException.C_FILE_EXISTS) {
-                throw e;
-            }
-        }
-        int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES"+usedStatement));
-        int fileId = nextId(m_cq.get("C_TABLE_FILES"+usedStatement));
-        Connection con = null;
-        PreparedStatement statement = null;
-        PreparedStatement statementFileWrite = null;
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE"+usedStatement));
-            // write new resource to the database
-            statement.setInt(1, resourceId);
-            statement.setInt(2, parentId);
-            statement.setString(3, filename);
-            statement.setInt(4, resourceType.getResourceType());
-            statement.setInt(5, flags);
-            statement.setInt(6, user.getId());
-            statement.setInt(7, user.getDefaultGroupId());
-            statement.setInt(8, project.getId());
-            statement.setInt(9, fileId);
-            statement.setInt(10, C_ACCESS_DEFAULT_FLAGS);
-            statement.setInt(11, state);
-            statement.setInt(12, C_UNKNOWN_ID);
-            statement.setInt(13, resourceType.getLauncherType());
-            statement.setString(14, resourceType.getLauncherClass());
-            statement.setTimestamp(15, new Timestamp(System.currentTimeMillis()));
-            statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
-            statement.setInt(17, contents.length);
-            statement.setInt(18, user.getId());
-            statement.executeUpdate();
-            statement.close();
-            // write the file content
-            createFileContent(fileId, contents, 0, usedPool, usedStatement);
-            /*
-            statementFileWrite = con.prepareStatement(m_cq.get("C_FILES_WRITE"+usedStatement));
-            statementFileWrite.setInt(1, fileId);
-            // TESTFIX (mfoley@iee.org) Old Code: statementFileWrite.setBytes(2, contents);
-            m_doSetBytes(statementFileWrite,2,contents);
-            statementFileWrite.executeUpdate(); */
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statementFileWrite != null) {
-                 try {
-                     statementFileWrite.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return readFile(project.getId(), onlineProject.getId(), filename);
-    }
-
-    /**
-     * Creates a new folder
-     *
-     * @param user The user who wants to create the folder.
-     * @param project The project in which the resource will be used.
-     * @param parentId The parentId of the folder.
-     * @param fileId The fileId of the folder.
-     * @param foldername The complete path to the folder in which the new folder will
-     * be created.
-     * @param flags The flags of this resource.
-     *
-     * @return The created folder.
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, int fileId, String foldername, int flags) throws CmsException {
-
-        CmsFolder oldFolder = null;
-        int state = C_STATE_NEW;
-        String usedPool = null;
-        String usedStatement = null;
-
-        if (foldername.length() > C_MAX_LENGTH_RESOURCE_NAME){
-            throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
-        }
-        //int onlineProject = getOnlineProject(project.getId());
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        // Test if the folder is already there and marked as deleted.
-        // If so, delete it
-        // No, dont delete it, throw exception (h.riege, 04.01.01)
-        try {
-            oldFolder = readFolder(project.getId(), foldername);
-            if (oldFolder.getState() == C_STATE_DELETED) {
-                //removeFolder(oldFolder);
-                //state = C_STATE_CHANGED;
-                throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-            } else {
-                if (oldFolder != null){
-                    throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-                }
-            }
-        } catch (CmsException e) {
-            if (e.getType() == CmsException.C_FILE_EXISTS) {
-                throw e;
-            }
-        }
-        int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES"+usedStatement));
-        Connection con = null;
-        PreparedStatement statement = null;
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // write new resource to the database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE"+usedStatement));
-            statement.setInt(1, resourceId);
-            statement.setInt(2, parentId);
-            statement.setString(3, foldername);
-            statement.setInt(4, C_TYPE_FOLDER);
-            statement.setInt(5, flags);
-            statement.setInt(6, user.getId());
-            statement.setInt(7, user.getDefaultGroupId());
-            statement.setInt(8, project.getId());
-            statement.setInt(9, fileId);
-            statement.setInt(10, C_ACCESS_DEFAULT_FLAGS);
-            statement.setInt(11, state);
-            statement.setInt(12, C_UNKNOWN_ID);
-            statement.setInt(13, C_UNKNOWN_LAUNCHER_ID);
-            statement.setString(14, C_UNKNOWN_LAUNCHER);
-            statement.setTimestamp(15, new Timestamp(System.currentTimeMillis()));
-            statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
-            statement.setInt(17, 0);
-            statement.setInt(18, user.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        String parent = new String();
-        if (!foldername.equals(C_ROOT)) {
-            parent=foldername.substring(0, foldername.length()-1);
-            parent=parent.substring(0, parent.lastIndexOf("/")+1);
-         }
-        // if this is the rootfolder or if the parentfolder is the rootfolder
-        // try to create the projectresource
-        if (parentId == C_UNKNOWN_ID || parent.equals(C_ROOT)){
-            try {
-                String rootFolder = null;
-                try{
-                    rootFolder = readProjectResource(project.getId(), C_ROOT);
-                } catch (CmsException exc){
-                }
-                if (rootFolder == null){
-                    createProjectResource(project.getId(), foldername);
-                }
-            } catch (CmsException e){
-                if (e.getType() != CmsException.C_FILE_EXISTS){
-                    throw e;
-                }
-            }
-        }
-        return readFolder(project.getId(), foldername);
-    }
-
-    /**
-     * Creates a new folder from an existing folder object.
-     *
-     * @param user The user who wants to create the folder.
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param folder The folder to be written to the Cms.
-     * @param parentId The parentId of the resource.
-     *
-     * @param foldername The complete path of the new name of this folder.
-     *
-     * @return The created folder.
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlineProject, CmsFolder folder, int parentId, String foldername) throws CmsException {
-
-        String usedPool = null;
-        String usedStatement = null;
-
-        if (foldername.length() > C_MAX_LENGTH_RESOURCE_NAME){
-            throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
-        }
-
-        CmsFolder oldFolder = null;
-        int state = 0;
-        int modifiedBy = user.getId();
-        long dateModified = System.currentTimeMillis();
-        if (project.equals(onlineProject)) {
-            state = folder.getState();
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-            modifiedBy = folder.getResourceLastModifiedBy();
-            dateModified = folder.getDateLastModified();
-        } else {
-            state = C_STATE_NEW;
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-
-        // Test if the file is already there and marked as deleted.
-        // If so, delete it
-        // No, dont delete it, throw exception (h.riege, 04.01.01)
-        try {
-            oldFolder = readFolder(project.getId(), foldername);
-            if (oldFolder.getState() == C_STATE_DELETED) {
-                //removeFolder(oldFolder);
-                //state = C_STATE_CHANGED;
-                throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-            } else {
-                if (oldFolder != null) {
-                    throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-                }
-            }
-        } catch (CmsException e) {
-            if (e.getType() == CmsException.C_FILE_EXISTS) {
-                throw e;
-            }
-        }
-        int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES"+usedStatement));
-        //int fileId = nextId(m_cq.get("C_TABLE_FILES"+usedStatement));
-        Connection con = null;
-        PreparedStatement statement = null;
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // write new resource to the database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE"+usedStatement));
-            statement.setInt(1, resourceId);
-            statement.setInt(2, parentId);
-            statement.setString(3, foldername);
-            statement.setInt(4, folder.getType());
-            statement.setInt(5, folder.getFlags());
-            statement.setInt(6, folder.getOwnerId());
-            statement.setInt(7, folder.getGroupId());
-            statement.setInt(8, project.getId());
-            statement.setInt(9, C_UNKNOWN_ID);
-            //statement.setInt(9, fileId);
-            statement.setInt(10, folder.getAccessFlags());
-            statement.setInt(11, state);
-            statement.setInt(12, folder.isLockedBy());
-            statement.setInt(13, folder.getLauncherType());
-            statement.setString(14, folder.getLauncherClassname());
-            statement.setTimestamp(15, new Timestamp(folder.getDateCreated()));
-            statement.setTimestamp(16, new Timestamp(dateModified));
-            statement.setInt(17, 0);
-            statement.setInt(18, modifiedBy);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                     // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        // if this is the rootfolder or if the parentfolder is the rootfolder
-        // try to create the projectresource
-        String parent = "/";
-        if (!folder.getResourceName().equals(C_ROOT)) {
-            parent=folder.getResourceName().substring(0,folder.getResourceName().length()-1);
-            parent=parent.substring(0,parent.lastIndexOf("/")+1);
-        }
-        if (parentId == C_UNKNOWN_ID || parent.equals(C_ROOT)){
-            try {
-                String rootFolder = null;
-                try{
-                    rootFolder = readProjectResource(project.getId(), C_ROOT);
-                } catch (CmsException exc){
-                }
-                if (rootFolder == null){
-                    createProjectResource(project.getId(), foldername);
-                }
-            } catch (CmsException e){
-                if (e.getType() != CmsException.C_FILE_EXISTS){
-                    throw e;
-                }
-            }
-        }
-        return readFolder(project.getId(), foldername);
-    }
-
-    /**
-     * Creates a new resource from an given CmsResource object.
-     *
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param newResource The resource to be written to the Cms.
-     * @param filecontent The filecontent if the resource is a file
-     * @param userId The ID of the current user.
-     * @param parentId The parentId of the resource.
-     *
-     * @return resource The created resource.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-     public CmsResource createResource(CmsProject project,
-                               CmsProject onlineProject,
-                               CmsResource newResource,
-                               byte[] filecontent,
-                               int userId, boolean isFolder)
-
-         throws CmsException {
-
-        String usedPool = null;
-        String usedStatement = null;
-        Connection con = null;
-        PreparedStatement statement = null;
-        // check the resource name
-        if (newResource.getResourceName().length() > C_MAX_LENGTH_RESOURCE_NAME){
-            throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
-        }
-        
-        int state=0;
-        int modifiedBy = userId;
-        long dateModified = newResource.isTouched() ? newResource.getDateLastModified() : System.currentTimeMillis();
-        
-        if (project.equals(onlineProject)) {
-            state= newResource.getState();
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-            modifiedBy = newResource.getResourceLastModifiedBy();
-            dateModified = newResource.getDateLastModified();
-        } else {
-            state=C_STATE_NEW;
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        // Test if the file is already there and marked as deleted.
-        // If so, delete it.
-        // If the file exists already and is not marked as deleted then throw exception
-        try {
-            readResource(project,newResource.getResourceName());
-            throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
-        } catch (CmsException e) {
-            // if the resource is marked as deleted remove it!
-            if (e.getType() == CmsException.C_RESOURCE_DELETED) {
-            	if(isFolder){
-            		removeFolder(project.getId(),(CmsFolder)newResource);
-            	} else {
-                	removeFile(project.getId(), newResource.getResourceName());
-            	}
-                state=C_STATE_CHANGED;
-                //throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
-            }
-            if (e.getType() == CmsException.C_FILE_EXISTS) {
-                throw e;
-            }
-        }
-       
-        int newFileId = -1;
-        int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES"+usedStatement));
-        // now write the resource
-        try {
-            con = DriverManager.getConnection(usedPool);
-            if(!isFolder){
-            	// first write the file content
-            	newFileId = nextId(m_cq.get("C_TABLE_FILES"+usedStatement));
-            	try {
-                	createFileContent(newFileId, filecontent, 0, usedPool, usedStatement);
-            	} catch (CmsException se) {
-                	if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    	A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsDbAccess] " + se.getMessage());
-                	}
-            	}
-            }
-
-            // now write the file header
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE"+usedStatement));
-            statement.setInt(1, resourceId);
-            statement.setInt(2, newResource.getParentId());
-            statement.setString(3, newResource.getResourceName());
-            statement.setInt(4, newResource.getType());
-            statement.setInt(5, newResource.getFlags());
-            statement.setInt(6, newResource.getOwnerId());
-            statement.setInt(7, newResource.getGroupId());
-            statement.setInt(8, project.getId());
-            statement.setInt(9, newFileId);
-            statement.setInt(10, newResource.getAccessFlags());
-            statement.setInt(11, state);
-            statement.setInt(12, newResource.isLockedBy());
-            statement.setInt(13, newResource.getLauncherType());
-            statement.setString(14, newResource.getLauncherClassname());
-            statement.setTimestamp(15, new Timestamp(newResource.getDateCreated()));
-            statement.setTimestamp(16, new Timestamp(dateModified));
-            statement.setInt(17, newResource.getLength());
-            statement.setInt(18, modifiedBy);
-            statement.executeUpdate();
-            statement.close();
-         } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-         } finally {
-            // close all db-resources
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-
-        return readResource(project, newResource.getResourceName());
-      }
 
     /**
      * Creates a new projectResource from an given CmsResource object.
@@ -1479,7 +594,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         PreparedStatement statement = null;
         Connection con = null;
         try {
-            readProjectResource(projectId, resourceName);
+            m_ResourceBroker.getVfsAccess().readProjectResource(projectId, resourceName);
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
             if (e.getType() == CmsException.C_FILE_EXISTS) {
@@ -1488,7 +603,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_PROJECTRESOURCES_CREATE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_CREATE"));
             // write new resource to the database
             statement.setInt(1, projectId);
             statement.setString(2, resourceName);
@@ -1511,72 +626,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
     }
 
-    /**
-     * Add a new group to the Cms.<BR/>
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param name The name of the new group.
-     * @param description The description for the new group.
-     * @param flags The flags for the new group.
-     * @param name The name of the parent group (or null).
-     *
-     * @return Group
-     *
-     * @throws CmsException Throws CmsException if operation was not succesfull.
-     */
-     public CmsGroup createGroup(String name, String description, int flags,String parent)
-         throws CmsException {
-
-         int parentId=C_UNKNOWN_ID;
-         CmsGroup group=null;
-
-        Connection con = null;
-       PreparedStatement statement = null;
-
-         try{
-
-            // get the id of the parent group if nescessary
-            if ((parent != null) && (!"".equals(parent))) {
-                parentId=readGroup(parent).getId();
-            }
-
-            con = DriverManager.getConnection(m_poolName);
-            // create statement
-            statement=con.prepareStatement(m_cq.get("C_GROUPS_CREATEGROUP"));
-
-            // write new group to the database
-            statement.setInt(1,nextId(C_TABLE_GROUPS));
-            statement.setInt(2,parentId);
-            statement.setString(3,name);
-            statement.setString(4,checkNull(description));
-            statement.setInt(5,flags);
-            statement.executeUpdate();
-
-            // create the user group by reading it from the database.
-            // this is nescessary to get the group id which is generated in the
-            // database.
-            group=readGroup(name);
-         } catch (SQLException e){
-              throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-         }
-         return group;
-     }
 
      /**
      * Creates a project.
@@ -1612,7 +661,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             con = DriverManager.getConnection(m_poolName);
 
             // write data to database
-            statement = con.prepareStatement(m_cq.get("C_PROJECTS_CREATE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_CREATE"));
 
             statement.setInt(1,id);
             statement.setInt(2,owner.getId());
@@ -1650,71 +699,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         return readProject(id);
     }
 
-    /**
-     * Creates the propertydefinitions for the resource type.<BR/>
-     *
-     * Only the admin can do this.
-     *
-     * @param name The name of the propertydefinitions to overwrite.
-     * @param resourcetype The resource-type for the propertydefinitions.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public CmsPropertydefinition createPropertydefinition(String name,
-                                                          int resourcetype)
-        throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
-
-        try {
-            // create the propertydefinition in the offline db
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_CREATE"));
-            statement.setInt(1,nextId(m_cq.get("C_TABLE_PROPERTYDEF")));
-            statement.setString(2,name);
-            statement.setInt(3,resourcetype);
-            statement.executeUpdate();
-            statement.close();
-            con.close();
-            // create the propertydefinition in the online db
-            con = DriverManager.getConnection(m_poolNameOnline);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_CREATE_ONLINE"));
-            statement.setInt(1,nextId(m_cq.get("C_TABLE_PROPERTYDEF_ONLINE")));
-            statement.setString(2,name);
-            statement.setInt(3,resourcetype);
-            statement.executeUpdate();
-            statement.close();
-            con.close();
-            // create the propertydefinition in the backup db
-            con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_CREATE_BACKUP"));
-            statement.setInt(1,nextId(m_cq.get("C_TABLE_PROPERTYDEF_BACKUP")));
-            statement.setString(2,name);
-            statement.setInt(3,resourcetype);
-            statement.executeUpdate();
-            statement.close();
-            con.close();
-         } catch( SQLException exc ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
-         }finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-          }
-         return(readPropertydefinition(name, resourcetype));
-    }
 
    /**
     * Helper method to serialize the hashtable.
@@ -1774,7 +758,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             con = DriverManager.getConnection(m_poolName);
 
             // write data to database
-            statement = con.prepareStatement(m_cq.get("C_SESSION_CREATE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_SESSION_CREATE"));
 
             statement.setString(1,sessionId);
             statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
@@ -1836,7 +820,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             newId = nextId(C_TABLE_TASK);
             con = DriverManager.getConnection(m_poolName);
             // this statement causes trouble with MySQL 4.0.10
-            statement = con.prepareStatement(m_cq.get("C_TASK_TYPE_COPY"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_TYPE_COPY"));
             // create task by copying from tasktype table
             statement.setInt(1,newId);
             statement.setInt(2,tasktype);
@@ -1914,7 +898,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             // create statement
             con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTIES_DELETEALL"+usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_DELETEALL"+usedStatement));
             statement.setInt(1, resource.getResourceId());
             statement.executeUpdate();
         } catch( SQLException exc ) {
@@ -1964,7 +948,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             // create statement
             con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTIES_DELETEALL"+usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_DELETEALL"+usedStatement));
             statement.setInt(1, resourceId);
             statement.executeUpdate();
         } catch( SQLException exc ) {
@@ -1988,165 +972,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
           }
     }
 
-    /**
-     * Deletes the file.
-     *
-     * @param project The project in which the resource will be used.
-     * @param filename The complete path of the file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public void deleteFile(CmsProject project, String filename)
-        throws CmsException {
 
-        Connection con = null;
-        PreparedStatement statement = null;
-        String usedPool = null;
-        String usedStatement = null;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement =con.prepareStatement(m_cq.get("C_RESOURCES_REMOVE"+usedStatement));
-            // mark the file as deleted
-            statement.setInt(1,C_STATE_DELETED);
-            statement.setInt(2,C_UNKNOWN_ID);
-            statement.setString(3, filename);
-            //statement.setInt(4,project.getId());
-            statement.executeUpdate();
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-    }
-
-    /**
-     * Deletes the folder.
-     *
-     * Only empty folders can be deleted yet.
-     *
-     * @param project The project in which the resource will be used.
-     * @param orgFolder The folder that will be deleted.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public void deleteFolder(CmsProject project, CmsFolder orgFolder)
-        throws CmsException {
-        String usedPool = null;
-        String usedStatement = null;
-        //CmsProject onlineProject = getOnlineProject(project.getId());
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        // the current implementation only deletes empty folders
-        // check if the folder has any files in it
-        Vector files= getFilesInFolder(project.getId(), orgFolder);
-        files=getUndeletedResources(files);
-        if (files.size()==0) {
-            // check if the folder has any folders in it
-            Vector folders= getSubFolders(project.getId(),orgFolder);
-            folders=getUndeletedResources(folders);
-            if (folders.size()==0) {
-                //this folder is empty, delete it
-                Connection con = null;
-                PreparedStatement statement = null;
-                try {
-                    con = DriverManager.getConnection(usedPool);
-                    // mark the folder as deleted
-                    statement=con.prepareStatement(m_cq.get("C_RESOURCES_REMOVE"+usedStatement));
-                    statement.setInt(1,C_STATE_DELETED);
-                    statement.setInt(2,C_UNKNOWN_ID);
-                    statement.setString(3, orgFolder.getResourceName());
-                    statement.executeUpdate();
-                } catch (SQLException e){
-                    throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-                } finally {
-                    if(statement != null) {
-                        try {
-                            statement.close();
-                        } catch(SQLException exc) {
-                            // nothing to do here
-                        }
-                    }
-                    if(con != null) {
-                        try {
-                            con.close();
-                        } catch(SQLException exc) {
-                            // nothing to do here
-                        }
-                    }
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+orgFolder.getAbsolutePath(),CmsException.C_NOT_EMPTY);
-            }
-        } else {
-            throw new CmsException("["+this.getClass().getName()+"] "+orgFolder.getAbsolutePath(),CmsException.C_NOT_EMPTY);
-        }
-    }
-
-    /**
-     * Delete a group from the Cms.<BR/>
-     * Only groups that contain no subgroups can be deleted.
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param delgroup The name of the group that is to be deleted.
-     * @throws CmsException  Throws CmsException if operation was not succesfull.
-     */
-    public void deleteGroup(String delgroup)
-         throws CmsException {
-        Connection con = null;
-         PreparedStatement statement = null;
-         try {
-            con = DriverManager.getConnection(m_poolName);
-             // create statement
-             statement=con.prepareStatement(m_cq.get("C_GROUPS_DELETEGROUP"));
-             statement.setString(1,delgroup);
-             statement.executeUpdate();
-        } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-         }
-     }
 
     /**
      * Deletes a project from the cms.
@@ -2171,7 +997,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             // create the statement
-            statement = con.prepareStatement(m_cq.get("C_PROJECTS_DELETE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_DELETE"));
             statement.setInt(1,project.getId());
             statement.executeUpdate();
         } catch( Exception exc ) {
@@ -2219,7 +1045,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             // create statement
-            statement = con.prepareStatement(m_cq.get("C_PROPERTIES_DELETEALLPROP"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_DELETEALLPROP"));
             statement.setInt(1, project.getId());
             statement.executeQuery();
         } catch( SQLException exc ) {
@@ -2257,7 +1083,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             // delete all project-resources.
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_DELETE_PROJECT"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_DELETE_PROJECT"));
             statement.setInt(1,project.getId());
             statement.executeQuery();
             // delete all project-files.
@@ -2295,7 +1121,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         PreparedStatement statement = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_PROJECTRESOURCES_DELETEALL"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_DELETEALL"));
             // delete all projectResources from the database
             statement.setInt(1, projectId);
             statement.executeUpdate();
@@ -2332,7 +1158,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         PreparedStatement statement = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_PROJECTRESOURCES_DELETE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_DELETE"));
             // delete resource from the database
             statement.setInt(1, projectId);
             statement.setString(2, resourceName);
@@ -2377,7 +1203,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             usedPool = m_poolName;
             usedStatement = "";
         }
-        CmsPropertydefinition propdef = readPropertydefinition(meta, resourceType);
+        CmsPropertydefinition propdef = m_ResourceBroker.getVfsAccess().readPropertydefinition(meta, resourceType);
         if( propdef == null) {
             // there is no propdefinition with the overgiven name for the resource
             throw new CmsException("[" + this.getClass().getName() + "] " + meta,
@@ -2389,7 +1215,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             try {
                 // create statement
                 con = DriverManager.getConnection(usedPool);
-                statement = con.prepareStatement(m_cq.get("C_PROPERTIES_DELETE"+usedStatement));
+                statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_DELETE"+usedStatement));
                 statement.setInt(1, propdef.getId());
                 statement.setInt(2, resource.getResourceId());
                 statement.executeUpdate();
@@ -2435,21 +1261,21 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
             // delete the propertydef from offline db
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_DELETE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_DELETE"));
             statement.setInt(1, metadef.getId() );
             statement.executeUpdate();
             statement.close();
             con.close();
             // delete the propertydef from online db
             con = DriverManager.getConnection(m_poolNameOnline);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_DELETE_ONLINE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_DELETE_ONLINE"));
             statement.setInt(1, metadef.getId() );
             statement.executeUpdate();
             statement.close();
             con.close();
             // delete the propertydef from backup db
             con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_DELETE_BACKUP"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_DELETE_BACKUP"));
             statement.setInt(1, metadef.getId() );
             statement.executeUpdate();
             statement.close();
@@ -2475,56 +1301,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
           }
     }
 
-    /**
-     * Private helper method to delete a resource.
-     *
-     * @param id the id of the resource to delete.
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    protected void deleteResource(CmsResource resource)
-        throws CmsException {
-        String usedPool = null;
-        String usedStatement = null;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (resource.getProjectId() == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        Connection con = null;
-        PreparedStatement statement = null;
-        try {
-            // delete resource data from database
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_DELETEBYID"+usedStatement));
-            statement.setInt(1, resource.getResourceId());
-            statement.executeUpdate();
-            statement.close();
-            // delete the file content
-            statement = con.prepareStatement(m_cq.get("C_FILE_DELETE"+usedStatement));
-            statement.setInt(1, resource.getFileId());
-            statement.executeUpdate();
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-    }
 
     /**
      * Deletes old sessions.
@@ -2534,7 +1310,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         PreparedStatement statement = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_SESSION_DELETE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_SESSION_DELETE"));
             statement.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT ));
 
             statement.execute();
@@ -2575,7 +1351,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         PreparedStatement statement = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-           statement = con.prepareStatement(m_cq.get("C_SYSTEMPROPERTIES_DELETE"));
+           statement = con.prepareStatement(m_SqlQueries.get("C_SYSTEMPROPERTIES_DELETE"));
            statement.setString(1,name);
            statement.executeUpdate();
         }catch (SQLException e){
@@ -2598,79 +1374,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
           }
     }
 
-    /**
-     * Deletes a user from the database.
-     *
-     * @param userId The Id of the user to delete
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public void deleteUser(int id)
-        throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_USERS_DELETEBYID"));
-            statement.setInt(1,id);
-            statement.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-    }
-
-    /**
-     * Deletes a user from the database.
-     *
-     * @param user the user to delete
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public void deleteUser(String name)
-        throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_USERS_DELETE"));
-            statement.setString(1,name);
-            statement.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-        }
-    }
 
     /**
      * Destroys this access-module
@@ -2690,42 +1393,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     }
 
     /**
-     * Private method to encrypt the passwords.
-     *
-     * @param value The value to encrypt.
-     * @return The encrypted value.
-     */
-    protected String digest(String value) {
-        // is there a valid digest?
-        if( m_digest != null ) {
-            try {
-                byte[] bytesForDigest = value.getBytes(m_digestFileEncoding);
-                byte[] bytesFromDigest = m_digest.digest(bytesForDigest);
-                // to get a String out of the bytearray we translate every byte
-                // in a hex value and put them together
-                StringBuffer result = new StringBuffer();
-                String addZerro;
-                for(int i=0; i<bytesFromDigest.length; i++){
-                    addZerro = Integer.toHexString(128 + bytesFromDigest[i]);
-                    if(addZerro.length() < 2){
-                        addZerro = "0" + addZerro;
-                    }
-                    result.append(addZerro);
-                }
-                return result.toString();
-            } catch(UnsupportedEncodingException exc) {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDbAccess] file.encoding " + m_digestFileEncoding + " for passwords not supported. Using the default one.");
-                }
-                return new String(m_digest.digest(value.getBytes()));
-            }
-        } else {
-            // no digest - use clear passwords
-            return value;
-        }
-    }
-
-    /**
      * Ends a task from the Cms.
      *
      * @param taskid Id of the task to end.
@@ -2738,7 +1405,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         PreparedStatement statement = null;
         try{
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_TASK_END"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_END"));
             statement.setInt(1, 100);
             statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis()));
             statement.setInt(3,taskId);
@@ -2774,16 +1441,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
 
         // set the groups
-        CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
-        CmsGroup administrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER, null);
-        CmsGroup users = createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED | C_FLAG_GROUP_ROLE | C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
-        CmsGroup projectleader = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER | C_FLAG_GROUP_PROJECTCOWORKER | C_FLAG_GROUP_ROLE, users.getName());
+        CmsGroup guests = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
+        CmsGroup administrators = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER, null);
+        CmsGroup users = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED | C_FLAG_GROUP_ROLE | C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
+        CmsGroup projectleader = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER | C_FLAG_GROUP_PROJECTCOWORKER | C_FLAG_GROUP_ROLE, users.getName());
 
         // add the users
-        CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", C_USER_TYPE_SYSTEMUSER);
-        CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", C_USER_TYPE_SYSTEMUSER);
-        addUserToGroup(guest.getId(), guests.getId());
-        addUserToGroup(admin.getId(), administrators.getId());
+        CmsUser guest = m_ResourceBroker.getUserAccess().addUser(C_USER_GUEST, "", "the guest-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", C_USER_TYPE_SYSTEMUSER);
+        CmsUser admin = m_ResourceBroker.getUserAccess().addUser(C_USER_ADMIN, "admin", "the admin-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", C_USER_TYPE_SYSTEMUSER);
+        m_ResourceBroker.getUserAccess().addUserToGroup(guest.getId(), guests.getId());
+        m_ResourceBroker.getUserAccess().addUserToGroup(admin.getId(), administrators.getId());
         writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
         // create the online project
         CmsTask task = createTask(0, 0, 1, // standart project type,
@@ -2792,26 +1459,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         // create the root-folder for the online project
         int siteRootId = 0;
-        CmsFolder rootFolder = createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
+        CmsFolder rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        writeFolder(online, rootFolder, false);
+        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
         // create the folder for the default site
-        rootFolder = createFolder(admin, online, rootFolder.getResourceId(), C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOT, 0);
+        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, rootFolder.getResourceId(), C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        writeFolder(online, rootFolder, false);
+        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
         siteRootId = rootFolder.getResourceId();
         // create the folder for the virtual file system
-        rootFolder = createFolder(admin, online, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
+        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        writeFolder(online, rootFolder, false);
+        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
         // create the folder for the context objects system
-        rootFolder = createFolder(admin, online, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
+        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        writeFolder(online, rootFolder, false);
+        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
         // create the task for the setup project
         task = createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(),
                                     "_setupProject", new java.sql.Timestamp(new java.util.Date().getTime()),
@@ -2822,26 +1489,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                                            "Initial site import", C_FLAG_ENABLED, C_PROJECT_TYPE_TEMPORARY);
 
         // create the root-folder for the offline project
-        rootFolder = createFolder(admin, setup, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
+        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        writeFolder(setup, rootFolder, false);
+        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
         // create the folder for the default site
-        rootFolder = createFolder(admin, setup, rootFolder.getResourceId(), C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOT, 0);
+        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, rootFolder.getResourceId(), C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        writeFolder(setup, rootFolder, false);
+        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
         siteRootId = rootFolder.getResourceId();
         // create the folder for the virtual file system
-        rootFolder = createFolder(admin, setup, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
+        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        writeFolder(setup, rootFolder, false);
+        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
         // create the folder for the context objects system
-        rootFolder = createFolder(admin, setup, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
+        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
-        writeFolder(setup, rootFolder, false);
+        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
     }
 
     /**
@@ -2861,7 +1528,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_TASK_FIND_AGENT"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_FIND_AGENT"));
             statement.setInt(1,roleid);
             res = statement.executeQuery();
 
@@ -2915,7 +1582,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         PreparedStatement statement = null;
         try{
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_TASK_FORWARD"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_FORWARD"));
             statement.setInt(1,newRoleId);
             statement.setInt(2,newUserId);
             statement.setInt(3,taskId);
@@ -2941,172 +1608,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     }
 
     /**
-     * Returns all projects, which are accessible by a group.
-     *
-     * @param group The requesting group.
-     *
-     * @return a Vector of projects.
-     */
-     public Vector getAllAccessibleProjectsByGroup(CmsGroup group)
-         throws CmsException {
-         Vector projects = new Vector();
-         ResultSet res = null;
-         Connection con = null;
-         PreparedStatement statement = null;
-
-         try {
-             // create the statement
-             con = DriverManager.getConnection(m_poolName);
-
-             statement = con.prepareStatement(m_cq.get("C_PROJECTS_READ_BYGROUP"));
-
-             statement.setInt(1,group.getId());
-             statement.setInt(2,group.getId());
-             res = statement.executeQuery();
-
-             while(res.next())
-                 projects.addElement(new CmsProject(res,m_cq));
-         } catch( Exception exc ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                 CmsException.C_SQL_ERROR, exc);
-
-         } finally {
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-         return(projects);
-     }
-
-    /**
-     * Returns all projects, which are manageable by a group.
-     *
-     * @param group The requesting group.
-     *
-     * @return a Vector of projects.
-     */
-     public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup group)
-         throws CmsException {
-         Vector projects = new Vector();
-         ResultSet res = null;
-         PreparedStatement statement = null;
-         Connection con = null;
-
-         try {
-             // create the statement
-             con = DriverManager.getConnection(m_poolName);
-
-             statement = con.prepareStatement(m_cq.get("C_PROJECTS_READ_BYMANAGER"));
-
-             statement.setInt(1,group.getId());
-             res = statement.executeQuery();
-
-             while(res.next())
-                 projects.addElement(new CmsProject(res,m_cq));
-         } catch( Exception exc ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                 CmsException.C_SQL_ERROR, exc);
-         } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-         return(projects);
-     }
-
-    /**
-     * Returns all projects, which are owned by a user.
-     *
-     * @param user The requesting user.
-     *
-     * @return a Vector of projects.
-     */
-     public Vector getAllAccessibleProjectsByUser(CmsUser user)
-         throws CmsException {
-         Vector projects = new Vector();
-         ResultSet res = null;
-         PreparedStatement statement = null;
-        Connection con = null;
-
-         try {
-             // create the statement
-             con = DriverManager.getConnection(m_poolName);
-
-             statement = con.prepareStatement(m_cq.get("C_PROJECTS_READ_BYUSER"));
-
-             statement.setInt(1,user.getId());
-             res = statement.executeQuery();
-
-             while(res.next())
-                 projects.addElement(new CmsProject(res,m_cq));
-         } catch( Exception exc ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                 CmsException.C_SQL_ERROR, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-         return(projects);
-     }
-
-    /**
      * Returns all projects, with the overgiven state.
      *
      * @param state The state of the projects to read.
@@ -3124,22 +1625,22 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
              // create the statement
              con = DriverManager.getConnection(m_poolName);
 
-             statement = con.prepareStatement(m_cq.get("C_PROJECTS_READ_BYFLAG"));
+             statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READ_BYFLAG"));
 
              statement.setInt(1,state);
              res = statement.executeQuery();
 
              while(res.next()) {
-                 projects.addElement( new CmsProject(res.getInt(m_cq.get("C_PROJECTS_PROJECT_ID")),
-                                                    res.getString(m_cq.get("C_PROJECTS_PROJECT_NAME")),
-                                                    res.getString(m_cq.get("C_PROJECTS_PROJECT_DESCRIPTION")),
-                                                    res.getInt(m_cq.get("C_PROJECTS_TASK_ID")),
-                                                    res.getInt(m_cq.get("C_PROJECTS_USER_ID")),
-                                                    res.getInt(m_cq.get("C_PROJECTS_GROUP_ID")),
-                                                    res.getInt(m_cq.get("C_PROJECTS_MANAGERGROUP_ID")),
-                                                    res.getInt(m_cq.get("C_PROJECTS_PROJECT_FLAGS")),
-                                                    SqlHelper.getTimestamp(res,m_cq.get("C_PROJECTS_PROJECT_CREATEDATE")),
-                                                    res.getInt(m_cq.get("C_PROJECTS_PROJECT_TYPE"))));
+                 projects.addElement( new CmsProject(res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_ID")),
+                                                    res.getString(m_SqlQueries.get("C_PROJECTS_PROJECT_NAME")),
+                                                    res.getString(m_SqlQueries.get("C_PROJECTS_PROJECT_DESCRIPTION")),
+                                                    res.getInt(m_SqlQueries.get("C_PROJECTS_TASK_ID")),
+                                                    res.getInt(m_SqlQueries.get("C_PROJECTS_USER_ID")),
+                                                    res.getInt(m_SqlQueries.get("C_PROJECTS_GROUP_ID")),
+                                                    res.getInt(m_SqlQueries.get("C_PROJECTS_MANAGERGROUP_ID")),
+                                                    res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_FLAGS")),
+                                                    SqlHelper.getTimestamp(res,m_SqlQueries.get("C_PROJECTS_PROJECT_CREATEDATE")),
+                                                    res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_TYPE"))));
              }
          } catch( SQLException exc ) {
              throw new CmsException("[" + this.getClass().getName() + ".getAllProjects(int)] " + exc.getMessage(),
@@ -3186,7 +1687,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
          try {
              // create the statement
              con = DriverManager.getConnection(m_poolNameBackup);
-             statement = con.prepareStatement(m_cq.get("C_PROJECTS_READLAST_BACKUP"));
+             statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READLAST_BACKUP"));
              res = statement.executeQuery();
              int i = 0;
              int max = 300;
@@ -3259,22 +1760,22 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
          Connection con = null;
          try {
              // get parent group
-             parent=readGroup(groupname);
+             parent=m_ResourceBroker.getUserAccess().readGroup(groupname);
             // parent group exists, so get all childs
             if (parent != null) {
                 // create statement
                 con = DriverManager.getConnection(m_poolName);
-                statement=con.prepareStatement(m_cq.get("C_GROUPS_GETCHILD"));
+                statement=con.prepareStatement(m_SqlQueries.get("C_GROUPS_GETCHILD"));
 
                 statement.setInt(1,parent.getId());
                 res = statement.executeQuery();
                 // create new Cms group objects
                 while ( res.next() ) {
-                     group=new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                                  res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                  res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                  res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                  res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS")));
+                     group=new CmsGroup(res.getInt(m_SqlQueries.get("C_GROUPS_GROUP_ID")),
+                                  res.getInt(m_SqlQueries.get("C_GROUPS_PARENT_GROUP_ID")),
+                                  res.getString(m_SqlQueries.get("C_GROUPS_GROUP_NAME")),
+                                  res.getString(m_SqlQueries.get("C_GROUPS_GROUP_DESCRIPTION")),
+                                  res.getInt(m_SqlQueries.get("C_GROUPS_GROUP_FLAGS")));
                     childs.addElement(group);
                 }
              }
@@ -3313,100 +1814,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
          return childs;
      }
 
-    /**
-     * Returns a Vector with all file headers of a folder.<BR/>
-     *
-     * @param parentFolder The folder to be searched.
-     *
-     * @return subfiles A Vector with all file headers of the folder.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public Vector getFilesInFolder(int projectId, CmsFolder parentFolder)
-        throws CmsException {
-        Vector files=new Vector();
-        CmsResource file=null;
-        ResultSet res =null;
-        Connection con = null;
-        PreparedStatement statement  = null;
-        String usedPool = null;
-        String usedStatement = null;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            //  get all files in folder
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_FILESINFOLDER"+usedStatement));
-            statement.setInt(1, parentFolder.getResourceId());
-            res = statement.executeQuery();
-
-            // create new file objects
-            while ( res.next() ) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }                
-
-                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,lockedInProject,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                new byte[0],resSize, lockedInProject);
-
-               files.addElement(file);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return files;
-    }
 
     /**
      * Returns a Vector with all resource-names that have set the given property to the given value.
@@ -3437,7 +1844,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
         try {
             con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_FILES_WITH_PROPERTY"+usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_GET_FILES_WITH_PROPERTY"+usedStatement));
             statement.setInt(1, projectId);
             statement.setString(2, propertyValue);
             statement.setString(3, propertyDefinition);
@@ -3479,428 +1886,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         return names;
     }
 
-    /**
-     * Returns a Vector with all resources of the given type
-     * that have set the given property to the given value.
-     *
-     * @param projectid, the id of the project to test.
-     * @param propertyDefinition, the name of the propertydefinition to check.
-     * @param propertyValue, the value of the property for the resource.
-     * @param resourceType, the value of the resourcetype.
-     *
-     * @return Vector with all resources.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public Vector getResourcesWithProperty(int projectId, String propertyDefinition,
-                                           String propertyValue, int resourceType) throws CmsException {
-        Vector resources = new Vector();
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool = null;
-        String usedStatement = null;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_RESOURCE_WITH_PROPERTY"+usedStatement));
-            statement.setInt(1, projectId);
-            statement.setString(2, propertyValue);
-            statement.setString(3, propertyDefinition);
-            statement.setInt(4, resourceType);
-            res = statement.executeQuery();
-            String lastResourcename = "";
-            // store the result into the vector
-            while (res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                CmsResource resResource = new CmsResource(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                resSize,lockedInProject);
-                if (!resName.equalsIgnoreCase(lastResourcename)){
-                    resources.addElement(resResource);
-                }
-                lastResourcename = resName;
-            }
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } catch (Exception exc) {
-            throw new CmsException("getResourcesWithProperty" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-             if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-        }
-        return resources;
-    }
 
-    /**
-     * Returns a Vector with all resources of the given type
-     * that have set the given property. For the start it is
-     * only used by the static export so it reads the online project only.
-     *
-     * @param projectid, the id of the project to test.
-     * @param propertyDefinition, the name of the propertydefinition to check.
-     *
-     * @return Vector with all resources.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public Vector getResourcesWithProperty(int projectId, String propertyDefinition)
-                throws CmsException {
-        Vector resources = new Vector();
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool = null;
-        String usedStatement = null;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_RESOURCE_WITH_PROPERTYDEF"+usedStatement));
-            statement.setInt(1, projectId);
-            statement.setString(2, propertyDefinition);
-            res = statement.executeQuery();
-            String lastResourcename = "";
-            // store the result into the vector
-            while (res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                CmsResource resResource = new CmsResource(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                resSize,lockedInProject);
-                if (!resName.equalsIgnoreCase(lastResourcename)){
-                    resources.addElement(resResource);
-                }
-                lastResourcename = resName;
-            }
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } catch (Exception exc) {
-            throw new CmsException("getResourcesWithProperty" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-             if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-        }
-        return resources;
-    }
-
-    /**
-     * Reads the complete folder-tree for this project.<BR>
-     *
-     * @param project The project in which the folders are.
-     * @param rootName The name of the root, e.g. /default/vfs
-     *
-     * @return A Vecor of folders.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector getFolderTree(int projectId, String rootName) throws CmsException {
-        Vector folders = new Vector();
-        CmsFolder folder;
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool = null;
-        String usedStatement = null;
-        String add1 = null;
-        String add2 = null;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        add1 = " "+m_cq.get("C_RESOURCES_GET_FOLDERTREE"+usedStatement+"_ADD1")+rootName;
-        add2 = m_cq.get("C_RESOURCES_GET_FOLDERTREE"+usedStatement+"_ADD2");
-        try {
-            // read file data from database
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_FOLDERTREE"+usedStatement)+add1+add2);
-            statement.setInt(1, projectId);
-            //statement.setString(2, rootName+"%");
-            res = statement.executeQuery();
-            // create new file
-            while (res.next()) {
-                int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId = res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName = res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId = res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId = res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID = res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId = res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags = res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state = res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy = res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                /* not needed */ res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                /* not needed */ res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                /* not needed */ res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                folder = new CmsFolder(resId, parentId, fileId, resName, resType, resFlags,
-                                       userId, groupId, projectID, accessFlags, state, lockedBy,
-                                       created, modified, modifiedBy, lockedInProject);
-                folders.addElement(folder);
-            }
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } catch (Exception ex) {
-            throw new CmsException("[" + this.getClass().getName() + "]", ex);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return folders;
-    }
-
-     /**
-     * Returns all groups<P/>
-     *
-     * @return users A Vector of all existing groups.
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-     public Vector getGroups()
-      throws CmsException {
-         Vector groups = new Vector();
-         CmsGroup group=null;
-         ResultSet res = null;
-         PreparedStatement statement = null;
-         Connection con = null;
-         try {
-            // create statement
-            con = DriverManager.getConnection(m_poolName);
-            statement=con.prepareStatement(m_cq.get("C_GROUPS_GETGROUPS"));
-
-            res = statement.executeQuery();
-
-            // create new Cms group objects
-            while ( res.next() ) {
-                    group=new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                                       res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                       res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                       res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                       res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS")));
-                    groups.addElement(group);
-             }
-
-         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-      return groups;
-     }
-
-    /**
-     * Returns a list of groups of a user.<P/>
-     *
-     * @param name The name of the user.
-     * @return Vector of groups
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector getGroupsOfUser(String name)
-        throws CmsException {
-        CmsGroup group;
-        Vector groups=new Vector();
-
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        Connection con = null;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-
-          //  get all all groups of the user
-            statement = con.prepareStatement(m_cq.get("C_GROUPS_GETGROUPSOFUSER"));
-            statement.setString(1,name);
-
-            res = statement.executeQuery();
-
-            while ( res.next() ) {
-                 group=new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                                  res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                  res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                  res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                  res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS")));
-                 groups.addElement(group);
-             }
-         } catch (SQLException e){
-              throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return groups;
-    }
 
     /**
      * Retrieves the online project from the database.
@@ -3922,7 +1908,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *          Admingroup for no Group.
      */
     public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
-        CmsResource res = readFileHeader(projectId, resource, false);
+        CmsResource res = m_ResourceBroker.getVfsAccess().readFileHeader(projectId, resource, false);
         int groupId = -1;
         boolean noGroupCanReadThis = false;
         do{
@@ -3932,7 +1918,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     if((groupId == -1) || (groupId == res.getGroupId())){
                         groupId = res.getGroupId();
                     }else{
-                        int result = checkGroupDependence(groupId, res.getGroupId());
+                        int result = m_ResourceBroker.getUserAccess().checkGroupDependence(groupId, res.getGroupId());
                         if(result == -1){
                             noGroupCanReadThis = true;
                         }else{
@@ -3943,7 +1929,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     noGroupCanReadThis = true;
                 }
             }
-            res = readFileHeader(projectId, res.getParentId());
+            res = m_ResourceBroker.getVfsAccess().readFileHeader(projectId, res.getParentId());
         }while(!(noGroupCanReadThis || C_ROOT.equals(res.getAbsolutePath())));
         if (noGroupCanReadThis){
             return C_GROUP_ADMIN;
@@ -3951,290 +1937,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         if(groupId == -1){
             return null;
         }else{
-            return readGroup(groupId).getName();
-        }
-    }
-    /**
-     * helper for getReadingpermittedGroup. Returns the id of the group that is in
-     * any way parent for the other group or -1 for no dependencies between the groups.
-     */
-    private int checkGroupDependence(int group1,int group2) throws CmsException {
-
-        int id = group1;
-        do{
-            id = readGroup(id).getParentId();
-            if(id == group2){
-                return group1;
-            }
-        }while (id != C_UNKNOWN_ID);
-
-        id = group2;
-        do{
-            id = readGroup(id).getParentId();
-            if(id == group1){
-                return group2;
-            }
-        }while (id != C_UNKNOWN_ID);
-
-        return -1;
-    }
-
-    /**
-     * checks a Vector of Groupids for the Group which can read all files
-     *
-     * @param groups A Vector with groupids (Integer).
-     * @return The id of the group that is in any way parent of all other
-     *       group or -1 for no dependencies between the groups.
-     */
-    public int checkGroupDependence(Vector groups) throws CmsException{
-        if((groups == null) || (groups.size() == 0)){
-            return -1;
-        }
-        int returnValue = ((Integer)groups.elementAt(0)).intValue();
-        for (int i=1; i < groups.size(); i++){
-            returnValue = checkGroupDependence(returnValue, ((Integer)groups.elementAt(i)).intValue());
-            if (returnValue == -1){
-                return -1;
-            }
-        }
-        return returnValue;
-    }
-
-    /**
-     * Reads all resources (including the folders) residing in a folder<BR>
-     *
-     * @param onlineResource the parent resource id of the online resoure.
-     * @param offlineResource the parent resource id of the offline resoure.
-     *
-     * @return A Vecor of resources.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector getResourcesInFolder(int projectId, CmsFolder offlineResource) throws CmsException {
-        Vector resources = new Vector();
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        // first get the folders
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_FOLDERS_IN_FOLDER"+usedStatement));
-            statement.setInt(1, offlineResource.getResourceId());
-            statement.setInt(2, projectId);
-            res = statement.executeQuery();
-            getResourcesInFolderHelper(res, resources);
-
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } catch (Exception ex) {
-            throw new CmsException("[" + this.getClass().getName() + "]", ex);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-
-        // then get the resources
-        try {
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_RESOURCES_IN_FOLDER"+usedStatement));
-            statement.setInt(1, offlineResource.getResourceId());
-            statement.setInt(2, projectId);
-            res = statement.executeQuery();
-            getResourcesInFolderHelper(res, resources);
-
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } catch (Exception ex) {
-            throw new CmsException("[" + this.getClass().getName() + "]", ex);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return resources;
-    }
-
-    /**
-     * Helper for resources in folder to create the resources-vector from result-set.
-     *
-     * @param res the Result set to get information from.
-     * @param resources a Vector to store the created resources in.
-     * @throws SQLException if there is an sql-error.
-     */
-    void getResourcesInFolderHelper(ResultSet res, Vector resources) throws SQLException, CmsException {
-        String lastfile = null;
-        CmsResource resource;
-
-        // create new resources
-        while (res.next()) {
-            int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-            int parentId = res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-            String resName = res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-
-            // only add this folder, if it was not in the last offline-project already
-            if (!resName.equals(lastfile)) {
-                int resType = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId = res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId = res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID = res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId = res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags = res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state = res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy = res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType = res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass = res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(lockedInProject, resFlags, modified);
-                }
-                                
-                resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId,
-                                            groupId, projectID, accessFlags, state, lockedBy, launcherType,
-                                            launcherClass, created, modified, modifiedBy, resSize, lockedInProject);
-                resources.addElement(resource);
-            }
-            lastfile = resName;
+            return m_ResourceBroker.getUserAccess().readGroup(groupId).getName();
         }
     }
 
-    /**
-     * Returns a Vector with all subfolders.<BR/>
-     *
-     * @param parentFolder The folder to be searched.
-     *
-     * @return Vector with all subfolders for the given folder.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public Vector getSubFolders(int projectId, CmsFolder parentFolder) throws CmsException {
-        Vector folders = new Vector();
-        CmsFolder folder = null;
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedStatement;
-        String usedPool;
-        
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        
-        try {
-            //  get all subfolders
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_SUBFOLDER" + usedStatement));
-            statement.setInt(1, parentFolder.getResourceId());
-            res = statement.executeQuery();
-            
-            // create new folder objects
-            while (res.next()) {
-                int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId = res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName = res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId = res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId = res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int fileId = res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags = res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state = res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy = res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                long created = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                folder = new CmsFolder(resId, parentId, fileId, resName, resType, resFlags, userId, groupId, lockedInProject, accessFlags, state, lockedBy, created, modified, modifiedBy, lockedInProject);
-                folders.addElement(folder);
-            }
-
-        } catch (SQLException e) {
-            //e.printStackTrace(System.err);
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } catch (Exception exc) {
-            //exc.printStackTrace(System.err);
-            throw new CmsException("getSubFolders " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        
-        return folders;
-    }
 
     /**
      * Get a parameter value for a task.
@@ -4254,12 +1960,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_TASKPAR_GET"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASKPAR_GET"));
             statement.setInt(1, taskId);
             statement.setString(2, parname);
             res = statement.executeQuery();
             if(res.next()) {
-                result = res.getString(m_cq.get("C_PAR_VALUE"));
+                result = res.getString(m_SqlQueries.get("C_PAR_VALUE"));
             }
         } catch( SQLException exc ) {
             throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
@@ -4309,7 +2015,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_TASK_GET_TASKTYPE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_GET_TASKTYPE"));
             statement.setString(1, taskName);
             res = statement.executeQuery();
             if (res.next()) {
@@ -4355,24 +2061,24 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         switch(tasktype)
         {
         case C_TASKS_ALL: {
-                result = result + m_cq.get("C_TASK_ROOT") + "<>0";
+                result = result + m_SqlQueries.get("C_TASK_ROOT") + "<>0";
                 break;
             }
         case C_TASKS_OPEN: {
-                result = result + m_cq.get("C_TASK_STATE") + "=" + C_TASK_STATE_STARTED;
+                result = result + m_SqlQueries.get("C_TASK_STATE") + "=" + C_TASK_STATE_STARTED;
                 break;
             }
         case C_TASKS_ACTIVE: {
-                result = result + m_cq.get("C_TASK_STATE") + "=" + C_TASK_STATE_STARTED;
+                result = result + m_SqlQueries.get("C_TASK_STATE") + "=" + C_TASK_STATE_STARTED;
                 break;
             }
         case C_TASKS_DONE: {
-                result = result + m_cq.get("C_TASK_STATE") + "=" + C_TASK_STATE_ENDED;
+                result = result + m_SqlQueries.get("C_TASK_STATE") + "=" + C_TASK_STATE_ENDED;
                 break;
             }
         case C_TASKS_NEW: {
-                result = result + m_cq.get("C_TASK_PERCENTAGE") + "='0' AND " +
-                        m_cq.get("C_TASK_STATE") + "=" + C_TASK_STATE_STARTED;
+                result = result + m_SqlQueries.get("C_TASK_PERCENTAGE") + "='0' AND " +
+                        m_SqlQueries.get("C_TASK_STATE") + "=" + C_TASK_STATE_STARTED;
                 break;
             }
         default:{}
@@ -4399,367 +2105,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         return undeletedResources;
     }
 
-    /**
-     * Gets all users of a type.
-     *
-     * @param type The type of the user.
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public Vector getUsers(int type)
-        throws CmsException {
-        Vector users = new Vector();
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        Connection con = null;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_USERS_GETUSERS"));
-            statement.setInt(1,type);
-            res = statement.executeQuery();
-            // create new Cms user objects
-            while( res.next() ) {
-                // read the additional infos.
-                byte[] value = getBytesFromResultset(res, m_cq.get("C_USERS_USER_INFO"));
-                // now deserialize the object
-                ByteArrayInputStream bin= new ByteArrayInputStream(value);
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                Hashtable info=(Hashtable)oin.readObject();
-
-                CmsUser user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
-                                           res.getString(m_cq.get("C_USERS_USER_NAME")),
-                                           res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
-                                           res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
-                                           res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
-                                           res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
-                                           res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
-                                           res.getString(m_cq.get("C_USERS_USER_EMAIL")),
-                                           SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
-                                           SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
-                                           res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
-                                           info,
-                                           new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                                                        res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                                        res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                                        res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                                        res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
-                                           res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
-                                           res.getString(m_cq.get("C_USERS_USER_SECTION")),
-                                           res.getInt(m_cq.get("C_USERS_USER_TYPE")));
-
-                users.addElement(user);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return users;
-    }
-
-     /**
-     * Gets all users of a type and namefilter.
-     *
-     * @param type The type of the user.
-     * @param namestart The namefilter
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public Vector getUsers(int type, String namefilter)
-        throws CmsException {
-        Vector users = new Vector();
-        Statement statement = null;
-        ResultSet res = null;
-        Connection con = null;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.createStatement();
-
-            //res = statement.executeQuery("SELECT * FROM CMS_USERS,CMS_GROUPS where USER_TYPE = "+type+" and USER_DEFAULT_GROUP_ID = GROUP_ID and USER_NAME like '"+namefilter+"%' ORDER BY USER_NAME");
-            res = statement.executeQuery(m_cq.get("C_USERS_GETUSERS_FILTER1")+type+m_cq.get("C_USERS_GETUSERS_FILTER2")+namefilter+m_cq.get("C_USERS_GETUSERS_FILTER3"));
-
-            // create new Cms user objects
-            while( res.next() ) {
-                // read the additional infos.
-                byte[] value = getBytesFromResultset(res,m_cq.get("C_USERS_USER_INFO"));
-                // now deserialize the object
-                ByteArrayInputStream bin= new ByteArrayInputStream(value);
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                Hashtable info=(Hashtable)oin.readObject();
-
-                CmsUser user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
-                                           res.getString(m_cq.get("C_USERS_USER_NAME")),
-                                           res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
-                                           res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
-                                           res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
-                                           res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
-                                           res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
-                                           res.getString(m_cq.get("C_USERS_USER_EMAIL")),
-                                           SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
-                                           SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
-                                           res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
-                                           info,
-                                           new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                                                        res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                                        res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                                        res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                                        res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
-                                           res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
-                                           res.getString(m_cq.get("C_USERS_USER_SECTION")),
-                                           res.getInt(m_cq.get("C_USERS_USER_TYPE")));
-
-                users.addElement(user);
-            }
-
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return users;
-    }
-
-    /**
-     * Returns a list of users of a group.<P/>
-     *
-     * @param name The name of the group.
-     * @param type the type of the users to read.
-     * @return Vector of users
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector getUsersOfGroup(String name, int type)
-        throws CmsException {
-        Vector users = new Vector();
-
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        Connection con = null;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_GROUPS_GETUSERSOFGROUP"));
-            statement.setString(1,name);
-            statement.setInt(2,type);
-
-            res = statement.executeQuery();
-
-            while( res.next() ) {
-                // read the additional infos.
-                byte[] value = getBytesFromResultset(res, m_cq.get("C_USERS_USER_INFO"));
-                // now deserialize the object
-                ByteArrayInputStream bin= new ByteArrayInputStream(value);
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                Hashtable info=(Hashtable)oin.readObject();
-
-                CmsUser user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
-                                           res.getString(m_cq.get("C_USERS_USER_NAME")),
-                                           res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
-                                           res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
-                                           res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
-                                           res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
-                                           res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
-                                           res.getString(m_cq.get("C_USERS_USER_EMAIL")),
-                                           SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
-                                           SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
-                                           res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
-                                           info,
-                                            new CmsGroup(res.getInt(m_cq.get("C_USERS_USER_DEFAULT_GROUP_ID")),
-                                                        res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                                        res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                                        res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                                        res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
-                                           res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
-                                           res.getString(m_cq.get("C_USERS_USER_SECTION")),
-                                           res.getInt(m_cq.get("C_USERS_USER_TYPE")));
-
-                users.addElement(user);
-            }
-         } catch (SQLException e){
-              throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return users;
-    }
-
-    /**
-     * Gets all users with a certain Lastname.
-     *
-     * @param Lastname      the start of the users lastname
-     * @param UserType      webuser or systemuser
-     * @param UserStatus    enabled, disabled
-     * @param wasLoggedIn   was the user ever locked in?
-     * @param nMax          max number of results
-     *
-     * @return the users.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public Vector getUsersByLastname(String lastname, int userType,
-                                     int userStatus, int wasLoggedIn, int nMax)
-                                     throws CmsException {
-        Vector users = new Vector();
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        Connection con = null;
-        int i = 0;
-        // "" =  return (nearly) all users
-        if(lastname == null) lastname = "";
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            //con = DriverManager.getConnection("jdbc:opencmspool:oracle");
-
-            if(wasLoggedIn == C_AT_LEAST_ONCE)
-                statement = con.prepareStatement(
-                        m_cq.get("C_USERS_GETUSERS_BY_LASTNAME_ONCE"));
-            else if(wasLoggedIn == C_NEVER)
-                statement = con.prepareStatement(
-                        m_cq.get("C_USERS_GETUSERS_BY_LASTNAME_NEVER"));
-            else // C_WHATEVER or whatever else
-                statement = con.prepareStatement(
-                        m_cq.get("C_USERS_GETUSERS_BY_LASTNAME_WHATEVER"));
-
-            statement.setString(1, lastname + "%");
-            statement.setInt(2, userType);
-            statement.setInt(3, userStatus);
-
-            res = statement.executeQuery();
-            // create new Cms user objects
-            while( res.next() && (i++ < nMax)) {
-                // read the additional infos.
-                byte[] value = getBytesFromResultset(res, m_cq.get("C_USERS_USER_INFO"));
-                // now deserialize the object
-                ByteArrayInputStream bin= new ByteArrayInputStream(value);
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                Hashtable info=(Hashtable)oin.readObject();
-                CmsUser user = new CmsUser(
-                        res.getInt(m_cq.get("C_USERS_USER_ID")),
-                        res.getString(m_cq.get("C_USERS_USER_NAME")),
-                        res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
-                        res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
-                        res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
-                        res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
-                        res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
-                        res.getString(m_cq.get("C_USERS_USER_EMAIL")),
-                        SqlHelper.getTimestamp(res,
-                                m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
-                        SqlHelper.getTimestamp(res,
-                                m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
-                        res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
-                        info,
-                        new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                            res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                            res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                            res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                            res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
-                            res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
-                            res.getString(m_cq.get("C_USERS_USER_SECTION")),
-                            res.getInt(m_cq.get("C_USERS_USER_TYPE")));
-
-                users.addElement(user);
-            }
-
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+
-                    e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return users;
-    }
 
     protected int insertTaskPar(int taskId, String parname, String parvalue)
         throws CmsException {
@@ -4771,7 +2116,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             newId = nextId(C_TABLE_TASKPAR);
-            statement = con.prepareStatement(m_cq.get("C_TASKPAR_INSERT"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASKPAR_INSERT"));
             statement.setInt(1, newId);
             statement.setInt(2, taskId);
             statement.setString(3, checkNull(parname));
@@ -4809,7 +2154,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             newId = nextId(C_TABLE_TASKPAR);
-            statement = con.prepareStatement(m_cq.get("C_TASKTYPE_INSERT"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASKTYPE_INSERT"));
             statement.setInt(1, autofinish);
             statement.setInt(2, escalationtyperef);
             statement.setString(3, htmllink);
@@ -4844,9 +2189,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * Private method to get the next id for a table.
      * This method is synchronized, to generate unique id's.
+     * TODO: this method should be removed!
      *
      * @param key A key for the table to get the max-id from.
      * @return next-id The next possible id for this table.
+     * @deprecated
      */
     protected synchronized int nextId(String key)
         throws CmsException {
@@ -4887,7 +2234,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             backupProject(currentProject, versionId, publishDate, user);
         }
         // read all folders in offlineProject
-        offlineFolders = readFolders(projectId, false, true);
+        offlineFolders = m_ResourceBroker.getVfsAccess().readFolders(projectId, false, true);
         for (int i = 0; i < offlineFolders.size(); i++){
             currentFolder = ((CmsFolder) offlineFolders.elementAt(i));
             report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);
@@ -4910,13 +2257,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 // get parentId for onlineFolder either from folderIdIndex or from the database
                 Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
                 if (parentId == null){
-                    CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
+                    CmsFolder currentOnlineParent = m_ResourceBroker.getVfsAccess().readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
                     parentId = new Integer(currentOnlineParent.getResourceId());
                     folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
                 }
                 // create the new folder and insert its id in the folderindex
                 try {
-                    newFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getResourceName());
+                    newFolder = m_ResourceBroker.getVfsAccess().createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getResourceName());
                     newFolder.setState(C_STATE_UNCHANGED);
                     updateResourcestate(newFolder);
                 } catch (CmsException e) {
@@ -4924,7 +2271,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         CmsFolder onlineFolder = null;
                         try {
-                            onlineFolder = readFolder(onlineProject.getId(), currentFolder.getResourceName());
+                            onlineFolder = m_ResourceBroker.getVfsAccess().readFolder(onlineProject.getId(), currentFolder.getResourceName());
                         } catch (CmsException exc) {
                             throw exc;
                         } // end of catch
@@ -4933,7 +2280,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                         try {
                             con = DriverManager.getConnection(m_poolNameOnline);
                             // update the onlineFolder with data from offlineFolder
-                            statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_ONLINE"));
+                            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_ONLINE"));
                             statement.setInt(1, currentFolder.getType());
                             statement.setInt(2, currentFolder.getFlags());
                             statement.setInt(3, currentFolder.getOwnerId());
@@ -4950,7 +2297,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                             statement.setInt(14, onlineFolder.getFileId());
                             statement.setInt(15, onlineFolder.getResourceId());
                             statement.executeUpdate();
-                            newFolder = readFolder(onlineProject.getId(), currentFolder.getResourceName());
+                            newFolder = m_ResourceBroker.getVfsAccess().readFolder(onlineProject.getId(), currentFolder.getResourceName());
                         } catch (SQLException sqle) {
                             throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
                         } finally {
@@ -4977,8 +2324,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 // copy properties
                 Map props = new HashMap();
                 try {
-                    props = readProperties(projectId, currentFolder, currentFolder.getType());
-                    writeProperties(props, onlineProject.getId(), newFolder, newFolder.getType());
+                    props = m_ResourceBroker.getVfsAccess().readProperties(projectId, currentFolder, currentFolder.getType());
+                    m_ResourceBroker.getVfsAccess().writeProperties(props, onlineProject.getId(), newFolder, newFolder.getType());
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + newFolder.toString() + " Message= " + exc.getMessage());
@@ -5001,19 +2348,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
                 CmsFolder onlineFolder = null;
                 try {
-                    onlineFolder = readFolder(onlineProject.getId(), currentFolder.getResourceName());
+                    onlineFolder = m_ResourceBroker.getVfsAccess().readFolder(onlineProject.getId(), currentFolder.getResourceName());
                 } catch (CmsException exc){
                     // if folder does not exist create it
                     if (exc.getType() == CmsException.C_NOT_FOUND){
                         // get parentId for onlineFolder either from folderIdIndex or from the database
                         Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
                         if (parentId == null){
-                            CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
+                            CmsFolder currentOnlineParent = m_ResourceBroker.getVfsAccess().readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
                             parentId = new Integer(currentOnlineParent.getResourceId());
                             folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
                         }
                         // create the new folder
-                        onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getResourceName());
+                        onlineFolder = m_ResourceBroker.getVfsAccess().createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getResourceName());
                         onlineFolder.setState(C_STATE_UNCHANGED);
                         updateResourcestate(onlineFolder);
                     } else {
@@ -5025,7 +2372,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 try {
                     con = DriverManager.getConnection(m_poolNameOnline);
                     // update the onlineFolder with data from offlineFolder
-                    statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_ONLINE"));
+                    statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_ONLINE"));
                     statement.setInt(1, currentFolder.getType());
                     statement.setInt(2, currentFolder.getFlags());
                     statement.setInt(3, currentFolder.getOwnerId());
@@ -5065,8 +2412,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 Map props = new HashMap();
                 try {
                     deleteAllProperties(onlineProject.getId(), onlineFolder);
-                    props = readProperties(projectId, currentFolder, currentFolder.getType());
-                    writeProperties(props, onlineProject.getId(), onlineFolder, currentFolder.getType());
+                    props = m_ResourceBroker.getVfsAccess().readProperties(projectId, currentFolder, currentFolder.getType());
+                    m_ResourceBroker.getVfsAccess().writeProperties(props, onlineProject.getId(), onlineFolder, currentFolder.getType());
                 } catch (CmsException exc){
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()){
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
@@ -5083,7 +2430,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         } // end of for(...
 
         // now read all FILES in offlineProject
-        offlineFiles = readFiles(projectId, false, true);
+        offlineFiles = m_ResourceBroker.getVfsAccess().readFiles(projectId, false, true);
         for (int i = 0; i < offlineFiles.size(); i++){
             currentFile = ((CmsFile) offlineFiles.elementAt(i));
             report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);
@@ -5108,10 +2455,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     }catch (Exception ex){
                     }
                 }
-                CmsFile currentOnlineFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
+                CmsFile currentOnlineFile = m_ResourceBroker.getVfsAccess().readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
                 if (enableHistory){
                     // read the properties for backup
-                    Map props = readProperties(projectId, currentFile, currentFile.getType());
+                    Map props = m_ResourceBroker.getVfsAccess().readProperties(projectId, currentFile, currentFile.getType());
                     // backup the offline resource
                     backupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
                 }
@@ -5123,8 +2470,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
                     }
                 }try{
-                    deleteResource(currentOnlineFile);
-                    deleteResource(currentFile);
+                    m_ResourceBroker.getVfsAccess().deleteResource(currentOnlineFile);
+                    m_ResourceBroker.getVfsAccess().deleteResource(currentFile);
                 }catch (CmsException exc){
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()){
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
@@ -5138,7 +2485,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 if (exportKey != null){
                     // Encoding project: Make sure files are written in the right encoding 
                     byte[] contents = currentFile.getContents();
-                    String encoding = readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, projectId, currentFile, currentFile.getType());
+                    String encoding = m_ResourceBroker.getVfsAccess().readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, projectId, currentFile, currentFile.getType());
                     if (encoding != null) {
                         // Only files that have the encodig property set will be encoded,
                         // the other files will be ignored. So images etc. are not touched.                        
@@ -5152,19 +2499,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
                 CmsFile onlineFile = null;
                 try{
-                    onlineFile = readFileHeader(onlineProject.getId(), currentFile.getResourceName(), false);
+                    onlineFile = m_ResourceBroker.getVfsAccess().readFileHeader(onlineProject.getId(), currentFile.getResourceName(), false);
                 }catch (CmsException exc){
                     if (exc.getType() == CmsException.C_NOT_FOUND){
                         // get parentId for onlineFolder either from folderIdIndex or from the database
                         Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
                         if (parentId == null){
-                            CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFile.getRootName()+currentFile.getParent());
+                            CmsFolder currentOnlineParent = m_ResourceBroker.getVfsAccess().readFolder(onlineProject.getId(), currentFile.getRootName()+currentFile.getParent());
                             parentId = new Integer(currentOnlineParent.getResourceId());
                             folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
                         }
                         // create a new File
                         currentFile.setState(C_STATE_UNCHANGED);
-                        onlineFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName());
+                        onlineFile = m_ResourceBroker.getVfsAccess().createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName());
                     }
                 } // end of catch
                 Connection con = null;
@@ -5172,7 +2519,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 try{
                     con = DriverManager.getConnection(m_poolNameOnline);
                     // update the onlineFile with data from offlineFile
-                    statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_ONLINE"));
+                    statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_ONLINE"));
                     statement.setInt(1, currentFile.getType());
                     statement.setInt(2, currentFile.getFlags());
                     statement.setInt(3, currentFile.getOwnerId());
@@ -5190,9 +2537,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     statement.setInt(15, onlineFile.getResourceId());
                     statement.executeUpdate();
                     statement.close();
-                    writeFileContent(onlineFile.getFileId(), currentFile.getContents(), m_poolNameOnline, "_ONLINE");
+                    m_ResourceBroker.getVfsAccess().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), m_poolNameOnline, "_ONLINE");
                     /*
-                    statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE_ONLINE"));
+                    statement = con.prepareStatement(m_SqlQueries.get("C_FILES_UPDATE_ONLINE"));
                     // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1, currentFile.getContents());
                     m_doSetBytes(statement,1,currentFile.getContents());
                     statement.setInt(2, onlineFile.getFileId());
@@ -5220,8 +2567,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 Map props = new HashMap();
                 try {
                     deleteAllProperties(onlineProject.getId(), onlineFile);
-                    props = readProperties(projectId, currentFile, currentFile.getType());
-                    writeProperties(props, onlineProject.getId(), onlineFile, currentFile.getType());
+                    props = m_ResourceBroker.getVfsAccess().readProperties(projectId, currentFile, currentFile.getType());
+                    m_ResourceBroker.getVfsAccess().writeProperties(props, onlineProject.getId(), onlineFile, currentFile.getType());
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + onlineFile.toString() + " Message= " + exc.getMessage());
@@ -5242,7 +2589,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 if (exportKey != null){
                     // Encoding project: Make sure files are written in the right encoding 
                     byte[] contents = currentFile.getContents();
-                    String encoding = readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, projectId, currentFile, currentFile.getType());
+                    String encoding = m_ResourceBroker.getVfsAccess().readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, projectId, currentFile, currentFile.getType());
                     if (encoding != null) {
                         // Only files that have the encodig property set will be encoded,
                         // the other files will be ignored. So images etc. are not touched.
@@ -5257,20 +2604,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 // get parentId for onlineFile either from folderIdIndex or from the database
                 Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
                 if (parentId == null){
-                    CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFile.getRootName()+currentFile.getParent());
+                    CmsFolder currentOnlineParent = m_ResourceBroker.getVfsAccess().readFolder(onlineProject.getId(), currentFile.getRootName()+currentFile.getParent());
                     parentId = new Integer(currentOnlineParent.getResourceId());
                     folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
                 }
                 // create the new file
                 try {
-                    newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName());
+                    newFile = m_ResourceBroker.getVfsAccess().createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName());
                     newFile.setState(C_STATE_UNCHANGED);
                     updateResourcestate(newFile);
                 } catch (CmsException e) {
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         CmsFile onlineFile = null;
                         try {
-                            onlineFile = readFileHeader(onlineProject.getId(), currentFile.getResourceName(), false);
+                            onlineFile = m_ResourceBroker.getVfsAccess().readFileHeader(onlineProject.getId(), currentFile.getResourceName(), false);
                         } catch (CmsException exc) {
                             throw exc;
                         } // end of catch
@@ -5279,7 +2626,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                         try {
                             con = DriverManager.getConnection(m_poolNameOnline);
                             // update the onlineFile with data from offlineFile
-                            statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_ONLINE"));
+                            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_ONLINE"));
                             statement.setInt(1, currentFile.getType());
                             statement.setInt(2, currentFile.getFlags());
                             statement.setInt(3, currentFile.getOwnerId());
@@ -5296,15 +2643,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                             statement.setInt(14, onlineFile.getFileId());
                             statement.setInt(15, onlineFile.getResourceId());
                             statement.executeUpdate();
-                            writeFileContent(onlineFile.getFileId(), currentFile.getContents(), m_poolNameOnline, "_ONLINE");
+                            m_ResourceBroker.getVfsAccess().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), m_poolNameOnline, "_ONLINE");
                             /*
-                            statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE_ONLINE"));
+                            statement = con.prepareStatement(m_SqlQueries.get("C_FILES_UPDATE_ONLINE"));
                             // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1, currentFile.getContents());
                             m_doSetBytes(statement,1,currentFile.getContents());
                             statement.setInt(2, onlineFile.getFileId());
                             statement.executeUpdate();
                             statement.close();*/
-                            newFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
+                            newFile = m_ResourceBroker.getVfsAccess().readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
                         } catch (SQLException sqle) {
                             throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
                         } finally {
@@ -5330,8 +2677,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 // copy properties
                 Map props = new HashMap();
                 try{
-                    props = readProperties(projectId, currentFile, currentFile.getType());
-                    writeProperties(props, onlineProject.getId(), newFile, newFile.getType());
+                    props = m_ResourceBroker.getVfsAccess().readProperties(projectId, currentFile, currentFile.getType());
+                    m_ResourceBroker.getVfsAccess().writeProperties(props, onlineProject.getId(), newFile, newFile.getType());
                 }catch (CmsException exc){
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()){
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + newFile.toString() + " Message= " + exc.getMessage());
@@ -5356,11 +2703,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 discAccess.removeResource(currentFolder.getAbsolutePath(), exportKey);
             }
             if (enableHistory){
-                Map props = readProperties(projectId, currentFolder,currentFolder.getType());
+                Map props = m_ResourceBroker.getVfsAccess().readProperties(projectId, currentFolder,currentFolder.getType());
                 // backup the offline resource
                 backupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
             }
-            CmsResource delOnlineFolder = readFolder(onlineProject.getId(),currentFolder.getResourceName());
+            CmsResource delOnlineFolder = m_ResourceBroker.getVfsAccess().readFolder(onlineProject.getId(),currentFolder.getResourceName());
             try{
                 deleteAllProperties(onlineProject.getId(), delOnlineFolder);
                 deleteAllProperties(projectId, currentFolder);
@@ -5375,7 +2722,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         //clearFilesTable();
         return changedResources;
     }
-
     /**
      * Get the next version id for the published backup resources
      *
@@ -5390,14 +2736,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try{
             // get the max version id
             con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_BACKUP_MAXVER"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_BACKUP_MAXVER"));
             res = statement.executeQuery();
             if (res.next()){
                 versionId = res.getInt(1)+1;
             }
             res.close();
             statement.close();
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_BACKUP_MAXVER_RESOURCE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_BACKUP_MAXVER_RESOURCE"));
             res = statement.executeQuery();
             if (res.next()){
                 resVersionId = res.getInt(1)+1;
@@ -5450,20 +2796,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         String group = new String();
         String managerGroup = new String();
         try{
-            CmsUser owner = readUser(project.getOwnerId());
+            CmsUser owner = m_ResourceBroker.getUserAccess().readUser(project.getOwnerId());
             ownerName = owner.getName()+" "+owner.getFirstname()+" "+owner.getLastname();
         } catch (CmsException e){
             // the owner could not be read
             ownerName = "";
         }
         try{
-            group = readGroup(project.getGroupId()).getName();
+            group = m_ResourceBroker.getUserAccess().readGroup(project.getGroupId()).getName();
         } catch (CmsException e){
             // the group could not be read
             group = "";
         }
         try{
-            managerGroup = readGroup(project.getManagerGroupId()).getName();
+            managerGroup = m_ResourceBroker.getUserAccess().readGroup(project.getManagerGroupId()).getName();
         } catch (CmsException e){
             // the group could not be read
             managerGroup = "";
@@ -5473,7 +2819,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolNameBackup);
             // first write the project
-            statement = con.prepareStatement(m_cq.get("C_PROJECTS_CREATE_BACKUP"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_CREATE_BACKUP"));
             statement.setInt(1, versionId);
             statement.setInt(2, project.getId());
             statement.setString(3, project.getName());
@@ -5494,7 +2840,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.close();
             // now write the projectresources
             for(int i = 0; i < projectresources.size(); i++){
-                statement = con.prepareStatement(m_cq.get("C_PROJECTRESOURCES_CREATE_BACKUP"));
+                statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_CREATE_BACKUP"));
                 statement.setInt(1, versionId);
                 statement.setInt(2, project.getId());
                 statement.setString(3, (String)projectresources.get(i));
@@ -5535,112 +2881,112 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
 
     public void backupResource(int projectId, CmsResource resource, byte[] content,
-                               Map properties, int versionId, long publishDate) throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
-        String ownerName = null;
-        String groupName = new String();
-        String lastModifiedName = null;
-        try{
-            CmsUser owner = readUser(resource.getOwnerId());
-            ownerName = owner.getName()+" "+owner.getFirstname()+" "+owner.getLastname();
-        } catch (CmsException e){
-            // the user could not be read
-            ownerName = "";
-        }
-        try{
-            groupName = readGroup(resource.getGroupId()).getName();
-        } catch (CmsException e){
-            // the group could not be read
-            groupName = "";
-        }
-        try{
-            CmsUser lastModified = readUser(resource.getResourceLastModifiedBy());
-            lastModifiedName = lastModified.getName()+" "+lastModified.getFirstname()+" "+lastModified.getLastname();
-        } catch (CmsException e){
-            // the user could not be read
-            lastModifiedName = "";
-        }
-        int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES_BACKUP"));
-        int fileId = C_UNKNOWN_ID;
-        // write backup resource to the database
-        try {
-            con = DriverManager.getConnection(m_poolNameBackup);
-            // if the resource is not a folder then backup the filecontent
-            if (resource.getType() != C_TYPE_FOLDER){
-                fileId = nextId(m_cq.get("C_TABLE_FILES_BACKUP"));
-                // write new resource to the database
-                createFileContent(fileId, content, versionId, m_poolNameBackup, "_BACKUP");
+                                   Map properties, int versionId, long publishDate) throws CmsException {
+            Connection con = null;
+            PreparedStatement statement = null;
+            String ownerName = null;
+            String groupName = new String();
+            String lastModifiedName = null;
+            try{
+                CmsUser owner = m_ResourceBroker.getUserAccess().readUser(resource.getOwnerId());
+                ownerName = owner.getName()+" "+owner.getFirstname()+" "+owner.getLastname();
+            } catch (CmsException e){
+                // the user could not be read
+                ownerName = "";
             }
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE_BACKUP"));
-            statement.setInt(1, resourceId);
-            statement.setInt(2, C_UNKNOWN_ID);
-            statement.setString(3, resource.getResourceName());
-            statement.setInt(4, resource.getType());
-            statement.setInt(5, resource.getFlags());
-            statement.setInt(6, resource.getOwnerId());
-            statement.setString(7, ownerName);
-            statement.setInt(8, resource.getGroupId());
-            statement.setString(9, groupName);
-            statement.setInt(10, projectId);
-            statement.setInt(11, fileId);
-            statement.setInt(12, resource.getAccessFlags());
-            statement.setInt(13, resource.getState());
-            statement.setInt(14, resource.getLauncherType());
-            statement.setString(15, resource.getLauncherClassname());
-            // set date created = publish date
-            statement.setTimestamp(16, new Timestamp(publishDate));
-            statement.setTimestamp(17, new Timestamp(resource.getDateLastModified()));
-            statement.setInt(18, content.length);
-            statement.setInt(19, resource.getResourceLastModifiedBy());
-            statement.setString(20, lastModifiedName);
-            statement.setInt(21, versionId);
-            statement.executeUpdate();
-            statement.close();
-            // now write the properties
-            // get all metadefs
-            Iterator keys = properties.keySet().iterator();
-            // one metainfo-name:
-            String key;
-            while(keys.hasNext()) {
-                key = (String) keys.next();
-                CmsPropertydefinition propdef = readPropertydefinition(key, resource.getType());
-                String value = (String) properties.get(key);
-                if( propdef == null) {
-                    // there is no propertydefinition for with the overgiven name for the resource
-                    throw new CmsException("[" + this.getClass().getName() + "] " + key,
-                    CmsException.C_NOT_FOUND);
-                } else {
-                    // write the property into the db
-                    statement = con.prepareStatement(m_cq.get("C_PROPERTIES_CREATE_BACKUP"));
-                    statement.setInt(1, nextId(m_cq.get("C_TABLE_PROPERTIES_BACKUP")));
-                    statement.setInt(2, propdef.getId());
-                    statement.setInt(3, resourceId);
-                    statement.setString(4, checkNull(value));
-                    statement.setInt(5, versionId);
-                    statement.executeUpdate();
-                    statement.close();
+            try{
+                groupName = m_ResourceBroker.getUserAccess().readGroup(resource.getGroupId()).getName();
+            } catch (CmsException e){
+                // the group could not be read
+                groupName = "";
+            }
+            try{
+                CmsUser lastModified = m_ResourceBroker.getUserAccess().readUser(resource.getResourceLastModifiedBy());
+                lastModifiedName = lastModified.getName()+" "+lastModified.getFirstname()+" "+lastModified.getLastname();
+            } catch (CmsException e){
+                // the user could not be read
+                lastModifiedName = "";
+            }
+            int resourceId = nextId(m_SqlQueries.get("C_TABLE_RESOURCES_BACKUP"));
+            int fileId = C_UNKNOWN_ID;
+            // write backup resource to the database
+            try {
+                con = DriverManager.getConnection(m_poolNameBackup);
+                // if the resource is not a folder then backup the filecontent
+                if (resource.getType() != C_TYPE_FOLDER){
+                    fileId = nextId(m_SqlQueries.get("C_TABLE_FILES_BACKUP"));
+                    // write new resource to the database
+                    m_ResourceBroker.getVfsAccess().createFileContent(fileId, content, versionId, m_poolNameBackup, "_BACKUP");
+                }
+                statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_WRITE_BACKUP"));
+                statement.setInt(1, resourceId);
+                statement.setInt(2, C_UNKNOWN_ID);
+                statement.setString(3, resource.getResourceName());
+                statement.setInt(4, resource.getType());
+                statement.setInt(5, resource.getFlags());
+                statement.setInt(6, resource.getOwnerId());
+                statement.setString(7, ownerName);
+                statement.setInt(8, resource.getGroupId());
+                statement.setString(9, groupName);
+                statement.setInt(10, projectId);
+                statement.setInt(11, fileId);
+                statement.setInt(12, resource.getAccessFlags());
+                statement.setInt(13, resource.getState());
+                statement.setInt(14, resource.getLauncherType());
+                statement.setString(15, resource.getLauncherClassname());
+                // set date created = publish date
+                statement.setTimestamp(16, new Timestamp(publishDate));
+                statement.setTimestamp(17, new Timestamp(resource.getDateLastModified()));
+                statement.setInt(18, content.length);
+                statement.setInt(19, resource.getResourceLastModifiedBy());
+                statement.setString(20, lastModifiedName);
+                statement.setInt(21, versionId);
+                statement.executeUpdate();
+                statement.close();
+                // now write the properties
+                // get all metadefs
+                Iterator keys = properties.keySet().iterator();
+                // one metainfo-name:
+                String key;
+                while(keys.hasNext()) {
+                    key = (String) keys.next();
+                    CmsPropertydefinition propdef = m_ResourceBroker.getVfsAccess().readPropertydefinition(key, resource.getType());
+                    String value = (String) properties.get(key);
+                    if( propdef == null) {
+                        // there is no propertydefinition for with the overgiven name for the resource
+                        throw new CmsException("[" + this.getClass().getName() + "] " + key,
+                        CmsException.C_NOT_FOUND);
+                    } else {
+                        // write the property into the db
+                        statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_CREATE_BACKUP"));
+                        statement.setInt(1, nextId(m_SqlQueries.get("C_TABLE_PROPERTIES_BACKUP")));
+                        statement.setInt(2, propdef.getId());
+                        statement.setInt(3, resourceId);
+                        statement.setString(4, checkNull(value));
+                        statement.setInt(5, versionId);
+                        statement.executeUpdate();
+                        statement.close();
+                    }
+                }
+            } catch (SQLException e) {
+                throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            } finally {
+                if(statement != null) {
+                    try {
+                        statement.close();
+                    } catch(SQLException exc) {
+                         // nothing to do here
+                    }
+                }
+                if(con != null) {
+                    try {
+                        con.close();
+                    } catch(SQLException exc) {
+                        // nothing to do here
+                    }
                 }
             }
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                     // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
         }
-    }
 
     /**
      * select all projectResources from an given project
@@ -5657,7 +3003,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Vector projectResources = new Vector();
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_PROJECTRESOURCES_READALL"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_READALL"));
             // select all resources from the database
             statement.setInt(1, projectId);
             res = statement.executeQuery();
@@ -5684,103 +3030,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         return projectResources;
     }
 
-    /**
-     * Reads all file headers of a file in the OpenCms.<BR>
-     * The reading excludes the filecontent.
-     *
-     * @param filename The name of the file to be read.
-     *
-     * @return Vector of file headers read from the Cms.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector readAllFileHeaders(int projectId, String resourceName)
-        throws CmsException {
-
-        CmsFile file=null;
-        ResultSet res =null;
-        Vector allHeaders = new Vector();
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READ_ALL"+usedStatement));
-            // read file header data from database
-            statement.setString(1, resourceName);
-            res = statement.executeQuery();
-            // create new file headers
-            while(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject=res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                new byte[0],resSize, lockedInProject);
-                allHeaders.addElement(file);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch( Exception exc ) {
-            throw new CmsException("readAllFileHeaders "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return allHeaders;
-    }
 
     /**
      * Reads all file headers of a file in the OpenCms.<BR>
@@ -5803,33 +3052,33 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         try {
             con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READ_ALL_BACKUP"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_READ_ALL_BACKUP"));
             // read file header data from database
             statement.setString(1, resourceName);
             res = statement.executeQuery();
             // create new file headers
             while(res.next()) {
-                int versionId=res.getInt(m_cq.get("C_RESOURCES_VERSION_ID"));
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                String userName=res.getString(m_cq.get("C_RESOURCES_USER_NAME"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                String groupName= res.getString(m_cq.get("C_RESOURCES_GROUP_NAME"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                String modifiedByName=res.getString(m_cq.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
+                int versionId=res.getInt(m_SqlQueries.get("C_RESOURCES_VERSION_ID"));
+                int resId=res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_ID"));
+                int parentId=res.getInt(m_SqlQueries.get("C_RESOURCES_PARENT_ID"));
+                String resName=res.getString(m_SqlQueries.get("C_RESOURCES_RESOURCE_NAME"));
+                int resType= res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_TYPE"));
+                int resFlags=res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_FLAGS"));
+                int userId=res.getInt(m_SqlQueries.get("C_RESOURCES_USER_ID"));
+                String userName=res.getString(m_SqlQueries.get("C_RESOURCES_USER_NAME"));
+                int groupId= res.getInt(m_SqlQueries.get("C_RESOURCES_GROUP_ID"));
+                String groupName= res.getString(m_SqlQueries.get("C_RESOURCES_GROUP_NAME"));
+                int projectID=res.getInt(m_SqlQueries.get("C_RESOURCES_PROJECT_ID"));
+                int fileId=res.getInt(m_SqlQueries.get("C_RESOURCES_FILE_ID"));
+                int accessFlags=res.getInt(m_SqlQueries.get("C_RESOURCES_ACCESS_FLAGS"));
+                int state= res.getInt(m_SqlQueries.get("C_RESOURCES_STATE"));
+                int launcherType= res.getInt(m_SqlQueries.get("C_RESOURCES_LAUNCHER_TYPE"));
+                String launcherClass=  res.getString(m_SqlQueries.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+                long created=SqlHelper.getTimestamp(res,m_SqlQueries.get("C_RESOURCES_DATE_CREATED")).getTime();
+                long modified=SqlHelper.getTimestamp(res,m_SqlQueries.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+                int resSize= res.getInt(m_SqlQueries.get("C_RESOURCES_SIZE"));
+                int modifiedBy=res.getInt(m_SqlQueries.get("C_RESOURCES_LASTMODIFIED_BY"));
+                String modifiedByName=res.getString(m_SqlQueries.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 file=new CmsBackupResource(versionId,resId,parentId,fileId,resName,resType,resFlags,
                                            userId,userName,groupId,groupName,projectID,accessFlags,
@@ -5870,259 +3119,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         return allHeaders;
     }
 
-    /**
-     * Returns a list of all properties of a file or folder.<p>
-     *
-     * @param resourceId the id of the resource
-     * @param resource the resource to read the properties from
-     * @param resourceType the type of the resource
-     *
-     * @return a Map of Strings representing the properties of the resource
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public HashMap readProperties(int projectId, CmsResource resource, int resourceType)
-        throws CmsException {
 
-        HashMap returnValue = new HashMap();
-        ResultSet result = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        int resourceId = resource.getResourceId();
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-           con = DriverManager.getConnection(usedPool);
-            // create project
-            statement = con.prepareStatement(m_cq.get("C_PROPERTIES_READALL"+usedStatement));
-            statement.setInt(1, resourceId);
-            statement.setInt(2, resourceType);
-            result = statement.executeQuery();
-            while(result.next()) {
-                 returnValue.put(result.getString(m_cq.get("C_PROPERTYDEF_NAME")),
-                                 result.getString(m_cq.get("C_PROPERTY_VALUE")));
-            }
-        } catch( SQLException exc ) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
-        } finally {
-            // close all db-resources
-            if(result != null) {
-                try {
-                    result.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return(returnValue);
-    }
-
-    /**
-     * Reads all propertydefinitions for the given resource type.
-     *
-     * @param resourcetype The resource type to read the propertydefinitions for.
-     *
-     * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
-     * The Vector is maybe empty.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public Vector readAllPropertydefinitions(int resourcetype)
-        throws CmsException {
-         Vector metadefs = new Vector();
-         ResultSet result = null;
-         PreparedStatement statement = null;
-         Connection con = null;
-
-         try {
-             con = DriverManager.getConnection(m_poolName);
-             // create statement
-             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_READALL"));
-             statement.setInt(1,resourcetype);
-             result = statement.executeQuery();
-
-             while(result.next()) {
-                 metadefs.addElement( new CmsPropertydefinition( result.getInt(m_cq.get("C_PROPERTYDEF_ID")),
-                                                             result.getString(m_cq.get("C_PROPERTYDEF_NAME")),
-                                                             result.getInt(m_cq.get("C_PROPERTYDEF_RESOURCE_TYPE"))));
-             }
-         } catch( SQLException exc ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                 CmsException.C_SQL_ERROR, exc);
-         }finally {
-            // close all db-resources
-            if(result != null) {
-                 try {
-                     result.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-          }
-        return(metadefs);
-    }
-
-
-    /**
-     * Reads all propertydefinitions for the given resource type.
-     *
-     * @param resourcetype The resource type to read the propertydefinitions for.
-     *
-     * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
-     * The Vector is maybe empty.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public Vector readAllPropertydefinitions(I_CmsResourceType resourcetype)
-        throws CmsException {
-        return(readAllPropertydefinitions(resourcetype.getResourceType()));
-    }
-
-    /**
-     * Reads a file from the Cms.<BR/>
-     *
-     * @param projectId The Id of the project in which the resource will be used.
-     * @param onlineProjectId The online projectId of the OpenCms.
-     * @param filename The complete name of the new file (including pathinformation).
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-     public CmsFile readFile(int projectId,
-                             int onlineProjectId,
-                             String filename)
-         throws CmsException {
-        CmsFile file = null;
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        if (projectId == onlineProjectId) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // if the actual project is the online project read file header and content
-            // from the online project
-            statement = con.prepareStatement(m_cq.get("C_FILES_READ"+usedStatement));
-            statement.setString(1, filename);
-            statement.setInt(2, projectId);
-            res = statement.executeQuery();
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                byte[] content=getBytesFromResultset(res, m_cq.get("C_RESOURCES_FILE_CONTENT"));
-                int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
-                                   groupId,resProjectId,accessFlags,state,lockedBy,
-                                   launcherType,launcherClass,created,modified,modifiedBy,
-                                   content,resSize, lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-                // check if this resource is marked as deleted
-                if (file.getState() == C_STATE_DELETED) {
-                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch( Exception exc ) {
-            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return file;
-     }
 
 /****************     methods for link management            ****************************/
 
@@ -6137,7 +3134,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             // delete all project-resources.
-            statement = con.prepareStatement(m_cq.get("C_LM_DELETE_ENTRYS"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_LM_DELETE_ENTRYS"));
             statement.setInt(1, pageId);
             statement.executeUpdate();
         } catch (SQLException e){
@@ -6177,7 +3174,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         PreparedStatement statement = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_LM_WRITE_ENTRY"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_LM_WRITE_ENTRY"));
             statement.setInt(1, pageId);
             for(int i=0; i < linkTargets.size(); i++){
                 try{
@@ -6219,11 +3216,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_LM_READ_ENTRYS"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_LM_READ_ENTRYS"));
             statement.setInt(1, pageId);
             res = statement.executeQuery();
             while(res.next()){
-                result.add(res.getString(m_cq.get("C_LM_LINK_DEST")));
+                result.add(res.getString(m_SqlQueries.get("C_LM_LINK_DEST")));
             }
             return result;
         }catch (SQLException e){
@@ -6267,7 +3264,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             // delete all project-resources.
-            statement = con.prepareStatement(m_cq.get("C_LM_DELETE_ENTRYS_ONLINE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_LM_DELETE_ENTRYS_ONLINE"));
             statement.setInt(1, pageId);
             statement.executeUpdate();
         } catch (SQLException e){
@@ -6307,7 +3304,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         PreparedStatement statement = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_LM_WRITE_ENTRY_ONLINE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_LM_WRITE_ENTRY_ONLINE"));
             statement.setInt(1, pageId);
             for(int i=0; i < linkTargets.size(); i++){
                 try{
@@ -6349,11 +3346,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_LM_READ_ENTRYS_ONLINE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_LM_READ_ENTRYS_ONLINE"));
             statement.setInt(1, pageId);
             res = statement.executeQuery();
             while(res.next()){
-                result.add(res.getString(m_cq.get("C_LM_LINK_DEST")));
+                result.add(res.getString(m_SqlQueries.get("C_LM_LINK_DEST")));
             }
             return result;
         }catch (SQLException e){
@@ -6399,26 +3396,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_LM_GET_ONLINE_BROKEN_LINKS"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_LM_GET_ONLINE_BROKEN_LINKS"));
             res = statement.executeQuery();
             int current = -1;
             CmsPageLinks links = null;
             while(res.next()){
-                int next = res.getInt(m_cq.get("C_LM_PAGE_ID"));
+                int next = res.getInt(m_SqlQueries.get("C_LM_PAGE_ID"));
                 if(next != current){
                     if(links != null){
                         result.add(links);
                     }
                     links = new CmsPageLinks(next);
-                    links.addLinkTarget(res.getString(m_cq.get("C_LM_LINK_DEST")));
+                    links.addLinkTarget(res.getString(m_SqlQueries.get("C_LM_LINK_DEST")));
                     try{
-                        links.setResourceName(((CmsFile)readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next)).getResourceName());
+                        links.setResourceName(((CmsFile)m_ResourceBroker.getVfsAccess().readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next)).getResourceName());
                     }catch(CmsException e){
                         links.setResourceName("id="+next+". Sorry, can't read resource. "+e.getMessage());
                     }
                     links.setOnline(true);
                 }else{
-                    links.addLinkTarget(res.getString(m_cq.get("C_LM_LINK_DEST")));
+                    links.addLinkTarget(res.getString(m_SqlQueries.get("C_LM_LINK_DEST")));
                 }
                 current = next;
             }
@@ -6550,13 +3547,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_LM_GET_ONLINE_REFERENCES"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_LM_GET_ONLINE_REFERENCES"));
             statement.setString(1, link);
             res = statement.executeQuery();
             while(res.next()) {
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+                String resName=res.getString(m_SqlQueries.get("C_RESOURCES_RESOURCE_NAME"));
                 if(!exeptions.contains(resName)){
-                    CmsPageLinks pl = new CmsPageLinks(res.getInt(m_cq.get("C_LM_PAGE_ID")));
+                    CmsPageLinks pl = new CmsPageLinks(res.getInt(m_SqlQueries.get("C_LM_PAGE_ID")));
                     pl.setOnline(true);
                     pl.addLinkTarget(link);
                     pl.setResourceName(resName);
@@ -6607,11 +3604,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_LM_GET_ALL_ONLINE_RES_NAMES"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_LM_GET_ALL_ONLINE_RES_NAMES"));
             res = statement.executeQuery();
             // create new resource
             while(res.next()) {
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+                String resName=res.getString(m_SqlQueries.get("C_RESOURCES_RESOURCE_NAME"));
                 resources.add(resName);
             }
         } catch (SQLException e){
@@ -6702,13 +3699,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         int resourceId = -1;
         try {
             con = DriverManager.getConnection(m_poolNameOnline);
-            statement=con.prepareStatement(m_cq.get("C_LM_READ_ONLINE_ID"));
+            statement=con.prepareStatement(m_SqlQueries.get("C_LM_READ_ONLINE_ID"));
             // read file data from database
             statement.setString(1, filename);
             res = statement.executeQuery();
             // read the id
             if(res.next()) {
-                resourceId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+                resourceId = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_ID"));
                 while(res.next()){
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -6762,15 +3759,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_EXPORT_LINK_READ"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_LINK_READ"));
             statement.setString(1, request);
             res = statement.executeQuery();
 
             // create new Cms exportlink object
             if(res.next()) {
-                link = new CmsExportLink(res.getInt(m_cq.get("C_EXPORT_ID")),
-                                   res.getString(m_cq.get("C_EXPORT_LINK")),
-                                   SqlHelper.getTimestamp(res,m_cq.get("C_EXPORT_DATE")).getTime(),
+                link = new CmsExportLink(res.getInt(m_SqlQueries.get("C_EXPORT_ID")),
+                                   res.getString(m_SqlQueries.get("C_EXPORT_LINK")),
+                                   SqlHelper.getTimestamp(res,m_SqlQueries.get("C_EXPORT_DATE")).getTime(),
                                    null);
 
                 // now the dependencies
@@ -6779,11 +3776,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     statement.close();
                 }catch(SQLException ex){
                 }
-                statement = con.prepareStatement(m_cq.get("C_EXPORT_DEPENDENCIES_READ"));
+                statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_DEPENDENCIES_READ"));
                 statement.setInt(1,link.getId());
                 res = statement.executeQuery();
                 while(res.next()){
-                    link.addDependency(res.getString(m_cq.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
+                    link.addDependency(res.getString(m_SqlQueries.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
                 }
             }
             return link;
@@ -6836,15 +3833,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_EXPORT_LINK_READ"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_LINK_READ"));
             statement.setString(1, request);
             res = statement.executeQuery();
 
             // create new Cms exportlink object
             if(res.next()) {
-                link = new CmsExportLink(res.getInt(m_cq.get("C_EXPORT_ID")),
-                                   res.getString(m_cq.get("C_EXPORT_LINK")),
-                                   SqlHelper.getTimestamp(res,m_cq.get("C_EXPORT_DATE")).getTime(),
+                link = new CmsExportLink(res.getInt(m_SqlQueries.get("C_EXPORT_ID")),
+                                   res.getString(m_SqlQueries.get("C_EXPORT_LINK")),
+                                   SqlHelper.getTimestamp(res,m_SqlQueries.get("C_EXPORT_DATE")).getTime(),
                                    null);
 
             }
@@ -6903,7 +3900,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             // delete the link table entry
-            statement=con.prepareStatement(m_cq.get("C_EXPORT_LINK_SET_PROCESSED"));
+            statement=con.prepareStatement(m_SqlQueries.get("C_EXPORT_LINK_SET_PROCESSED"));
             statement.setBoolean(1, link.getProcessedState());
             statement.setInt(2, linkId);
             statement.executeUpdate();
@@ -6964,7 +3961,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             // delete the link table entry
-            statement=con.prepareStatement(m_cq.get("C_EXPORT_LINK_DELETE"));
+            statement=con.prepareStatement(m_SqlQueries.get("C_EXPORT_LINK_DELETE"));
             statement.setInt(1, deleteId);
             statement.executeUpdate();
             // now the dependencies
@@ -6972,7 +3969,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 statement.close();
             }catch(SQLException ex){
             }
-            statement=con.prepareStatement(m_cq.get("C_EXPORT_DEPENDENCIES_DELETE"));
+            statement=con.prepareStatement(m_SqlQueries.get("C_EXPORT_DEPENDENCIES_DELETE"));
             statement.setInt(1, deleteId);
             statement.executeUpdate();
         } catch (SQLException e){
@@ -7006,7 +4003,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         deleteExportLink(link);
         int id = link.getId();
         if(id == 0){
-            id = nextId(m_cq.get("C_TABLE_EXPORT_LINKS"));
+            id = nextId(m_SqlQueries.get("C_TABLE_EXPORT_LINKS"));
             link.setLinkId(id);
         }
         // now write it
@@ -7015,7 +4012,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             // write the link table entry
-            statement=con.prepareStatement(m_cq.get("C_EXPORT_LINK_WRITE"));
+            statement=con.prepareStatement(m_SqlQueries.get("C_EXPORT_LINK_WRITE"));
             statement.setInt(1, id);
             statement.setString(2, link.getLink());
             statement.setTimestamp(3, new Timestamp(link.getLastExportDate()));
@@ -7026,7 +4023,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 statement.close();
             }catch(SQLException ex){
             }
-            statement = con.prepareStatement(m_cq.get("C_EXPORT_DEPENDENCIES_WRITE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_DEPENDENCIES_WRITE"));
             statement.setInt(1, id);
             Vector deps = link.getDependencies();
             for(int i=0; i < deps.size(); i++){
@@ -7074,11 +4071,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             Vector firstResult = new Vector();
             Vector secondResult = new Vector();
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_EXPORT_GET_ALL_DEPENDENCIES"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_GET_ALL_DEPENDENCIES"));
             res = statement.executeQuery();
             while(res.next()) {
-                firstResult.add(res.getString(m_cq.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
-                secondResult.add(res.getString(m_cq.get("C_EXPORT_LINK")));
+                firstResult.add(res.getString(m_SqlQueries.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
+                secondResult.add(res.getString(m_SqlQueries.get("C_EXPORT_LINK")));
             }
             // now we have all dependencies that are there. We can search now for
             // the ones we need
@@ -7146,10 +4143,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_EXPORT_GET_ALL_LINKS"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_EXPORT_GET_ALL_LINKS"));
             res = statement.executeQuery();
             while(res.next()) {
-                retValue.add(res.getString(m_cq.get("C_EXPORT_LINK")));
+                retValue.add(res.getString(m_SqlQueries.get("C_EXPORT_LINK")));
             }
             return retValue;
          }
@@ -7184,1538 +4181,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
      }
 
-    /**
-     * Reads a file from the Cms.<BR/>
-     *
-     * @param projectId The Id of the project in which the resource will be used.
-     * @param onlineProjectId The online projectId of the OpenCms.
-     * @param filename The complete name of the new file (including pathinformation).
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-     public CmsFile readFile(int projectId,
-                             int onlineProjectId,
-                             String filename, boolean includeDeleted)
-         throws CmsException {
-        CmsFile file = null;
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        if (projectId == onlineProjectId) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // if the actual project is the online project read file header and content
-            // from the online project
-            statement = con.prepareStatement(m_cq.get("C_FILES_READ"+usedStatement));
-            statement.setString(1, filename);
-            statement.setInt(2, projectId);
-            res = statement.executeQuery();
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                byte[] content=getBytesFromResultset(res,m_cq.get("C_RESOURCES_FILE_CONTENT"));
-                int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
-                                   groupId,resProjectId,accessFlags,state,lockedBy,
-                                   launcherType,launcherClass,created,modified,modifiedBy,
-                                   content,resSize, lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-                // check if this resource is marked as deleted
-                if (file.getState() == C_STATE_DELETED && !includeDeleted) {
-                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] readFile "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch( Exception exc ) {
-            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return file;
-     }
-
-    /**
-     * Reads a file in the project from the Cms.<BR/>
-     *
-     * @param projectId The Id of the project in which the resource will be used.
-     * @param onlineProjectId The online projectId of the OpenCms.
-     * @param filename The complete name of the new file (including pathinformation).
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-     public CmsFile readFileInProject(int projectId,
-                                        int onlineProjectId,
-                                        String filename)
-         throws CmsException {
-
-        CmsFile file = null;
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        if (projectId == onlineProjectId) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // if the actual project is the online project read file header and content
-            // from the online project
-            statement = con.prepareStatement(m_cq.get("C_FILES_READINPROJECT"+usedStatement));
-            statement.setString(1, filename);
-            statement.setInt(2, projectId);
-            res = statement.executeQuery();
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                byte[] content=getBytesFromResultset(res,m_cq.get("C_RESOURCES_FILE_CONTENT"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
-                                   groupId,projectId,accessFlags,state,lockedBy,
-                                   launcherType,launcherClass,created,modified,modifiedBy,
-                                   content,resSize, lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch( Exception exc ) {
-            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return file;
-     }
-
-    /**
-     * Private helper method to read the fileContent for publishProject(export).
-     *
-     * @param fileId the fileId.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    protected byte[] readFileContent(int projectId, int fileId)
-        throws CmsException {
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        byte[] returnValue = null;
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // read fileContent from database
-            statement = con.prepareStatement(m_cq.get("C_FILE_READ"+usedStatement));
-            statement.setInt(1,fileId);
-            res = statement.executeQuery();
-            if (res.next()) {
-                  returnValue = res.getBytes(m_cq.get("C_FILE_CONTENT"));
-            } else {
-                  throw new CmsException("["+this.getClass().getName()+"]"+fileId,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        }finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        return returnValue;
-    }
-
-    /**
-     * Reads a file header from the Cms.<BR/>
-     * The reading excludes the filecontent.
-     *
-     * @param projectId The Id of the project
-     * @param resourceId The Id of the resource.
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public CmsFile readFileHeader(int projectId, int resourceId)
-        throws CmsException {
-
-        CmsFile file=null;
-        ResultSet res =null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement=con.prepareStatement(m_cq.get("C_RESOURCES_READBYID"+usedStatement));
-            // read file data from database
-            statement.setInt(1, resourceId);
-            res = statement.executeQuery();
-            // create new file
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                new byte[0],resSize, lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-                // check if this resource is marked as deleted
-                if (file.getState() == C_STATE_DELETED) {
-                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+resourceId,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch( Exception exc ) {
-            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return file;
-    }
-
-    /**
-     * Reads a file header from the Cms.<BR/>
-     * The reading excludes the filecontent.
-     *
-     * @param projectId The Id of the project
-     * @param resourceId The Id of the resource.
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public CmsFile readFileHeader(int projectId, CmsResource resource)
-        throws CmsException {
-
-        CmsFile file=null;
-        ResultSet res =null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement=con.prepareStatement(m_cq.get("C_RESOURCES_READBYID"+usedStatement));
-            // read file data from database
-            statement.setInt(1, resource.getResourceId());
-            res = statement.executeQuery();
-            // create new file
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                new byte[0],resSize,lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-                // check if this resource is marked as deleted
-                if (file.getState() == C_STATE_DELETED) {
-                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+resource.getResourceId(),CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch( Exception exc ) {
-            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return file;
-    }
-
-    /**
-     * Reads a file header from the Cms.<BR/>
-     * The reading excludes the filecontent.
-     *
-     * @param projectId The Id of the project in which the resource will be used.
-     * @param filename The complete name of the new file (including pathinformation).
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public CmsFile readFileHeader(int projectId, String filename, boolean includeDeleted)
-        throws CmsException {
-
-        CmsFile file=null;
-        ResultSet res =null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement=con.prepareStatement(m_cq.get("C_RESOURCES_READ"+usedStatement));
-            // read file data from database
-            statement.setString(1, filename);
-            statement.setInt(2, projectId);
-            res = statement.executeQuery();
-            // create new file
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                new byte[0],resSize,lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-                // check if this resource is marked as deleted
-                if ((file.getState() == C_STATE_DELETED) && !includeDeleted) {
-                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch( Exception exc ) {
-            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-          }
-
-        return file;
-       }
-
-    /**
-     * Reads a file header from the backup of the Cms.<BR/>
-     * The reading excludes the filecontent.
-     *
-     * @param versionId The Id of the version of the resource.
-     * @param filename The complete name of the new file (including pathinformation).
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public CmsBackupResource readFileHeaderForHist(int versionId, String filename)
-        throws CmsException {
-
-        CmsBackupResource file=null;
-        ResultSet res =null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(m_poolNameBackup);
-            statement=con.prepareStatement(m_cq.get("C_RESOURCES_READ_BACKUP"));
-            // read file data from database
-            statement.setString(1, filename);
-            statement.setInt(2, versionId);
-            res = statement.executeQuery();
-            // create new file
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                String userName = res.getString(m_cq.get("C_RESOURCES_USER_NAME"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                String groupName = res.getString(m_cq.get("C_RESOURCES_GROUP_NAME"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass= res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                String modifiedByName=res.getString(m_cq.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                file=new CmsBackupResource(versionId,resId,parentId,fileId,filename,resType,
-                                           resFlags,userId,userName,groupId,groupName,
-                                           projectID,accessFlags,state,
-                                           launcherType,launcherClass,created,modified,modifiedBy,
-                                           modifiedByName,new byte[0],resSize, lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch( Exception exc ) {
-            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-          }
-
-        return file;
-       }
-
-    /**
-     * Reads a file from the history of the Cms.<BR/>
-     *
-     * @param versionId The versionId of the resource.
-     * @param filename The complete name of the file (including pathinformation).
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-     public CmsBackupResource readFileForHist(int versionId, String filename)
-         throws CmsException {
-        CmsBackupResource file = null;
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(m_poolNameBackup);
-            // if the actual project is the online project read file header and content
-            // from the online project
-            statement = con.prepareStatement(m_cq.get("C_FILES_READ_BACKUP"));
-            statement.setString(1, filename);
-            statement.setInt(2, versionId);
-            res = statement.executeQuery();
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                String userName = res.getString(m_cq.get("C_RESOURCES_USER_NAME"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                String groupName = res.getString(m_cq.get("C_RESOURCES_GROUP_NAME"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                String modifiedByName = res.getString(m_cq.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                byte[] content=getBytesFromResultset(res,m_cq.get("C_RESOURCES_FILE_CONTENT"));
-                int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                file = new CmsBackupResource(versionId,resId,parentId,fileId,filename,resType,
-                                             resFlags,userId,userName,groupId,groupName,
-                                             resProjectId,accessFlags,state,
-                                             launcherType,launcherClass,created,modified,modifiedBy,
-                                             modifiedByName,content,resSize, lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch( Exception exc ) {
-            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return file;
-     }
-
-    /**
-     * Reads a file header from the Cms.<BR/>
-     * The reading excludes the filecontent.
-     *
-     * @param projectId The Id of the project in which the resource will be used.
-     * @param filename The complete name of the new file (including pathinformation).
-     *
-     * @return file The read file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public CmsFile readFileHeaderInProject(int projectId, String filename)
-        throws CmsException {
-
-        CmsFile file=null;
-        ResultSet res =null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement=con.prepareStatement(m_cq.get("C_RESOURCES_READINPROJECT"+usedStatement));
-            // read file data from database
-            statement.setString(1, filename);
-            statement.setInt(2, projectId);
-            res = statement.executeQuery();
-            // create new file
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                new byte[0],resSize,lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-                // check if this resource is marked as deleted
-                if (file.getState() == C_STATE_DELETED) {
-                    throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (CmsException ex) {
-            throw ex;
-        } catch( Exception exc ) {
-            throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-          }
-
-        return file;
-       }
-
-    /**
-     * Reads all files from the Cms, that are in one project.<BR/>
-     *
-     * @param project The project in which the files are.
-     *
-     * @return A Vecor of files.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector readFiles(int projectId) throws CmsException {
-        return readFiles(projectId, true, false);
-    }
-    /**
-     * Reads all files from the Cms, that are in one project.<BR/>
-     *
-     * @param project The project in which the files are.
-     *
-     * @return A Vecor of files.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector readFiles(int projectId, boolean includeUnchanged, boolean onlyProject)
-        throws CmsException {
-
-        Vector files = new Vector();
-        CmsFile file;
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        String onlyChanged = new String();
-        String inProject = new String();
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-            if (onlyProject){
-                inProject = " AND CMS_RESOURCES.PROJECT_ID = CMS_PROJECTRESOURCES.PROJECT_ID";
-            }
-        }
-        if (!includeUnchanged){
-            onlyChanged = " AND STATE != "+C_STATE_UNCHANGED;
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // read file data from database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READFILESBYPROJECT"+usedStatement)+onlyChanged+inProject);
-            statement.setInt(1,projectId);
-            res = statement.executeQuery();
-            // create new file
-            while(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                byte[] fileContent = getBytesFromResultset(res,m_cq.get("C_FILE_CONTENT"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                //byte[] fileContent = new byte[0];
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file = new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                fileContent,resSize,lockedInProject);
-
-                files.addElement(file);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (Exception ex) {
-            throw new CmsException("["+this.getClass().getName()+"]", ex);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return files;
-    }
-
-    /**
-     * Reads a folder from the Cms.<BR/>
-     *
-     * @param project The project in which the resource will be used.
-     * @param foldername The name of the folder to be read.
-     *
-     * @return The read folder.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public CmsFolder readFolder(int projectId, String foldername)
-        throws CmsException {
-
-        CmsFolder folder=null;
-        ResultSet res =null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement=con.prepareStatement(m_cq.get("C_RESOURCES_READ"+usedStatement));
-            statement.setString(1, foldername);
-            statement.setInt(2,projectId);
-            res = statement.executeQuery();
-            // create new resource
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                      groupId,projectID,accessFlags,state,lockedBy,created,
-                                      modified,modifiedBy,lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch(CmsException exc) {
-            // just throw this exception
-            throw exc;
-        } catch( Exception exc ) {
-            throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return folder;
-    }
-
-    /**
-     * Reads a folder from the Cms.<BR/>
-     *
-     * @param project The project in which the resource will be used.
-     * @param folderid The id of the folder to be read.
-     *
-     * @return The read folder.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public CmsFolder readFolder(int projectId, int folderid)
-        throws CmsException {
-
-        CmsFolder folder=null;
-        ResultSet res =null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement=con.prepareStatement(m_cq.get("C_RESOURCES_READBYID"+usedStatement));
-            statement.setInt(1, folderid);
-            res = statement.executeQuery();
-            // create new resource
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                      groupId,projectID,accessFlags,state,lockedBy,created,
-                                      modified,modifiedBy,lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+folderid,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch(CmsException exc) {
-            // just throw this exception
-            throw exc;
-        } catch( Exception exc ) {
-            throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return folder;
-    }
-    /**
-     * Reads a folder from the Cms that exists in the project.<BR/>
-     *
-     * @param project The project in which the resource will be used.
-     * @param foldername The name of the folder to be read.
-     *
-     * @return The read folder.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public CmsFolder readFolderInProject(int projectId, String foldername)
-        throws CmsException {
-
-        CmsFolder folder=null;
-        ResultSet res =null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement=con.prepareStatement(m_cq.get("C_RESOURCES_READINPROJECT"+usedStatement));
-            statement.setString(1, foldername);
-            statement.setInt(2,projectId);
-            res = statement.executeQuery();
-            // create new resource
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                      groupId,projectID,accessFlags,state,lockedBy,created,
-                                      modified,modifiedBy,lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch(CmsException exc) {
-            // just throw this exception
-            throw exc;
-        } catch( Exception exc ) {
-            throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return folder;
-    }
-
-    /**
-     * Reads all folders from the Cms, that are in one project.<BR/>
-     *
-     * @param project The project in which the folders are.
-     *
-     * @return A Vecor of folders.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector readFolders(int projectId) throws CmsException {
-        return readFolders(projectId, true, false);
-    }
-
-    /**
-     * Reads all folders from the Cms, that are in one project.<BR/>
-     *
-     * @param project The project in which the folders are.
-     *
-     * @return A Vecor of folders.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector readFolders(int projectId, boolean includeUnchanged, boolean onlyProject)
-        throws CmsException {
-
-        Vector folders = new Vector();
-        CmsFolder folder;
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        String onlyChanged = new String();
-        String inProject = new String();
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-            if (onlyProject){
-                inProject = " AND CMS_RESOURCES.PROJECT_ID = CMS_PROJECTRESOURCES.PROJECT_ID";
-            }
-        }
-        if (!includeUnchanged){
-            onlyChanged = " AND CMS_RESOURCES.STATE != "+C_STATE_UNCHANGED+" ORDER BY CMS_RESOURCES.RESOURCE_NAME";
-        } else {
-            onlyChanged = " ORDER BY CMS_RESOURCES.RESOURCE_NAME";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // read folder data from database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READFOLDERSBYPROJECT"+usedStatement)+inProject+onlyChanged);
-            statement.setInt(1,projectId);
-            res = statement.executeQuery();
-            // create new folder
-            while(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                      groupId,projectID,accessFlags,state,lockedBy,created,
-                                      modified,modifiedBy,lockedInProject);
-                folders.addElement(folder);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (Exception ex) {
-            throw new CmsException("["+this.getClass().getName()+"]", ex);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return folders;
-    }
-
-     /**
-     * Returns a group object.<P/>
-     * @param groupname The id of the group that is to be read.
-     * @return Group.
-     * @throws CmsException  Throws CmsException if operation was not succesful
-     */
-     public CmsGroup readGroup(int id)
-         throws CmsException {
-
-         CmsGroup group=null;
-         ResultSet res = null;
-         PreparedStatement statement=null;
-         Connection con = null;
 
 
-         try{
-             con = DriverManager.getConnection(m_poolName);
 
-             // read the group from the database
-             statement=con.prepareStatement(m_cq.get("C_GROUPS_READGROUP2"));
-             statement.setInt(1,id);
-             res = statement.executeQuery();
-             // create new Cms group object
-             if(res.next()) {
-               group=new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                                  res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                  res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                  res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                  res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS")));
-             } else {
-                 throw new CmsException("[" + this.getClass().getName() + "] "+id,CmsException.C_NO_GROUP);
-             }
-
-         } catch (SQLException e){
-
-         throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-
-         }
-         return group;
-     }
-
-    /**
-     * Returns a group object.<P/>
-     * @param groupname The name of the group that is to be read.
-     * @return Group.
-     * @throws CmsException  Throws CmsException if operation was not succesful
-     */
-     public CmsGroup readGroup(String groupname)
-         throws CmsException {
-
-         CmsGroup group=null;
-         ResultSet res = null;
-         PreparedStatement statement=null;
-         Connection con = null;
-
-         try{
-             con = DriverManager.getConnection(m_poolName);
-             // read the group from the database
-             statement=con.prepareStatement(m_cq.get("C_GROUPS_READGROUP"));
-             statement.setString(1,groupname);
-             res = statement.executeQuery();
-
-             // create new Cms group object
-             if(res.next()) {
-               group=new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                                  res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                  res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                  res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                  res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS")));
-             } else {
-                 throw new CmsException("[" + this.getClass().getName() + "] "+groupname,CmsException.C_NO_GROUP);
-             }
-
-
-         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-         }
-         return group;
-     }
 
     /**
      * Reads a project.
@@ -8734,22 +4202,22 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_PROJECTS_READ"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READ"));
 
             statement.setInt(1,id);
             res = statement.executeQuery();
 
             if(res.next()) {
-                project = new CmsProject(res.getInt(m_cq.get("C_PROJECTS_PROJECT_ID")),
-                                         res.getString(m_cq.get("C_PROJECTS_PROJECT_NAME")),
-                                         res.getString(m_cq.get("C_PROJECTS_PROJECT_DESCRIPTION")),
-                                         res.getInt(m_cq.get("C_PROJECTS_TASK_ID")),
-                                         res.getInt(m_cq.get("C_PROJECTS_USER_ID")),
-                                         res.getInt(m_cq.get("C_PROJECTS_GROUP_ID")),
-                                         res.getInt(m_cq.get("C_PROJECTS_MANAGERGROUP_ID")),
-                                         res.getInt(m_cq.get("C_PROJECTS_PROJECT_FLAGS")),
-                                         SqlHelper.getTimestamp(res,m_cq.get("C_PROJECTS_PROJECT_CREATEDATE")),
-                                         res.getInt(m_cq.get("C_PROJECTS_PROJECT_TYPE")));
+                project = new CmsProject(res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_ID")),
+                                         res.getString(m_SqlQueries.get("C_PROJECTS_PROJECT_NAME")),
+                                         res.getString(m_SqlQueries.get("C_PROJECTS_PROJECT_DESCRIPTION")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_TASK_ID")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_USER_ID")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_GROUP_ID")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_MANAGERGROUP_ID")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_FLAGS")),
+                                         SqlHelper.getTimestamp(res,m_SqlQueries.get("C_PROJECTS_PROJECT_CREATEDATE")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_TYPE")));
             } else {
                 // project not found!
                 throw new CmsException("[" + this.getClass().getName() + "] " + id,
@@ -8805,13 +4273,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
 
-            statement = con.prepareStatement(m_cq.get("C_PROJECTS_READ_BYTASK"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READ_BYTASK"));
 
             statement.setInt(1,task.getId());
             res = statement.executeQuery();
 
             if(res.next())
-                 project = new CmsProject(res,m_cq);
+                 project = new CmsProject(res,m_SqlQueries);
           else
                 // project not found!
                 throw new CmsException("[" + this.getClass().getName() + "] " + task,
@@ -8869,34 +4337,34 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
             // read resource data from database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_PROJECTVIEW")+addStatement);
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_PROJECTVIEW")+addStatement);
             statement.setInt(1,project);
             res = statement.executeQuery();
             // create new resource
             while(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                //int projectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+                int resId=res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_ID"));
+                int parentId=res.getInt(m_SqlQueries.get("C_RESOURCES_PARENT_ID"));
+                String resName=res.getString(m_SqlQueries.get("C_RESOURCES_RESOURCE_NAME"));
+                int resType= res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_TYPE"));
+                int resFlags=res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_FLAGS"));
+                int userId=res.getInt(m_SqlQueries.get("C_RESOURCES_USER_ID"));
+                int groupId= res.getInt(m_SqlQueries.get("C_RESOURCES_GROUP_ID"));
+                //int projectId=res.getInt(m_SqlQueries.get("C_RESOURCES_PROJECT_ID"));
                 int projectId=currentProject;
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+                int fileId=res.getInt(m_SqlQueries.get("C_RESOURCES_FILE_ID"));
+                int accessFlags=res.getInt(m_SqlQueries.get("C_RESOURCES_ACCESS_FLAGS"));
+                int state= res.getInt(m_SqlQueries.get("C_RESOURCES_STATE"));
+                int lockedBy= res.getInt(m_SqlQueries.get("C_RESOURCES_LOCKED_BY"));
+                int launcherType= res.getInt(m_SqlQueries.get("C_RESOURCES_LAUNCHER_TYPE"));
+                String launcherClass=  res.getString(m_SqlQueries.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+                long created=SqlHelper.getTimestamp(res,m_SqlQueries.get("C_RESOURCES_DATE_CREATED")).getTime();
+                long modified=SqlHelper.getTimestamp(res,m_SqlQueries.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+                int modifiedBy=res.getInt(m_SqlQueries.get("C_RESOURCES_LASTMODIFIED_BY"));
+                int resSize= res.getInt(m_SqlQueries.get("C_RESOURCES_SIZE"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 
                 if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
+                    modified = m_ResourceBroker.getVfsAccess().fetchDateFromResource(projectId, resFlags, modified);
                 }                
 
                 file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
@@ -8952,7 +4420,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_cq.get("C_PROJECTS_READBYVERSION_BACKUP"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READBYVERSION_BACKUP"));
 
             statement.setInt(1,versionId);
             res = statement.executeQuery();
@@ -8960,21 +4428,21 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             if(res.next()) {
                 Vector projectresources = readBackupProjectResources(versionId);
                 project = new CmsBackupProject(res.getInt("VERSION_ID"),
-                                         res.getInt(m_cq.get("C_PROJECTS_PROJECT_ID")),
-                                         res.getString(m_cq.get("C_PROJECTS_PROJECT_NAME")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_ID")),
+                                         res.getString(m_SqlQueries.get("C_PROJECTS_PROJECT_NAME")),
                                          SqlHelper.getTimestamp(res,"PROJECT_PUBLISHDATE"),
                                          res.getInt("PROJECT_PUBLISHED_BY"),
                                          res.getString("PROJECT_PUBLISHED_BY_NAME"),
-                                         res.getString(m_cq.get("C_PROJECTS_PROJECT_DESCRIPTION")),
-                                         res.getInt(m_cq.get("C_PROJECTS_TASK_ID")),
-                                         res.getInt(m_cq.get("C_PROJECTS_USER_ID")),
+                                         res.getString(m_SqlQueries.get("C_PROJECTS_PROJECT_DESCRIPTION")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_TASK_ID")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_USER_ID")),
                                          res.getString("USER_NAME"),
-                                         res.getInt(m_cq.get("C_PROJECTS_GROUP_ID")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_GROUP_ID")),
                                          res.getString("GROUP_NAME"),
-                                         res.getInt(m_cq.get("C_PROJECTS_MANAGERGROUP_ID")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_MANAGERGROUP_ID")),
                                          res.getString("MANAGERGROUP_NAME"),
-                                         SqlHelper.getTimestamp(res,m_cq.get("C_PROJECTS_PROJECT_CREATEDATE")),
-                                         res.getInt(m_cq.get("C_PROJECTS_PROJECT_TYPE")),
+                                         SqlHelper.getTimestamp(res,m_SqlQueries.get("C_PROJECTS_PROJECT_CREATEDATE")),
+                                         res.getInt(m_SqlQueries.get("C_PROJECTS_PROJECT_TYPE")),
                                          projectresources);
             } else {
                 // project not found!
@@ -9038,16 +4506,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             con = DriverManager.getConnection(m_poolName);
 
-            statement = con.prepareStatement(m_cq.get("C_TASKLOG_READ_PPROJECTLOGS"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASKLOG_READ_PPROJECTLOGS"));
             statement.setInt(1, projectid);
             res = statement.executeQuery();
             while(res.next()) {
-                comment = res.getString(m_cq.get("C_LOG_COMMENT"));
-                id = res.getInt(m_cq.get("C_LOG_ID"));
-                starttime = SqlHelper.getTimestamp(res,m_cq.get("C_LOG_STARTTIME"));
-                task = res.getInt(m_cq.get("C_LOG_TASK"));
-                user = res.getInt(m_cq.get("C_LOG_USER"));
-                type = res.getInt(m_cq.get("C_LOG_TYPE"));
+                comment = res.getString(m_SqlQueries.get("C_LOG_COMMENT"));
+                id = res.getInt(m_SqlQueries.get("C_LOG_ID"));
+                starttime = SqlHelper.getTimestamp(res,m_SqlQueries.get("C_LOG_STARTTIME"));
+                task = res.getInt(m_SqlQueries.get("C_LOG_TASK"));
+                user = res.getInt(m_SqlQueries.get("C_LOG_USER"));
+                type = res.getInt(m_SqlQueries.get("C_LOG_TYPE"));
 
                 tasklog =  new CmsTaskLog(id, comment, task, user, starttime, type);
                 logs.addElement(tasklog);
@@ -9083,414 +4551,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         return logs;
     }
 
-    /**
-     * Returns a property of a file or folder.
-     *
-     * @param meta The property-name of which the property has to be read.
-     * @param resourceId The id of the resource.
-     * @param resourceType The Type of the resource.
-     *
-     * @return property The property as string or null if the property not exists.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public String readProperty(String meta, int projectId, CmsResource resource, int resourceType)
-        throws CmsException {
-        ResultSet result = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        String returnValue = null;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // create statement
-            statement = con.prepareStatement(m_cq.get("C_PROPERTIES_READ"+usedStatement));
-            statement.setInt(1, resource.getResourceId());
-            statement.setString(2, meta);
-            statement.setInt(3, resourceType);
-            result = statement.executeQuery();
-            // if resultset exists - return it
-            if(result.next()) {
-                returnValue = result.getString(m_cq.get("C_PROPERTY_VALUE"));
-            }
-        } catch( SQLException exc ) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
-        } finally {
-            // close all db-resources
-            if(result != null) {
-                try {
-                    result.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return returnValue;
-    }
 
-    /**
-     * Reads a propertydefinition for the given resource type.
-     *
-     * @param name The name of the propertydefinition to read.
-     * @param type The resource type for which the propertydefinition is valid.
-     *
-     * @return propertydefinition The propertydefinition that corresponds to the overgiven
-     * arguments - or null if there is no valid propertydefinition.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public CmsPropertydefinition readPropertydefinition(String name, int type)
-        throws CmsException {
-         CmsPropertydefinition propDef=null;
-         ResultSet res = null;
-         PreparedStatement statement = null;
-         Connection con = null;
 
-         try {
-             con = DriverManager.getConnection(m_poolName);
-
-             // create statement
-             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_READ"));
-             statement.setString(1,name);
-             statement.setInt(2,type);
-             res = statement.executeQuery();
-
-            // if resultset exists - return it
-            if(res.next()) {
-                propDef = new CmsPropertydefinition( res.getInt(m_cq.get("C_PROPERTYDEF_ID")),
-                                            res.getString(m_cq.get("C_PROPERTYDEF_NAME")),
-                                            res.getInt(m_cq.get("C_PROPERTYDEF_RESOURCE_TYPE")));
-            } else {
-                res.close();
-                res = null;
-                // not found!
-                throw new CmsException("[" + this.getClass().getName() + "] " + name,
-                    CmsException.C_NOT_FOUND);
-            }
-         } catch( SQLException exc ) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                 CmsException.C_SQL_ERROR, exc);
-         }finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-          }
-         return propDef;
-    }
-
-    /**
-     * Reads a propertydefinition for the given resource type.
-     *
-     * @param name The name of the propertydefinition to read.
-     * @param type The resource type for which the propertydefinition is valid.
-     *
-     * @return propertydefinition The propertydefinition that corresponds to the overgiven
-     * arguments - or null if there is no valid propertydefinition.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    public CmsPropertydefinition readPropertydefinition(String name, I_CmsResourceType type)
-        throws CmsException {
-        return( readPropertydefinition(name, type.getResourceType() ) );
-    }
-
-    /**
-     * Reads a resource from the Cms.<BR/>
-     * A resource is either a file header or a folder.
-     *
-     * @param project The project in which the resource will be used.
-     * @param filename The complete name of the new file (including pathinformation).
-     *
-     * @return The resource read.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    protected CmsResource readResource(CmsProject project, String filename)
-        throws CmsException {
-
-        CmsResource file = null;
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(project.getId()).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // read resource data from database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READ"+usedStatement));
-            statement.setString(1,filename);
-            statement.setInt(2,project.getId());
-            res = statement.executeQuery();
-            // create new resource
-            if(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
-                                     userId,groupId,projectId,accessFlags,state,lockedBy,
-                                     launcherType,launcherClass,created,modified,modifiedBy,
-                                     resSize,lockedInProject);
-                while(res.next()){
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                res.close();
-                res = null;
-                throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch( Exception exc ) {
-            throw new CmsException("readResource "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return file;
-    }
-
-    /**
-     * Reads all resource from the Cms, that are in one project.<BR/>
-     * A resource is either a file header or a folder.
-     *
-     * @param project The project in which the resource will be used.
-     *
-     * @return A Vecor of resources.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector readResources(CmsProject project)
-        throws CmsException {
-
-        Vector resources = new Vector();
-        CmsResource file;
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(project.getId()).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // read resource data from database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READBYPROJECT"+usedStatement));
-            statement.setInt(1,project.getId());
-            res = statement.executeQuery();
-            // create new resource
-            while(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                
-                file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
-                                     userId,groupId,projectId,accessFlags,state,lockedBy,
-                                     launcherType,launcherClass,created,modified,modifiedBy,
-                                     resSize,lockedInProject);
-                resources.addElement(file);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (Exception ex) {
-            throw new CmsException("["+this.getClass().getName()+"]", ex);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return resources;
-    }
-
-    /**
-     * select a projectResource from an given project and resourcename
-     *
-     * @param project The project in which the resource is used.
-     * @param resource The resource to be read from the Cms.
-     *
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public String readProjectResource(int projectId, String resourcename) throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
-        ResultSet res = null;
-        String resName = null;
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_PROJECTRESOURCES_READ"));
-            // select resource from the database
-            statement.setInt(1, projectId);
-            statement.setString(2, resourcename);
-            res = statement.executeQuery();
-            if (res.next()) {
-                resName = res.getString("RESOURCE_NAME");
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(res != null){
-                try{
-                    res.close();
-                } catch (SQLException e) {
-                }
-            }
-            if (statement != null) {
-                try{
-                    statement.close();
-                } catch (SQLException e){
-                }
-            }
-            if (con != null){
-                try{
-                    con.close();
-                } catch (SQLException e){
-                }
-            }
-        }
-        return resName;
-    }
 
     /**
      * select a projectResource from an given project and resourcename
@@ -9508,7 +4570,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Vector projectResources = new Vector();
         try {
             con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_cq.get("C_PROJECTRESOURCES_READ_BACKUP"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTRESOURCES_READ_BACKUP"));
             // select resource from the database
             statement.setInt(1, versionId);
             res = statement.executeQuery();
@@ -9552,7 +4614,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_SESSION_READ"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_SESSION_READ"));
             statement.setString(1,sessionId);
             statement.setTimestamp(2,new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT ));
 
@@ -9561,7 +4623,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             // create new Cms user object
             if(res.next()) {
                 // read the additional infos.
-                byte[] value = getBytesFromResultset(res,"SESSION_DATA");
+                byte[] value = m_SqlQueries.getBytes(res,"SESSION_DATA");
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -9633,11 +4695,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // create get the property data from the database
         try {
             con = DriverManager.getConnection(m_poolName);
-          statement=con.prepareStatement(m_cq.get("C_SYSTEMPROPERTIES_READ"));
+          statement=con.prepareStatement(m_SqlQueries.get("C_SYSTEMPROPERTIES_READ"));
           statement.setString(1,name);
           res = statement.executeQuery();
           if(res.next()) {
-                value = getBytesFromResultset(res,m_cq.get("C_SYSTEMPROPERTY_VALUE"));
+                value = m_SqlQueries.getBytes(res,m_SqlQueries.get("C_SYSTEMPROPERTY_VALUE"));
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -9698,32 +4760,32 @@ public CmsTask readTask(int id) throws CmsException {
     try {
         con = DriverManager.getConnection(m_poolName);
         
-        statement = con.prepareStatement(m_cq.get("C_TASK_READ"));
+        statement = con.prepareStatement(m_SqlQueries.get("C_TASK_READ"));
         statement.setInt(1, id);
         res = statement.executeQuery();
                 
         if (res.next()) {
-            int autofinish = res.getInt(m_cq.get("C_TASK_AUTOFINISH"));
-            java.sql.Timestamp endtime = SqlHelper.getTimestamp(res, m_cq.get("C_TASK_ENDTIME"));
-            int escalationtype = res.getInt(m_cq.get("C_TASK_ESCALATIONTYPE"));
-            id = res.getInt(m_cq.get("C_TASK_ID"));
-            int initiatoruser = res.getInt(m_cq.get("C_TASK_INITIATORUSER"));
-            int milestone = res.getInt(m_cq.get("C_TASK_MILESTONE"));
-            String name = res.getString(m_cq.get("C_TASK_NAME"));
-            int originaluser = res.getInt(m_cq.get("C_TASK_ORIGINALUSER"));
-            int agentuser = res.getInt(m_cq.get("C_TASK_AGENTUSER"));
-            int parent = res.getInt(m_cq.get("C_TASK_PARENT"));
-            int percentage = res.getInt(m_cq.get("C_TASK_PERCENTAGE"));
-            String permission = res.getString(m_cq.get("C_TASK_PERMISSION"));
-            int priority = res.getInt(m_cq.get("C_TASK_PRIORITY"));
-            int role = res.getInt(m_cq.get("C_TASK_ROLE"));
-            int root = res.getInt(m_cq.get("C_TASK_ROOT"));
-            java.sql.Timestamp starttime = SqlHelper.getTimestamp(res, m_cq.get("C_TASK_STARTTIME"));
-            int state = res.getInt(m_cq.get("C_TASK_STATE"));
-            int tasktype = res.getInt(m_cq.get("C_TASK_TASKTYPE"));
-            java.sql.Timestamp timeout = SqlHelper.getTimestamp(res, m_cq.get("C_TASK_TIMEOUT"));
-            java.sql.Timestamp wakeuptime = SqlHelper.getTimestamp(res, m_cq.get("C_TASK_WAKEUPTIME"));
-            String htmllink = res.getString(m_cq.get("C_TASK_HTMLLINK"));
+            int autofinish = res.getInt(m_SqlQueries.get("C_TASK_AUTOFINISH"));
+            java.sql.Timestamp endtime = SqlHelper.getTimestamp(res, m_SqlQueries.get("C_TASK_ENDTIME"));
+            int escalationtype = res.getInt(m_SqlQueries.get("C_TASK_ESCALATIONTYPE"));
+            id = res.getInt(m_SqlQueries.get("C_TASK_ID"));
+            int initiatoruser = res.getInt(m_SqlQueries.get("C_TASK_INITIATORUSER"));
+            int milestone = res.getInt(m_SqlQueries.get("C_TASK_MILESTONE"));
+            String name = res.getString(m_SqlQueries.get("C_TASK_NAME"));
+            int originaluser = res.getInt(m_SqlQueries.get("C_TASK_ORIGINALUSER"));
+            int agentuser = res.getInt(m_SqlQueries.get("C_TASK_AGENTUSER"));
+            int parent = res.getInt(m_SqlQueries.get("C_TASK_PARENT"));
+            int percentage = res.getInt(m_SqlQueries.get("C_TASK_PERCENTAGE"));
+            String permission = res.getString(m_SqlQueries.get("C_TASK_PERMISSION"));
+            int priority = res.getInt(m_SqlQueries.get("C_TASK_PRIORITY"));
+            int role = res.getInt(m_SqlQueries.get("C_TASK_ROLE"));
+            int root = res.getInt(m_SqlQueries.get("C_TASK_ROOT"));
+            java.sql.Timestamp starttime = SqlHelper.getTimestamp(res, m_SqlQueries.get("C_TASK_STARTTIME"));
+            int state = res.getInt(m_SqlQueries.get("C_TASK_STATE"));
+            int tasktype = res.getInt(m_SqlQueries.get("C_TASK_TASKTYPE"));
+            java.sql.Timestamp timeout = SqlHelper.getTimestamp(res, m_SqlQueries.get("C_TASK_TIMEOUT"));
+            java.sql.Timestamp wakeuptime = SqlHelper.getTimestamp(res, m_SqlQueries.get("C_TASK_WAKEUPTIME"));
+            String htmllink = res.getString(m_SqlQueries.get("C_TASK_HTMLLINK"));
             task = new CmsTask(id, name, state, tasktype, root, parent, initiatoruser, role, agentuser, originaluser, starttime, wakeuptime, timeout, endtime, percentage, permission, priority, escalationtype, htmllink, milestone, autofinish);
         }
     } catch (SQLException exc) {
@@ -9775,16 +4837,16 @@ public CmsTask readTask(int id) throws CmsException {
         try {
             con = DriverManager.getConnection(m_poolName);
 
-            statement = con.prepareStatement(m_cq.get("C_TASKLOG_READ"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASKLOG_READ"));
             statement.setInt(1, id);
             res = statement.executeQuery();
             if(res.next()) {
-                String comment = res.getString(m_cq.get("C_LOG_COMMENT"));
-                id = res.getInt(m_cq.get("C_LOG_ID"));
-                java.sql.Timestamp starttime = SqlHelper.getTimestamp(res,m_cq.get("C_LOG_STARTTIME"));
-                int task = res.getInt(m_cq.get("C_LOG_TASK"));
-                int user = res.getInt(m_cq.get("C_LOG_USER"));
-                int type = res.getInt(m_cq.get("C_LOG_TYPE"));
+                String comment = res.getString(m_SqlQueries.get("C_LOG_COMMENT"));
+                id = res.getInt(m_SqlQueries.get("C_LOG_ID"));
+                java.sql.Timestamp starttime = SqlHelper.getTimestamp(res,m_SqlQueries.get("C_LOG_STARTTIME"));
+                int task = res.getInt(m_SqlQueries.get("C_LOG_TASK"));
+                int user = res.getInt(m_SqlQueries.get("C_LOG_USER"));
+                int type = res.getInt(m_SqlQueries.get("C_LOG_TYPE"));
 
                 tasklog =  new CmsTaskLog(id, comment, task, user, starttime, type);
             }
@@ -9843,16 +4905,16 @@ public CmsTask readTask(int id) throws CmsException {
 
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_TASKLOG_READ_LOGS"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASKLOG_READ_LOGS"));
             statement.setInt(1, taskId);
             res = statement.executeQuery();
             while(res.next()) {
-                comment = res.getString(m_cq.get("C_TASKLOG_COMMENT"));
-                id = res.getInt(m_cq.get("C_TASKLOG_ID"));
-                starttime = SqlHelper.getTimestamp(res,m_cq.get("C_TASKLOG_STARTTIME"));
-                task = res.getInt(m_cq.get("C_TASKLOG_TASK"));
-                user = res.getInt(m_cq.get("C_TASKLOG_USER"));
-                type = res.getInt(m_cq.get("C_TASKLOG_TYPE"));
+                comment = res.getString(m_SqlQueries.get("C_TASKLOG_COMMENT"));
+                id = res.getInt(m_SqlQueries.get("C_TASKLOG_ID"));
+                starttime = SqlHelper.getTimestamp(res,m_SqlQueries.get("C_TASKLOG_STARTTIME"));
+                task = res.getInt(m_SqlQueries.get("C_TASKLOG_TASK"));
+                user = res.getInt(m_SqlQueries.get("C_TASKLOG_USER"));
+                type = res.getInt(m_SqlQueries.get("C_TASKLOG_TYPE"));
                 tasklog =  new CmsTaskLog(id, comment, task, user, starttime, type);
                 logs.addElement(tasklog);
             }
@@ -9913,14 +4975,14 @@ public CmsTask readTask(int id) throws CmsException {
 
         // create the sql string depending on parameters
         // handle the project for the SQL String
-        String sqlstr = "SELECT * FROM " + m_cq.get("C_TABLENAME_TASK")+" WHERE ";
+        String sqlstr = "SELECT * FROM " + m_SqlQueries.get("C_TABLENAME_TASK")+" WHERE ";
         if(project!=null){
-            sqlstr = sqlstr + m_cq.get("C_TASK_ROOT") + "=" + project.getTaskId();
+            sqlstr = sqlstr + m_SqlQueries.get("C_TASK_ROOT") + "=" + project.getTaskId();
             first = false;
         }
         else
         {
-            sqlstr = sqlstr + m_cq.get("C_TASK_ROOT") + "<>0 AND " + m_cq.get("C_TASK_PARENT") + "<>0";
+            sqlstr = sqlstr + m_SqlQueries.get("C_TASK_ROOT") + "<>0 AND " + m_SqlQueries.get("C_TASK_PARENT") + "<>0";
             first = false;
         }
 
@@ -9929,7 +4991,7 @@ public CmsTask readTask(int id) throws CmsException {
             if(!first){
                 sqlstr = sqlstr + " AND ";
             }
-            sqlstr = sqlstr + m_cq.get("C_TASK_AGENTUSER") + "=" + agent.getId();
+            sqlstr = sqlstr + m_SqlQueries.get("C_TASK_AGENTUSER") + "=" + agent.getId();
             first = false;
         }
 
@@ -9938,7 +5000,7 @@ public CmsTask readTask(int id) throws CmsException {
             if(!first){
                 sqlstr = sqlstr + " AND ";
             }
-            sqlstr = sqlstr + m_cq.get("C_TASK_INITIATORUSER") + "=" + owner.getId();
+            sqlstr = sqlstr + m_SqlQueries.get("C_TASK_INITIATORUSER") + "=" + owner.getId();
             first = false;
         }
 
@@ -9947,7 +5009,7 @@ public CmsTask readTask(int id) throws CmsException {
             if(!first){
                 sqlstr = sqlstr+" AND ";
             }
-            sqlstr = sqlstr + m_cq.get("C_TASK_ROLE") + "=" + role.getId();
+            sqlstr = sqlstr + m_SqlQueries.get("C_TASK_ROLE") + "=" + role.getId();
             first = false;
         }
 
@@ -9975,27 +5037,27 @@ public CmsTask readTask(int id) throws CmsException {
 
             // if resultset exists - return vector of tasks
             while(recset.next()) {
-                task =  new CmsTask(recset.getInt(m_cq.get("C_TASK_ID")),
-                                    recset.getString(m_cq.get("C_TASK_NAME")),
-                                    recset.getInt(m_cq.get("C_TASK_STATE")),
-                                    recset.getInt(m_cq.get("C_TASK_TASKTYPE")),
-                                    recset.getInt(m_cq.get("C_TASK_ROOT")),
-                                    recset.getInt(m_cq.get("C_TASK_PARENT")),
-                                    recset.getInt(m_cq.get("C_TASK_INITIATORUSER")),
-                                    recset.getInt(m_cq.get("C_TASK_ROLE")),
-                                    recset.getInt(m_cq.get("C_TASK_AGENTUSER")),
-                                    recset.getInt(m_cq.get("C_TASK_ORIGINALUSER")),
-                                    SqlHelper.getTimestamp(recset,m_cq.get("C_TASK_STARTTIME")),
-                                    SqlHelper.getTimestamp(recset,m_cq.get("C_TASK_WAKEUPTIME")),
-                                    SqlHelper.getTimestamp(recset,m_cq.get("C_TASK_TIMEOUT")),
-                                    SqlHelper.getTimestamp(recset,m_cq.get("C_TASK_ENDTIME")),
-                                    recset.getInt(m_cq.get("C_TASK_PERCENTAGE")),
-                                    recset.getString(m_cq.get("C_TASK_PERMISSION")),
-                                    recset.getInt(m_cq.get("C_TASK_PRIORITY")),
-                                    recset.getInt(m_cq.get("C_TASK_ESCALATIONTYPE")),
-                                    recset.getString(m_cq.get("C_TASK_HTMLLINK")),
-                                    recset.getInt(m_cq.get("C_TASK_MILESTONE")),
-                                    recset.getInt(m_cq.get("C_TASK_AUTOFINISH")));
+                task =  new CmsTask(recset.getInt(m_SqlQueries.get("C_TASK_ID")),
+                                    recset.getString(m_SqlQueries.get("C_TASK_NAME")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_STATE")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_TASKTYPE")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_ROOT")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_PARENT")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_INITIATORUSER")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_ROLE")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_AGENTUSER")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_ORIGINALUSER")),
+                                    SqlHelper.getTimestamp(recset,m_SqlQueries.get("C_TASK_STARTTIME")),
+                                    SqlHelper.getTimestamp(recset,m_SqlQueries.get("C_TASK_WAKEUPTIME")),
+                                    SqlHelper.getTimestamp(recset,m_SqlQueries.get("C_TASK_TIMEOUT")),
+                                    SqlHelper.getTimestamp(recset,m_SqlQueries.get("C_TASK_ENDTIME")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_PERCENTAGE")),
+                                    recset.getString(m_SqlQueries.get("C_TASK_PERMISSION")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_PRIORITY")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_ESCALATIONTYPE")),
+                                    recset.getString(m_SqlQueries.get("C_TASK_HTMLLINK")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_MILESTONE")),
+                                    recset.getInt(m_SqlQueries.get("C_TASK_AUTOFINISH")));
 
 
                 tasks.addElement(task);
@@ -10026,338 +5088,6 @@ public CmsTask readTask(int id) throws CmsException {
         return tasks;
     }
 
-    /**
-     * Reads a user from the cms, only if the password is correct.
-     *
-     * @param id the id of the user.
-     * @param type the type of the user.
-     * @return the read user.
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public CmsUser readUser(int id)
-        throws CmsException {
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        CmsUser user = null;
-        Connection con = null;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_USERS_READID"));
-            statement.setInt(1,id);
-            res = statement.executeQuery();
-
-            // create new Cms user object
-            if(res.next()) {
-                 // read the additional infos.
-                byte[] value = getBytesFromResultset(res,m_cq.get("C_USERS_USER_INFO"));
-                // now deserialize the object
-                ByteArrayInputStream bin= new ByteArrayInputStream(value);
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                Hashtable info=(Hashtable)oin.readObject();
-                user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
-                                   res.getString(m_cq.get("C_USERS_USER_NAME")),
-                                   res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
-                                   res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
-                                   res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
-                                   res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
-                                   res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
-                                   res.getString(m_cq.get("C_USERS_USER_EMAIL")),
-                                   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
-                                   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
-                                   res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
-                                   info,
-                                   new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                                                res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                                res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                                res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                                res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
-                                   res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
-                                   res.getString(m_cq.get("C_USERS_USER_SECTION")),
-                                   res.getInt(m_cq.get("C_USERS_USER_TYPE")));
-            } else {
-                res.close();
-                res = null;
-                throw new CmsException("["+this.getClass().getName()+"]"+id,CmsException.C_NO_USER);
-            }
-            return user;
-         }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        }
-        // a.lucas: catch CmsException here and throw it again.
-        // Don't wrap another CmsException around it, since this may cause problems during login.
-        catch (CmsException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-    }
-
-    /**
-     * Reads a user from the cms.
-     *
-     * @param name the name of the user.
-     * @param type the type of the user.
-     * @return the read user.
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public CmsUser readUser(String name, int type)
-        throws CmsException {
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        CmsUser user = null;
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_USERS_READ"));
-            statement.setString(1,name);
-            statement.setInt(2,type);
-
-            res = statement.executeQuery();
-
-            // create new Cms user object
-            if(res.next()) {
-                // read the additional infos.
-                byte[] value = getBytesFromResultset(res,m_cq.get("C_USERS_USER_INFO"));
-                // now deserialize the object
-                ByteArrayInputStream bin= new ByteArrayInputStream(value);
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                Hashtable info=(Hashtable)oin.readObject();
-
-                user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
-                                   res.getString(m_cq.get("C_USERS_USER_NAME")),
-                                   res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
-                                   res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
-                                   res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
-                                   res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
-                                   res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
-                                   res.getString(m_cq.get("C_USERS_USER_EMAIL")),
-                                   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
-                                   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
-                                   res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
-                                   info,
-                                   new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                                                res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                                res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                                res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                                res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
-                                   res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
-                                   res.getString(m_cq.get("C_USERS_USER_SECTION")),
-                                   res.getInt(m_cq.get("C_USERS_USER_TYPE")));
-            } else {
-                res.close();
-                res = null;
-                throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
-            }
-
-            return user;
-         }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        }
-        // a.lucas: catch CmsException here and throw it again.
-        // Don't wrap another CmsException around it, since this may cause problems during login.
-        catch (CmsException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-    }
-
-    /**
-     * Reads a user from the cms, only if the password is correct.
-     *
-     * @param name the name of the user.
-     * @param password the password of the user.
-     * @param type the type of the user.
-     * @return the read user.
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public CmsUser readUser(String name, String password, int type)
-        throws CmsException {
-        PreparedStatement statement = null;
-        ResultSet res = null;
-        CmsUser user = null;
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_USERS_READPW"));
-            statement.setString(1,name);
-            statement.setString(2,digest(password));
-            statement.setInt(3,type);
-            res = statement.executeQuery();
-
-            // create new Cms user object
-            if(res.next()) {
-                // read the additional infos.
-                byte[] value = getBytesFromResultset(res,m_cq.get("C_USERS_USER_INFO"));
-                // now deserialize the object
-                ByteArrayInputStream bin= new ByteArrayInputStream(value);
-                ObjectInputStream oin = new ObjectInputStream(bin);
-                Hashtable info=(Hashtable)oin.readObject();
-
-                user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
-                                   res.getString(m_cq.get("C_USERS_USER_NAME")),
-                                   res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
-                                   res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
-                                   res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
-                                   res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
-                                   res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
-                                   res.getString(m_cq.get("C_USERS_USER_EMAIL")),
-                                   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
-                                   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
-                                   res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
-                                   info,
-                                   new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
-                                                res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
-                                                res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
-                                                res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
-                                                res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
-                                   res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
-                                   res.getString(m_cq.get("C_USERS_USER_SECTION")),
-                                   res.getInt(m_cq.get("C_USERS_USER_TYPE")));
-            } else {
-                res.close();
-                res = null;
-                throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
-            }
-
-            return user;
-         }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        }
-        // a.lucas: catch CmsException here and throw it again.
-        // Don't wrap another CmsException around it, since this may cause problems during login.
-        catch (CmsException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-    }
-
-    /**
-     * Sets the password, only if the user knows the recovery-password.
-     *
-     * @param user the user to set the password for.
-     * @param recoveryPassword the recoveryPassword the user has to know to set the password.
-     * @param password the password to set
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public void recoverPassword(String user, String recoveryPassword, String password )
-        throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
-
-        int result;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-
-            statement = con.prepareStatement(m_cq.get("C_USERS_RECOVERPW"));
-
-            statement.setString(1,digest(password));
-            statement.setString(2,user);
-            statement.setString(3,digest(recoveryPassword));
-            result = statement.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            // close all db-resources
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        if(result != 1) {
-            // the update wasn't succesfull -> throw exception
-            throw new CmsException("["+this.getClass().getName()+"] the password couldn't be recovered.");
-        }
-    }
 
      /**
       * Deletes a file in the database.
@@ -10374,7 +5104,7 @@ public CmsTask readTask(int id) throws CmsException {
         Connection con = null;
         String usedPool;
         String usedStatement;
-        CmsResource resource = readFileHeader(projectId, filename, true);
+        CmsResource resource = m_ResourceBroker.getVfsAccess().readFileHeader(projectId, filename, true);
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
@@ -10386,12 +5116,12 @@ public CmsTask readTask(int id) throws CmsException {
         try {
             con = DriverManager.getConnection(usedPool);
             // delete the file header
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_DELETE"+usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_DELETE"+usedStatement));
             statement.setString(1, filename);
             statement.executeUpdate();
             statement.close();
             // delete the file content
-            statement = con.prepareStatement(m_cq.get("C_FILE_DELETE"+usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_FILE_DELETE"+usedStatement));
             statement.setInt(1, resource.getFileId());
             statement.executeUpdate();
         } catch (SQLException e){
@@ -10438,11 +5168,11 @@ public CmsTask readTask(int id) throws CmsException {
             usedPool = m_poolName;
             usedStatement = "";
         }
-        Vector files= getFilesInFolder(projectId, folder);
+        Vector files= m_ResourceBroker.getVfsAccess().getFilesInFolder(projectId, folder);
         files=getUndeletedResources(files);
         if (files.size()==0) {
             // check if the folder has any folders in it
-            Vector folders= getSubFolders(projectId, folder);
+            Vector folders= m_ResourceBroker.getVfsAccess().getSubFolders(projectId, folder);
             folders=getUndeletedResources(folders);
             if (folders.size()==0) {
                 //this folder is empty, delete it
@@ -10451,7 +5181,7 @@ public CmsTask readTask(int id) throws CmsException {
                 try {
                     con = DriverManager.getConnection(usedPool);
                     // delete the folder
-                    statement = con.prepareStatement(m_cq.get("C_RESOURCES_ID_DELETE"+usedStatement));
+                    statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_ID_DELETE"+usedStatement));
                     statement.setInt(1,folder.getResourceId());
                     statement.executeUpdate();
                 } catch (SQLException e){
@@ -10507,7 +5237,7 @@ public CmsTask readTask(int id) throws CmsException {
         try {
             con = DriverManager.getConnection(usedPool);
             // delete the folder
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_DELETE"+usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_DELETE"+usedStatement));
             statement.setString(1, foldername);
             statement.executeUpdate();
         } catch (SQLException e){
@@ -10548,26 +5278,26 @@ public CmsTask readTask(int id) throws CmsException {
         try{
             con = DriverManager.getConnection(m_poolName);
             // get all temporary files of the resource
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GETTEMPFILES"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_GETTEMPFILES"));
             statement.setString(1, tempFilename);
             res = statement.executeQuery();
             while(res.next()){
                 int fileId = res.getInt("FILE_ID");
                 int resourceId = res.getInt("RESOURCE_ID");
                 // delete the properties
-                statementProp = con.prepareStatement(m_cq.get("C_PROPERTIES_DELETEALL"));
+                statementProp = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_DELETEALL"));
                 statementProp.setInt(1, resourceId);
                 statementProp.executeQuery();
                 statementProp.close();
                 // delete the file content
-                statementCont = con.prepareStatement(m_cq.get("C_FILE_DELETE"));
+                statementCont = con.prepareStatement(m_SqlQueries.get("C_FILE_DELETE"));
                 statementCont.setInt(1, fileId);
                 statementCont.executeUpdate();
                 statementCont.close();
             }
             res.close();
             statement.close();
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_DELETETEMPFILES"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_DELETETEMPFILES"));
             statement.setString(1, tempFilename);
             statement.executeUpdate();
         } catch (SQLException e){
@@ -10612,192 +5342,6 @@ public CmsTask readTask(int id) throws CmsException {
         }
     }
 
-    /**
-     * Removes a user from a group.
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param userid The id of the user that is to be added to the group.
-     * @param groupid The id of the group.
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-     public void removeUserFromGroup(int userid, int groupid)
-         throws CmsException {
-         PreparedStatement statement = null;
-         Connection con = null;
-         try {
-             con = DriverManager.getConnection(m_poolName);
-             // create statement
-             statement = con.prepareStatement(m_cq.get("C_GROUPS_REMOVEUSERFROMGROUP"));
-
-             statement.setInt(1,groupid);
-             statement.setInt(2,userid);
-             statement.executeUpdate();
-
-         } catch (SQLException e){
-
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            // close all db-resources
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-     }
-
-    /**
-     * Renames the file to the new name.
-     *
-     * @param project The prect in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param userId The user id
-     * @param oldfileID The id of the resource which will be renamed.
-     * @param newname The new name of the resource.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public void renameFile(CmsProject project,
-                            CmsProject onlineProject,
-                            int userId,
-                            int oldfileID,
-                            String newname)
-        throws CmsException {
-
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        if (project.getId() == onlineProject.getId()){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try{
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_RENAMERESOURCE"+usedStatement));
-
-            statement.setString(1,newname);
-            statement.setInt(2,userId);
-            statement.setInt(3,oldfileID);
-            statement.executeUpdate();
-
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-    }
-
-    /**
-     * Sets a new password for a user.
-     *
-     * @param user the user to set the password for.
-     * @param password the password to set
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public void setPassword(String user, String password)
-        throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_USERS_SETPW"));
-            statement.setString(1,digest(password));
-            statement.setString(2,user);
-            statement.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-    }
-
-    /**
-     * Sets a new password for a user.
-     *
-     * @param user the user to set the password for.
-     * @param password the recoveryPassword to set
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public void setRecoveryPassword(String user, String password)
-        throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
-        int result;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_USERS_SETRECPW"));
-
-            statement.setString(1,digest(password));
-            statement.setString(2,user);
-            result = statement.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            // close all db-resources
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-        if(result != 1) {
-            // the update wasn't succesfull -> throw exception
-            throw new CmsException("["+this.getClass().getName()+"] new password couldn't be set.");
-        }
-    }
 
     /**
      * Set a Parameter for a task.
@@ -10821,14 +5365,14 @@ public CmsTask readTask(int id) throws CmsException {
         try {
             con = DriverManager.getConnection(m_poolName);
             // test if the parameter already exists for this task
-            statement = con.prepareStatement(m_cq.get("C_TASKPAR_TEST"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASKPAR_TEST"));
             statement.setInt(1, taskId);
             statement.setString(2, parname);
             res = statement.executeQuery();
 
             if(res.next()) {
                 //Parameter exisits, so make an update
-                updateTaskPar(res.getInt(m_cq.get("C_PAR_ID")), parvalue);
+                updateTaskPar(res.getInt(m_SqlQueries.get("C_PAR_ID")), parvalue);
             }
             else {
                 //Parameter is not exisiting, so make an insert
@@ -10901,58 +5445,6 @@ public CmsTask readTask(int id) throws CmsException {
     }
 
     /**
-     * Undeletes the file.
-     *
-     * @param project The project in which the resource will be used.
-     * @param filename The complete path of the file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public void undeleteFile(CmsProject project, String filename)
-        throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(project.getId()).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_REMOVE"+usedStatement));
-            // mark the file as deleted
-            statement.setInt(1,C_STATE_CHANGED);
-            statement.setInt(2,C_UNKNOWN_ID);
-            statement.setString(3, filename);
-            statement.executeUpdate();
-         } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-         }finally {
-            // close all db-resources
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-         }
-     }
-
-    /**
      * Unlocks all resources in this project.
      *
      * @param project The project to be unlocked.
@@ -10977,7 +5469,7 @@ public CmsTask readTask(int id) throws CmsException {
         try {
             con = DriverManager.getConnection(usedPool);
             // create the statement
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_UNLOCK"+usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UNLOCK"+usedStatement));
             statement.setInt(1,project.getId());
             statement.executeUpdate();
         } catch( Exception exc ) {
@@ -11025,7 +5517,7 @@ public CmsTask readTask(int id) throws CmsException {
         }
         try {
             con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_LOCK"+usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_LOCK"+usedStatement));
             statement.setInt(1, res.isLockedBy());
             statement.setInt(2, projectId);
             statement.setInt(3, res.getResourceId());
@@ -11074,7 +5566,7 @@ public CmsTask readTask(int id) throws CmsException {
         }
         try {
             con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_STATE"+usedStatement));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_STATE"+usedStatement));
             statement.setInt(1, res.getState());
             statement.setInt(2, res.getResourceId());
             statement.executeUpdate();
@@ -11118,7 +5610,7 @@ public CmsTask readTask(int id) throws CmsException {
             con = DriverManager.getConnection(m_poolName);
 
             // write data to database
-            statement = con.prepareStatement(m_cq.get("C_SESSION_UPDATE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_SESSION_UPDATE"));
 
             statement.setTimestamp(1,new java.sql.Timestamp(System.currentTimeMillis()));
             // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2,value);
@@ -11156,7 +5648,7 @@ public CmsTask readTask(int id) throws CmsException {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_TASKPAR_UPDATE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASKPAR_UPDATE"));
             statement.setString(1, parvalue);
             statement.setInt(2, parid);
             statement.executeUpdate();
@@ -11186,7 +5678,7 @@ public CmsTask readTask(int id) throws CmsException {
         Connection con = null;
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_TASKTYPE_UPDATE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASKTYPE_UPDATE"));
             statement.setInt(1, autofinish);
             statement.setInt(2, escalationtyperef);
             statement.setString(3, htmllink);
@@ -11216,438 +5708,6 @@ public CmsTask readTask(int id) throws CmsException {
         }
     }
 
-    /**
-     * Checks if a user is member of a group.<P/>
-     *
-     * @param nameid The id of the user to check.
-     * @param groupid The id of the group to check.
-     * @return True or False
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-     public boolean userInGroup(int userid, int groupid)
-         throws CmsException {
-         boolean userInGroup=false;
-         PreparedStatement statement = null;
-         ResultSet res = null;
-         Connection con = null;
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            // create statement
-            statement = con.prepareStatement(m_cq.get("C_GROUPS_USERINGROUP"));
-
-            statement.setInt(1,groupid);
-            statement.setInt(2,userid);
-            res = statement.executeQuery();
-            if (res.next()){
-                userInGroup=true;
-            }
-         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-         } finally {
-            // close all db-resources
-            if(res != null) {
-                 try {
-                     res.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-         return userInGroup;
-     }
-
-    /**
-     * Writes a file to the Cms.<BR/>
-     *
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param file The new file.
-     * @param changed Flag indicating if the file state must be set to changed.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public void writeFile(CmsProject project,
-                           CmsProject onlineProject,
-                           CmsFile file, boolean changed)
-        throws CmsException {
-        writeFile(project, onlineProject, file, changed, file.getResourceLastModifiedBy());
-    }
-
-    /**
-     * Writes a file to the Cms.<BR/>
-     *
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param file The new file.
-     * @param changed Flag indicating if the file state must be set to changed.
-     * @param userId The id of the user who has changed the resource.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public void writeFile(CmsProject project,
-                           CmsProject onlineProject,
-                           CmsFile file, boolean changed, int userId)
-        throws CmsException {
-        String usedPool;
-        String usedStatement;
-        if (project.getId() == onlineProject.getId()){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        writeFileHeader(project, file, changed, userId);
-        writeFileContent(file.getFileId(), file.getContents(), usedPool, usedStatement);
-    }
-
-     /**
-     * Writes the fileheader to the Cms.
-     *
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param file The new file.
-     * @param changed Flag indicating if the file state must be set to changed.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-     public void writeFileHeader(CmsProject project, CmsFile file, boolean changed)
-         throws CmsException {
-         writeFileHeader(project, file, changed, file.getResourceLastModifiedBy());
-     }
-
-     /**
-     * Writes the fileheader to the Cms.
-     *
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param file The new file.
-     * @param changed Flag indicating if the file state must be set to changed.
-     * @param userId The id of the user who has changed the resource.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-     public void writeFileHeader(CmsProject project, CmsFile file, boolean changed, int userId)
-         throws CmsException {
-        ResultSet res = null;
-        PreparedStatement statementResourceUpdate = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        int modifiedBy = userId;
-        long dateModified = file.isTouched() ? file.getDateLastModified() : System.currentTimeMillis();
-        
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-            modifiedBy = file.getResourceLastModifiedBy();
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // update resource in the database
-            statementResourceUpdate = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE"+usedStatement));
-            statementResourceUpdate.setInt(1,file.getType());
-            statementResourceUpdate.setInt(2,file.getFlags());
-            statementResourceUpdate.setInt(3,file.getOwnerId());
-            statementResourceUpdate.setInt(4,file.getGroupId());
-            statementResourceUpdate.setInt(5,file.getProjectId());
-            statementResourceUpdate.setInt(6,file.getAccessFlags());
-            //STATE
-            int state=file.getState();
-            if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
-                statementResourceUpdate.setInt(7,state);
-            } else {
-                if (changed==true) {
-                    statementResourceUpdate.setInt(7,C_STATE_CHANGED);
-                } else {
-                    statementResourceUpdate.setInt(7,file.getState());
-                }
-            }
-            statementResourceUpdate.setInt(8,file.isLockedBy());
-            statementResourceUpdate.setInt(9,file.getLauncherType());
-            statementResourceUpdate.setString(10,file.getLauncherClassname());
-            statementResourceUpdate.setTimestamp(11,new Timestamp(dateModified));
-            statementResourceUpdate.setInt(12,modifiedBy);
-            statementResourceUpdate.setInt(13,file.getLength());
-            statementResourceUpdate.setInt(14,file.getFileId());
-            statementResourceUpdate.setInt(15,file.getResourceId());
-            statementResourceUpdate.executeUpdate();
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statementResourceUpdate != null) {
-                try {
-                    statementResourceUpdate.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-    }
-
-     /**
-     * Writes a folder to the Cms.<BR/>
-     *
-     * @param project The project in which the resource will be used.
-     * @param folder The folder to be written.
-     * @param changed Flag indicating if the file state must be set to changed.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public void writeFolder(CmsProject project, CmsFolder folder, boolean changed)
-        throws CmsException {
-        writeFolder(project, folder, changed, folder.getResourceLastModifiedBy());
-    }
-
-     /**
-     * Writes a folder to the Cms.<BR/>
-     *
-     * @param project The project in which the resource will be used.
-     * @param folder The folder to be written.
-     * @param changed Flag indicating if the file state must be set to changed.
-     * @param userId The user who has changed the resource
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public void writeFolder(CmsProject project, CmsFolder folder, boolean changed, int userId)
-        throws CmsException {
-
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        int modifiedBy = userId;
-        long dateModified = folder.isTouched() ? folder.getDateLastModified() : System.currentTimeMillis();
-
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-            modifiedBy = folder.getResourceLastModifiedBy();
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // update resource in the database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE"+usedStatement));
-            statement.setInt(1,folder.getType());
-            statement.setInt(2,folder.getFlags());
-            statement.setInt(3,folder.getOwnerId());
-            statement.setInt(4,folder.getGroupId());
-            statement.setInt(5,folder.getProjectId());
-            statement.setInt(6,folder.getAccessFlags());
-            int state=folder.getState();
-            if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
-                statement.setInt(7,state);
-            } else {
-                if (changed==true) {
-                    statement.setInt(7,C_STATE_CHANGED);
-                } else {
-                    statement.setInt(7,folder.getState());
-                }
-            }
-            statement.setInt(8,folder.isLockedBy());
-            statement.setInt(9,folder.getLauncherType());
-            statement.setString(10,folder.getLauncherClassname());
-            statement.setTimestamp(11,new Timestamp(dateModified));
-            statement.setInt(12,modifiedBy);
-            statement.setInt(13,0);
-            statement.setInt(14,C_UNKNOWN_ID);
-            statement.setInt(15,folder.getResourceId());
-            statement.executeUpdate();
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        }finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-    }
-
-     /**
-     * Writes a folder to the Cms.<BR/>
-     *
-     * @param project The project in which the resource will be used.
-     * @param folder The folder to be written.
-     * @param changed Flag indicating if the file state must be set to changed.
-     * @param userId The user who has changed the resource
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, boolean changed, int userId)
-        throws CmsException {
-
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        int modifiedBy = userId;
-        long dateModified = resource.isTouched() ? resource.getDateLastModified() : System.currentTimeMillis();
-        boolean isFolder = false;
-        
-        if(resource.getType() == C_TYPE_FOLDER){
-        	isFolder = true;
-        }
-        if(filecontent == null){
-        	filecontent = new byte[0];
-        }
-        //int onlineProject = getOnlineProject(project.getId()).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-            modifiedBy = resource.getResourceLastModifiedBy();
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // update resource in the database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE"+usedStatement));
-            statement.setInt(1,resource.getType());
-            statement.setInt(2,resource.getFlags());
-            statement.setInt(3,resource.getOwnerId());
-            statement.setInt(4,resource.getGroupId());
-            statement.setInt(5,resource.getProjectId());
-            statement.setInt(6,resource.getAccessFlags());
-            int state=resource.getState();
-            if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
-                statement.setInt(7,state);
-            } else {
-                if (changed==true) {
-                    statement.setInt(7,C_STATE_CHANGED);
-                } else {
-                    statement.setInt(7,resource.getState());
-                }
-            }
-            statement.setInt(8,resource.isLockedBy());
-            statement.setInt(9,resource.getLauncherType());
-            statement.setString(10,resource.getLauncherClassname());
-            statement.setTimestamp(11,new Timestamp(dateModified));
-            statement.setInt(12,modifiedBy);
-            statement.setInt(13,filecontent.length);
-            statement.setInt(14,resource.getFileId());
-            statement.setInt(15,resource.getResourceId());
-            statement.executeUpdate();
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        }finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        // write the filecontent if this is a file
-        if(!isFolder){
-        	this.writeFileContent(resource.getFileId(),filecontent, usedPool, usedStatement);
-        }   
-    }
-    
-    /**
-     * Writes an already existing group in the Cms.<BR/>
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param group The group that should be written to the Cms.
-     * @throws CmsException  Throws CmsException if operation was not succesfull.
-     */
-     public void writeGroup(CmsGroup group)
-         throws CmsException {
-         PreparedStatement statement = null;
-         Connection con = null;
-
-         try {
-            con = DriverManager.getConnection(m_poolName);
-            if (group != null){
-                // create statement
-                statement=con.prepareStatement(m_cq.get("C_GROUPS_WRITEGROUP"));
-                statement.setString(1,checkNull(group.getDescription()));
-                statement.setInt(2,group.getFlags());
-                statement.setInt(3,group.getParentId());
-                statement.setInt(4,group.getId());
-                statement.executeUpdate();
-
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + "] ",CmsException.C_NO_GROUP);
-            }
-         } catch (SQLException e){
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-         }
-     }
 
      /**
       * Deletes a project from the cms.
@@ -11665,7 +5725,7 @@ public CmsTask readTask(int id) throws CmsException {
          try {
              con = DriverManager.getConnection(m_poolName);
              // create the statement
-             statement = con.prepareStatement(m_cq.get("C_PROJECTS_WRITE"));
+             statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_WRITE"));
 
              statement.setInt(1,project.getOwnerId());
              statement.setInt(2,project.getGroupId());
@@ -11698,130 +5758,6 @@ public CmsTask readTask(int id) throws CmsException {
          }
      }
 
-    /**
-     * Writes a couple of Properties for a file or folder.
-     *
-     * @param propertyinfos A Hashtable with propertydefinition- property-pairs as strings.
-     * @param projectId The id of the current project.
-     * @param resource The CmsResource object of the resource that gets the properties.
-     * @param resourceType The Type of the resource.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType)
-        throws CmsException {
-        this.writeProperties(propertyinfos, projectId, resource, resourceType, false);
-    }
-    
-    /**
-     * Writes a couple of Properties for a file or folder.
-     *
-     * @param propertyinfos A Hashtable with propertydefinition- property-pairs as strings.
-     * @param projectId The id of the current project.
-     * @param resource The CmsResource object of the resource that gets the properties.
-     * @param resourceType The Type of the resource.
-     * @param addDefinition If <code>true</code> then the propertydefinition is added if it not exists
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition)
-        throws CmsException {
-
-        // get all metadefs
-        Iterator keys = propertyinfos.keySet().iterator();
-        // one metainfo-name:
-        String key;
-
-        while(keys.hasNext()) {
-            key = (String) keys.next();
-            writeProperty(key, projectId, (String) propertyinfos.get(key), resource, resourceType, addDefinition);
-        }
-    }
-
-    /**
-     * Writes a property for a file or folder.
-     *
-     * @param meta The property-name of which the property has to be read.
-     * @param value The value for the property to be set.
-     * @param resourceId The id of the resource.
-     * @param resourceType The Type of the resource.
-     * @param addDefinition If <code>true</code> then the propertydefinition is added if it not exists
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition)
-        throws CmsException {
-        CmsPropertydefinition propdef = null;
-        try{
-        	propdef = readPropertydefinition(meta, resourceType);
-        } catch (CmsException ex){
-        	// do nothing
-        }
-        if( propdef == null) {
-            // there is no propertydefinition for with the overgiven name for the resource
-            // add this definition or throw an exception
-            if(addDefinition){
-            	this.createPropertydefinition(meta, resourceType);
-            } else {
-            	throw new CmsException("[" + this.getClass().getName() + "] " + meta,
-                	CmsException.C_NOT_FOUND);
-            }
-        } else {
-            String usedPool;
-            String usedStatement;
-            //int onlineProject = getOnlineProject(projectId).getId();
-            int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-            if (projectId == onlineProject){
-                usedPool = m_poolNameOnline;
-                usedStatement = "_ONLINE";
-            } else {
-                usedPool = m_poolName;
-                usedStatement = "";
-            }
-            // write the property into the db
-            PreparedStatement statement = null;
-            Connection con = null;
-            try {
-                con = DriverManager.getConnection(usedPool);
-                if( readProperty(propdef.getName(), projectId, resource, resourceType) != null) {
-                    // property exists already - use update.
-                    // create statement
-                    statement = con.prepareStatement(m_cq.get("C_PROPERTIES_UPDATE"+usedStatement));
-                    statement.setString(1, checkNull(value) );
-                    statement.setInt(2, resource.getResourceId());
-                    statement.setInt(3, propdef.getId());
-                    statement.executeUpdate();
-                } else {
-                    // property dosen't exist - use create.
-                    // create statement
-                    statement = con.prepareStatement(m_cq.get("C_PROPERTIES_CREATE"+usedStatement));
-                    statement.setInt(1, nextId(m_cq.get("C_TABLE_PROPERTIES"+usedStatement)));
-                    statement.setInt(2, propdef.getId());
-                    statement.setInt(3, resource.getResourceId());
-                    statement.setString(4, checkNull(value));
-                    statement.executeUpdate();
-                }
-            } catch(SQLException exc) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                    CmsException.C_SQL_ERROR, exc);
-            }finally {
-                if(statement != null) {
-                     try {
-                         statement.close();
-                     } catch(SQLException exc) {
-                         // nothing to do here
-                     }
-                }
-                if(con != null) {
-                     try {
-                         con.close();
-                     } catch(SQLException exc) {
-                         // nothing to do here
-                     }
-                }
-             }
-        }
-    }
 
     /**
      * Updates the name of the propertydefinition for the resource type.<BR/>
@@ -11842,7 +5778,7 @@ public CmsTask readTask(int id) throws CmsException {
         try {
             // write the propertydef in the offline db
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_UPDATE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_UPDATE"));
             statement.setString(1, metadef.getName() );
             statement.setInt(2, metadef.getId() );
             statement.executeUpdate();
@@ -11850,7 +5786,7 @@ public CmsTask readTask(int id) throws CmsException {
             con.close();
             // write the propertydef in the online db
             con = DriverManager.getConnection(m_poolNameOnline);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_UPDATE_ONLINE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_UPDATE_ONLINE"));
             statement.setString(1, metadef.getName() );
             statement.setInt(2, metadef.getId() );
             statement.executeUpdate();
@@ -11858,14 +5794,14 @@ public CmsTask readTask(int id) throws CmsException {
             con.close();
             // write the propertydef in the backup db
             con = DriverManager.getConnection(m_poolNameBackup);
-            statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_UPDATE_BACKUP"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTYDEF_UPDATE_BACKUP"));
             statement.setString(1, metadef.getName() );
             statement.setInt(2, metadef.getId() );
             statement.executeUpdate();
             statement.close();
             con.close();
             // read the propertydefinition
-            returnValue = readPropertydefinition(metadef.getName(), metadef.getType());
+            returnValue = m_ResourceBroker.getVfsAccess().readPropertydefinition(metadef.getName(), metadef.getType());
          } catch( SQLException exc ) {
              throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
                 CmsException.C_SQL_ERROR, exc);
@@ -11914,7 +5850,7 @@ public CmsTask readTask(int id) throws CmsException {
             oout.close();
             value=bout.toByteArray();
 
-            statement=con.prepareStatement(m_cq.get("C_SYSTEMPROPERTIES_UPDATE"));
+            statement=con.prepareStatement(m_SqlQueries.get("C_SYSTEMPROPERTIES_UPDATE"));
             // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1,value);
             m_doSetBytes(statement,1,value);
             statement.setString(2,name);
@@ -11968,7 +5904,7 @@ public CmsTask readTask(int id) throws CmsException {
 
         try {
             con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_cq.get("C_TASK_UPDATE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_UPDATE"));
             statement.setString(1,task.getName());
             statement.setInt(2,task.getState());
             statement.setInt(3,task.getTaskType());
@@ -12034,7 +5970,7 @@ public CmsTask readTask(int id) throws CmsException {
         try{
             con = DriverManager.getConnection(m_poolName);
             newId = nextId(C_TABLE_TASKLOG);
-            statement = con.prepareStatement(m_cq.get("C_TASKLOG_WRITE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASKLOG_WRITE"));
             statement.setInt(1, newId);
             statement.setInt(2, taskId);
             if(userid!=C_UNKNOWN_ID){
@@ -12087,13 +6023,13 @@ public CmsTask readTask(int id) throws CmsException {
         try {
             con = DriverManager.getConnection(m_poolName);
             // test if the parameter already exists for this task
-            statement = con.prepareStatement(m_cq.get("C_TASK_GET_TASKTYPE"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_GET_TASKTYPE"));
             statement.setString(1, name);
             res = statement.executeQuery();
 
             if(res.next()) {
                 //Parameter exisits, so make an update
-                updateTaskType(res.getInt(m_cq.get("C_PAR_ID")), autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
+                updateTaskType(res.getInt(m_SqlQueries.get("C_PAR_ID")), autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
 
             }
             else {
@@ -12130,68 +6066,6 @@ public CmsTask readTask(int id) throws CmsException {
         return result;
     }
 
-    /**
-     * Writes a user to the database.
-     *
-     * @param user the user to write
-     * @throws thorws CmsException if something goes wrong.
-     */
-    public void writeUser(CmsUser user)
-        throws CmsException {
-        byte[] value=null;
-        PreparedStatement statement = null;
-        Connection con = null;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            // serialize the hashtable
-            ByteArrayOutputStream bout= new ByteArrayOutputStream();
-            ObjectOutputStream oout=new ObjectOutputStream(bout);
-            oout.writeObject(user.getAdditionalInfo());
-            oout.close();
-            value=bout.toByteArray();
-
-            // write data to database
-            statement = con.prepareStatement(m_cq.get("C_USERS_WRITE"));
-
-            statement.setString(1,checkNull(user.getDescription()));
-            statement.setString(2,checkNull(user.getFirstname()));
-            statement.setString(3,checkNull(user.getLastname()));
-            statement.setString(4,checkNull(user.getEmail()));
-            statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
-            statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
-            statement.setInt(7,user.getFlags());
-            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(8,value);
-            m_doSetBytes(statement,8,value);
-            statement.setInt(9, user.getDefaultGroupId());
-            statement.setString(10,checkNull(user.getAddress()));
-            statement.setString(11,checkNull(user.getSection()));
-            statement.setInt(12,user.getType());
-            statement.setInt(13,user.getId());
-            statement.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        }
-        catch (IOException e){
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);
-        } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-    }
 
     /**
      * Changes the project-id of a resource to the new project
@@ -12207,7 +6081,7 @@ public CmsTask readTask(int id) throws CmsException {
         try {
             con = DriverManager.getConnection(m_poolName);
             // write data to database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_PROJECTID"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_UPDATE_PROJECTID"));
             statement.setInt(1, newProjectId);
             statement.setString(2, resourcename);
             statement.executeUpdate();
@@ -12233,242 +6107,7 @@ public CmsTask readTask(int id) throws CmsException {
 
     }
 
-    /**
-     * Changes the user type of the user
-     *
-     * @param userId The id of the user to change
-     * @param userType The new usertype of the user
-     */
-    public void changeUserType(int userId, int userType) throws CmsException{
-        PreparedStatement statement = null;
-        Connection con = null;
 
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            // write data to database
-            statement = con.prepareStatement(m_cq.get("C_USERS_UPDATE_USERTYPE"));
-            statement.setInt(1, userType);
-            statement.setInt(2, userId);
-            statement.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }
-    }
-
-    /**
-     * Reads all resources that contains the given string in the resourcename
-     * and exists in the current project.<BR/>
-     * A resource is either a file header or a folder.
-     *
-     * @param project The project in which the resource will be used.
-     * @param resourcename A part of the resourcename
-     *
-     * @return A Vecor of resources.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector readResourcesLikeName(CmsProject project, String resourcename)
-        throws CmsException {
-
-        Vector resources = new Vector();
-        CmsResource file;
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        //int onlineProject = getOnlineProject(project.getId()).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (project.getId() == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // read resource data from database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READ_LIKENAME_1"+usedStatement)+resourcename+m_cq.get("C_RESOURCES_READ_LIKENAME_2"+usedStatement));
-            statement.setInt(1,project.getId());
-            res = statement.executeQuery();
-            // create new resource
-            while(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
-                                     userId,groupId,projectId,accessFlags,state,lockedBy,
-                                     launcherType,launcherClass,created,modified,modifiedBy,
-                                     resSize,lockedInProject);
-                resources.addElement(file);
-            }
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (Exception ex) {
-            throw new CmsException("["+this.getClass().getName()+"]", ex);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return resources;
-    }
-
-    /**
-     * Reads all files from the Cms, that are of the given type.<BR/>
-     *
-     * @param projectId A project id for reading online or offline resources
-     * @param resourcetype The type of the files.
-     *
-     * @return A Vector of files.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector readFilesByType(int projectId, int resourcetype) throws CmsException {
-
-        Vector files = new Vector();
-        CmsFile file;
-        ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
-        String usedPool;
-        String usedStatement;
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject) {
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // read file data from database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READ_FILESBYTYPE"+usedStatement));
-            statement.setInt(1, resourcetype);
-            res = statement.executeQuery();
-            // create new file
-            while(res.next()) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                byte[] fileContent = getBytesFromResultset(res,m_cq.get("C_FILE_CONTENT"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                
-                if (com.opencms.file.genericSql.CmsDbAccess.C_USE_TARGET_DATE && resType == com.opencms.file.genericSql.CmsDbAccess.C_RESTYPE_LINK_ID && resFlags > 0) {
-                    modified = this.fetchDateFromResource(projectId, resFlags, modified);
-                }
-                                
-                file = new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                groupId,projectID,accessFlags,state,lockedBy,
-                                launcherType,launcherClass,created,modified,modifiedBy,
-                                fileContent,resSize,lockedInProject);
-
-                files.addElement(file);
-            }
-        } catch (SQLException e){
-        e.printStackTrace();
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch (Exception ex) {
-            throw new CmsException("["+this.getClass().getName()+"]", ex);
-        } finally {
-            // close all db-resources
-            if(res != null) {
-                try {
-                    res.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-        return files;
-    }
 
     /**
      * Deletes the versions from the backup tables that are older then the given date
@@ -12484,7 +6123,7 @@ public CmsTask readTask(int id) throws CmsException {
         try{
             con = DriverManager.getConnection(m_poolNameBackup);
             // read the max. version_id from database by the publish_date
-            statement = con.prepareStatement(m_cq.get("C_BACKUP_READ_MAXVERSION"));
+            statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_READ_MAXVERSION"));
             statement.setTimestamp(1, new Timestamp(maxdate));
             res = statement.executeQuery();
             if(res.next()){
@@ -12494,37 +6133,37 @@ public CmsTask readTask(int id) throws CmsException {
             statement.close();
             if(maxVersion > 0){
                 // delete the elder backup projects by versionId
-                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_PROJECT_BYVERSION"));
+                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_PROJECT_BYVERSION"));
                 statement.setInt(1, maxVersion);
                 statement.executeUpdate();
                 statement.close();
                 // delete the elder backup projectresources by versionId
-                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_PROJECTRESOURCES_BYVERSION"));
+                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_PROJECTRESOURCES_BYVERSION"));
                 statement.setInt(1, maxVersion);
                 statement.executeUpdate();
                 statement.close();
                 // delete the elder backup resources by versionId
-                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_RESOURCES_BYVERSION"));
+                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_RESOURCES_BYVERSION"));
                 statement.setInt(1, maxVersion);
                 statement.executeUpdate();
                 statement.close();
                 // delete the elder backup files by versionId
-                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_FILES_BYVERSION"));
+                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_FILES_BYVERSION"));
                 statement.setInt(1, maxVersion);
                 statement.executeUpdate();
                 statement.close();
                 // delete the elder backup properties by versionId
-                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_PROPERTIES_BYVERSION"));
+                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_PROPERTIES_BYVERSION"));
                 statement.setInt(1, maxVersion);
                 statement.executeUpdate();
                 statement.close();
                 // delete the elder backup moduledata by versionId
-                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_MODULEMASTER_BYVERSION"));
+                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_MODULEMASTER_BYVERSION"));
                 statement.setInt(1, maxVersion);
                 statement.executeUpdate();
                 statement.close();
                 // delete the elder backup module media by versionId
-                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_MODULEMEDIA_BYVERSION"));
+                statement = con.prepareStatement(m_SqlQueries.get("C_BACKUP_DELETE_MODULEMEDIA_BYVERSION"));
                 statement.setInt(1, maxVersion);
                 statement.executeUpdate();
                 statement.close();
@@ -12564,493 +6203,15 @@ public CmsTask readTask(int id) throws CmsException {
      * retrieve the correct instance of the queries holder.
      * This method should be overloaded if other query strings should be used.
      */
-    protected com.opencms.file.genericSql.CmsQueries getQueries() {
-        return new com.opencms.file.genericSql.CmsQueries();
+    public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config) {
+        m_SqlQueries = new com.opencms.file.genericSql.CmsQueries();
+        m_SqlQueries.initJdbcPoolUrls(config);        
+        
+        com.opencms.file.genericSql.CmsQueries queries = new com.opencms.file.genericSql.CmsQueries();
+        queries.initJdbcPoolUrls(config);
+        
+        return queries;
     }
 
-    /**
-     * Returns the bytes from a result set
-     *
-     * @param res The ResultSet to read from
-     * @param columnName The name of the column to read from
-     *
-     * @return The byte value from the column
-     */
-    protected byte[] getBytesFromResultset(ResultSet res, String columnName) throws SQLException{
-        return res.getBytes(columnName);
-    }
-
-    /**
-     * Creates the content entry for a file
-     *
-     * @param fileId The ID of the new file
-     * @param fileContent The content of the new file
-     * @param versionId For the content of a backup file you need to insert the versionId of the backup
-     * @param usedPool The name of the databasepool to use
-     * @param usedStatement Specifies which tables must be used: offline, online or backup
-     *
-     */
-    protected void createFileContent(int fileId, byte[] fileContent, int versionId,String usedPool, String usedStatement) throws CmsException{
-        Connection con = null;
-        PreparedStatement statement = null;
-        try{
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_FILES_WRITE"+usedStatement));
-            statement.setInt(1, fileId);
-            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2, file.getContents());
-            if(fileContent.length < 2000) {
-                statement.setBytes(2,fileContent);
-            } else {
-                statement.setBinaryStream(2, new ByteArrayInputStream(fileContent), fileContent.length);
-            }
-            if("_BACKUP".equals(usedStatement)){
-                statement.setInt(3, versionId);
-            }
-            statement.executeUpdate();
-            statement.close();
-         } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-         } finally {
-            // close all db-resources
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-    }
-
-        /**
-     * Writes the file content of an existing file
-     *
-     * @param fileId The ID of the file to update
-     * @param fileContent The new content of the file
-     * @param usedPool The name of the database pool to use
-     * @param usedStatement Specifies which tables must be used: offline, online or backup
-     */
-    protected void writeFileContent(int fileId, byte[] fileContent, String usedPool, String usedStatement) throws CmsException{
-        Connection con = null;
-        PreparedStatement statement = null;
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // update the file content in the FILES database.
-            statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE"+usedStatement));
-            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1,file.getContents());
-            if(fileContent.length < 2000) {
-                statement.setBytes(1,fileContent);
-            } else {
-                statement.setBinaryStream(1, new ByteArrayInputStream(fileContent), fileContent.length);
-            }
-
-            statement.setInt(2,fileId);
-            statement.executeUpdate();
-
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
-    }
-    
-    /**
-     * Update the resources flag attribute of all resources.
-     * 
-     * @param theProject the resources in this project are updated
-     * @param theValue the new int value of the resource fags attribute
-     * @return the count of affected rows
-     */
-    public int updateAllResourceFlags(CmsProject theProject, int theValue) throws CmsException {
-        String query = "C_UPDATE_ALL_RESOURCE_FLAGS";
-        String pool = m_poolName;
-        PreparedStatement stmnt = null;
-        Connection con = null;
-        int rowCount = 0;
-
-        // check if we need to use the same query working on the tables of the online project
-        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            pool = m_poolNameOnline;
-            query += "_ONLINE";
-        }
-
-        try {
-            // execute the query
-            con = DriverManager.getConnection(pool);
-            stmnt = con.prepareStatement(m_cq.get(query));
-            stmnt.setInt(1, theValue);
-            rowCount = stmnt.executeUpdate();
-        } catch (SQLException e) {
-            rowCount = 0;
-            throw new CmsException("[" + this.getClass().getName() + ".updateAllResourceFlags()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if (stmnt != null) {
-                try {
-                    stmnt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException exc) {
-                }
-            }
-        }
-
-        return rowCount;
-    }
-
-    /**
-     * Fetch all VFS links pointing to other VFS resources.
-     * 
-     * @param theProject the resources in this project are updated
-     * @param theResourceIDs reference to an ArrayList where the ID's of the fetched links are stored
-     * @param theLinkContents reference to an ArrayList where the contents of the fetched links (= VFS resource names of the targets) are stored
-     * @param theResourceTypeLinkID reference to an ArrayList where the resource names of the fetched links are stored
-     * @return the count of affected rows
-     */
-    public int fetchAllVfsLinks(CmsProject theProject, ArrayList theResourceIDs, ArrayList theLinkContents, ArrayList theLinkResources, int theResourceTypeLinkID) throws CmsException {
-        String query = "C_SELECT_VFS_LINK_RESOURCES";
-        String pool = m_poolName;
-        PreparedStatement stmnt = null;
-        Connection con = null;
-        int rowCount = 0;
-        ResultSet result = null;
-
-        // check if we need to use the same query working on the tables of the online project
-        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            pool = m_poolNameOnline;
-            query += "_ONLINE";
-        }
-
-        try {
-            // execute the query
-            con = DriverManager.getConnection(pool);
-            stmnt = con.prepareStatement(m_cq.get(query));
-            stmnt.setInt(1, theResourceTypeLinkID);
-            result = stmnt.executeQuery();
-
-            while (result.next()) {
-                theResourceIDs.add((Integer) new Integer(result.getInt(1)));
-                theLinkContents.add((String) new String(getBytesFromResultset(result, m_cq.get("C_FILE_CONTENT"))));
-                theLinkResources.add((String) result.getString(3));
-                rowCount++;
-            }
-        } catch (SQLException e) {
-            rowCount = 0;
-            throw new CmsException("[" + this.getClass().getName() + ".fetchAllVfsLinks()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if (stmnt != null) {
-                try {
-                    stmnt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException exc) {
-                }
-            }
-        }
-
-        return rowCount;
-    }
-
-    /**
-     * Fetch the ID for a given VFS link target.
-     * 
-     * @param theProject the CmsProject where the resource is fetched
-     * @param theResourceName the name of the resource for which we fetch it's ID
-     * @param skipResourceTypeID targets of this resource type are ignored
-     * @return the ID of the resource, or -1
-     */
-    public int fetchResourceID(CmsProject theProject, String theResourceName, int skipResourceTypeID) throws CmsException {
-        String query = "C_SELECT_RESOURCE_ID";
-        String pool = m_poolName;
-        PreparedStatement stmnt = null;
-        Connection con = null;
-        int resourceID = 0;
-        ResultSet result = null;
-
-        // check if we need to use the same query working on the tables of the online project
-        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            pool = m_poolNameOnline;
-            query += "_ONLINE";
-        }
-
-        try {
-            // execute the query
-            con = DriverManager.getConnection(pool);
-            stmnt = con.prepareStatement(m_cq.get(query));
-            stmnt.setString(1, theResourceName);
-            result = stmnt.executeQuery();
-
-            if (result.next()) {
-                int resourceTypeID = result.getInt(2);
-
-                if (resourceTypeID != skipResourceTypeID) {
-                    resourceID = result.getInt(1);
-                } else {
-                    resourceID = -1;
-                }
-            } else {
-                resourceID = 0;
-            }
-        } catch (SQLException e) {
-            resourceID = 0;
-            throw new CmsException("[" + this.getClass().getName() + ".fetchResourceID()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if (stmnt != null) {
-                try {
-                    stmnt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException exc) {
-                }
-            }
-        }
-
-        return resourceID;
-    }
-
-    /**
-     * Update the resource flag attribute for a given resource.
-     * 
-     * @param theProject the CmsProject where the resource is updated
-     * @param theResourceID the ID of the resource which is updated
-     * @param theValue the new value of the resource flag attribute
-     * @return the count of affected rows (should be 1, unless an error occurred)
-     */
-    public int updateResourceFlags(CmsProject theProject, int theResourceID, int theValue) throws CmsException {
-        String query = "C_UPDATE_RESOURCE_FLAGS";
-        String pool = m_poolName;
-        PreparedStatement stmnt = null;
-        Connection con = null;
-        int rowCount = 0;
-
-        // check if we need to use the same query working on the tables of the online project
-        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            pool = m_poolNameOnline;
-            query += "_ONLINE";
-        }
-
-        try {
-            // execute the query
-            con = DriverManager.getConnection(pool);
-            stmnt = con.prepareStatement(m_cq.get(query));
-            stmnt.setInt(1, theValue);
-            stmnt.setInt(2, theResourceID);
-            rowCount = stmnt.executeUpdate();
-        } catch (SQLException e) {
-            rowCount = 0;
-            throw new CmsException("[" + this.getClass().getName() + ".updateResourceFlags()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if (stmnt != null) {
-                try {
-                    stmnt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException exc) {
-                }
-            }
-        }
-
-        return rowCount;
-    }
-
-    /**
-     * Fetches all VFS links pointing to a given resource ID.
-     * 
-     * @param theProject the current project
-     * @param theResourceID the ID of the resource of which the VFS links are fetched
-     * @param theResourceTypeLinkID the resource type ID of VFS links
-     * @return an ArrayList with the resource names of the fetched VFS links
-     * @throws CmsException
-     */
-    public ArrayList fetchVfsLinksForResourceID(CmsProject theProject, int theResourceID, int theResourceTypeLinkID) throws CmsException {
-        String query = "C_SELECT_VFS_LINKS";
-        String pool = m_poolName;
-        PreparedStatement stmnt = null;
-        Connection con = null;
-        ResultSet result = null;
-        ArrayList vfsLinks = new ArrayList();
-
-        // check if we need to use the same query working on the tables of the online project
-        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            pool = m_poolNameOnline;
-            query += "_ONLINE";
-        }
-
-        try {
-            // execute the query
-            con = DriverManager.getConnection(pool);
-            stmnt = con.prepareStatement(m_cq.get(query));
-            stmnt.setInt(1, theResourceID);
-            stmnt.setInt(2, theResourceTypeLinkID);
-            stmnt.setInt(3, C_STATE_DELETED);
-            result = stmnt.executeQuery();
-
-            while (result.next()) {
-                CmsResource resource = this.readFileHeader(theProject.getId(), result.getString(1), false);
-
-                if (resource != null) {
-                    vfsLinks.add(resource);
-                }
-            }
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + ".fetchVfsLinksForResourceID()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if (stmnt != null) {
-                try {
-                    stmnt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException exc) {
-                }
-            }
-        }
-
-        return vfsLinks;
-    }
-
-    /**
-     * Fetches the RESOURCE_FLAGS attribute for a given resource name.
-     * This method is slighty more efficient that calling readFileHeader().
-     * 
-     * @param theProject the current project to choose the right SQL query
-     * @param theResourceName the name of the resource of which the resource flags are fetched
-     * @return the value of the resource flag attribute.
-     * @throws CmsException
-     */
-    public int fetchResourceFlags(CmsProject theProject, String theResourceName) throws CmsException {
-        String query = "C_SELECT_RESOURCE_FLAGS";
-        String pool = m_poolName;
-        PreparedStatement stmnt = null;
-        Connection con = null;
-        int resourceFlags = 0;
-        ResultSet result = null;
-
-        // check if we need to use the same query working on the tables of the online project
-        if (theProject.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            pool = m_poolNameOnline;
-            query += "_ONLINE";
-        }
-
-        try {
-            // execute the query
-            con = DriverManager.getConnection(pool);
-            stmnt = con.prepareStatement(m_cq.get(query));
-            stmnt.setString(1, theResourceName);
-            result = stmnt.executeQuery();
-
-            if (result.next()) {
-                resourceFlags = result.getInt(1);
-            } else {
-                resourceFlags = 0;
-            }
-        } catch (SQLException e) {
-            resourceFlags = 0;
-            throw new CmsException("[" + this.getClass().getName() + ".fetchResourceID()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if (stmnt != null) {
-                try {
-                    stmnt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException exc) {
-                }
-            }
-        }
-
-        return resourceFlags;
-    }
-
-    protected long fetchDateFromResource(int theProjectId, int theResourceId, long theDefaultDate) throws CmsException {
-        String query = "C_SELECT_RESOURCE_DATE_LASTMODIFIED";
-        String pool = m_poolName;
-        PreparedStatement stmnt = null;
-        Connection con = null;
-        ResultSet result = null;
-        long date_lastModified = theDefaultDate;
-
-        // check if we need to use the same query working on the tables of the online project
-        if (theProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            pool = m_poolNameOnline;
-            query += "_ONLINE";
-        }
-
-        try {
-            // execute the query
-            con = DriverManager.getConnection(pool);
-            stmnt = con.prepareStatement(m_cq.get(query));
-            stmnt.setInt(1, theResourceId);
-            result = stmnt.executeQuery();
-
-            if (result.next()) {
-                date_lastModified = SqlHelper.getTimestamp(result, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                //System.err.println( "date: " + result.getObject(1).toString() );
-            } else {
-                date_lastModified = theDefaultDate;
-            }
-        } catch (SQLException e) {
-            //System.err.println( "\n[" + this.getClass().getName() + ".fetchDateFromResource()] " + e.toString() );
-            date_lastModified = theDefaultDate;
-            throw new CmsException("[" + this.getClass().getName() + ".fetchDateFromResource()] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            if (stmnt != null) {
-                try {
-                    stmnt.close();
-                } catch (SQLException exc) {
-                }
-            }
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException exc) {
-                }
-            }
-        }
-
-        //System.err.println( "\n[" + this.getClass().getName() + ".fetchDateFromResource()] date: " + date_lastModified ); 
-        return date_lastModified;
-    }    
     
 }
