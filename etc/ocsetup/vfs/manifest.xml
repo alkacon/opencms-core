@@ -721,6 +721,60 @@
 			<access>15</access>
 			<properties/>
 		</file>
+        <file>
+            <source>action/NewsAdminBackoffice.html</source>
+            <destination>system/workplace/action/NewsAdminBackoffice.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/NewsBodyBackoffice.html</source>
+            <destination>system/workplace/action/NewsBodyBackoffice.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/NewsDeleteBackoffice.html</source>
+            <destination>system/workplace/action/NewsDeleteBackoffice.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/NewsEditBackoffice.html</source>
+            <destination>system/workplace/action/NewsEditBackoffice.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/NewsEditBodyBackoffice.html</source>
+            <destination>system/workplace/action/NewsEditBodyBackoffice.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/NewsHeadBackoffice.html</source>
+            <destination>system/workplace/action/NewsHeadBackoffice.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
 		<file>
 			<source>action/news_edit.html</source>
 			<destination>system/workplace/action/news_edit.html</destination>
@@ -7601,6 +7655,90 @@
 			<access>79</access>
 			<properties/>
 		</file>
+        <file>
+            <source>templates/NewsAdminBackoffice</source>
+            <destination>system/workplace/templates/NewsAdminBackoffice</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[detailed view]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>templates/NewsBodyBackoffice</source>
+            <destination>system/workplace/templates/NewsBodyBackoffice</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[data list in the body]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>templates/NewsDeleteBackoffice</source>
+            <destination>system/workplace/templates/NewsDeleteBackoffice</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[delete content]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>templates/NewsEditBackoffice</source>
+            <destination>system/workplace/templates/NewsEditBackoffice</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[edit content]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>templates/NewsEditBodyBackoffice</source>
+            <destination>system/workplace/templates/NewsEditBodyBackoffice</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[Eingabemaske_News]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>templates/NewsHeadBackoffice</source>
+            <destination>system/workplace/templates/NewsHeadBackoffice</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>383</access>
+            <properties/>
+        </file>
 		<file>
 			<source>templates/news_admin</source>
 			<destination>system/workplace/templates/news_admin</destination>
