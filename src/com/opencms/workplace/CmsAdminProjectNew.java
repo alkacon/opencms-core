@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/09/06 13:21:44 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2001/09/11 06:33:29 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.54 $ $Date: 2001/09/06 13:21:44 $
+ * @version $Revision: 1.55 $ $Date: 2001/09/11 06:33:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -375,7 +375,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
                     }
-                    throw e;
+                    xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                    templateSelector = "errornewproject"+errorTemplateAddOn;
+                    //throw e;
                 }
             } catch(CmsException exc) {
                 xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
