@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/01/15 14:53:31 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2001/01/15 14:58:39 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2001/01/15 14:53:31 $
+ * @version $Revision: 1.36 $ $Date: 2001/01/15 14:58:39 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -361,7 +361,7 @@ public Vector getResourcesForProject() throws CmsException {
 private void importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
 	// print out the information for shell-users
 	System.out.print("Importing ");
-	System.out.print(source + " ");
+	System.out.print(destination + " ");
 	boolean success = false;
 	byte[] content = null;
 	String fullname = null;
@@ -402,17 +402,17 @@ private void importFile(String source, String destination, String type, String u
 			try {
 				m_cms.chmod(fullname, Integer.parseInt(access));
 			} catch(CmsException exc) {
-				System.out.print(" chmod(" + access + ") failed ");
+				System.out.print("chmod(" + access + ") failed ");
 			}
 			try {
 				m_cms.chgrp(fullname, group);
 			} catch(CmsException exc) {
-				System.out.print(" chgrp(" + group + ") failed ");
+				System.out.print("chgrp(" + group + ") failed ");
 			}
 			try {
 				m_cms.chown(fullname, user);
 			} catch(CmsException exc) {
-				System.out.print(" chown(" + user + ") failed ");
+				System.out.print("chown(" + user + ") failed ");
 			}
 			if(launcherStartClass != null) {
 				CmsFile f = m_cms.readFile(fullname);
