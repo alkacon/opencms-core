@@ -3,9 +3,9 @@
 ############################
 
 create user $$user$$ identified by $$password$$
-default tablespace users
-temporary tablespace temp
-quota unlimited on users
-quota unlimited on temp;
+default tablespace $$defaultTablespace$$
+temporary tablespace $$temporaryTablespace$$
+quota unlimited on $$defaultTablespace$$
+quota unlimited on $$temporaryTablespace$$;
 
 grant connect, resource to $$user$$ ;
