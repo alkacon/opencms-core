@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property environment="env"/>
+    <!-- property environment="env"/ -->
 
     <!-- The version-number ${version.number} is automatically set to the
     current date and time. For official builds this should be set to a proper
     value at the commandline.
     Set it like this: ant all -Dversion.number=4.3.28     
     You can also uncomment the line below. -->
-    <!-- property name="version.number"             value="5.0_beta_1"/-->    
+    <property name="version.number"             value="5.0_beta_1"/>    
 
     <property name="version.name"               value="Kaitain"/>
     <property name="app.name"                   value="opencms"/>
@@ -323,40 +323,49 @@ ${build.inputlib.tidy}
         <property name="build.srcdist.etc"          value="${build.srcdist.main}/etc"/>
         <property name="build.srcdist.web"          value="${build.srcdist.main}/web"/>
         <property name="build.srcdist.libs"         value="${build.srcdist}/ExternalComponents"/>
+        <property name="build.srcdist.local"        value="${build.srcdist}/local"/>
         
         <mkdir dir="${build.srcdist}"/>     
         <mkdir dir="${build.srcdist.main}"/>     
         <mkdir dir="${build.srcdist.src}"/>     
         <mkdir dir="${build.srcdist.libs}"/>        
         <mkdir dir="${build.srcdist.etc}"/>     
-        <mkdir dir="${build.srcdist.web}"/>        
+        <mkdir dir="${build.srcdist.web}"/>     
+        <mkdir dir="${build.srcdist.local}"/>             
         <mkdir dir="${zip.home}"/>        
 
-        <copy file="${build.inputlib.servlet}"      todir="${build.srcdist.libs}"/>
-        <copy file="${build.inputlib.xerces}"       todir="${build.srcdist.libs}"/>
-        <copy file="${build.inputlib.mysql}"        todir="${build.srcdist.libs}"/>
-        <copy file="${build.inputlib.activation}"   todir="${build.srcdist.libs}"/>
-        <copy file="${build.inputlib.mail}"         todir="${build.srcdist.libs}"/>
-        <copy file="${build.inputlib.fesi}"         todir="${build.srcdist.libs}"/>
-        <copy file="${build.inputlib.oro}"          todir="${build.srcdist.libs}"/>
-        <copy file="${build.inputlib.tidy}"         todir="${build.srcdist.libs}"/>
+        <copy todir="${build.srcdist.libs}">
+            <fileset dir="${build.inputlib}">
+                <include name="**/*.jar"/>
+                <include name="**/*.zip"/>
+                <exclude name="classes12.zip"/>
+            </fileset>
+        </copy>
 
         <copy todir="${build.srcdist.src}">
-            <fileset dir="src" excludes="*/CVS/*"/>
+            <fileset dir="src" excludes="*/CVS/*,**/.nbattrs"/>
         </copy>
         
         <copy todir="${build.srcdist.etc}">
-            <fileset dir="etc" excludes="*/CVS/*"/>
+            <fileset dir="etc" excludes="*/CVS/*,**/.nbattrs"/>
         </copy>
 
         <copy todir="${build.srcdist.web}">
-            <fileset dir="web" excludes="*/CVS/*"/>
+            <fileset dir="web" excludes="*/CVS/*,**/.nbattrs"/>
         </copy>         
 
         <copy todir="${build.srcdist.main}">
-            <fileset dir="." includes="*.*" excludes="*/CVS/*"/>
+            <fileset dir="." includes="*.*" excludes="*/CVS/*,**/.nbattrs"/>
         </copy>
-
+       
+        <touch>
+            <fileset dir="${build.local}"/>
+        </touch>
+       
+        <copy todir="${build.srcdist.local}">
+            <fileset dir="${build.local}" excludes="*/CVS/*,**/.nbattrs"/>
+        </copy>  
+       
         <tstamp>
             <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
         </tstamp>
