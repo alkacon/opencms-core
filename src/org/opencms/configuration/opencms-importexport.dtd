@@ -1,7 +1,7 @@
 <!-- 
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
-<!ELEMENT opencms (importexport)>
+<!ELEMENT opencms (importexport, staticexport?)>
 
 <!--
 # <importexport> configuration:
@@ -28,7 +28,14 @@
 # <import> node options.
 # There are several options to ensure backward compatibility.
 -->
-<!ELEMENT import (overwrite?, convert?, oldwebappurl?, importversions+, immutables*, principaltranslations*, ignoredproperties*)>
+<!ELEMENT import (
+	overwrite?, 
+	convert?, 
+	oldwebappurl?, 
+	importversions+, 
+	immutables*, 
+	principaltranslations*, 
+	ignoredproperties*)>
 
 <!--
 # If this flag is set to "false" then imports > v2 (that should have resource UUIDs
@@ -95,3 +102,138 @@
 <!ELEMENT ignoredproperties (property*)>
 <!ELEMENT property EMPTY>
 <!ATTLIST property name CDATA #REQUIRED>
+
+<!--
+# <staticexport> Configuration:
+#
+# Settings for the static export. 
+# The attribute "enabled" controls if the static export is enabled,
+# if it is set to "false" nothing is ever exported, if set to "true" 
+# it works according the the selected <mode> setting.
+-->
+<!ELEMENT staticexport (
+	mode, 
+	exportpath,
+	defaultpropertyvalue,
+	defaultsuffixes?,
+	rendersettings)>
+<!ATTLIST staticexport enabled (TRUE|true|FALSE|false) #REQUIRED>
+
+<!--
+# There are 3 modes of operation. The default mode is "on-demand" mode,
+# which is most suitable for dynamic sites that use the static export as optimization
+# for non-dynamic content. The second mode is the "on-publish" mode,
+# which export all changes immediatly after something is published. 
+# The third mode is the "full-static-render" mode, where the complete content is
+# rendered as static HTML pages, so that you can transfer the complete exported 
+# content to another server that does not run OpenCms.
+#
+# The 3 possible values for this node are:
+#
+# on-demand             selects export "on demand" mode
+# after-publish         selects export "after publish" mode
+# full-static-render	selects export "full static render" mode
+-->
+<!ELEMENT mode (#PCDATA)>
+
+<!--
+# The path in the "real" FS to write the static exported pages to.
+# This is relative to the web application root path.
+-->	
+<!ELEMENT exportpath (#PCDATA)>
+
+<!--
+# The default value of the "export" property for resources where searching for
+# the property value of the resource returns "null".
+-->
+<!ELEMENT defaultpropertyvalue (#PCDATA)>
+
+<!--
+# A list of suffixes where the export property default is "true", 
+# even if the default property value (see above) is "false".
+-->
+<!ELEMENT defaultsuffixes (suffix+)>
+
+<!ELEMENT suffix EMPTY>
+<!ATTLIST suffix key CDATA #REQUIRED>
+
+<!--
+# The render settings control how template based resources are written to 
+# (i.e. "rendered") the "real" FS. 
+-->
+<!ELEMENT rendersettings (
+	rfs-prefix,
+	vfs-prefix,
+	userelativelinks,
+	exporturl, 
+	plainoptimization, 
+	testresource, 
+	resourcestorender)>
+
+<!--
+# The rfs prefix is used to adjust the links to
+# resources that have been written to the "real" file system.
+# Usually, a dynmaic resource has the web application and servlet names
+# in the path to the link, e.g. "/opencms/opencms". If a resource is static exported,
+# it is not longer delivered through the OpenCms servlet and thus thus path needs 
+# to be adjusted.
+#
+# This node supports variable replacement since the values can depend on the configuration:
+# 
+# ${EXPORT_PATH}		is replaced with the value of the <exportpath> node, e.g. "export"
+# ${CONTEXT_NAME}		is replaced with the name of the webapp context, e.g. "opencms"
+# ${SERVLET_NAME}		is replaces with the name of the OpenCms servlet, e.g. "opencms"
+-->
+<!ELEMENT rfs-prefix (#PCDATA)>
+
+<!--
+# The vfs prefix is used to adjust the links to
+# resources that are still served dynamically by OpenCms.
+# Usually this is something like "/opencms/opencms".
+# However, in some advanced setups that also use static export 
+# (e.g. if you use Apache httpd and mod_proxy)
+# this prefix needs to be adjusted.
+#
+# This node supports the same variables as the <rfs-prefix> node.
+-->
+<!ELEMENT vfs-prefix (#PCDATA)>
+
+<!--
+# Controls if the links in the static exported pages should be written as 
+# absolute or relative links.
+-->
+<!ELEMENT userelativelinks (#PCDATA)>
+
+<!--
+# Setting for "after-publish" or "full-static-render" mode:
+# The url given here is internally called to export template resources,
+# i.e. a http request to this machine is done to generate them.
+# Usually this should be a request to the server itself, i.e. localhost.
+#
+# This node supports the same variables as the <rfs-prefix> node.
+-->
+<!ELEMENT exporturl (#PCDATA)>
+
+<!--
+# Setting for "after-publish" mode:
+# Usually a complete dependency check is made after publish for all template
+# resources. If this is set to "true" (the default), this check is skipped
+# if only on-template resources (i.e. images, plain text files) where published. 
+# If you have build a navigation that also depends on these files, you must 
+# set this to "false" or the navigation might not be updated.
+-->
+<!ELEMENT plainoptimization (#PCDATA)>
+
+<!ELEMENT testresource EMPTY>
+<!ATTLIST testresource uri CDATA #REQUIRED>
+
+<!--
+# A list of resources in the vfs that are rendered in "after-publish" mode,
+# or if a full static export is done. This is a list of regular expressions.
+# Only resources that match one of the given regular expressions are rendered.
+# The intention is to speed up the dependency check by excluding folders 
+# like "/system".
+-->
+<!ELEMENT resourcestorender (regex+)>
+
+<!ELEMENT regex (#PCDATA)>
