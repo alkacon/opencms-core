@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 12:35:50 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2000/06/09 12:49:08 $
+ * Version: $Revision: 1.47 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.46 $ $Date: 2000/06/09 12:35:50 $ * 
+ * @version $Revision: 1.47 $ $Date: 2000/06/09 12:49:08 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -3119,6 +3119,66 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 			 } 
      }
 
+	 /**
+	 * Reads a folder from the Cms.<BR/>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername The name of the folder to be read.
+	 * 
+	 * @return The read folder.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	 public CmsFolder readFolder(int projectId, String foldername)
+         throws CmsException {
+         
+         CmsFolder folder=null;
+         ResultSet res =null;
+         PreparedStatement statement = null;
+         try {  
+               statement=m_pool.getPreparedStatement(C_RESOURCES_READ_KEY);
+               statement.setString(1, foldername);
+               statement.setInt(2,projectId);
+               res = statement.executeQuery();
+               // create new resource
+               if(res.next()) {
+                        folder = new CmsFolder(res.getInt(C_RESOURCES_RESOURCE_ID),
+											   res.getInt(C_RESOURCES_PARENT_ID),
+											   res.getInt(C_RESOURCES_FILE_ID),
+											   res.getString(C_RESOURCES_RESOURCE_NAME),
+                                               res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                               res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                               res.getInt(C_RESOURCES_USER_ID),
+                                               res.getInt(C_RESOURCES_GROUP_ID),
+                                               res.getInt(C_PROJECT_ID_RESOURCES),
+                                               res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                               res.getInt(C_RESOURCES_STATE),
+                                               res.getInt(C_RESOURCES_LOCKED_BY),
+                                               res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                               res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                               res.getInt(C_RESOURCES_LASTMODIFIED_BY));
+                        // check if this resource is marked as deleted
+                        if (folder.getState() == C_STATE_DELETED) {
+                            throw new CmsException("["+this.getClass().getName()+"]"+folder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
+                        }
+                   }else {
+                 throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);  
+               }
+               res.close();
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} catch( Exception exc ) {
+           throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}finally {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_READ_KEY, statement);
+				}
+		 } 
+        return folder;
+    }
+	
+
+
      /**
 	 * Writes a folder to the Cms.<BR/>
 	 * 
@@ -3160,9 +3220,71 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                 statement.executeUpdate();
             } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+         }finally {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_UPDATE_KEY, statement);
+				}
+			 } 
      }
 
+    /**
+	 * Creates a new folder 
+	 * 
+	 * @param user The user who wants to create the folder.
+	 * @param project The project in which the resource will be used.
+	 * @param foldername The complete path to the folder in which the new folder will 
+	 * be created.
+	 * @param flags The flags of this resource.
+	 * 
+	 * @return The created folder.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	 public CmsFolder createFolder(CmsUser user,
+                                   CmsProject project, 
+                                   int resourceId, int parentId, int fileId,
+                                   String foldername,int resourceLastModifiedBy,
+                                   int flags)
+         throws CmsException {
+         if (resourceId == C_UNKNOWN_ID){
+				resourceId = nextId(C_TABLE_RESOURCES);
+         }
+         if (fileId == C_UNKNOWN_ID){
+			fileId = nextId(C_TABLE_FILES);
+		 }
+			
+		 PreparedStatement statement = null;
+         try {  
+            // write new resource to the database
+            statement=m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
+            statement.setInt(1,resourceId);
+            statement.setInt(2,parentId);
+            statement.setString(3, foldername);
+            statement.setInt(4,C_TYPE_FOLDER);
+            statement.setInt(5,flags);
+            statement.setInt(6,user.getId());
+            statement.setInt(7,user.getDefaultGroupId());
+            statement.setInt(8,project.getId());
+            statement.setInt(9,fileId);
+            statement.setInt(10,C_ACCESS_DEFAULT_FLAGS);
+            statement.setInt(11,C_STATE_NEW);
+            statement.setInt(12,C_UNKNOWN_ID);
+            statement.setInt(13,C_UNKNOWN_LAUNCHER_ID);
+            statement.setString(14,C_UNKNOWN_LAUNCHER);
+            statement.setTimestamp(15,new Timestamp(System.currentTimeMillis()));
+            statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
+            statement.setInt(17,0);
+            statement.setInt(18,resourceLastModifiedBy);
+            statement.executeUpdate();
+            
+           } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }finally {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
+				}
+			 }  
+         return readFolder(project.getId(),foldername);
+     }
 
 	 
     /**
