@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/19 09:27:58 $
- * Version: $Revision: 1.161 $
+ * Date   : $Date: 2000/10/24 14:20:32 $
+ * Version: $Revision: 1.162 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.161 $ $Date: 2000/10/19 09:27:58 $ * 
+ * @version $Revision: 1.162 $ $Date: 2000/10/24 14:20:32 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -1889,10 +1889,12 @@ public CmsLanguage createLanguage(String name, String shortName, int priority) t
 public void deleteSite(int siteId) throws CmsException
 {
 	PreparedStatement statement = null;
+	CmsSite site = getSiteBySiteId(siteId);
 	try
 	{
 		statement = m_pool.getPreparedStatement(m_cq.C_SITE_DELETESITE_KEY);
-		statement.setInt(1, siteId);
+		statement.setString(1, site.getName() + "_deleted" + site.getId());
+		statement.setInt(2, siteId);
 		statement.executeUpdate();
 	}
 	catch (SQLException e)

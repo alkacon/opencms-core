@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/10/11 12:10:12 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/10/24 14:20:34 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.29 $ $Date: 2000/10/11 12:10:12 $
+ * @version $Revision: 1.30 $ $Date: 2000/10/24 14:20:34 $
  */
 public class CmsQueries
 {
@@ -316,7 +316,7 @@ public class CmsQueries
 	public Integer C_SITEURLS_GETALLSITEURLS_KEY = new Integer(462);
 	public String C_SITEURLS_GETALLSITEURLS = "SELECT URL_ID, URL, SITE_ID, PRIMARYURL FROM " + C_DATABASE_PREFIX + "SITE_URLS";
 	public Integer C_SITE_DELETESITE_KEY = new Integer(463);
-	public String C_SITE_DELETESITE = "UPDATE " + C_DATABASE_PREFIX + "SITES SET DELETED=1 WHERE SITE_ID = ?";
+	public String C_SITE_DELETESITE = "UPDATE " + C_DATABASE_PREFIX + "SITES SET DELETED=1,NAME=? WHERE SITE_ID = ?";
 	public Integer C_SITE_DELETESITE_REATTACH_CHILD_PROJECTS_KEY = new Integer(475);
 	public String C_SITE_DELETESITE_REATTACH_CHILD_PROJECTS = "UPDATE " + C_DATABASE_PREFIX + "PROJECTS SET PARENT_ID = ? WHERE PROJECT_ID = ?";
 	public Integer C_SITE_DELETESITE_FIND_ALL_CHILDREN_IDS_KEY = new Integer(476);
