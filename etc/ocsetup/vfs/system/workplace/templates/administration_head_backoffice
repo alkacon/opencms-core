@@ -23,6 +23,12 @@
 <SCRIPT LANGUAGE="JavaScript">
     var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
      function doEdit(para) {
+     
+
+     if(window.top.body.admin_content.doUpdate!=null)window.top.body.admin_content.doUpdate();
+     
+     
+     
         switch(para) {
         case 1: {
                 window.top.body.admin_content.Editor.action.value = "exit";
@@ -33,6 +39,7 @@
         case 2: {   
                 window.top.body.admin_content.Editor.action.value = "saveexit";
                 if(this.backofficepage)window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;
+
                 window.top.body.admin_content.Editor.submit();
                 break;
                 }
@@ -83,7 +90,7 @@
 
 <BOSELECTOR>
 <![CDATA[
-<td class=menu valign="center">]]><SELECT method="getSelectedPage" class="textfeld" name="backofficepage" id="backofficepage" width="auto" size="1" onchange="window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;window.top.body.admin_content.Editor.submit()"/><![CDATA[</td>
+<td class=menu valign="center">]]><SELECT method="getSelectedPage" class="textfeld" name="backofficepage" id="backofficepage" width="auto" size="1" onchange="doEdit(3);"/><![CDATA[</td><!--window.top.body.admin_content.Editor.backofficepage.value = backofficepage.value;window.top.body.admin_content.Editor.submit()-->
 ]]>
 </BOSELECTOR>
 
