@@ -296,8 +296,7 @@ if (options.showElement("selector.elements")) {
 <%
 }
 %>
-<%= wp.button("javascript:doTemplSubmit(4);", null, "elements", "editor.dialog.elements.button", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>						
+<%= wp.button("javascript:doTemplSubmit(4);", null, "elements", "editor.dialog.elements.button", buttonStyle) %>					
 <%= wp.button("javascript:doTemplSubmit(5);", null, "properties", "editor.dialog.properties.button", buttonStyle) %>				
 <td class="maxwidth">&nbsp;</td>
 <%= wp.button("javascript:doTemplSubmit(2);", null, "preview", "button.preview", buttonStyle) %>

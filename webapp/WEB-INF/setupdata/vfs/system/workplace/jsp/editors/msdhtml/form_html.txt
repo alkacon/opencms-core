@@ -39,10 +39,9 @@ if (options.showElement("gallery.html")) {%>
 	<%= wp.button("javascript:HtmlBrowser=opensmallwin('" + cms.link("/system/workplace/action/htmlbrowser.html") + "?initial=true', 'HtmlBrowser', 550, 500);HtmlBrowser.focus();", null, "htmlgallery", "button.htmllist", buttonStyle) %><%
 }
 %>
+<%= wp.button("javascript:doEditHTML(48);", null, "specialchar", "button.specialchars", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
 <%= wp.button("javascript:doEditHTML(47);", null, "details", "button.toggledetails", buttonStyle) %>
-<%= wp.buttonBarSeparator(5, 5) %>
-<%= wp.button("javascript:doEditHTML(48);", null, "specialchar", "button.specialchars", buttonStyle) %>
 <%
 if (wp.isHelpEnabled()) {%>								
 	<%= wp.buttonBarSeparator(5, 5) %>
