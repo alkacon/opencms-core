@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2001/11/23 15:04:56 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/02/21 16:15:40 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -471,8 +471,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                         m_tempString.append(" " + attrs.item(i).getNodeName()
                                 + "=" + m_configuration.getQuotationmark());
                         /* scan attribute values and replace subStrings */
-                        String helpString = m_tools.scanChar(attrs.item(i).getNodeValue()
-                                ,m_configuration.getReplaceExtendedChars());
+                        String helpString = attrs.item(i).getNodeValue();
                         helpString = m_tools.scanString(helpString,m_configuration.getReplaceStrings());
                         m_tempString.append(helpString + m_configuration.getQuotationmark());
                     }
