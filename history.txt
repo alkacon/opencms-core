@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.48 Arakis - 04 January 2001
+
+* Removed a bug in the mysql and generic driver. 
+  Now the projecthandling is correct again.
+
 OpenCms 4.1.47 Arakis - 03 January 2001
 
 * If the browser sends no user-agent the CmsXmlTemplate don't answers with a 
