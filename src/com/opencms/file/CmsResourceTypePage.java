@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/05/13 14:49:32 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/08/02 09:43:50 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2002/05/13 14:49:32 $
+ * @version $Revision: 1.27 $ $Date: 2002/08/02 09:43:50 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -681,7 +681,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         cms.doRenameFile(oldname,newname);
         // linkmanagement: delete the links of the old page and create them for the new one
         int oldId = file.getFileId();
-        int newId = cms.readFileHeader(newname).getFileId();
+        int newId = cms.readFileHeader(file.getParent()+newname).getFileId();
         cms.createLinkEntrys(newId, cms.readLinkEntrys(oldId));
         cms.deleteLinkEntrys(oldId);
     }
