@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/27 20:37:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -87,6 +87,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         
         suite.addTest(new TestCmsSearchAdvancedFeatures("testSortSearchResults"));
         suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchCategories"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testMultipleSearchRoots"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -103,6 +104,54 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         return wrapper;
     }
+    
+    
+    /**
+     * Tests searching with multiple search roots.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMultipleSearchRoots() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing searching with multiple search roots");        
+        
+        CmsSearch searchBean = new CmsSearch();
+        List searchResult;               
+        String query = "OpenCms";
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_OFFLINE);                        
+        searchBean.setMatchesPerPage(1000);
+        searchBean.setQuery(query);
+        
+        String[][] roots = new String[][]{
+            new String[]{"/folder1/"},
+            new String[]{"/folder2/"},
+            new String[]{"/types/"},
+            new String[]{"/folder2/", "/types/"},
+            new String[]{"/folder1/", "/types/"},
+            new String[]{"/folder1/", "/folder2/"},
+            new String[]{"/folder1/", "/folder2/", "/types/"}};
+
+        int[] expected = new int[]{7, 4, 1, 5, 8, 11, 12};
+        
+        for (int i=0; i<expected.length; i++) {
+            int expect = expected[i];
+            String[] rootList = roots[i];
+            searchBean.setSearchRoots(rootList);
+            searchResult = searchBean.getSearchResult();        
+            Iterator j = searchResult.iterator();
+            System.out.println("Result for search " + i + " (found " + searchResult.size() + ", expected " + expect + ")");       
+            while (j.hasNext()) {
+                CmsSearchResult res = (CmsSearchResult)j.next();
+                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));            
+                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));              
+                System.out.println("  score: " + res.getScore());               
+            }
+            assertEquals(expect, searchResult.size());
+        }
+    }    
     
     /**
      * Tests search category grouping.<p>
@@ -141,6 +190,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         searchBean.init(cms);
         searchBean.setIndex(INDEX_OFFLINE);                        
         searchBean.setQuery(query);
+        searchBean.setMatchesPerPage(1000);
         searchBean.setCalculateCategories(true);
         
         // first run is default sort order
@@ -165,11 +215,42 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         assertTrue(categories.containsKey(cat3.getValue()));
         assertTrue(categories.containsKey(CmsSearchCategoryCollector.UNKNOWN_CATEGORY));
         // result must be all 3 categories plus 1 for "unknown"
-        assertEquals(4, categories.size());        
-        // for "category_3" (/types folder) there must be exactly 1 result
+        assertEquals(4, categories.size());
+        // assert result count
+        assertEquals(new Integer(7), categories.get(cat1.getValue()));
+        assertEquals(new Integer(4), categories.get(cat2.getValue()));
         assertEquals(new Integer(1), categories.get(cat3.getValue()));
-        // for "unknown" there must be exactly 1 result
         assertEquals(new Integer(1), categories.get(CmsSearchCategoryCollector.UNKNOWN_CATEGORY));
+                        
+        // count the category results
+        searchBean.setCalculateCategories(false);
+        
+        String[][] cats = new String[][]{
+            new String[]{cat1.getValue()},
+            new String[]{cat2.getValue()},
+            new String[]{cat3.getValue()},
+            new String[]{cat1.getValue(), cat3.getValue()},
+            new String[]{cat2.getValue(), cat3.getValue()},
+            new String[]{cat1.getValue(), cat2.getValue()},
+            new String[]{cat1.getValue(), cat2.getValue(), cat3.getValue()}};
+        
+        int[] expected = new int[]{7, 4, 1, 8, 5, 11, 12};
+        
+        for (int k=0; k<expected.length; k++) {
+            int expect = expected[k];
+            String[] catList = cats[k];
+            searchBean.setCategories(catList);
+            searchResult = searchBean.getSearchResult();
+            Iterator j = searchResult.iterator();
+            System.out.println("Result for search " + k + " (found " + searchResult.size() + ", expected " + expect + ")");       
+            while (j.hasNext()) {
+                CmsSearchResult res = (CmsSearchResult)j.next();
+                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));            
+                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));              
+                System.out.println("  score: " + res.getScore());               
+            }
+            assertEquals(expect, searchResult.size());
+        }        
     }
  
     /**
@@ -245,7 +326,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
             lastTime = res.getDateLastModified().getTime();
         }
         
-        assertNull(searchBean.getSearchResultCategories());
+        assertNull(searchBean.getSearchResultCategories());       
     }
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsWord.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/27 20:37:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,9 @@
 package org.opencms.search.extractors;
 
 import java.io.InputStream;
+import java.util.Map;
+
+import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 
 import org.textmining.text.extraction.WordExtractor;
 
@@ -42,7 +45,7 @@ import org.textmining.text.extraction.WordExtractor;
  * 
  * @since 5.7.2
  */
-public final class CmsExtractorMsWord extends A_CmsTextExtractor {
+public final class CmsExtractorMsWord extends A_CmsTextExtractorMsOfficeBase {
 
     /** Static member instance of the extractor. */
     private static final CmsExtractorMsWord m_instance = new CmsExtractorMsWord();
@@ -64,17 +67,25 @@ public final class CmsExtractorMsWord extends A_CmsTextExtractor {
 
         return m_instance;
     }
-    
+
     /** 
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
+        // first extract the text using the text actraction libary
         WordExtractor wordExtractor = new WordExtractor();
-        String result = wordExtractor.extractText(in);
+        String result = wordExtractor.extractText(getStreamCopy(in));
+        result = removeControlChars(result);
 
-        result =  removeControlChars(result);
-        return new CmsExtractionResult(result);
+        // now extract the meta information using POI 
+        POIFSReader reader = new POIFSReader();
+        reader.registerListener(this);
+        reader.read(getStreamCopy(in));
+        Map metaInfo = extractMetaInformation();
+
+        // return the final result
+        return new CmsExtractionResult(result, metaInfo);
     }
 
 }

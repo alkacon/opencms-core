@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/27 20:37:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,29 +98,19 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
             PDDocumentInformation info = pdfDocument.getDocumentInformation();
             
             Map metaInfo = new HashMap();
-            StringBuffer result = new StringBuffer(4096);
             // append document meta data to content
             String meta;
             meta = info.getTitle();
             if (CmsStringUtil.isNotEmpty(meta)) {
                 metaInfo.put(I_CmsExtractionResult.META_TITLE, meta);
-                // also append this to the document content
-                result.append(meta);
-                result.append('\n');
             }
             meta = info.getKeywords();
             if (CmsStringUtil.isNotEmpty(meta)) {
                 metaInfo.put(I_CmsExtractionResult.META_KEYWORDS, meta);                
-                // also append this to the document content
-                result.append(meta);
-                result.append('\n');
             }
             meta = info.getSubject();
             if (CmsStringUtil.isNotEmpty(meta)) {
                 metaInfo.put(I_CmsExtractionResult.META_SUBJECT, meta);                
-                // also append this to the document content
-                result.append(meta);
-                result.append('\n');
             }
             // extract other available meta information
             meta = info.getAuthor();
@@ -145,10 +135,10 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
             }
             
             // add the main document text
-            result.append(stripper.getText(pdfDocument));
+            String result = stripper.getText(pdfDocument);
             
             // return the final result
-            return new CmsExtractionResult(result.toString(), metaInfo);
+            return new CmsExtractionResult(result, metaInfo);
 
         } finally {
             if (pdfDocument != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/27 20:37:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.search.extractors;
 import org.opencms.i18n.CmsEncoder;
 
 import java.io.InputStream;
+import java.util.Map;
 
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
@@ -48,17 +49,11 @@ import org.apache.poi.util.LittleEndian;
  * 
  * @since 5.7.2
  */
-public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractor implements POIFSReaderListener {
-    
-    /** PPT text byte atom. */    
-    public static final int PPT_TEXTBYTE_ATOM = 4008;    
-    
-    /** PPT text char atom. */
-    public static final int PPT_TEXTCHAR_ATOM = 4000;
+public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBase implements POIFSReaderListener {
 
     /** The buffer that is written with the content of the PPT. */
     private StringBuffer m_buffer;
-    
+
     /**
      * Hide the public constructor.<p> 
      */
@@ -84,12 +79,15 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractor implement
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
         POIFSReader reader = new POIFSReader();
-        
         reader.registerListener(this);
         reader.read(in);
-        
+
+        // extract all information
+        Map metaInfo = extractMetaInformation();
         String result = removeControlChars(m_buffer.toString());
-        return new CmsExtractionResult(result);
+
+        // return the final result
+        return new CmsExtractionResult(result, metaInfo);
     }
 
     /**
@@ -99,45 +97,47 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractor implement
 
         try {
 
-            DocumentInputStream input = event.getStream();
+            // super implementation handles document summary
+            super.processPOIFSReaderEvent(event);
 
             // make sue this is a PPT document
-            if (!event.getName().startsWith("PowerPoint Document")) {
+            if (!event.getName().startsWith(POWERPOINT_EVENT_NAME)) {
                 return;
             }
-            
+
+            DocumentInputStream input = event.getStream();
             byte[] buffer = new byte[input.available()];
             input.read(buffer, 0, input.available());
 
             for (int i = 0; i < buffer.length - 20; i++) {
                 int type = LittleEndian.getUShort(buffer, i + 2);
-                int size = (int)LittleEndian.getUInt(buffer, i + 4) + 3;                                
-                
-                String encoding = null;                
-                switch (type) {                    
+                int size = (int)LittleEndian.getUInt(buffer, i + 4) + 3;
+
+                String encoding = null;
+                switch (type) {
                     case PPT_TEXTBYTE_ATOM:
                         // this pice is single-byte encoded, let's assume Cp1252 since this is most likley
-                        encoding = "Cp1252";
+                        // anyone who knows how to find out the "right" encoding - please email me
+                        encoding = ENCODING_CP1252;
                     case PPT_TEXTCHAR_ATOM:
                         if (encoding == null) {
-                            // this piece is double-byte encoded, use UTF-16 (don't know what else to use)
-                            encoding = "UTF-16";
+                            // this piece is double-byte encoded, use UTF-16
+                            encoding = ENCODING_UTF16;
                         }
                         int start = i + 4 + 1;
                         int end = start + size;
-                        
-                        byte[] buf = new byte[size];                    
+
+                        byte[] buf = new byte[size];
                         System.arraycopy(buffer, start, buf, 0, buf.length);
-                        
-                        // TODO: figure out what encoding PPT uses here - UTF-16 seems to be the best guess
-                        m_buffer.append(CmsEncoder.createString(buf, encoding));                                       
+
+                        m_buffer.append(CmsEncoder.createString(buf, encoding));
                         i = end;
                     default:
-                        // noop                                           
+                // noop                                           
                 }
             }
         } catch (Exception e) {
             // ignore
         }
-    }   
+    }
 }

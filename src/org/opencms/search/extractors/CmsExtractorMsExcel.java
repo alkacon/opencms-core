@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsExcel.java,v $
- * Date   : $Date: 2005/03/26 11:37:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/27 20:37:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,16 @@ package org.opencms.search.extractors;
 
 import org.opencms.util.CmsStringUtil;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 
 /**
  * Extracts the text form an MS Excel document.<p>
@@ -48,7 +51,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
  * 
  * @since 5.7.2
  */
-public final class CmsExtractorMsExcel extends A_CmsTextExtractor {
+public final class CmsExtractorMsExcel extends A_CmsTextExtractorMsOfficeBase {
 
     /** Static member instance of the extractor. */
     private static final CmsExtractorMsExcel m_instance = new CmsExtractorMsExcel();
@@ -75,6 +78,29 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractor {
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
+
+        // first extract the table content
+        String result = extractTableContent(getStreamCopy(in));
+        result = removeControlChars(result);
+
+        // now extract the meta information using POI 
+        POIFSReader reader = new POIFSReader();
+        reader.registerListener(this);
+        reader.read(getStreamCopy(in));
+        Map metaInfo = extractMetaInformation();
+
+        // return the final result
+        return new CmsExtractionResult(result, metaInfo);
+    }
+
+    /**
+     * Extracts the text from the Excel table content.<p>
+     * 
+     * @param in the document input stream
+     * @return the extracted text
+     * @throws IOException if something goes wring
+     */
+    protected String extractTableContent(InputStream in) throws IOException {
 
         HSSFWorkbook excelWb = new HSSFWorkbook(in);
         StringBuffer result = new StringBuffer(4096);
@@ -139,7 +165,7 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractor {
             }
         }
 
-        return new CmsExtractionResult(result.toString());
+        return result.toString();
     }
 
 }

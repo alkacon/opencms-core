@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/27 20:37:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,9 @@ import java.io.InputStream;
  */
 public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
 
+    /** A buffer in case the input stream must be read more then once. */
+    protected byte[] m_inputBuffer;
+
     /**
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(byte[])
      */
@@ -60,6 +63,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
     public I_CmsExtractionResult extractText(byte[] content, String encoding) throws Exception {
 
         // call stream based method of extraction
+        m_inputBuffer = content;
         return extractText(new ByteArrayInputStream(content), encoding);
     }
 
@@ -79,18 +83,51 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream(512);
         int c = 0;
-        while (c >= 0) {
+        while (true) {
             try {
                 c = in.read();
+                if (c < 0) {
+                    break;
+                }
                 out.write(c);
             } catch (IOException e) {
                 // finished
-                c = -1;
+                break;
             }
         }
 
         // call byte array based method of extraction
         return extractText(out.toByteArray(), encoding);
+    }
+
+    /**
+     * Creates a copy of the original input stream, which allows to read the input stream more then 
+     * once, required for certain document types.<p>
+     * 
+     * @param in the inpur stram to copy
+     * @return a copy of the original input stream
+     * @throws IOException in case of read errors from the original input stream
+     */
+    public InputStream getStreamCopy(InputStream in) throws IOException {
+
+        if (m_inputBuffer != null) {
+            return new ByteArrayInputStream(m_inputBuffer);
+        }
+
+        // read the input stream fully and copy it to a byte array
+        ByteArrayOutputStream out = new ByteArrayOutputStream(4096);
+        int c = 0;
+        while (true) {
+            c = in.read();
+            if (c < 0) {
+                break;
+            }
+            out.write(c);
+        }
+        m_inputBuffer = out.toByteArray();
+
+        // now return a reader from the byte array
+        return new ByteArrayInputStream(m_inputBuffer);
     }
 
     /**

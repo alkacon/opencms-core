@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/03/27 20:37:38 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,17 +55,20 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.TermQuery;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
@@ -96,10 +99,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final String C_PRIORITY = CmsSearchIndex.class.getName() + ".priority";
 
     /** Special root path append token for optimized path queries. */
-    public static final String C_ROOT_PATH_REPLACEMENT = "@oc ";
+    public static final String C_ROOT_PATH_SUFFIX = "@o.c";
 
     /** Special root path start token for optimized path queries. */
-    public static final String C_ROOT_PATH_TOKEN = "root";
+    public static final String C_ROOT_PATH_TOKEN = "root" + C_ROOT_PATH_SUFFIX;
 
     /** Separator for the search excerpt fragments. */
     private static final String C_EXCERPT_FRAGMENT_SEPARATOR = " ... ";
@@ -157,7 +160,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Rewrites the a resource path for use in the {@link I_CmsDocumentFactory#DOC_ROOT} field.<p>
      * 
-     * All "/" chars in the path are replaced with the {@link #C_ROOT_PATH_REPLACEMENT} token.
+     * All "/" chars in the path are replaced with the {@link #C_ROOT_PATH_SUFFIX} token.
      * This is required in order to use a Lucene "phrase query" on the resource path.
      * Using a phrase query is much, much better for the search performance then using a straightforward 
      * "prefix query". With a "prefix query", Lucene would interally generate a huge list of boolean sub-queries,
@@ -166,33 +169,60 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * Using the "phrase query", only one (or very few) queries are internally generated, and the result 
      * is just the same.<p>  
      * 
-     * This implementation replaces the "/" of a path with "@oc ". 
+     * This implementation basically replaces the "/" of a path with "@o.c ". 
      * This is a trick so that the Lucene analyzer leaves the
      * directory names untouched, since it treats them like literal email addresses. 
      * Otherwise the language analyzer might modify the directory names, leading to potential
      * duplicates (e.g. <code>members/</code> and <code>member/</code> may both be trimmed to <code>member</code>),
      * so that the prefix search returns more results then expected.<p>
-     * 
      * @param path the path to rewrite
-     * @param isFolder must be set to true if the resource is a folder
      * 
      * @return the re-written path
      */
-    public static final String rewriteResourcePath(String path, boolean isFolder) {
+    public static String rootPathRewrite(String path) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
-            return C_ROOT_PATH_TOKEN + C_ROOT_PATH_REPLACEMENT.trim();
+        StringBuffer result = new StringBuffer(256);
+        String[] elements = rootPathSplit(path);
+        for (int i = 0; i < elements.length; i++) {
+            result.append(elements[i]);
+            if ((i + 1) < elements.length) {
+                result.append(' ');
+            }
         }
-
-        if (isFolder && !CmsResource.isFolder(path)) {
-            // if this is a folder we must make sure to append a "/" in order to correctly append the suffix
-            path += "/";
-        }
-
-        StringBuffer result = new StringBuffer(128);
-        result.append(C_ROOT_PATH_TOKEN);
-        result.append(CmsStringUtil.substitute(path, "/", C_ROOT_PATH_REPLACEMENT).trim());
         return result.toString();
+    }
+
+    /**
+     * Spits the a resource path into tokens for use in the <code>{@link I_CmsDocumentFactory#DOC_ROOT}</code> field
+     * and with the <code>{@link #rootPathRewrite(String)}</code> method.<p>
+     * 
+     * @param path the path to split
+     * 
+     * @return the splitted path
+     * 
+     * @see #rootPathRewrite(String)
+     */
+    public static String[] rootPathSplit(String path) {
+
+        if (CmsStringUtil.isEmpty(path)) {
+            return new String[] {C_ROOT_PATH_TOKEN};
+        }
+
+        // split the path
+        String[] elements = CmsStringUtil.splitAsArray(path, '/');
+        int length = elements.length;
+        if (CmsResource.isFolder(path)) {
+            // last element would be empty String "", remove this
+            length--;
+        }
+        String[] result = new String[length];
+        result[0] = C_ROOT_PATH_TOKEN;
+        for (int i = 1; i < length; i++) {
+            // append suffix to all path elements
+            result[i] = elements[i] + C_ROOT_PATH_SUFFIX;
+
+        }
+        return result;
     }
 
     /**
@@ -420,7 +450,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * @param searchQuery the search term to search the index
      * @param sortOrder the sort order for the search
      * @param fields the list of fields to search
-     * @param countCategories if <code>true</code>, the category count is calculated for all search results
+     * @param categories the list of categories to limit the search to
+     * @param calculateCategories if <code>true</code>, the category count is calculated for all search results
      *      (use with caution, this option uses much performance)
      * @param page the page to calculate the search result list, or -1 to return all found documents in the search result
      * @param matchesPerPage the number of search results per page, or -1 to return all found documents in the search result
@@ -433,7 +464,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         String searchQuery,
         Sort sortOrder,
         String[] fields,
-        boolean countCategories,
+        String[] categories,
+        boolean calculateCategories,
         int page,
         int matchesPerPage) throws CmsException {
 
@@ -480,14 +512,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             context.setCurrentProject(cms.readProject(m_project));
 
             // complete the search root
+            String[] roots;
             if ((searchRoots != null) && (searchRoots.length > 0)) {
                 // add the site root to all the search root
+                roots = new String[searchRoots.length];
                 for (int i = 0; i < searchRoots.length; i++) {
-                    searchRoots[i] = cms.getRequestContext().addSiteRoot(searchRoots[i]);
+                    roots[i] = cms.getRequestContext().addSiteRoot(searchRoots[i]);
                 }
             } else {
                 // just use the site root as the search root
-                searchRoots = new String[] {cms.getRequestContext().getSiteRoot()};
+                roots = new String[] {cms.getRequestContext().getSiteRoot()};
             }
 
             timeLucene = -System.currentTimeMillis();
@@ -501,20 +535,30 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // implementation note: 
             // initially this was a simple PrefixQuery based on the DOC_PATH
             // however, internally Lucene rewrote that to literally hundreds of BooleanQuery parts
-            // the following implementation will lead to just one Lucene PhraseQuery per directory and is thus much better                                   
-            StringBuffer phrase = new StringBuffer();
-            phrase.append("+(");
-            for (int i = 0; i < searchRoots.length; i++) {
-                phrase.append("\"");
-                phrase.append(rewriteResourcePath(searchRoots[i], true));
-                phrase.append("\" ");
+            // the following implementation will lead to just one Lucene PhraseQuery per directory and is thus much better    
+            BooleanQuery pathQuery = new BooleanQuery();
+            for (int i = 0; i < roots.length; i++) {
+                String[] paths = rootPathSplit(roots[i]);
+                PhraseQuery phrase = new PhraseQuery();
+                for (int j = 0; j < paths.length; j++) {
+                    Term term = new Term(I_CmsDocumentFactory.DOC_ROOT, paths[j]);
+                    phrase.add(term);
+                }
+                pathQuery.add(phrase, false, false);
             }
-            phrase.append(")");
-            // it's important to parse the query and not construct it from terms in order to 
-            // ensure the words are processed with the same analyzer that also created the index
-            Query phraseQuery = QueryParser.parse(phrase.toString(), I_CmsDocumentFactory.DOC_ROOT, languageAnalyzer);
+            // add the calculated phrase query for the root path
+            query.add(pathQuery, true, false);
 
-            query.add(phraseQuery, true, false);
+            if ((categories != null) && (categories.length > 0)) {
+                // add query categories (if required)
+                BooleanQuery categoryQuery = new BooleanQuery();
+                for (int i = 0; i < categories.length; i++) {
+                    Term term = new Term(I_CmsDocumentFactory.DOC_CATEGORY, categories[i]);
+                    TermQuery termQuery = new TermQuery(term);
+                    categoryQuery.add(termQuery, false, false);
+                }
+                query.add(categoryQuery, true, false);
+            }
 
             if ((fields != null) && (fields.length > 0)) {
                 // this is a "regular" query over one or more fields
@@ -550,7 +594,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             // collect the categories
             CmsSearchCategoryCollector categoryCollector;
-            if (countCategories) {
+            if (calculateCategories) {
                 // USE THIS OPTION WITH CAUTION
                 // this may slow down searched by an order of magnitude
                 categoryCollector = new CmsSearchCategoryCollector(searcher);

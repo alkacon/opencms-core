@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.618 $
+ * Date   : $Date: 2005/03/27 20:37:39 $
+ * Version: $Revision: 1.619 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March xx, 2005
 ! Added "search.priority" property to boost marked documents up in the search result list
 ! Added sort options to search, default is by score, options are by title or date of last modification
 ! Added search categories feature, for display of a category overview for a search result
+! Added multiple search root option
 
 OpenCms 5.7.1 Corrin (aka 6.0 beta 1) - February 21, 2005
 ! Static export "file scrubbing" can now be customized implementing I_CmsStaticExportHandler

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/03/27 20:37:38 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.lucene.search.SortField;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.24 $ $Date: 2005/03/26 11:36:35 $
+ * @version $Revision: 1.25 $ $Date: 2005/03/27 20:37:38 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -90,6 +90,12 @@ public class CmsSearch implements Serializable, Cloneable {
 
     /** Indicates if a category count should be calculated for the result list. */
     protected boolean m_calculateCategories;
+
+    /** Contains the list of categories that the search is limited to. */
+    protected String[] m_categories;
+
+    /** The result categories of a search. */
+    protected Map m_categoriesFound;
 
     /** The cms object. */
     protected transient CmsObject m_cms;
@@ -139,14 +145,11 @@ public class CmsSearch implements Serializable, Cloneable {
     /** The total number of search results matching the query. */
     protected int m_searchResultCount;
 
-    /** The search root. */
-    protected String m_searchRoot;
+    /** Contains the list of search root paths. */
+    protected String[] m_searchRoots;
 
     /** The search sort order. */
     protected Sort m_sortOrder;
-
-    /** The result categories of a search. */
-    private Map m_categories;
 
     /**
      * Default constructor, used to instanciate the search facility as a bean.<p>
@@ -155,13 +158,14 @@ public class CmsSearch implements Serializable, Cloneable {
 
         super();
 
-        m_searchRoot = "";
+        m_searchRoots = new String[] {""};
         m_page = 1;
         m_searchResultCount = 0;
         m_matchesPerPage = 10;
         m_displayPages = 10;
         m_queryLength = -1;
         m_sortOrder = CmsSearch.SORT_DEFAULT;
+        m_fields = CmsSearchIndex.C_DOC_META_FIELDS;
     }
 
     /**
@@ -177,6 +181,16 @@ public class CmsSearch implements Serializable, Cloneable {
     public boolean getCalculateCategories() {
 
         return m_calculateCategories;
+    }
+
+    /**
+     * Returns the search categories.<p>
+     *
+     * @return the search categories
+     */
+    public String[] getCategories() {
+
+        return m_categories;
     }
 
     /**
@@ -361,7 +375,9 @@ public class CmsSearch implements Serializable, Cloneable {
             params.append("&index=");
             params.append(CmsEncoder.encode(m_indexName));
             params.append("&searchRoot=");
-            params.append(CmsEncoder.encode(m_searchRoot));
+            // TODO: handle the multiple search roots possible know (could be easy, just use multiple parameters?)
+            int todo = 0;
+            params.append(CmsEncoder.encode(m_searchRoots[0]));
             m_searchParameters = params.toString();
             return m_searchParameters;
         } else {
@@ -388,24 +404,13 @@ public class CmsSearch implements Serializable, Cloneable {
             }
 
             try {
-                CmsSearchResultList result;
-
-                String[] searchRoots = null;
-                if (m_searchRoot != null) {
-                    searchRoots = new String[] {m_searchRoot};
-                }
-
-                String[] fields = m_fields;
-                if ((fields == null) || (fields.length == 0)) {
-                    fields = CmsSearchIndex.C_DOC_META_FIELDS;
-                }
-
-                result = m_index.search(
+                CmsSearchResultList result = m_index.search(
                     m_cms,
-                    searchRoots,
+                    m_searchRoots,
                     m_query,
                     m_sortOrder,
-                    fields,
+                    m_fields,
+                    m_categories,
                     m_calculateCategories,
                     m_page,
                     m_matchesPerPage);
@@ -414,7 +419,7 @@ public class CmsSearch implements Serializable, Cloneable {
 
                     m_result = result;
                     m_searchResultCount = result.getHitCount();
-                    m_categories = result.getCategories();
+                    m_categoriesFound = result.getCategories();
 
                     // re-caluclate the number of pages for this search result
                     m_pageCount = m_searchResultCount / m_matchesPerPage;
@@ -433,7 +438,7 @@ public class CmsSearch implements Serializable, Cloneable {
                 } else {
                     m_result = Collections.EMPTY_LIST;
                     m_searchResultCount = 0;
-                    m_categories = null;
+                    m_categoriesFound = null;
                     m_pageCount = 0;
                     m_prevUrl = null;
                     m_nextUrl = null;
@@ -466,7 +471,7 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public Map getSearchResultCategories() {
 
-        return m_categories;
+        return m_categoriesFound;
     }
 
     /**
@@ -480,18 +485,21 @@ public class CmsSearch implements Serializable, Cloneable {
     }
 
     /**
-     * Returns the search root.<p>
+     * Returns the search roots.<p>
      * 
-     * Only resource that are sub-resource of the search root
+     * Only resources that are sub-resources of one of the search roots
      * are included in the search result.<p>
      * 
-     * Per default, the search root is an empty string.<p>
-     *
-     * @return the search root
+     * The search roots are used <i>in addition to</i> the current site root
+     * of the user performing the search.<p>
+     * 
+     * By default, the search roots contain only one entry with an empty string.<p>
+     * 
+     * @return the search roots
      */
-    public String getSearchRoot() {
+    public String[] getSearchRoots() {
 
-        return m_searchRoot;
+        return m_searchRoots;
     }
 
     /**
@@ -538,6 +546,41 @@ public class CmsSearch implements Serializable, Cloneable {
     public void setCalculateCategories(boolean calculateCategories) {
 
         m_calculateCategories = calculateCategories;
+    }
+
+    /**
+     * Sets the search categories, all search results must be in one of the categories,
+     * the category set must match the indexed category exactly.<p>
+     *
+     * All categories will automatically be trimmed and lowercased, since search categories
+     * are also stored this way in the index.<p>
+     *
+     * @param categories the categories to set
+     */
+    public void setCategories(String[] categories) {
+
+        String[] setCategories = null;
+        if (categories != null) {
+            if (categories.length != 0) {
+                // ensure all categories are not null, trimmed, not-empty and lowercased
+                int count = 0;
+                String[] setCat = new String[categories.length];
+                for (int i = 0; i < categories.length; i++) {
+                    String cat = categories[i];
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cat)) {
+                        // all categories must internally be lower case, 
+                        // since the index keywords are lowercased as well
+                        cat = cat.trim().toLowerCase();
+                        setCat[count] = cat;
+                        count++;
+                    }
+                }
+                setCategories = new String[count];
+                System.arraycopy(setCat, 0, setCategories, 0, count);
+            }
+        }
+        m_categories = setCategories;
+        resetLastResult();
     }
 
     /**
@@ -646,21 +689,33 @@ public class CmsSearch implements Serializable, Cloneable {
     }
 
     /**
-     * Sets the search root.<p>
+     * Convenience method to set exactly one search root.<p>
      * 
-     * Only resource that are sub-resource of the search root
-     * are included in the search result.<p>
-     * 
-     * The search root set here is used <i>in addition to</i> the current site root
-     * of the user performing the search.<p>
-     * 
-     * Per default, the search root is an empty string.<p>
-     *
      * @param searchRoot the search root to set
+     *
+     * @see #setSearchRoots(String[])
      */
     public void setSearchRoot(String searchRoot) {
 
-        m_searchRoot = searchRoot;
+        setSearchRoots(new String[] {searchRoot});
+    }
+
+    /**
+     * Sets the search root list.<p>
+     * 
+     * Only resources that are sub-resources of one of the search roots
+     * are included in the search result.<p>
+     * 
+     * The search roots set here are used <i>in addition to</i> the current site root
+     * of the user performing the search.<p>
+     * 
+     * By default, the search roots contain only one entry with an empty string.<p>
+     *
+     * @param searchRoots the search roots to set
+     */
+    public void setSearchRoots(String[] searchRoots) {
+
+        m_searchRoots = searchRoots;
         resetLastResult();
     }
 
@@ -682,7 +737,7 @@ public class CmsSearch implements Serializable, Cloneable {
 
         m_result = null;
         m_lastException = null;
-        m_categories = null;
+        m_categoriesFound = null;
     }
 
 }

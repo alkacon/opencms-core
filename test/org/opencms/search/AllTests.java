@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/AllTests.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/27 20:37:39 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,6 +58,7 @@ public final class AllTests {
 
         TestSuite suite = new TestSuite("Tests for package org.opencms.search");
         //$JUnit-BEGIN$
+        suite.addTest(new TestSuite(TestCmsSearchUtils.class));
         suite.addTest(TestCmsSearch.suite());
         suite.addTest(TestCmsSearchInDocuments.suite());
         suite.addTest(TestCmsSearchAdvancedFeatures.suite());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestMsWordExtraction.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/27 20:37:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.search.extractors;
 
 import java.io.InputStream;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -74,5 +75,13 @@ public class TestMsWordExtraction extends TestCase {
         assertTrue(result.indexOf("Some content on a second sheet.") > -1);
         assertTrue(result.indexOf("Some content on the third sheet.") > -1);
         assertTrue(result.indexOf("äöüÄÖÜß€") > -1);
+        
+        Map meta = extractionResult.getMetaInfo();
+        assertEquals("Alkacon Software - The OpenCms experts", meta.get(I_CmsExtractionResult.META_TITLE));
+        assertEquals("This is the subject", meta.get(I_CmsExtractionResult.META_SUBJECT));
+        assertEquals("Alexander Kandzior", meta.get(I_CmsExtractionResult.META_AUTHOR));
+        assertEquals("Alkacon Software", meta.get(I_CmsExtractionResult.META_COMPANY));
+        assertEquals("This is the comment", meta.get(I_CmsExtractionResult.META_COMMENTS));
+        assertEquals("Key1, Key2", meta.get(I_CmsExtractionResult.META_KEYWORDS));
     }    
 }

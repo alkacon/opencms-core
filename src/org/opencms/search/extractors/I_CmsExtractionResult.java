@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/I_CmsExtractionResult.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/27 20:37:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,31 +42,40 @@ import java.util.Map;
 public interface I_CmsExtractionResult {
 
     /** Key to access the document author name in the meta information map. */
-    String META_AUTHOR = "Author";
+    String META_AUTHOR = "author";
+
+    /** Key to access the document catrgory in the meta information map. */
+    String META_CATEGORY = "category";
+
+    /** Key to access the document comments in the meta information map. */
+    String META_COMMENTS = "comments";
+
+    /** Key to access the document company name in the meta information map. */
+    String META_COMPANY = "company";
 
     /** Key to access the document creator name in the meta information map. */
-    String META_CREATOR = "Creator";
+    String META_CREATOR = "creator";
 
     /** Key to access the document creation date in the meta information map, this should be in HTTP header format. */
-    String META_DATE_CREATED = "Creation date";
+    String META_DATE_CREATED = "creation date";
 
     /** Key to access the document date of last modification in the meta information map, this should be in HTTP header format. */
-    String META_DATE_LASTMODIFIED = "Last modification date";
-
-    /** Key to access the document description in the meta information map. */
-    String META_DESCRIPTION = "Description";
+    String META_DATE_LASTMODIFIED = "last modification date";
 
     /** Key to access the document keywords in the meta information map. */
-    String META_KEYWORDS = "Keywords";
+    String META_KEYWORDS = "keywords";
+
+    /** Key to access the document manager name in the meta information map. */
+    String META_MANAGER = "manager";
 
     /** Key to access the document producer name in the meta information map. */
-    String META_PRODUCER = "Producer";
+    String META_PRODUCER = "producer";
 
     /** Key to access the document subject in the meta information map. */
-    String META_SUBJECT = "Subject";
+    String META_SUBJECT = "subject";
 
     /** Key to access the document title in the meta information map. */
-    String META_TITLE = "Title";
+    String META_TITLE = "title";
 
     /**
      * Returns the extracted content as a String.<p>

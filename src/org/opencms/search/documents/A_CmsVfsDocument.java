@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/27 20:37:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -151,8 +152,9 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
         // extract the content from the resource
         I_CmsExtractionResult content = extractContent(cms, resource, language);
-        if (content != null) {
-            document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, content.getContent()));
+        String text = mergeMetaInfo(content);
+        if (text != null) {
+            document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, text));
         }
 
         StringBuffer meta = new StringBuffer(512);
@@ -201,13 +203,15 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             // all categorys are internally stored lower case
             value = value.trim().toLowerCase();
             if (value.length() > 0) {
-                document.add(Field.Keyword(I_CmsDocumentFactory.DOC_CATEGORY, value));
+                field = Field.Keyword(I_CmsDocumentFactory.DOC_CATEGORY, value);
+                field.setBoost(0);
+                document.add(field);
             }
         }
 
         // add the document root path, optimized for use with a phrase query
-        String rootPath = CmsSearchIndex.rewriteResourcePath(resource.getRootPath(), false);
-        field = Field.UnStored(I_CmsDocumentFactory.DOC_ROOT, rootPath);
+        String rootPath = CmsSearchIndex.rootPathRewrite(resource.getRootPath());
+        field = Field.Text(I_CmsDocumentFactory.DOC_ROOT, rootPath);
         // set boost of 0 to root path field, since root path should have no effect on search result score 
         field.setBoost(0);
         document.add(field);
@@ -230,17 +234,69 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_PRIORITY, true).getValue()) != null) {
             value = value.trim().toLowerCase();
             if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_MAX_VALUE)) {
-                boost = 1.5f;
+                boost = 2.0f;
             } else if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_HIGH_VALUE)) {
-                boost = 1.25f;
+                boost = 1.5f;
             } else if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_LOW_VALUE)) {
-                boost = 0.75f;
+                boost = 0.5f;
             }
         }
         // set document boost factor
         document.setBoost(boost);
 
         return document;
+    }
+
+    /**
+     * Returns a String created out of the content and the most important meta information in the given 
+     * extraction result.<p>
+     * 
+     * OpenCms uses it's own properties for the text "Title" etc. field, this method ensures
+     * the most important document meta information can still be found as part of the content.<p> 
+     * 
+     * @param extractedContent the extraction result to merge
+     * 
+     * @return a String created out of the most important meta information in the given map and the content
+     */
+    protected String mergeMetaInfo(I_CmsExtractionResult extractedContent) {
+
+        Map metaInfo = extractedContent.getMetaInfo();
+        String content = extractedContent.getContent();
+
+        if (((metaInfo == null) || (metaInfo.size() == 0)) && (CmsStringUtil.isEmpty(content))) {
+            return null;
+        }
+
+        StringBuffer result = new StringBuffer(4096);
+        if (metaInfo != null) {
+            String meta;
+            meta = (String)metaInfo.get(I_CmsExtractionResult.META_TITLE);
+            if (CmsStringUtil.isNotEmpty(meta)) {
+                result.append(meta);
+                result.append('\n');
+            }
+            meta = (String)metaInfo.get(I_CmsExtractionResult.META_SUBJECT);
+            if (CmsStringUtil.isNotEmpty(meta)) {
+                result.append(meta);
+                result.append('\n');
+            }
+            meta = (String)metaInfo.get(I_CmsExtractionResult.META_KEYWORDS);
+            if (CmsStringUtil.isNotEmpty(meta)) {
+                result.append(meta);
+                result.append('\n');
+            }
+            meta = (String)metaInfo.get(I_CmsExtractionResult.META_COMMENTS);
+            if (CmsStringUtil.isNotEmpty(meta)) {
+                result.append(meta);
+                result.append('\n');
+            }
+        }
+
+        if (content != null) {
+            result.append(content);
+        }
+
+        return result.toString();
     }
 
     /**
