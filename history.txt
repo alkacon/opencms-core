@@ -12,6 +12,10 @@ OpenCms 4.3.30 Bela Tegeuse - 20 July 2001
 ! new feature in history: a version of a file can be restored from the history
 * elementdefinition parameter now work with the element cache
 * Fixed some bugs in taskhandling.
+* Fixed some wrong writing of OpenCms.
+* Fixed some bugs in taskhandling.
+* Fixed some bugs in property-handling.
+* Fixed some bugs in user-preferences.
 
 OpenCms 4.3.29 Bela Tegeuse - 19 July 2001
 * fixed bug when reading all files or all subfolders in an offline folder
