@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/17 10:05:32 $
- * Version: $Revision: 1.230 $
+ * Date   : $Date: 2003/09/17 13:54:10 $
+ * Version: $Revision: 1.231 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.230 $ $Date: 2003/09/17 10:05:32 $
+ * @version $Revision: 1.231 $ $Date: 2003/09/17 13:54:10 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -302,11 +302,9 @@ public class CmsDriverManager extends Object {
             }
         } catch (Exception exc) {
             String message = "Critical error while loading driver manager";
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager] " + message);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal(message, exc);
             }
-
-            exc.printStackTrace(System.err);
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
@@ -371,11 +369,9 @@ public class CmsDriverManager extends Object {
             }
         } catch (Exception exc) {
             String message = "Critical error while loading driver manager";
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager] " + message);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal(message, exc);
             }
-
-            exc.printStackTrace(System.err);
 
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
@@ -4320,7 +4316,7 @@ public class CmsDriverManager extends Object {
         } catch (Exception ex) {
             // init of registry failed - throw exception
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled())
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(". Critical init error/4: " + ex.getMessage());
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Critical init error/4", ex);
             throw new CmsException("Init of registry failed", CmsException.C_REGISTRY_ERROR, ex);
         }
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -4868,11 +4864,9 @@ public class CmsDriverManager extends Object {
 
         } catch (Exception exc) {
             String message = "Critical error while initializing " + driverName;
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager] " + message);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal(message, exc);
             }
-
-            exc.printStackTrace(System.err);
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
@@ -4908,11 +4902,9 @@ public class CmsDriverManager extends Object {
 
         } catch (Exception exc) {
             String message = "Critical error while initializing " + driverName;
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager] " + message);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal(message, exc);
             }
-
-            exc.printStackTrace(System.err);
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
@@ -4935,11 +4927,9 @@ public class CmsDriverManager extends Object {
             poolUrl = CmsDbPool.createDriverManagerConnectionPool(configurations, poolName);
         } catch (Exception exc) {
             String message = "Critical error while initializing resource pool " + poolName;
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager] " + message);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal(message, exc);
             }
-
-            exc.printStackTrace(System.err);
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
@@ -5939,8 +5929,8 @@ public class CmsDriverManager extends Object {
         try {
             props.load(getClass().getClassLoader().getResourceAsStream("mimetypes.properties"));
         } catch (Exception exc) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[" + this.getClass().getName() + "] could not read mimetypes from properties. " + exc.getMessage());
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal("Could not read mimetypes from properties", exc);
             }
         }
         return props;
@@ -8475,7 +8465,7 @@ public class CmsDriverManager extends Object {
             projectResources = readProjectResources(context,context.currentProject());
         } catch (CmsException e) {
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager.isInsideProject()] error reading project resources " + e.getMessage());
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error reading project resources", e);
             }
                         
             return false;
