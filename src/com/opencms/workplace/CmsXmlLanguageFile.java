@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/19 14:23:24 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import com.opencms.template.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/15 17:51:19 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/19 14:23:24 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -184,7 +184,7 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
     public String getDataValue(String tag) throws CmsException {
         String result = null;
         if(!hasData(tag)) {
-            String errorMessage = "Mandatory tag \"" + tag + "\" missing in workplace definition file.";
+            String errorMessage = "Mandatory tag \"" + tag + "\" missing in language file \"" + getFilename() + "\".";
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
             }
