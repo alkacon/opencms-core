@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/12/23 10:32:03 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/01/10 09:47:51 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Comparator;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -83,7 +83,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
                 date2 = r2.getDateLastModified();
             }
 
-            return (date1 > date2) ? 1 : (date1 < date2) ? -1 : 0;
+            return (date1 > date2) ? -1 : (date1 < date2) ? 1 : 0;
         }
     };
     
