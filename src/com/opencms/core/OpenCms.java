@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/02/25 13:06:37 $
-* Version: $Revision: 1.113 $
+* Date   : $Date: 2003/02/25 16:10:09 $
+* Version: $Revision: 1.114 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.113 $ $Date: 2003/02/25 13:06:37 $
+ * @version $Revision: 1.114 $ $Date: 2003/02/25 16:10:09 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -297,12 +297,28 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old locale support   : " + (supportOldLocales.booleanValue()?"enabled":"disabled"));      
 
-        // convert import files from 4.x versions flag
+        // convert import files from 4.x versions old webapp URL
         String webappUrl = (String)conf.getString("compatibility.support.import.old.webappurl", null);
         if (webappUrl != null) {
             setRuntimeProperty("compatibility.support.import.old.webappurl", webappUrl);
         }
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old webapp URL       : " + ((webappUrl == null)?"not set!":webappUrl));      
+
+
+        // Unwanted resource properties which are deleted during import
+        String[] propNames = conf.getStringArray("compatibility.support.import.remove.propertytags");
+        if (propNames == null) propNames = new String[0];  
+        ArrayList propertyNames = new ArrayList(java.util.Arrays.asList(propNames));
+        for (int i=0; i<propertyNames.size(); i++) {
+            // remove possible white space
+            String name = ((String)propertyNames.get(i)).trim();
+            if (name != null && ! "".equals(name)) {
+                propertyNames.set(i, name);
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Clear import property: " + (i+1) + " - " + propertyNames.get(i) );
+            }               
+        }        
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Remove properties    : " + ((propertyNames.size() > 0)?"enabled":"disabled"));     
+        setRuntimeProperty("compatibility.support.import.remove.propertytags", propertyNames);
 
         // old web application names (for editor macro replacement) 
         String[] appNames = conf.getStringArray("compatibility.support.webAppNames");
