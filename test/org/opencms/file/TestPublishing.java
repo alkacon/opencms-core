@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/02/28 09:50:39 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -81,6 +81,7 @@ public class TestPublishing extends OpenCmsTestCase {
         suite.addTest(new TestPublishing("testPublishLockedFiles"));
         suite.addTest(new TestPublishing("testPublishDeletedFiles"));
         suite.addTest(new TestPublishing("testPublishProjectLastmodified"));
+        suite.addTest(new TestPublishing("testPublishTemporaryProject"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -95,7 +96,293 @@ public class TestPublishing extends OpenCmsTestCase {
         
         return wrapper;
     }     
-     
+    
+    /**
+     * Test publishing changed files.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishChangedFiles() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing publish changed files");
+        
+        String resource1 = "/folder2/image1_new.gif";
+        String resource2 = "/folder2/image1_sibling1.gif";
+        String resource3 = "/folder2/image1_sibling2.gif";
+        String resource4 = "/folder2/image1_sibling3.gif";
+        
+        CmsProject onlineProject  = cms.readProject("Online");
+        CmsProject offlineProject  = cms.readProject("Offline");
+        
+        CmsProperty prop1;
+        CmsProperty prop2;
+        CmsProperty prop3;
+        CmsProperty prop4;
+
+        
+        // make changes to the resources 
+        // do not need to make any changes to resource3 and resource4 as they are
+        // siblings of resource2!
+ 
+        cms.lockResource(resource1);
+        cms.lockResource(resource2);
+        
+        cms.writePropertyObject(resource1, new CmsProperty("Title", resource1, null));
+        cms.writePropertyObject(resource2, new CmsProperty("Title", resource2, null));
+        cms.writePropertyObject(resource3, new CmsProperty("Title", resource3, null));
+        cms.writePropertyObject(resource4, new CmsProperty("Title", resource4, null));
+           
+        // unlock all resources
+        cms.unlockResource(resource1);
+        cms.unlockResource(resource2);
+                      
+        storeResources(cms, resource1);
+        storeResources(cms, resource2);
+        storeResources(cms, resource3);
+        storeResources(cms, resource4);
+       
+        // publish a modified resource without siblings
+        //
+        cms.publishResource(resource1);
+
+        // the online file must the offline changes
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        prop1 = cms.readPropertyObject(resource1, "Title", false);
+
+        
+        if (!prop1.getValue().equals((resource1))) {
+            fail("Property not published for " + resource1);
+        }
+        assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
+        
+        // check if the file in the offline project is unchancged now
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, resource1, I_CmsConstants.C_STATE_UNCHANGED);
+
+        // publish a modified resource with siblings, but keeping the siblings unpublished
+        //
+        cms.publishResource(resource2);
+
+        // the online file must the offline changes
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        prop2 = cms.readPropertyObject(resource2, "Title", false);
+        prop3 = cms.readPropertyObject(resource3, "Title", false);
+        prop4 = cms.readPropertyObject(resource4, "Title", false);
+        
+        if (!prop2.getValue().equals((resource2))) {
+            fail("Property not published for " + resource2);
+        }
+        if (prop3.getValue().equals((resource3))) {
+            fail("Property  published for " + resource3);
+        }
+        if (prop4.getValue().equals((resource4))) {
+            fail("Property  published for " + resource4);
+        }
+        
+        assertFilter(cms, resource2, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);          
+        
+        // check if the file in the offline project is unchancged now
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, resource2, I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, resource3, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, resource4, I_CmsConstants.C_STATE_CHANGED);
+
+        // publish a modified resource with siblings, publish the siblings as well
+        //
+        cms.publishResource(resource3, true, new CmsShellReport());
+
+        // the online file must the offline changes
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        prop3 = cms.readPropertyObject(resource3, "Title", false);
+        prop4 = cms.readPropertyObject(resource4, "Title", false);
+        
+        if (!prop3.getValue().equals((resource3))) {
+            fail("Property  not published for " + resource3);
+        }
+        if (!prop4.getValue().equals((resource4))) {
+            fail("Property  not published for " + resource4);
+        }
+        
+        assertFilter(cms, resource3, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
+        assertFilter(cms, resource4, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
+                
+        // check if the file in the offline project is unchancged now
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, resource3, I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, resource4, I_CmsConstants.C_STATE_UNCHANGED);
+    }  
+    
+    /**
+     * Test publishing deelted files.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishDeletedFiles() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing publish deleted files");
+        
+        String resource1 = "/folder2/image1_new.gif";
+        String resource2 = "/folder2/image1_sibling1.gif";
+        String resource3 = "/folder2/image1_sibling2.gif";
+        String resource4 = "/folder2/image1_sibling3.gif";
+        
+        CmsProject onlineProject  = cms.readProject("Online");
+        CmsProject offlineProject  = cms.readProject("Offline");
+        
+        // publish a deleted resource without siblings
+        //
+        
+        // delete the resources 
+        cms.lockResource(resource1);
+        cms.deleteResource(resource1, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        cms.unlockResource(resource1);
+       
+        cms.publishResource(resource1);
+
+        // the online file must be deleted
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        try {
+            cms.readResource(resource1);
+            fail ("Resource " + resource1 + " was not deleted online");
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok
+       } catch (CmsException e) {
+            fail("Resource " + resource1 + " error:" +e);
+        }
+       
+       cms.getRequestContext().setCurrentProject(offlineProject);
+             
+       // publish a deleted resource with siblings, 
+       // delete the siblings also, but publish only the resource itself
+       
+       // delete the resources 
+       cms.lockResource(resource2);
+       cms.deleteResource(resource2, I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+       cms.unlockResource(resource2);
+       
+       // this test makes only sense when siblings are published
+       cms.publishResource(resource2, false, new CmsShellReport());
+
+       // the online file must be deleted
+       cms.getRequestContext().setCurrentProject(onlineProject);
+       try {
+           cms.readResource(resource2);
+           fail ("Resource " + resource2 + " was not deleted online");
+       } catch (CmsVfsResourceNotFoundException e) {
+           // ok
+      } catch (CmsException e) {
+           fail("Resource " + resource2 + " error:" +e);
+       }    
+       // the other siblings must still be there
+      try {
+          cms.readResource(resource3);
+      } catch (CmsException e) {
+              fail("Resource " + resource3 + " error:" +e);
+      }
+      try {
+          cms.readResource(resource4);
+      } catch (CmsException e) {
+            fail("Resource " + resource4 + " error:" +e);
+      }
+      
+      cms.getRequestContext().setCurrentProject(offlineProject);
+      // in the offline project, the siblings must be still marked as deleted
+      assertState(cms, resource3, I_CmsConstants.C_STATE_DELETED);
+      assertState(cms, resource4, I_CmsConstants.C_STATE_DELETED);
+      
+      // publish a deleted resource with siblings, delete the siblings
+      //
+      cms.publishResource(resource3, true, new CmsShellReport());
+      
+      // the online files must be deleted
+      cms.getRequestContext().setCurrentProject(onlineProject);
+      try {
+          cms.readResource(resource3);
+          fail ("Resource " + resource3 + " was not deleted online");
+      } catch (CmsVfsResourceNotFoundException e) {
+          // ok
+      } catch (CmsException e) {
+          fail("Resource " + resource3 + " error:" +e);
+      } 
+      try {
+          cms.readResource(resource4);
+          fail ("Resource " + resource4 + " was not deleted online");
+      } catch (CmsVfsResourceNotFoundException e) {
+          // ok
+      } catch (CmsException e) {
+          fail("Resource " + resource4 + " error:" +e);
+      } 
+      
+      cms.getRequestContext().setCurrentProject(offlineProject);
+
+    }
+
+    /**
+     * Test publishing changed files.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishLockedFiles() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing publish locked files");
+        
+        String source = "/folder2/subfolder21/image1.gif";
+        String resource1 = "/folder2/image1_new.gif";
+        String resource2 = "/folder2/image1_sibling1.gif";
+        
+        CmsProject onlineProject  = cms.readProject("Online");
+        
+        CmsProperty prop0;
+        CmsProperty prop1;
+        CmsProperty prop2;
+  
+        // make changes to the resources 
+        // do not need to make any changes to resource3 and resource4 as they are
+        // siblings of resource2!
+ 
+        cms.lockResource(source);
+        cms.lockResource(resource1);
+        cms.lockResource(resource2);
+        
+        cms.writePropertyObject(source, new CmsProperty("Title", source + " modified", null));
+        cms.writePropertyObject(resource1, new CmsProperty("Title", resource1 + " modified", null));
+        cms.writePropertyObject(resource2, new CmsProperty("Title", resource2 + " modified", null));
+
+        storeResources(cms, source);
+        storeResources(cms, resource1);
+        storeResources(cms, resource2);
+       
+        // publish a modified resource without siblings
+        cms.publishProject();
+
+        // ensure that all changed resources are still changed in the offline project
+        assertState(cms, source, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, resource1, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, resource2, I_CmsConstants.C_STATE_CHANGED);
+                
+        // ensure that all changed resources are NOT published
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        prop0 = cms.readPropertyObject(source, "Title", false);
+        prop1 = cms.readPropertyObject(resource1, "Title", false);
+        prop2 = cms.readPropertyObject(resource2, "Title", false);
+        
+        if (prop0.getValue().equals((source + " modified"))) {
+            fail("Property published for " + source);
+        }
+        if (prop1.getValue().equals((resource1 + " modified"))) {
+            fail("Property published for " + resource1);
+        }        
+        if (prop2.getValue().equals((resource2 + " modified"))) {
+            fail("Property published for " + resource2);
+        }
+    }  
+    
+    
+    
+    
     /**
      * Test publishing new files.<p>
      * 
@@ -305,289 +592,6 @@ public class TestPublishing extends OpenCmsTestCase {
     }   
     
     /**
-     * Test publishing changed files.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testPublishChangedFiles() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
-        echo("Testing publish changed files");
-        
-        String resource1 = "/folder2/image1_new.gif";
-        String resource2 = "/folder2/image1_sibling1.gif";
-        String resource3 = "/folder2/image1_sibling2.gif";
-        String resource4 = "/folder2/image1_sibling3.gif";
-        
-        CmsProject onlineProject  = cms.readProject("Online");
-        CmsProject offlineProject  = cms.readProject("Offline");
-        
-        CmsProperty prop1;
-        CmsProperty prop2;
-        CmsProperty prop3;
-        CmsProperty prop4;
-
-        
-        // make changes to the resources 
-        // do not need to make any changes to resource3 and resource4 as they are
-        // siblings of resource2!
- 
-        cms.lockResource(resource1);
-        cms.lockResource(resource2);
-        
-        cms.writePropertyObject(resource1, new CmsProperty("Title", resource1, null));
-        cms.writePropertyObject(resource2, new CmsProperty("Title", resource2, null));
-        cms.writePropertyObject(resource3, new CmsProperty("Title", resource3, null));
-        cms.writePropertyObject(resource4, new CmsProperty("Title", resource4, null));
-           
-        // unlock all resources
-        cms.unlockResource(resource1);
-        cms.unlockResource(resource2);
-                      
-        storeResources(cms, resource1);
-        storeResources(cms, resource2);
-        storeResources(cms, resource3);
-        storeResources(cms, resource4);
-       
-        // publish a modified resource without siblings
-        //
-        cms.publishResource(resource1);
-
-        // the online file must the offline changes
-        cms.getRequestContext().setCurrentProject(onlineProject);
-        prop1 = cms.readPropertyObject(resource1, "Title", false);
-
-        
-        if (!prop1.getValue().equals((resource1))) {
-            fail("Property not published for " + resource1);
-        }
-        assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
-        
-        // check if the file in the offline project is unchancged now
-        cms.getRequestContext().setCurrentProject(offlineProject);
-        assertState(cms, resource1, I_CmsConstants.C_STATE_UNCHANGED);
-
-        // publish a modified resource with siblings, but keeping the siblings unpublished
-        //
-        cms.publishResource(resource2);
-
-        // the online file must the offline changes
-        cms.getRequestContext().setCurrentProject(onlineProject);
-        prop2 = cms.readPropertyObject(resource2, "Title", false);
-        prop3 = cms.readPropertyObject(resource3, "Title", false);
-        prop4 = cms.readPropertyObject(resource4, "Title", false);
-        
-        if (!prop2.getValue().equals((resource2))) {
-            fail("Property not published for " + resource2);
-        }
-        if (prop3.getValue().equals((resource3))) {
-            fail("Property  published for " + resource3);
-        }
-        if (prop4.getValue().equals((resource4))) {
-            fail("Property  published for " + resource4);
-        }
-        
-        assertFilter(cms, resource2, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);          
-        
-        // check if the file in the offline project is unchancged now
-        cms.getRequestContext().setCurrentProject(offlineProject);
-        assertState(cms, resource2, I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, resource3, I_CmsConstants.C_STATE_CHANGED);
-        assertState(cms, resource4, I_CmsConstants.C_STATE_CHANGED);
-
-        // publish a modified resource with siblings, publish the siblings as well
-        //
-        cms.publishResource(resource3, true, new CmsShellReport());
-
-        // the online file must the offline changes
-        cms.getRequestContext().setCurrentProject(onlineProject);
-        prop3 = cms.readPropertyObject(resource3, "Title", false);
-        prop4 = cms.readPropertyObject(resource4, "Title", false);
-        
-        if (!prop3.getValue().equals((resource3))) {
-            fail("Property  not published for " + resource3);
-        }
-        if (!prop4.getValue().equals((resource4))) {
-            fail("Property  not published for " + resource4);
-        }
-        
-        assertFilter(cms, resource3, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
-        assertFilter(cms, resource4, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
-                
-        // check if the file in the offline project is unchancged now
-        cms.getRequestContext().setCurrentProject(offlineProject);
-        assertState(cms, resource3, I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, resource4, I_CmsConstants.C_STATE_UNCHANGED);
-    }  
-
-    /**
-     * Test publishing changed files.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testPublishLockedFiles() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
-        echo("Testing publish locked files");
-        
-        String source = "/folder2/subfolder21/image1.gif";
-        String resource1 = "/folder2/image1_new.gif";
-        String resource2 = "/folder2/image1_sibling1.gif";
-        
-        CmsProject onlineProject  = cms.readProject("Online");
-        
-        CmsProperty prop0;
-        CmsProperty prop1;
-        CmsProperty prop2;
-  
-        // make changes to the resources 
-        // do not need to make any changes to resource3 and resource4 as they are
-        // siblings of resource2!
- 
-        cms.lockResource(source);
-        cms.lockResource(resource1);
-        cms.lockResource(resource2);
-        
-        cms.writePropertyObject(source, new CmsProperty("Title", source + " modified", null));
-        cms.writePropertyObject(resource1, new CmsProperty("Title", resource1 + " modified", null));
-        cms.writePropertyObject(resource2, new CmsProperty("Title", resource2 + " modified", null));
-
-        storeResources(cms, source);
-        storeResources(cms, resource1);
-        storeResources(cms, resource2);
-       
-        // publish a modified resource without siblings
-        cms.publishProject();
-
-        // ensure that all changed resources are still changed in the offline project
-        assertState(cms, source, I_CmsConstants.C_STATE_CHANGED);
-        assertState(cms, resource1, I_CmsConstants.C_STATE_CHANGED);
-        assertState(cms, resource2, I_CmsConstants.C_STATE_CHANGED);
-                
-        // ensure that all changed resources are NOT published
-        cms.getRequestContext().setCurrentProject(onlineProject);
-        prop0 = cms.readPropertyObject(source, "Title", false);
-        prop1 = cms.readPropertyObject(resource1, "Title", false);
-        prop2 = cms.readPropertyObject(resource2, "Title", false);
-        
-        if (prop0.getValue().equals((source + " modified"))) {
-            fail("Property published for " + source);
-        }
-        if (prop1.getValue().equals((resource1 + " modified"))) {
-            fail("Property published for " + resource1);
-        }        
-        if (prop2.getValue().equals((resource2 + " modified"))) {
-            fail("Property published for " + resource2);
-        }
-    }  
-    
-    /**
-     * Test publishing deelted files.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testPublishDeletedFiles() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
-        echo("Testing publish deleted files");
-        
-        String resource1 = "/folder2/image1_new.gif";
-        String resource2 = "/folder2/image1_sibling1.gif";
-        String resource3 = "/folder2/image1_sibling2.gif";
-        String resource4 = "/folder2/image1_sibling3.gif";
-        
-        CmsProject onlineProject  = cms.readProject("Online");
-        CmsProject offlineProject  = cms.readProject("Offline");
-        
-        // publish a deleted resource without siblings
-        //
-        
-        // delete the resources 
-        cms.lockResource(resource1);
-        cms.deleteResource(resource1, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-        cms.unlockResource(resource1);
-       
-        cms.publishResource(resource1);
-
-        // the online file must be deleted
-        cms.getRequestContext().setCurrentProject(onlineProject);
-        try {
-            cms.readResource(resource1);
-            fail ("Resource " + resource1 + " was not deleted online");
-        } catch (CmsVfsResourceNotFoundException e) {
-            // ok
-       } catch (CmsException e) {
-            fail("Resource " + resource1 + " error:" +e);
-        }
-       
-       cms.getRequestContext().setCurrentProject(offlineProject);
-             
-       // publish a deleted resource with siblings, 
-       // delete the siblings also, but publish only the resource itself
-       
-       // delete the resources 
-       cms.lockResource(resource2);
-       cms.deleteResource(resource2, I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
-       cms.unlockResource(resource2);
-       
-       // this test makes only sense when siblings are published
-       cms.publishResource(resource2, false, new CmsShellReport());
-
-       // the online file must be deleted
-       cms.getRequestContext().setCurrentProject(onlineProject);
-       try {
-           cms.readResource(resource2);
-           fail ("Resource " + resource2 + " was not deleted online");
-       } catch (CmsVfsResourceNotFoundException e) {
-           // ok
-      } catch (CmsException e) {
-           fail("Resource " + resource2 + " error:" +e);
-       }    
-       // the other siblings must still be there
-      try {
-          cms.readResource(resource3);
-      } catch (CmsException e) {
-              fail("Resource " + resource3 + " error:" +e);
-      }
-      try {
-          cms.readResource(resource4);
-      } catch (CmsException e) {
-            fail("Resource " + resource4 + " error:" +e);
-      }
-      
-      cms.getRequestContext().setCurrentProject(offlineProject);
-      // in the offline project, the siblings must be still marked as deleted
-      assertState(cms, resource3, I_CmsConstants.C_STATE_DELETED);
-      assertState(cms, resource4, I_CmsConstants.C_STATE_DELETED);
-      
-      // publish a deleted resource with siblings, delete the siblings
-      //
-      cms.publishResource(resource3, true, new CmsShellReport());
-      
-      // the online files must be deleted
-      cms.getRequestContext().setCurrentProject(onlineProject);
-      try {
-          cms.readResource(resource3);
-          fail ("Resource " + resource3 + " was not deleted online");
-      } catch (CmsVfsResourceNotFoundException e) {
-          // ok
-      } catch (CmsException e) {
-          fail("Resource " + resource3 + " error:" +e);
-      } 
-      try {
-          cms.readResource(resource4);
-          fail ("Resource " + resource4 + " was not deleted online");
-      } catch (CmsVfsResourceNotFoundException e) {
-          // ok
-      } catch (CmsException e) {
-          fail("Resource " + resource4 + " error:" +e);
-      } 
-      
-      cms.getRequestContext().setCurrentProject(offlineProject);
-
-    }
-    
-    /**
      * Tests publishing resources within a distinct project.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -668,6 +672,68 @@ public class TestPublishing extends OpenCmsTestCase {
         
         // the sibling outside the test project must not be published (still not in test project)
         assertState(cms, res4, I_CmsConstants.C_STATE_NEW);        
+    }
+     
+    /**
+     * Test publishing a temporary project.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishTemporaryProject() throws Throwable {
+        CmsObject cms = getCmsObject();     
+        echo("Testing publish temporary project");
+        
+        String source = "/folder1/testfile.txt";
+        CmsProject onlineProject  = cms.readProject("Online");
+        CmsProject offlineProject  = cms.readProject("Offline");
+        
+        //create a new temp project
+        CmsProject tempProject = cms.createProject("deleteme", "Temp project to be deleted after publish", "Users", "Projectmanagers", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
+        cms.copyResourceToProject("/");
+        cms.getRequestContext().setCurrentProject(tempProject);      
+        
+        // now create a new resource
+        cms.createResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.unlockResource(source);
+        storeResources(cms, source);
+        
+        cms.readResource(source);
+        
+        //publish the project
+        cms.publishProject();
+        
+
+        // now try to read the resource
+        try {
+            cms.readResource(source);
+        } catch (CmsException e) {
+            fail("Resource " + source + " not found in project " + cms.getRequestContext().currentProject().toString() + ":" +e);
+        }  
+        
+        // now try to read the resource in the online project
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        try {
+            cms.readResource(source);
+        } catch (CmsException e) {
+            fail("Resource " + source + " not found in project " + cms.getRequestContext().currentProject().toString() + ":" +e);
+        }  
+        
+        // check if the state of the resource is ok
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
+        
+        // check if the file in the offline project is unchancged now
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, source, I_CmsConstants.C_STATE_UNCHANGED);
+        
+        // check if the project is deleted
+        try {
+            cms.readProject("deleteme");
+            fail("Temporary project still existing");
+        } catch (CmsException e) {
+            // to nothing, this exception must be thrown
+        }
+    
+        
     }
     
     /**
