@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/10/13 18:00:58 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/10/14 12:07:24 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -145,15 +145,16 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         res.setContentLength(file.getContents().length);
         // set date last modified header
         res.setDateHeader("Last-Modified", file.getDateLastModified());
+        int expireTime;
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            // for binary data, allow proxy caching of 5 minutes
-            res.setHeader("Cache-Control", "max-age=300"); // HTTP 1.1
-            res.setDateHeader("Expires", System.currentTimeMillis() + 300000); // HTTP 1.0            
+            // allow proxy caching of 10 minutes  
+            expireTime = 600;        
         } else {
-            // no caching allowed for offline project
-            res.setHeader("Cache-Control", "no-cache"); // HTTP 1.1
-            res.setHeader("Pragma", "no-cache"); // HTTP 1.0
+            // allow proxy caching of 10 secounds only (required for PDF preview in offline project)
+            expireTime = 10;
         }
+        res.setHeader("Cache-Control", "max-age=" + expireTime); // HTTP 1.1
+        res.setDateHeader("Expires", System.currentTimeMillis() + (expireTime * 1000)); // HTTP 1.0          
         service(cms, file, req, res);        
     }
         
