@@ -2,8 +2,8 @@ package com.opencms.xmlmodules;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/xmlmodules/Attic/A_CmsModuleAdmin.java,v $
- * Date   : $Date: 2000/08/08 14:08:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/01/04 09:45:49 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import org.apache.xml.serialize.*;
  * Provides methods for both displaying and editing articles.
  * 
  * @author Matthias Schreiber
- * @version $Revision: 1.3 $ $Date: 2000/08/08 14:08:34 $
+ * @version $Revision: 1.4 $ $Date: 2001/01/04 09:45:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsModuleAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsModuleConstants, I_CmsFileListUsers {
@@ -60,6 +60,7 @@ public abstract class A_CmsModuleAdmin extends CmsWorkplaceDefault implements I_
 	 * @exception CmsException if check access failed.
 	 */
 	protected boolean checkWriteAccess(CmsObject cms, String folderPage, String folderContent) throws CmsException {
+/*
 		CmsFolder pageFolder = null;
 		CmsFolder contentFolder = null;
 		try {
@@ -68,7 +69,10 @@ public abstract class A_CmsModuleAdmin extends CmsWorkplaceDefault implements I_
 		} catch(Exception e) {
 			return false;
 		}
-		return cms.accessCreate(pageFolder) && cms.accessCreate(contentFolder);        
+*/
+		// ednfal: changed Method accessCreate: read resource in resourcebroker	
+		//return cms.accessCreate(pageFolder) && cms.accessCreate(contentFolder);
+		return cms.accessCreate(folderPage) && cms.accessCreate(folderContent); 
 	}
 	/**
 	 * Create a content file. File flags setted in the user preferences
