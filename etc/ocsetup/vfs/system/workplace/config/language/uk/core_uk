@@ -316,7 +316,7 @@
 			<context>
 				<copy>Copy</copy>
 				<cut>Cut</cut>	
-				<paste>Pase</paste>				
+				<paste>Paste</paste>				
 				<deletecell>Delete Cell</deletecell>
 				<deletecol>Delete Column</deletecol>
 				<deleterow>Delete Row</deleterow>
