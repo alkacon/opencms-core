@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/10/14 12:06:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/10/14 15:18:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
@@ -226,12 +227,37 @@ public abstract class A_CmsImport implements I_CmsImport {
             if (link.startsWith("/")) {
                 // now check if the link target is existing
                 try {
-                    m_cms.readFileHeader(link);
-                    m_cms.createVfsLink(key, link, properties);
+                    CmsResource target = m_cms.readFileHeader(link);
+
+                    // create a new sibling as CmsResource                         
+                    CmsResource resource = new CmsResource(
+                        new CmsUUID(), // structure ID is always a new UUID
+                        target.getResourceId(), 
+                        CmsUUID.getNullUUID(),
+                        target.getFileId(), 
+                        CmsResource.getName(key), 
+                        target.getType(), 
+                        0, // TODO: pass flags from import 
+                        m_cms.getRequestContext().currentProject().getId(), 
+                        I_CmsConstants.C_STATE_NEW, 
+                        m_cms.getResourceType(target.getType()).getLoaderId(), 
+                        target.getDateCreated(), 
+                        target.getUserCreated(), 
+                        target.getDateLastModified(), 
+                        target.getUserLastModified(), 
+                        0, 
+                        1
+                    );
+                    
+                    m_cms.importResource(resource, null, properties, key);
+                    // m_cms.createVfsLink(key, link, properties);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 } catch (CmsException ex) {
                     m_report.println();
                     m_report.print(m_report.key("report.convert_link_notfound") + " " + link, I_CmsReport.C_FORMAT_WARNING);
+                    
+                    if (OpenCms.getLog(this).isDebugEnabled())
+                        OpenCms.getLog(this).debug("Link conversion failed: " + key + " -> " + link, ex);
                 }
 
             } else {
