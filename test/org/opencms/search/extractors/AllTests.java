@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/AllTests.java,v $
- * Date   : $Date: 2005/03/23 19:08:23 $
- * Version: $Revision: 1.7 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/AllTests.java,v $
+ * Date   : $Date: 2005/03/23 19:08:22 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.search;
+package org.opencms.search.extractors;
 
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -37,7 +37,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Comment for <code>AllTests</code>.<p>
+ *  Tests for package <code>org.opencms.search.extractors</code>.<p>
  */
 public final class AllTests {
 
@@ -56,10 +56,14 @@ public final class AllTests {
     public static Test suite() {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
-        TestSuite suite = new TestSuite("Tests for package org.opencms.search");
+        TestSuite suite = new TestSuite("Tests for package org.opencms.search.extractors");
         //$JUnit-BEGIN$
-        suite.addTest(TestCmsSearch.suite());
-        suite.addTest(TestCmsSearchInDocuments.suite());
+        suite.addTest(new TestSuite(TestHtmllExtraction.class));
+        suite.addTest(new TestSuite(TestMsPowerPointExtraction.class));
+        suite.addTest(new TestSuite(TestRtfExtraction.class));
+        suite.addTest(new TestSuite(TestMsWordExtraction.class));
+        suite.addTest(new TestSuite(TestPdfExtraction.class));
+        suite.addTest(new TestSuite(TestMsExcelExtraction.class));
         //$JUnit-END$
         return suite;
     }

@@ -53,6 +53,7 @@
     <property name="opencms.inputlib.poi"				location="${opencms.input.libs}/poi-2.5.1-final-20040804.jar" />
     <property name="opencms.inputlib.snowball"			location="${opencms.input.libs}/snowball-1.0.jar" />
     <property name="opencms.inputlib.pdfbox"			location="${opencms.input.libs}/PDFBox-0.7.0.jar" />
+    <property name="opencms.inputlib.textextraction"	location="${opencms.input.libs}/tm-extractors-0.4.jar" />
     <property name="opencms.inputlib.junit"      		location="${opencms.input.libs}/junit-3-8-1.jar" /> 
     <property name="opencms.inputlib.oracle"      		location="${opencms.input.externlibs}/ojdbc14.jar" /> 
  
@@ -108,6 +109,7 @@
                 <available file="${opencms.inputlib.poi}"/>
                 <available file="${opencms.inputlib.snowball}"/>
                 <available file="${opencms.inputlib.pdfbox}"/> 
+                <available file="${opencms.inputlib.textextraction}"/> 
             </and>            
         </condition>
 
@@ -182,6 +184,7 @@ ${opencms.inputlib.lucene}
 ${opencms.inputlib.poi}
 ${opencms.inputlib.snowball}
 ${opencms.inputlib.pdfbox}
+${opencms.inputlib.textextraction}
 
         </fail>
     </target>
@@ -240,6 +243,7 @@ ${opencms.inputlib.pdfbox}
                        ${opencms.inputlib.lucene}:
                        ${opencms.inputlib.poi}:
                        ${opencms.inputlib.snowball}:
+                       ${opencms.inputlib.textextraction}:
                        ${opencms.inputlib.pdfbox}"
             debug="on"
             optimize="on"
@@ -540,6 +544,7 @@ ${opencms.inputlib.pdfbox}
                        ${opencms.inputlib.lucene}:
                        ${opencms.inputlib.poi}:
                        ${opencms.inputlib.snowball}:
+                       ${opencms.inputlib.textextraction}:
                        ${opencms.inputlib.pdfbox}"
             debug="on"
             optimize="on"
@@ -599,6 +604,7 @@ ${opencms.inputlib.pdfbox}
 				<pathelement location="${opencms.inputlib.snowball}"/>
 				<pathelement location="${opencms.inputlib.jaxen}"/>
 				<pathelement location="${opencms.inputlib.pdfbox}"/>
+				<pathelement location="${opencms.inputlib.textextraction}"/>
 			</classpath>
 			
 			<formatter type="plain" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/23 19:08:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,17 +34,13 @@ package org.opencms.search;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URL;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -57,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -181,42 +177,15 @@ public class TestCmsSearch extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing search with large result set");
 
-        // get URL of test input resource
-        URL inputSourceUrl = ClassLoader.getSystemResource("org/opencms/search/pdf-test-112.pdf");
-        File file = new File(inputSourceUrl.getFile());
-        byte[] buffer = null;
-
-        // load bytes from input resource
-        FileInputStream fileStream = null;
-        int charsRead;
-        int size;
-        try {
-            fileStream = new FileInputStream(file);
-            charsRead = 0;
-            size = new Long(file.length()).intValue();
-            buffer = new byte[size];
-            while (charsRead < size) {
-                charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-            }
-        } catch (IOException e) {
-            throw new CmsException(e.getMessage());
-        } finally {
-            try {
-                if (fileStream != null) {
-                    fileStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         // create test folder
         cms.createResource("/test/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, null);
         cms.unlockResource("/test/");
 
         // create master resource
-        cms.createResource("/test/master.pdf", CmsResourceTypeBinary.getStaticTypeId(), buffer, null);
-        cms.unlockResource("/test/master.pdf");
+        importTestResource(cms, 
+            "org/opencms/search/pdf-test-112.pdf", "/test/master.pdf", 
+            CmsResourceTypeBinary.getStaticTypeId(), 
+            Collections.EMPTY_LIST);
 
         // create a copy
         cms.copyResource("/test/master.pdf", "/test/copy.pdf");

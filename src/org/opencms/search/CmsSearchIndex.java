@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/03/23 19:08:23 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,9 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.documents.CmsHighlightExtractor;
+import org.opencms.search.documents.CmsHighlightFinder;
 import org.opencms.search.documents.I_CmsDocumentFactory;
-import org.opencms.search.documents.I_TermHighlighter;
+import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
@@ -66,7 +66,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.40 $ $Date: 2005/03/15 18:05:54 $
+ * @version $Revision: 1.41 $ $Date: 2005/03/23 19:08:23 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -698,21 +698,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns an excerpt of the content of a specified index resource.<p>
-     * 
-     * @param cms the cms object
-     * @param indexResource an index resource
-     * @param searchQuery the search query
-     * @return an excerpt of the content of the specified index resource
-     * @throws CmsException if something goes wrong
-     */
-    protected String getExcerpt(CmsObject cms, A_CmsIndexResource indexResource, String searchQuery)
-    throws CmsException {
-
-        return getExcerpt(getRawContent(cms, indexResource), searchQuery);
-    }
-
-    /**
      * Returns an excerpt of the given content related to the given search query.<p>
      * 
      * @param rawContent the content
@@ -729,8 +714,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         String excerpt = null;
         Analyzer analyzer = null;
         Query query = null;
-        CmsHighlightExtractor highlighter = null;
-        I_TermHighlighter termHighlighter = null;
+        CmsHighlightFinder highlighter = null;
+        I_CmsTermHighlighter termHighlighter = null;
         int maxExcerptLength = OpenCms.getSearchManager().getMaxExcerptLength();
 
         // the index reader, required for excerpt generation with wildcards
@@ -753,7 +738,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     // rewrite the query, this will remove wildcards and replace them with full terms
                     query = query.rewrite(reader);
                     termHighlighter = OpenCms.getSearchManager().getHighlighter();
-                    highlighter = new CmsHighlightExtractor(termHighlighter, query, analyzer);
+                    highlighter = new CmsHighlightFinder(termHighlighter, query, analyzer);
 
                     excerpt = highlighter.getBestFragments(
                         rawContent,
@@ -827,33 +812,4 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         return indexer.getIndexResource(cms, doc);
     }
-
-    /**
-     * Returns the raw content of an index resource.<p>
-     * 
-     * The content is read using the document factory matching the index resource's
-     * Cms resource types and mimetypes.<p>
-     * 
-     * @param cms the cms object
-     * @param indexResource an index resource
-     * @return the raw content
-     */
-    protected String getRawContent(CmsObject cms, A_CmsIndexResource indexResource) {
-
-        String rawContent = null;
-
-        try {
-            rawContent = OpenCms.getSearchManager().getDocumentFactory(indexResource).getRawContent(
-                cms,
-                indexResource,
-                m_locale);
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Could not read raw content of " + indexResource.getRootPath(), e);
-            }
-        }
-
-        return rawContent;
-    }
-
 }

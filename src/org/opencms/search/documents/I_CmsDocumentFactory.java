@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2005/03/08 06:21:01 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/03/23 19:08:22 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.search.A_CmsIndexResource;
+import org.opencms.search.extractors.I_CmsExtractionResult;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.15 $ $Date: 2005/03/08 06:21:01 $
+ * @version $Revision: 1.16 $ $Date: 2005/03/23 19:08:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
@@ -89,8 +90,10 @@ public interface I_CmsDocumentFactory {
 
     /**
      * Returns a list of document keys for the documenttype.<p>
+     * 
      * The list of accepted resource types may contain a catch-all entry "*";
-     * in this case, a list for all possible resource types is returned.
+     * in this case, a list for all possible resource types is returned,
+     * calculated by a logic depending on the document handler class.<p>
      * 
      * @param resourceTypes list of accepted resource types
      * @param mimeTypes list of accepted mime types
@@ -107,15 +110,15 @@ public interface I_CmsDocumentFactory {
     String getName();
 
     /**
-     * Returns the raw content of a given resource according to the concrete file type.<p>
+     * Extractes the content of a given resource according to the resource file type.<p>
      * 
      * @param cms the cms object
      * @param resource a cms resource
      * @param language the requested language
-     * @return the raw textual content of the resource
+     * @return the extracted content of the resource
      * @throws CmsException if somethin goes wrong
      */
-    String getRawContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException;
+    I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException;
 
     /**
      * Creates a new instance of a lucene document type for the concrete file type.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/03/19 13:58:20 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/03/23 19:08:23 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -621,7 +621,7 @@ public class CmsResourceManager {
     public void initConfiguration() {
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : loaded");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
         }
         
         m_resourceTypesFromXml = Collections.unmodifiableList(m_resourceTypesFromXml);

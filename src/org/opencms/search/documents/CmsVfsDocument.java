@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2005/03/09 11:59:13 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/03/23 19:08:22 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,18 @@
 
 package org.opencms.search.documents;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsIndexException;
 import org.opencms.search.A_CmsIndexResource;
+import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.extractors.CmsExtractionResult;
+import org.opencms.search.extractors.I_CmsExtractionResult;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,7 +56,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a vfs resource 
  * of any type derived from <code>CmsResource</code>.<p>
  * 
- * @version $Revision: 1.16 $ $Date: 2005/03/09 11:59:13 $
+ * @version $Revision: 1.17 $ $Date: 2005/03/23 19:08:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
@@ -132,7 +135,6 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
 
     /**
      * Returns the raw text content of a vfs resource.<p>
-     * NOT IMPLEMENTED.
      * 
      * @param cms the cms object 
      * @param resource the resource
@@ -140,12 +142,13 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
      * @return the raw text content
      * @throws CmsException if something goes wrong
      */
-    public String getRawContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
 
         if (resource == null) {
             throw new CmsIndexException("Can not get raw content for language " + language + " from a 'null' resource");
         }
-        return "";
+        // just return an empty result set
+        return new CmsExtractionResult("");
     }
 
     /**
@@ -159,7 +162,7 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
         CmsResource res = (CmsResource)resource.getData();
         String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
         String value;
-        
+
         StringBuffer meta = new StringBuffer(512);
 
         if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue()) != null) {
@@ -183,18 +186,37 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
 
         String rootPath = CmsSearchIndex.rewriteResourcePath(resource.getRootPath(), false);
         document.add(Field.UnStored(I_CmsDocumentFactory.DOC_ROOT, rootPath));
-        
+
         meta.append(CmsResource.getName(resource.getRootPath()));
         document.add(Field.UnStored(I_CmsDocumentFactory.DOC_META, meta.toString()));
 
-        document.add(
-            Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, DateField.timeToString(res.getDateCreated())));
-        document.add(
-            Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, DateField.timeToString(res.getDateLastModified())));
-                
+        document
+            .add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, DateField.timeToString(res.getDateCreated())));
+        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, DateField.timeToString(res
+            .getDateLastModified())));
+
         document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath()));
         document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_SOURCE, resource.getSource()));
 
         return document;
+    }
+
+    /**
+     * Upgrades the given resource to a {@link CmsFile} with content.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param resource the resource to upgrade
+     * 
+     * @return the given resource upgraded to a {@link CmsFile} with content
+     * 
+     * @throws CmsException if the resource could not be read or has no content
+     */
+    protected CmsFile readFile(CmsObject cms, CmsResource resource) throws CmsException {
+
+        CmsFile file = CmsFile.upgrade(resource, cms);
+        if (file.getLength() <= 0) {
+            throw new CmsIndexException("Resource " + resource.getRootPath() + " has no content.");
+        }
+        return file;
     }
 }

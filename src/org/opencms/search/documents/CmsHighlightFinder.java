@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightExtractor.java,v $
- * Date   : $Date: 2005/03/13 09:50:05 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightFinder.java,v $
+ * Date   : $Date: 2005/03/23 19:08:22 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -123,13 +123,13 @@ class FragmentQueue extends PriorityQueue {
  * @author Maik Schreiber (mailto: bZ@iq-computing.de) /Mark Harwood
  *         (mark@searcharea.co.uk)
  */
-public final class CmsHighlightExtractor {
+public final class CmsHighlightFinder {
     
     /** The analyzer. */
     private Analyzer m_analyzer;
     
     /** The term highlighter. */
-    private I_TermHighlighter m_highlighter;
+    private I_CmsTermHighlighter m_highlighter;
 
     /** The query. */
     private Query m_query;
@@ -146,8 +146,8 @@ public final class CmsHighlightExtractor {
      *            Analyzer used to construct the Query
      * @throws IOException if something goes wrong
      */
-    public CmsHighlightExtractor(
-        I_TermHighlighter highlighter,
+    public CmsHighlightFinder(
+        I_CmsTermHighlighter highlighter,
         Query query,
         Analyzer analyzer)
         throws IOException {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2005/03/08 06:21:01 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/03/23 19:08:22 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.extractors.CmsExtractionResult;
+import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsHtmlExtractor;
 
 import com.opencms.defaults.master.*;
@@ -53,7 +55,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.12 $ $Date: 2005/03/08 06:21:01 $
+ * @version $Revision: 1.13 $ $Date: 2005/03/23 19:08:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
@@ -96,10 +98,10 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
      * @return the raw text content
      * @throws CmsException if something goes wrong
      */
-    public String getRawContent(CmsObject cms, A_CmsIndexResource indexResource, String language) throws CmsException {        
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language) throws CmsException {        
         
         CmsMasterDataSet resource = (CmsMasterDataSet)indexResource.getData();
-        String rawContent = null;
+        String result = null;
         
         try {
             
@@ -129,13 +131,13 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
             }
             
             CmsHtmlExtractor extractor = new CmsHtmlExtractor();
-            rawContent = extractor.extractText(buf.toString(), OpenCms.getSystemInfo().getDefaultEncoding());
+            result = extractor.extractText(buf.toString(), OpenCms.getSystemInfo().getDefaultEncoding());
             
         } catch (Exception exc) {
             throw new CmsIndexException("Reading resource " + indexResource.getRootPath() + " failed", exc);
         }
 
-        return rawContent;
+        return new CmsExtractionResult(result);
     }
     
     /**
@@ -168,7 +170,7 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
         
         document.add(Field.UnIndexed(I_CmsCosDocumentFactory.DOC_CONTENT_ID, resource.getId().toString()));
         
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(cms, resource, language)));
+        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, extractContent(cms, resource, language).getContent()));
 
         return document;
     }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/I_TermHighlighter.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsTermHighlighter.java,v $
+ * Date   : $Date: 2005/03/23 19:08:22 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,10 @@ package org.opencms.search.documents;
 /**
  * Highlights arbitrary m_terms.
  *
- * @version $Id: I_TermHighlighter.java,v 1.2 2005/02/17 12:44:32 m.moossen Exp $
+ * @version $Id: I_CmsTermHighlighter.java,v 1.1 2005/03/23 19:08:22 a.kandzior Exp $
  * @author Maik Schreiber (mailto: bZ@iq-computing.de)
  */
-public interface I_TermHighlighter {
+public interface I_CmsTermHighlighter {
   /**
    * Highlight an arbitrary term. For example, an HTML I_TermHighlighter could simply do:
    *

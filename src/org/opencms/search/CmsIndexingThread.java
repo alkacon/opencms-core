@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2005/03/04 13:42:37 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/03/23 19:08:23 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.lucene.index.IndexWriter;
  * The indexing of a single resource was wrapped into a single thread
  * in order to prevent the indexer from hanging.<p>
  *  
- * @version $Revision: 1.12 $ $Date: 2005/03/04 13:42:37 $
+ * @version $Revision: 1.13 $ $Date: 2005/03/23 19:08:23 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -114,7 +114,12 @@ public class CmsIndexingThread extends Thread {
         }
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Indexing " + m_res.getRootPath());
+            OpenCms.getLog(this)
+                .debug(
+                    "Indexing "
+                        + m_res.getRootPath()
+                        + ((documentFactory != null) ? (" using document factory '" + documentFactory.getName() + "'")
+                        : ""));
         }
 
         if (documentFactory != null) {

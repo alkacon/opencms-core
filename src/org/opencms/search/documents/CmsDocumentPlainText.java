@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsPageDocument.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentPlainText.java,v $
  * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.7 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002  Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,77 +28,78 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package com.opencms.legacy;
 
+package org.opencms.search.documents;
+
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.search.CmsIndexException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
-import org.opencms.search.documents.CmsVfsDocument;
-import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.CmsIndexException;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import com.opencms.template.*;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.htmlparser.parserapplications.StringExtractor;
 
 /**
  * Lucene document factory class to extract index data from a cms resource 
- * of type <code>CmsResourceTypePage</code>.<p>
+ * containing plain text data.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2005/03/23 19:08:22 $
+ * @version $Revision: 1.1 $ $Date: 2005/03/23 19:08:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * 
- * @deprecated Will not be supported past the OpenCms 6 release.
  */
-public class CmsPageDocument extends CmsVfsDocument {
+public class CmsDocumentPlainText extends CmsVfsDocument {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
      * @param name name of the documenttype
      */
-    public CmsPageDocument (String name) {
+    public CmsDocumentPlainText(String name) {
+
         super(name);
     }
-    
+
     /**
-     * Gets the raw text content of a cms resource.<p>
+     * Returns the raw text content of a given vfs resource containing plain text data.<p>
      * 
      * @see org.opencms.search.documents.CmsVfsDocument#extractContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language) throws CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
-        String rawContent = null;
-        
+        CmsFile file = readFile(cms, resource);
+
         try {
-            CmsXmlTemplateFile file = new CmsXmlTemplateFile(cms, cms.getRequestContext().removeSiteRoot(resource.getRootPath()));        
-            String content = file.getProcessedTemplateContent(null, null);
-            
-            StringExtractor extractor = new StringExtractor(content);
-            rawContent = extractor.extractStrings(true);
-        } catch (Exception exc) {
-            throw new CmsIndexException("Reading resource " + resource.getRootPath() + " failed", exc);
+            String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+            CmsProperty encoding = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
+            String result = new String(file.getContents(), encoding.getValue(OpenCms.getSystemInfo().getDefaultEncoding()));
+            return new CmsExtractionResult(result);            
+        } catch (Exception e) {
+            throw new CmsIndexException("Extracting text from resource "
+                + resource.getRootPath()
+                + " failed: "
+                + e.getMessage(), e);
         }
-        
-        return new CmsExtractionResult(rawContent);
     }
-    
+
     /**
-     * Creates a new lucene document instance for a resource of type <code>CmsResourceTypePage</code>.<p>
+     * Generates a new lucene document instance from contents of the given resource.<p>
      * 
      * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
-    public Document newInstance (CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
-                   
+    public Document newInstance(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
+
         Document document = super.newInstance(cms, resource, language);
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, extractContent(cms, resource, language).getContent()));
+        I_CmsExtractionResult content = extractContent(cms, resource, language);
         
+        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, content.getContent()));
+
         return document;
     }
 }

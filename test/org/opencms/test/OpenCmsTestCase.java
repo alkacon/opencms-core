@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/03/19 13:59:19 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2005/03/23 19:08:22 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,50 +85,11 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 5.3.5
  */
 public class OpenCmsTestCase extends TestCase {
-
-    /** Key for tests on MySql database. */
-    public static final String C_DB_MYSQL = "mysql";
-
-    /** Key for tests on Oracle database. */
-    public static final String C_DB_ORACLE = "oracle";
-
-    /** The OpenCms/database configuration. */
-    public static ExtendedProperties m_configuration = null;
-
-    /** DB product used for the tests. */
-    public static String m_dbProduct = C_DB_MYSQL;
-
-    /** Name of the default tablespace (oracle only). */
-    public static String m_defaultTablespace;
-
-    /** Name of the index tablespace (oracle only). */
-    public static String m_indexTablespace;
-
-    /** The internal storages. */
-    public static HashMap m_resourceStorages;
-
-    /** Name of the temporary tablespace (oracle only). */
-    public static String m_tempTablespace;
-
-    /** The file date of the configuration files. */
-    private static long[] m_dateConfigFiles;
-
-    /** The path to the default setup data files. */
-    private static String m_setupDataPath;
-
-    /** The initialized OpenCms shell instance. */
-    private static CmsShell m_shell;
-
-    /** The list of paths to the additional test data files. */
-    private static List m_testDataPath;
-
-    /** The additional connection name. */
-    private static String m_additionalConnectionName = "additional";
 
     /** Class to bundle the connection information. */
     protected class ConnectionData {
@@ -151,18 +112,6 @@ public class OpenCmsTestCase extends TestCase {
         /** The password of the user. */
         public String m_userPassword;
     }
-
-    /** The setup connection data. */
-    protected static ConnectionData m_setupConnection;
-
-    /** The user connection data. */
-    protected static ConnectionData m_defaultConnection;
-
-    /** Additional connection data. */
-    protected static ConnectionData m_additionalConnection;
-
-    /** The current resource storage. */
-    public OpenCmsTestResourceStorage m_currentResourceStrorage;
 
     /**
      * Extension of <code>NodeComparator</code> to store unequal nodes.<p>
@@ -190,6 +139,57 @@ public class OpenCmsTestCase extends TestCase {
         }
     }
 
+    /** Key for tests on MySql database. */
+    public static final String C_DB_MYSQL = "mysql";
+
+    /** Key for tests on Oracle database. */
+    public static final String C_DB_ORACLE = "oracle";
+
+    /** The OpenCms/database configuration. */
+    public static ExtendedProperties m_configuration = null;
+
+    /** DB product used for the tests. */
+    public static String m_dbProduct = C_DB_MYSQL;
+
+    /** Name of the default tablespace (oracle only). */
+    public static String m_defaultTablespace;
+
+    /** Name of the index tablespace (oracle only). */
+    public static String m_indexTablespace;
+
+    /** The internal storages. */
+    public static HashMap m_resourceStorages;
+
+    /** Name of the temporary tablespace (oracle only). */
+    public static String m_tempTablespace;
+
+    /** Additional connection data. */
+    protected static ConnectionData m_additionalConnection;
+
+    /** The user connection data. */
+    protected static ConnectionData m_defaultConnection;
+
+    /** The setup connection data. */
+    protected static ConnectionData m_setupConnection;
+
+    /** The additional connection name. */
+    private static String m_additionalConnectionName = "additional";
+
+    /** The file date of the configuration files. */
+    private static long[] m_dateConfigFiles;
+
+    /** The path to the default setup data files. */
+    private static String m_setupDataPath;
+
+    /** The initialized OpenCms shell instance. */
+    private static CmsShell m_shell;
+
+    /** The list of paths to the additional test data files. */
+    private static List m_testDataPath;
+
+    /** The current resource storage. */
+    public OpenCmsTestResourceStorage m_currentResourceStrorage;
+
     /**
      * Default JUnit constructor.<p>
      * 
@@ -213,7 +213,7 @@ public class OpenCmsTestCase extends TestCase {
             if (m_resourceStorages == null) {
                 m_resourceStorages = new HashMap();
             }
-            
+
             // initialize configuration
             initConfiguration();
 
@@ -237,13 +237,17 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Sets the additional connection name.<p>
-     * 
-     * @param additionalConnectionName the additional connection name
+     * Initializes the path to the test data configuration files
+     * using the default path.<p>
      */
-    public static void setConnectionName(String additionalConnectionName) {
+    public static synchronized void initTestDataPath() {
 
-        m_additionalConnectionName = additionalConnectionName;
+        if (m_testDataPath == null) {
+            m_testDataPath = new ArrayList(4);
+
+            // set data path 
+            addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
+        }
     }
 
     /**
@@ -291,13 +295,23 @@ public class OpenCmsTestCase extends TestCase {
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
-               
+
         try {
             // sleep 0.5 seconds - sometimes other Threads need to finish before the next test case can start
             Thread.sleep(500);
         } catch (InterruptedException e) {
             // ignore
         }
+    }
+
+    /**
+     * Sets the additional connection name.<p>
+     * 
+     * @param additionalConnectionName the additional connection name
+     */
+    public static void setConnectionName(String additionalConnectionName) {
+
+        m_additionalConnectionName = additionalConnectionName;
     }
 
     /**
@@ -341,7 +355,7 @@ public class OpenCmsTestCase extends TestCase {
 
         // intialize a new resource storage
         m_resourceStorages = new HashMap();
-        
+
         // turn off exceptions after error logging during setup (won't work otherwise)
         OpenCmsTestLogAppender.setBreakOnError(false);
         // output a message 
@@ -569,17 +583,30 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Initializes the path to the test data configuration files
-     * using the default path.<p>
+     * Imports a resource from the RFS test directories to the VFS.<p> 
+     * 
+     * The imported resource will be automatically unlocked.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param rfsPath the RTF path of the resource to import, must be a path accessibly by the current class loader
+     * @param vfsPath the VFS path for the imported resource
+     * @param type the type for the imported resource
+     * @param properties the properties for the imported resource
+     * @return the imported resource
+     * 
+     * @throws Exception if the import fails
      */
-    public static synchronized void initTestDataPath() {
+    protected static CmsResource importTestResource(
+        CmsObject cms,
+        String rfsPath,
+        String vfsPath,
+        int type,
+        List properties) throws Exception {
 
-        if (m_testDataPath == null) {
-            m_testDataPath = new ArrayList(4);
-
-            // set data path 
-            addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
-        }
+        byte[] content = CmsFileUtil.readFile(rfsPath);
+        CmsResource result = cms.createResource(vfsPath, type, content, properties);
+        cms.unlockResource(vfsPath);
+        return result;
     }
 
     /**
@@ -1464,6 +1491,28 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Tests whether a resource has currently a specified flag set.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param flag a flag to check
+     */
+    public void assertFlags(CmsObject cms, String resourceName, int flag) {
+
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
+
+            // test if the specified flag is set
+            if (!((res.getFlags() & flag) > 0)) {
+                fail("[Flags (" + res.getFlags() + ") do not contain flag (" + flag + ")");
+            }
+        } catch (CmsException e) {
+            fail("Error reading resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+
+    /**
      * Ensures that the given resource is a folder.<p>
      * 
      * @param cms the CmsObject
@@ -2148,28 +2197,6 @@ public class OpenCmsTestCase extends TestCase {
 
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
-        }
-    }
-    
-    /**
-     * Tests whether a resource has currently a specified flag set.<p>
-     * 
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource to compare
-     * @param flag a flag to check
-     */
-    public void assertFlags(CmsObject cms, String resourceName, int flag) {
-        
-        try {
-            // get the actual resource from the vfs
-            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
-
-            // test if the specified flag is set
-            if (!((res.getFlags() & flag) > 0)) {
-                fail("[Flags (" + res.getFlags() + ") do not contain flag (" + flag + ")");
-            }
-        } catch (CmsException e) {
-            fail("Error reading resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
         }
     }
 

@@ -7,86 +7,126 @@
 		<directory>index</directory>
 		<timeout>60000</timeout>		
 		<excerpt>1024</excerpt>
-		<highlighter>org.opencms.search.documents.CmsHtmlHighlighter</highlighter>
+		<highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>
 		<documenttypes>		
 			<documenttype>
 				<name>generic</name>
 				<class>org.opencms.search.documents.CmsVfsDocument</class>
 				<mimetypes/>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypePlain</resourcetype>
+					<resourcetype>*</resourcetype>
 				</resourcetypes>
-			</documenttype>	
+			</documenttype>		
+			<documenttype>
+				<name>html</name>
+				<class>org.opencms.search.documents.CmsDocumentHtml</class>
+				<mimetypes>
+					<mimetype>text/html</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>
 			<documenttype>
 				<name>image</name>
 				<class>org.opencms.search.documents.CmsVfsDocument</class>
 				<mimetypes/>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeImage</resourcetype>
+					<resourcetype>image</resourcetype>
 				</resourcetypes>
-			</documenttype>			
+			</documenttype>		
 			<documenttype>
 				<name>jsp</name>
-				<class>org.opencms.search.documents.CmsTextDocument</class>
+				<class>org.opencms.search.documents.CmsDocumentPlainText</class>
 				<mimetypes/>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeJsp</resourcetype>
+					<resourcetype>jsp</resourcetype>
 				</resourcetypes>
-			</documenttype>						
+			</documenttype>		
 			<documenttype>
 				<name>msexcel</name>
-				<class>org.opencms.search.documents.CmsExcelDocument</class>
+				<class>org.opencms.search.documents.CmsDocumentMsExcel</class>
 				<mimetypes>
 					<mimetype>application/vnd.ms-excel</mimetype>
 				</mimetypes>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeBinary</resourcetype>
-					<resourcetype>org.opencms.file.types.CmsResourceTypePlain</resourcetype>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
 				</resourcetypes>
-			</documenttype>				
+			</documenttype>		
+			<documenttype>
+				<name>mspowerpoint</name>
+				<class>org.opencms.search.documents.CmsDocumentMsPowerPoint</class>
+				<mimetypes>
+					<mimetype>application/vnd.ms-powerpoint</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>
 			<documenttype>
 				<name>msword</name>
-				<class>org.opencms.search.documents.CmsWordDocument</class>
+				<class>org.opencms.search.documents.CmsDocumentMsWord</class>
 				<mimetypes>
 					<mimetype>application/msword</mimetype>
 				</mimetypes>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeBinary</resourcetype>
-					<resourcetype>org.opencms.file.types.CmsResourceTypePlain</resourcetype>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
 				</resourcetypes>
-			</documenttype>			
+			</documenttype>	
 			<documenttype>
 				<name>pdf</name>
-				<class>org.opencms.search.documents.CmsPdfDocument</class>
+				<class>org.opencms.search.documents.CmsDocumentPdf</class>
 				<mimetypes>
 					<mimetype>application/pdf</mimetype>
 				</mimetypes>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeBinary</resourcetype>
-					<resourcetype>org.opencms.file.types.CmsResourceTypePlain</resourcetype>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
 				</resourcetypes>
-			</documenttype>			
+			</documenttype>
+			<documenttype>
+				<name>rtf</name>
+				<class>org.opencms.search.documents.CmsDocumentRtf</class>
+				<mimetypes>
+					<mimetype>application/rtf</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>		
 			<documenttype>
 				<name>text</name>
-				<class>org.opencms.search.documents.CmsTextDocument</class>
+				<class>org.opencms.search.documents.CmsDocumentPlainText</class>
 				<mimetypes>
 					<mimetype>text/html</mimetype>
 					<mimetype>text/plain</mimetype>
 				</mimetypes>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypePlain</resourcetype>
+					<resourcetype>plain</resourcetype>
 				</resourcetypes>
-			</documenttype>			
+			</documenttype>	
+			<documenttype>
+				<name>xmlcontent</name>
+				<class>org.opencms.search.documents.CmsDocumentXmlContent</class>
+				<mimetypes/>
+				<resourcetypes>
+					<resourcetype>*</resourcetype>
+				</resourcetypes>
+			</documenttype>
 			<documenttype>
 				<name>xmlpage</name>
-				<class>org.opencms.search.documents.CmsXmlPageDocument</class>
+				<class>org.opencms.search.documents.CmsDocumentXmlPage</class>
 				<mimetypes>
 					<mimetype>text/html</mimetype>
 				</mimetypes>
 				<resourcetypes>
-					<resourcetype>org.opencms.file.types.CmsResourceTypeXmlPage</resourcetype>
+					<resourcetype>xmlpage</resourcetype>
 				</resourcetypes>
-			</documenttype>												
+			</documenttype>	
 		</documenttypes>
 		<analyzers>
 			<analyzer>
@@ -146,11 +186,14 @@
 				</resources>
 				<documenttypes-indexed>
 	                <name>xmlpage</name>
+					<name>xmlcontent</name>
 	                <name>page</name>
 	                <name>text</name>
 	                <name>pdf</name>
+	                <name>rtf</name>
 	                <name>msword</name>
 	                <name>msexcel</name>
+	                <name>mspowerpoint</name>
 	                <name>image</name>
 	                <name>generic</name>				
 				</documenttypes-indexed>				

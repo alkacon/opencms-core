@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsWordTextPiece.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsTermHighlighterHtml.java,v $
+ * Date   : $Date: 2005/03/23 19:08:22 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,48 +30,28 @@
  */
 package org.opencms.search.documents;
 
+
 /**
- * This class stores info about the data structure describing a run of text.
+ * HTML Highlighter implementation used while generation excerpts.<p>
  * 
+ * @version $Revision: 1.1 $ $Date: 2005/03/23 19:08:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
-
-class CmsWordTextPiece {
-    
-    private int m_fcStart;
-    private int m_length;
-    private boolean m_usesUnicode;
+public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
 
     /**
-     * @param start start
-     * @param length length
-     * @param unicode true if uses unicode
+     * @see org.opencms.search.documents.I_CmsTermHighlighter#highlightTerm(java.lang.String)
      */
-    public CmsWordTextPiece(int start, int length, boolean unicode) {
-        m_usesUnicode = unicode;
-        m_length = length;
-        m_fcStart = start;
-    }
-    
-    /**
-     * @return the length
-     */
-    public int getLength() {
-        return m_length;
-    }
+    public String highlightTerm(String term) {
 
-    /**
-     * @return the start
-     */
-    public int getStart() {
-        return m_fcStart;
-    }
-    
-    /**
-     * @return true if uses unicode
-     */
-    public boolean usesUnicode() {
-        return m_usesUnicode;
+        if (term == null) {
+            return "";
+        }
+        StringBuffer result = new StringBuffer(term.length() + 16);
+        result.append("<b>");
+        result.append(term);
+        result.append("</b>");
+        return result.toString();
     }
 
 }

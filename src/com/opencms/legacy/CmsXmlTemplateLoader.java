@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/03/17 10:31:08 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/03/23 19:08:22 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -462,7 +462,6 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         }
 
         if (elementCacheEnabled) {
-//        patched 23.1.2004 by ph@ethikom.de: otherwise problems with cached and parsed XML content appear
             // TODO: Make cache more efficient
             clearLoaderCache(true, true);
 

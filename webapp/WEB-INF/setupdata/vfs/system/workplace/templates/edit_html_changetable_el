@@ -3,8 +3,6 @@
 
 MSHTML edit dialog for changing attributes of TR and TD-elements.
 
-Author : Michael Schäfer (ms@ethikom.de)
-
 -->
 <workplace>
 <template>

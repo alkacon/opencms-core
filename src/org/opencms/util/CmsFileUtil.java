@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/03/19 13:58:18 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/23 19:08:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -193,14 +193,14 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Reads a file from the RFS and converts it to a String with the specified encoding.<p> 
+     * Reads a file from the RFS and returns the file content.<p> 
      * 
      * @param filename the file to read 
-     * @param encoding the encoding to use when converting the file content to a String
-     * @return the read file convered to a String
+     * @return the read file content
+     * 
      * @throws IOException in case of file access errors
      */
-    public static String readFile(String filename, String encoding) throws IOException {
+    public static byte[] readFile(String filename) throws IOException {
 
         // create input and output stream
         InputStream in = CmsFileUtil.class.getClassLoader().getResourceAsStream(filename);
@@ -218,6 +218,19 @@ public final class CmsFileUtil {
         in.close();
         out.close();
 
-        return new String(out.toByteArray(), encoding);
+        return out.toByteArray();
+    }
+
+    /**
+     * Reads a file from the RFS and converts it to a String with the specified encoding.<p> 
+     * 
+     * @param filename the file to read 
+     * @param encoding the encoding to use when converting the file content to a String
+     * @return the read file convered to a String
+     * @throws IOException in case of file access errors
+     */
+    public static String readFile(String filename, String encoding) throws IOException {
+
+        return new String(readFile(filename), encoding);
     }
 }
