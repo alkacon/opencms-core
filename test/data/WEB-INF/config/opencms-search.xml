@@ -77,6 +77,14 @@
 				<resourcetypes>
 					<resourcetype>org.opencms.file.types.CmsResourceTypeImage</resourcetype>
 				</resourcetypes>
+			</documenttype>
+			<documenttype>
+				<name>xmlcontent</name>
+				<class>org.opencms.search.documents.CmsXmlDocument</class>
+				<mimetypes/>
+				<resourcetypes>
+					<resourcetype>org.opencms.file.types.CmsResourceTypeXmlContent</resourcetype>
+				</resourcetypes>
 			</documenttype>			
 			<documenttype>
 				<name>generic</name>
@@ -151,6 +159,7 @@
 	                <name>msword</name>
 	                <name>msexcel</name>
 	                <name>image</name>
+					<name>xmlcontent</name>
 	                <name>generic</name>				
 				</documenttypes-indexed>				
 			</indexsource>
@@ -165,6 +174,7 @@
 	                <name>page</name>
 	                <name>text</name>
 	                <name>jsp</name>
+					<name>xmlcontent</name>
 	                <name>generic</name>
 				</documenttypes-indexed>
 			</indexsource>	

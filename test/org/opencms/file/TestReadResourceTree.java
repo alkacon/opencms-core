@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReadResourceTree.java,v $
- * Date   : $Date: 2004/11/12 17:44:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/19 09:10:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "readResources" method of the CmsObject to test reading resource lists within a subtree.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestReadResourceTree extends OpenCmsTestCase {
 
@@ -261,10 +261,10 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         List result;
         
         result = cms.getResourcesInFolder(path, CmsResourceFilter.ALL);
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
         
         result = cms.getSubFolders(path, CmsResourceFilter.ALL);
-        assertEquals(3, result.size());     
+        assertEquals(4, result.size());     
         
         result = cms.getFilesInFolder(path, CmsResourceFilter.ALL);
         assertEquals(1, result.size());          

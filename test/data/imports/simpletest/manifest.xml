@@ -1688,6 +1688,112 @@
 			</properties>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>xmlcontent</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 01 Jun 2004 11:06:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jun 2004 11:06:06 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Xmlcontent]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/article.xsd</source>
+			<destination>xmlcontent/article.xsd</destination>
+			<type>plain</type>
+			<uuidresource>3416bed7-1128-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Mon, 25 Oct 2004 17:28:15 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 10:27:15 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for articles]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/article_0001.html</source>
+			<destination>xmlcontent/article_0001.html</destination>
+			<type>article</type>
+			<uuidresource>e20dff06-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 18:59:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:16:45 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample Article 1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/article_0002.html</source>
+			<destination>xmlcontent/article_0002.html</destination>
+			<type>article</type>
+			<uuidresource>00b9d277-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Tue, 19 Oct 2004 18:59:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:10:27 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is the article 2 sample]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/article_0003.html</source>
+			<destination>xmlcontent/article_0003.html</destination>
+			<type>article</type>
+			<uuidresource>beeee83b-113f-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Wed, 20 Oct 2004 19:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:15:46 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nice sample Article 3]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/article_0004.html</source>
+			<destination>xmlcontent/article_0004.html</destination>
+			<type>article</type>
+			<uuidresource>f7c19c2b-1140-11d9-831f-b70b5b3477aa</uuidresource>
+			<datelastmodified>Thu, 21 Oct 2004 19:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 28 Sep 2004 13:24:31 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is article number 4]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
 	</files>
 	<usergroupdata>
 		<groupdata>

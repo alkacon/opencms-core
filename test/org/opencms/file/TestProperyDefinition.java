@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestProperyDefinition.java,v $
- * Date   : $Date: 2004/11/15 09:46:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/19 09:10:33 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestProperyDefinition extends OpenCmsTestCase {
 
@@ -254,7 +254,7 @@ public class TestProperyDefinition extends OpenCmsTestCase {
         List result;
         
         result = cms.readResourcesWithProperty(I_CmsConstants.C_PROPERTY_TITLE);
-        assertEquals(56, result.size());
+        assertEquals(62, result.size());
         result = cms.readResourcesWithProperty(I_CmsConstants.C_PROPERTY_TEMPLATE);
         assertEquals(24, result.size());
     }
