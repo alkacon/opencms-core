@@ -12,7 +12,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/21 14:51:02 $  
+ * @version $Revision: 1.3 $ $Date: 2000/01/24 12:01:46 $  
  */
 public class CmsResponseHttpServlet implements I_CmsConstants,  
                                                I_CmsResponse{ 
@@ -41,7 +41,7 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
      * @param req The original HttpServletRequest used to create this CmsRequest.
      * @param res The original HttpServletResponse used to create this CmsResponse.
      */
-    public CmsResponseHttpServlet (HttpServletRequest req, HttpServletResponse res) {
+     CmsResponseHttpServlet (HttpServletRequest req, HttpServletResponse res) {
         m_res=res;
         m_req=req;
     }

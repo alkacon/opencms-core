@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/12 10:13:53 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/24 12:01:40 $
  */
  class CmsAccessUserInfoMySql implements I_CmsAccessUserInfo {
 
@@ -115,10 +115,10 @@ import com.opencms.core.*;
         
          }
         catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
         catch (IOException e){
-            throw new CmsException(CmsException. C_SERIALIZATION, e);			
+            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
 		}
      
     }
@@ -146,10 +146,14 @@ import com.opencms.core.*;
        
         // get the additional user information data from the database
     	try {
-            synchronized(m_statementUserinfoRead) {
+            /*synchronized(m_statementUserinfoRead) {
 		        m_statementUserinfoRead.setInt(1,id);
            	    res = m_statementUserinfoRead.executeQuery();
-            }
+            }*/
+            Statement s = m_Con.createStatement();			
+			s.setEscapeProcessing(false);	
+         
+            res = s.executeQuery("SELECT * FROM USERS_ADDITIONALINFO WHERE USER_ID = "+id);
 	        if(res.next()) {
                 value = res.getBytes(C_USER_INFO);
                  // now deserialize the object
@@ -157,18 +161,18 @@ import com.opencms.core.*;
                 ObjectInputStream oin = new ObjectInputStream(bin);
                 info=(Hashtable)oin.readObject();                
 		     } else {
-                       throw new CmsException("User ID:"+id,CmsException.C_NO_USER);
+                throw new CmsException("[CmsAccessUserInfoMySql/readUserInformation(id)]: User ID:"+id,CmsException.C_NO_USER);
              }
 			
 		}
 		catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessUserInfoMySql/readUserInformation(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}	
         catch (IOException e){
-            throw new CmsException(CmsException. C_SERIALIZATION, e);			
+            throw new CmsException("[CmsAccessUserInfoMySql/readUserInformation(id)]:"+CmsException. C_SERIALIZATION, e);			
 		}
 	    catch (ClassNotFoundException e){
-            throw new CmsException(CmsException. C_SERIALIZATION, e);			
+            throw new CmsException("[CmsAccessUserInfoMySql]:"+CmsException. C_SERIALIZATION, e);			
 		}	
   
         return info;
@@ -205,10 +209,10 @@ import com.opencms.core.*;
      
          }
         catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessUserInfoMySql/writeUserInformation(id,infos)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
         catch (IOException e){
-            throw new CmsException(CmsException. C_SERIALIZATION, e);			
+            throw new CmsException("[CmsAccessUserInfoMySql/writeUserInformation(id,infos)]:",CmsException. C_SERIALIZATION, e);			
 		}
    
      }
@@ -230,7 +234,7 @@ import com.opencms.core.*;
           	    m_statementUserinfoDelete.executeUpdate();  
             }
 		}catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessUserInfoMySql/deleteUser(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          
      }

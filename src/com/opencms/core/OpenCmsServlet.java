@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.9 $ $Date: 2000/01/21 14:51:02 $  
+* @version $Revision: 1.10 $ $Date: 2000/01/24 12:01:46 $  
 * 
 */
 
@@ -236,7 +236,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
              
                 // get the username
                 user=m_sessionStorage.getUserName(session.getId());
-     
+                System.err.println("Session authentifcation "+user.toString());
                              
                 //check if a user was returned, i.e. the user is authenticated
                 if (user != null) {
@@ -272,6 +272,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
 				            // autheification in the DB
                             try {
                             user=cms.loginUser(username,password); 
+                            System.err.println("HTTP authentifcation "+user.toString());
                             // authentification was successful create a session 
                             session=req.getSession(true);
                             OpenCmsServletNotify notify = new OpenCmsServletNotify(session.getId(),m_sessionStorage);
@@ -281,12 +282,15 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                                 if (e.getType() == CmsException.C_NO_ACCESS){
                                     // authentification failed, so display a login screen
                                     requestAuthorization(req, res);
+                                    System.err.println("HTTPn authentifcation login required");
                                 } else {
                                     throw e;               
                                 }                                                                                                    
 			    			 }
                         }
-                    }
+                 } else {
+                        System.err.println("Guest");
+                 }
             }
        } catch (CmsException e) {
             errorHandling(req,res,e);
@@ -360,22 +364,26 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
             // access denied error - display login dialog
             case CmsException.C_NO_ACCESS: 
                 requestAuthorization(req,res);  
+                System.err.println(e.toString());
                 break;
             // file not found - display 404 error.
             case CmsException.C_NOT_FOUND:
+                System.err.println(e.toString());
                 res.setContentType("text/plain");
-                res.getWriter().print(e.toString());
+                //res.getWriter().print(e.toString());
                 //res.sendError(res.SC_NOT_FOUND);
                 break;
             case CmsException.C_SERVICE_UNAVAILABLE:
+                System.err.println(e.toString());
                 res.sendError(res.SC_SERVICE_UNAVAILABLE, e.toString());
                 break;
             default:
+                System.err.println(e.toString());
                 res.setContentType("text/plain");
-                res.getWriter().print(e.toString());
+                //res.getWriter().print(e.toString());
                 //res.sendError(res.SC_INTERNAL_SERVER_ERROR);
             }
-          
+            e.printStackTrace();
         } catch (IOException ex) {
            
         }

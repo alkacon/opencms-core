@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/06 11:52:08 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/24 12:01:40 $
  */
  class CmsAccessUserGroup implements I_CmsAccessUserGroup, I_CmsConstants {
 
@@ -61,7 +61,7 @@ import com.opencms.core.*;
              defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
              user.setDefaultGroup(defaultGroup);
          } else {
-             throw new CmsException(CmsException.C_NOT_FOUND);
+             throw new CmsException("[CmsAccessUserGroup/readUser(username)]: Username "+username,CmsException.C_NOT_FOUND);
          }
          return user;
      }
@@ -89,7 +89,7 @@ import com.opencms.core.*;
              defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
              user.setDefaultGroup(defaultGroup);
          } else {
-             throw new CmsException(CmsException.C_NO_ACCESS);
+             throw new CmsException("[CmsAccessUserGroup/readUser(username,password)]:Username "+username,CmsException.C_NO_ACCESS);
          }
          return user;
      }
@@ -113,7 +113,7 @@ import com.opencms.core.*;
              defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
              user.setDefaultGroup(defaultGroup);
          } else {
-             throw new CmsException(CmsException.C_NOT_FOUND);
+             throw new CmsException("[CmsAccessUserGroup/readUser(id)]:UserId "+id,CmsException.C_NOT_FOUND);
          }
          return user;
     }
@@ -134,7 +134,7 @@ import com.opencms.core.*;
          if (user != null) {
             groups=m_accessGroup.getGroupsOfUser(user.getId());
             } else {
-            throw new CmsException(CmsException.C_NO_USER);
+            throw new CmsException("[CmsAccessUserGroup/getGroupsOfUser(username)]:Username "+username,CmsException.C_NO_USER);
        }
          return groups;
      }
@@ -200,7 +200,7 @@ import com.opencms.core.*;
                  }
              }
          }   else {
-               throw new CmsException(CmsException.C_NO_GROUP);
+               throw new CmsException("[CmsAccessUserGroup/getUsersOfGroup(groupname)]:Groupname "+groupname,CmsException.C_NO_GROUP);
          }
          return users;
      }
@@ -229,10 +229,10 @@ import com.opencms.core.*;
                 //add this user to the group
                 userInGroup=m_accessGroup.userInGroup(user.getId(),group.getId());
             } else {
-                throw new CmsException(CmsException.C_NO_GROUP);
+                throw new CmsException("[CmsAccessUserGroup/userInGroup(username,groupname)]:Groupname "+groupname,CmsException.C_NO_GROUP);
             }
          } else {
-            throw new CmsException(CmsException.C_NO_USER);
+            throw new CmsException("[CmsAccessUserGroup/userInGroup(username,groupname)]:Userame "+username,CmsException.C_NO_USER);
        }
          
          return userInGroup;
@@ -299,7 +299,7 @@ import com.opencms.core.*;
              m_accessUser.deleteUser(username);
              m_accessUserInfo.deleteUserInformation(userId);
          } else {
-             throw new CmsException(CmsException.C_NOT_FOUND);
+             throw new CmsException("[CmsAccessUserGroup/deleteUser(username)]:Username "+username,CmsException.C_NOT_FOUND);
          }
         }
          
@@ -322,7 +322,7 @@ import com.opencms.core.*;
                 userId=user.getId();
                 m_accessUserInfo.writeUserInformation(userId,user.getAdditionalInfo());               
             } else {
-              throw new CmsException(CmsException.C_NOT_FOUND);
+              throw new CmsException("[CmsAccessUserGroup/writeUser(user)]:Username "+user.getName(),CmsException.C_NOT_FOUND);
             }   
      }
 
@@ -397,10 +397,10 @@ import com.opencms.core.*;
                 //add this user to the group
                 m_accessGroup.addUserToGroup(user.getId(),group.getId());
             } else {
-                throw new CmsException(CmsException.C_NO_GROUP);
+                throw new CmsException("[CmsAccessUserGroup/addUserToGroup(username/groupname)]:Groupname "+groupname,CmsException.C_NO_GROUP);
             }
          } else {
-            throw new CmsException(CmsException.C_NO_USER);
+            throw new CmsException("[CmsAccessUserGroup/addUserToGroup(username/groupname)]:Username "+username,CmsException.C_NO_USER);
        }
      }
 
@@ -429,13 +429,13 @@ import com.opencms.core.*;
                     //remove this user from the group
                     m_accessGroup.removeUserFromGroup(user.getId(),group.getId());
                 } else {
-                    throw new CmsException(CmsException.C_NO_DEFAULT_GROUP);
+                    throw new CmsException("[CmsAccessUserGroup/removeUserFromGroup(username,groupname)]:",CmsException.C_NO_DEFAULT_GROUP);
                 }
             } else {
-                throw new CmsException(CmsException.C_NO_GROUP);
+                throw new CmsException("[CmsAccessUserGroup/removeUserFromGroup(username,groupname)]:Groupname "+groupname,CmsException.C_NO_GROUP);
             }
          } else {
-            throw new CmsException(CmsException.C_NO_USER);
+            throw new CmsException("[CmsAccessUserGroup/removeUserFromGroup(username,groupname)]:Username "+username,CmsException.C_NO_USER);
        }
      }
      

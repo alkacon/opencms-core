@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/14 13:46:51 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/24 12:01:40 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -61,6 +61,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			// sets the last used index of resource types.
 			resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
 			
+            // add the mime-types to the database
 			propertyRb.addProperty( C_PROPERTY_RESOURCE_TYPE, resourceTypes );
             
             
@@ -105,6 +106,8 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 					new CmsAccessMetadefinitionMySql(propertyDriver, propertyConnectString));
 			
        
+            
+            
 			return new CmsResourceBroker(userRb, fileRb, metadefinitionRb, 
 										 propertyRb, projectRb);
 	}

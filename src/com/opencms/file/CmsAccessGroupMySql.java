@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/12 10:13:53 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/24 12:01:40 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -232,7 +232,7 @@ import com.opencms.core.*;
              }
   
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);		
+             throw new CmsException("[CmsAccessGroupMySql/getGroupsOfUser(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
          
         
@@ -255,11 +255,15 @@ import com.opencms.core.*;
          ResultSet res = null;
    
          try{ 
-             synchronized (m_statementGroupRead) {
+            /* synchronized (m_statementGroupRead) {
                 // read the group from the database
                 m_statementGroupRead.setString(1,groupname);
                 res = m_statementGroupRead.executeQuery();
-             }
+             } */
+            Statement s = m_Con.createStatement();			
+			s.setEscapeProcessing(false);	
+			
+			res = s.executeQuery("SELECT * FROM GROUPS WHERE GROUP_NAME = '"+groupname+"'");
              // create new Cms group object
 			 if(res.next()) {
                 group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -268,11 +272,11 @@ import com.opencms.core.*;
                                    res.getString(C_GROUP_DESCRIPTION),
                                    res.getInt(C_GROUP_FLAGS));                                
              } else {
-                 throw new CmsException(groupname,CmsException.C_NO_GROUP);
+                 throw new CmsException("[CmsAccessGroupMySql/readGRoup(groupname)]:"+groupname,CmsException.C_NO_GROUP);
              }
        
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessGroupMySql/readGRoup(groupname)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return group;
      }
@@ -292,11 +296,15 @@ import com.opencms.core.*;
          ResultSet res = null;
    
          try{
-             synchronized(m_statementGroupReadId) {
+            /* synchronized(m_statementGroupReadId) {
                  // read the group from the database
                 m_statementGroupReadId.setInt(1,id);
                 res = m_statementGroupReadId.executeQuery();
-             }
+             }*/
+            Statement s = m_Con.createStatement();			
+			s.setEscapeProcessing(false);	
+            res = s.executeQuery("SELECT * FROM GROUPS WHERE GROUP_ID = "+id);
+            
              // create new Cms group object
 			 if(res.next()) {
                 group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -305,11 +313,11 @@ import com.opencms.core.*;
                                    res.getString(C_GROUP_DESCRIPTION),
                                    res.getInt(C_GROUP_FLAGS));                                
              } else {
-                 throw new CmsException(group.getName(),CmsException.C_NO_GROUP);
+                 throw new CmsException("[CmsAccessGroupMySql/readGroup(id)]:"+id,CmsException.C_NO_GROUP);
              }
        
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+             throw new CmsException("[CmsAccessGroupMySql/readGroup(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return group;
      }
@@ -338,7 +346,7 @@ import com.opencms.core.*;
              }
   
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);		
+             throw new CmsException("[CmsAccessGroupMySql/getUsersOfGroup(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
          
          return userid;
@@ -368,7 +376,7 @@ import com.opencms.core.*;
                 userInGroup=true;
             }                     
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessGroupMySql/userInGroup(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}             
          return userInGroup;
      }
@@ -416,7 +424,7 @@ import com.opencms.core.*;
             // database.
             group=readGroup(name);
          } catch (SQLException e){
-                 throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+             throw new CmsException("[CmsAccessGroupMySql/createGroup(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
   		}
          return group;
      }
@@ -441,10 +449,10 @@ import com.opencms.core.*;
                     m_statementGroupWrite.executeUpdate();  
                 }
             } else {
-                throw new CmsException(CmsException.C_NO_GROUP);	
+                throw new CmsException("[CmsAccessGroupMySql/writeGroup(group)]:",CmsException.C_NO_GROUP);	
             }
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessGroupMySql/writeGroup(group)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
      }
 
@@ -465,7 +473,7 @@ import com.opencms.core.*;
                 m_statementGroupDelete.executeUpdate();
              }
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessGroupMySql/delete(group)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
      }
 
@@ -495,7 +503,7 @@ import com.opencms.core.*;
                 }
    
              } catch (SQLException e){
-                 throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+                 throw new CmsException("[CmsAccessGroupMySql/addUserToGroup(userid,groupid)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
           
 	    	}
         }
@@ -520,7 +528,7 @@ import com.opencms.core.*;
                 m_statementRemoveUserFromGroup.executeUpdate();
              }
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessGroupMySql/removeUserFromGroup(userid,groupid)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
      }
 
@@ -553,7 +561,7 @@ import com.opencms.core.*;
              
        
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);		
+            throw new CmsException("[CmsAccessGroupMySql/getGroups()]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
       return groups;
      }
@@ -595,7 +603,7 @@ import com.opencms.core.*;
              }
        
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessGroupMySql/getChild(groupname)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          //check if the child vector has no elements, set it to null.
          if (childs.size() == 0) {
@@ -638,7 +646,7 @@ import com.opencms.core.*;
              }
        
          } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[CmsAccessGroupMySql/getParent(groupname)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
         return parent;
     }

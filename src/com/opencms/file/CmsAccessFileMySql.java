@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/01/13 12:13:39 $
+ * @version $Revision: 1.16 $ $Date: 2000/01/24 12:01:39 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -1047,12 +1047,16 @@ import com.opencms.core.*;
          ResultSet res =null;
            
          try {  
-              synchronized ( m_statementResourceRead) {
+            /*  synchronized ( m_statementResourceRead) {
                    // read resource data from database
                    m_statementResourceRead.setString(1,absoluteName(foldername));
                    m_statementResourceRead.setInt(2,project.getId());
                    res = m_statementResourceRead.executeQuery();
-               }
+               }*/
+              Statement s = m_Con.createStatement();			
+			  s.setEscapeProcessing(false);	
+			  res = s.executeQuery("SELECT * FROM RESOURCES WHERE RESOURCE_NAME = '"+foldername
+                                   +"' AND PROJECT_ID = "+project.getId());
                // create new resource
                if(res.next()) {
                         folder = new CmsFolder(res.getString(C_RESOURCE_NAME),
