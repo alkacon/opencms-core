@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.402 $
+ * Date   : $Date: 2004/08/10 15:44:19 $
+ * Version: $Revision: 1.403 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,6 +67,7 @@ import java.util.*;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.dbcp.PoolingDriver;
 
 /**
  * This is the driver manager.<p>
@@ -75,10 +76,10 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.402 $ $Date: 2004/08/03 07:19:04 $
+ * @version $Revision: 1.403 $ $Date: 2004/08/10 15:44:19 $
  * @since 5.1
  */
-public class CmsDriverManager extends Object implements I_CmsEventListener {
+public final class CmsDriverManager extends Object implements I_CmsEventListener {
 
     /**
      * Provides a method to build cache keys for groups and users that depend either on 
@@ -298,7 +299,17 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
     /** The workflow driver. */
     private I_CmsWorkflowDriver m_workflowDriver;
+    
+    /** The list of initialized JDBC pools. */
+    private List m_connectionPools;
 
+    /**
+     * Private constructor, initializes some required member variables.<p> 
+     */
+    private CmsDriverManager() {
+        m_connectionPools = new ArrayList();
+    }
+    
     /**
      * Reads the required configurations from the opencms.properties file and creates
      * the various drivers to access the cms resources.<p>
@@ -750,7 +761,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 // fire an event that a new resource has been created
                 OpenCms.fireCmsEvent(
                     new CmsEvent(
-                        new CmsObject(), 
                         I_CmsEventListener.EVENT_RESOURCE_CREATED, 
                         Collections.singletonMap("resource", newResource)));
             }
@@ -833,7 +843,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         modifiedResources.add(destinationFolder);
         OpenCms.fireCmsEvent(
             new CmsEvent(
-                new CmsObject(), 
                 I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED, 
                 Collections.singletonMap("resources", modifiedResources)));
     }    
@@ -980,7 +989,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         modifiedResources.add(destinationFolder);
         OpenCms.fireCmsEvent(
             new CmsEvent(
-                new CmsObject(), 
                 I_CmsEventListener.EVENT_RESOURCE_COPIED, 
                 Collections.singletonMap("resources", modifiedResources)));
    
@@ -1028,7 +1036,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             Map data = new HashMap();
             data.put("resource", resource);
             data.put("property", property);
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MODIFIED, data));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROPERTY_MODIFIED, data));
         }
     }  
     
@@ -1075,7 +1083,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_propertyCache.clear();
 
             // fire an event that the properties of a resource have been modified
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));
         }
     }
     
@@ -1150,7 +1158,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_permissionCache.clear();
 
         // fire resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }  
     
     /**
@@ -1208,7 +1216,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_permissionCache.clear();
 
         // fire resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
     
     /**
@@ -1293,7 +1301,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         clearResourceCache();
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }    
     
     /**
@@ -1442,7 +1450,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // update the cache
         clearResourceCache();
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }    
     
     /**
@@ -1610,7 +1618,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearAccessControlListCache();
         m_propertyCache.clear();
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap("resources", resources)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap("resources", resources)));
     }
     
 
@@ -1652,7 +1660,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 } catch (CmsException exc) {
                     // if the subfolder exists already - all is ok
                 } finally {
-                    OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", context.currentProject())));
+                    OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", context.currentProject())));
                 }
             }
         } else {
@@ -1798,7 +1806,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearResourceCache();
         m_propertyCache.clear();
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));
     }
     
 
@@ -1836,7 +1844,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // fire the event
         OpenCms.fireCmsEvent(
             new CmsEvent(
-                new CmsObject(), 
                 I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
                 Collections.singletonMap("resource", resource)));
     }    
@@ -1945,7 +1952,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         OpenCms.fireCmsEvent(
             new CmsEvent(
-                new CmsObject(), 
                 I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
                 Collections.singletonMap("resource", resource)));
     }    
@@ -1998,7 +2004,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearResourceCache();
         content = null;
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }    
 
     /**
@@ -2045,7 +2051,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // update the cache
         clearResourceCache();
 
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
         
         return resource;
     }
@@ -2261,7 +2267,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // fire a resource modification event
         OpenCms.fireCmsEvent(
             new CmsEvent(
-                new CmsObject(), 
                 I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
                 Collections.singletonMap("resource", destination)));        
     }
@@ -2325,7 +2330,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // fire a resource modification event
         OpenCms.fireCmsEvent(
             new CmsEvent(
-                new CmsObject(), 
                 I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
                 Collections.singletonMap("resource", resource)));       
     }
@@ -2359,7 +2363,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // fire a resource modification event
         OpenCms.fireCmsEvent(
             new CmsEvent(
-                new CmsObject(), 
                 I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
                 Collections.singletonMap("resource", resource)));        
     }    
@@ -3528,7 +3531,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             CmsTask task = createProject(context, CmsWorkplaceManager.C_TEMP_FILE_PROJECT_NAME, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
             CmsProject tempProject = m_projectDriver.createProject(context.currentUser(), group, managergroup, task, CmsWorkplaceManager.C_TEMP_FILE_PROJECT_NAME, CmsWorkplaceManager.C_TEMP_FILE_PROJECT_DESCRIPTION, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, null);
             m_projectDriver.createProjectResource(tempProject.getId(), "/", null);
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", tempProject)));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", tempProject)));
             return tempProject;
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] createTempfileProject() ", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
@@ -3574,7 +3577,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_propertyCache.clear();
 
             // fire an event that all properties of a resource have been deleted
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resources", resources)));            
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resources", resources)));            
         }
     }
     
@@ -3757,7 +3760,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     undoChanges(context, currentFile);
                 }
 
-                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFile)));
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFile)));
             }
             // now delete folders or undo changes in folders
             for (int i = 0; i < allFolders.size(); i++) {
@@ -3780,7 +3783,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     undoChanges(context, currentFolder);
                 }
 
-                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFolder)));
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFolder)));
             }
             // now delete the folders in the vector
             for (int i = deletedFolders.size() - 1; i > -1; i--) {
@@ -3789,7 +3792,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 // remove the access control entries
                 m_userDriver.removeAccessControlEntries(context.currentProject(), delFolder.getResourceId());
 
-                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", delFolder)));
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", delFolder)));
             }
             // unlock all resources in the project
             m_lockManager.removeResourcesInProject(deleteProject.getId());
@@ -3803,7 +3806,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_projectDriver.deleteProject(deleteProject);
             m_projectCache.remove(new Integer(projectId));
 
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", deleteProject)));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", deleteProject)));
         } else if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteProject() " + deleteProject.getName(), CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         } else {
@@ -3834,7 +3837,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             } finally {
                 
                 // fire an event that a property of a resource has been deleted
-                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_DEFINITION_MODIFIED, Collections.singletonMap("propertyDefinition", propertyDefinition)));
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROPERTY_DEFINITION_MODIFIED, Collections.singletonMap("propertyDefinition", propertyDefinition)));
             }
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deletePropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
@@ -4662,7 +4665,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             }
 
             // clear all caches to reclaim memory
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
 
             // force a complete object finalization and garbage collection 
             System.runFinalization();
@@ -5497,24 +5500,23 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * 
      * @param configurations the configurations from the propertyfile
      * @param poolName the configuration name of the pool
-     * @return the pool url
      * @throws CmsException if something goes wrong
      */
-    public String newPoolInstance(ExtendedProperties configurations, String poolName) throws CmsException {
+    public void newPoolInstance(ExtendedProperties configurations, String poolName) throws CmsException {
 
-        String poolUrl = null;
+        PoolingDriver driver;
 
         try {
-            poolUrl = CmsDbPool.createDriverManagerConnectionPool(configurations, poolName);
+            driver = CmsDbPool.createDriverManagerConnectionPool(configurations, poolName);
         } catch (Exception exc) {
-            String message = "Critical error while initializing resource pool " + poolName;
+            String message = "Critical error while initializing connection pool " + poolName;
             if (OpenCms.getLog(this).isFatalEnabled()) {
                 OpenCms.getLog(this).fatal(message, exc);
             }
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
-        return poolUrl;
+        m_connectionPools.add(driver);
     }
 
     /**
@@ -7307,21 +7309,19 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * 
      * All files and folders "inside" an export point are written.<p>
      * 
-     * @param context the current request context
      * @param report an I_CmsReport instance to print output message, or null to write messages to the log file
      */
-    public void updateExportPoints(CmsRequestContext context, I_CmsReport report) {
+    public void updateExportPoints(I_CmsReport report) {
         Set exportPoints = new HashSet();
         String currentExportPoint = null;
         List resources = new ArrayList();
         Iterator i = null;
         CmsResource currentResource = null;
         CmsExportPointDriver exportPointDriver = null;
-        CmsProject oldProject = null;
-
+        
         try {
-            // save the current project before we switch to the online project
-            oldProject = context.currentProject();
+            // export points are always written with the "export" user permissions
+            CmsRequestContext context = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport()).getRequestContext();
             context.setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
 
             // read the export points and return immediately if there are no export points at all         
@@ -7386,8 +7386,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error updating export points", e);
             }
-        } finally {
-            context.setCurrentProject(oldProject);
         }
     }
 
@@ -7744,11 +7742,46 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         try {
             clearcache();
             
-            m_projectDriver.destroy();
-            m_userDriver.destroy();
-            m_vfsDriver.destroy();
-            m_workflowDriver.destroy();
-            m_backupDriver.destroy();
+            try {
+                m_projectDriver.destroy();
+            } catch (Throwable t) {
+                OpenCms.getLog(this).error("Error closing project driver", t);
+            }
+            try {
+                m_userDriver.destroy();
+            } catch (Throwable t) {
+                OpenCms.getLog(this).error("Error closing user driver", t);
+            }
+            try {
+                m_vfsDriver.destroy();
+            } catch (Throwable t) {
+                OpenCms.getLog(this).error("Error closing VFS driver", t);
+            }
+            try {
+                m_workflowDriver.destroy();
+            } catch (Throwable t) {
+                OpenCms.getLog(this).error("Error closing workflow driver", t);
+            }
+            try {
+                m_backupDriver.destroy();
+            } catch (Throwable t) {
+                OpenCms.getLog(this).error("Error closing backup driver", t);
+            }
+            
+            for (int i=0; i<m_connectionPools.size(); i++) {
+                PoolingDriver driver = (PoolingDriver)m_connectionPools.get(i);
+                String[] pools = driver.getPoolNames();
+                for (int j=0; j<pools.length; j++) {
+                    try {
+                        driver.closePool(pools[j]);
+                        if (OpenCms.getLog(this).isDebugEnabled()) {
+                            OpenCms.getLog(this).debug("Closed connection pool '" + pools[j] + "'");
+                        }
+                    } catch (Throwable t) {
+                        OpenCms.getLog(this).error("Error closing connection pool '" + pools[j] + "'", t);
+                    }
+                }                
+            }
             
             m_userCache = null;
             m_groupCache = null;

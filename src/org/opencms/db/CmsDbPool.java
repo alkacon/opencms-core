@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2004/06/14 12:19:33 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/08/10 15:44:19 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2004/06/14 12:19:33 $
+ * @version $Revision: 1.23 $ $Date: 2004/08/10 15:44:19 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -178,7 +178,7 @@ public final class CmsDbPool extends Object {
      * @return String the URL to access the created DBCP pool
      * @throws Exception if the pool could not be initialized
      */
-    public static String createDriverManagerConnectionPool(ExtendedProperties configuration, String key) throws Exception {
+    public static PoolingDriver createDriverManagerConnectionPool(ExtendedProperties configuration, String key) throws Exception {
         // read the values of the pool configuration specified by the given key
         String jdbcDriver = configuration.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_DRIVER);
         String jdbcUrl = configuration.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_URL);
@@ -275,8 +275,8 @@ public final class CmsDbPool extends Object {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Init. JDBC pool      : " + poolUrl + " (" + jdbcUrl + ")");
         }
-
-        return poolUrl;
+                
+        return driver;
     } 
 
 }
