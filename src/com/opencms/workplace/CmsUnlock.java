@@ -1,8 +1,7 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2001/02/22 10:21:10 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2001/02/22 14:17:28 $
+* Version: $Revision: 1.33 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +44,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2001/02/22 10:21:10 $
+ * @version $Revision: 1.33 $ $Date: 2001/02/22 14:17:28 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -136,6 +135,16 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                         }
                     }
                 }
+                else {
+                    if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_FOLDER_NAME)) {
+                        try {
+                            cms.unlockResource(C_CONTENTBODYPATH + filename.substring(1));
+                        }
+                        catch(CmsException e) {
+
+                        }
+                    }
+                }
                 try {
                     cms.unlockResource(filename);
                     session.removeValue(C_PARA_FILE);
@@ -176,6 +185,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
     }
 
+
     /**
      * Indicates if the results of this class are cacheable.
      *
@@ -191,3 +201,4 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         return false;
     }
 }
+

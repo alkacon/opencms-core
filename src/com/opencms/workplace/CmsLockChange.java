@@ -1,8 +1,7 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2001/02/22 10:21:10 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2001/02/22 14:17:28 $
+* Version: $Revision: 1.28 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,10 +41,10 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.27 $ $Date: 2001/02/22 10:21:10 $
+ * @version $Revision: 1.28 $ $Date: 2001/02/22 14:17:28 $
  */
 
-public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
+public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
 
     /**
      * method to check get the real body path from the content file
@@ -125,6 +124,16 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
                     //TODO: ErrorHandling
                     }
                 }
+                else {
+                        if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_FOLDER_NAME)) {
+                            try {
+                                cms.lockResource(C_CONTENTBODYPATH + filename.substring(1), true);
+                            }
+                            catch(CmsException e) {
+
+                            }
+                        }
+                }
                 cms.lockResource(filename, true);
                 session.removeValue(C_PARA_FILE);
             }
@@ -172,3 +181,4 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
         return false;
     }
 }
+
