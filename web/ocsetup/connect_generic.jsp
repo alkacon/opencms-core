@@ -198,7 +198,7 @@
 								</table>
 							</td>
 						</tr>
-						<tr><td align="center"><b>Attention:</b> You must have a working database driver in your /oclib and /lib folder!</td></tr>
+						<tr><td align="center"><b>Attention:</b> You must have a working database driver in your classpath!</td></tr>
 						
 					</table>
 				</td>
