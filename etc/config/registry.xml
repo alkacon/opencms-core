@@ -70,6 +70,11 @@
         <smtpserver>my.smtp.server</smtpserver>
         <smtpserver2>alternative.smtp.server</smtpserver2>
         <defaultmailsender>nobody@nowhere.com</defaultmailsender>
+        <checklink>
+            <mailfrom>nobody@nowhere.com</mailfrom>
+            <mailto>nobody@nowhere.com</mailto>
+            <mailtemplate>/system/workplace/templates/urlcheckform</mailtemplate>
+        </checklink>
         <repository>
             <path>/system/classes/</path>
         </repository>
@@ -82,6 +87,11 @@
         <tempfileproject></tempfileproject>
         <UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>
 		<searchbylucene>off</searchbylucene>
+        <history>
+            <enabled>true</enabled>
+            <weeks></weeks>
+            <deleteversions>false</deleteversions>
+        </history>
     </system>
     <modules/>
 </registry>
