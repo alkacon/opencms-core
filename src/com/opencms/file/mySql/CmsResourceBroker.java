@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/20 09:10:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/07/20 11:52:19 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/07/20 09:10:02 $
+ * @version $Revision: 1.9 $ $Date: 2000/07/20 11:52:19 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1873,14 +1873,18 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							  int id)
         throws CmsException {
 		
-        CmsUser user=null;
-        // try to read the user from cache
-        user=(CmsUser)m_userCache.get(id);
-        if (user==null) {
-            user=m_dbAccess.readUser(id);
-            m_userCache.put(id,user);
-        } 
-		return user;
+        try {
+            CmsUser user=null;
+            // try to read the user from cache
+            user=(CmsUser)m_userCache.get(id);
+            if (user==null) {
+                user=m_dbAccess.readUser(id);
+                m_userCache.put(id,user);
+            } 
+		    return user;
+        } catch (CmsException ex) {
+            return new CmsUser(C_UNKNOWN_ID, id + "", "deleted user");
+        }
     }
     
      /**

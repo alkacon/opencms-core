@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2000/07/18 14:05:55 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/07/20 11:52:19 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/07/18 14:05:55 $
+ * @version $Revision: 1.25 $ $Date: 2000/07/20 11:52:19 $
  */
 
 public class CmsUser implements I_CmsConstants, Cloneable {
@@ -129,6 +129,19 @@ public class CmsUser implements I_CmsConstants, Cloneable {
 	 */
 	private int m_type = C_UNKNOWN_INT;
 	
+    
+     /**
+     * Constructor, creates a new Cms user object.
+     * 
+     * @param id The id of the new user.
+     * @param name The name of the new user.
+     * @param description The description of the new user.
+     */
+    public CmsUser(int id, String name,String description) {
+        m_id=id;
+        m_name=name;
+        m_description= description;
+    }
     	 
     /**
      * Constructor, creates a new Cms user object.
