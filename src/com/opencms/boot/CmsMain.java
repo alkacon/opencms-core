@@ -1,30 +1,30 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
-* Date   : $Date: 2003/01/20 17:57:51 $
-* Version: $Revision: 1.10 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
+ * Date   : $Date: 2003/02/26 10:30:37 $
+ * Version: $Revision: 1.11 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2001  The OpenCms Group
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.org 
+ *
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.boot;
 
@@ -37,24 +37,24 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * This class is a commadnlineinterface for the opencms. It can be used to test
- * the opencms, and for the initial setup. It uses the OpenCms-Object.
+ * Command line interface to access resourcen in OpenCms.<p>
+ * 
+ * This can be used to test the OpenCms VFS, 
+ * and it is also used for the initial setup.<p>
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.10 $ $Date: 2003/01/20 17:57:51 $
+ * @version $Revision: 1.11 $ $Date: 2003/02/26 10:30:37 $
  */
 public class CmsMain {
-
 
   private static final int C_MODE_ECMASCRIPT = 1;
   private static final int C_MODE_CLASSIC = 0;
 
     /**
-     * Main entry point when started via the command line.
+     * Main program entry point when started via the command line.<p>
      *
-     * @param args Array of parameters passed to the application
-     * via the command line.
+     * @param args parameters passed to the application via the command line
      */
     public static void main(String[] args) {
         boolean wrongUsage = false;
@@ -110,14 +110,14 @@ public class CmsMain {
     }
 
     /**
-     * Main entry point when started via the OpenCms setup wizard.
+     * Main program entry point when started via the OpenCms setup wizard.<p>
      *
-     * @param file file containing the setup commands (cmssetup.txt)
-     * @param base OpenCms base folder
+     * @param file filename of a file containing the setup commands (e.g. cmssetup.txt)
+     * @param base base folder for the OpenCms web application
      */
     public static void startSetup(String file, String base)  {
         try {
-            begin(new FileInputStream(new File(file)),base,C_MODE_CLASSIC);
+            begin(new FileInputStream(new File(file)), base, C_MODE_CLASSIC);
         }
         catch (FileNotFoundException  e)  {
           e.printStackTrace();
@@ -125,7 +125,11 @@ public class CmsMain {
     }
 
     /**
-     * Used to launch the OpenCms command line interface (CmsShell)
+     * Used to launch the OpenCms command line interface (CmsShell).<p>
+     * 
+     * @param fis file input stream of a scrfipt containing commands
+     * @param base base folder for the OpenCms web application
+     * @param mode can be C_MODE_CLASSIC or C_MODE_ECMASCRIPT
      */
     private static void begin(FileInputStream fis, String base, int mode)  {
         String classname = "com.opencms.core.CmsShell";
@@ -175,9 +179,13 @@ public class CmsMain {
         }
     }
 
-
+    /**
+     * Searches for the OpenCms web application base folder during startup.<p>
+     * 
+     * @param startFolder the folder where to start searching
+     * @return String the name of the folder on the local file system
+     */
     public static String searchBaseFolder(String startFolder) {
-
         File currentDir = null;
         String base = null;
         File father = null;
@@ -208,6 +216,12 @@ public class CmsMain {
         return base;
     }
 
+    /**
+     * Internal helper method for {@link #searchBaseFolder(String)}.<p>
+     * 
+     * @param currentDir current directory
+     * @return String directory name
+     */
     private static String downSearchBaseFolder(File currentDir) {
         if(isBaseFolder(currentDir)) {
             return currentDir.getAbsolutePath();
@@ -222,6 +236,12 @@ public class CmsMain {
         return null;
     }
 
+    /**
+     * Internal helper method for {@link #searchBaseFolder(String)}.<p>
+     * 
+     * @param currentDir current directory
+     * @return boolean <code>true</code> if currentDir is the base folder
+     */
     private static boolean isBaseFolder(File currentDir) {
         if(currentDir.exists() && currentDir.isDirectory()) {
             File f1 = new File(currentDir.getAbsolutePath() + File.separator + CmsBase.getPropertiesPath(false));
@@ -232,13 +252,9 @@ public class CmsMain {
     }
 
     /**
-     * Gives the usage-information to the user.
+     * Prints out a usage help message to <code>System.out</code>.<p>
      */
     private static void usage() {
         System.out.println("Usage: java com.opencms.core.CmsMain [-base=<basepath>] [-script=<scriptfile>] [-mode=[<ecmascript><es>/<classic>]]");
     }
-    static synchronized int getWurst(String gaga) {
-        return 0;
-    }
-
 }

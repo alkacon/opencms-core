@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/02/21 15:18:22 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/02/26 10:30:36 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.63 $ $Date: 2003/02/21 15:18:22 $
+ * @version $Revision: 1.64 $ $Date: 2003/02/26 10:30:36 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -2272,31 +2272,12 @@ class CmsShellCommands implements I_CmsConstants {
     }
 
     /**
-     * Reads all propertydefinitions for the given resource type.
+     * Reads all propertydefinitions for the given resource type.<p>
      *
      * @param resourcetype The name of the resource type to read the
-     * propertydefinitions for.
+     *         propertydefinitions for.
      */
     public void readAllPropertydefinitions(String resourcetype) {
-        try {
-            Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype);
-            for(int i = 0;i < propertydefs.size();i++) {
-                System.out.println((CmsPropertydefinition)propertydefs.elementAt(i));
-            }
-        }
-        catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Reads all propertydefinitions for the given resource type.
-     *
-     * @param resourcetype The name of the resource type to read the
-     * propertydefinitions for.
-     * @param type The type of the propertydefinition (normal|optional).
-     */
-    public void readAllPropertydefinitions(String resourcetype, String type) {
         try {
             Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype);
             for(int i = 0;i < propertydefs.size();i++) {

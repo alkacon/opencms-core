@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/02/25 16:10:09 $
-* Version: $Revision: 1.114 $
+* Date   : $Date: 2003/02/26 10:30:36 $
+* Version: $Revision: 1.115 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.114 $ $Date: 2003/02/25 16:10:09 $
+ * @version $Revision: 1.115 $ $Date: 2003/02/26 10:30:36 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -172,7 +172,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
     /**
      * Flag to indicate if the startup classes have already been initialized
      */
-    private boolean isInitialized = false;
+    private boolean m_isInitialized = false;
     
     /**
      * Constructor to create a new OpenCms object.<p>
@@ -568,78 +568,87 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      * class.<p>
      * 
      * This must be done only once per running OpenCms object instance.
-     * Usually this will be done by the OpenCms servlet. 
+     * Usually this will be done by the OpenCms servlet.
+     * 
+     * @param req the current request
+     * @param res the current response 
      */
     void initStartupClasses(HttpServletRequest req, HttpServletResponse res) throws CmsException {
-        if (isInitialized) return;
+        if (m_isInitialized) return;
 
-        // Set the initialized flag to true
-        isInitialized = true;
-
-        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : starting");
-
-        // set context once and for all
-        String context = req.getContextPath() + req.getServletPath();
-        if (! context.endsWith("/")) context += "/";
-        A_OpenCms.setOpenCmsContext(context);
-        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms context      : " + context);
-        
-        // check for old webapp names and extend with context
-        ArrayList webAppName = (ArrayList)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
-        if (webAppName != null) {
-            if (! webAppName.contains(context)) {
-                webAppName.add(context);
-                setRuntimeProperty("compatibility.support.webAppNames", webAppName);
+        synchronized (this) {
+            // Set the initialized flag to true
+            m_isInitialized = true;
+            
+            if (res == null) {
+                // currently no init action depends on res, this might change in the future
             }
-        } else {
-            setRuntimeProperty("compatibility.support.webAppNames", new ArrayList());
-        }
-
-        // check for the JSP export URL runtime property
-        String jspExportUrl = (String)getRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL);
-        if (jspExportUrl == null) {
-            StringBuffer url = new StringBuffer(256);
-            url.append(req.getScheme());
-            url.append("://");
-            url.append(req.getServerName());
-            url.append(":");
-            url.append(req.getServerPort());
-            url.append(context);        
-            String flexExportUrl = new String(url);    
-            // check if the URL ends with a "/", this is not allowed
-            if (flexExportUrl.endsWith(C_FOLDER_SEPARATOR)) {
-                flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length()-1);
+    
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : starting");
+    
+            // set context once and for all
+            String context = req.getContextPath() + req.getServletPath();
+            if (! context.endsWith("/")) context += "/";
+            A_OpenCms.setOpenCmsContext(context);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms context      : " + context);
+            
+            // check for old webapp names and extend with context
+            ArrayList webAppName = (ArrayList)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
+            if (webAppName != null) {
+                if (! webAppName.contains(context)) {
+                    webAppName.add(context);
+                    setRuntimeProperty("compatibility.support.webAppNames", webAppName);
+                }
+            } else {
+                setRuntimeProperty("compatibility.support.webAppNames", new ArrayList());
             }
-            setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
-            CmsJspLoader.setJspExportUrl(flexExportUrl);
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". JSP export URL       : using value from first request - " + flexExportUrl);
-        }
-        
-
-        // initialize 1 instance per class listed in the startup node
-        try{
-            Hashtable startupNode = getRegistry().getSystemValues( "startup" );
-            if (startupNode!=null) {
-                for (int i=1;i<=startupNode.size();i++) {
-                    String currentClass = (String)startupNode.get( "class" + i );
-                    try {
-                        Class.forName(currentClass).newInstance();
-
-                        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : " + currentClass + " instanciated");
-                    } catch (Exception e1){
-                        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e1.toString());
+    
+            // check for the JSP export URL runtime property
+            String jspExportUrl = (String)getRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL);
+            if (jspExportUrl == null) {
+                StringBuffer url = new StringBuffer(256);
+                url.append(req.getScheme());
+                url.append("://");
+                url.append(req.getServerName());
+                url.append(":");
+                url.append(req.getServerPort());
+                url.append(context);        
+                String flexExportUrl = new String(url);    
+                // check if the URL ends with a "/", this is not allowed
+                if (flexExportUrl.endsWith(C_FOLDER_SEPARATOR)) {
+                    flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length()-1);
+                }
+                setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
+                CmsJspLoader.setJspExportUrl(flexExportUrl);
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". JSP export URL       : using value from first request - " + flexExportUrl);
+            }
+            
+    
+            // initialize 1 instance per class listed in the startup node
+            try{
+                Hashtable startupNode = getRegistry().getSystemValues( "startup" );
+                if (startupNode!=null) {
+                    for (int i=1;i<=startupNode.size();i++) {
+                        String currentClass = (String)startupNode.get( "class" + i );
+                        try {
+                            Class.forName(currentClass).newInstance();
+    
+                            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : " + currentClass + " instanciated");
+                        } catch (Exception e1){
+                            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e1.toString());
+                        }
                     }
                 }
+            } catch (Exception e2){
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e2.toString());
             }
-        } catch (Exception e2){
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e2.toString());
+    
+            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
+                A_OpenCms.log(C_OPENCMS_INIT, ". Startup class init   : finished");
+                A_OpenCms.log(C_OPENCMS_INIT, ".                      ...............................................................");        
+                A_OpenCms.log(C_OPENCMS_INIT, ".");        
+            }    
         }
-
-        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
-            A_OpenCms.log(C_OPENCMS_INIT, ". Startup class init   : finished");
-            A_OpenCms.log(C_OPENCMS_INIT, ".                      ...............................................................");        
-            A_OpenCms.log(C_OPENCMS_INIT, ".");        
-        }    
     }
 
     /**

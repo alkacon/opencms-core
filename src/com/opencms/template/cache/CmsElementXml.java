@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2003/01/20 23:59:21 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/02/26 10:30:37 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -118,7 +118,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                 }
             }
             if(variant != null) {
-                result = resolveVariant(cms, variant, elementCache, mergedElDefs, elementName, parameters);
+                result = resolveVariant(cms, variant, elementCache, mergedElDefs, parameters);
             }
         }
         if(variant == null) {

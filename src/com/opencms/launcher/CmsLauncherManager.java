@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
-* Date   : $Date: 2003/02/01 19:14:45 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/02/26 10:30:36 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.*;
  * given launcher id.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2003/02/01 19:14:45 $
+ * @version $Revision: 1.25 $ $Date: 2003/02/26 10:30:36 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
 
@@ -78,7 +78,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
         I_CmsLauncher launcherInstance = null;
         Integer launcherId = null;
 
-        Hashtable knownLaunchers = getKnownLaunchers(cms);
+        Hashtable knownLaunchers = getKnownLaunchers();
         // Initialize Hashtable
         launchers = new Hashtable();
         if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT) ) {
@@ -178,11 +178,12 @@ public class CmsLauncherManager implements I_CmsLogChannels {
     }
 
     /**
-     * Gets the known launchers from the registry.
-     * Needed to look up all available launchers.
-     * @return Hashtable with the known launchers.
+     * Returns the known launchers configured in the registry,
+     * used to look up all available launchers.<p>
+     * 
+     * @return Hashtable with the known launchers
      */
-    private Hashtable getKnownLaunchers(OpenCms cms) {
+    private Hashtable getKnownLaunchers() {
         Hashtable knownLaunchers = new Hashtable();
         try{
             I_CmsRegistry reg = OpenCms.getRegistry();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/02/26 10:30:37 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -390,17 +390,17 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     }
 
     /**
-     * Resolve given variant of this element and get content of all sub elements.
+     * Resolve given variant of this element and get content of all sub elements.<p>
+     * 
      * @param cms CmsObject for accessing system resources
      * @param variant Variant that should be resolved
      * @param elementCache Entry point for element cache
      * @param elDefs Definitions for all subelements
-     * @param elementName Current name of the subelement during resolving
      * @param parameters All parameters of this request
      * @return Byte array with processed element content
      * @throws CmsException if resolving fails.
      */
-    public byte[] resolveVariant(CmsObject cms, CmsElementVariant variant, CmsElementCache elementCache, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException {
+    public byte[] resolveVariant(CmsObject cms, CmsElementVariant variant, CmsElementCache elementCache, CmsElementDefinitionCollection elDefs, Hashtable parameters) throws CmsException {
         boolean resolveDebug = false;
         if(resolveDebug) System.err.println("= Start resolving variant " + variant);
         int len = variant.size();

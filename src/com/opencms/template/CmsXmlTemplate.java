@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.108 $
+* Date   : $Date: 2003/02/26 10:30:37 $
+* Version: $Revision: 1.109 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.108 $ $Date: 2003/02/02 15:59:53 $
+ * @version $Revision: 1.109 $ $Date: 2003/02/26 10:30:37 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1311,7 +1311,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                     }
                 }
             }
-            result = ((CmsElementXml)currElem).resolveVariant(cms, variant, elementCache, mergedElDefs, elementName, parameters);
+            result = ((CmsElementXml)currElem).resolveVariant(cms, variant, elementCache, mergedElDefs, parameters);
         } else {
             // Classic way. Element cache is not activated, so let's genereate the template as usual
             // Try to process the template file

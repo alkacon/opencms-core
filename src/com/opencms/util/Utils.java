@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/02/15 11:14:57 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/02/26 10:30:37 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,13 +76,10 @@ public class Utils {
     /** Constant for sorting files downward by lastmodified date */
     public static final int C_SORT_LASTMODIFIED_DOWN = 4;
 
-
-    /** Constant for sorting files downward by publishing date */
-    public static final int C_SORT_PUBLISHED_DOWN = 5;
-
     /**
      * This method makes the sorting desicion for the creation of index and archive pages,
-     * depending on the sorting method to be used.
+     * depending on the sorting method to be used.<p>
+     * 
      * @param cms Cms Object for accessign files.
      * @param sorting The sorting method to be used.
      * @param fileA One of the two CmsFile objects to be compared.
@@ -91,8 +88,7 @@ public class Utils {
      * @throws CmsException Is thrown when file access failed.
      *
      */
-
-    private static boolean compare(CmsObject cms, int sorting, CmsFile fileA, CmsFile fileB)
+    private static boolean compare(int sorting, CmsFile fileA, CmsFile fileB)
             throws CmsException {
         boolean cmp = false;
         String titleA = fileA.getName();
@@ -380,14 +376,14 @@ public class Utils {
     }
 
     /**
-     * Sorts a Vector of CmsFile objects according to an included sorting method.
-     * @param cms Cms Object for accessign files.
+     * Sorts a Vector of CmsFile objects according to an included sorting method.<p>
+     * 
      * @param unsortedFiles Vector containing a list of unsorted files
      * @param sorting The sorting method to be used.
      * @return Vector of sorted CmsFile objects
+     * @deprecated this method is deprecated and will be removed in a later OpenCms release
      */
-
-    public static Vector sort(CmsObject cms, Vector unsortedFiles, int sorting) {
+    public static Vector sort(Vector unsortedFiles, int sorting) {
         Vector v = new Vector();
         Enumeration enu = unsortedFiles.elements();
         CmsFile[] field = new CmsFile[unsortedFiles.size()];
@@ -410,7 +406,7 @@ public class Utils {
             for(out = 1;out < nElem;out++) {
                 CmsFile temp = field[out];
                 in = out;
-                while(in > 0 && compare(cms, sorting, field[in - 1], temp)) {
+                while(in > 0 && compare(sorting, field[in - 1], temp)) {
                     field[in] = field[in - 1];
                     --in;
                 }

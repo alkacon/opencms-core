@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/02/26 10:30:37 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ public class CmsElementDump extends A_CmsElement {
         }
 
         if(variant != null) {
-            result = resolveVariant(cms, variant, elementCache, elDefs, elementName, parameters);
+            result = resolveVariant(cms, variant, elementCache, elDefs, parameters);
         } else {
             // This element was not found in the variant cache.
             // We have to generate it.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/02/09 16:52:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/02/26 10:30:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Iterator;
  * to avoid method calling overhead (a cache is about speed, isn't it :)
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsFlexCacheKey {
     
@@ -141,22 +141,22 @@ public class CmsFlexCacheKey {
     }
     
     /**
-     * This constructor is used when building a cache key from a response.
-     * A key for a response uses the properties of the requested resource and looks
-     * there for a property called "cache". 
+     * This constructor is used when building a cache key from set of cache directives.<p>
+     * 
+     * These directives are attached to the properties of the requested resource 
+     * on a property called "cache". 
      * The value of this poperty that is passed in this constructor as "cacheDirectives" 
      * is parsed to build the keys data structure.<p>
      *
      * In case a parsing error occures, the value of this key is set to "cache=never", 
      * and the hadParseError() flag is set to true. 
-     * This is done to ensure that a valid key is always constructed with the constructor.
+     * This is done to ensure that a valid key is always constructed with the constructor.<p>
      *
      * @param target The requested resource
      * @param cacheDirectives The cache directives of the resource (value of the property "cache")
      * @param online Must be true for an online resource, false for offline resources
-     * @param response The response to construct the key from. 
      */        
-    public CmsFlexCacheKey(CmsFlexResponse response, String target, String cacheDirectives, boolean online) {
+    public CmsFlexCacheKey(String target, String cacheDirectives, boolean online) {
         Resource = getKeyName(target, online);     
         Variation = "never";
         m_isRequest = false;

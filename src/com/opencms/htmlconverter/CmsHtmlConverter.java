@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/02/26 10:30:37 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -366,57 +366,58 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     }
 
     /**
-     * Private method to parse DOM and create user defined output
+     * Private method to parse DOM and create user defined output.<p>
+     * 
      * @param node Node of DOM from HTML code
      */
     private void printDocument(Node node) {
-        /* if node is empty do nothing... (Recursion) */
+        // if node is empty do nothing... (Recursion) 
         if ( node == null ) {
             return;
         }
-        /* initialise local variables */
+        // initialise local variables 
         int type = node.getNodeType();
         int replaceTag = -1;
         int replaceBlock = -1;
-        /* detect node type */
+        // detect node type 
         switch (type) {
         case Node.DOCUMENT_NODE:
-            /* initialise m_tempString and add global prefix */
+            // initialise m_tempString and add global prefix 
             m_tempString = new StringBuffer(m_configuration.getGlobalPrefix());
             this.printDocument(((Document)node).getDocumentElement());
             break;
         case Node.ELEMENT_NODE:
-            /* analyse element node and transform it */
+            // analyse element node and transform it 
             replaceBlock = this.indexReplaceBlock(node);
             replaceTag = this.indexReplaceTag(node);
-            /* scan element node; if a block has to be removed or replaced,
-               break and discard child nodes */
+            // scan element node; if a block has to be removed or replaced,
+            // break and discard child nodes 
             if (this.transformStartElement(node,replaceBlock,replaceTag)) {
                 break;
             }
-            /* test if node has children */
+            // test if node has children 
             NodeList children = node.getChildNodes();
             if ( children != null ) {
                 int len = children.getLength();
                 for ( int i = 0; i < len; i++ )
-                /* recursively call printDocument with all child nodes */
+                // recursively call printDocument with all child nodes 
                 this.printDocument(children.item(i));
             }
             break;
         case Node.TEXT_NODE:
-            /* replace subStrings in text nodes */
+            // replace subStrings in text nodes 
             this.transformTextNode(node);
             break;
         }
-        /* end of recursion, add eventual endtags and suffixes */
+        // end of recursion, add eventual endtags and suffixes 
         switch (type) {
         case Node.ELEMENT_NODE:
-            /* analyse endtags and add them to output */
+            // analyse endtags and add them to output 
             this.transformEndElement(node,replaceBlock,replaceTag);
             break;
         case Node.DOCUMENT_NODE:
-            /* add suffix to end of output */
-            this.transformEndDocument(node);
+            // add suffix to end of output 
+            this.transformEndDocument();
             break;
         }
     }
@@ -584,7 +585,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * Private method to transform output at end of document
      * @param node actual element node
      */
-    private void transformEndDocument (Node node) {
+    private void transformEndDocument () {
         m_tempString.append(m_configuration.getGlobalSuffix());
     }
 

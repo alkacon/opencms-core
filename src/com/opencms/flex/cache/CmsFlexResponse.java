@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
-* Date   : $Date: 2003/01/20 23:59:32 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/02/26 10:30:36 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  * A wrapper class for a HttpServletRequest that controls the Flex cache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapper {
     
@@ -584,7 +584,7 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
      * @throws CmsException In case the value String had a parse error
      */
     CmsFlexCacheKey setCmsCacheKey(String target, String value, boolean online) throws com.opencms.core.CmsException {
-        m_key = new CmsFlexCacheKey(this, target, value, online);
+        m_key = new CmsFlexCacheKey(target, value, online);
         if (m_key.hadParseError()) {
             // We throw the exception here to make sure this response has a valid key (cache=never)
             throw new com.opencms.core.CmsException(com.opencms.core.CmsException.C_FLEX_CACHE);            

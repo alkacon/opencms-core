@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2003/02/25 13:09:23 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/02/26 10:30:37 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -140,7 +140,7 @@ public class LinkSubstitution {
         return substituteEditorContent(cms, content, null, null);
     }
 
-    public String substituteContentBody(CmsObject cms, String body, String webappUrl, String fileName) throws CmsException {
+    public String substituteContentBody(String body, String webappUrl, String fileName) throws CmsException {
         
         // prepare the content for the JTidy
         body = "<html><head></head><body>" + body + "</body></html>";

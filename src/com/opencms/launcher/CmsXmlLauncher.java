@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2003/01/20 23:59:23 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/02/26 10:30:36 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,25 +53,25 @@ import java.util.Hashtable;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * OpenCms launcher class for XML templates.
+ * OpenCms launcher class for XML templates.<p>
+ * 
  * This can be used generating output for XML body files using XML template and
- * subtemplate technology.
- * <P>
+ * subtemplate technology.<p>
+ * 
  * The selected body should define a start template class using <BR> <CODE>
  * &lt;PAGE&gt;<BR>
  * &nbsp;&nbsp;&lt;CLASS&gt;...&lt;/CLASS&gt;<BR>
- * &lt;/PAGE&gt;</CODE><P>
+ * &lt;/PAGE&gt;</CODE><p>
  *
  * If no start template is defined, the class given by the parameters
  * will be used.
- * <P>
  * If even this is not defined, CmsXmlTemplate will
- * be used to create output.
+ * be used to create output.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.43 $ $Date: 2003/01/20 23:59:23 $
+ * @version $Revision: 1.44 $ $Date: 2003/02/26 10:30:36 $
  */
-public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
+public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants {
     
     /** Magic elemet replace name */
     public static final String C_ELEMENT_REPLACE = "_CMS_ELEMENTREPLACE";
@@ -85,7 +85,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
      * @param startTemplateClass Name of the template class to start with.
      * @throws CmsException
      */
-    protected byte[] generateOutput(CmsObject cms, CmsFile file, String startTemplateClass, I_CmsRequest req, A_OpenCms openCms) throws CmsException {
+    protected byte[] generateOutput(CmsObject cms, CmsFile file, String startTemplateClass, I_CmsRequest req) throws CmsException {
         byte[] output = null;
 
         // Hashtable for collecting all parameters.
@@ -338,7 +338,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
         // get the CmsRequest
         I_CmsRequest req = cms.getRequestContext().getRequest();
         byte[] result = null;
-        result = generateOutput(cms, file, startTemplateClass, req, openCms);
+        result = generateOutput(cms, file, startTemplateClass, req);
         if(result != null) {
             writeBytesToResponse(cms, result);
         }

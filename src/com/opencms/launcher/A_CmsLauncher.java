@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2003/02/01 22:58:58 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/02/26 10:30:36 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Hashtable;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.40 $ $Date: 2003/02/01 22:58:58 $
+ * @version $Revision: 1.41 $ $Date: 2003/02/26 10:30:36 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
 
@@ -268,7 +268,6 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
         
         // Clear launcher caches if this is required
         clearLauncherCache(cms, 
-            ((clearcache != null) && ("all".equals(clearcache) || "class".equals(clearcache))),
             ((clearcache != null) && ("all".equals(clearcache) || "file".equals(clearcache))),
             ((clearcache != null) && ("all".equals(clearcache) || "template".equals(clearcache))));
         
@@ -277,13 +276,14 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
     
     /**
      * Compatibility method to ensure the legacy cache command line parameters
-     * are still supported.
+     * are still supported.<p>
+     * 
      * @param cms an initialized CmsObject
      * @param clearClasses if true, CmsTemplateClassManager is cleared
      * @param clearFiles if true, A_CmsXmlContent cache is cleared
      * @param clearTemplates if true, internal template cache is cleared.
      */
-    private static void clearLauncherCache(CmsObject cms, boolean clearClasses, boolean clearFiles, boolean clearTemplates) {
+    private static void clearLauncherCache(CmsObject cms, boolean clearFiles, boolean clearTemplates) {
         long currentFsCounter = cms.getFileSystemChanges();
         if(clearFiles || (currentFsCounter > m_lastFsCounterFile)) {
             A_CmsXmlContent.clearFileCache();
@@ -302,7 +302,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * @param cms an initialized CmsObject
      */  
     public static void clearLauncherCache(CmsObject cms) {
-        clearLauncherCache(cms, true, true, true);
+        clearLauncherCache(cms, true, true);
     }
     
 

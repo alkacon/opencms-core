@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/02/10 12:21:41 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/02/26 10:30:36 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.43 $ $Date: 2003/02/10 12:21:41 $
+ * @version $Revision: 1.44 $ $Date: 2003/02/26 10:30:36 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -299,7 +299,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 // a file was read, go on process it
                 m_opencms.setResponse(cms, file);
                 m_opencms.showResource(cms, file);
-                updateUser(cms, cmsReq, cmsRes);
+                updateUser(cms, cmsReq);
             }
         }
         catch(CmsException e) {
@@ -614,20 +614,18 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     }
 
     /**
-     * Updated the the user data stored in the CmsCoreSession after the requested document
-     * is processed.<br>
+     * Updates the the user data stored in the CmsCoreSession after the requested document
+     * is processed.<p>
      *
-     * This is nescessary if the user data (current group or project) was changed in
-     * the requested document. <br>
+     * This is required if the user data (current group or project) was changed in
+     * the requested document.<p>
      *
      * The user data is only updated if the user was authenticated to the system.
      *
-     * @param cms The actual CmsObject.
-     * @param cmsReq The clints request.
-     * @param cmsRes The servlets response.
-     * @return The CmsObject
+     * @param cms the current CmsObject initialized with the user data
+     * @param cmsReq the current request
      */
-    private void updateUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes) throws IOException {
+    private void updateUser(CmsObject cms, I_CmsRequest cmsReq) throws IOException {
         if (! cms.getRequestContext().isUpdateSessionEnabled()) {
             return;
         }

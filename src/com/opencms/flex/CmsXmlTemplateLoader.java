@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/01/31 17:00:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/02/26 10:30:37 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -181,7 +181,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
             cms_req.setOriginalRequest(req);
             cms.getRequestContext().setEncoding(enc);            
             // process the included XMLTemplate
-            result = generateOutput(cms, fx, fx.getLauncherClassname(), cms_req, m_openCms);                                    
+            result = generateOutput(cms, fx, fx.getLauncherClassname(), cms_req);                                    
             // append the result to the output stream
             if(result != null) {
                 // Encoding project:
