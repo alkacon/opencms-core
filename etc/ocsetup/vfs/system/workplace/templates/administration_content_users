@@ -161,20 +161,20 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
 								<input type=hidden name="USER" value="]]><PROCESS>USER</PROCESS><![CDATA[">
 								<td class=formular width=10%>
 							 	]]><LABEL value="input.description"/><![CDATA[:</td>
-								<td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USERDESC</PROCESS><![CDATA[" class="textfeld" name="USERDESC" id="USERDESC"></td>
+								<td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USERDESC</PROCESS><![CDATA[" maxlength=255 class="textfeld" name="USERDESC" id="USERDESC"></td>
 	 						</tr>
 					 		<tr>
 								 <td class=formular>
 								 ]]><LABEL value="input.lastname"/><![CDATA[:</td>
-								 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERNAME</PROCESS><![CDATA[" class="textfeld" name="USERNAME" id="USERNAME"></td>
+								 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERNAME</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="USERNAME" id="USERNAME"></td>
 								 <td class=formular>
 								 ]]><LABEL value="input.email"/><![CDATA[:</td>
-								 <td class=dialogtxt><input type="text" value="]]><PROCESS>EMAIL</PROCESS><![CDATA[" class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
+								 <td class=dialogtxt><input type="text" value="]]><PROCESS>EMAIL</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
 							</tr>
 							<tr>
 								 <td class=formular>
 								 ]]><LABEL value="input.firstname"/><![CDATA[:</td>
-								 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERFIRSTNAME</PROCESS><![CDATA[" class="textfeld" name="USERFIRSTNAME" id="USERFIRSTNAME"></td>
+								 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERFIRSTNAME</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USERFIRSTNAME" id="USERFIRSTNAME"></td>
 								 <td class=formular>
 								 ]]><LABEL value="input.street"/><![CDATA[:</td>
 								 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERSTREET</PROCESS><![CDATA[" class="textfeld" name="USERSTREET" id="USERSTREET"></td>
@@ -183,7 +183,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                             <tr>
 								 <td class=formular>
 							 	 ]]><LABEL value="input.zipcode"/><![CDATA[:</td>
-							 	 <td class=dialogtxt><input type="text" value="]]><PROCESS>ZIP</PROCESS><![CDATA[" class="textfeld" name="ZIP" id="ZIP"></td>
+							 	 <td class=dialogtxt><input type="text" value="]]><PROCESS>ZIP</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="ZIP" id="ZIP"></td>
 
                                 <td class=formular>
  								]]><LABEL value="input.city"/><![CDATA[:</td>
@@ -193,11 +193,11 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
  							<tr>
 							    <td class=formular>
 							    ]]><LABEL value="input.password"/><![CDATA[:</td>
-							 	<td class=dialogtxt><input type="password" value="]]><PROCESS>PWD</PROCESS><![CDATA[" class="textfeld" name="PWD" id="PWD"></td>
+							 	<td class=dialogtxt><input type="password" value="]]><PROCESS>PWD</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD" id="PWD"></td>
  
  								<td class=formular>
  								]]><LABEL value="input.newpwdrepeat"/><![CDATA[:</td>
- 								<td class=dialogtxt><input type="password" value="]]><PROCESS>PWD2</PROCESS><![CDATA[" class="textfeld" name="PWD2" id="PWD2"></td>
+ 								<td class=dialogtxt><input type="password" value="]]><PROCESS>PWD2</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD2" id="PWD2"></td>
  							</tr>
 							
 							
@@ -343,23 +343,23 @@ function show_help()
  							<tr>
  								<td class=formular width=10%>
  								]]><LABEL value="input.user"/><![CDATA[:</td>
- 								<td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USER</PROCESS><![CDATA[" class="textfeld" name="USER" id="USER"></td>
+ 								<td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USER</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="USER" id="USER"></td>
  								<td class=formular width=10%>
  								]]><LABEL value="input.description"/><![CDATA[:</td>
- 								<td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USERDESC</PROCESS><![CDATA[" class="textfeld" name="USERDESC" id="USERDESC"></td>
+ 								<td class=dialogtxt width=40%><input type="text" value="]]><PROCESS>USERDESC</PROCESS><![CDATA[" maxlength=255 class="textfeld" name="USERDESC" id="USERDESC"></td>
  							</tr>
  							<tr>
  								<td class=formular>
  								]]><LABEL value="input.lastname"/><![CDATA[:</td>
- 								<td class=dialogtxt><input type="text" value="]]><PROCESS>USERNAME</PROCESS><![CDATA[" class="textfeld" name="USERNAME" id="USERNAME"></td>
+ 								<td class=dialogtxt><input type="text" value="]]><PROCESS>USERNAME</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USERNAME" id="USERNAME"></td>
  								<td class=formular>
  								]]><LABEL value="input.email"/><![CDATA[:</td>
- 								<td class=dialogtxt><input type="text" value="]]><PROCESS>EMAIL</PROCESS><![CDATA[" class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
+ 								<td class=dialogtxt><input type="text" value="]]><PROCESS>EMAIL</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
  							</tr>
  							<tr>
  								<td class=formular>
  								]]><LABEL value="input.firstname"/><![CDATA[:</td>
- 								<td class=dialogtxt><input type="text" value="]]><PROCESS>USERFIRSTNAME</PROCESS><![CDATA[" class="textfeld" name="USERFIRSTNAME" id="USERFIRSTNAME"></td>
+ 								<td class=dialogtxt><input type="text" value="]]><PROCESS>USERFIRSTNAME</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USERFIRSTNAME" id="USERFIRSTNAME"></td>
  								<td class=formular>
  								]]><LABEL value="input.street"/><![CDATA[:</td>
  								<td class=dialogtxt><input type="text" value="]]><PROCESS>USERSTREET</PROCESS><![CDATA[" class="textfeld" name="USERSTREET" id="USERSTREET"></td>
@@ -367,7 +367,7 @@ function show_help()
  							<tr>
 								<td class=formular>
 							 	]]><LABEL value="input.zipcode"/><![CDATA[:</td>
-							 	<td class=dialogtxt><input type="text" value="]]><PROCESS>ZIP</PROCESS><![CDATA[" class="textfeld" name="ZIP" id="ZIP"></td>
+							 	<td class=dialogtxt><input type="text" value="]]><PROCESS>ZIP</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="ZIP" id="ZIP"></td>
 
                                 <td class=formular>
  								]]><LABEL value="input.city"/><![CDATA[:</td>
@@ -377,11 +377,11 @@ function show_help()
  							<tr>
 							    <td class=formular>
 							    ]]><LABEL value="input.password"/><![CDATA[:</td>
-							 	<td class=dialogtxt><input type="password" value="]]><PROCESS>PWD</PROCESS><![CDATA[" class="textfeld" name="PWD" id="PWD"></td>
+							 	<td class=dialogtxt><input type="password" value="]]><PROCESS>PWD</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD" id="PWD"></td>
  
  								<td class=formular>
  								]]><LABEL value="input.newpwdrepeat"/><![CDATA[:</td>
- 								<td class=dialogtxt><input type="password" value="]]><PROCESS>PWD2</PROCESS><![CDATA[" class="textfeld" name="PWD2" id="PWD2"></td>
+ 								<td class=dialogtxt><input type="password" value="]]><PROCESS>PWD2</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="PWD2" id="PWD2"></td>
  							</tr>
  							</table>
  							
@@ -546,7 +546,7 @@ wirklich loeschen?
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="sonstiger Fehler" message="error.message.adduser" reason="" suggestion="" ref="administration_content_users.html?perspective=newuser" /><![CDATA[
+]]><ERRORPAGE title="sonstiger Fehler" message="error.message.adduser" reason="" suggestion="error.suggestion.none" ref="administration_content_users.html?perspective=newuser" /><![CDATA[
 ]]>
 </TEMPLATE>
 

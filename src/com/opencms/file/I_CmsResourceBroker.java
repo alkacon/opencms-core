@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/11 13:38:09 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2000/04/13 18:06:06 $
+ * Version: $Revision: 1.58 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.57 $ $Date: 2000/04/11 13:38:09 $
+ * @version $Revision: 1.58 $ $Date: 2000/04/13 18:06:06 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -1128,6 +1128,37 @@ interface I_CmsResourceBroker {
 	 * @return the mime-types.
 	 */
 	public Hashtable readMimeTypes(A_CmsUser currentUser, A_CmsProject currentProject)
+		throws CmsException;
+	
+	/**
+	 * Gets the known file extensions (=suffixes) 
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted access<BR/>
+	 * 
+	 * @param currentUser The user who requested this method, not used here
+	 * @param currentProject The current project of the user, not used here
+	 * 
+	 * @return Hashtable with file extensions as Strings
+	 */
+	
+	public Hashtable readFileExtensions(A_CmsUser currentUser, A_CmsProject currentProject)
+		throws CmsException;
+	
+	
+	/**
+	 * Writes the file extensions  
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "Administrators" are authorized.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param extensions Holds extensions as keys and resourcetypes (Stings) as values
+	 */
+	
+	public void writeFileExtensions(A_CmsUser currentUser, A_CmsProject currentProject,
+									Hashtable extensions)
 		throws CmsException;
 	
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/04/11 13:38:08 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2000/04/13 18:06:06 $
+ * Version: $Revision: 1.63 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.62 $ $Date: 2000/04/11 13:38:08 $ 
+ * @version $Revision: 1.63 $ $Date: 2000/04/13 18:06:06 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1306,6 +1306,16 @@ public abstract class A_CmsObject {
 	 */
 	abstract public Hashtable readMimeTypes()
 		throws CmsException;
+	
+	
+	abstract public Hashtable readFileExtensions()
+		throws CmsException;
+
+	abstract public void writeFileExtensions(Hashtable extensions) 
+		throws CmsException;
+	
+	
+	
 	
 	/**
 	 * Writes the export-path for the system.

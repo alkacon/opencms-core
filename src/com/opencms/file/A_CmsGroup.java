@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsGroup.java,v $
- * Date   : $Date: 2000/04/06 12:39:03 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/13 18:06:06 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/04/06 12:39:03 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/13 18:06:06 $
  */
 abstract public class A_CmsGroup { 
 	
@@ -109,11 +109,20 @@ abstract public class A_CmsGroup {
      */
     abstract public void  setEnabled();
 	
+	/**
+     * Enables or disables the flag Projectmanager.
+     */
 	abstract public void setProjectManager(boolean yes);
+	
+	/**
+     * Enables or disables the flag Projectcoworker.
+     */
 	abstract public void setProjectCoWorker(boolean yes); 
+	
+	/**
+     * Enables or disables the flag Role.
+     */
 	abstract public void setRole(boolean yes);
-	
-	
 
 	/**
 	 * Returns the id of the parent group of the actual Cms group object, 

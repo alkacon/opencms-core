@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/11 13:38:08 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2000/04/13 18:06:06 $
+ * Version: $Revision: 1.101 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.100 $ $Date: 2000/04/11 13:38:08 $
+ * @version $Revision: 1.101 $ $Date: 2000/04/13 18:06:06 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1975,7 +1975,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			Hashtable mountpoints = (Hashtable) 
 									 m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
 			
-			// if mountpoints dosen't exists - create them.
+			// if mountpoints don't exist - create them.
 			if(mountpoints == null) {
 				mountpoints = new Hashtable();
 				m_systempropertyRb.addProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);
@@ -2046,6 +2046,66 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		return((Hashtable) m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_MIMETYPES) );			
 	}
+	
+		
+	/**
+	 * Gets the known file extensions (=suffixes) 
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted access<BR/>
+	 * 
+	 * @param currentUser The user who requested this method, not used here
+	 * @param currentProject The current project of the user, not used here
+	 * 
+	 * @return Hashtable with file extensions as Strings
+	 */
+	
+	public Hashtable readFileExtensions(A_CmsUser currentUser, A_CmsProject currentProject)
+		throws CmsException {
+		Hashtable res=(Hashtable) m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_EXTENSIONS);
+		return ( (res!=null)? res : new Hashtable());	
+	}
+	
+	/**
+	 * Writes the file extensions  
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "Administrators" are authorized.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param extensions Holds extensions as keys and resourcetypes (Stings) as values
+	 */
+	
+	
+	synchronized public void writeFileExtensions(A_CmsUser currentUser, A_CmsProject currentProject,
+									Hashtable extensions)
+		throws CmsException {
+		if (extensions != null) {
+			if (isAdmin(currentUser, currentProject)) { 
+				
+				if (m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_EXTENSIONS) == null) {
+					// the property wasn't set before.
+					m_systempropertyRb.addProperty(C_SYSTEMPROPERTY_EXTENSIONS, extensions);
+				} else {
+					// overwrite the property.
+					m_systempropertyRb.writeProperty(C_SYSTEMPROPERTY_EXTENSIONS, extensions);
+				}	
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "] " + extensions.size(), 
+					CmsException.C_NO_ACCESS);
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * Writes the export-path for the system.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/11 13:38:08 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2000/04/13 18:06:06 $
+ * Version: $Revision: 1.64 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.63 $ $Date: 2000/04/11 13:38:08 $ 
+ * @version $Revision: 1.64 $ $Date: 2000/04/13 18:06:06 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -1631,7 +1631,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * The Mime-Types will be returned.
 	 * 
 	 * <B>Security:</B>
-	 * All users are garnted<BR/>
+	 * All users are granted<BR/>
 	 * 
 	 * @return the mime-types.
 	 */
@@ -1639,6 +1639,36 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException {
 		return c_rb.readMimeTypes(null, null);
 	}
+	
+	
+	/**
+	 * Gets the known file extensions (=suffixes) 
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted access<BR/>
+	 * 
+	 * @return Hashtable with file extensions as Strings
+	 */
+	
+	public Hashtable readFileExtensions()
+		throws CmsException{
+		return c_rb.readFileExtensions(null, null);
+	}
+
+	/**
+	 * Writes the file extensions  
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "Administrators" are authorized.<BR/>
+	 *  
+	 * @param extensions Holds extensions as keys and resourcetypes (Stings) as values
+	 */
+	
+	public void writeFileExtensions(Hashtable extensions) 
+		throws CmsException {
+		c_rb.writeFileExtensions(m_context.currentUser(), m_context.currentProject(), extensions);
+	}
+	 
 	
 	/**
 	 * Writes the export-path for the system.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/04/10 08:45:41 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/04/13 18:06:06 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2000/04/10 08:45:41 $
+ * @version $Revision: 1.40 $ $Date: 2000/04/13 18:06:06 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -123,6 +123,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         // registerTag("ERRORBOX", "com.opencms.workplace.CmsErrorbox");
         registerTag("ERRORPAGE", "com.opencms.workplace.CmsErrorpage");
         registerTag("FILELIST", "com.opencms.workplace.CmsFileList");
+		registerTag("FILETYPELIST", "com.opencms.workplace.CmsFileTypeList");
         registerTag("INPUTFIELD", "com.opencms.workplace.CmsInput");
         registerTag("JAVASCRIPTBUTTON", "com.opencms.workplace.CmsButtonJavascript");
         registerTag("LABEL", "com.opencms.workplace.CmsLabel");

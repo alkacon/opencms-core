@@ -125,7 +125,10 @@
 				<login>Sorry, the user could not log in to the system.</login>
 				<projectlockchange>Sorry, the project could not be unlocked.</projectlockchange>
 				<newproject>Sorry, the new project could not be created.</newproject>
+				<newprop>Sorry, the new propertydefinition could not be created.</newprop>
+				<newextension>Sorry, the new file extension could not be assigned.</newextension>
 				<newtask>Sorry, the new task could not be created.</newtask>
+				<propinuse>Some file uses this property.<![CDATA[<br>]]>You cannot delete it.</propinuse>
 				<publishproject>Sorry, the project could not be published.</publishproject>
 				<rmdefault>Sorry, not all users could be removed.</rmdefault>
 				<deleteproject>Sorry, the project could not be deleted.</deleteproject>
@@ -146,11 +149,21 @@
 				<database>There was a system error.</database>
 				<datamissing>The fields User, Name and Email must be filled out.</datamissing> 
 				<disadmin>A user in the group Administrators can not be disabled.</disadmin>
+				<extinuse>This extension has already been assigned to a resource type.</extinuse>
 				<lock>Either you don't have the needed permissions, or the contents of this file are locked by someone else.</lock>
 				<lockchange>The file is locked by another user.</lockchange>
 				<login>The data entered is not correct.</login>
 				<projectlockchange>There was an error.</projectlockchange>
 				<newproject>The entered project data is invalid.</newproject>
+				<newextformat>Your input was in the wrong format.</newextformat>
+				<newprop>see details</newprop>
+				<newprop1>Property</newprop1>
+				<newprop2>of</newprop2>
+				<newprop3>could not be established.</newprop3>
+				<newextension>see details</newextension>
+				<newextension1>file extension</newextension1>
+				<newextension2>could not be assgigned to resource type</newextension2>
+				<newextension3>.</newextension3> 
 				<newtask>The data for the task is invalid.</newtask>
 				<nogroup>You must pick at last one group.</nogroup>
 				<none></none>
@@ -177,6 +190,9 @@
 				<login>Please check the entered data or contact your system administrator.</login>
 				<projectlockchange>Please try again later, or contact your system administrator.</projectlockchange>
 				<newproject>Please check the entered data or contact your system administrator.</newproject>
+				<newprop>Please try again later, or contact your system administrator.</newprop>
+				<newextformat>Please enter only one file extension at a time. You need not enter the star and the dot.</newextformat>
+				<newextension>Please contact your system administrator.</newextension>				
 				<newtask>Please check the entered data or contact your system administrator.</newtask>
 				<none></none>
 				<publishproject>Please try again later, or contact your system administrator.</publishproject>
@@ -201,6 +217,8 @@
 				<lockchange>Steal Lock</lockchange>
  				<login>Login Error</login>
 				<projectlockchange>Release lock for project</projectlockchange>
+				<newprop>New property for resource type</newprop>
+				<newextension>Associate new file extension</newextension>				
  				<newproject>New Project</newproject>
  				<newtask>New Task</newtask>
 				<publishproject>Publish Project</publishproject>
@@ -225,7 +243,7 @@
 		<icon>
 			<currentprojects>Current Projects</currentprojects>
 			<database>Database- management</database>
-			<datatypes>Resourcetype- management</datatypes>
+			<datatypes>Resource type- management</datatypes>
 			<export>Export</export>
 			<groups>Edit Groups</groups>
 			<import>Import</import>
@@ -235,14 +253,15 @@
 			<processmanagement>Scheduler</processmanagement>
 			<project>Project- management</project>
 			<projecthistory>Project History</projecthistory>
+			<properties>Properties<![CDATA[<br>]]>management</properties>
 			<user>User- management</user>
 			<users>Edit Users</users>
 		</icon>
 		
 		<editor>
 			<context>
-				<cut>Cut</cut>
 				<copy>Copy</copy>
+				<cut>Cut</cut>	
 				<paste>Pase</paste>				
 				<deletecell>Delete Cell</deletecell>
 				<deletecol>Delete Column</deletecol>
@@ -483,6 +502,16 @@
 				<unlock> Other Users can then edit the File again.</unlock>
 				<unlockfolder> Other Users can then edit the Folder again.</unlockfolder>				
 			</message2>
+			<message3>
+				<deletepropdef1>Do you really want to delete the property definition</deletepropdef1>
+				<deletepropdef2>of resource type </deletepropdef2>
+				<deletepropdef3>?</deletepropdef3>
+			</message3>
+			<message4>
+				<deleteextension1>Do you really want to delete the association of </deleteextension1>
+				<deleteextension2>to the resource type </deleteextension2>
+				<deleteextension3>?</deleteextension3>
+			</message4>			
 		</messagebox>
 		
 		<panel>
@@ -686,7 +715,8 @@
 
 		<title>
 			<access>Permissions</access>
-			<admindatatypes>Resourcetype management</admindatatypes>			
+			<admindatatypes>Resource type management</admindatatypes>
+			<adminproperties>Property management</adminproperties>
 			<changed>Date Changed</changed>
 			<chgrp>Change Group of</chgrp>
 			<chmod>Change Permissions of</chmod>
@@ -695,6 +725,8 @@
 			<chtype>Change File type</chtype>
 			<copy>Copy File</copy>
 			<copyfolder>Copy Folder</copyfolder>
+			<deletepropdef>Delete the property definition</deletepropdef>
+			<deleteextension>Delete the association of file extension</deleteextension>
 			<editpropertyinfo>Edit Property of</editpropertyinfo>
 			<move>Move File</move>
 			<group>Group</group>
@@ -708,11 +740,15 @@
 			<newfolder>Create a new Folder</newfolder>
 			<newpropertyinfo>Define new Property for</newpropertyinfo>
 			<newpropertydef>Create new Property</newpropertydef>
+			<newpropdeffor>New property definition for the resource type</newpropdeffor>
+			<newextension>Associate new file extension</newextension>
+			<newextensionfor>New file extension for resource type</newextensionfor>
 			<newpage>Create new Page</newpage>
 			<newtable>Create new Table</newtable>
 			<owner>Owner</owner>
 			<picbrowser>OpenCms Image Browser</picbrowser>
 			<property>Properties of</property>
+			<propinuse>Property definition already in use</propinuse>
 			<rename>Rename File</rename>
 			<rootfolder>(Root Folder)</rootfolder>
 			<size>Size</size>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
- * Date   : $Date: 2000/04/07 08:59:07 $
- * Version: $Revision: 1.2 $Selector
+ * Date   : $Date: 2000/04/13 18:06:06 $
+ * Version: $Revision: 1.3 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2000/04/07 08:59:07 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/13 18:06:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -190,9 +190,13 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 					user=""; 
 					selectedGroups = new Vector();
 					notSelectedGroups = new Vector();
+					selectedGroups.addElement(C_GROUP_USERS); // preselect Users
 					Vector groups = cms.getGroups();
 					for(int z = 0; z < groups.size(); z++) {
-						notSelectedGroups.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
+						String aName = (String) ((A_CmsGroup)groups.elementAt(z)).getName();
+						if (!C_GROUP_USERS.equals(aName)) {
+							notSelectedGroups.addElement(aName);
+						}
 					}
 					session.putValue("selectedGroups", selectedGroups);
 					session.putValue("notSelectedGroups", notSelectedGroups);

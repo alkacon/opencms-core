@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessMetadefinitionMySql.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/13 18:06:06 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -170,7 +170,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
      */    
     private static final String C_METADEF_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "METADEF WHERE " + 
 												   C_METADEF_NAME + " = ? and " +
-												   C_METADEF_TYPE + " = ?";
+												   C_RESOURCE_TYPE + " = ?";
 	
 	/**
      * SQL Command for deleting all metainfos in a project.
@@ -399,7 +399,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 		try {
 			if(countMetainfos(metadef) != 0) {
 				throw new CmsException("[" + this.getClass().getName() + "] " + metadef.getName(), 
-					CmsException.C_UNKNOWN_EXCEPTION);
+					CmsException.C_MANDATORY_PROPERTY);
 			}
 			
 			// create statement
@@ -407,7 +407,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 				m_con.prepareStatement(C_METADEF_DELETE);
 			
 			statementDeleteMetadef.setString(1, metadef.getName() );
-			statementDeleteMetadef.setInt(2, metadef.getType() );
+			statementDeleteMetadef.setInt(2, metadef.getType() ); 
 			statementDeleteMetadef.executeUpdate();
 		 } catch( SQLException exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
@@ -771,12 +771,14 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 		throws CmsException {
 		A_CmsPropertydefinition metadef = readMetadefinition(meta, resourceType);
 		
+		System.err.println("entering deleteMetainformation, metadef="+metadef.getName());
+		
 		if( metadef == null) {
 			// there is no metadefinition with the overgiven name for the resource
 			throw new CmsException("[" + this.getClass().getName() + "] " + meta, 
 				CmsException.C_NOT_FOUND);
 		} else {
-			// delete the metainfo into the db
+			// delete the metainfo in the db
 			try {
 				// create statement
 				PreparedStatement statementDeleteMetainfo = 
@@ -786,6 +788,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 				statementDeleteMetainfo.setString(2, path);
 				statementDeleteMetainfo.setInt(3, projectId);
 				statementDeleteMetainfo.executeUpdate();
+				System.err.println("exiting deleteMetainformation, metadef="+metadef.getName());
 			} catch(SQLException exc) {
 				throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 					CmsException.C_SQL_ERROR, exc);

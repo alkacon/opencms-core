@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2000/04/13 18:06:06 $
+ * Version: $Revision: 1.72 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.71 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.72 $ $Date: 2000/04/13 18:06:06 $
  */
 public interface I_CmsConstants
 {
@@ -484,7 +484,12 @@ public interface I_CmsConstants
 	  * The name of the resourcetype-systemproperty.
 	  */
 	 static final String C_SYSTEMPROPERTY_RESOURCE_TYPE = "RESOURCE_TYPE";
-	 
+
+	 /**
+	  * The name of the resourcetype-extension.
+	  */
+	 static final String C_SYSTEMPROPERTY_EXTENSIONS = "EXTENSIONS";
+ 
     /**
      * The key for the username in the user information hashtable.
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/04/11 13:38:09 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2000/04/13 18:06:06 $
+ * Version: $Revision: 1.85 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.84 $ $Date: 2000/04/11 13:38:09 $
+ * @version $Revision: 1.85 $ $Date: 2000/04/13 18:06:06 $
  */
 public interface I_CmsWpConstants {
 
@@ -202,6 +202,9 @@ public interface I_CmsWpConstants {
 	/** The filename to the projectlisttemplate */
 	public static final String C_PROJECTLIST_TEMPLATEFILE = "projecttemplate";
 
+	//** The filename to the filetypelist template */
+	public static final String C_FILETYPELIST_TEMPLATEFILE = "filetypelisttemplate";
+	
     /** The filename to the taskdocu template */
 	public static final String C_TASKDOCU_TEMPLATEFILE = "tasklistdoctemplate";
     
