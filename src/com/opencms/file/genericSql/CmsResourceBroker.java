@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/04 12:27:14 $
- * Version: $Revision: 1.219 $
+ * Date   : $Date: 2001/01/08 16:59:52 $
+ * Version: $Revision: 1.220 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.219 $ $Date: 2001/01/04 12:27:14 $
+ * @version $Revision: 1.220 $ $Date: 2001/01/08 16:59:52 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3800,7 +3800,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 	public CmsUser loginUser(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String password) 
 		throws CmsException {
-   		CmsUser newUser = readUser(currentUser, currentProject, username, password);
+   		CmsUser newUser = m_dbAccess.readUser(username, password, C_USER_TYPE_SYSTEMUSER);
 		
 		// is the user enabled?
 		if( newUser.getFlags() == C_FLAG_ENABLED ) {
@@ -3835,7 +3835,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 	public CmsUser loginWebUser(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String password) 
 		throws CmsException {
-   		CmsUser newUser = readWebUser(currentUser, currentProject, username, password);
+   		CmsUser newUser = m_dbAccess.readUser(username, password, C_USER_TYPE_WEBUSER);
 		
 		// is the user enabled?
 		if( newUser.getFlags() == C_FLAG_ENABLED ) {
