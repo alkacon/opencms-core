@@ -76,6 +76,8 @@ default:
 -->
 </style>
 
+<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>help.js"></script>
+
 <%= wp.calendarIncludes() %>
 
 <script type="text/javascript" src="<%= wp.getSkinUri() %>commons/tree.js"></script>
