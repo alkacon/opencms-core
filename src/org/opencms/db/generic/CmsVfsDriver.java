@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/31 10:23:34 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2003/07/31 13:11:14 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.67 $ $Date: 2003/07/31 10:23:34 $
+ * @version $Revision: 1.68 $ $Date: 2003/07/31 13:11:14 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3346,6 +3346,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         } catch (CmsException ex) {
             // do nothing
         }
+        String resourceName=resource.getFullResourceName();
+        // hack: this never should happen, but it does.......
+        if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
+            resourceName+="/";
+        } 
         
         if (propdef == null) {
             // there is no propertydefinition for with the overgiven name for the resource
@@ -3367,7 +3372,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                     stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_UPDATE");
                     stmt.setString(1, m_sqlManager.validateNull(value));
                     stmt.setString(2, resource.getResourceId().toString());
-                    stmt.setString(3, resource.getFullResourceName());
+                    stmt.setString(3, resourceName);
                     stmt.setInt(4, propdef.getId());
                     stmt.executeUpdate();
                 } else {
@@ -3377,7 +3382,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                     stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.get(projectId, "C_TABLE_PROPERTIES")));
                     stmt.setInt(2, propdef.getId());
                     stmt.setString(3, resource.getResourceId().toString());
-                    stmt.setString(4, resource.getFullResourceName());
+                    stmt.setString(4, resourceName);
                     stmt.setString(5, m_sqlManager.validateNull(value));
                     stmt.executeUpdate();
                 }
