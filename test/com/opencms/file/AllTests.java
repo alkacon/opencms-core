@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/file/Attic/AllTests.java,v $
- * Date   : $Date: 2003/03/05 18:43:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/12 17:22:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,23 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
 public class AllTests {
 
+    /**
+     * Hide constructor to prevent generation of class instances.<p>
+     */
+    private AllTests() {
+    }
+    
+    /**
+     * Returns the JUnit test suite for this package.<p>
+     * 
+     * @return the JUnit test suite for this package
+     */    
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for com.opencms.file");
         //$JUnit-BEGIN$

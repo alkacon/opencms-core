@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/file/Attic/CmsImportTest.java,v $
- * Date   : $Date: 2003/03/23 20:57:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/12 17:22:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,20 +35,24 @@ import junit.framework.TestCase;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0
  */
 public class CmsImportTest extends TestCase {
 
     /**
-     * Constructor for CmsImportTest.
-     * @param arg0
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
      */
     public CmsImportTest(String arg0) {
         super(arg0);
     }
-
+    
+    /**
+     * Runs a test for the import of content.<p>  
+     */
     public void testSetDirectories() {
         String[] rules = { 
             "s#/default/vfs/content/bodys/(.*)#/default/vfs/system/bodies/$1#",
@@ -67,43 +71,43 @@ public class CmsImportTest extends TestCase {
         String content, result;
         
         content =         
-            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-            "<PAGE>\n" +
-            "    <class>com.opencms.template.CmsXmlTemplate</class>\n" +
-            "    <masterTemplate>/system/modules/de.alkacon.opencms.modules.lgt.frontend/templates/lgt_group_main</masterTemplate>\n" +
-            "    <ELEMENTDEF name=\"body\">\n" +
-            "        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n" +
-            "        <TEMPLATE>/content/bodys/group/de/index.html</TEMPLATE>\n" +
-            "    </ELEMENTDEF>\n" +
-            "</PAGE>";
+            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
+            + "<PAGE>\n"
+            + "    <class>com.opencms.template.CmsXmlTemplate</class>\n"
+            + "    <masterTemplate>/system/modules/de.alkacon.opencms.modules.lgt.frontend/templates/lgt_group_main</masterTemplate>\n"
+            + "    <ELEMENTDEF name=\"body\">\n"
+            + "        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n"
+            + "        <TEMPLATE>/content/bodys/group/de/index.html</TEMPLATE>\n"
+            + "    </ELEMENTDEF>\n"
+            + "</PAGE>";
         
         result =         
-            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-            "<PAGE>\n" +
-            "    <class>com.opencms.template.CmsXmlTemplate</class>\n" +
-            "    <masterTemplate>/system/modules/de.alkacon.opencms.modules.lgt.frontend/templates/lgt_group_main</masterTemplate>\n" +
-            "    <ELEMENTDEF name=\"body\">\n" +
-            "        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n" +
-            "        <TEMPLATE>/system/bodies/group/de/index.html</TEMPLATE>\n" +
-            "    </ELEMENTDEF>\n" +
-            "</PAGE>";        
+            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
+            + "<PAGE>\n"
+            + "    <class>com.opencms.template.CmsXmlTemplate</class>\n"
+            + "    <masterTemplate>/system/modules/de.alkacon.opencms.modules.lgt.frontend/templates/lgt_group_main</masterTemplate>\n"
+            + "    <ELEMENTDEF name=\"body\">\n"
+            + "        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n"
+            + "        <TEMPLATE>/system/bodies/group/de/index.html</TEMPLATE>\n"
+            + "    </ELEMENTDEF>\n"
+            + "</PAGE>";        
         
         content = CmsImport.setDirectories(content, rules);        
         assertEquals(content, result);        
             
         content =      
-            ".hbackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1.gif) no-repeat; background-color:#FFFFFF; }\n" +
-            ".hibackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1_cai_cpe.gif); no-repeat; background-color:#FFFFFF; }" +        
-            "<img src=\"{OpenCmsContext}/pics/test/\">\n" +
-            "picDir=/system/modules/li.castle.frontend/pics/\n" +
-            "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";
+            ".hbackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1.gif) no-repeat; background-color:#FFFFFF; }\n"
+            + ".hibackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1_cai_cpe.gif); no-repeat; background-color:#FFFFFF; }"        
+            + "<img src=\"{OpenCmsContext}/pics/test/\">\n"
+            + "picDir=/system/modules/li.castle.frontend/pics/\n"
+            + "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";
         
         result =         
-            ".hbackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1.gif) no-repeat; background-color:#FFFFFF; }\n" +
-            ".hibackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1_cai_cpe.gif); no-repeat; background-color:#FFFFFF; }" +        
-            "<img src=\"{OpenCmsContext}/system/galleries/pics/test/\">\n" +
-            "picDir=/system/modules/li.castle.frontend/pics/\n" +
-            "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/system/galleries/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";           
+            ".hbackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1.gif) no-repeat; background-color:#FFFFFF; }\n"
+            + ".hibackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1_cai_cpe.gif); no-repeat; background-color:#FFFFFF; }"        
+            + "<img src=\"{OpenCmsContext}/system/galleries/pics/test/\">\n"
+            + "picDir=/system/modules/li.castle.frontend/pics/\n"
+            + "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/system/galleries/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";           
         
         content = CmsImport.setDirectories(content, rules);      
         

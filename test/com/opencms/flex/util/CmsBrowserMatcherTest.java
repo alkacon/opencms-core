@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/CmsBrowserMatcherTest.java,v $
- * Date   : $Date: 2003/06/04 12:34:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/12 17:22:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -86,13 +86,17 @@ public class CmsBrowserMatcherTest extends TestCase {
     };
      
     /**
-     * Constructor for CmsResourceTranslatorTest.
-     * @param arg0
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
      */
     public CmsBrowserMatcherTest(String arg0) {
         super(arg0);
     }
 
+    /**
+     * Tests the browser matching regular expressions.<p>
+     */
     public void testMatchBrowser() {
         ArrayList pattern = new ArrayList(useragent.length);
         for (int i=0; i<useragent.length; i++) {

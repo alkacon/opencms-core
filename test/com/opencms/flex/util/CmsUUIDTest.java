@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/CmsUUIDTest.java,v $
- * Date   : $Date: 2003/05/13 15:53:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/12 17:22:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
@@ -47,13 +47,17 @@ public class CmsUUIDTest extends TestCase {
     private static final boolean DEBUG = true;
      
     /**
-     * Constructor for CmsResourceTranslatorTest.
-     * @param arg0
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
      */
     public CmsUUIDTest(String arg0) {
         super(arg0);
     }
 
+    /**
+     * Tests UUID generation.<p>
+     */
     public void testUUID() {
         try {
             CmsUUID.init(CmsUUID.getDummyEthernetAddress());
@@ -76,7 +80,7 @@ public class CmsUUIDTest extends TestCase {
         assertTrue(id4.isNullUUID());
         
         if (id4.equals(CmsUUID.getNullUUID())) {
-            System.out.println( "id4 is null-UUID" );
+            System.out.println("id4 is null-UUID");
         }
     }
 }

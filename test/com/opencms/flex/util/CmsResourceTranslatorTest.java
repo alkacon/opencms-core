@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/CmsResourceTranslatorTest.java,v $
- * Date   : $Date: 2003/03/05 18:43:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/12 17:22:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,11 @@
  
 package com.opencms.flex.util;
 
-import com.opencms.flex.util.CmsResourceTranslator;
-
 import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -59,13 +57,17 @@ public class CmsResourceTranslatorTest extends TestCase {
     };
      
     /**
-     * Constructor for CmsResourceTranslatorTest.
-     * @param arg0
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
      */
     public CmsResourceTranslatorTest(String arg0) {
         super(arg0);
     }
 
+    /**
+     * Tests for the resource name translation.<p>
+     */
     public void testTranslateResource() {
         
         CmsResourceTranslator translator = new CmsResourceTranslator(rules, false);

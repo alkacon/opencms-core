@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/Attic/AllTests.java,v $
- * Date   : $Date: 2003/03/05 18:46:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/12 17:22:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,23 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0
  */
 public class AllTests {
     
+    /**
+     * Hide constructor to prevent generation of class instances.<p>
+     */
+    private AllTests() {
+    }
+    
+    /**
+     * Creates the OpenCms JUnit test suite.<p>
+     * 
+     * @return the OpenCms JUnit test suite
+     */
     public static Test suite() {
         TestSuite suite = new TestSuite("OpenCms complete test");
         suite.addTest(com.opencms.flex.util.AllTests.suite());        
@@ -60,15 +71,19 @@ public class AllTests {
         return wrapper;
     }
     
+    /**
+     * One-time initialization code,
+     * might be used later to create a default OpenCms DB setup scenario.<p>
+     */
     public static void oneTimeSetUp() {
-        // one-time initialization code
-        // might be used later to create a default OpenCms DB setup scenario
         System.out.println("Starting OpenCms test run...");
     }
-
+    
+    /** 
+     * One-time cleanup code,
+     * might be used later to tear down a default OpenCms DB setup scenario.<p>
+     */
     public static void oneTimeTearDown() {
-        // one-time cleanup code
-        // might be used later to tear down a default OpenCms DB setup scenario
         System.out.println("... OpenCms test run finished!");
     }    
 }
