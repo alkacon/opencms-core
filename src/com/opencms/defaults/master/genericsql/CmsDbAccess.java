@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/07/05 02:09:34 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/08/23 16:51:50 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1750,6 +1750,17 @@ public class CmsDbAccess {
         int subId, String contentDefinitionName, boolean enableHistory,
         int versionId, long publishingDate, Vector changedRessources,
         Vector changedModuleData) throws CmsException {
+        
+        try {
+           Class.forName(contentDefinitionName).getMethod("beforePublish",
+                new Class[] {CmsObject.class, Boolean.class, Integer.class, Integer.class,
+                Long.class, Vector.class, Vector.class, CmsMasterDataSet.class}).invoke(null, new Object[] {cms,
+                new Boolean(enableHistory), new Integer(subId), new Integer(versionId), new Long(publishingDate),
+                changedRessources, changedModuleData, dataset});   
+        }
+        catch (Exception e) {
+            CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsDbAccess] error calling method beforePublish in class " + contentDefinitionName );
+        }
 
         // backup the data
         if(enableHistory) {
