@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
- * Date   : $Date: 2001/07/09 08:34:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/07/23 11:09:46 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -34,7 +34,7 @@ import java.io.*;
  * This class describes a backup resource in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2001/07/09 08:34:54 $
+ * @version $Revision: 1.2 $ $Date: 2001/07/23 11:09:46 $
  */
 public class CmsBackupResource extends CmsResource implements Cloneable,Serializable {
 
@@ -97,7 +97,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable,Serializ
 						      int launcherType, String launcherClassname,
 						      long dateCreated, long dateLastModified,
 						      int resourceLastModifiedBy, String lastModifiedByName,
-						      byte[] fileContent,int size){
+						      byte[] fileContent,int size, int lockedInProject){
 
 		// create the CmsResource.
 		super(resourceId, parentId, fileId,
@@ -106,7 +106,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable,Serializ
 			  accessFlags,state,C_UNKNOWN_ID,
 			  launcherType,launcherClassname,
 			  dateCreated,dateLastModified,
-			  resourceLastModifiedBy,size);
+			  resourceLastModifiedBy,size, lockedInProject);
 
 		// set content and size.
 		m_fileContent=fileContent;
@@ -141,7 +141,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable,Serializ
 							         new String(this.getLauncherClassname()), this.getDateCreated(),
                                      this.getDateLastModified(),this.getResourceLastModifiedBy(),
                                      this.getLastModifiedByName(),
-                                     newContent, this.getLength());
+                                     newContent, this.getLength(), this.getLockedInProject());
 	}
 	/**
 	 * Gets the content of this file.
