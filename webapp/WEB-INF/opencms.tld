@@ -83,8 +83,16 @@
         </description>
         <attribute>
             <name>element</name>
-            <required>true</required>
-        </attribute>        
+        </attribute>  
+        <attribute>
+            <name>ifexists</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsone</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsall</name>
+        </attribute>      
     </tag>
     
     <tag>

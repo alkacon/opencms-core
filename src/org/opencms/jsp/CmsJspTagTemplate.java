@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/20 15:58:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,10 @@
 
 package org.opencms.jsp;
 
+import org.opencms.page.CmsXmlPage;
+
+import com.opencms.util.Utils;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
@@ -39,12 +43,20 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
     // Attribute member variables
+    
+    /** Name of element */
     private String m_element = null;
+    
+    /** List of elements for element check */
+    private String m_elementlist = null;
+    
+    /** Condition for element check */
+    private boolean m_checkall = false;
 
     /** Template part identifier */
     public static final String C_TEMPLATE_ELEMENT = "__element";
@@ -68,6 +80,69 @@ public class CmsJspTagTemplate extends BodyTagSupport {
     }
 
     /**
+     * Sets the list of elements to check.<p>
+     * 
+     * @param elements the list of elements
+     */
+    public void setIfexists(String elements) {
+        if (elements != null) {
+            m_elementlist = elements;
+            m_checkall = false;
+        }
+    }
+    
+    /**
+     * Returns the list of elements to check.<p>
+     * 
+     * @return the list of elements
+     */
+    public String getIfexists() {
+        return m_elementlist!=null?m_elementlist:"";
+    }
+
+    /**
+     * Sets the list of elements to check.<p>
+     * 
+     * @param elements the list of elements
+     */
+    public void setIfexistsone(String elements) {
+        if (elements != null) {
+            m_elementlist = elements;
+            m_checkall = false;
+        }        
+    }
+
+    /**
+     * Returns the list of elements to check.<p>
+     * 
+     * @return the list of elements
+     */
+    public String getIfexistsone() {
+        return m_elementlist!=null?m_elementlist:"";
+    }
+
+    /**
+     * Sets the list of elements to check.<p>
+     * 
+     * @param elements the list of elements
+     */
+    public void setIfexistsall(String elements) {
+        if (elements != null) {
+            m_elementlist = elements;
+            m_checkall = true;
+        }           
+    }
+
+    /**
+     * Returns the list of elements to check.<p>
+     * 
+     * @return the list of elements
+     */
+    public String getIfexistsall() {
+        return m_elementlist!=null?m_elementlist:"";
+    }
+    
+    /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */ 
     public void release() {
@@ -79,7 +154,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     public int doStartTag() {
-        if (templateTagAction(m_element, pageContext.getRequest())) {
+        if (templateTagAction(m_element, null, false, pageContext.getRequest())) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;
@@ -90,12 +165,25 @@ public class CmsJspTagTemplate extends BodyTagSupport {
      * Internal action method.<p>
      * 
      * @param element the selected element
+     * @param elementlist list the list of elements to check
+     * @param checkall flag to indicate that all elements should be checked
      * @param req the current request 
      * @return boolean <code>true</code> if this element should be inclued, <code>false</code>
      * otherwise
      */    
-    public static boolean templateTagAction(String element, ServletRequest req) {
+    public static boolean templateTagAction(String element, String elementlist, boolean checkall, ServletRequest req) {
+
+        if (elementlist != null) {
+            CmsXmlPage page = (CmsXmlPage)req.getAttribute(org.opencms.loader.CmsXmlPageLoader.C_XMLPAGE_OBJECT);
+            // check the elements in the elementlist, if the check fails don't render the body
+            // String element[] = Utils.split(elementlist,",");
+            //for (int i = 0; i < element.length; i++) {
+            //    if (page.hasElement(element[i].trim(),"") && page.isEnabled())
+            //}
+        } 
+        
+        // otherwise, check if an element was defined and if its equal to the desired element
         String param =  req.getParameter(C_TEMPLATE_ELEMENT);        
-        return ((param == null) || (param.equals(element)));
+        return ((element ==  null) || (param == null) || (param.equals(element)));
     }
  }

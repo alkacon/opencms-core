@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/01/12 10:06:25 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/01/20 15:58:41 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,6 @@ import com.opencms.template.CmsXmlTemplate;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -91,7 +90,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 5.0 beta 2
  */
@@ -741,11 +740,40 @@ public class CmsJspActionElement {
      * @see org.opencms.jsp.CmsJspTagUser
      */
     public boolean template(String element) {
+        return template(element, null, false);
+    }
+
+    /**
+     * Checks if a template part should be used or not, same as using 
+     * the <code>&lt;cms:template ifexists="..." /&gt;</code> tag.<p>
+     * 
+     * @param elementlist the list of elements to check
+     * @param checkall <code>true</code> if all elements in the list should be checked 
+     * @return <code>true</code> if the elements available, <code>false</code> otherwise
+     * 
+     * @see org.opencms.jsp.CmsJspTagUser
+     */
+    public boolean template(String elementlist, boolean checkall) {
+        return template(null, elementlist, checkall);
+    }
+
+    /**
+     * Checks if a template part should be used or not, same as using 
+     * the <code>&lt;cms:template element="..." ifexists="..." /&gt;</code> tag.<p>
+     * 
+     * @param element the template element to check
+     * @param elementlist the list of elements to check 
+     * @param checkall <code>true</code> if all elements in the list should be checked
+     * @return <code>true</code> if the element is active, <code>false</code> otherwise
+     * 
+     * @see org.opencms.jsp.CmsJspTagUser
+     */
+    public boolean template(String element, String elementlist, boolean checkall) {
         if (m_notInitialized) {
             return true;
         }
         try {
-            return CmsJspTagTemplate.templateTagAction(element, m_request);
+            return CmsJspTagTemplate.templateTagAction(element, elementlist, checkall, m_request);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -863,6 +891,14 @@ public class CmsJspActionElement {
         return getContent(target, null, null);
     }
 
+    /**
+     * Returns the processed output of an element within an OpenCms resource.<p>
+     * 
+     * @param target the target to process
+     * @param element name of the element
+     * @param language language of the element
+     * @return the processed output
+     */
     public String getContent(String target, String element, String language) {
         try {
             I_CmsResourceLoader loader = null;
