@@ -10,6 +10,7 @@ Legend:
 
 OpenCms 4.5.21 Chusuk       - xx November 2001
 ! Added schedule task management to the workplace.
+! Added method to create channels directly via CmsObject.
 
 OpenCms 4.5.20 Chusuk       - 15 November 2001
 ! Added AdditionalChangeDate for timed contentdefinitions. 
