@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/10/29 13:00:42 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/10/29 15:49:39 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.main;
 
-import org.opencms.cron.*;
+import org.opencms.cron.CmsCronEntry;
+import org.opencms.cron.CmsCronScheduleJob;
+import org.opencms.cron.CmsCronScheduler;
+import org.opencms.cron.CmsCronTable;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.flex.CmsFlexCache;
@@ -50,7 +53,15 @@ import org.opencms.util.CmsUUID;
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.CmsMain;
 import com.opencms.boot.CmsSetupUtils;
-import com.opencms.core.*;
+import com.opencms.core.CmsCoreSession;
+import com.opencms.core.CmsException;
+import com.opencms.core.CmsRequestHttpServlet;
+import com.opencms.core.CmsResponseHttpServlet;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.core.I_CmsResourceInit;
+import com.opencms.core.I_CmsResponse;
+import com.opencms.core.OpenCmsServletNotify;
 import com.opencms.core.exceptions.CmsResourceInitException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
@@ -90,7 +101,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * @since 5.1
  */
 public class OpenCmsCore {
