@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/locale/Attic/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/01/22 10:39:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/23 10:35:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,26 +38,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/01/22 10:39:35 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/23 10:35:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
     /**
-     * @see org.opencms.locale.I_CmsLocaleHandler#getLocaleName(com.opencms.file.CmsRequestContext, java.lang.String, java.lang.String[], java.lang.String[])
+     * @see org.opencms.locale.I_CmsLocaleHandler#getLocaleName(com.opencms.file.CmsRequestContext, java.lang.String)
      */
     public String getLocaleName(
         CmsRequestContext context,
-        String requestedLocaleName,
-        String availableLocaleNames[],
-        String defaultLocaleNames[]) {
+        String requestedLocaleName) {
         
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
         
         // initialize locale names if not initialized resource-specific
+        String availableLocaleNames[] = localeManager.getAvailableLocaleNames(context, context.getUri());
         if (availableLocaleNames == null) {
             availableLocaleNames = localeManager.getAvailableLocaleNames();
         }
+        String defaultLocaleNames[] = localeManager.getDefaultLocaleNames(context, context.getUri());
         if (defaultLocaleNames == null) {
             defaultLocaleNames = localeManager.getDefaultLocaleNames();
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/locale/Attic/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/01/22 10:39:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/23 10:35:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,11 +30,12 @@
  */
 package org.opencms.locale;
 
-import org.opencms.main.OpenCms;
+import org.opencms.db.CmsDriverManager;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
 import com.opencms.util.Utils;
 
 import java.util.HashMap;
@@ -46,10 +47,12 @@ import java.util.Set;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2004/01/22 10:39:35 $
+ * @version $Revision: 1.5 $ $Date: 2004/01/23 10:35:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsLocaleManager {
+    
+    private CmsDriverManager m_driverManager;
     
     private String[] m_defaultLocaleNames;
     
@@ -70,10 +73,14 @@ public class CmsLocaleManager {
      * <code>locale.default</code>
      * in <code>opencms.properties</code>
      *
+     * @param driverManager the driver manager
      * @param configuration the configuration from <code>opencms.properties</code>
+     * @param localeHandler the locale handler
      */
-    public CmsLocaleManager (ExtendedProperties configuration) {
+    public CmsLocaleManager (CmsDriverManager driverManager, ExtendedProperties configuration, I_CmsLocaleHandler localeHandler) {
 
+        m_driverManager = driverManager;
+        
         // init available locales
         m_availableLocaleNames = configuration.getStringArray("locale.available");
         m_availableLocales = new HashMap();
@@ -97,7 +104,7 @@ public class CmsLocaleManager {
         m_defaultLocaleNames = configuration.getStringArray("locale.default");
         
         // init locale handler
-        m_localeHandler = (I_CmsLocaleHandler)OpenCms.getRuntimeProperty(C_LOCALE_HANDLER);
+        m_localeHandler = localeHandler;
         if (m_localeHandler == null) {
             m_localeHandler = new CmsDefaultLocaleHandler();
         }
@@ -318,10 +325,21 @@ public class CmsLocaleManager {
      * @return an array of available locale names
      */
     public String[] getAvailableLocaleNames(CmsObject cms, String resourceName) {
+        return getAvailableLocaleNames(cms.getRequestContext(), resourceName);
+    }
+
+    /**
+     * Returns an array of available locale names for the given resource.<p>
+     * 
+     * @param context the requst context
+     * @param resourceName the name of the resource
+     * @return an array of available locale names
+     */
+    public String[] getAvailableLocaleNames(CmsRequestContext context, String resourceName) {
     
         String availableNames = null;
         try {
-            availableNames = cms.readProperty(resourceName, I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, true);
+            availableNames = m_driverManager.readProperty(context, context.addSiteRoot(resourceName), context.getAdjustedFullSiteRoot(resourceName), I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, true);
         } catch (CmsException exc) {
             //noop
         }
@@ -337,10 +355,21 @@ public class CmsLocaleManager {
      * @return an array of default locale names
      */
     public String[] getDefaultLocaleNames(CmsObject cms, String resourceName) {
+        return getDefaultLocaleNames(cms.getRequestContext(), resourceName);
+    }
+    
+    /**
+     * Returns an array of default locale names for the given resource.<p>
+     * 
+     * @param context the requst context
+     * @param resourceName the name of the resource
+     * @return an array of default locale names
+     */    
+    public String[] getDefaultLocaleNames(CmsRequestContext context, String resourceName) {
         
         String defaultNames = null;
         try {
-            defaultNames = cms.readProperty(resourceName, I_CmsConstants.C_PROPERTY_LOCALE, true);
+            defaultNames = m_driverManager.readProperty(context, context.addSiteRoot(resourceName), context.getAdjustedFullSiteRoot(resourceName), I_CmsConstants.C_PROPERTY_LOCALE, true);
         } catch (CmsException exc) {
             //noop
         }        

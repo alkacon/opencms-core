@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/locale/Attic/I_CmsLocaleHandler.java,v $
- * Date   : $Date: 2004/01/22 10:39:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/23 10:35:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.locale;
 import com.opencms.file.CmsRequestContext;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/01/22 10:39:35 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/23 10:35:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsLocaleHandler {
@@ -44,9 +44,7 @@ public interface I_CmsLocaleHandler {
      * 
      * @param context the request context
      * @param requestedLocaleName name of the requested locale or <code>null</code>
-     * @param availableLocaleNames comma-separated names of available locales for the requested resource or <code>null</code>
-     * @param defaultLocaleNames comma-separated names of default locales for the requested resource or <code>null</code>
      * @return the name of the appropriate locale
      */
-    String getLocaleName(CmsRequestContext context, String requestedLocaleName, String availableLocaleNames[], String defaultLocaleNames[]);
+    String getLocaleName(CmsRequestContext context, String requestedLocaleName);
 }

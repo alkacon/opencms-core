@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2004/01/22 10:39:35 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2004/01/23 10:35:09 $
+ * Version: $Revision: 1.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.107 $
+ * @version $Revision: 1.108 $
  */
 public class CmsRequestContext {
 
@@ -579,16 +579,8 @@ public class CmsRequestContext {
      */
     public void initLocale() {
         
-        try {
-            String available = m_driverManager.readProperty(this, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, true);
-            String defaults = m_driverManager.readProperty(this, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), I_CmsConstants.C_PROPERTY_LOCALE, true);
-
-            m_localeName = OpenCms.getLocaleManager().getLocaleHandler().getLocaleName(this, null, OpenCms.getLocaleManager().getLocaleNames(available), OpenCms.getLocaleManager().getLocaleNames(defaults));
-            
-        } catch (CmsException exc) {
-            m_localeName = null;
-        }
-        
+        m_localeName = OpenCms.getLocaleManager().getLocaleHandler().getLocaleName(this, null);
+                    
         if (m_localeName == null || "".equals(m_localeName)) {
             m_localeName = OpenCms.getLocaleManager().getDefaultLocaleName();
             if (OpenCms.getLog(this).isDebugEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/01/22 10:39:35 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2004/01/23 10:35:09 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1379,10 +1379,10 @@ public final class OpenCmsCore {
         }
         
         // initialize the locale manager
+        I_CmsLocaleHandler localeHandler = null;
         try {
             String localeHandlerClass = OpenCms.getRegistry().getLocaleHandler();
-            I_CmsLocaleHandler handler = (I_CmsLocaleHandler)Class.forName(localeHandlerClass).newInstance();
-            setRuntimeProperty(CmsLocaleManager.C_LOCALE_HANDLER, handler);
+            localeHandler = (I_CmsLocaleHandler)Class.forName(localeHandlerClass).newInstance();
             if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 getLog(CmsLog.CHANNEL_INIT).info(". Locale handler class : " + localeHandlerClass + " instanciated");
             }
@@ -1393,7 +1393,7 @@ public final class OpenCmsCore {
         }
         
         try {    
-            m_localeManager = new CmsLocaleManager(configuration);
+            m_localeManager = new CmsLocaleManager(m_driverManager, configuration, localeHandler);
             if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 String names[] = m_localeManager.getAvailableLocaleNames();
                 StringBuffer buf = new StringBuffer();
