@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/03/15 10:32:57 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/21 09:18:15 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,10 +43,25 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/03/15 10:32:57 $
+ * @version $Revision: 1.10 $ $Date: 2000/03/21 09:18:15 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
+
+	/** Session key */
+	private static String C_NEWNAME = "new_project_name";
+
+	/** Session key */
+	private static String C_NEWDESCRIPTION = "new_project_description";
+
+	/** Session key */
+	private static String C_NEWGROUP = "new_project_group";
+
+	/** Session key */
+	private static String C_NEWMANAGERGROUP = "new_project_managergroup";
+
+	/** Session key */
+	private static String C_NEWFOLDER = "new_project_folder";
 
     /**
      * Indicates if the results of this class are cacheable.
@@ -88,6 +103,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         String newDescription = (String)parameters.get(C_PROJECTNEW_DESCRIPTION);
         String newManagerGroup = (String)parameters.get(C_PROJECTNEW_MANAGERGROUP);
         String newFolder = (String)parameters.get(C_PROJECTNEW_FOLDER);
+        String action = (String)parameters.get("action");
 		
         // modify the folderaname if nescessary (the root folder is always given
         // as a nice name)
@@ -98,10 +114,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             }
         }
         
-        // get the current project to restore it later again.
-        // to create a project, the workplace must be set to the online project.
-        String project=reqCont.currentProject().getName();
-        session.putValue(C_PARA_PROJECT,project);
         reqCont.setCurrentProject(cms.onlineProject().getName());
         
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
@@ -109,7 +121,25 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		// is there any data? 
 		if( (newName != null) && (newGroup != null) &&  (newDescription != null) && 
 			(newManagerGroup != null) && (newFolder != null) ) {
-			// Yes: create new Project
+			// Yes: store the data into the session
+			session.putValue(C_NEWNAME, newName);
+			session.putValue(C_NEWGROUP, newGroup);
+			session.putValue(C_NEWDESCRIPTION, newDescription);
+			session.putValue(C_NEWMANAGERGROUP, newManagerGroup);
+			session.putValue(C_NEWFOLDER, newFolder);
+			templateSelector = "wait";
+		}
+		
+		// is the wait-page showing?
+		if( "ok".equals(action) ) {			
+			// YES: get the stored data
+			newName = (String) session.getValue(C_NEWNAME);
+			newGroup = (String) session.getValue(C_NEWGROUP);
+			newDescription = (String) session.getValue(C_NEWDESCRIPTION);
+			newManagerGroup = (String) session.getValue(C_NEWMANAGERGROUP);
+			newFolder = (String) session.getValue(C_NEWFOLDER);			
+			
+			// create new Project
 			try {
                 //test if the given folder is existing
                 cms.readFolder(newFolder);
