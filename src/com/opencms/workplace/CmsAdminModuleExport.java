@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/03/07 11:17:22 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/03/11 00:00:26 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,10 @@ import com.opencms.file.I_CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 /**
@@ -135,8 +138,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 					// add each additonal folder plus its content folder under "content/bodys"
 					additionalResourceTokens = new StringTokenizer(additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
 
-					resourceCount = (additionalResourceTokens.countTokens() * 2) + CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
-
+					resourceCount = (additionalResourceTokens.countTokens()) + CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
 					resourcen = new String[resourceCount];
 
 					// add each resource plus its equivalent at content/bodys to 
@@ -144,23 +146,20 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 					while (additionalResourceTokens.hasMoreTokens()) {
 						String currentResource = additionalResourceTokens.nextToken().trim();
 
-						if (DEBUG > 0) {
-							System.err.println("Adding resource: " + currentResource);
-							System.err.println("Adding resource: " + C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length() - 1) + currentResource);
-						}
-
-						resourcen[i++] = currentResource;
-						resourcen[i++] = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length() - 1) + currentResource;
+                        if (! "-".equals(currentResource)) {
+                            if (DEBUG > 0) {
+                                System.err.println("Adding resource: " + currentResource);
+                            }                            
+						    resourcen[i++] = currentResource;
+                        }
 					}
-				}
-				else {
+				} else {
 					// no additional resources were specified...
 				    resourceCount = CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT;
 					resourcen = new String[resourceCount];
 					i = 0;
 				}
-			}
-			else {
+			} else {
 				// TRADITIONAL MODULE
 				if (DEBUG > 0) {
 					System.out.println(moduleName + " is a traditional module");
@@ -177,37 +176,40 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 
 			if (!C_VFS_NEW_STRUCTURE) {
 				resourcen[i++] = C_VFS_PATH_MODULEDEMOS + moduleName + "/";
-				resourcen[i++] = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length() - 1) + C_VFS_PATH_MODULEDEMOS + moduleName + "/";
 			}
 
 			// check if all resources exists and can be read
-			for (i = 0; i < resourceCount; i++) {
+            ArrayList resList = new ArrayList(Arrays.asList(resourcen));    
+            ArrayList resListCopy = new ArrayList();  
+			for (Iterator it = resList.iterator(); it.hasNext(); ) {
+                String res = (String)it.next();
 				try {
-					if (resourcen[i] != null) {
+					if (res != null) {
 						if (DEBUG > 0) {
-							System.err.println("reading file header of: " + resourcen[i]);
+							System.err.println("reading file header of: " + res);
 						}
-						cms.readFileHeader(resourcen[i]);
+						cms.readFileHeader(res);       
+                        resListCopy.add(res);                 
 					}
 				}
 				catch (CmsException e) {
                     // resource did not exist / could not be read
 					if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-						A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "error exporting module: couldn't add " + resourcen[i] + " to Module\n" + Utils.getStackTrace(e));
+						A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "error exporting module: couldn't add " + res + " to Module\n" + Utils.getStackTrace(e));
 					}
-					resourcen[i] = resourcen[resourceCount - CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT];
+                    if (DEBUG > 0) {
+                        System.err.println("couldn't add " + res);
+                    } 
 				}
-			}
-			try {
-				cms.readFileHeader(resourcen[resourceCount - CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT]);
-			}
-			catch (CmsException e) {
-				if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-					A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "error exporting module: couldn't add " + resourcen[resourceCount - CmsAdminModuleExport.C_MINIMUM_MODULE_RESOURCE_COUNT] + " to Module\n" + "You dont have this module in this project!");
-				}
-				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
-			}
-
+			}            
+            resourcen = new String[resListCopy.size()];         
+            for (int count=0; count < resListCopy.size(); count++ ) {               
+                resourcen[count] = (String)resListCopy.get(count);        
+                if (DEBUG > 0) {
+                    System.err.println("exporting " + resourcen[count]);
+                } 
+            }                            
+            
             String filename = CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + I_CmsRegistry.C_MODULE_PATH + moduleName + "_" + reg.getModuleVersion(moduleName);
             A_CmsReportThread doExport = new CmsAdminModuleExportThread(cms, reg, moduleName, resourcen, filename);
             doExport.start();
