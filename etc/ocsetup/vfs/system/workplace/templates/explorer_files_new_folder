@@ -504,4 +504,28 @@ function closeAllWindows(){
 	]]>
 </TEMPLATE>
 
+<TEMPLATE name="error_system">
+<![CDATA[
+]]><ERRORPAGE title="error.title.foldercreate" message="error.message.foldercreate" reason="error.reason.foldercreate" suggestion="error.suggestion.none" ref="explorer_files_new_folder.html?step=fromerror" ><process>details</process></ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error_1">
+<![CDATA[
+]]><ERRORPAGE title="error.title.foldercreate" message="error.message.foldercreate" reason="error.reason.extNav1" suggestion="error.suggestion.none" ref="explorer_files_new_folder.html?step=extNavError" >no details</ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error_2">
+<![CDATA[
+]]><ERRORPAGE title="error.title.foldercreate" message="error.message.foldercreate" reason="error.reason.extNav2" suggestion="error.suggestion.none" ref="explorer_files_new_folder.html?step=extNavError" >no details</ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error_3">
+<![CDATA[
+]]><ERRORPAGE title="error.title.foldercreate" message="error.message.foldercreate" reason="error.reason.extNav3" suggestion="error.suggestion.none" ref="explorer_files_new_folder.html?step=extNavError" >no details</ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
 </WORKPLACE>

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/03/28 16:12:03 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/04/02 12:52:51 $
+* Version: $Revision: 1.21 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2001/03/28 16:12:03 $
+ * @version $Revision: 1.21 $ $Date: 2001/04/02 12:52:51 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -115,15 +115,27 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         // get the current phase of this wizard
         String step = (String)parameters.get("step");
         if(step != null) {
+            // test if we come from the extended Nav errorpages
+            if(step.equals("extNavError")){
+                step = "1";
+                newFolder = (String)session.getValue(C_SESSIONHEADER + C_PARA_NEWFOLDER);
+                title = (String)session.getValue(C_SESSIONHEADER + C_PARA_TITLE);
+                navtitle = (String)session.getValue(C_SESSIONHEADER + C_PARA_NAVTEXT);
+                navpos = (String)session.getValue(C_SESSIONHEADER + C_PARA_NAVPOS);
+            }
             if(step.equals("1")) {
+                // store all data in session for ext nav or in case of an error
+                session.putValue(C_SESSIONHEADER + C_PARA_NEWFOLDER, newFolder);
+                session.putValue(C_SESSIONHEADER + C_PARA_TITLE, title);
+                if(navtitle != null) {
+                    session.putValue(C_SESSIONHEADER + C_PARA_NAVTEXT, navtitle);
+                    session.putValue(C_SESSIONHEADER + C_PARA_NAVPOS, navpos);
+                }else{
+                    session.removeValue(C_SESSIONHEADER + C_PARA_NAVTEXT);
+                    session.removeValue(C_SESSIONHEADER + C_PARA_NAVPOS);
+                }
                 if(extendedNavigation){
                     // display the extended navigation
-                    session.putValue(C_SESSIONHEADER + C_PARA_NEWFOLDER, newFolder);
-                    session.putValue(C_SESSIONHEADER + C_PARA_TITLE, title);
-                    if(navtitle != null) {
-                        session.putValue(C_SESSIONHEADER + C_PARA_NAVTEXT, navtitle);
-                        session.putValue(C_SESSIONHEADER + C_PARA_NAVPOS, navpos);
-                    }
                     // look if there are allready values to display (if user used the backbutton)
                     Hashtable preprops = (Hashtable)session.getValue(C_SESSIONHEADER + "extendedProperties");
                     //set the default values or the before selected values in the template
@@ -156,17 +168,17 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                                 // prepare to call the dialog for creating the index.html page
                                 session.putValue(C_PARA_FILELIST, folder.getAbsolutePath());
                                 xmlTemplateDocument.setData("indexlocation", folder.getAbsolutePath());
-                                template = "update2";
-                            }else{
-                                template = "update";
                             }
+                            template = "update2";
+                        }else{
+                            template = "update";
                         }
                         // all done, now we have to clean up our mess
                         clearSession(session);
                     }catch(CmsException ex) {
-                        throw new CmsException("Error while creating new Folder" + ex.getMessage(), ex.getType(), ex);
+                        xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                        return startProcessing(cms, xmlTemplateDocument, "", parameters, "error_system");
                     }
-                    // TODO: ErrorHandling
                 }
             }else if("2".equals(step)){
                 // get all the usefull parameters and the session stuff
@@ -180,10 +192,18 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 insertProperty(allProperties, C_PROPERTY_TITLE, title);
                 insertProperty(allProperties, C_PROPERTY_NAVTEXT, navtitle);
                 fillProperties(allProperties, parameters);
+                session.putValue(C_SESSIONHEADER + "extendedProperties", allProperties);
                 // check the backbutton
                 if (back == null){
                     // fast forward
                     try {
+                        // first check if everything is ok
+                        int propError = checkProperties(cms, allProperties);
+                        if (propError > 0){
+                            // error by user get the correct error template
+                            template = "error_" + propError;
+                            return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
+                        }
                         // create the folder
                         CmsFolder folder = cms.createFolder(currentFilelist, newFolder);
                         cms.lockResource(folder.getAbsolutePath());
@@ -206,7 +226,8 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                         // we dont need our session entrys anymore
                         clearSession(session);
                     }catch(CmsException ex) {
-                        throw new CmsException("Error while creating new Folder" + ex.getMessage(), ex.getType(), ex);
+                        xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                        return startProcessing(cms, xmlTemplateDocument, "", parameters, "error_system");
                     }
                 }else{
                     // user pressed backbutton. show the first template again
@@ -218,12 +239,22 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                         // deaktivate the linklayer
                         xmlTemplateDocument.setData("doOnload", "checkInTheBox();");
                     }
-                    session.putValue(C_SESSIONHEADER + "extendedProperties", allProperties);
                     template = null;
+                }
+            }else if("fromerror".equalsIgnoreCase(step)){
+                // error while creating the folder go to firs page and set the stored parameter
+                template = null;
+                xmlTemplateDocument.setData("name", (String)session.getValue(C_SESSIONHEADER + C_PARA_NEWFOLDER));
+                xmlTemplateDocument.setData("title", (String)session.getValue(C_SESSIONHEADER + C_PARA_TITLE));
+                navtitle = (String)session.getValue(C_SESSIONHEADER + C_PARA_NAVTEXT);
+                if (navtitle != null){
+                    xmlTemplateDocument.setData("navtext", navtitle);
+                }else{
+                    // deaktivate the linklayer
+                    xmlTemplateDocument.setData("doOnload", "checkInTheBox();");
                 }
             }
         }
-
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
     }
@@ -557,6 +588,56 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         //insertProperty(properties, "Email_fontcolor", (String)parameters.get("tcolemail"));
         insertProperty(properties, "Templ_leadcolor", (String)parameters.get("bcolsearch"));
         //insertProperty(properties, "Suche_fontcolor", (String)parameters.get("tcolsearch"));
+    }
+
+    /**
+     * Checks if all properties are correct. if not it returns the nummber so the
+     * rigth errortemplate can be displayed.
+     *
+     * @param cms The cmsObject
+     * @param properties The Hashtable with the properties to be checked.
+     * @return int the error nummber.
+     */
+    private int checkProperties (CmsObject cms, Hashtable properties){
+
+        // serch for error 1 (the Hauptlogo must be a OpenCms resource from type image)
+        try{
+            String logo = (String)properties.get("Hauptlogo_img");
+            CmsResource pic = cms.readFileHeader(logo);
+            if(!(cms.getResourceType(pic.getType()).getResourceName()).equals(cms.C_TYPE_IMAGE_NAME)){
+               return 1;
+            }
+        }catch(CmsException e){
+            return 1;
+        }
+
+        // serch for error 2 (FreierLink_navtext and FreierLink_target: both or none)
+        String text   = (String)properties.get("FreierLink_navtext");
+        String target = (String)properties.get("FreierLink_target");
+        if ((text == null || "".equals(text)) != (target == null || "".equals(target))){
+            return 2;
+        }
+
+        // serch for error3 ( the colors must have the form #xxxxxx with 0<= x <= F )
+        String[] propsToCheck = {"Templ_bgcolor",
+                                 "Templ_fontcolor",
+                                 "Templ_fontcolor_hover",
+                                 "Templ_bordercolor",
+                                 "Templ_leadcolor"};
+        for (int i=0; i < propsToCheck.length; i++){
+            String test = (String)properties.get(propsToCheck[i]);
+            if ((test.length() != 7) || test.charAt(0) != '#'){
+                return 3;
+            }
+            String valid = "0123456789ABCDEF";
+            for (int j=1; j<7; j++){
+                if( valid.indexOf(test.charAt(j)) < 0){
+                    return 3;
+                }
+            }
+        }
+        // no errors found
+        return 0;
     }
 
     /**
