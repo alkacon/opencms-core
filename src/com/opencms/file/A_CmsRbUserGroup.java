@@ -14,7 +14,8 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/14 18:02:13 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
  */
 abstract class A_CmsRbUserGroup {
 
@@ -27,8 +28,10 @@ abstract class A_CmsRbUserGroup {
 	 * @param callingUser The user who wants to use this method.
 	 * @return true, if the users current group is the admin-group, 
 	 * else it returns false.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract boolean isAdmin(A_CmsUser callingUSer);
+	abstract boolean isAdmin(A_CmsUser callingUser)
+         throws CmsException;
 
 	/**
 	 * Determines, if the users current group is the projectleader-group.<BR/>
@@ -239,6 +242,7 @@ abstract class A_CmsRbUserGroup {
 	 * @param name The name of the new group.
 	 * @param description The description for the new group.
 	 * @int flags The flags for the new group.
+	 * @param name The name of the parent group (or null).
 	 *
 	 * @return Group
 	 * 
@@ -246,11 +250,12 @@ abstract class A_CmsRbUserGroup {
 	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
 	 * same group already exists.
 	 */	
-	abstract A_CmsGroup addGroup(A_CmsUser callingUser, String name, String description, int flags)
+	abstract A_CmsGroup addGroup(A_CmsUser callingUser, String name, String description, int flags, String parent)
 		throws CmsException, CmsDuplicateKeyException;
 
 	/**
 	 * Delete a group from the Cms.<BR/>
+	 * Only groups that contain no subgroups can be deleted.
 	 * 
 	 * Only the admin can do this.<P/>
 	 * 
@@ -315,8 +320,25 @@ abstract class A_CmsRbUserGroup {
 	 * 
 	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing groups.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getGroups(A_CmsUser callingUser);	
+	abstract Vector getGroups(A_CmsUser callingUser)
+        throws CmsException;	
+    
+    
+    /**
+	 * Returns all child groups of a groups<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @param groupname The name of the group.
+	 * @return users A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	abstract Vector getChild(A_CmsUser callingUser, String groupname)
+        throws CmsException ;	
 
 	/** 
 	 * Sets the password for a user.

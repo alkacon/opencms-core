@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/13 18:41:03 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
  */
 public class CmsRbProperty extends A_CmsRbProperty  {
 	
@@ -21,16 +21,16 @@ public class CmsRbProperty extends A_CmsRbProperty  {
      * The property access object which is required to access the
      * property database.
      */
-    private A_CmsAccessProperty m_AccessProperty;
+    private A_CmsAccessProperty m_accessProperty;
     
     /**
      * Constructor, creates a new Cms Property Resource Broker.
      * 
      * @param AccessProperty The property access object.
      */
-    public CmsRbProperty(A_CmsAccessProperty AccessProperty)
+    public CmsRbProperty(A_CmsAccessProperty accessProperty)
     {
-        m_AccessProperty=AccessProperty;
+        m_accessProperty=accessProperty;
     }
     
 	/**
@@ -45,7 +45,7 @@ public class CmsRbProperty extends A_CmsRbProperty  {
 	 public Serializable readProperty(String name) 
         throws CmsException {
         
-        return m_AccessProperty.readProperty(name);
+        return m_accessProperty.readProperty(name);
      }
 
 	/**
@@ -60,7 +60,7 @@ public class CmsRbProperty extends A_CmsRbProperty  {
 	 public void writeProperty(String name, Serializable object)
         throws CmsDuplicateKeyException, CmsException {
          
-        m_AccessProperty.writeProperty(name,object);
+        m_accessProperty.writeProperty(name,object);
      }
 
 	/**
@@ -73,6 +73,6 @@ public class CmsRbProperty extends A_CmsRbProperty  {
 	 public void deleteProperty(String name)
         throws CmsException {
         
-        m_AccessProperty.deleteProperty(name);
+        m_accessProperty.deleteProperty(name);
     }
 }

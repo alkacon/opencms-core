@@ -15,16 +15,61 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/14 18:02:13 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
  */
  public class CmsAccessUserMySql extends A_CmsAccessUser implements I_CmsConstants  {
      
-     
+     /**
+     * SQL Command for writing users.
+     */   
+    private static final String C_USER_WRITE = "INSERT INTO USERS VALUES(?,?,?,?)";
+    
+     /**
+     * SQL Command for writing users.
+     */   
+    private static final String C_USER_READ = "SELECT * FROM USERS WHERE USER_NAME = ?";
+    
+      /**
+     * Name of the column USER_ID in the SQL table USER.
+     */
+    private static final String C_USER_ID="USER_ID";
+       
+    /**
+     * Name of the column USER_NAME in the SQL table USERS.
+     */
+    private static final String C_USER_NAME="USER_NAME";
+    
+     /**
+     * Name of the column USER_PASSWORD in the SQL table USERS.
+     */
+    private static final String C_USER_PASSWORD="USER_PASSWORD";
+    
+    
+    /**
+     * Name of the column USER_DESCRIPTION in the SQL table USERS.
+     */
+    private static final String C_USER_DESCRIPTION="USER_DESCRIPTION";
+    
      /**
      * This is the connection object to the database
      */
     private Connection m_Con  = null;
 
+     /**
+     * Constructor, creartes a new CmsAccessUserMySql object and connects it to the
+     * user information database.
+     *
+     * @param driver Name of the mySQL JDBC driver.
+     * @param conUrl The connection string to the database.
+     * 
+     * @exception CmsException Throws CmsException if connection fails.
+     * 
+     */
+    public CmsAccessUserMySql(String driver,String conUrl)	
+        throws CmsException, ClassNotFoundException {
+        Class.forName(driver);
+        initConnections(conUrl);
+    }
    	/**
 	 * Returns a user object.<P/>
 	 * 
@@ -34,7 +79,27 @@ import com.opencms.core.*;
 	 */
 	 A_CmsUser readUser(String username)
          throws CmsException {
-         return null;
+      
+         A_CmsUser user=null;
+   
+         try{
+             // read the user from the database
+             PreparedStatement s = getConnection().prepareStatement(C_USER_READ);
+             s.setEscapeProcessing(false);       
+             s.setString(1,username);
+             ResultSet res = s.executeQuery();
+             // create new Cms user object
+			 if(res.next()) {
+                user=new CmsUser(res.getInt(C_USER_ID),
+                                 res.getString(C_USER_NAME),
+                                 res.getString(C_USER_DESCRIPTION));                                                        
+             }
+       
+         } catch (SQLException e){
+            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+		}
+         return user;
+  
      }
 	
 	/**
@@ -58,11 +123,7 @@ import com.opencms.core.*;
 	 * 
 	 * @param name The new name for the user.
 	 * @param password The new password for the user.
-	 * @param group The default groupname for the user.
 	 * @param description The description for the user.
-	 * @param additionalInfos A Hashtable with additional infos for the user. These
-	 * Infos may be stored into the Usertables (depending on the implementation).
-	 * @param flags The flags for a user (e.g. C_FLAG_ENABLED)
 	 * 
 	 * @return user The added user will be returned.
 	 * 
@@ -71,10 +132,32 @@ import com.opencms.core.*;
 	 * a user with the given username exists already.
 	 */
 	 A_CmsUser addUser(String name, String password, 
-					  String group, String description, 
-					  Hashtable additionalInfos, int flags)
-         throws CmsException, CmsDuplicateKeyException {
-         return null;
+					   String description) 				
+        throws CmsException, CmsDuplicateKeyException {
+
+         A_CmsUser user=null;
+         
+         try {     
+            // write new user to the database
+            PreparedStatement s = getConnection().prepareStatement(C_USER_WRITE);
+            s.setEscapeProcessing(false);       
+            s.setInt(1,0);
+            s.setString(2,name);
+            s.setString(3,password);
+            s.setString(4,description);
+            s.executeUpdate();
+            
+            // read the new user object
+            user=readUser(name);
+            
+         } catch (SQLException e){
+             if (e.getErrorCode() == 1062) {
+				throw new CmsDuplicateKeyException(e.toString());
+             } else {
+                throw new CmsException(CmsException.C_SQL_ERROR, e);			
+             }
+		}
+         return user;
      }
 
 	/** 

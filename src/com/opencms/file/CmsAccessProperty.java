@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/14 18:02:13 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/15 16:43:21 $
  */
 public class CmsAccessProperty extends A_CmsAccessProperty  {
 
@@ -42,6 +42,7 @@ public class CmsAccessProperty extends A_CmsAccessProperty  {
      * Name of the column PROPERTY_VALUE in the SQL table PROPERTIES.
      */
     private static final String C_PROPERTY_VALUE="PROPERTY_VALUE";
+    
     /**
      * This is the connection object to the database
      */

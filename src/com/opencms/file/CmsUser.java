@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/14 18:02:14 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/15 16:43:21 $
  */
 
 public class CmsUser extends A_CmsUser implements I_CmsConstants {
@@ -28,16 +28,15 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
      */
     private String m_description=null;
         
-    /**
-     * The current group of the user.
-     */
-	private A_CmsGroup m_currentGroup = null;
-    
-    /**
+     /**
      * A storage for additional user information.
      */
     private Hashtable m_additionalInfo = null;
     
+    /**
+     * The default group of this user.
+     */
+    private A_CmsGroup m_defaultGroup= null;
     
     /**
      * Constructor, creates a new Cms user object.
@@ -54,18 +53,34 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         m_id=id;
         m_name=name;
         m_description=description;
-        m_currentGroup=group;
         m_additionalInfo=info;  
-          
-        //add aditional infos in the hastable
+        m_defaultGroup=group;          
+        
+        //add aditional infos in the hashtable
         if (m_additionalInfo == null) {
             m_additionalInfo=new Hashtable();
         }
-        m_additionalInfo.put(C_ADDITIONAL_INFO_DEFAULTGROUP,group);
+        m_additionalInfo.put(C_ADDITIONAL_INFO_DEFAULTGROUP_ID,new Integer(group.getId()));
         m_additionalInfo.put(C_ADDITIONAL_INFO_FLAGS,new Integer(flags));
         m_additionalInfo.put(C_ADDITIONAL_INFO_LASTLOGIN,new Long(0));
     }
     
+    /**
+     * Constructor, creates a new Cms user object.
+     * 
+     * @param id The id of the new user.
+     * @param name The name of the new user.
+     * @param description The description of the new user.
+     */
+     CmsUser (int id, String name, String description) {
+            
+        m_id=id;
+        m_name=name;
+        m_description=description;
+        m_defaultGroup=null;
+        m_additionalInfo=null;
+        m_additionalInfo=new Hashtable();
+    }
     
 	/**
 	 * Gets the login-name of the user.
@@ -82,7 +97,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
 	 * 
 	 * @return the id of this user.
 	 */
-	public long getId() {
+	public int getId() {
         return m_id;
     }
 	
@@ -110,16 +125,6 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
 	
 
 	/**
-	 * Returns the current group for this user.
-	 * 
-	 * @return the current group for this user.
-	 */
-	public A_CmsGroup getCurrentGroup() {
-        return m_currentGroup;
-    }
-
-	
-	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
 	 * 
@@ -136,6 +141,25 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         return output.toString();
     }
 	
+    /**
+     * Returns the default group object of this user.
+     * 
+     * @return Default Group of the user
+     */
+    public A_CmsGroup getDefaultGroup() {
+        return m_defaultGroup;
+    }
+     
+    
+    /**
+     * Sets the default group object of this user.
+     * 
+     * @param defaultGroup The default group of this user.
+     */
+    void setDefaultGroup(A_CmsGroup defaultGroup) {
+        m_defaultGroup = defaultGroup;
+    }
+
 	/**
 	 * Compares the overgiven object with this object.
 	 * 
@@ -186,7 +210,19 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
     public Hashtable getAdditionalInfo() {
         return  m_additionalInfo;
     }
-         
+           
+     /**
+	 * Sets the  complete Hashtable with additional information about the user. <BR/>
+	 * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
+	 * 
+	 * This method has package-visibility for security-reasons.
+	 * It is required to because of the use of two seprate databases for user data and
+	 * additional user data.
+	 * 
+	 */
+    void setAdditionalInfo(Hashtable additionalInfo) {
+        m_additionalInfo=additionalInfo;
+    }
     
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_EMAIL);</pre>
@@ -276,13 +312,13 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
  
        
      /**
-	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP);</pre>
+	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP_ID);</pre>
 	 * 
-	 * @return the USER_DEFAULTGROUP, or null.
+	 * @return the USER_DEFAULTGROUP_ID, or null.
 	 */
-	public A_CmsGroup getDefaultGroup() {
-        A_CmsGroup value=null;
-        value =(A_CmsGroup)m_additionalInfo.get(C_ADDITIONAL_INFO_DEFAULTGROUP);
+	public int getDefaultGroupId() {
+        int value=C_UNKNOWN_ID;
+        value =((Integer)m_additionalInfo.get(C_ADDITIONAL_INFO_DEFAULTGROUP_ID)).intValue();
         return value;
     }
 

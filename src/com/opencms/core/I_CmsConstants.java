@@ -5,7 +5,7 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 1999/12/14 12:15:33 $
+ * @version $Revision: 1.6 $ $Date: 1999/12/15 16:43:21 $
  */
 public interface I_CmsConstants
 {
@@ -117,9 +117,9 @@ public interface I_CmsConstants
 	 final static String C_ADDITIONAL_INFO_SECTION	= "USER_SECTION";
      
      /**
-	 * Key for additional info default group.
+	 * Key for additional info default group id.
 	 */
-	 final static String C_ADDITIONAL_INFO_DEFAULTGROUP	= "USER_DEFAULTGROUP";
+	 final static String C_ADDITIONAL_INFO_DEFAULTGROUP_ID	= "USER_DEFAULTGROUP_ID";
      
      /**
 	 * Key for additional info last login.

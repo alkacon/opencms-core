@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/14 18:02:13 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
  */
 abstract class A_CmsAccessUserGroup {
 
@@ -140,6 +140,7 @@ abstract class A_CmsAccessUserGroup {
 	 * @param name The name of the new group.
 	 * @param description The description for the new group.
 	 * @int flags The flags for the new group.
+	 * @param name The name of the parent group (or null).
 	 *
 	 * @return Group
 	 * 
@@ -147,11 +148,12 @@ abstract class A_CmsAccessUserGroup {
 	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
 	 * same group already exists.
 	 */	
-	abstract A_CmsGroup addGroup(String name, String description, int flags)
+	abstract A_CmsGroup addGroup(String name, String description, int flags,String parent)
 		throws CmsException, CmsDuplicateKeyException;
 
 	/**
 	 * Delete a group from the Cms.<BR/>
+	 * Only groups that contain no subgroups can be deleted.
 	 * 
 	 * Only the admin can do this.<P/>
 	 * 
@@ -196,8 +198,22 @@ abstract class A_CmsAccessUserGroup {
 	 * Returns all groups<P/>
 	 * 
 	 * @return users A Vector of all existing groups.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getGroups();	
+	abstract Vector getGroups()
+        throws CmsException ;	
+    
+     
+    /**
+	 * Returns all child groups of a groups<P/>
+	 * 
+	 * 
+	 * @param groupname The name of the group.
+	 * @return users A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	abstract Vector getChild(String groupname) 
+        throws CmsException;	
 
 	/** 
 	 * Sets the password for a user.

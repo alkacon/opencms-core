@@ -7,7 +7,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/14 18:02:13 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/15 16:43:21 $
  */
 abstract public class A_CmsGroup { 
 	
@@ -23,7 +23,7 @@ abstract public class A_CmsGroup {
 	 * 
 	 * @return id The id of this group.
 	 */
-	abstract public long getId();
+	abstract public int getId();
 	
 	/**
 	 * Returns the description of this group.

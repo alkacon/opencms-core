@@ -14,10 +14,26 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/14 18:02:14 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
  */
- class CmsRbUserGroup extends A_CmsRbUserGroup{
+ class CmsRbUserGroup extends A_CmsRbUserGroup implements I_CmsConstants {
 
+     /**
+     * The user/group access object which is required to access the
+     * user and group databases.
+     */
+    private A_CmsAccessUserGroup m_accessUserGroup;
+    
+     /**
+     * Constructor, creates a new Cms User & Group Resource Broker.
+     * 
+     * @param accessUserGroup The user/group access object.
+     */
+    public CmsRbUserGroup(A_CmsAccessUserGroup accessUserGroup)
+    {
+        m_accessUserGroup=accessUserGroup;
+    }
+    
 	/**
 	 * Determines, if the users current group is the admin-group.
 	 * 
@@ -27,9 +43,14 @@ import com.opencms.core.*;
 	 * @param callingUser The user who wants to use this method.
 	 * @return true, if the users current group is the admin-group, 
 	 * else it returns false.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-     boolean isAdmin(A_CmsUser callingUSer) {
-      return true;
+     boolean isAdmin(A_CmsUser callingUser) 
+         throws CmsException {
+      boolean isAdmin=false;
+    
+      
+      return isAdmin;
      }
 
 	/**
@@ -148,8 +169,11 @@ import com.opencms.core.*;
 	 */
 	 A_CmsGroup readGroup(A_CmsUser callingUser, String groupname)
          throws CmsException {
-         return null;
-     }
+         
+         A_CmsGroup group = null;
+         group=m_accessUserGroup.readGroup(groupname);
+         return group;
+      }
 
 	/**
 	 * Returns a list of users in a group.<P/>
@@ -212,7 +236,10 @@ import com.opencms.core.*;
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
          throws CmsException, CmsDuplicateKeyException {
-         return null;
+         
+         A_CmsUser user=null;
+         user=m_accessUserGroup.addUser(name,password,group,description,additionalInfos,flags);
+         return user;
      }
 
 	/** 
@@ -264,6 +291,7 @@ import com.opencms.core.*;
 	 * @param name The name of the new group.
 	 * @param description The description for the new group.
 	 * @int flags The flags for the new group.
+	 * @param name The name of the parent group (or null).
 	 *
 	 * @return Group
 	 * 
@@ -271,13 +299,18 @@ import com.opencms.core.*;
 	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
 	 * same group already exists.
 	 */	
-	 A_CmsGroup addGroup(A_CmsUser callingUser, String name, String description, int flags)
+	 A_CmsGroup addGroup(A_CmsUser callingUser, String name, String description, 
+                         int flags, String parent)
          throws CmsException, CmsDuplicateKeyException {
-         return null;
+         
+         A_CmsGroup group=null;
+         group=m_accessUserGroup.addGroup(name,description,flags,parent);    
+         return group;         
      }
 
 	/**
 	 * Delete a group from the Cms.<BR/>
+	 * Only groups that contain no subgroups can be deleted.
 	 * 
 	 * Only the admin can do this.<P/>
 	 * 
@@ -290,6 +323,17 @@ import com.opencms.core.*;
 	 */	
 	 void deleteGroup(A_CmsUser callingUser, String delgroup)
          throws CmsException {
+         A_CmsGroup group = null;
+         Vector childs=null;
+         // get all child groups of the group
+         childs=getChild(callingUser,delgroup);
+         // delete group only if it has no childs
+         if (childs == null) {
+            m_accessUserGroup.deleteGroup(delgroup);
+         } else {
+            throw new CmsException(CmsException.C_GROUP_NOT_EMPTY);	
+         }
+             
      }
 
 	/**
@@ -347,11 +391,34 @@ import com.opencms.core.*;
 	 * 
 	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing groups.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getGroups(A_CmsUser callingUser) {
-         return null;
+     Vector getGroups(A_CmsUser callingUser)
+        throws CmsException  {
+        Vector groups=null;
+        groups=m_accessUserGroup.getGroups();
+        return groups;
      }
 
+      
+    /**
+	 * Returns all child groups of a groups<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @param groupname The name of the group.
+	 * @return users A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+     Vector getChild(A_CmsUser callingUser, String groupname)
+      throws CmsException {
+        Vector childs=null;
+        childs=m_accessUserGroup.getChild(groupname);
+        return childs;
+     }
+     
 	/** 
 	 * Sets the password for a user.
 	 * 

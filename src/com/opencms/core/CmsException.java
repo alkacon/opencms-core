@@ -1,10 +1,11 @@
 package com.opencms.core;
 
+
 /**
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/14 18:02:13 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/15 16:43:21 $
  */
 public class CmsException extends Exception {
 	
@@ -21,6 +22,7 @@ public class CmsException extends Exception {
 	public final static int C_NOT_ADMIN = 6;
 	public final static int C_SERIALIZATION = 7;
     public final static int C_NO_GROUP = 8;
+    public final static int C_GROUP_NOT_EMPTY = 9;
 
 	public final static String C_EXTXT[] = {
 							"Unknown exception",
@@ -32,6 +34,7 @@ public class CmsException extends Exception {
 							"Admin access required: ",
 							"Serialization/Deserialization failed:",
                             "Unknown User Group:",
+                            "Group not empty:",
 							};
     
 	/** 

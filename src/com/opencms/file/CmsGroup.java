@@ -6,7 +6,7 @@ import com.opencms.core.*;
  * This class describes a Cms user group and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/14 18:02:13 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/15 16:43:21 $
  */
  public class CmsGroup extends A_CmsGroup implements I_CmsConstants { 
     
@@ -69,7 +69,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return id The id of this group.
 	 */
-     public long getId(){
+     public int getId(){
          return m_id;
      }
 	

@@ -12,10 +12,39 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/14 18:02:13 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
  */
- class CmsAccessUserGroup extends A_CmsAccessUserGroup {
+ class CmsAccessUserGroup extends A_CmsAccessUserGroup implements I_CmsConstants {
 
+     private A_CmsAccessUser m_accessUser;
+     private A_CmsAccessUserInfo m_accessUserInfo;
+     private A_CmsAccessGroup m_accessGroup;
+     
+      /**
+     * Constructor, creartes a new CmsAccessUserGroup object. 
+     * It coordinates the acces to the user, user information and group database
+     * via the three access modules.
+     *
+     * @param driver Name of the mySQL JDBC driver.
+     * @param accessUser Reference to the user access module.
+     * @param accessUserInfo Reference to the user information access module.
+     * @param accessGroup  Reference to the group access module.
+     * 
+     * @exception CmsException Throws CmsException if connection fails.
+     * 
+     */
+     public CmsAccessUserGroup(A_CmsAccessUser accessUser,
+                               A_CmsAccessUserInfo accessUserInfo,
+                               A_CmsAccessGroup accessGroup)
+      throws CmsException {
+         m_accessUser=accessUser;
+         m_accessUserInfo = accessUserInfo;
+         m_accessGroup = accessGroup;         
+     }
+     
+     
+     
+     
 	/**
 	 * Returns a user object.<P/>
 	 * 
@@ -64,7 +93,9 @@ import com.opencms.core.*;
 	 */
 	 A_CmsGroup readGroup(String groupname)
          throws CmsException {
-         return null;
+          A_CmsGroup group= null;
+          group=m_accessGroup.readGroup(groupname);
+         return group;
      }
 
 	/**
@@ -113,11 +144,26 @@ import com.opencms.core.*;
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a user with the given username exists already.
 	 */
-	A_CmsUser addUser(String name, String password, 
+	 A_CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
         throws CmsException, CmsDuplicateKeyException {
-        return null;
+        A_CmsUser user=null;
+        A_CmsGroup defaultGroup=null;
+                      
+        //get the group id of the user default group
+        defaultGroup=m_accessGroup.readGroup(group);
+        //add the basic user data in the user database.
+        user=m_accessUser.addUser(name,password,description);
+        //store the additional information in the additional information database.
+        additionalInfos.put(C_ADDITIONAL_INFO_DEFAULTGROUP_ID,new Integer(defaultGroup.getId()));
+        additionalInfos.put(C_ADDITIONAL_INFO_FLAGS,new Integer(flags));
+        additionalInfos.put(C_ADDITIONAL_INFO_LASTLOGIN,new Long(0));
+        m_accessUserInfo.writeUserInformation(user.getId(),additionalInfos);  
+        //combine user object and additional information to the complete user object.
+        user.setAdditionalInfo(additionalInfos);
+        user.setDefaultGroup(defaultGroup);
+        return user;
     }
 
 	/** 
@@ -159,6 +205,7 @@ import com.opencms.core.*;
 	 * @param name The name of the new group.
 	 * @param description The description for the new group.
 	 * @int flags The flags for the new group.
+	 * @param name The name of the parent group (or null).
 	 *
 	 * @return Group
 	 * 
@@ -166,13 +213,16 @@ import com.opencms.core.*;
 	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
 	 * same group already exists.
 	 */	
-	 A_CmsGroup addGroup(String name, String description, int flags)
+	 A_CmsGroup addGroup(String name, String description, int flags,String parent)
          throws CmsException, CmsDuplicateKeyException {
-         return null;
+            A_CmsGroup group= null;
+            group=m_accessGroup.addGroup(name,description,flags,parent);
+         return group;
      }
 
 	/**
 	 * Delete a group from the Cms.<BR/>
+	 * Only groups that contain no subgroups can be deleted.
 	 * 
 	 * Only the admin can do this.<P/>
 	 * 
@@ -181,6 +231,7 @@ import com.opencms.core.*;
 	 */	
 	 void deleteGroup(String delgroup)
          throws CmsException {
+         m_accessGroup.deleteGroup(delgroup);
      }
 
 	/**
@@ -222,10 +273,27 @@ import com.opencms.core.*;
 	 * Returns all groups<P/>
 	 * 
 	 * @return users A Vector of all existing groups.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getGroups() {
-         return null;
+     Vector getGroups() 
+       throws CmsException{
+         return m_accessGroup.getGroups();
      }
+     
+      
+    /**
+	 * Returns all child groups of a groups<P/>
+	 * 
+	 * 
+	 * @param groupname The name of the group.
+	 * @return users A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+     Vector getChild(String groupname)
+        throws CmsException{
+         return m_accessGroup.getChild(groupname);
+     }
+         
 
 	/** 
 	 * Sets the password for a user.

@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/14 18:02:13 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/15 16:43:21 $
  */
 abstract class A_CmsAccessUser {
 
@@ -44,11 +44,7 @@ abstract class A_CmsAccessUser {
 	 * 
 	 * @param name The new name for the user.
 	 * @param password The new password for the user.
-	 * @param group The default groupname for the user.
 	 * @param description The description for the user.
-	 * @param additionalInfos A Hashtable with additional infos for the user. These
-	 * Infos may be stored into the Usertables (depending on the implementation).
-	 * @param flags The flags for a user (e.g. C_FLAG_ENABLED)
 	 * 
 	 * @return user The added user will be returned.
 	 * 
@@ -57,8 +53,7 @@ abstract class A_CmsAccessUser {
 	 * a user with the given username exists already.
 	 */
 	abstract A_CmsUser addUser(String name, String password, 
-					  String group, String description, 
-					  Hashtable additionalInfos, int flags)
+				               String description)
 		throws CmsException, CmsDuplicateKeyException;
 
 	/** 
