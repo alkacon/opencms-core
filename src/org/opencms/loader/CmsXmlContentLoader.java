@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlContentLoader.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/09/27 17:11:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,12 +54,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * OpenCms loader class for xml pages.<p>
+ * OpenCms loader class for xml content.<p>
  *
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsXmlContentLoader implements I_CmsResourceLoader {   
@@ -136,12 +135,12 @@ public class CmsXmlContentLoader implements I_CmsResourceLoader {
 
     /**
      * Returns a String describing the ResourceLoader,
-     * which is <code>"The OpenCms default resource loader for xml pages"</code>.<p>
+     * which is <code>"The OpenCms default resource loader for xml content"</code>.<p>
      * 
      * @return a describing String for the ResourceLoader 
      */
     public String getResourceLoaderInfo() {
-        return "The OpenCms default resource loader for xml pages";
+        return "The OpenCms default resource loader for xml content";
     }
 
     /**
