@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/07/01 16:30:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/07/03 10:17:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,15 +44,15 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
     /** The default expiration date of a resource (which is: never expires). */
-    public static long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;
+    public static final long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;
 
     /** The default release date of a resource (which is: always released). */
-    public static long DATE_RELEASED_DEFAULT;
+    public static final long DATE_RELEASED_DEFAULT = 0;
 
     /** The size of the content. */
     protected int m_length;

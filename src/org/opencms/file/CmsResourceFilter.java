@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/07/03 10:17:30 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.main.I_CmsConstants;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3.5
  */
 public final class CmsResourceFilter {
@@ -60,7 +60,7 @@ public final class CmsResourceFilter {
      * <li>Includes: Resources marked as 'invisible' using permissions.</li>
      * </ul>
      */
-    public static CmsResourceFilter ALL = new CmsResourceFilter(true, true, true);
+    public static final CmsResourceFilter ALL = new CmsResourceFilter(true, true, true);
     
     /** 
      * Default filter to display resources for the online project.<p>
@@ -72,7 +72,7 @@ public final class CmsResourceFilter {
      * <li>Includes: Resources marked as 'invisible' using permissions.</li>
      * </ul> 
      */
-    public static CmsResourceFilter DEFAULT = new CmsResourceFilter(false, false, true);
+    public static final CmsResourceFilter DEFAULT = new CmsResourceFilter(false, false, true);
       
     /** 
      * Filter to display resources ignoring the release and expiration dates.<p>
@@ -84,7 +84,7 @@ public final class CmsResourceFilter {
      * <li>Includes: Resources marked as 'invisible' using permissions.</li>
      * </ul> 
      */
-    public static CmsResourceFilter IGNORE_EXPIRATION = new CmsResourceFilter(false, true, true);
+    public static final CmsResourceFilter IGNORE_EXPIRATION = new CmsResourceFilter(false, true, true);
 
     /** 
      * Filter to display only visible resources.<p>
@@ -96,7 +96,7 @@ public final class CmsResourceFilter {
      * <li>Excludes: Resources marked as 'invisible' using permissions.</li>
      * </ul> 
      */
-    public static CmsResourceFilter ONLY_VISIBLE = new CmsResourceFilter(true, true, false);
+    public static final CmsResourceFilter ONLY_VISIBLE = new CmsResourceFilter(true, true, false);
     
     /** The cache id for this filter. */
     private String m_cacheId;
