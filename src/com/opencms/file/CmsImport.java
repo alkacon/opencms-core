@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/10/24 10:38:47 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/10/25 19:30:55 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2000/10/24 10:38:47 $
+ * @version $Revision: 1.28 $ $Date: 2000/10/25 19:30:55 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -183,11 +183,15 @@ public Vector getConflictingFilenames() throws CmsException {
 	} catch (Exception exc) {
 		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 	}
-	try {
-		m_importZip.close();
-	} catch(IOException exc) {
-		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-	}		
+	if (m_importZip != null)
+	{
+	  try
+	  {
+		  m_importZip.close();
+	  } catch (IOException exc) {
+		  throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+	  }
+	}
 	return conflictNames;
 }
 	/**
@@ -299,11 +303,15 @@ public Vector getResourcesForProject() throws CmsException {
 	} catch (Exception exc) {
 		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 	}
-	try {
-		m_importZip.close();
-	} catch(IOException exc) {
-		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-	}	
+	if (m_importZip != null)
+	{
+	  try
+	  {
+		  m_importZip.close();
+	  } catch (IOException exc) {
+		  throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+	  }
+	}
 	return resources;
 }
 	/**
@@ -504,10 +512,14 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 	} catch (Exception exc) {
 		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 	}
-	try {
-		m_importZip.close();
-	} catch (IOException exc) {
-		throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+	if (m_importZip != null)
+	{
+	  try
+	  {
+		  m_importZip.close();
+	  } catch (IOException exc) {
+		  throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+	  }
 	}
 }
 /**
