@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/10/14 09:00:31 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/10/16 10:44:25 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
+import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -65,7 +66,7 @@ import org.opencms.site.CmsSiteManager;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1
  */
@@ -166,17 +167,12 @@ public abstract class CmsWorkplace {
     }
     
     /**
-     * Initializes the current users workplace settings by reading the values 
-     * from the users preferences.<p>
+     * Returns the language for the currently logged in user.<p>
      * 
-     * This method is synchronized to ensure that the settings are
-     * initialized only once for a user.
-     * 
-     * @param cms the cms object for the current user
-     * @param settings the current workplace settings
-     * @return initialized object with the current users workplace settings 
-     */    
-    static synchronized CmsWorkplaceSettings initWorkplaceSettings(CmsObject cms, CmsWorkplaceSettings settings) {                
+     * @param cms the CmsObject
+     * @return the language String for the currently logged in user
+     */
+    protected static synchronized String initUserLanguage(CmsObject cms) {
         // initialize the current user language
         String language = null;               
         Hashtable startSettings =
@@ -205,6 +201,23 @@ public abstract class CmsWorkplace {
         if (language == null) {
             language = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
         }
+        return language;
+    }
+    
+    /**
+     * Initializes the current users workplace settings by reading the values 
+     * from the users preferences.<p>
+     * 
+     * This method is synchronized to ensure that the settings are
+     * initialized only once for a user.
+     * 
+     * @param cms the cms object for the current user
+     * @param settings the current workplace settings
+     * @return initialized object with the current users workplace settings 
+     */    
+    static synchronized CmsWorkplaceSettings initWorkplaceSettings(CmsObject cms, CmsWorkplaceSettings settings) {                
+        // initialize the current user language
+        String language = initUserLanguage(cms);
         
         // save language in settings
         settings.setLanguage(language);        
@@ -239,9 +252,14 @@ public abstract class CmsWorkplace {
         settings.setSite(siteRoot);
         
         // check out the user information for a default view that might be stored there
+        Hashtable startSettings =
+                    (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
         if (startSettings != null) {
             settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, (String)startSettings.get(I_CmsConstants.C_START_VIEW)));
         }
+        
+        // save the visible resource types for the current user
+        settings.setResourceTypes(initWorkplaceResourceTypes(cms));
                   
         return settings;   
     }
@@ -474,6 +492,30 @@ public abstract class CmsWorkplace {
         result.append("//-->\n");
         result.append("</script>\n");
         return result.toString();
+    }
+    
+    /**
+     * Initializes a Map with all visible resource types for the current user.<p>
+     * 
+     * @param cms the CmsObject
+     * @return all visible resource types in a map with the resource type id as key value
+     */
+    private static Map initWorkplaceResourceTypes(CmsObject cms) {
+        List allResTypes = new ArrayList();
+        Map resourceTypes = new HashMap();
+        try {
+            allResTypes = cms.getAllResourceTypes();
+        } catch (CmsException e) { }
+        Iterator i = allResTypes.iterator();
+        while (i.hasNext()) {
+            // loop through all types and check which types can be displayed for the user
+            I_CmsResourceType curType = (I_CmsResourceType)i.next();
+            try {
+                cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + curType.getResourceTypeName());
+                resourceTypes.put(new Integer(curType.getResourceType()), curType);               
+            } catch (CmsException e) { }
+        } 
+        return resourceTypes;      
     }
     
     /**

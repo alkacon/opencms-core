@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/10/09 16:44:19 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/10/16 10:44:25 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.main.OpenCms;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1
  */
@@ -67,6 +67,7 @@ public class CmsWorkplaceSettings {
     private String m_currentSite;
     private Map m_treeType;
     private Map m_treeSite;
+    private Map m_resourceTypes;
         
     /**
      * Constructor, only package visible.<p>
@@ -75,6 +76,7 @@ public class CmsWorkplaceSettings {
         m_explorerPage = 1;
         m_treeType = new HashMap();
         m_treeSite = new HashMap();
+        m_resourceTypes = new HashMap();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot(); 
     }
     
@@ -416,6 +418,24 @@ public class CmsWorkplaceSettings {
     public synchronized String getTreeSite(String type) {
         String result = (String)m_treeSite.get(type);
         return result;
+    }
+    
+    /**
+     * Returns a Map with all visible resource types for the current user, with the IDs as key values.<p>
+     * 
+     * @return Map with all visible resource types
+     */
+    public synchronized Map getResourceTypes() {
+        return m_resourceTypes;
+    }
+    
+    /**
+     * Sets all visible resource types for the current user, with the IDs as key values.<p>
+     * 
+     * @param value Map with all visible resource types
+     */
+    public synchronized void setResourceTypes(Map value) {
+        m_resourceTypes = value;
     } 
 
 }

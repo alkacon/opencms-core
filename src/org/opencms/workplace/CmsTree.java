@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/10/09 16:44:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/10/16 10:44:25 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,9 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
+import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,7 +61,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -106,21 +108,40 @@ public class CmsTree extends CmsWorkplace {
     public static String initTree(CmsObject cms, String encoding, String skinUri) {
         StringBuffer retValue = new StringBuffer(512);
         String servletUrl = cms.getRequestContext().getRequest().getServletUrl();
+        
+        // get the localized workplace messages
+        String language = initUserLanguage(cms);
+        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, language);
+        
         retValue.append("function initTreeResources() {\n");
         retValue.append("\tinitResources(\"" + encoding + "\", \"" + C_PATH_WORKPLACE + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");
-
-        retValue.append("\taddResourceType(0, \"folder\",\t\"Folder\",\t\"filetypes/folder.gif\");\n");
-        retValue.append("\taddResourceType(2, \"link\",\t\"Link\",\t\"filetypes/link.gif\");\n");
-        retValue.append("\taddResourceType(3, \"plain\",\t\"Text\",\t\"filetypes/plain.gif\");\n");
-        retValue.append("\taddResourceType(4, \"XMLTemplate\",\t\"XML Template\",\t\"filetypes/xmltemplate.gif\");\n");
-        retValue.append("\taddResourceType(5, \"binary\",\t\"Binary\",\t\"filetypes/binary.gif\");\n");
-        retValue.append("\taddResourceType(6, \"image\",\t\"Image\",\t\"filetypes/image.gif\");\n");
-        retValue.append("\taddResourceType(8, \"jsp\",\t\"JSP\",\t\"filetypes/jsp.gif\");\n");
-        retValue.append("\taddResourceType(9, \"page\",\t\"Page\",\t\"filetypes/page.gif\");\n");
-        retValue.append("\taddResourceType(99, \"pointer\",\t\"Pointer\",\t\"filetypes/pointer.gif\");\n");
-        retValue.append("}\n\n");
         
+        // get all available resource types
+        List allResTypes = new ArrayList();
+        try {
+            allResTypes = cms.getAllResourceTypes();
+        } catch (CmsException e) { }
+        Iterator i = allResTypes.iterator();
+        while (i.hasNext()) {
+            // loop through all types and check which types can be displayed
+            I_CmsResourceType curType = (I_CmsResourceType)i.next();
+            int curTypeId = curType.getResourceType();
+            String curTypeName = curType.getResourceTypeName();
+            String curTypeLocalName = messages.key("fileicon."+curTypeName);
+            try {
+                cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + curTypeName);
+                if (curTypeName.startsWith("new")) {
+                    // type "newpage" should be displayed as "page"
+                    curTypeName = curTypeName.substring(3);
+                }
+                retValue.append("\taddResourceType(");
+                retValue.append(curTypeId + ", \"" + curTypeName + "\",\t\"" + curTypeLocalName + "\",\t\"filetypes/" + curTypeName + ".gif\");\n");
+            } catch (CmsException e) { }
+        }       
+
+        retValue.append("}\n\n");     
         retValue.append("initTreeResources();\n");
+        
         return retValue.toString();
     }
     
@@ -324,6 +345,9 @@ public class CmsTree extends CmsWorkplace {
             while (i.hasNext()) {          
                 CmsResource resource = (CmsResource)i.next();
                 grey = !CmsProject.isInsideProject(projectResources, resource);
+                if ((!grey) && (!getSettings().getResourceTypes().containsKey(new Integer(resource.getType())))) {
+                    grey = true;
+                }
                 result.append(getNode(resource.getName(), resource.getType(), resource.getStructureId(), resource.getParentStructureId(), grey));
             }
         
