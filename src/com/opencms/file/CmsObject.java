@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/23 10:56:01 $
-* Version: $Revision: 1.445 $
+* Date   : $Date: 2004/01/23 11:07:16 $
+* Version: $Revision: 1.446 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.445 $
+ * @version $Revision: 1.446 $
  */
 public class CmsObject {
 
@@ -4430,7 +4430,7 @@ public class CmsObject {
      * @throws Exception if something goes wrong
      */
     public void validateHtmlLinks(I_CmsReport report) throws Exception {
-        validateHtmlLinks(null, false, report);
+        m_driverManager.validateHtmlLinks(this, null, false, report);
     }
     
     /**
@@ -4445,9 +4445,7 @@ public class CmsObject {
     public void validateHtmlLinks(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
         int oldProjectType = m_context.currentProject().getType();       
         try {
-            if (directPublishResource != null) {
-                m_context.currentProject().setType(I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH);
-            }
+            m_context.currentProject().setType(I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH);
             m_driverManager.validateHtmlLinks(this, directPublishResource, directPublishSiblings, report);
         } catch (CmsException e) {
             throw e;
