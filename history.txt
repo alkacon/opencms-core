@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.537 $
+ * Date   : $Date: 2004/04/01 10:14:57 $
+ * Version: $Revision: 1.538 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,17 @@ OpenCms 5.3.4 Ix - March xx, 2004
 ! Added loader implementations for improved handling of "304 - Not Modified" 
   response for "If-Modified-Since" requests (this item was on the TODO list for 2 years!)
 ! XmlPages are now correctly cached in the Flex cache
+! New "direct publish" (+d) permission allows user to directly publish
+  a resource without the need to create special projects
+! Properties can now be attached either to the resource or the structure
+  record, so that siblings can optionally share properties
+- Properties are not longer of type String but of type CmsPropety,
+  String signature methods still exists but will be deprecated  
+! Static export "on publish" re-implemented using new and improved handling
+! Static export now atomatically detects changes in dependency resources, e.g. if 
+  one entry in the navigation changes it will export all pages that use this navigation
+! Static export can also be triggered with a button in the Administration for a 
+  "full static render" export of the complete website  
 
 OpenCms 5.3.3 Ix - March 01, 2004
 - Refactored classes com.opencms.file.* to org.opencms.file.*

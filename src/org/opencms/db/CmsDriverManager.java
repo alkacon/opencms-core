@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/03/31 14:01:10 $
- * Version: $Revision: 1.344 $
+ * Date   : $Date: 2004/04/01 10:14:57 $
+ * Version: $Revision: 1.345 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.344 $ $Date: 2004/03/31 14:01:10 $
+ * @version $Revision: 1.345 $ $Date: 2004/04/01 10:14:57 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -304,16 +304,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Cache for properties
      */
     private Map m_propertyCache;
-    
-    /**
-     * Cache for property definitions
-     */
-    private Map m_propertyDefCache;
-    
-    /**
-     * Cache for property definition lists
-     */
-    private Map m_propertyDefVectorCache;
     
     /**
      * Comment for <code>m_refresh</code>
@@ -1127,8 +1117,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_resourceCache.clear();
         m_resourceListCache.clear();
         m_propertyCache.clear();
-        m_propertyDefCache.clear();
-        m_propertyDefVectorCache.clear();
         m_accessControlListCache.clear();
         m_permissionCache.clear();
     }
@@ -1983,8 +1971,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             name = name.trim();
             validFilename(name);
             
-            m_propertyDefVectorCache.clear();
-            
             try {
                 propertyDefinition = m_vfsDriver.readPropertyDefinition(name, context.currentProject().getId(), resourcetype);
             } catch (CmsException e) {
@@ -2204,26 +2190,29 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful
      */
     public void deleteAllProperties(CmsRequestContext context, String resourceName) throws CmsException {
+
         CmsResource resource = null;
 
         try {
-        // read the resource
+            // read the resource
             resource = readFileHeader(context, resourceName);
 
-        // check the security
+            // check the security
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
-        //delete all Properties
+            //delete all Properties
             m_vfsDriver.deleteProperties(context.currentProject().getId(), resource);
         } finally {
             // clear the driver manager cache
-        	m_propertyCache.clear();
+            m_propertyCache.clear();
 
             // fire an event that all properties of a resource have been deleted
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));
-    	}
-    }    
-
+            OpenCms.fireCmsEvent(new CmsEvent(
+                new CmsObject(),
+                I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                Collections.singletonMap("resource", resource)));
+        }
+    }
 
     /**
      * Deletes all backup versions of a single resource.<p>
@@ -2680,9 +2669,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 propertyDefinition = readPropertydefinition(context, name, resourcetype);
                 m_vfsDriver.deletePropertyDefinition(propertyDefinition);
             } finally {
-                // update the driver manager cache
-                m_propertyDefVectorCache.clear();
-                m_propertyDefCache.remove(name + (getResourceType(resourcetype)).getResourceType());
                 
                 // fire an event that a property of a resource has been deleted
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_DEFINITION_MODIFIED, Collections.singletonMap("propertyDefinition", propertyDefinition)));
@@ -2702,7 +2688,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void deleteStaticExportPublishedResource(CmsRequestContext context, String resourceName, int linkType, String linkParameter) throws CmsException {
-        // TODO: any security restrictions nescessary?
+
         m_projectDriver.deleteStaticExportPublishedResource(context.currentProject(), resourceName, linkType, linkParameter);
     }
     
@@ -2714,7 +2700,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void deleteAllStaticExportPublishedResources(CmsRequestContext context, int linkType) throws CmsException {
-        // TODO: any security restrictions nescessary?
+
         m_projectDriver.deleteAllStaticExportPublishedResources(context.currentProject(), linkType);
     }
  
@@ -2885,8 +2871,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_userGroupsCache = null;
             m_projectCache = null;
             m_propertyCache = null;
-            m_propertyDefCache = null;
-            m_propertyDefVectorCache = null;
             m_resourceCache = null;
             m_resourceListCache = null;
             m_accessControlListCache = null;
@@ -4400,18 +4384,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyCache", hashMap);
         }
-
-        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertydef", 100));
-        m_propertyDefCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyDefCache", hashMap);
-        }
-        
-        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertydefvector", 100));
-        m_propertyDefVectorCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled()) { 
-            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyDefVectorCache", hashMap);
-        }
         
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".accesscontrollists", 1000));    
         m_accessControlListCache = Collections.synchronizedMap(hashMap);
@@ -5313,15 +5285,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful
      */
     private Vector readAllPropertydefinitions(CmsRequestContext context, I_CmsResourceType resourceType) throws CmsException {
-        Vector returnValue = null;
 
-        returnValue = (Vector)m_propertyDefVectorCache.get(Integer.toString(resourceType.getResourceType()));
-        if (returnValue == null) {
-            returnValue = m_vfsDriver.readPropertyDefinitions(context.currentProject().getId(), resourceType);
-            Collections.sort(returnValue);
-            m_propertyDefVectorCache.put(Integer.toString(resourceType.getResourceType()), returnValue);
-        }
-
+        Vector returnValue = m_vfsDriver.readPropertyDefinitions(context.currentProject().getId(), resourceType);
+        Collections.sort(returnValue);
         return returnValue;
     }
 
@@ -5475,19 +5441,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public CmsBackupProject readBackupProject(int tagId) throws CmsException {
         return m_backupDriver.readBackupProject(tagId);
     }
-    
-    /** 
-     * Reads the backed up properties of a backup resource.<p>
-     * 
-     * @param resource the backup resource
-     * @return a Map with all backed up properties
-     * @throws CmsException if something goes wrong
-     */
-	/*
-    public Map readBackupProperties(CmsBackupResource resource) throws CmsException {
-        return m_backupDriver.readBackupProperties(resource);
-    }
-	*/
 
     /**
      * Reads all resources that are inside and changed in a specified project.<p>
@@ -5660,49 +5613,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Reads a file header from the Cms.<p>
-     * 
-     * The reading excludes the filecontent.
-     * A file header can be read from an offline project or the online project.
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read the resource</li>
-     * </ul>
-     *
-     * @param context the current request context
-     * @param filename the name of the file to be read
-     * @param includeDeleted flag to include the deleted resources
-     * @return the file read from the Cms
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsResource readFileHeader(CmsRequestContext context, String filename, boolean includeDeleted) throws CmsException {
-        // check if this method is misused to read a folder
-        if (CmsResource.isFolder(filename)) {
-            return readFolder(context, filename, includeDeleted);
-        }
-
-        List path = readPath(context, filename, includeDeleted);
-        CmsResource resource = (CmsResource)path.get(path.size() - 1);
-
-        // check if the user has read access to the file
-        checkPermissions(context, resource, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
-
-        // set full resource name
-        if (resource.isFolder()) {
-            resource.setFullResourceName(filename + I_CmsConstants.C_FOLDER_SEPARATOR);
-        } else {
-            resource.setFullResourceName(filename);
-        }
-
-        // update date info in context
-        updateContextDates(context, resource);
-
-        // access was granted - return the file-header.
-        return resource;
-    }
-
-    /**
      * Reads a file header of another project of the Cms.<p>
      * 
      * The reading excludes the filecontent.
@@ -5858,6 +5768,52 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
+     * Reads a file header from the Cms.<p>
+     * 
+     * The reading excludes the filecontent.
+     * A file header can be read from an offline project or the online project.<p>
+     * 
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read the resource</li>
+     * </ul>
+     *
+     * @param context the current request context
+     * @param filename the name of the file to be read
+     * @param includeDeleted flag to include the deleted resources
+     * @return the file read from the Cms
+     * @throws CmsException if operation was not succesful
+     */
+    public CmsResource readFileHeader(CmsRequestContext context, String filename, boolean includeDeleted) throws CmsException {
+        
+        List path = readPath(context, filename, includeDeleted);
+        CmsResource resource = (CmsResource)path.get(path.size() - 1);
+
+        // check if the user has read access to the file
+        checkPermissions(context, resource, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
+
+        // set full resource name
+        if (resource.isFolder()) {
+            if ((resource.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
+                // resource was deleted
+                throw new CmsException("[" + this.getClass().getName() + "]" + context.removeSiteRoot(readPath(context, resource, includeDeleted)), CmsException.C_RESOURCE_DELETED);
+            }
+            // resource.setFullResourceName(filename + I_CmsConstants.C_FOLDER_SEPARATOR);
+            resource = new CmsFolder(resource);
+            resource.setFullResourceName(filename);
+        } else {
+            resource.setFullResourceName(filename);
+        }
+
+        // update date info in context
+        updateContextDates(context, resource);
+
+        // access was granted - return the file-header.
+        return resource;
+    }    
+    
+    /**
      * Reads a folder from the Cms.<p>
      *
      * Access is granted, if:
@@ -5873,32 +5829,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if the folder couldn't be read. The CmsException will also be thrown, if the user has not the rights for this resource.
      */
     public CmsFolder readFolder(CmsRequestContext context, String foldername, boolean includeDeleted) throws CmsException {
-        if (foldername == null) {
-            return null;
-        }
-
-        if (!CmsResource.isFolder(foldername)) {
-            foldername += "/";
-        }
-
-        List path = readPath(context, foldername, includeDeleted);
-        CmsFolder folder = (CmsFolder)path.get(path.size() - 1);
-
-        // check if the user has read access to the folder
-        checkPermissions(context, folder, I_CmsConstants.C_READ_ACCESS);
-
-        // acces to all subfolders was granted - return the folder.
-        if ((folder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + context.removeSiteRoot(readPath(context, folder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
-        }
-
-        // now set the full resource name
-        folder.setFullResourceName(foldername);
-
-        // update date info in context
-        updateContextDates(context, folder);          
-
-        return folder;
+        
+        return (CmsFolder)readFileHeader(context, foldername, includeDeleted);
     }
 
     /**
@@ -6511,14 +6443,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name, int resourcetype) throws CmsException {
-        CmsPropertydefinition returnValue = null;
-        returnValue = (CmsPropertydefinition)m_propertyDefCache.get(name + resourcetype);
-
-        if (returnValue == null) {
-            returnValue = m_vfsDriver.readPropertyDefinition(name, context.currentProject().getId(), resourcetype);
-            m_propertyDefCache.put(name + resourcetype, returnValue);
-        }
-        return returnValue;
+        
+        return m_vfsDriver.readPropertyDefinition(name, context.currentProject().getId(), resourcetype);
     }
 
     /**
@@ -6608,7 +6534,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public List readStaticExportResources(CmsRequestContext context, boolean parameterResources) throws CmsException {
-        // TODO: any security restrictions nescessary?
+     
         return m_projectDriver.readStaticExportResources(context.currentProject(), parameterResources);
     }
     
@@ -7978,7 +7904,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void writeStaticExportPublishedResource(CmsRequestContext context, String resourceName, int linkType, String linkParameter) throws CmsException {
-        // TODO: any security restrictions nescessary?
+
         m_projectDriver.writeStaticExportPublishedResource(context.currentProject(), resourceName, linkType, linkParameter);
     }
  
@@ -8272,16 +8198,24 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param file the file that gets exported
      * @throws CmsException if something goes wrong
      */
-    private void writeExportPoint(CmsRequestContext context, CmsExportPointDriver discAccess, String exportKey, CmsFile file) throws CmsException {
+    private void writeExportPoint(
+        CmsRequestContext context,
+        CmsExportPointDriver discAccess,
+        String exportKey,
+        CmsFile file) throws CmsException {
+
         byte[] contents = null;
         String encoding = null;
         CmsProperty property = null;
-        
-        try {                            
+
+        try {
             // make sure files are written using the correct character encoding 
             contents = file.getContents();
-            property = getVfsDriver().readPropertyObject(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, context.currentProject(), file);
-			encoding = (property != null) ? property.getValue() : null;
+            property = getVfsDriver().readPropertyObject(
+                I_CmsConstants.C_PROPERTY_CONTENT_ENCODING,
+                context.currentProject(),
+                file);
+            encoding = (property != null) ? property.getValue() : null;
 
             if (encoding != null) {
                 // only files that have the encodig property set will be encoded,
@@ -8292,7 +8226,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Unsupported encoding of " + file.toString(), e);
                     }
-                    
+
                     throw new CmsException("Unsupported encoding of " + file.toString(), e);
                 }
             }
@@ -8302,9 +8236,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error writing export point of " + file.toString(), e);
             }
-            
+
             throw new CmsException("Error writing export point of " + file.toString(), e);
-        }    
+        }
         contents = null;
     }
     
@@ -8738,9 +8672,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             // update the resource state
             if (resource.isFile()) {
-                m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
+                m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile)resource, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
             } else {
-                m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
+                m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder)resource, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
             }
         } finally {
             // update the driver manager cache

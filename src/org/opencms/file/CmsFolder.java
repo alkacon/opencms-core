@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/04/01 10:14:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,6 +73,19 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             setFullResourceName(resource.getRootPath());
         }        
     }
+    
+    /**
+     * Sets the resource name including the path, ensuring that the name ends with a "/".<p>
+     * 
+     * @param fullResourceName the resource name including the path
+     */
+    public void setFullResourceName(String fullResourceName) {
+        if (! CmsResource.isFolder(fullResourceName)) {
+            super.setFullResourceName(fullResourceName + "/");
+        } else {
+            super.setFullResourceName(fullResourceName);
+        }
+    }    
 
    /**
     * Constructor, creates a new CmsFolder object.<p>
