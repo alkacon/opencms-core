@@ -331,7 +331,7 @@
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
-					<defaultproperties enabled="true" shownavigation="false">
+					<defaultproperties enabled="true" shownavigation="true">
 						<property name="Title"/>
 					</defaultproperties>
 					<contextmenu>
