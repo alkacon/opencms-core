@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.9 Ecaz - 14 June 2002
+! added a new way to check a new entered password. 
+
 OpenCms 4.7.7 Ecaz - 14 June 2002
 ! First version of JUnit testing classes, not fully functional 
 * Fixed bug in direct publish. When publishing a not changed folder with changed resources
