@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2003/02/26 10:30:37 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/08/13 14:05:10 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -110,34 +110,36 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /** initialises Vector m_enterTags with tag names */
     private void initialiseTags() {
-        StringTokenizer T = new StringTokenizer("p,table,tr,td,body,head,script,pre,title,style,h1,h2,h3,h4,h5,h6,ul,ol,li",",");
+        StringTokenizer T = new StringTokenizer("p,table,tr,td,body,head,script,pre,title,style,h1,h2,h3,h4,h5,h6,ul,ol,li", ",");
         while (T.hasMoreTokens()) {
             m_enterTags.addElement(new String(T.nextToken()));
        }
     }
 
     /**
-     * sets the prefix.
+     * Sets the prefix and the relative root.<p>
      *
-     * @param prefix The servletprefix.
+     * @param prefix the servletprefix
+     * @param relativeRoot the relative root
      */
-    public void setServletPrefix(String prefix, String relativeRoot){
+    public void setServletPrefix(String prefix, String relativeRoot) {
         m_servletPrefix = prefix;
         m_relativeRoot = relativeRoot;
     }
 
     /**
-     * sets the url.
+     * Sets the url.<p>
      *
-     * @param url object.
+     * @param orgUrl object
      */
-    public void setOriginalUrl(URL orgUrl){
+    public void setOriginalUrl(URL orgUrl) {
         m_url = orgUrl;
     }
 
     /**
-     * Configures JTidy from file
-     * @param filename filename of JTidy configuration file
+     * Configures JTidy from file.<p>
+     * 
+     * @param fileName filename of JTidy configuration file
      */
     public void setTidyConfFile(String fileName) {
         m_tidyConfFile = fileName;
@@ -150,10 +152,9 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * @return filename of JTidy configuration file
      */
     public String getTidyConfFile() {
-        if (m_tidyConfFileDefined == true) {
+        if (m_tidyConfFileDefined) {
             return m_tidyConfFile;
-        }
-        else {
+        } else {
             return "";
         }
     }
@@ -174,8 +175,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         try {
             InputStream in = new FileInputStream(confFile);
             m_configuration.init(in);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Configuration error: Configuration file no found!");
             return;
         }
@@ -202,10 +202,9 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * @return filename of configuration file
      */
     public String getConverterConfFile() {
-        if (m_converterConfFileDefined == true) {
+        if (m_converterConfFileDefined) {
             return m_converterConfFile;
-        }
-        else {
+        } else {
             return "";
         }
     }
@@ -230,7 +229,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Checks if HTML code has errors
-     * @param in InputStream with HTML code
+     * @param input InputStream with HTML code
      * @return true if errors were detected, otherwise false
      */
     public boolean hasErrors (InputStream input) {
@@ -240,14 +239,9 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         m_tidy.setQuiet(true);
         m_tidy.setErrout(null);
         /* parse InputStream */
-        m_tidy.parse(input,null);
+        m_tidy.parse(input, null);
         /* check number of errors */
-        if (m_tidy.getParseErrors() == 0) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return m_tidy.getParseErrors() != 0;
     }
 
     /**
@@ -266,7 +260,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     public String showErrors (String inString) {
         InputStream in = new ByteArrayInputStream(inString.getBytes());
         OutputStream out = new ByteArrayOutputStream();
-        this.showErrors(in,out);
+        this.showErrors(in, out);
         return out.toString();
     }
 
@@ -283,7 +277,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         InputStream in = new BufferedInputStream(input);
         PrintWriter errorLog = new PrintWriter(output);
         m_tidy.setErrout(errorLog);
-        m_tidy.parse(in,null);
+        m_tidy.parse(in, null);
         if (m_tidy.getParseErrors() == 0) {
             errorLog.println("HTML code ok!\nNo errors detected.");
         }
@@ -298,7 +292,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     public String convertHTML (String inString) {
         Reader in = new StringReader(inString);
         Writer out = new StringWriter();
-        this.convertHTML(in,out);
+        this.convertHTML(in, out);
         return out.toString();
     }
 
@@ -315,12 +309,12 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         /* initialise JTidy */
         m_tidy.setShowWarnings(false);
         m_tidy.setQuiet(true);
-        if (m_tidyConfFileDefined == false) {
+        if (!m_tidyConfFileDefined) {
             m_tidy.setOnlyErrors(false);
             m_tidy.setTidyMark(false);
         }
         /* print errorlog in ByteArray */
-        PrintWriter errorLog = new PrintWriter(new ByteArrayOutputStream(),true);
+        PrintWriter errorLog = new PrintWriter(new ByteArrayOutputStream(), true);
         m_tidy.setErrout(errorLog);
         try {
             /* write InputStream input in StringBuffer htmlString */
@@ -328,14 +322,13 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
             while ((c = input.read()) != -1) {
                 htmlString.append((char)c);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Conversion error: " + e.toString());
             return;
         }
         outString = htmlString.toString();
         /* first step: replace subStrings in htmlString run #1*/
-        outString = m_tools.scanContent(outString,m_configuration.getReplaceContent());
+        outString = m_tools.scanContent(outString, m_configuration.getReplaceContent());
         /* convert htmlString in InputStream for parseDOM */
         InputStream in;
         try {
@@ -345,7 +338,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
             in = new ByteArrayInputStream(outString.getBytes());
             m_tidy.setCharEncoding(org.w3c.tidy.Configuration.LATIN1);
         }
-        node = m_tidy.parseDOM(in,null);
+        node = m_tidy.parseDOM(in, null);
         /* check if html code has errors */
         if (m_tidy.getParseErrors() != 0) {
             System.err.println("Conversion error: HTML code has errors!");
@@ -353,13 +346,12 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         /* second step: create transformed output with printDocument from DOM */
         this.printDocument(node);
         /* third step: replace Strings run #2 */
-        outString = m_tools.scanString(m_tempString.toString(),m_configuration.getReplaceStrings());
+        outString = m_tools.scanString(m_tempString.toString(), m_configuration.getReplaceStrings());
         outString = this.cleanOutput(outString);
         try {
             output.write(outString);
             output.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Conversion error: " + e.toString());
             return;
         }
@@ -372,7 +364,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      */
     private void printDocument(Node node) {
         // if node is empty do nothing... (Recursion) 
-        if ( node == null ) {
+        if (node == null) {
             return;
         }
         // initialise local variables 
@@ -429,14 +421,14 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * @param replaceTag index of object m_replaceTags
      * @return true if recursion has to be interrupted, otherwise false
      */
-    private boolean transformStartElement (Node node,int replaceBlock,int replaceTag) {
-        String tempReplaceString,valueParam;
+    private boolean transformStartElement (Node node, int replaceBlock, int replaceTag) {
+        String tempReplaceString, valueParam;
         /* remove complete block, interrupt recursion in printDocument */
-        if (m_tools.checkTag(node.getNodeName(),m_configuration.getRemoveBlocks())) {
+        if (m_tools.checkTag(node.getNodeName(), m_configuration.getRemoveBlocks())) {
             return true;
         }
         /* if tag has to be removed return, otherwise test other cases */
-        if (!m_tools.checkTag(node.getNodeName(),m_configuration.getRemoveTags())) {
+        if (!m_tools.checkTag(node.getNodeName(), m_configuration.getRemoveTags())) {
             /* test if a block has to be replaced */
             if (replaceBlock != -1) {
                 m_blockObject = (CmsHtmlConverterObjectReplaceBlocks)
@@ -445,8 +437,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                    insert it into replaceString */
                 tempReplaceString = m_blockObject.getReplaceString();
                 if (!m_blockObject.getParameter().equals("")) {
-                    valueParam = m_tools.scanNodeAttrs(node,m_blockObject.getParameter());
-                    tempReplaceString = m_tools.replaceString(tempReplaceString,"$parameter$",valueParam);
+                    valueParam = m_tools.scanNodeAttrs(node, m_blockObject.getParameter());
+                    tempReplaceString = m_tools.replaceString(tempReplaceString, "$parameter$", valueParam);
                 }
                 m_tempString.append(tempReplaceString);
                 /* remove temporary object from ArrayList replaceBlocks */
@@ -455,8 +447,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                 }
                 /* ignore child elements in block, interrupt recursion in printDocument */
                 return true;
-            }
-            else {
+            } else {
                 /* test if actual element (start tag) has to be replaced */
                 if (replaceTag != -1) {
                     m_tagObject = (CmsHtmlConverterObjectReplaceTags)
@@ -465,36 +456,34 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                     /* if a parameter is used, get it from node attribute value,
                        insert it into replaceString */
                     if (!m_tagObject.getParameter().equals("")) {
-                        valueParam = m_tools.scanNodeAttrs(node,m_tagObject.getParameter());
+                        valueParam = m_tools.scanNodeAttrs(node, m_tagObject.getParameter());
                         // HACK: only replace attribute value of parameter attribute!
                         if (m_tagObject.getReplaceParamAttr()) {
                             if (!m_tools.shouldReplaceUrl(m_url, valueParam, m_servletPrefix)) {
                                 tempReplaceString = "$parameter$";
-                            }
-                            else {
+                            } else {
                                 valueParam = m_tools.modifyParameter(m_url, valueParam, m_servletPrefix, m_relativeRoot);
                             }
-                            tempReplaceString = m_tools.reconstructTag(tempReplaceString,node,m_tagObject.getParameter(),m_configuration.getQuotationmark());
+                            tempReplaceString = m_tools.reconstructTag(tempReplaceString, node, m_tagObject.getParameter(), m_configuration.getQuotationmark());
                         }
-                        tempReplaceString = m_tools.replaceString(tempReplaceString,"$parameter$",valueParam);
+                        tempReplaceString = m_tools.replaceString(tempReplaceString, "$parameter$", valueParam);
                     }
                     m_tempString.append(tempReplaceString);
-                }
-                /* no replacement needed: append original element to output */
-                else {
+                } else {
+                    /* no replacement needed: append original element to output */
                     m_tempString.append("<");
                     m_tempString.append(node.getNodeName());
                     NamedNodeMap attrs = node.getAttributes();
-                    for ( int i = attrs.getLength()-1; i >= 0 ; i-- ) {
+                    for (int i = attrs.getLength()-1; i >= 0; i--) {
                         m_tempString.append(" " + attrs.item(i).getNodeName()
                                 + "=" + m_configuration.getQuotationmark());
                         /* scan attribute values and replace subStrings */
                         String helpString = attrs.item(i).getNodeValue();
-                        helpString = m_tools.scanString(helpString,m_configuration.getReplaceStrings());
+                        helpString = m_tools.scanString(helpString, m_configuration.getReplaceStrings());
                         m_tempString.append(helpString + m_configuration.getQuotationmark());
                     }
                     if (m_configuration.getXhtmlOutput()
-                            && m_tools.checkTag(node.getNodeName(),m_configuration.getInlineTags())) {
+                            && m_tools.checkTag(node.getNodeName(), m_configuration.getInlineTags())) {
                         m_tempString.append("/");
                     }
                     m_tempString.append(">");
@@ -512,9 +501,9 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      */
     private void transformEndElement(Node node, int replaceBlock, int replaceTag) {
         /* test if block has to be removed */
-        if (!m_tools.checkTag(node.getNodeName(),m_configuration.getRemoveBlocks())) {
+        if (!m_tools.checkTag(node.getNodeName(), m_configuration.getRemoveBlocks())) {
             /* test if tag has to be removed */
-            if (!m_tools.checkTag(node.getNodeName(),m_configuration.getRemoveTags())) {
+            if (!m_tools.checkTag(node.getNodeName(), m_configuration.getRemoveTags())) {
                 /* continue, if block is not replaced */
                 if (replaceBlock == -1) {
                     /* replace end tag and discard inline tags */
@@ -526,10 +515,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                             /* if parameter is used, get it from node attribute value,
                                insert it into replaceString */
                             if (!m_tagObject.getParameter().equals("")) {
-                                String valueParam = m_tools.scanNodeAttrs(node
-                                        ,m_tagObject.getParameter());
-                                tempReplaceString = m_tools.replaceString(tempReplaceString
-                                        ,"$parameter$",valueParam);
+                                String valueParam = m_tools.scanNodeAttrs(node, m_tagObject.getParameter());
+                                tempReplaceString = m_tools.replaceString(tempReplaceString, "$parameter$", valueParam);
                             }
                             m_tempString.append(tempReplaceString);
                         }
@@ -537,10 +524,9 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                         if (replaceTag > (m_numberReplaceTags - 1)) {
                             m_configuration.removeObjectReplaceTag(replaceTag);
                         }
-                    }
-                    else {
+                    } else {
                         /* catch inline tags and discard them */
-                        if (!m_tools.checkTag(node.getNodeName(),m_configuration.getInlineTags())) {
+                        if (!m_tools.checkTag(node.getNodeName(), m_configuration.getInlineTags())) {
                             m_tempString.append("</");
                             m_tempString.append(node.getNodeName());
                             m_tempString.append(">");
@@ -548,7 +534,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                             if (m_configuration.getGlobalAddEveryLine()) {
                                 // check if a "\n" can be added to output
                                 boolean added = false;
-                                for (int i=0;i<m_enterTags.size();i++) {
+                                for (int i=0; i<m_enterTags.size(); i++) {
                                     if (!added && node.getNodeName().equalsIgnoreCase((String)m_enterTags.elementAt(i))) {
                                         m_tempString.append(m_configuration.getGlobalSuffix()
                                                 + "\n" + m_configuration.getGlobalPrefix());
@@ -559,11 +545,10 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                                         return;
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 // check if a "\n" can be added to output
                                 boolean added = false;
-                                for (int i=0;i<m_enterTags.size();i++) {
+                                for (int i=0; i<m_enterTags.size(); i++) {
                                     if (!added && node.getNodeName().equalsIgnoreCase((String)m_enterTags.elementAt(i))) {
                                         m_tempString.append("\n");
                                         added = true;
@@ -583,7 +568,6 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Private method to transform output at end of document
-     * @param node actual element node
      */
     private void transformEndDocument () {
         m_tempString.append(m_configuration.getGlobalSuffix());
@@ -597,18 +581,16 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         String helpString = node.getNodeValue();
         /* do not scan text nodes between <script> tags! */
         if (!node.getParentNode().getNodeName().equalsIgnoreCase("script")
-                && !node.getParentNode().getNodeName().equalsIgnoreCase("style") ){
-            helpString = m_tools.scanChar(helpString
-                        ,m_configuration.getReplaceExtendedChars());
+                && !node.getParentNode().getNodeName().equalsIgnoreCase("style")) {
+            helpString = m_tools.scanChar(helpString, m_configuration.getReplaceExtendedChars());
         }
         /* replace quotationsmarks if configured */
         if (m_configuration.getEncodeQuotationmarks()) {
-            helpString = m_tools.replaceString(helpString,"\"",m_configuration.getQuotationmark());
+            helpString = m_tools.replaceString(helpString, "\"", m_configuration.getQuotationmark());
         }
         /* test if prefix and suffix have to be added every new line */
         if (m_configuration.getGlobalAddEveryLine()) {
-            helpString = m_tools.replaceString(helpString,"\n"
-                    ,(m_configuration.getGlobalSuffix() + "\n" + m_configuration.getGlobalPrefix()));
+            helpString = m_tools.replaceString(helpString, "\n", (m_configuration.getGlobalSuffix() + "\n" + m_configuration.getGlobalPrefix()));
         }
         m_tempString.append(helpString);
     }
@@ -624,7 +606,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
             /* delete empty "prefix-suffix" lines if suffix and prefix are not empty */
             if (!m_configuration.getGlobalPrefix().equals("")
                     && !m_configuration.getGlobalSuffix().equals("")) {
-                cleanString = m_tools.replaceString(cleanString,cutString,"");
+                cleanString = m_tools.replaceString(cleanString, cutString, "");
             }
         }
         return cleanString;
@@ -647,17 +629,17 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                 if (testObject.getTagAttrib().equals("")) {
                     /* test if replaceStrings have to be retrieved from attributes */
                     if (testObject.getReplaceFromAttrs()) {
-                        return scanTagElementAttrs(node,testObject);
+                        return scanTagElementAttrs(node, testObject);
                     }
                     return index;
                 }
-                for ( int i = (attrs.getLength() - 1); i >= 0 ; i-- ) {
-                    if ( attrs.item(i).getNodeName().equals(testObject.getTagAttrib())
+                for (int i = attrs.getLength()-1; i >= 0; i--) {
+                    if (attrs.item(i).getNodeName().equals(testObject.getTagAttrib())
                             && (attrs.item(i).getNodeValue().equals(testObject.getTagAttribValue())
-                            || testObject.getTagAttribValue().equals("")) ) {
+                            || testObject.getTagAttribValue().equals(""))) {
                         /* test if replaceStrings have to be retrieved from attributes */
                         if (testObject.getReplaceFromAttrs()) {
-                            return scanTagElementAttrs(node,testObject);
+                            return scanTagElementAttrs(node, testObject);
                         }
                         return index;
                     }
@@ -688,7 +670,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         String attrName = "";
         boolean replaceParamAttr = testObject.getReplaceParamAttr();
         /* scan attributes for replaceStrings */
-        for (int i = 0;i < attrs.getLength();i++) {
+        for (int i = 0; i < attrs.getLength(); i++) {
             attrName = attrs.item(i).getNodeName();
             if (attrName.equalsIgnoreCase(startAttribute)) {
                 replaceStartTag = attrs.item(i).getNodeValue();
@@ -703,8 +685,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
             replaceEndTag = m_configuration.scanBrackets(replaceEndTag);
         }
         /* add temporary object to ArrayList replaceTags */
-        m_configuration.addObjectReplaceTag(prefix,name,attrib,attrValue
-                ,replaceStartTag,replaceEndTag,suffix,false,"","",parameter,replaceParamAttr);
+        m_configuration.addObjectReplaceTag(prefix, name, attrib, attrValue, replaceStartTag, replaceEndTag, suffix, false, "", "", parameter, replaceParamAttr);
         return m_configuration.getReplaceTags().size()-1;
     }
 
