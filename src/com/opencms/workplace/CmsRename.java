@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/07/18 16:13:51 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/07/28 14:15:27 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.26 $ $Date: 2000/07/18 16:13:51 $
+ * @version $Revision: 1.27 $ $Date: 2000/07/28 14:15:27 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -435,16 +435,17 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				cms.moveFile((C_CONTENTBODYPATH.substring(0,help))+file.getAbsolutePath(),(C_CONTENTBODYPATH.substring(0,help))+newFolder);
 				if (flags.equals("false")) {
 					 // set access flags of the new file to the default flags
-					CmsFile newfile=cms.readFile(newFolder,file.getName());
-				
+					//CmsFile newfile=cms.readFile(newFolder,file.getName());
+				    CmsFile newfile=cms.readFile((C_CONTENTBODYPATH.substring(0,help))+newFolder,file.getName());
+                    
                     Hashtable startSettings=null;
                     Integer accessFlags=null;
                     startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
                     if (startSettings != null) {
                         accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-                        if (accessFlags == null) {
+                    }
+                    if (accessFlags == null) {
                             accessFlags=new Integer(C_ACCESS_DEFAULT_FLAGS);
-                        }
                     }                           
                     newfile.setAccessFlags(accessFlags.intValue());  
 				 
