@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/05/13 12:44:54 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject {
     
@@ -242,7 +242,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
                         req.addParameterMap(map);
                     }
                     // Do the include call
-                    req.getCmsRequestDispatcher((String)o).include(req, res);
+                    req.getRequestDispatcher((String)o).include(req, res);
                     // Reset parameters if neccessary
                     if (oldMap != null) req.setParameterMap(oldMap);
                 } else {

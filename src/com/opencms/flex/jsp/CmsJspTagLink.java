@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLink.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/05/13 12:44:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,10 @@
 
 package com.opencms.flex.jsp;
 
-import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.flex.cache.CmsFlexController;
 import com.opencms.util.LinkSubstitution;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 
 /**
@@ -43,7 +44,7 @@ import javax.servlet.jsp.JspException;
  * export to work properly.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
  
@@ -53,19 +54,16 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
      */
     public int doEndTag() throws JspException {
         
-        javax.servlet.ServletRequest req = pageContext.getRequest();
+        ServletRequest req = pageContext.getRequest();
         
         // This will always be true if the page is called through OpenCms 
-        if (req instanceof com.opencms.flex.cache.CmsFlexRequest) {
-
-            CmsFlexRequest c_req = (CmsFlexRequest)req;
-                
+        if (CmsFlexController.isCmsRequest(req)) {
             try {
                 // Get link-string from the body and reset body 
                 String link = this.getBodyContent().getString();                          
                 this.getBodyContent().clear();            
                 // Calculate the link substitution
-                String newlink = linkTagAction(link, c_req);
+                String newlink = linkTagAction(link, req);
                 // Write the result back to the page                
                 this.getBodyContent().print(newlink);
                 this.getBodyContent().writeOut(pageContext.getOut());
@@ -82,8 +80,7 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
     /**
      * Internal action method.<p>
      * 
-     * Calulates a link using the OpenCms link export rules using the
-     * given CmsFlexRequest to access the link substitutor.<p>
+     * Calulates a link using the OpenCms link export rules.<p>
      * 
      * @param link the link that should be calculated, can be relative or absolute
      * @param req the current request
@@ -91,11 +88,12 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
      * 
      * @see com.opencms.util.LinkSubstitution#getLinkSubstitution(CmsObject, String)
      */
-    public static String linkTagAction(String link, CmsFlexRequest req) {
+    public static String linkTagAction(String link, ServletRequest req) {
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         if (link.indexOf(':') >= 0) {
-            return LinkSubstitution.getLinkSubstitution(req.getCmsObject(), link);
+            return LinkSubstitution.getLinkSubstitution(controller.getCmsObject(), link);
         } else {
-            return LinkSubstitution.getLinkSubstitution(req.getCmsObject(), req.toAbsolute(link));
+            return LinkSubstitution.getLinkSubstitution(controller.getCmsObject(), controller.getCurrentRequest().toAbsolute(link));
         }        
     }
 }

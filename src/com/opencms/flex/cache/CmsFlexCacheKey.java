@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/05/13 12:44:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,11 @@
  
 package com.opencms.flex.cache;
 
+import com.opencms.file.CmsObject;
+
 import java.util.Iterator;
+
+import javax.servlet.ServletRequest;
 
 /**
  * Implements the CmsFlexCacheKey,
@@ -42,7 +46,7 @@ import java.util.Iterator;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsFlexCacheKey {
     
@@ -108,17 +112,17 @@ public class CmsFlexCacheKey {
      * @param online must be true for an online resource, false for offline resources
      * @param request the request to construct the key for
      */    
-    public CmsFlexCacheKey(CmsFlexRequest request, String target, boolean online) {
+    public CmsFlexCacheKey(ServletRequest request, String target, boolean online) {
                 
         Resource = getKeyName(target, online);     
         Variation = "never";
-        
+                       
         m_isRequest = true;
         // Fetch the cms from the request
-        com.opencms.file.CmsObject cms = request.getCmsObject();        
+        CmsObject cms = ((CmsFlexController)request.getAttribute(CmsFlexController.ATTRIBUTE_NAME)).getCmsObject();        
         // Get the top-level file name / uri
         // m_uri = request.getCmsFile().getAbsolutePath();
-        m_uri = request.getCmsObject().getRequestContext().getUri();
+        m_uri = cms.getRequestContext().getUri();
         // Fetch user from the current cms
         m_user = cms.getRequestContext().currentUser().getId();        
         // Fetch group. Must have unique names, so the String is ok

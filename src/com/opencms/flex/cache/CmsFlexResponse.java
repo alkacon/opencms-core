@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
- * Date   : $Date: 2003/04/14 06:36:52 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/05/13 12:44:54 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
@@ -51,7 +52,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -64,6 +65,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /** A special wrapper class for a ServletOutputStream */
     private CmsFlexResponse.CmsServletOutputStream m_out;
     
+    /** The CmsFlexController for this response */
+    private CmsFlexController m_controller = null;
+        
     /** A printwriter that writes in the m_out stream */
     private java.io.PrintWriter m_writer = null;
     
@@ -74,13 +78,13 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     private boolean m_parentWritesOnlyToBuffer;
     
     /** A list of include calls that origin from this page, i.e. these are sub elements of this element */
-    private java.util.List m_includeList = null;
+    private List m_includeList = null;
     
     /** A list of parameters that belong to the include calls */
-    private java.util.List m_includeListParameters = null;
+    private List m_includeListParameters = null;
     
     /** A list of results from the inclusions, needed because of JSP buffering */
-    private java.util.List m_includeResults = null;
+    private List m_includeResults = null;
     
     /** Byte array used for "cached leafs" optimization */
     private byte[] m_cacheBytes = null;
@@ -126,13 +130,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * this variation is usually used for the "Top" response.<p>
      *
      * @param res the HttpServletResponse to wrap
+     * @param controller the controller to use
      * @param streaming indicates if streaming should be enabled or not
+     * @param isTopElement indicates if this is the top element of an include cascade
      */
-    public CmsFlexResponse(HttpServletResponse res, boolean streaming, boolean isTopElement, String encoding) {
+    public CmsFlexResponse(HttpServletResponse res, CmsFlexController controller, boolean streaming, boolean isTopElement) {
         super(res);
         m_res = res;
+        m_controller = controller;
         m_out = null;
-        m_encoding = encoding;
+        m_encoding = controller.getCmsObject().getRequestContext().getEncoding();
         m_isTopElement = isTopElement;
         m_parentWritesOnlyToBuffer = ! streaming;
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
@@ -145,14 +152,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * this variation one is usually used to wrap responses for further include calls in OpenCms.<p>
      *
      * @param res the CmsFlexResponse to wrap     
+     * @param controller the controller to use
      */
-    public CmsFlexResponse(CmsFlexResponse res) {
+    public CmsFlexResponse(HttpServletResponse res, CmsFlexController controller) {
         super(res);
         m_res = res;
+        m_controller = controller;
         m_out = null;
-        m_encoding = res.getEncoding();
-        m_isTopElement = res.isTopElement();        
-        m_parentWritesOnlyToBuffer = res.hasIncludeList();
+        m_encoding = controller.getCurrentResponse().getEncoding();
+        m_isTopElement = controller.getCurrentResponse().isTopElement();        
+        m_parentWritesOnlyToBuffer = controller.getCurrentResponse().hasIncludeList();
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
         m_headers = new java.util.HashMap(37);
         m_buffer_headers = new java.util.HashMap(17);
@@ -179,20 +188,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     public boolean isTopElement() {
         return m_isTopElement;        
     }
-
-    /** 
-     * Returns the top wrapped response, i.e. the first response wrapped
-     * that is not of type CmsFlexResponse.<p>
-     *
-     * @return the top wrapped response.
-     */
-    private HttpServletResponse getTopResponse() {
-        if (m_res instanceof CmsFlexResponse) {
-            return ((CmsFlexResponse)m_res).getTopResponse();
-        } else {
-            return m_res;
-        }
-    }    
     
     /** 
      * Sets buffering status of the response.<p>
@@ -266,9 +261,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      */
     void setSuspended(boolean value) {
         m_suspended = value;
-        if (m_res instanceof CmsFlexResponse) {
-            ((CmsFlexResponse)m_res).setSuspended(value);
-        }
     }
         
     /**
@@ -532,16 +524,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (m_out == null) {
             if (! m_writeOnlyToBuffer) {
                 // We can use the parents output stream
-                if (m_cachingRequired || !(m_res instanceof CmsFlexResponse)) {
+                if (m_cachingRequired || (m_controller.getResponseQueueSize() > 1)) {
                     // We are allowed to cache our results (probably to contruct a new cache entry)
-                    m_out = new com.opencms.flex.cache.CmsFlexResponse.CmsServletOutputStream(m_res.getOutputStream());        
+                    m_out = new CmsFlexResponse.CmsServletOutputStream(m_res.getOutputStream());        
                 } else {
                     // We are not allowed to cache so we just use the parents output stream
-                    m_out = (com.opencms.flex.cache.CmsFlexResponse.CmsServletOutputStream)m_res.getOutputStream();
+                    m_out = (CmsFlexResponse.CmsServletOutputStream)m_res.getOutputStream();
                 }
             } else {
                 // Construct a "buffer only" output stream
-                m_out = new com.opencms.flex.cache.CmsFlexResponse.CmsServletOutputStream();
+                m_out = new CmsFlexResponse.CmsServletOutputStream();
             }
         }
         if (m_writer == null) {
@@ -680,13 +672,14 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         }
         
         if (! m_cachingRequired) {
-            // If caching is required a cachen entry will be constructed first and redirect will
+            // If caching is required a cached entry will be constructed first and redirect will
             // be called after this is completed and stored in the cache
             if (DEBUG) System.err.println("FlexResponse: getTopResponse.sendRedirect() to target " + location);
-            getTopResponse().sendRedirect(location);           
+            
+            m_controller.getTopResponse().sendRedirect(location);        
         }
         
-        setSuspended(true);
+        m_controller.suspendFlexResponse();
     }
     
     /**
@@ -706,10 +699,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                     if ((j.nextIndex() == 0) && (((String)l.get(0)).startsWith(C_SETHEADER)))  {
                         String s = (String)j.next();
                         res.setHeader(key, s.substring(C_SETHEADER.length()));
-                        if (DEBUG && (! (res instanceof CmsFlexResponse))) System.err.println("FlexResponse: setHeader(" + key + ") to final stream");               
                     } else {
                         res.addHeader(key, (String)j.next());
-                        if (DEBUG && (! (res instanceof CmsFlexResponse))) System.err.println("FlexResponse: addHeader(" + key + ") to final stream");               
                     }
                 }
             }        
