@@ -4,12 +4,15 @@
 <![CDATA[
 <html>
 <head>
-</HEAD>
-	<body background="]]><METHOD name="picsUrl">_bg_mitte_links.gif</METHOD><![CDATA[">
-	
-	
-</body>
-</html>
+    <title>OpenCms</title>
+</head>
+
+
+<BODY background="]]><METHOD name="picsUrl">_bg_mitte_links.gif</METHOD><![CDATA[" bgcolor="#000000">
+
+
+</BODY>
+</HTML>
 ]]>
 </TEMPLATE>
 </WORKPLACE> 

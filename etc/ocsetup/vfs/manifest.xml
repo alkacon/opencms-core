@@ -3090,8 +3090,8 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/_Bg_mitte_links.gif</source>
-            <destination>pics/system/_Bg_mitte_links.gif</destination>
+            <source>pics/system/_bg_mitte_links.gif</source>
+            <destination>pics/system/_bg_mitte_links.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -8604,7 +8604,7 @@
                 <property>
                     <name>NavText</name>
                     <type>2</type>
-                    <value><![CDATA[Seite sperren]]></value>
+                    <value><![CDATA[Lock-/ Unlock-Funktion]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -8614,7 +8614,7 @@
                 <property>
                     <name>Title</name>
                     <type>2</type>
-                    <value><![CDATA[Seite sperren]]></value>
+                    <value><![CDATA[Lock-/ Unlock-Funktion]]></value>
                 </property>
             </properties>
         </file>
