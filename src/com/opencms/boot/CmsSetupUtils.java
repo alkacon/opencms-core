@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2003/07/28 15:03:24 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/08/29 10:36:15 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,11 +53,14 @@ public class CmsSetupUtils {
 
     private Vector m_errors;
 
-
-    /** Constructor */
+    /** 
+     * Constructor.<p>
+     * 
+     * @param basePath the base path where OpenCms is installed
+     */
     public CmsSetupUtils(String basePath) {
-      m_errors = new Vector();
-      m_configFolder = basePath + "WEB-INF/config/";
+        m_errors = new Vector();
+        m_configFolder = basePath + "WEB-INF/config/";
     }
 
     /**
@@ -66,16 +69,16 @@ public class CmsSetupUtils {
      *  @param originalFile File to save props to
      *  @param backup if true, create backupfile
      */
-    public void saveProperties(ExtendedProperties extProp, String originalFile, boolean backup)  {
+    public void saveProperties(ExtendedProperties extProp, String originalFile, boolean backup) {
         if (new File(m_configFolder + originalFile).isFile()) {
-            String backupFile = originalFile.substring(0,originalFile.lastIndexOf('.')) + ".ori";
-            String tempFile = originalFile.substring(0,originalFile.lastIndexOf('.')) + ".tmp";
+            String backupFile = originalFile.substring(0, originalFile.lastIndexOf('.')) + ".ori";
+            String tempFile = originalFile.substring(0, originalFile.lastIndexOf('.')) + ".tmp";
 
             m_errors.clear();
 
             // make a backup copy
-            if(backup)  {
-               this.copyFile(originalFile, backupFile);
+            if (backup) {
+                this.copyFile(originalFile, backupFile);
             }
 
             //save to temporary file
@@ -87,8 +90,8 @@ public class CmsSetupUtils {
             // delete temp file
             File temp = new File(m_configFolder + tempFile);
             temp.delete();
-        } else  {
-            m_errors.addElement("No valid file: " + originalFile+ "\n");
+        } else {
+            m_errors.addElement("No valid file: " + originalFile + "\n");
         }
 
     }
@@ -103,14 +106,14 @@ public class CmsSetupUtils {
         try {
             LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configFolder + sourceFilename)));
             FileWriter fw = new FileWriter(new File(m_configFolder + destFilename));
-            
+
             while (true) {
                 String line = lnr.readLine();
                 if (line == null)
                     break;
                 fw.write(line + '\n');
             }
-            
+
             lnr.close();
             fw.close();
         } catch (IOException e) {
@@ -118,7 +121,7 @@ public class CmsSetupUtils {
             m_errors.addElement(e.toString() + "\n");
         }
     }
-    
+
     /**
      * Restores the registry.xml either to or from a backup file, depending
      * whether the setup wizard is executed the first time (the backup registry
@@ -129,11 +132,11 @@ public class CmsSetupUtils {
      */
     public void backupRegistry(String registryFilename, String originalRegistryFilename) {
         File originalRegistry = new File(m_configFolder + originalRegistryFilename);
-        
+
         if (originalRegistry.exists()) {
-            this.copyFile(originalRegistryFilename,registryFilename);
+            this.copyFile(originalRegistryFilename, registryFilename);
         } else {
-            this.copyFile(registryFilename,originalRegistryFilename);
+            this.copyFile(registryFilename, originalRegistryFilename);
         }
     }
 
@@ -145,46 +148,44 @@ public class CmsSetupUtils {
      */
     private void save(ExtendedProperties extProp, String source, String target) {
         try {
-            LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configFolder
-                    + source)));
+            LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configFolder + source)));
 
             FileWriter fw = new FileWriter(new File(m_configFolder + target));
 
-            while(true) {
+            while (true) {
                 String line = lnr.readLine();
-                if(line == null)  break;
+                if (line == null)
+                    break;
                 line = line.trim();
 
-                if(line.startsWith("#")) {
+                if (line.startsWith("#")) {
                     // output comment
                     fw.write(line);
-                    fw.write("\n");                    
-                }
-                else if (line.indexOf('=') > -1) {
-                    String key = line.substring(0,line.indexOf('=')).trim();
+                    fw.write("\n");
+                } else if (line.indexOf('=') > -1) {
+                    String key = line.substring(0, line.indexOf('=')).trim();
                     // write key
-                    fw.write((key+"="));
+                    fw.write((key + "="));
                     try {
                         // Get the value to the given key from the properties 
                         String value = extProp.get(key).toString();
-
                         // if this was a list (array), we need to delete leading and tailing '[]' characters
-                        if(value.startsWith("[") && value.endsWith("]") && value.indexOf(',')>-1) {
-                            value = splitMultipleValues(value.substring(1,value.length()-1));
+                        if (value.startsWith("[") && value.endsWith("]") && value.indexOf(',') > -1) {
+                            value = splitMultipleValues(value.substring(1, value.length() - 1));
                         }
                         // write it
                         fw.write(value);
-                    } catch (NullPointerException e)  {
+                    } catch (NullPointerException e) {
                         // no value found - do nothing 
-                    }                    
+                    }
                     // add trailing line feed
-                    fw.write("\n");                    
+                    fw.write("\n");
                 } else if ("".equals(line)) {
                     // output empty line
                     fw.write("\n");
                 }
             }
-            
+
             lnr.close();
             fw.close();
         } catch (Exception e) {
@@ -194,14 +195,21 @@ public class CmsSetupUtils {
     }
 
     /**
-     * URLEncodes a given string similar to JavaScript.
+     * URLEncodes a given string similar to JavaScript.<p>
+     * 
      * @param source string to be encoded
+     * @param encoding the encoding to use
+     * @return the encoding String
      */
-        public static String escape(String source, String encoding) {
-        return Encoder.escapeWBlanks(source,encoding);
+    public static String escape(String source, String encoding) {
+        return Encoder.escapeWBlanks(source, encoding);
     }
 
-
+    /**
+     * Returns a Vector containing all error that occured.<p>
+     * 
+     * @return a Vector containing all error that occured
+     */
     public Vector getErrors() {
         return m_errors;
     }
@@ -213,7 +221,7 @@ public class CmsSetupUtils {
      *  @return true if used JDK version is equal or higher than required JDK version,
      *  false otherwise
      */
-    public static boolean compareJDKVersions(String usedJDK, String requiredJDK)  {
+    public static boolean compareJDKVersions(String usedJDK, String requiredJDK) {
         int compare = usedJDK.compareTo(requiredJDK);
         return (!(compare < 0));
     }
@@ -223,9 +231,9 @@ public class CmsSetupUtils {
      *  @param supportedEngines All known servlet engines OpenCms supports
      *  @return true if this engine is supported, false if it was not found in the list
      */
-    public static boolean supportedServletEngine(String thisEngine, String[] supportedEngines)  {
+    public static boolean supportedServletEngine(String thisEngine, String[] supportedEngines) {
         boolean supported = false;
-        engineCheck: for(int i = 0; i < supportedEngines.length; i++)  {
+        engineCheck : for (int i = 0; i < supportedEngines.length; i++) {
             if (thisEngine.indexOf(supportedEngines[i]) >= 0) {
                 supported = true;
                 break engineCheck;
@@ -234,14 +242,16 @@ public class CmsSetupUtils {
         return supported;
     }
 
-    /** Checks if the used servlet engine is part of the servlet engines OpenCms
-     *  does NOT support
-     *  @param thisEngine The servlet engine in use
-     *  @param supportedEngines All known servlet engines OpenCms does NOT support
-     *  @return supportedEngines index or -1 if not found
+    /** 
+     * Checks if the used servlet engine is part of the servlet engines OpenCms
+     * does NOT support<p>
+     * 
+     * @param thisEngine the servlet engine in use
+     * @param unsupportedEngines all known servlet engines OpenCms does NOT support
+     * @return the engine id or -1 if the engine is not supported
      */
-    public static int unsupportedServletEngine(String thisEngine, String[] unsupportedEngines)  {
-        for(int i = 0; i < unsupportedEngines.length; i++)  {
+    public static int unsupportedServletEngine(String thisEngine, String[] unsupportedEngines) {
+        for (int i = 0; i < unsupportedEngines.length; i++) {
             if (thisEngine.indexOf(unsupportedEngines[i]) >= 0) {
                 return i;
             }
@@ -251,18 +261,19 @@ public class CmsSetupUtils {
 
     /**
      * Writes the version info of the used servlet engine and the used JDK
-     * to the version.txt
+     * to the version.txt.<p>
      *
      * @param thisEngine The servlet engine in use
      * @param usedJDK The JDK version in use
+     * @param basePath the OpenCms base path
      */
-    public static void writeVersionInfo(String thisEngine, String usedJDK, String basePath){
+    public static void writeVersionInfo(String thisEngine, String usedJDK, String basePath) {
         FileWriter fOut = null;
         PrintWriter dOut = null;
         String filename = basePath + CmsSetupDb.C_SETUP_FOLDER + "versions.txt";
         try {
             File file = new File(filename);
-            if(file.exists()){
+            if (file.exists()) {
                 // new FileOutputStream of the existing file with parameter append=true
                 fOut = new FileWriter(filename, true);
             } else {
@@ -272,32 +283,36 @@ public class CmsSetupUtils {
             dOut = new PrintWriter(fOut);
             dOut.println();
             dOut.println("############### currently used configuration ################");
-            dOut.println("Date:                "+DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis())));
-            dOut.println("Used JDK:            "+usedJDK);
-            dOut.println("Used Servlet Engine: "+thisEngine);
+            dOut.println("Date:                " + DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis())));
+            dOut.println("Used JDK:            " + usedJDK);
+            dOut.println("Used Servlet Engine: " + thisEngine);
             dOut.close();
-        } catch (IOException e) {
-        } finally {
+        } catch (IOException e) { } finally {
             try {
                 if (fOut != null)
                     fOut.close();
-            } catch (IOException e) {
-            }
+            } catch (IOException e) { }
         }
     }
 
-    private String splitMultipleValues(String value)  {
-      String tempValue = "";
-      StringTokenizer st = new StringTokenizer(value,",");
-      int counter = 1;
-      int max = st.countTokens();
-      while(st.hasMoreTokens()) {
-        tempValue += st.nextToken().trim();
-        if(counter < max)  {
-          tempValue += ", \\ \n";
+    /**
+     * Splits a String at the comma sign and adds a linebreak befor the comma.<p>
+     * 
+     * @param value the String to split
+     * @return the splitted String
+     */
+    private String splitMultipleValues(String value) {
+        String tempValue = "";
+        StringTokenizer st = new StringTokenizer(value, ",");
+        int counter = 1;
+        int max = st.countTokens();
+        while (st.hasMoreTokens()) {
+            tempValue += st.nextToken().trim();
+            if (counter < max) {
+                tempValue += ", \\ \n";
+            }
+            counter++;
         }
-        counter++;
-      }
-      return tempValue;
-    }
+        return tempValue;
+    }  
 }
