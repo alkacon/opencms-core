@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/08/24 15:10:34 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/08/30 12:03:10 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/08/24 15:10:34 $
+ * @version $Revision: 1.14 $ $Date: 2000/08/30 12:03:10 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,
 																   I_CmsWpConstants,
@@ -224,8 +224,10 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
 				 
 		for(int i=0; i < langFiles.size(); i++) {
 			file = (CmsFile)langFiles.elementAt(i);
-			init(cms,file.getAbsolutePath());
-			readIncludeFile(file.getAbsolutePath());
+			if (file.getState() != C_STATE_DELETED) {
+				init(cms,file.getAbsolutePath());
+				readIncludeFile(file.getAbsolutePath());
+			}
 		}
 	}
 	/**
