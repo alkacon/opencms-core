@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/04/18 13:56:01 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/05/10 14:25:44 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.34 $ $Date: 2000/04/18 13:56:01 $  
+* @version $Revision: 1.35 $ $Date: 2000/05/10 14:25:44 $  
 * 
 */
 
@@ -80,6 +80,16 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
      * The name of the property connect string entry in the configuration file.
      */
      static final String C_PROPERTY_CONNECT="property.connectString";
+
+     /**
+     * The name of the redirect entry in the configuration file.
+     */
+     static final String C_PROPERTY_REDIRECT="redirect";
+
+     /**
+     * The name of the redirect location entry in the configuration file.
+     */
+     static final String C_PROPERTY_REDIRECTLOCATION="redirectlocation";
      
       /**
      * The name of the initializer classname entry in the configuration file.
@@ -105,6 +115,16 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
       * The reference to the OpenCms system.
       */
      private A_OpenCms m_opencms;
+     
+     /**
+      * Storage for redirects.
+      */
+     private Vector m_redirect=new Vector();
+     
+     /**
+      * Storage for redirect locations.
+      */
+     private Vector m_redirectlocation=new Vector();
      
  	 /**
 	 * Initialization of the OpenCms servlet.
@@ -138,6 +158,20 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         propertyDriver=(String)m_configurations.getString(C_PROPERTY_DRIVER);
         propertyConnect=(String)m_configurations.getString(C_PROPERTY_CONNECT);
 
+        
+        // initialize the redirect information
+        int count =0;
+        String redirect;
+        String redirectlocation;
+        while ((redirect = (String)m_configurations.getString(C_PROPERTY_REDIRECT+"." + count)) != null) {
+            redirectlocation=(String)m_configurations.getString(C_PROPERTY_REDIRECTLOCATION+"." + count);
+            m_redirect.addElement(redirect);
+            m_redirectlocation.addElement(redirectlocation);
+            count++;
+        }                                                                                                      
+	
+       
+        
 		// get the classname of the initializer class
         initializerClassname=(String)m_configurations.getString(C_INILITALIZER_CLASSNAME);
 		if(A_OpenCms.isLogging()) {
@@ -191,6 +225,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 
         try {
            cms=initUser(cmsReq,cmsRes);
+           checkRelocation(cms);
            CmsFile file=m_opencms.initResource(cms); 
            m_opencms.setResponse(cms,file);
            m_opencms.showResource(cms,file);
@@ -227,6 +262,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
          
        try {
             cms=initUser(cmsReq,cmsRes);
+            checkRelocation(cms);
             CmsFile file=m_opencms.initResource(cms); 
             m_opencms.setResponse(cms,file);
             m_opencms.showResource(cms,file);
@@ -426,6 +462,38 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		res.setStatus(401);
 	}
 
+    /**
+     * Checks if the requested resource must be redirected to the server docroot and
+     * excecutes the redirect if nescessary.
+     * @param cms The CmsObject
+     * @exeption Throws CmsException if something goes wrong.
+     */
+    private void checkRelocation(CmsObject cms) 
+        throws CmsException {
+        A_CmsRequestContext context=cms.getRequestContext();
+        
+        // check the if the current project is the online project. Only in this project,
+        // a redirect is nescessary.
+        if (context.currentProject().equals(cms.onlineProject())) {
+            String filename=context.getUri();
+            // check all redirect locations
+            for (int i=0;i<m_redirect.size();i++) {
+                String redirect=(String)m_redirect.elementAt(i);                
+                // found a match, so redirect
+                if (filename.startsWith(redirect)) {
+                    String redirectlocation=(String)m_redirectlocation.elementAt(i);        
+                    String doRedirect=redirectlocation+filename.substring(redirect.length());
+                    // try to redirect
+                    try {
+		                ((HttpServletResponse)context.getResponse().getOriginalResponse()).sendRedirect(doRedirect);                         
+                    } catch (Exception e) {
+			            throw new CmsException("Redirect fails :"+doRedirect,CmsException.C_UNKNOWN_EXCEPTION,e);
+			        }
+                }
+            }
+        }
+    }
+    
     
     /**
      * This method performs the error handling for the OpenCms.

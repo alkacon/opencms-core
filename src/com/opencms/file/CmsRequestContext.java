@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/04/04 10:28:47 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/05/10 14:25:44 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/04/04 10:28:47 $
+ * @version $Revision: 1.21 $ $Date: 2000/05/10 14:25:44 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -89,16 +89,17 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	void init(I_CmsResourceBroker rb, I_CmsRequest req, I_CmsResponse resp, 
 			  String user, String currentGroup, int currentProjectId) 
 		throws CmsException {
-		m_rb = rb;
+    	m_rb = rb;
 		m_req = req;
 		m_resp = resp;
+   
 		m_user = m_rb.readUser(null, null, user);
-		
+
 		// check, if the user is disabled
 		if( m_user.getDisabled() == true ) {
 			m_user = null;
 		}
-		
+
 		// set current project and group for this request
 		setCurrentProject(currentProjectId);
 		m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
