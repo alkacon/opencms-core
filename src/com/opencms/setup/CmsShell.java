@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/04/17 10:37:10 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/04/18 09:12:46 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.37 $ $Date: 2000/04/17 10:37:10 $
+ * @version $Revision: 1.38 $ $Date: 2000/04/18 09:12:46 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1510,5 +1510,26 @@ public class CmsShell implements I_CmsConstants {
 		} catch( Exception exc ) {
 			printException(exc);
 		}
+	}
+	
+	/**
+	 * Gets all CmsMountPoints. 
+	 * All mountpoints will be returned.
+	 * 
+	 * @return the mountpoints - or null if they doesen't exists.
+	 */
+	public void readMimeTypes() {
+		try {
+			Hashtable mimeTypes = m_cms.readMimeTypes();
+			Enumeration keys = mimeTypes.keys();
+			String key;
+			
+			while(keys.hasMoreElements()) {
+				key = (String) keys.nextElement();
+				System.out.println(key + " : " + mimeTypes.get(key));
+			}
+		} catch( Exception exc ) {
+			printException(exc);
+		}		
 	}
 }
