@@ -49,7 +49,7 @@ before someone else does it for you.</p>
 
 
 <p>If you're seeing this page, and you don't think you should be, 
-then either you're either a user who has arrived at new installation of OpenCms, 
+then either you're a user who has arrived at a new installation of OpenCms, 
 or you're an administrator who hasn't got his/her setup quite right. 
 Providing the latter is the case, please refer to the OpenCms Documentation 
 available at <a href="http://www.opencms.org" target="_blank">http://www.opencms.org</a>
