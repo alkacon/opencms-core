@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/24 13:16:07 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2000/03/24 13:48:38 $
+ * Version: $Revision: 1.88 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.87 $ $Date: 2000/03/24 13:16:07 $
+ * @version $Revision: 1.88 $ $Date: 2000/03/24 13:48:38 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2384,7 +2384,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		// check for mandatory metainfos
 		 checkMandatoryMetainfos(currentUser, currentProject, C_TYPE_FOLDER_NAME, 
 								 metainfos);
-		System.err.println("2");	
+	
 		// checks, if the filename is valid, if not it throws a exception
 		validFilename(newFolderName);
 
