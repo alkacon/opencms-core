@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2004/11/25 13:16:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/23 13:16:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -86,6 +86,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
         suite.addTest(new TestPublishIssues("testPublishScenarioC"));        
         suite.addTest(new TestPublishIssues("testMultipleProjectCreation"));
         suite.addTest(new TestPublishIssues("testDirectPublishWithSiblings"));
+        suite.addTest(new TestPublishIssues("testPublishScenarioD"));        
+        suite.addTest(new TestPublishIssues("testPublishScenarioE"));        
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -329,7 +331,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
     }
     
     /**
-     * Tests publish scenario "B".<p>
+     * Tests publish scenario "C".<p>
      * 
      * This scenario is described as follows:
      * Direct publishing of folders containing subfolders skips all changed subfolders e.g. direct publish of /folder1/ 
@@ -370,6 +372,105 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertState(cms, "/folder_a/file_a.txt", I_CmsConstants.C_STATE_UNCHANGED);
         assertState(cms, "/folder_a/folder_b/", I_CmsConstants.C_STATE_UNCHANGED);
         assertState(cms, "/folder_a/folder_b/file_b.txt", I_CmsConstants.C_STATE_UNCHANGED);
+        
+    }
+    
+    /**
+     * Tests publish scenario "D".<p>
+     * 
+     * This scenario is described as follows:
+     * Direct publishing of folders containing subfolders skips all (sibling)
+     * resources in subfolders. 
+     * e.g. direct publish of /folder2/folder1/ 
+     * publishes /folder2/folder1/ and /folder2/folder1/index.html/, 
+     * but not /folder2/folder1/subfolder11/index.html.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishScenarioD() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing publish scenario D");
+        
+        // change to the offline project 
+        CmsProject project = cms.readProject("Offline");
+        cms.getRequestContext().setCurrentProject(project);
+
+        
+        cms.lockResource("/folder1/");
+        // copy the whole folder creating siblings of all resources
+        cms.copyResource("/folder1/", "/folder2/folder1", I_CmsConstants.C_COPY_AS_SIBLING);
+        cms.unlockResource("/folder1/");
+        
+        // direct publish the new folder
+        cms.unlockResource("/folder2/folder1/");
+        cms.publishResource("/folder2/folder1/");
+        
+        assertState(cms, "/folder2/folder1/", I_CmsConstants.C_STATE_UNCHANGED);        
+        assertState(cms, "/folder2/folder1/index.html", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder11/", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder11/index.html", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder11/subsubfolder111/", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder11/subsubfolder111/jsp.jsp", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder12/", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder12/index.html", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder12/subsubfolder121/", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder12/subsubfolder121/index.html", I_CmsConstants.C_STATE_UNCHANGED);
+        
+    }
+    
+    /**
+     * Tests publish scenario "E".<p>
+     * 
+     * This scenario is described as follows:
+     * Deletion of folders containing shared locked siblings 
+     * e.g. 
+     * user test1 edits a sibling
+     * then user test2 deletes the folder containing a sibling with shared lock
+     * direct publish of deleted folder geenrates an exception.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishScenarioE() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing publish scenario E");
+
+        // change to the offline project 
+        CmsProject project = cms.readProject("Offline");
+        cms.getRequestContext().setCurrentProject(project);
+      
+        // create folder
+        cms.createResource("/test", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        
+        // create sibling
+        cms.copyResource("/folder1/subfolder12/subsubfolder121", "/test/zaptest", I_CmsConstants.C_COPY_AS_SIBLING);
+        cms.unlockResource("/test");
+        
+        // read sibling again
+        cms.readResource("/test/zaptest/image1.gif");
+        
+        // publish
+        cms.publishResource("/test");
+
+        // lock sibling 
+        cms.lockResource("/folder1/subfolder12/subsubfolder121/image1.gif");
+        
+        cms.addUserToGroup("test2", "Projectmanagers");
+
+        // login as user test2 and delete folder
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(project);
+        
+        assertEquals(cms.getLock("/test/zaptest/image1.gif").getType(), CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        
+        // delete the folder
+        cms.lockResource("/test/zaptest");
+        cms.deleteResource("/test/zaptest", I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        cms.unlockResource("/test/zaptest");
+        
+        // publish
+        cms.publishResource("/test");
         
     }
     
