@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/06/01 08:22:46 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/07/23 16:54:19 $
+* Version: $Revision: 1.27 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2001/06/01 08:22:46 $
+ * @version $Revision: 1.27 $ $Date: 2001/07/23 16:54:19 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -79,16 +79,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
     public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         // First build our own cache directives.
         return new CmsCacheDirectives(false);
-    }
-
-    /**
-     * Insert the method's description here.
-     * Creation date: (07.12.00 16:10:35)
-     * @return java.lang.String
-     */
-
-    private String clearString() {
-        return null;
     }
 
     /**
@@ -246,10 +236,19 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append("\"" + res.getAccessFlags() + "\", ");
             // locked by
             if(res.isLockedBy() == C_UNKNOWN_ID) {
-                content.append("\"" + "" + "\");\n");
+                content.append("\"" + "" + "\", ");
             }else {
-                content.append("\"" + cms.lockedBy(res).getName() + "\");\n");
+                content.append("\"" + cms.lockedBy(res).getName() + "\", ");
             }
+            // locked in project
+            int lockedInProject = res.getLockedInProject();
+            String lockedInProjectName = "";
+            try {
+                lockedInProjectName = cms.readProject(lockedInProject).getName();
+            } catch(CmsException exc) {
+                // ignore the exception - this is an old project so ignore it
+            }
+            content.append("\"" + lockedInProjectName + "\", " + lockedInProject + ");\n");
         }
 
         //  now the tree, only if changed

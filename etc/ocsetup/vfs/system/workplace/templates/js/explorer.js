@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/07/16 18:23:27 $
-  * Version: $Revision: 1.28 $
+  * Date   : $Date: 2001/07/23 16:54:19 $
+  * Version: $Revision: 1.29 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -65,7 +65,7 @@
  /**
   *  one entry in the filelist 
   */
- function file(name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy){
+ function file(name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy, lockedInProjectName, lockedInProjectId){
      this.name = name;
      this.path = path;
      this.title = title;
@@ -80,6 +80,8 @@
      this.group = group;
      this.permission = permission;
      this.lockedBy = lockedBy;
+     this.lockedInProjectName = lockedInProjectName;
+     this.lockedInProjectId = lockedInProjectId;
  }
  
  /**
@@ -906,8 +908,8 @@ function enableNewButton(showit){
  /**
   *  add a file to filelist
   */
- function aF(name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy){
-    vi.liste[vi.liste.length] = new file( name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy);
+ function aF(name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy, lockedInProjectName, lockedInProjectId){
+    vi.liste[vi.liste.length] = new file( name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy, lockedInProjectName, lockedInProjectId);
  }
  
  
@@ -929,7 +931,6 @@ function enableNewButton(showit){
      var lockedBystring;
      var ssclass;
      var temp="<html><head>"+
-             "<script language=JavaScript> <!-- function show_help() {  return '2_1_2_2.html'; } //--> </script>"+
              "<style type='text/css'>"+
              "<!"+"--"+
              "h1 { font-size:48pt; color:#FF0000; font-style:italic; } "+
@@ -1028,12 +1029,12 @@ function enableNewButton(showit){
         var lockIcon;
         
          if(vi.liste[i].lockedBy!=""){
-            if(vr.userName == vi.liste[i].lockedBy){
+            if( (vr.userName == vi.liste[i].lockedBy) && (vi.liste[i].lockedInProjectId == vi.liste[i].project)){
                  lockIcon=vi.iconPath+'ic_lockuser.gif';
             }else{
                 lockIcon=vi.iconPath+'ic_lock.gif';
             }
-             lockedBystring="alt=\""+vr.altlockedby+" "+vi.liste[i].lockedBy+"\"";
+            lockedBystring="alt=\""+vr.altlockedby+" "+vi.liste[i].lockedBy+ vr.altlockedin + vi.liste[i].lockedInProjectName + "\"";
             wo.write("<img src='"+lockIcon+"' "+lockedBystring+" border=0 width=16 height=16></a>");
          }
         wo.write("</td>");

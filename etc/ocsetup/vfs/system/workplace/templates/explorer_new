@@ -7,10 +7,8 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return explorer_content.show_help();
-}
+    // shows the explorer
+    top.display_ex();
 //-->
 </script>
 
@@ -19,14 +17,6 @@ function show_help()
 <title>opencms</title>
 
 </head>
-
-<!-- begin frameset for explorer -->
-<frameset cols="20%,80%" border=5 frameborder=1 framespacing=5>
-	<frame name="explorer_tree" src="explorer_tree.html" marginwidth=8 marginheight=8 leftmargin=8 topmargin=8>
-	<frame name="explorer_content" src="explorer_content.html" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 scrolling=no>
-</frameset>
-<!-- end frameset for explorer -->
-
 </html>
 ]]>
 </TEMPLATE>

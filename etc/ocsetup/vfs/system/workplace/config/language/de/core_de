@@ -318,7 +318,7 @@
                 <publishproject>Projekt veröffentlichen</publishproject>
                 <publishresource>Direkt veröffentlichen</publishresource>
                 <restoreresource>Historisierte Version wiederherstellen</restoreresource>
-				<rename>Umbenennen</rename>
+                <rename>Umbenennen</rename>
                 <deleteproject>Projekt löschen</deleteproject>
                 <syncfolder>Ordner synchronisieren</syncfolder>
                 <syncproperties>Einstellungen für die Synchronisation</syncproperties>
@@ -391,6 +391,7 @@
             <state3>gelöscht</state3>
             <statenip>keine Projektdatei</statenip>
             <lockedby>Zur Bearbeitung gesperrt von </lockedby>
+            <lockedin><![CDATA[ im Projekt ]]></lockedin>
             <context>
                 <access>Zugriff ändern</access>
                 <chgrp>Gruppe ändern</chgrp>
@@ -507,7 +508,7 @@
             <rows>Zeilen</rows>
             <search>Suche</search>
             <settings>Einstellungen</settings>
-			<showlockdialog>Sperr Dialoge anzeigen</showlockdialog>
+            <showlockdialog>Sperr Dialoge anzeigen</showlockdialog>
             <size>Größe</size>
             <spacing>Abstand</spacing>
             <spacinginfo>Bildschirmpunkte zwischen Zellen</spacinginfo>
