@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/07/27 09:09:48 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2001/07/27 13:44:33 $
+* Version: $Revision: 1.31 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2001/07/27 09:09:48 $
+ * @version $Revision: 1.31 $ $Date: 2001/07/27 13:44:33 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -497,9 +497,29 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                                     cms.getRequestContext().getElementCache().getVariantCachesize());
     }
 
+    /**
+     * Get the resources in the folder stored in parameter param
+     * or in the project shown in the projectview
+     *
+     * @param cms The CmsObject
+     * @param param The name of the folder
+     * @param projectView True if the projectview is shown
+     * @return The vector with all ressources
+     */
     private Vector getRessources(CmsObject cms, String param, boolean projectView) throws CmsException {
         if(projectView) {
-            return cms.readFileHeaders(cms.getRequestContext().currentProject().getId());
+            I_CmsSession session = cms.getRequestContext().getSession(true);
+            String filter = new String();
+            filter = (String) session.getValue("filter");
+            String projectId = (String) session.getValue("projectid");
+            int currentProjectId;
+            if(projectId == null || "".equals(projectId)){
+                currentProjectId = cms.getRequestContext().currentProject().getId();
+            } else {
+                currentProjectId = Integer.parseInt(projectId);
+            }
+            session.removeValue("filter");
+            return cms.readProjectView(currentProjectId, filter);
         } else {
             return cms.getResourcesInFolder(param);
         }
