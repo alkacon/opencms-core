@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/11/11 11:46:53 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/11/29 14:44:19 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,6 +58,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.io.UnsupportedEncodingException;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,11 +79,28 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.3.1
  */
 public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
+    
+    /**
+     * Simple comparator implementation for locales, that compares the String value of the locales.<p>
+     */
+    private static class CmsLocaleComparator implements Comparator {
+        
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(Object o1, Object o2) {
+
+            if ((o1 instanceof Locale) && (o2 instanceof Locale)) {
+                return o1.toString().compareTo(o2.toString());
+            }
+            return 0;
+        }
+    }
 
     /** The default encoding for the workplace (UTF-8). */
     // TODO: Encoding feature of the workplace is not active 
@@ -93,6 +111,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
     /** The name of the temp file project. */
     public static final String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
+    
+    /** Static locale comparator. */
+    private static final Comparator m_localeComparator = new CmsLocaleComparator();
 
     /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
@@ -145,8 +166,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** Contains all folders that should be labled if siblings exist. */
     private List m_labelSiteFolders;
 
-    /** Set of installed workplace locales. */
-    private Set m_locales;
+    /** List of installed workplace locales, soreted ascending. */
+    private List m_locales;
 
     /** The configured list of localized workplace folders. */
     private List m_localizedFolders;
@@ -168,7 +189,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : starting");
         }
-        m_locales = new HashSet();
+        m_locales = new ArrayList();
         m_labelSiteFolders = new ArrayList();
         m_localizedFolders = new ArrayList();
         m_autoLockResources = true;
@@ -523,13 +544,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
-     * Returns the set of available workplace locales.<p>
+     * Returns the list of available workplace locales, sorted ascending.<p>
      * 
      * Please note: Be careful not to modify the returned Set as it is not a clone.<p>
      * 
      * @return the set of available workplace locales
      */
-    public Set getLocales() {
+    public List getLocales() {
 
         return m_locales;
     }
@@ -876,9 +897,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @return the workplace locale set
      */
-    private Set initWorkplaceLocales(CmsObject cms) {
+    private List initWorkplaceLocales(CmsObject cms) {
 
-        m_locales = new HashSet();
+        Set locales = new HashSet();
         List localeFolders;
         try {
             localeFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
@@ -895,14 +916,20 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             CmsFolder folder = (CmsFolder)i.next();
             Locale locale = CmsLocaleManager.getLocale(folder.getName());
             // add locale
-            m_locales.add(locale);
+            locales.add(locale);
             // add less specialized locale
-            m_locales.add(new Locale(locale.getLanguage(), locale.getCountry()));
+            locales.add(new Locale(locale.getLanguage(), locale.getCountry()));
             // add even less specialized locale            
-            m_locales.add(new Locale(locale.getLanguage()));
+            locales.add(new Locale(locale.getLanguage()));
         }
-        return m_locales;
+        
+        // sort the result
+        ArrayList result = new ArrayList();
+        result.addAll(locales);
+        Collections.sort(result, m_localeComparator);
+        return result;
     }
+    
 
     /**
      * Initializes the available workplace views.<p>
