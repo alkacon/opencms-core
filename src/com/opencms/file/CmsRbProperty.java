@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/14 19:25:17 $
  */
 public class CmsRbProperty implements I_CmsRbProperty  {
 	
@@ -58,7 +58,6 @@ public class CmsRbProperty implements I_CmsRbProperty  {
 	 */
 	 public Serializable readProperty(String name) 
         throws CmsException {
-        
         return m_accessProperty.readProperty(name);
      }
 

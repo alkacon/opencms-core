@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.40 $ $Date: 2000/02/14 19:01:23 $ 
+ * @version $Revision: 1.41 $ $Date: 2000/02/14 19:25:17 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -1424,8 +1424,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public Hashtable readMimeTypes()
 		throws CmsException {
-		return( c_rb.readMimeTypes(m_context.currentUser(), 
-								   m_context.currentProject()));
+		return c_rb.readMimeTypes(null, null);
 	}
 	
     /**
