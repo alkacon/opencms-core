@@ -167,8 +167,23 @@ if ((n > 0) && (itemNo > -1)) {
 }
 }
 
+function checkVal(item) {
+	var nums = "0123456789*";  
+	var strLength=item.length;
+	if(strLength<1){
+		return false;
+	}
+	for (i=0; i<strLength; i++){
+		if(nums.indexOf(item.charAt(i)) == -1){
+			alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + item.charAt(i));
+			return false;			
+		}
+	}
+	return true;
+}
+
 function addFolder(theList, item1, item2, item3) {  
-	if (item1 != null && item1 != "" && item2 != null && item2 != "" && item3 != null && item3 != "") {
+	if (item1 != null && item1 != "" && item2 != null && checkVal(item2) && item3 != null && checkVal(item3)) {
 		var item = item1+"  Version:"+item2+" - "+item3;
 		newOption = new Option(item, item, false, false); 
 		theList.options[theList.length] = newOption;
