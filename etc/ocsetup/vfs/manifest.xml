@@ -65,7 +65,7 @@
             <lastmodified>1046214000000</lastmodified>
             <properties>
                 <property>
-                    <name>export</name>
+                    <name>exportname</name>
                     <type>0</type>
                     <value><![CDATA[/externallinks/]]></value>
                 </property>
@@ -82,7 +82,7 @@
                 <property>
                     <name>export</name>
                     <type>0</type>
-                    <value><![CDATA[/htmlgalleries/]]></value>
+                    <value><![CDATA[false]]></value>
                 </property>
             </properties>
         </file>
