@@ -9,6 +9,7 @@ Legend:
 - General comment
 
 OpenCms 4.5.5  Gom Jabbar   - XX XXXXX 2001
+! Now a ressource can have a group-id that was already deleted.
 ! Now the stylesheet-tag is used again for displaying stylesheets in the 
   HTML-Editor control.
 ! When creating a new page in the templateselectbox only templates with the 
