@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
  * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/05 16:11:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/11/05 16:46:13 $
+ * Version: $Revision: 1.3 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -39,8 +39,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.2 $
- * $Date: 2001/11/05 16:11:51 $
+ * $Revision: 1.3 $
+ * $Date: 2001/11/05 16:46:13 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -544,6 +544,7 @@ public abstract class CmsMasterContent
      */
     public void undelete(CmsObject cms) throws Exception {
         m_dataSet.m_state = I_CmsConstants.C_STATE_CHANGED;
+        m_dataSet.m_lockedInProject = cms.getRequestContext().currentProject().getId();
         this.setLockstate(cms.getRequestContext().currentUser().getId());
         this.write(cms);
     }
