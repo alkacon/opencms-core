@@ -5,7 +5,7 @@
     <area.name/>
     <navigation.startfolder/>
     <headnav.menus>true</headnav.menus>
-    <headnav.menudepth><![CDATA[3]]></headnav.menudepth>
+    <headnav.menudepth><![CDATA[2]]></headnav.menudepth>
     <headnav.markcurrent>true</headnav.markcurrent>
     <navleft.showselected>false</navleft.showselected>
     <login.uri/>

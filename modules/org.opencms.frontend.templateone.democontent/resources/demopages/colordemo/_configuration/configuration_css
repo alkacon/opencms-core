@@ -1,39 +1,39 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <styles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/stylesheet.xsd">
   <style language="en">
     <main.template.type><![CDATA[normal]]></main.template.type>
-    <main.border><![CDATA[#666666]]></main.border>
+    <main.border>#666666</main.border>
     <main.font.family><![CDATA[Verdana, Helvetica, sans-serif]]></main.font.family>
-    <main.sides.bg><![CDATA[#EEEEEE]]></main.sides.bg>
+    <main.sides.bg>#EEEEEE</main.sides.bg>
     <nav.font.family><![CDATA[Tahoma, Arial, Helvetica, sans-serif]]></nav.font.family>
-    <head.links.border><![CDATA[#666666]]></head.links.border>
-    <head.links.bg><![CDATA[#FFFFFF]]></head.links.bg>
-    <head.img.bg><![CDATA[#DDDDDD]]></head.img.bg>
-    <head.nav.bg><![CDATA[#666677]]></head.nav.bg>
-    <head.nav.font><![CDATA[#FFFFFF]]></head.nav.font>
-    <head.nav.bg.hover><![CDATA[#000000]]></head.nav.bg.hover>
-    <head.nav.font.hover><![CDATA[#FFFFFF]]></head.nav.font.hover>
-    <head.nav.border><![CDATA[#6666AA]]></head.nav.border>
-    <navleft.bg><![CDATA[#BBBBCC]]></navleft.bg>
-    <navleft.font><![CDATA[#333366]]></navleft.font>
-    <navleft.img.bg.uri><![CDATA[/system/galleries/pics/alkacon-templateone/bg_nav_alkacon.jpg]]></navleft.img.bg.uri>
-    <content.bg><![CDATA[#FFFFFF]]></content.bg>
-    <content.border><![CDATA[#CCCCCC]]></content.border>
-    <content.font><![CDATA[#000000]]></content.font>
-    <content.link><![CDATA[#cc0033]]></content.link>
-    <content.link.hover><![CDATA[#cc0033]]></content.link.hover>
-    <content.link.active><![CDATA[#ff3366]]></content.link.active>
-    <content.link.visited><![CDATA[#cc0033]]></content.link.visited>
-    <form.button.border><![CDATA[#000000]]></form.button.border>
-    <form.button.bg><![CDATA[#EEEEEE]]></form.button.bg>
-    <form.button.font><![CDATA[#000000]]></form.button.font>
-    <side.bg><![CDATA[]]></side.bg>
-    <foot.links.border><![CDATA[#666666]]></foot.links.border>
-    <foot.links.bg><![CDATA[#FFFFFF]]></foot.links.bg>
-    <foot.links.font><![CDATA[#000000]]></foot.links.font>
-    <foot.links.font.hover><![CDATA[#666666]]></foot.links.font.hover>
-    <foot.links.font.active><![CDATA[#666666]]></foot.links.font.active>
-    <foot.links.font.visited><![CDATA[#000000]]></foot.links.font.visited>
+    <head.links.border>#666666</head.links.border>
+    <head.links.bg>#FFFFFF</head.links.bg>
+    <head.img.bg>#DDDDDD</head.img.bg>
+    <head.nav.bg>#666677</head.nav.bg>
+    <head.nav.font>#FFFFFF</head.nav.font>
+    <head.nav.bg.hover>#000000</head.nav.bg.hover>
+    <head.nav.font.hover>#FFFFFF</head.nav.font.hover>
+    <head.nav.border>#6666AA</head.nav.border>
+    <navleft.bg>#BBBBCC</navleft.bg>
+    <navleft.font>#333366</navleft.font>
+    <navleft.img.bg.uri>/system/galleries/pics/alkacon-templateone/bg_nav_alkacon.jpg</navleft.img.bg.uri>
+    <content.bg>#FFFFFF</content.bg>
+    <content.border>#CCCCCC</content.border>
+    <content.font>#000000</content.font>
+    <content.link>#cc0033</content.link>
+    <content.link.hover>#cc0033</content.link.hover>
+    <content.link.active>#ff3366</content.link.active>
+    <content.link.visited>#cc0033</content.link.visited>
+    <form.button.border>#000000</form.button.border>
+    <form.button.bg>#EEEEEE</form.button.bg>
+    <form.button.font>#000000</form.button.font>
+    <side.bg>#FFFFFF</side.bg>
+    <foot.links.border>#666666</foot.links.border>
+    <foot.links.bg>#FFFFFF</foot.links.bg>
+    <foot.links.font>#000000</foot.links.font>
+    <foot.links.font.hover>#666666</foot.links.font.hover>
+    <foot.links.font.active>#666666</foot.links.font.active>
+    <foot.links.font.visited>#000000</foot.links.font.visited>
   </style>
 </styles>
