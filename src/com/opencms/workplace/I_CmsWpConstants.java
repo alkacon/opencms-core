@@ -3,10 +3,13 @@ package com.opencms.workplace;
 public interface I_CmsWpConstants {
     /** Name of the template containing button definitions */
     public static final String C_BUTTONTEMPLATE = "ButtonTemplate";
-
+ 
+    /**
+     *  Name of the template containing label definitions
+     */
+    public static final String C_LABELTEMPLATE = "labelTemplate";
     
-    
-    
+        
     // Parameters for buttons
     
     /** Name of the button */
@@ -18,7 +21,10 @@ public interface I_CmsWpConstants {
     /** Alt text of the button */
     public static final String C_BUTTON_ALT = "alt";
 
+    // Parameters for labels
     
+    /** Name of the value */
+    public static final String C_LABEL_VALUE = "value";
     
     
     // Constants for language file control
