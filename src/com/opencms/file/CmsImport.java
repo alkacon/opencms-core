@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2001/08/03 12:02:41 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2001/11/20 11:04:38 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.51 $ $Date: 2001/08/03 12:02:41 $
+ * @version $Revision: 1.52 $ $Date: 2001/11/20 11:04:38 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -610,9 +610,11 @@ private boolean inExcludeList(Vector excludeList, String path) {
             }
 
             // now try to import the groups in the stack
-            if (!m_groupsToCreate.empty()){
-                while (m_groupsToCreate.size() > 0){
-                    Hashtable groupdata = (Hashtable)m_groupsToCreate.pop();
+            while (!m_groupsToCreate.empty()){
+                Stack tempStack = m_groupsToCreate;
+                m_groupsToCreate = new Stack();
+                while (tempStack.size() > 0){
+                    Hashtable groupdata = (Hashtable)tempStack.pop();
                     name = (String)groupdata.get(C_EXPORT_TAG_NAME);
                     description = (String)groupdata.get(C_EXPORT_TAG_DESCRIPTION);
                     flags = (String)groupdata.get(C_EXPORT_TAG_FLAGS);
@@ -698,6 +700,9 @@ private boolean inExcludeList(Vector excludeList, String path) {
      */
     private void importGroup(String name, String description, String flags, String parentgroupName)
         throws CmsException{
+        if(description == null) {
+            description = "";
+        }
         CmsGroup parentGroup = null;
         try{
             if ((parentgroupName != null) && (!"".equals(parentgroupName))) {
@@ -710,7 +715,7 @@ private boolean inExcludeList(Vector excludeList, String path) {
                 // cannot create group, put on stack and try to create later
                 Hashtable groupData = new Hashtable();
                 groupData.put(C_EXPORT_TAG_NAME, name);
-                groupData.put(C_EXPORT_TAG_DESCRIPTION, description);
+                    groupData.put(C_EXPORT_TAG_DESCRIPTION, description);
                 groupData.put(C_EXPORT_TAG_FLAGS, flags);
                 groupData.put(C_EXPORT_TAG_PARENTGROUP, parentgroupName);
                 m_groupsToCreate.push(groupData);
