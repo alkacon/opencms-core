@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/10/06 17:21:27 $
- * Version: $Revision: 1.144 $
+ * Date   : $Date: 2003/10/07 14:12:39 $
+ * Version: $Revision: 1.145 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.144 $ $Date: 2003/10/06 17:21:27 $
+ * @version $Revision: 1.145 $ $Date: 2003/10/07 14:12:39 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2314,7 +2314,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             // create the definition of the property optionally if it is missing
             if (addDefinition) {
                 propdef = createPropertyDefinition(meta, projectId, resourceType); 
-                try {
+                if (projectId >= 0) try {
                     m_driverManager.getBackupDriver().createBackupPropertyDefinition(meta, resourceType);
                 } catch (CmsException ex) {
                     // nothing has to be done here
