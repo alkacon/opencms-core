@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsLinkProcessor.java,v $
- * Date   : $Date: 2003/12/10 17:37:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/12/12 11:27:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/12/10 17:37:15 $
+ * @version $Revision: 1.4 $ $Date: 2003/12/12 11:27:20 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -236,17 +236,14 @@ public class CmsLinkProcessor extends NodeVisitor {
         
         parent = tag.getParent ();
         if (null == parent) {
-            System.err.println("Writing: " + tag.toHtml());
             m_result.append(tag.toHtml());
         } else if (parent instanceof CompositeTag) {
             // write the parent and its children only when the end tag is reached
             if (tag == ((CompositeTag)parent).getEndTag()) {
                 m_result.append(parent.toHtml());
-                System.err.println("Writing: " + parent.toHtml());
             }
         } else {
             m_result.append(parent.toHtml());
-            System.err.println("Writing: " + parent.toHtml());
         }
     }
 
