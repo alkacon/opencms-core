@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/01 10:24:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $ $Date: 2003/08/14 15:37:25 $
+ * @version $Revision: 1.5 $ $Date: 2003/09/01 10:24:01 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -240,7 +240,7 @@ public class CmsDefaultUsers {
             if (match == null) continue;
             boolean valid = true;
             match = match.trim();
-            int pos = match.indexOf('=');
+            int pos = match.indexOf(':');
             if (pos <= 0) {
                 valid = false;
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/01 10:24:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.staticexport.CmsStaticExportManager;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.CmsMain;
+import com.opencms.boot.CmsSetupUtils;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.core.exceptions.CmsResourceInitException;
@@ -89,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -886,7 +887,8 @@ public class OpenCmsCore {
         
         // Collect the configurations        
         try {
-            extendedProperties = new ExtendedProperties(CmsBase.getPropertiesPath(true));
+            // extendedProperties = new ExtendedProperties(CmsBase.getPropertiesPath(true));
+            extendedProperties = CmsSetupUtils.loadProperties(CmsBase.getPropertiesPath(true));
         } catch (Exception e) {
             throwInitException(new CmsInitException(C_ERRORMSG + "Trouble reading property file " + CmsBase.getPropertiesPath(true) + ".\n\n", e));
         }

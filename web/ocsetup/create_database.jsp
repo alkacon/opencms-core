@@ -173,7 +173,7 @@
 											db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
 											//Create Tables
 											out.print("<p>Creating tables ...");
-											db.createTables(Bean.getDatabase());
+											db.createTables(Bean.getDatabase(), Bean.getReplacer());
 											if(db.noErrors())	{										
 												out.println(" <b>Ok</b></p>");
 											}

@@ -13,13 +13,13 @@ import java.util.Vector;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/07/28 15:03:24 $
+ * @version $Revision: 1.7 $ $Date: 2003/09/01 10:24:01 $
  */
 public class CmsSetupDb extends Object {
 
-	public static String C_SETUP_DATA_FOLDER = "WEB-INF/setupdata/";
+    public static String C_SETUP_DATA_FOLDER = "WEB-INF/setupdata/";
     public static String C_SETUP_FOLDER = "setup/";
-	
+
     private Connection m_con = null;
     private Vector m_errors = null;
     private String m_basePath = null;
@@ -28,9 +28,9 @@ public class CmsSetupDb extends Object {
     /**
      * Creates a new CmsSetupDb object.<p>
      * 
-	 * @param basePath the location of the setup scripts
-	 */
-	public CmsSetupDb(String basePath) {
+     * @param basePath the location of the setup scripts
+     */
+    public CmsSetupDb(String basePath) {
         m_errors = new Vector();
         m_basePath = basePath;
     }
@@ -38,12 +38,12 @@ public class CmsSetupDb extends Object {
     /**
      * Creates a new internal connection to the database.<p>
      * 
-	 * @param DbDriver	the name of the driver class
-	 * @param DbConStr	the databse url
-	 * @param DbUser	the database user
-	 * @param DbPwd		the password of the database user
-	 */
-	public void setConnection(String DbDriver, String DbConStr, String DbUser, String DbPwd) {
+     * @param DbDriver the name of the driver class
+     * @param DbConStr the databse url
+     * @param DbUser the database user
+     * @param DbPwd the password of the database user
+     */
+    public void setConnection(String DbDriver, String DbConStr, String DbUser, String DbPwd) {
         try {
             Class.forName(DbDriver);
             m_con = DriverManager.getConnection(DbConStr, DbUser, DbPwd);
@@ -55,21 +55,21 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-	 * Closes the internal connection to the database.<p>
-	 */
-	public void closeConnection() {
+     * Closes the internal connection to the database.<p>
+     */
+    public void closeConnection() {
         try {
             m_con.close();
-        } catch (Exception e) {}
+        } catch (Exception e) { }
     }
 
     /**
      * Calls the drop script for the given database.
      * 
-	 * @param database the name of the database
-	 * @param replacer the replacements to perform in the drop script
-	 */
-	public void dropDatabase(String database, Hashtable replacer) {
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     */
+    public void dropDatabase(String database, Hashtable replacer) {
         String file = getScript(database + ".dropdb");
         if (file != null) {
             m_errorLogging = true;
@@ -82,10 +82,10 @@ public class CmsSetupDb extends Object {
     /**
      * Calls the create database script for the given database.<p>
      * 
-	 * @param database	the name of the database
-	 * @param replacer	the replacements to perform in the drop script
-	 */
-	public void createDatabase(String database, Hashtable replacer) {
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     */
+    public void createDatabase(String database, Hashtable replacer) {
         String file = getScript(database + ".createdb");
         if (file != null) {
             m_errorLogging = true;
@@ -98,13 +98,14 @@ public class CmsSetupDb extends Object {
     /**
      * Calls the create tables script for the given database.<p>
      * 
-	 * @param database the name of the database
-	 */
-	public void createTables(String database) {
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     */
+    public void createTables(String database, Hashtable replacer) {
         String file = getScript(database + ".createtables");
         if (file != null) {
             m_errorLogging = true;
-            parseScript(file, null);
+            parseScript(file, replacer);
         } else {
             m_errors.addElement("No create tables script found: " + database + ".createtables \n");
         }
@@ -113,9 +114,9 @@ public class CmsSetupDb extends Object {
     /**
      * Calls the drop tables script for the given database.<p>
      * 
-	 * @param database the name of the database
-	 */
-	public void dropTables(String database) {
+     * @param database the name of the database
+     */
+    public void dropTables(String database) {
         String file = getScript(database + ".droptables");
         if (file != null) {
             m_errorLogging = true;
@@ -128,10 +129,10 @@ public class CmsSetupDb extends Object {
     /**
      * Internal method to parse and execute a setup script.<p>
      * 
-	 * @param file		the filename of the setup script
-	 * @param replacers	the replacements to perform in the script
-	 */
-	private void parseScript(String file, Hashtable replacers) {
+     * @param file the filename of the setup script
+     * @param replacers the replacements to perform in the script
+     */
+    private void parseScript(String file, Hashtable replacers) {
 
         /* indicates if the setup script contains included files (oracle) */
         boolean includedFile = false;
@@ -187,7 +188,7 @@ public class CmsSetupDb extends Object {
                             //reset
                             includedFile = false;
                         } else {
-							/* normal statement. Execute it */
+                            /* normal statement. Execute it */
                             if (replacers != null) {
                                 ExecuteStatement(replaceValues(statement, replacers));
                             } else {
@@ -211,11 +212,11 @@ public class CmsSetupDb extends Object {
     /**
      * Internal method to perform replacements within a single line of script code.<p>
      * 
-	 * @param source	the line of script code
-	 * @param replacers	the replacements to perform in the line
-	 * @return 			the script line with replaced values
-	 */
-	private String replaceValues(String source, Hashtable replacers) {
+     * @param source the line of script code
+     * @param replacers the replacements to perform in the line
+     * @return the script line with replaced values
+     */
+    private String replaceValues(String source, Hashtable replacers) {
         StringTokenizer tokenizer = new StringTokenizer(source);
         String temp = "";
 
@@ -241,10 +242,10 @@ public class CmsSetupDb extends Object {
     /**
      * Returns the filename of a script from dbsetup.properties.<p> 
      * 
-	 * @param key	the key to identify the script
-	 * @return		the filename of the script
-	 */
-	private String getScript(String key) {
+     * @param key the key to identify the script
+     * @return the filename of the script
+     */
+    private String getScript(String key) {
         /* open properties, get the value */
         try {
             Properties properties = new Properties();
@@ -262,10 +263,10 @@ public class CmsSetupDb extends Object {
     /**
      * Returns an included file as a String.<p>
      * 
-	 * @param statement	the filename from the include statement  
-	 * @return the contents of the file as String
-	 */
-	private String getIncludedFile(String statement) {
+     * @param statement the filename from the include statement  
+     * @return the contents of the file as String
+     */
+    private String getIncludedFile(String statement) {
         String file;
         statement = statement.trim();
 
@@ -290,7 +291,7 @@ public class CmsSetupDb extends Object {
                 if (line == null)
                     break;
                 line = line.trim();
-                if (line.startsWith("--") || line.startsWith("/")) {} else {
+                if  (!(line.startsWith("--") || line.startsWith("/"))) {
                     stat += line + " \n";
                 }
             }
@@ -307,9 +308,9 @@ public class CmsSetupDb extends Object {
     /**
      * Creates and executes a database statment from a String.<p>
      * 
-	 * @param statement the database statement
-	 */
-	private void ExecuteStatement(String statement) {
+     * @param statement the database statement
+     */
+    private void ExecuteStatement(String statement) {
         Statement stat;
         try {
             stat = m_con.createStatement();
@@ -325,34 +326,34 @@ public class CmsSetupDb extends Object {
     /**
      * Returns a Vector of Error messages.<p>
      * 
-	 * @return all error messages collected internally
-	 */
-	public Vector getErrors() {
+     * @return all error messages collected internally
+     */
+    public Vector getErrors() {
         return m_errors;
     }
     
     /**
-	 * Clears the error messages stored internally.<p>
-	 */
-	public void clearErrors() {
+     * Clears the error messages stored internally.<p>
+     */
+    public void clearErrors() {
         m_errors.clear();
     }
 
     /**
      * Checks if internal errors occured.<p>
      * 
-	 * @return true if internal errors occured
-	 */
-	public boolean noErrors() {
+     * @return true if internal errors occured
+     */
+    public boolean noErrors() {
         return m_errors.isEmpty();
     }
 
     /**
-	 * @see java.lang.Object#finalize()
-	 */
-	protected void finalize() {
+     * @see java.lang.Object#finalize()
+     */
+    protected void finalize() {
         try {
             m_con.close();
-        } catch (SQLException e) {}
+        } catch (SQLException e) { }
     }
 }

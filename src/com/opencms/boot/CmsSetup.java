@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/08/29 10:36:15 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/09/01 10:24:01 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -97,11 +97,11 @@ public class CmsSetup {
      */
     public void initProperties(String props) {
         String path = getConfigFolder() + props;
+        FileInputStream fis = null;
         try {
-            FileInputStream fis = new FileInputStream(new File(path));
-            m_ExtProperties = new ExtendedProperties();
-            m_ExtProperties.load(fis);
-            fis.close();
+            // fis = new FileInputStream(new File(path));
+            m_ExtProperties = CmsSetupUtils.loadProperties(path);
+            // fis.close();
             m_DbProperties = new Properties();
             m_DbProperties.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
         } catch (Exception e) {
@@ -924,6 +924,16 @@ public class CmsSetup {
     /** Get the temporary tablespace when creating a new oracle user */
     public String getDbTemporaryTablespace() {
         return this.getDbProperty(m_database + ".temporaryTablespace");
+    }
+
+    /** Set the index tablespace when creating a new oracle user */
+    public void setDbIndexTablespace(String dbIndexTablespace) {
+        this.setDbProperty(m_database + ".indexTablespace", dbIndexTablespace);
+    }
+
+    /** Get the index tablespace when creating a new oracle user */
+    public String getDbIndexTablespace() {
+        return this.getDbProperty(m_database + ".indexTablespace");
     }
 
     public boolean getWizardEnabled() {

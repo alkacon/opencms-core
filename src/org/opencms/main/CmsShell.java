@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2003/08/18 15:49:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/01 10:24:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ package org.opencms.main;
 import org.opencms.db.CmsDriverManager;
 
 import com.opencms.boot.CmsBase;
+import com.opencms.boot.CmsSetupUtils;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -58,7 +59,7 @@ import source.org.apache.java.util.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $ $Date: 2003/08/18 15:49:53 $
+ * @version $Revision: 1.3 $ $Date: 2003/09/01 10:24:01 $
  */
 public class CmsShell {
 
@@ -96,7 +97,7 @@ public class CmsShell {
         try {
             String propsPath = CmsBase.getPropertiesPath(true);
             System.out.println("%%% props: " + propsPath);
-            Configurations conf = new Configurations(new ExtendedProperties(propsPath));
+            Configurations conf = new Configurations(CmsSetupUtils.loadProperties(propsPath));
             m_openCms = new OpenCmsCore(conf);
 
             m_echo = false;

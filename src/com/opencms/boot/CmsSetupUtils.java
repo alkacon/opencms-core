@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2003/08/29 10:36:15 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/09/01 10:24:01 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,20 @@
 
 package com.opencms.boot;
 
+import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.util.Encoder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.text.DateFormat;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -63,6 +68,57 @@ public class CmsSetupUtils {
         m_configFolder = basePath + "WEB-INF/config/";
     }
 
+    public void setConfigPath (String configPath) {
+    
+        m_configFolder = configPath;    
+    }
+    
+    public String getConfigPath() {
+        
+        return m_configFolder;
+    }
+
+    public static ExtendedProperties loadProperties(String path) throws IOException {
+    
+        FileInputStream input = null;
+        ExtendedProperties properties = null;
+        
+        try {
+            input = new FileInputStream(new File(path));
+            properties = new ExtendedProperties();
+            properties.load(input);
+            input.close();
+        } catch (IOException e) {
+            try { input.close(); } catch (Exception ex) { };
+            throw e;
+        }
+        
+        for (Iterator i = properties.keySet().iterator(); i.hasNext(); ) {
+            String key = (String)i.next();
+            Object obj = properties.get(key);
+            String value[] = {};
+            
+            if (obj instanceof Vector) 
+                value = (String[])((Vector)obj).toArray(value);
+            else {
+                String v[] = { (String)obj };
+                value = v;
+            } 
+
+            for (int j = 0; j < value.length; j++) {
+                // value = CmsStringSubstitution.substitute(value, "\\,", ",");
+                value[j] = CmsStringSubstitution.substitute(value[j], "\\=", "="); 
+            }
+            
+            if (value.length > 1)
+                properties.put(key, new Vector(Arrays.asList(value)));
+            else
+                properties.put(key, value[0]);        
+        }
+        
+        return properties;    
+    }   
+     
     /**
      *  Saves properties to specified file.
      *  @param extProp Properties to be saved
@@ -147,7 +203,15 @@ public class CmsSetupUtils {
      * @param target target file to save the properties to
      */
     private void save(ExtendedProperties extProp, String source, String target) {
+
+//int ww = 0;
+//while (ww == 0) {
+//    ww = 0;
+//}
+
         try {
+            HashSet alreadyWritten = new HashSet();
+            
             LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configFolder + source)));
 
             FileWriter fw = new FileWriter(new File(m_configFolder + target));
@@ -158,32 +222,69 @@ public class CmsSetupUtils {
                     break;
                 line = line.trim();
 
-                if (line.startsWith("#")) {
+                if ("".equals(line)) {
+                    // output empty line
+                    fw.write("\n");
+                } else if (line.startsWith("#")) {
                     // output comment
                     fw.write(line);
                     fw.write("\n");
-                } else if (line.indexOf('=') > -1) {
-                    String key = line.substring(0, line.indexOf('=')).trim();
-                    // write key
-                    fw.write((key + "="));
-                    try {
-                        // Get the value to the given key from the properties 
-                        String value = extProp.get(key).toString();
-                        // if this was a list (array), we need to delete leading and tailing '[]' characters
-                        if (value.startsWith("[") && value.endsWith("]") && value.indexOf(',') > -1) {
-                            value = splitMultipleValues(value.substring(1, value.length() - 1));
+                } else {
+                    
+                    int index  = line.indexOf('=');
+                    int index1 = line.indexOf("\\=");
+                    if (line.indexOf('=') > -1 && index1 != index - 1) {
+                
+                        String key = line.substring(0, line.indexOf('=')).trim();
+                        if (alreadyWritten.contains(key))
+                            continue;
+                        
+                        // write key
+                        fw.write((key + "="));
+                        try {
+                            Object obj = extProp.get(key);
+                            String value = "";
+                            
+                            if (obj != null && obj instanceof Vector) {
+                                String values[] = {}; 
+                                values = (String[])((Vector)obj).toArray(values);
+                                StringBuffer buf = new StringBuffer();
+                                
+                                for (int i=0; i < values.length; i++) {
+                                    
+                                    // escape commas and equals in value
+                                    values[i] = CmsStringSubstitution.substitute(values[i], ",", "\\,");
+                                    values[i] = CmsStringSubstitution.substitute(values[i], "=", "\\=");
+                                                                        
+                                    buf.append("\t" + values[i] + ((i < values.length-1) ? ",\\\n" : ""));     
+                                }
+                                value = buf.toString();   
+                                
+                                // write it
+                                fw.write("\\\n" + value);
+                                
+                            } else if (obj != null){
+                                
+                                value = ((String)obj).trim();
+                                
+                                // escape commas and equals in value
+                                value = CmsStringSubstitution.substitute(value, ",", "\\,");
+                                value = CmsStringSubstitution.substitute(value, "=", "\\=");
+
+                                // write it
+                                fw.write(value);                    
+                            }
+
+                        } catch (NullPointerException e) {
+                            // no value found - do nothing 
                         }
-                        // write it
-                        fw.write(value);
-                    } catch (NullPointerException e) {
-                        // no value found - do nothing 
+                        // add trailing line feed
+                        fw.write("\n");
+                        
+                        // remember that this properties is already written (multi values)
+                        alreadyWritten.add(key);
                     }
-                    // add trailing line feed
-                    fw.write("\n");
-                } else if ("".equals(line)) {
-                    // output empty line
-                    fw.write("\n");
-                }
+                } 
             }
 
             lnr.close();
@@ -309,7 +410,7 @@ public class CmsSetupUtils {
         while (st.hasMoreTokens()) {
             tempValue += st.nextToken().trim();
             if (counter < max) {
-                tempValue += ", \\ \n";
+                tempValue += ", \\ \n\t";
             }
             counter++;
         }
