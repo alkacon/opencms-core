@@ -17,8 +17,16 @@ function simpleEscape(text) {
 }
 
 
+
+ns = (document.layers)? true:false;
+ie = (document.all)? true:false;
+
+
+
 function checkforchars(whichform){
-allesklar=true;
+
+	allesklar=true;
+
 	for(i=0;i<whichform.value.length;i++){
 	    if(whichform.value.charAt(i)=="%"){
 	    	allesklar=false;
@@ -33,40 +41,51 @@ allesklar=true;
 	    	alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
 	    	}
 	}
-	
+
 	return allesklar;
 }
 
 
 function checkIt(wasdenn){
-	
-	allesok=true;
-	
-	if(wasdenn==1){
-		allesok=checkforchars(document.LINK.NEUNAME);
 
-		if(document.LINK.NEUNAME.value=="" || document.LINK.LINKNAME.value=="")
+	if(wasdenn==1){
+	
+	    if(ie) formu=formu=document.LINK;
+		else formu=document.NEWLINK.document.LINK;
+
+		allesok=checkforchars(formu.NEUNAME);
+
+		if(formu.NEUNAME.value=="" || formu.LINKNAME.value=="")
 		{
 			alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
 			allesok=false;
-		} 
-		if(allesok)location='explorer_files_new_page.html?step=1&newfile='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&template='+simpleEscape(document.LINK.TEMPLATE.value)+'&navtitle='+simpleEscape(document.LINK.LINKNAME.value)+'&navpos='+ document.LINK.LINKPOS.value;
+		}
+		if(allesok)location='explorer_files_new_page.html?step=1&newfile='+
+			formu.NEUNAME.value+
+			'&title='+formu.NEUTITEL.value+
+			'&template='+simpleEscape(formu.TEMPLATE.value)+
+			'&navtitle='+simpleEscape(formu.LINKNAME.value)+
+			'&navpos='+ formu.LINKPOS.value;
 	}
-	
-	
-	
+
 	if(wasdenn==2){
-	
-		allesok=checkforchars(document.NEU.NEUNAME);
-	
-		if(document.NEU.NEUNAME.value=="" )
+     
+		if(ie) formu=document.NEU;
+		else formu=document.NEWWITHOUTLINK.document.NEU;
+
+		allesok=checkforchars(formu.NEUNAME);
+
+		if(formu.NEUNAME.value=="")
 		{
-				alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
-				allesok=false;
-		} 
-		if(allesok)location='explorer_files_new_page.html?step=1&newfile='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&template='+simpleEscape(document.NEU.TEMPLATE.value);
+			alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
+			allesok=false;
+		}
+		if(allesok)location='explorer_files_new_page.html?step=1&newfile='+formu.NEUNAME.value+'&title='+formu.NEUTITEL.value+'&template='+simpleEscape(formu.TEMPLATE.value);
 	}
 }
+
+allesok=true;
+
 
 
 

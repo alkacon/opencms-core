@@ -35,17 +35,28 @@ allesklar=true;
 }
 
 
+ns = (document.layers)? true:false;
+ie = (document.all)? true:false;
 
 function checkIt(whichone){
+	
+	if(whichone==2){
+		if(ie) formu=document.NEU;
+		else formu=document.NEWWITHOUTLINK.document.NEU;
 
-	if(whichone==2)if(checkforchars(document.NEU.NEUNAME)==true)location='explorer_files_new_folder.html?step=1&newfolder='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value;
-	if(whichone==1){
-		if(document.LINK.LINKNAME.value!=""){
-			if(checkforchars(document.LINK.NEUNAME)==true )location='explorer_files_new_folder.html?step=1&newfolder='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&navtitle='+document.LINK.LINKNAME.value+'&navpos='+document.LINK.LINKPOS.value;
-		}else alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
-
+		if(checkforchars(formu.NEUNAME)==true)location='explorer_files_new_folder.html?step=1&newfolder='+formu.NEUNAME.value+'&title='+formu.NEUTITEL.value;
 	}
+	if(whichone==1){
 
+		if(ie) formu=document.LINK;
+		else formu=document.NEWLINK.document.LINK;
+
+		if(formu.LINKNAME.value!=""){
+			if(checkforchars(formu.NEUNAME)==true )location='explorer_files_new_folder.html?step=1&newfolder='+formu.NEUNAME.value+'&title='+formu.NEUTITEL.value+'&navtitle='+formu.LINKNAME.value+'&navpos='+formu.LINKPOS.value;
+		}else{
+		 alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
+		}
+	}
 }
 
 
