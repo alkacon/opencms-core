@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.20 $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/29 08:31:34 $
+ * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/29 08:31:34 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2003/09/19 14:42:53 $
+ * @version $Revision: 1.21 $ $Date: 2003/09/29 08:31:34 $
  */
 public class CmsSynchronize {
 
@@ -484,7 +484,7 @@ public class CmsSynchronize {
             
             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
         } catch (Exception e) {
-            throw new CmsException(e.toString());
+            throw new CmsSynchronizeException(e.toString());
         }
     }
 
