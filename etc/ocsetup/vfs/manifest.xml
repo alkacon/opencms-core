@@ -10405,6 +10405,21 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/templates/extended_backoffice</source>
+            <destination>system/workplace/templates/extended_backoffice</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[Backoffice]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
             <source>system/workplace/templates/folder_tree</source>
             <destination>system/workplace/templates/folder_tree</destination>
             <type>plain</type>
