@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/02/28 14:24:31 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2001/04/06 16:15:19 $
+* Version: $Revision: 1.33 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2001/02/28 14:24:31 $
+ * @version $Revision: 1.33 $ $Date: 2001/04/06 16:15:19 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -386,6 +386,25 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public String getProcessedDataValue(String tag, Object callingObject, Object userObj) throws CmsException {
         return super.getProcessedDataValue(tag, callingObject, userObj);
+    }
+
+    /**
+     * Gets the text and CDATA content of a processed datablock from the
+     * datablock hashtable. An eventually given output stream is user for streaming
+     * the generated result directly to the response output stream while processing.
+     * <P>
+     * The userObj Object is passed to all called user methods.
+     * By using this, the initiating class can pass customized data to its methods.
+     *
+     * @param tag Key for the datablocks hashtable.
+     * @param callingObject Object that should be used to look up user methods.
+     * @param userObj any object that should be passed to user methods
+     * @param stream OutputStream that may be used for directly streaming the results or null.
+     * @return Processed datablock for the given key.
+     * @exception CmsException
+     */
+    public String getProcessedDataValue(String tag, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
+        return super.getProcessedDataValue(tag, callingObject, userObj, stream);
     }
 
     /**
