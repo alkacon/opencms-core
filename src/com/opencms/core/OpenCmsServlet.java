@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/03/08 14:54:54 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/03/23 17:03:49 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.26 $ $Date: 2000/03/08 14:54:54 $  
+* @version $Revision: 1.27 $ $Date: 2000/03/23 17:03:49 $  
 * 
 */
 
@@ -126,7 +126,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         // Collect the configurations
     	try {	
             m_configurations = new Configurations (new ExtendedProperties(config.getInitParameter("properties")));
-    	} catch (IOException e) {
+    	} catch (Exception e) {
     		throw new ServletException(e.getMessage() + ".  Properties file is: " + config.getInitParameter("properties"));
     	}
         

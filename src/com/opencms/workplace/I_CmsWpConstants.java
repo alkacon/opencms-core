@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/23 15:14:03 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2000/03/23 17:03:49 $
+ * Version: $Revision: 1.70 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.69 $ $Date: 2000/03/23 15:14:03 $
+ * @version $Revision: 1.70 $ $Date: 2000/03/23 17:03:49 $
  */
 public interface I_CmsWpConstants {
 
@@ -439,6 +439,9 @@ public interface I_CmsWpConstants {
 	
     /**  Method of the projectlist field  */
     public static final String C_PROJECTLIST_NAME = "name";    
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_NAME_ESCAPED = "name_escaped";    
 	
     /**  Method of the projectlist field  */
     public static final String C_PROJECTLIST_DESCRIPTION = "description";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/23 17:03:49 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * replaxed with <code>%hex</code> where hex is a two digit hex number.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/23 17:03:49 $
  */
 public class Encoder { 
 	
@@ -67,7 +67,9 @@ public class Encoder {
 	  StringTokenizer t=new StringTokenizer(enc,"+");
       while (t.hasMoreTokens()) {
             ret.append(t.nextToken());
-            ret.append("%20");
+			if(t.hasMoreTokens()) {
+				ret.append("%20");
+			}
       }
 	  return ret.toString();
   }

@@ -30,7 +30,7 @@ var help="]]><METHOD name="helpUrl"/><![CDATA[";
 <body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed  bgproperties=fixed>
 
 <table cellspacing=0 cellpadding=0 border=0>
-<form action="" method=post id=form1 name=form1>
+<form action="tasks_head.html" method=post id=form1 name=form1>
 	<tr valign=center>
 		<td class=menu valign=middle><a href="#"><img src="]]><METHOD name="picsUrl">bt_back_in.gif</METHOD><![CDATA[" alt="" border=0 width=32 heigth=32></a></td>
 		<td class=menubold><p class=einzug>]]><label value="task.label.filter"/><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
