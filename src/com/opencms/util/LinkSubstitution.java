@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2001/11/15 15:56:45 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/11/19 14:32:11 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,6 +50,9 @@ public class LinkSubstitution {
         c_perlUtil = new Perl5Util();
     }
 
+    public String substituteEditorContent(String content){
+        return content;
+    }
     /**
      * Replaces the link according to the rules and registers it to the
      * requestcontex if we are in export modus.
