@@ -1,5 +1,5 @@
 CREATE OR REPLACE
-FUNCTION getNextId(pTableId NUMBER) RETURN NUMBER IS
+FUNCTION getNextId(pTableId VARCHAR2) RETURN NUMBER IS
   vNextId NUMBER;
 BEGIN
   select id into vNextId from cms_systemid where table_key = pTableId for update;
