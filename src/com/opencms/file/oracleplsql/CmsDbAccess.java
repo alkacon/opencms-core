@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/06/22 16:00:59 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2001/06/27 07:25:08 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.31 $ $Date: 2001/06/22 16:00:59 $ *
+ * @version $Revision: 1.32 $ $Date: 2001/06/27 07:25:08 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -235,7 +235,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			statement.registerOutParameter(1, Types.INTEGER);
 			statement.setInt(2, currentUser.getId());
 			statement.setInt(3, currentProject.getId());
-			statement.setInt(4, resource.getResourceId());
+			statement.setString(4, resource.getAbsolutePath());
 			statement.execute();
 			if (statement.getInt(1) == 1) {
 				return true;
