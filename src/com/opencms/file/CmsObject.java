@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/10/22 12:40:33 $
-* Version: $Revision: 1.244 $
+* Date   : $Date: 2002/10/22 15:23:58 $
+* Version: $Revision: 1.245 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.244 $ $Date: 2002/10/22 12:40:33 $
+ * @version $Revision: 1.245 $ $Date: 2002/10/22 15:23:58 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2432,8 +2432,8 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
         updateOnlineProjectLinks(null, null, newRes, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
         newRes = null;
         changedResources = allChanged.getChangedResources();
-        changedModuleMasters = allChanged.getChangedModuleMasters();
-        getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
+        changedModuleMasters = allChanged.getChangedModuleMasters();        
+        if (getOnlineElementCache() != null) getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
         clearcache();
         // do static export if the static-export is enabled in opencms.properties
         if (this.getStaticExportProperties().isStaticExportEnabled()){
@@ -2483,7 +2483,7 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
             success = false;
         }
         if(!success){
-            getOnlineElementCache().clearCache();
+            if (getOnlineElementCache() != null) getOnlineElementCache().clearCache();
         }
         // set current project to online project if the published project was temporary
         // and the published project is still the current project
