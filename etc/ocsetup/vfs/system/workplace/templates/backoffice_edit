@@ -12,10 +12,11 @@
 </template>
 
 <!-- Media backoffice template remove it if not used -->
+<media_alt_text/>
 
 <media_preview>
 <![CDATA[
-    window.open(']]><method name="getServletPath"/><![CDATA[system/modules/de.framfab.opencms.modules.Article/administration/Article/showMedia.html','Fenster1','width=310,height=400,left=0,top=0');
+    window.open(']]><method name="getServletPath"/><![CDATA[system/workplace/templates/showMediaFrame','media','');
 ]]>
 </media_preview>
 
@@ -36,6 +37,37 @@
 <![CDATA[
 <SCRIPT language="JavaScript">
     ]]><PROCESS>preview</PROCESS><![CDATA[
+    
+    function setMediaAction(para) {
+        window.top.body.admin_content.Editor.backofficepage.value=window.top.body.admin_head.backofficepage.value;
+        switch(para) {
+        case 1: {
+                document.Editor.media_action.value = "delPicture";
+                document.Editor.submit();
+                break;
+                }
+        case 2: {   
+                document.Editor.media_action.value = "editPicture";
+                document.Editor.submit();
+                break;
+                }
+        case 3: {
+                document.Editor.media_action.value = "prevPicture";
+                document.Editor.submit();
+                break;
+                }
+        case 4: {
+                document.Editor.media_action.value = "addPicture";
+                document.Editor.submit();
+                break;
+                }
+        case 5: {
+                document.Editor.media_action.value = "clear";
+                document.Editor.submit();
+                break;
+                }
+          }
+    }
 </script>
 
 <center>
