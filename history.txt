@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.8  Gom Jabbar   - XX September 2001
+OpenCms 4.5.8  Gom Jabbar   - 13 September 2001
 ! The filelist was very slow for folder with many entrys. Now if there are more than 
   50 entrys the list is divided in pages of 50 entrys. In the explorer head there is
   a new select box to switch the pages.
