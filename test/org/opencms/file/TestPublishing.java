@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2004/07/01 14:44:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/01 15:11:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.test.OpenCmsTestCase;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -68,6 +68,7 @@ public class TestPublishing extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         
         suite.addTest(new TestPublishing("testPublishNewFiles"));
+        suite.addTest(new TestPublishing("testPublishChangedFiles"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -102,17 +103,16 @@ public class TestPublishing extends OpenCmsTestCase {
         CmsProject onlineProject  = cms.readProject("Online");
         CmsProject offlineProject  = cms.readProject("Offline");
         
-        // make three copies of a file to be published later
+        // make four copies of a file to be published later
         cms.copyResource(source, destination1, I_CmsConstants.C_COPY_AS_NEW);
         cms.copyResource(source, destination2, I_CmsConstants.C_COPY_AS_SIBLING);
         cms.copyResource(source, destination3, I_CmsConstants.C_COPY_AS_SIBLING);
         cms.copyResource(source, destination4, I_CmsConstants.C_COPY_AS_SIBLING);
         
         // unlock all new resources
+        // do not neet do unlock destination3 as it is a sibling of destination2     
         cms.unlockResource(destination1);
-        cms.unlockResource(destination2);
-        // do not neet do unlock destination3 as it is a sibling of destination2
-        
+        cms.unlockResource(destination2);    
         
         // publish a new resource
         //
@@ -128,8 +128,7 @@ public class TestPublishing extends OpenCmsTestCase {
         
         // check if the file in the offline project is unchancged now
         cms.getRequestContext().setCurrentProject(offlineProject);
-        assertState(cms, destination1, I_CmsConstants.C_STATE_UNCHANGED);
-        
+        assertState(cms, destination1, I_CmsConstants.C_STATE_UNCHANGED);     
         
         // publish a sibling without publishing other siblings
         //
@@ -186,4 +185,68 @@ public class TestPublishing extends OpenCmsTestCase {
         assertState(cms, destination3, I_CmsConstants.C_STATE_UNCHANGED);
         assertState(cms, destination4, I_CmsConstants.C_STATE_UNCHANGED);
     }  
+    
+    /**
+     * Test publishing changed files.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishChangedFiles() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing publish changed files");
+        
+        String resource1 = "/folder2/image1_new.gif";
+        String resource2 = "/folder2/image1_sibling1.gif";
+        String resource3 = "/folder2/image1_sibling2.gif";
+        String resource4 = "/folder2/image1_sibling3.gif";
+        
+        CmsProject onlineProject  = cms.readProject("Online");
+        CmsProject offlineProject  = cms.readProject("Offline");
+        
+        // make changes to the resources 
+        // do not need to make any changed to resource3 and resource4 as they are
+        // siblings
+        long timestamp = System.currentTimeMillis();
+
+        cms.lockResource(resource1);
+        cms.lockResource(resource2);
+         
+        cms.touch(resource1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, true);
+        cms.touch(resource2, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, true);
+       
+        // unlock all resources
+        cms.unlockResource(resource1);
+        cms.unlockResource(resource2);
+       
+        // publish a modified resource without siblings
+        //
+        cms.publishResource(resource1);
+
+        // the online file must the offline changes
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertDateLastModified(cms, resource1, timestamp);
+        
+        // check if the file in the offline project is unchancged now
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, resource1, I_CmsConstants.C_STATE_UNCHANGED);
+
+        // publish a modified resource with siblings and keep the siblings non-publish
+        //
+        cms.publishResource(resource2);
+        // the online file must the offline changes
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertDateLastModified(cms, resource2, timestamp);
+        assertDateLastModified(cms, resource3, timestamp);
+        assertDateLastModified(cms, resource4, timestamp);
+       
+        // check if the file in the offline project is unchancged now
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, resource2, I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, resource3, I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, resource4, I_CmsConstants.C_STATE_UNCHANGED);
+        
+    }  
+    
+    
 }
