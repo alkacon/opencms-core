@@ -8,6 +8,13 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.2 Bela Tegeuse - 29 March 2001
+
+! Zip-files can now be extracted when uploading a file.
+* Bugfix in zip-Import
+! new option for displaying contexmenues: a '3' in the first place of the 
+  rulestring means the entry is displayed only in the Onlineproject
+
 OpenCms 4.3.1 Bela Tegeuse - 26 March 2001
 
 - New version-number for development release.
