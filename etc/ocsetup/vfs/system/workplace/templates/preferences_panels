@@ -102,7 +102,7 @@ Other Preference input forms will be added here
 	<tr>
 		<td class=formular width=30%>]]><LABEL value="input.startupproject" /><![CDATA[:</td>
 		<td class=dialogtxt>
-			]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.form1.submit()"/><![CDATA[
+			]]><SELECT class="textfeld" name="project" width="150" method="getProjects" /><![CDATA[
 		</td>
 	</tr>
 	<tr>
