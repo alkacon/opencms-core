@@ -482,7 +482,7 @@
 			<datecreated>Date created</datecreated>
 			<description>Description</description>
 			<downloadlist>Download Browser</downloadlist>
-			<editedat> Edited at</editedat>
+			<editedat>Last edited at</editedat>
 			<editedby>Edited by</editedby>
 			<errormessage>Errormessage</errormessage>
 			<externallink>External Link</externallink>
@@ -491,6 +491,7 @@
 			<group>Group</group>
 			<groupsprojectmanager>Manager Group</groupsprojectmanager>
 			<groupsprojectworker>User Group</groupsprojectworker>
+			<historyheader>Project: Published at, Edited by (Last edited at)</historyheader>
 		 	<imagelist>Imagelist</imagelist>
 			<inactive>inactive</inactive>
 			<link>Link</link>
