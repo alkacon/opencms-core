@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessUserGroup.java,v $
- * Date   : $Date: 2000/04/06 12:39:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/05/18 15:19:10 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/04/06 12:39:03 $
+ * @version $Revision: 1.17 $ $Date: 2000/05/18 15:19:10 $
  */
  class CmsAccessUserGroup implements I_CmsAccessUserGroup, I_CmsConstants {
 
@@ -127,17 +127,22 @@ import com.opencms.core.*;
 	 */
 	public A_CmsUser readUser(int id)
         throws CmsException {
-         A_CmsUser user=null;
-         A_CmsGroup defaultGroup=null;
-         user=m_accessUser.readUser(id);
-         if (user!= null){
-             user=m_accessUserInfo.readUserInformation(user); 
-             defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
-             user.setDefaultGroup(defaultGroup);
-         } else {
-             throw new CmsException("["+this.getClass().getName()+"]"+id,CmsException.C_NOT_FOUND);
-         }
-         return user;
+		try {
+		
+			A_CmsUser user=null;
+			A_CmsGroup defaultGroup=null;
+			user=m_accessUser.readUser(id);
+			if (user!= null){
+			    user=m_accessUserInfo.readUserInformation(user); 
+			    defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
+			    user.setDefaultGroup(defaultGroup);
+			} else {
+			    throw new CmsException("["+this.getClass().getName()+"]"+id,CmsException.C_NOT_FOUND);
+			}
+			return user;
+		} catch(CmsException exc) {
+			return new CmsUser(C_UNKNOWN_ID, id + "", "deleted user");
+		}
     }
 	
 	/**
@@ -186,9 +191,13 @@ import com.opencms.core.*;
 	 */
 	public A_CmsGroup readGroup(int groupId)
 		throws CmsException {
+		try {
           A_CmsGroup group= null;
           group=m_accessGroup.readGroup(groupId);
          return group;
+		} catch(CmsException exc) {
+			return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, groupId + "", "deleted group", 0);
+		}
     }
 
 	/**
