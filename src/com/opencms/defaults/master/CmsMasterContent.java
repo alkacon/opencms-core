@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.40 $
- * $Date: 2003/07/31 13:19:37 $
+ * $Revision: 1.41 $
+ * $Date: 2003/07/31 17:02:45 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -891,7 +891,7 @@ public abstract class CmsMasterContent
         Vector allChannels = new Vector();
         Vector subChannels = new Vector();
         try {
-            subChannels = cms.getResourcesInFolder(I_CmsConstants.C_COS_DEFAULT + channel);
+            subChannels = cms.getResourcesInFolder(I_CmsConstants.VFS_FOLDER_COS + channel);
         } catch (CmsException e) {
             // the channel is not present, so return empty Vector.
             return allChannels;
@@ -930,7 +930,7 @@ public abstract class CmsMasterContent
             throws CmsException {
         Vector allChannels = new Vector();
         String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();
-        Vector subChannels = cms.getResourcesInFolder(I_CmsConstants.C_COS_DEFAULT + rootChannel);
+        Vector subChannels = cms.getResourcesInFolder(I_CmsConstants.VFS_FOLDER_COS + rootChannel);
         int offset = rootChannel.length()-1;
         for (int i=0; i < subChannels.size(); i++) {
             CmsResource resource = (CmsResource)subChannels.get(i);

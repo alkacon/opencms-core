@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.12 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.13 $ $Date: 2003/07/31 17:02:45 $
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -126,14 +126,14 @@ public class CmsCoreSession {
      */
     public String getCurrentSite(String sessionId) {
         Hashtable userinfo = null;
-        String currentSite = I_CmsConstants.C_VFS_DEFAULT;
+        String currentSite = I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
         userinfo = getUser(sessionId);
 
         // this user does exist, so get his current site
         if(userinfo != null) {
             currentSite = (String)userinfo.get(I_CmsConstants.C_SESSION_CURRENTSITE);
             if(currentSite == null) {
-                currentSite = I_CmsConstants.C_VFS_DEFAULT;
+                currentSite = I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
             }
         }
         return currentSite;

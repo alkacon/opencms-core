@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -171,7 +171,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                         templateSelector = "errornoname";
                     }
                 }else {
-                    tryToCreateFolder(cms, "/system/", "modules");
+                    tryToCreateFolder(cms, C_VFS_PATH_SYSTEM, "modules");
                     // create the module (first test if we are in a project including /system/
                     try {
                         cms.createResource(C_VFS_PATH_MODULES, packagename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);

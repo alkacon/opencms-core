@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,22 +68,22 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
 
     public String getCreateUrl(CmsObject cms, String tagcontent,
                              A_CmsXmlContent doc, Object userObject) throws Exception{
-        return "system/workplace/administration/channels/EditBackoffice.html";
+        return C_VFS_PATH_WORKPLACE.substring(1) + "administration/channels/EditBackoffice.html";
     }
 
     public String getBackofficeUrl(CmsObject cms, String tagcontent,
                                  A_CmsXmlContent doc, Object userObject) throws Exception {
-        return "system/workplace/administration/channels/Backoffice.html";
+        return C_VFS_PATH_WORKPLACE.substring(1) + "administration/channels/Backoffice.html";
     }
 
     public String getEditUrl(CmsObject cms, String tagcontent,
                            A_CmsXmlContent doc, Object userObject) throws Exception {
-        return "system/workplace/administration/channels/EditBackoffice.html";
+        return C_VFS_PATH_WORKPLACE.substring(1) + "administration/channels/EditBackoffice.html";
     }
 
     public String getPublishUrl(CmsObject cms, String tagcontent,
                                  A_CmsXmlContent doc, Object userObject) throws Exception {
-        return "system/workplace/administration/channels/Backoffice.html";
+        return C_VFS_PATH_WORKPLACE.substring(1) + "administration/channels/Backoffice.html";
     }
 
     // removed for testing

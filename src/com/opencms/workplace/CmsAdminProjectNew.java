@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.77 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.78 $ $Date: 2003/07/31 17:02:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -219,7 +219,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         }else{
             // this is from the administration view
             xmlTemplateDocument.setData("pathCorrection","../../");
-            xmlTemplateDocument.setData("backButton","../../../action/administration_content_top.html?sender=/system/workplace/administration/project/");
+            xmlTemplateDocument.setData("backButton","../../../action/administration_content_top.html?sender=" + C_VFS_PATH_WORKPLACE + "administration/project/");
             xmlTemplateDocument.setData("myUrl","index.html");
             xmlTemplateDocument.setData("dontDoIt", "");
             xmlTemplateDocument.setData("doThis","");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2003/07/30 11:56:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/31 17:02:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,17 +43,17 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
 public final class CmsWorkplaceAction { 
     
     /** Path to the JSP workplace */    
-    public static final String C_PATH_JSP_WORKPLACE = "/system/workplace/jsp/";
+    public static final String C_PATH_JSP_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/";
     
     /** Path to the XML workplace */    
-    public static final String C_PATH_XML_WORKPLACE = "/system/workplace/action/";
+    public static final String C_PATH_XML_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/";
    
     /** Path to the JSP workplace frame loader file */    
     public static final String C_JSP_WORKPLACE_URI = C_PATH_JSP_WORKPLACE + "top_fs.html";

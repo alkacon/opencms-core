@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.112 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.113 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.112 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.113 $ $Date: 2003/07/31 17:02:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -767,7 +767,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         for(int i = 0;i < numEditors;i++) {
             if(editor.equals(C_SELECTBOX_EDITORVIEWS[i])) {
                 parameters.put("editor._CLASS_", C_SELECTBOX_EDITORVIEWS_CLASSES[i]);
-                parameters.put("editor._TEMPLATE_", "/system/workplace/templates/" + C_SELECTBOX_EDITORVIEWS_TEMPLATES[i]);
+                parameters.put("editor._TEMPLATE_", C_VFS_PATH_DEFAULT_INTERNAL + C_SELECTBOX_EDITORVIEWS_TEMPLATES[i]);
             }
         }
         session.putValue("te_file", file);

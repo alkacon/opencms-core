@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.85 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.86 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.85 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.86 $ $Date: 2003/07/31 17:02:45 $
  *
  */
 public class CmsRequestContext {
@@ -106,7 +106,7 @@ public class CmsRequestContext {
     private Vector m_language = new Vector();
 
     /** The name of the root, e.g. /site_a/vfs */
-    private String m_siteRoot = I_CmsConstants.C_VFS_DEFAULT;
+    private String m_siteRoot = I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
 
     /** Current encoding */
     private String m_encoding = null;
@@ -508,12 +508,12 @@ public class CmsRequestContext {
      */   
     public String removeSiteRoot(String resourcename) {
         String siteRoot = getAdjustedFullSiteRoot(resourcename);
-        if (resourcename.startsWith(siteRoot)) {
+        if ((siteRoot.length() > 0) && resourcename.startsWith(siteRoot)) {
             resourcename = resourcename.substring(siteRoot.length());
         }
         return resourcename;
     }
-
+    
     /**
      * Returns the adjusted site root for a resoure that has the full path 
      * set, e.g. /default/vfs/system/.<p>
@@ -522,23 +522,22 @@ public class CmsRequestContext {
      * @return the adjusted site root for a resoure
      */      
     public String getAdjustedFullSiteRoot(String resourcename) {
-        if (resourcename.startsWith(I_CmsConstants.C_VFS_DEFAULT + "/system/")) {
-            return I_CmsConstants.C_VFS_DEFAULT;
+        if (resourcename.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/")) {
+            return I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
         } else {
             return m_siteRoot;
         }
     }
-    
+
     /**
-     * Returns the adjusted site root for a resoure that has not the full path
-     * set, e.g. /system/.<p>
+     * Returns the adjusted site root for a resoure.<p>
      * 
      * @param resourcename the resource name to get the adjusted site root for
      * @return the adjusted site root for a resoure
      */
     public String getAdjustedSiteRoot(String resourcename) {
-        if (resourcename.startsWith("/system/")) {
-            return I_CmsConstants.C_VFS_DEFAULT;
+        if (resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
+            return I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
         } else {
             return m_siteRoot;
         }  

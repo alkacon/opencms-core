@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.10 $ $Date: 2003/07/31 17:02:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -209,7 +209,7 @@ public class CmsProjecthistory extends A_CmsWpElement {
      */
 
     public CmsXmlWpTemplateFile getProjectlistDefinitions(CmsObject cms) throws CmsException {
-        String templatePath = "/system/workplace/administration/project/historyprojects/";
+        String templatePath = C_VFS_PATH_WORKPLACE + "administration/project/historyprojects/";
         m_projectlistdef = new CmsXmlWpTemplateFile(cms, templatePath+"projectlist");
         return m_projectlistdef;
     }

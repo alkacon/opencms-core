@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.CmsObject;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.38 $ $Date: 2003/07/31 17:02:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -141,13 +141,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * Reference to the box defintion file
      */
     protected static CmsXmlWpTemplateFile m_prefsscrollerdef = null;
-
-
-    /**
-     * Path to all worplace definition files.
-     */
-    protected static final String C_WORKPLACE_ELEMENT_PATH = "/system/workplace/templates/";
-
+    
 
     /** Reference to the config file */
     private static CmsXmlWpConfigFile m_configFile = null;
@@ -161,7 +155,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getBackbuttonDefinitions(CmsObject cms) throws CmsException {
 
-        m_backbuttondef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH
+        m_backbuttondef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL
                 + C_ADMIN_BACK_BUTTON);
 
         return m_backbuttondef;
@@ -176,7 +170,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpBoxDefFile getBoxDefinitions(CmsObject cms) throws CmsException {
 
-        m_boxdef = new CmsXmlWpBoxDefFile(cms, C_WORKPLACE_ELEMENT_PATH + C_BOXTEMPLATE);
+        m_boxdef = new CmsXmlWpBoxDefFile(cms, C_VFS_PATH_DEFAULT_INTERNAL + C_BOXTEMPLATE);
         return m_boxdef;
     }
 
@@ -189,7 +183,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpButtonsDefFile getButtonDefinitions(CmsObject cms) throws CmsException {
 
-        m_buttondef = new CmsXmlWpButtonsDefFile(cms, C_WORKPLACE_ELEMENT_PATH
+        m_buttondef = new CmsXmlWpButtonsDefFile(cms, C_VFS_PATH_DEFAULT_INTERNAL
                 + C_BUTTONTEMPLATE);
 
         return m_buttondef;
@@ -229,7 +223,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getContextmenueDefinitions(CmsObject cms) throws CmsException {
 
-        m_contextdef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH + C_CONTEXTMENUE_TEMPLATEFILE);
+        m_contextdef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL + C_CONTEXTMENUE_TEMPLATEFILE);
         return m_contextdef;
     }
 
@@ -242,7 +236,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getErrorDefinitions(CmsObject cms) throws CmsException {
 
-        m_errordef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH + C_ERRORTEMPLATE);
+        m_errordef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL + C_ERRORTEMPLATE);
         return m_errordef;
     }
 
@@ -255,7 +249,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getIconDefinitions(CmsObject cms) throws CmsException {
 
-        m_icondef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH + C_ICON_TEMPLATEFILE);
+        m_icondef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL + C_ICON_TEMPLATEFILE);
         return m_icondef;
     }
 
@@ -268,7 +262,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpInputDefFile getInputDefinitions(CmsObject cms) throws CmsException {
 
-        m_inputdef = new CmsXmlWpInputDefFile(cms, C_WORKPLACE_ELEMENT_PATH + C_INPUTTEMPLATE);
+        m_inputdef = new CmsXmlWpInputDefFile(cms, C_VFS_PATH_DEFAULT_INTERNAL + C_INPUTTEMPLATE);
         return m_inputdef;
     }
 
@@ -281,7 +275,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpLabelDefFile getLabelDefinitions(CmsObject cms) throws CmsException {
 
-        m_labeldef = new CmsXmlWpLabelDefFile(cms, C_WORKPLACE_ELEMENT_PATH + C_LABELTEMPLATE);
+        m_labeldef = new CmsXmlWpLabelDefFile(cms, C_VFS_PATH_DEFAULT_INTERNAL + C_LABELTEMPLATE);
         return m_labeldef;
     }
 
@@ -294,7 +288,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getModulelistDefinitions(CmsObject cms) throws CmsException {
 
-        m_modulelistdef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH
+        m_modulelistdef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL
                 + C_MODULELIST_TEMPLATEFILE);
         return m_modulelistdef;
     }
@@ -308,7 +302,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getPanelDefinitions(CmsObject cms) throws CmsException {
 
-        m_paneldef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH + C_PANELTEMPLATE);
+        m_paneldef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL + C_PANELTEMPLATE);
         return m_paneldef;
     }
 
@@ -321,7 +315,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getPrefsScrollerDefinitions(CmsObject cms) throws CmsException {
 
-        m_prefsscrollerdef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH
+        m_prefsscrollerdef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL
                 + C_PREFSSCROLLER_TEMPLATEFILE);
         return m_prefsscrollerdef;
     }
@@ -335,7 +329,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getProjectlistDefinitions(CmsObject cms) throws CmsException {
 
-        m_projectlistdef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH
+        m_projectlistdef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL
                 + C_PROJECTLIST_TEMPLATEFILE);
         return m_projectlistdef;
     }
@@ -349,7 +343,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getRadioDefinitions(CmsObject cms) throws CmsException {
 
-        m_radiodef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH + C_RADIOTEMPLATE);
+        m_radiodef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL + C_RADIOTEMPLATE);
         return m_radiodef;
     }
 
@@ -362,7 +356,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getTaskDocuDefinitions(CmsObject cms) throws CmsException {
 
-        m_taskdocudef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH
+        m_taskdocudef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL
                 + C_TASKDOCU_TEMPLATEFILE);
         return m_taskdocudef;
     }
@@ -376,7 +370,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 
     public CmsXmlWpTemplateFile getTaskListDefinitions(CmsObject cms) throws CmsException {
 
-        m_tasklistdef = new CmsXmlWpTemplateFile(cms, C_WORKPLACE_ELEMENT_PATH
+        m_tasklistdef = new CmsXmlWpTemplateFile(cms, C_VFS_PATH_DEFAULT_INTERNAL
                 + C_TASKLIST_TEMPLATEFILE);
         return m_tasklistdef;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2003/07/31 13:19:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/31 17:02:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsFileListUsers {
      
@@ -244,8 +244,8 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
         String folder = (String)parameters.get("folder");
 
         if(folder != null) {
-            String servletUrl = cms.getRequestContext().getRequest().getServletUrl() + "/";
-            return "window.top.body.admin_content.location.href='" + servletUrl + "system/workplace/action/explorer_files.html?mode=listonly&folder=" + folder + "'";
+            String servletUrl = cms.getRequestContext().getRequest().getServletUrl();
+            return "window.top.body.admin_content.location.href='" + servletUrl + C_VFS_PATH_WORKPLACE + "action/explorer_files.html?mode=listonly&folder=" + folder + "'";
         } else {
             return "";
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class CmsExplorerResources extends CmsWorkplaceDefault {
 
-    private final static String C_RESTYPES_FOLDER = "/system/workplace/restypes/";
+    private final static String C_RESTYPES_FOLDER = C_VFS_PATH_WORKPLACE + "restypes/";
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ import java.util.Hashtable;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
+import com.opencms.workplace.I_CmsWpConstants;
+
 import org.opencms.security.I_CmsPrincipal;
 
 
@@ -40,7 +42,7 @@ import org.opencms.security.I_CmsPrincipal;
  * Describes the Cms user object and the methods to access it.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.41 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.42 $ $Date: 2003/07/31 17:02:45 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -253,7 +255,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
             Hashtable startSettings = new Hashtable();
             startSettings.put(I_CmsConstants.C_START_LANGUAGE, A_OpenCms.getUserDefaultLanguage());
             startSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID));
-            startSettings.put(I_CmsConstants.C_START_VIEW, "/system/workplace/action/explorer.html");
+            startSettings.put(I_CmsConstants.C_START_VIEW, I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/explorer.html");
             startSettings.put(I_CmsConstants.C_START_DEFAULTGROUP, this.getDefaultGroup().getName());
             startSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");
             startSettings.put(I_CmsConstants.C_START_ACCESSFLAGS, new Integer(A_OpenCms.getUserDefaultAccessFlags()));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,12 +52,10 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.39 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Name:  $ $Revision: 1.40 $ $Date: 2003/07/31 17:02:45 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault {
-
-    private static String C_ADMIN_PATH = "system/workplace/action/administration_content_top.html";
 
     /**
      * Returns the complete Icon.
@@ -80,7 +78,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
         boolean hasAccessVisible = (new Boolean(accessVisible)).booleanValue();
         String iconPicPath = (String)resourcesUri(cms, "", null, null);
         // change the iconPicPath if the point is from a module
-        if(sender.startsWith("/system/modules")) {
+        if(sender.startsWith(C_VFS_PATH_SYSTEM + "modules")) {
             if (picName.startsWith("/")) {
                 iconPicPath = cms.getRequestContext().getRequest().getServletUrl() + sender.substring(0, sender.indexOf("/administration/"));
             }
@@ -179,8 +177,8 @@ public class CmsAdministration extends CmsWorkplaceDefault {
                         + className + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
             }
         }
-        templateDocument.setData("linkTo", cms.getRequestContext().getRequest().getServletUrl() + "/" + C_ADMIN_PATH
-                + "?" + "sender=" + sender);
+        templateDocument.setData("linkTo", cms.getRequestContext().getRequest().getServletUrl() + C_VFS_PATH_WORKPLACE 
+                + "action/administration_content_top.html?sender=" + sender);
         StringBuffer iconLabelBuffer = new StringBuffer(lang.getLanguageValue(languageKey));
 
         // Insert a html-break, if needed

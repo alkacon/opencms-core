@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.127 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.128 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.127 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.128 $ $Date: 2003/07/31 17:02:45 $
  */
 public class CmsImport implements Serializable {
 
@@ -108,9 +108,6 @@ public class CmsImport implements Serializable {
 
     /** The path to the bodies in OpenCms 4.x */
     private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
-
-    /** The path to the bodies in OpenCms 5.x */
-    private static final String C_VFS_PATH_BODIES = "system/bodies/";
 
     /** Web application names for conversion support */
     private List m_webAppNames = new ArrayList();
@@ -599,7 +596,7 @@ public class CmsImport implements Serializable {
                 } else if ("folder".equals(type)) {
                     // check if the imported resource is a folder. Folders created in the /system/bodies/ folder
                     // must be remove since we do not use body files anymore.
-                    if (destination.startsWith(C_VFS_PATH_BODIES)) {
+                    if (destination.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(1))) {
                         m_folderStorage.add(destination);
 
                     }
@@ -922,7 +919,7 @@ public class CmsImport implements Serializable {
                 flags = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
 
                 //TODO: will this work with multiple sites?
-                String translatedName = I_CmsConstants.C_VFS_DEFAULT + m_importPath + destination;
+                String translatedName = I_CmsConstants.VFS_FOLDER_DEFAULT_SITE + m_importPath + destination;
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
                     translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                 }
@@ -930,7 +927,7 @@ public class CmsImport implements Serializable {
                 translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
                 // check if this resource is immutable
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
-                translatedName = translatedName.substring(I_CmsConstants.C_VFS_DEFAULT.length());
+                translatedName = translatedName.substring(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE.length());
                 // if the resource is not immutable and not on the exclude list, import it
                 if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
                     // print out the information to the report
@@ -1073,7 +1070,7 @@ public class CmsImport implements Serializable {
                     type = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
                 }
 
-                String translatedName = I_CmsConstants.C_VFS_DEFAULT + m_importPath + destination;
+                String translatedName = I_CmsConstants.VFS_FOLDER_DEFAULT_SITE + m_importPath + destination;
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
                     translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                 }
@@ -1083,7 +1080,7 @@ public class CmsImport implements Serializable {
 
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
 
-                translatedName = translatedName.substring(I_CmsConstants.C_VFS_DEFAULT.length());
+                translatedName = translatedName.substring(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE.length());
                 if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
 
                     // print out the information to the report
@@ -1140,7 +1137,7 @@ public class CmsImport implements Serializable {
                 CmsResource newpage = null;
                 
                 try {
-                    newpage = m_cms.readFileHeader("/system/workplace/restypes/" + CmsResourceTypeNewPage.C_RESOURCE_TYPE_NAME);
+                    newpage = m_cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + CmsResourceTypeNewPage.C_RESOURCE_TYPE_NAME);
                 } catch (CmsException e1) {
                     // do nothing, 
                 }

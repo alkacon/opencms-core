@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/22 17:13:33 $
-* Version: $Revision: 1.250 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.251 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.250 $ $Date: 2003/07/22 17:13:33 $
+ * @version $Revision: 1.251 $ $Date: 2003/07/31 17:02:45 $
  */
 public interface I_CmsConstants {
 
@@ -1322,22 +1322,19 @@ public interface I_CmsConstants {
     String C_ERRPREFIX = "err";
 
     /**
-     * The name of the default site
+     * The vfs path of the default site
      */
-    String C_DEFAULT_SITE = "default";
-
+    String VFS_FOLDER_DEFAULT_SITE = "/default/vfs";
+    
     /**
-     * The root name of the VFS
-     */
-    String C_ROOTNAME_VFS = "vfs";
-
+     * The vfs path of the cos channel folders
+     */    
+    String VFS_FOLDER_COS = "/default/cos";
+    
     /**
-     * The root name of the COS
+     * The vfs path of the system folder
      */
-    String C_ROOTNAME_COS = "cos";
-
-    String C_VFS_DEFAULT = "/" + C_DEFAULT_SITE + "/" + C_ROOTNAME_VFS;
-    String C_COS_DEFAULT = "/" + C_DEFAULT_SITE + "/" + C_ROOTNAME_COS;
+    String VFS_FOLDER_SYSTEM = "/default/vfs/system";
 
     /**
      * The name of the entry for the id generator to create new channelid's

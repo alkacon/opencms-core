@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Vector;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.53 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.54 $ $Date: 2003/07/31 17:02:45 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -115,7 +115,7 @@ public class CmsXmlWpConfigFile {
      * @throws CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
     public String getWorkplaceActionPath() throws CmsException {
-        return "/system/workplace/action/";
+        return I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/";
     }
 
     /**
@@ -124,7 +124,7 @@ public class CmsXmlWpConfigFile {
      * @throws CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
     public String getWorkplaceAdministrationPath() throws CmsException {
-        return "/system/workplace/administration/";
+        return I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "administration/";
     }
     
     /** Flag to indicate what setting the value of "UseWpPicturesFromVFS" in the registry.xml is */    

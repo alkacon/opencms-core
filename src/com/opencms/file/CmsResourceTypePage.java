@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/30 17:02:24 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2003/07/31 17:02:45 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.92 $
+ * @version $Revision: 1.93 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -232,9 +232,9 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         String bodyPath = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"))) + (resourcename);
         String body = hXml.getElementTemplate("body");
         body = hXml.validateBodyPath(cms, body, file);
-        String bodyXml = cms.getRequestContext().getDirectoryTranslator().translateResource(I_CmsConstants.C_VFS_DEFAULT + body);
+        String bodyXml = cms.getRequestContext().getDirectoryTranslator().translateResource(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE + body);
 
-        if ((I_CmsConstants.C_VFS_DEFAULT + bodyPath).equals(bodyXml)) {
+        if ((I_CmsConstants.VFS_FOLDER_DEFAULT_SITE + bodyPath).equals(bodyXml)) {
 
             // Evaluate some path information
             String destinationFolder = destination.substring(0, destination.lastIndexOf("/") + 1);
@@ -570,9 +570,9 @@ public class CmsResourceTypePage implements I_CmsResourceType {
             // Return translated path name for body
             body = hXml.getElementTemplate("body");
             body = hXml.validateBodyPath(cms, body, file);
-            body = cms.getRequestContext().getDirectoryTranslator().translateResource(I_CmsConstants.C_VFS_DEFAULT + body);
-            if (body.startsWith(I_CmsConstants.C_VFS_DEFAULT))
-                body = body.substring(I_CmsConstants.C_VFS_DEFAULT.length());
+            body = cms.getRequestContext().getDirectoryTranslator().translateResource(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE + body);
+            if (body.startsWith(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE))
+                body = body.substring(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE.length());
         } catch (CmsException exc) {
             // could not read body
         }

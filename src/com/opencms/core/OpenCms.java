@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/07/31 13:19:37 $
- * Version: $Revision: 1.150 $
+ * Date   : $Date: 2003/07/31 17:02:45 $
+ * Version: $Revision: 1.151 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.150 $
+ * @version $Revision: 1.151 $
  */
 public final class OpenCms extends A_OpenCms {
 
@@ -593,7 +593,7 @@ public final class OpenCms extends A_OpenCms {
         //create a valid cms-object
         CmsObject cms = new CmsObject();
         try {
-            initUser(cms, null, null, I_CmsConstants.C_USER_ADMIN, I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.C_VFS_DEFAULT, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            initUser(cms, null, null, I_CmsConstants.C_USER_ADMIN, I_CmsConstants.C_GROUP_ADMIN, I_CmsConstants.VFS_FOLDER_DEFAULT_SITE, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             new CmsStaticExport(cms, null, false, null, null, null, null);
         } catch (Exception e) {
             if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
@@ -930,7 +930,7 @@ public final class OpenCms extends A_OpenCms {
         // create a valid cms-object
         CmsObject cms = new CmsObject();
         try {
-            initUser(cms, null, null, entry.getUserName(), entry.getGroupName(), I_CmsConstants.C_VFS_DEFAULT, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            initUser(cms, null, null, entry.getUserName(), entry.getGroupName(), I_CmsConstants.VFS_FOLDER_DEFAULT_SITE, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             // create a new ScheduleJob and start it
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();

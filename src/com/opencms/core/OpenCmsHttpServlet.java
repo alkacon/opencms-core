@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
- * Date   : $Date: 2003/07/31 13:19:37 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2003/07/31 17:02:45 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.util.Utils;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.Date;
@@ -81,7 +82,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  */
 public class OpenCmsHttpServlet extends HttpServlet {
     
@@ -484,7 +485,7 @@ public class OpenCmsHttpServlet extends HttpServlet {
              
         // check if basic or form based authentication should be used      
         m_useBasicAuthentication = m_configurations.getBoolean("auth.basic", true);        
-        m_authenticationFormURI = m_configurations.getString("auth.form_uri" , "/system/workplace/action/authenticate.html");
+        m_authenticationFormURI = m_configurations.getString("auth.form_uri" , I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/authenticate.html");
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.99 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.100 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.security.I_CmsPrincipal;
 import com.opencms.file.*;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.CmsShellReport;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,7 +57,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.99 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.100 $ $Date: 2003/07/31 17:02:45 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -82,7 +83,7 @@ class CmsShellCommands {
     public CmsShellCommands(OpenCms openCms, CmsObject cms) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
-        m_openCms.initUser(m_cms, null, null, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, I_CmsConstants.C_VFS_DEFAULT, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+        m_openCms.initUser(m_cms, null, null, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, I_CmsConstants.VFS_FOLDER_DEFAULT_SITE, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
 
         // print the version-string
         version();
@@ -883,7 +884,7 @@ class CmsShellCommands {
             exportPaths[i] = (String)paths.elementAt(i);
         }
         boolean excludeSystem = true;
-        if(pathList.startsWith("/system/") || (pathList.indexOf(";/system/") > -1)) {
+        if(pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM) || (pathList.indexOf(";" + I_CmsWpConstants.C_VFS_PATH_SYSTEM) > -1)) {
             excludeSystem = false;
         }
         try {
@@ -915,7 +916,7 @@ class CmsShellCommands {
             exportPaths[i] = (String)paths.elementAt(i);
         }
         boolean excludeSystem = true;
-        if(pathList.startsWith("/system/") || (pathList.indexOf(";/system/") > -1)) {
+        if(pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM) || (pathList.indexOf(";" + I_CmsWpConstants.C_VFS_PATH_SYSTEM) > -1)) {
             excludeSystem = false;
         }
         try {
@@ -948,7 +949,7 @@ class CmsShellCommands {
             exportPaths[i] = (String)paths.elementAt(i);
         }
         boolean excludeSystem = true;
-        if(pathList.startsWith("/system/") || (pathList.indexOf(";/system/") > -1)) {
+        if(pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM) || (pathList.indexOf(";" + I_CmsWpConstants.C_VFS_PATH_SYSTEM) > -1)) {
             excludeSystem = false;
         }
         try {

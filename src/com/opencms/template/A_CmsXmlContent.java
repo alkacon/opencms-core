@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.83 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.84 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.83 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.84 $ $Date: 2003/07/31 17:02:45 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
@@ -99,9 +99,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
     /** The classname of the super XML content class */
     public static final String C_MINIMUM_CLASSNAME = "com.opencms.template.A_CmsXmlContent";
-
-    /** Constant pathname, where to find templates */
-    public static final String C_TEMPLATEPATH = "/system/workplace/templates/";
 
     /** Constant extension of the template-files. */
     public static final String C_TEMPLATE_EXTENSION = "";

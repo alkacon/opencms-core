@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/07/30 16:25:43 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.18 $ $Date: 2003/07/30 16:25:43 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/31 17:02:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -111,7 +111,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
         // Check if we must redirect to head_1
         if(foldername.equals(C_VFS_GALLERY_EXTERNALLINKS) && templateFile.endsWith("administration_head_extlinkgalleries2")) {
             // we are in the wrong head - use the first one
-            xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/externallinksgallery/administration_head_extlinkgalleries1", elementName, parameters, templateSelector);
+            xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/externallinksgallery/administration_head_extlinkgalleries1", elementName, parameters, templateSelector);
         }
         
         // Check if we must redirect to head_2
@@ -119,7 +119,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
             String parent = CmsResource.getParent(cms.readAbsolutePath(thefolder));
             if(foldername.startsWith(C_VFS_GALLERY_EXTERNALLINKS) && (parent.equals(C_VFS_GALLERY_EXTERNALLINKS)) && templateFile.endsWith("administration_head_extlinkgalleries1")) {
                 // we are in the wrong head - use the second one
-                xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/htmlgallery/administration_head_extlinkgalleries2", elementName, parameters, templateSelector);
+                xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_extlinkgalleries2", elementName, parameters, templateSelector);
             }
         }
         catch(Exception e) {}         

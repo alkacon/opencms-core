@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.353 $
+* Date   : $Date: 2003/07/31 17:02:45 $
+* Version: $Revision: 1.354 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.353 $
+ * @version $Revision: 1.354 $
  */
 public class CmsObject {
 
@@ -3954,14 +3954,14 @@ public class CmsObject {
      * Sets the name of the current site root of the content objects system
      */
     public void setContextToCos() {
-        getRequestContext().setSiteRoot(I_CmsConstants.C_COS_DEFAULT);
+        getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
     }
 
     /**
      * Sets the name of the current site root of the virtual file system.
      */
     public void setContextToVfs() {
-        getRequestContext().setSiteRoot(I_CmsConstants.C_VFS_DEFAULT);
+        getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE);
     }
 
     /**
