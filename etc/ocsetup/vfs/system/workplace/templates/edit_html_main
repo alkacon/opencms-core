@@ -63,7 +63,7 @@
 				<td align="left" width="20"><img src="]]><METHOD name="resourcesUri">bu_tb_start.gif</METHOD><![CDATA[" width="10" height="28"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="10" height="28"></td>
 				<td align="left" width="100%"><table width="100%" border="0" cellspacing="0" cellpadding="0">
 					<tr height="20"> 
-						<td>]]><SELECT class="textfeld" name="BLOCK" width="100" method="getFontStyles" onchange="return ParagraphStyle_onchange()"/><![CDATA[</td>
+						<td><select class=textfeld name="BLOCK" id="BLOCK" width=100 style="width:100px" onchange="return ParagraphStyle_onchange()" size="1"><option selected value="Normal">Normal</select></td>
 						<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>
 						<script language="JavaScript">					
 						if (USE_FONTFACE) {
@@ -74,7 +74,7 @@
 							document.write('<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>');
 						}
 						if (USE_FONTSIZE) {
-							document.write('<td>]]><SELECT class="textfeld" name="FONTSIZE" width="40" method="getFontSizes" onchange="doEditHTML(23);"/><![CDATA[</td>');
+							document.write('<td><select class=textfeld name="FONTSIZE" id="FONTSIZE" width=40 style="width:40px" onchange="doEditHTML(23);" size="1"><option selected value="1">1<option value="2">2<option value="3">3<option value="4">4<option value="5">5<option value="6">6<option value="7">7</select></td>');
 							document.write('<td width="5" align="left"><img src="]]><METHOD name="resourcesUri">empty.gif</METHOD><![CDATA[" width="5" height="1"></td>');
 						} else {
 							document.write('<td><INPUT TYPE=HIDDEN name="FONTSIZE"></td>');

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/02/04 12:12:07 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/02/16 02:23:17 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2003/02/04 12:12:07 $
+ * @version $Revision: 1.46 $ $Date: 2003/02/16 02:23:17 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -154,7 +154,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Bytearre containgine the processed data of the template.
      * @throws Throws CmsException if something goes wrong.
      */
-
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
 
@@ -188,7 +187,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 
         // check if the submit or ok button is selected. If so, update all values
         if(C_PARA_SUBMIT.equals(button) || C_PARA_OK.equals(button)) {
-
             // get the data values form the active panel and store them in the session.
             // this is nescessary to save this data in the next step.
             if(panel != null) {
@@ -216,7 +214,10 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                         if (lang != null) {
                             session.putValue(C_START_LANGUAGE, lang);
                         }
-                    }
+                        // ensure encoding from language file is set in session
+                        CmsXmlLanguageFile langFile = new CmsXmlLanguageFile(cms, lang);
+                        reqCont.setEncoding(langFile.getEncoding(), true);                        
+                    }                    
                 }
             }
             // update the actual user data with those values taken from the preferences
@@ -237,7 +238,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             // now update the start settings
             Hashtable startSettings = (Hashtable)session.getValue(C_PARA_STARTSETTINGS);
             if(startSettings != null) {
-                cms.getRequestContext().currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS, startSettings);
+                reqCont.currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS, startSettings);
                 String defaultGroup = (String)startSettings.get(C_START_DEFAULTGROUP);
                 reqCont.currentUser().setDefaultGroup(cms.readGroup(defaultGroup));
             }
@@ -300,16 +301,13 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                     }
                 }
 
-                // the previous panel was the user panel, save all the data form there
-                if(oldPanel.equals("user")) {
-
-
-                /*
-                String userSettings=getUserSettings(parameters);
-                if (userSettings != null) {
-                    session.putValue("USERSETTINGS",userSettings);
-                }*/
-                }
+//                // the previous panel was the user panel, save all the data form there
+//                if(oldPanel.equals("user")) {
+//                    String userSettings=getUserSettings(parameters);
+//                    if (userSettings != null) {
+//                        session.putValue("USERSETTINGS",userSettings);
+//                    }
+//                }
 
                 // the previous panel was the start panel, save all the data form there
                 if(oldPanel.equals("start")) {
@@ -363,7 +361,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current group in the vectors.
      * @throws CmsException
      */
-
     public Integer getDefaultGroup(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
@@ -412,7 +409,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param parameters Hashtable containing all request parameters
      * @return Explorer filelist flags.
      */
-
     private int getExplorerSettings(Hashtable parameters) {
         int explorerSettings = C_FILELIST_NAME;
         if(parameters.get("CBTITLE") != null) {
@@ -460,7 +456,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current filter view in the vectors.
      * @throws CmsException
      */
-
     public Integer getFilters(CmsObject cms, CmsXmlLanguageFile lang, Vector values,
             Vector names, Hashtable parameters) throws CmsException {
 
@@ -571,7 +566,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current group in the vectors.
      * @throws CmsException
      */
-
     public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
             Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
@@ -616,7 +610,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current group in the vectors.
      * @throws CmsException
      */
-
     public Integer getLanguageFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         // get all folders with language files
@@ -668,7 +661,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current project in the vectors.
      * @throws CmsException
      */
-
     public Integer getProjects(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
 
@@ -717,7 +709,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param parameters Hashtable containing all request parameters
      * @return Hashtable containing the start settings.
      */
-
     private Hashtable getStartSettings(CmsObject cms, Hashtable parameters) throws CmsException {
         Hashtable startSettings = new Hashtable();
         startSettings.put(C_START_LANGUAGE, (String)parameters.get("LANGUAGE"));
@@ -790,7 +781,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param parameters Hashtable containing all request parameters
      * @return Explorer filelist flags.
      */
-
     private Hashtable getTaskSettings(Hashtable parameters, I_CmsSession session) {
         Hashtable taskSettings = new Hashtable();
         if(parameters.get("CBALL") != null) {
@@ -842,7 +832,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return Index representing the user's current workplace view in the vectors.
      * @throws CmsException
      */
-
     public Integer getViews(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
 
@@ -911,7 +900,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
@@ -925,7 +913,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param reqCont The request context.
      * @param xmlTemplateDocument The template in which all data is added.
      */
-
     private void setExplorerSettings(I_CmsSession session, Hashtable parameters,
              CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
 
@@ -1012,19 +999,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
     }
 
     /**
-     * Calculates the settings for the user filelist from the data submitted in
-     * the preference explorer panel.
-     * @param parameters Hashtable containing all request parameters
-     * @return Sring containinb the new user group name.
-     */
-
-    /*  private String getUserSettings(Hashtable parameters) {
-    String group;
-    group=(String)parameters.get("group");
-    return group;
-    }*/
-
-    /**
      * User method to get the actual panel of the PReferences dialog.
      * <P>
      * @param cms CmsObject Object for accessing system resources.
@@ -1034,7 +1008,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @return String with the pics URL.
      * @throws CmsException
      */
-
     public Object setPanel(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String panel = (String)session.getValue(C_PARA_OLDPANEL);
@@ -1050,7 +1023,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param reqCont The request context.
      * @param xmlTemplateDocument The template in which all data is added.
      */
-
     private void setStartSettings(CmsObject cms, I_CmsSession session, Hashtable parameters,
             CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
 
@@ -1172,7 +1144,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param reqCont The request context.
      * @param xmlTemplateDocument The template in which all data is added.
      */
-
     private void setTaskSettings(I_CmsSession session, Hashtable parameters,
             CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
 
@@ -1238,7 +1209,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      * @param reqCont The request context.
      * @param xmlTemplateDocument The template in which all data is added.
      */
-
     private void setUserSettings(I_CmsSession session, Hashtable parameters,
             CmsRequestContext reqCont, CmsXmlWpTemplateFile xmlTemplateDocument) {
 

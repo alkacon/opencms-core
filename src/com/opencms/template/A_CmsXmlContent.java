@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2003/02/16 02:23:17 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.69 $ $Date: 2003/02/15 11:14:53 $
+ * @version $Revision: 1.70 $ $Date: 2003/02/16 02:23:17 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -1779,15 +1779,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param data String to be put in the datablock.
      */
     protected void setData(String tag, String data) {
-
         // create new XML Element to store the data
-        //Element newElement = m_content.createElement("DATA");
         String attribute = tag;
         int dotIndex = tag.lastIndexOf(".");
         if(dotIndex != -1) {
             attribute = attribute.substring(dotIndex + 1);
         }
-        //newElement.setAttribute("name", attribute);
         Element newElement = m_content.createElement(attribute);
         if(data == null || "".equals(data)) {
             // empty string or null are given.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/15 11:14:57 $
- * Version: $Revision: 1.454 $
+ * Date   : $Date: 2003/02/16 02:23:17 $
+ * Version: $Revision: 1.455 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@ OpenCms 5.0 (next version)
 * Fixed issue #55 from Bugzilla (compatibility.support.oldlocales not working if no new modules installed)
 * Fixed issue where an absolute link to the local machine with an URI outside of OpenCms
   was incorrectly treated as an OpenCms internal link by the link replacement engine
+- Workplace now adopts to the systems default encoding if possible instead of using only the encoding
+  set in the localization file
 - Removed unused private methods and member variables in all classes
 - JSP are now stored with real path names in the jsp/ subdirectory  
 - When exporting a module the modules "uploadeddate" and "uploadedby" registry information is discarded

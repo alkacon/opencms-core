@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/02/03 14:16:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/02/16 02:23:17 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
@@ -49,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -174,8 +173,17 @@ public class CmsLoginNew extends CmsXmlTemplate {
             if(preferences == null) {
                 preferences = getDefaultPreferences();
             }
+            // check of the users language setting (if he has one)
+            session.removeValue(C_START_LANGUAGE);
+            String language = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+            
+            if (DEBUG > 1) System.err.println("CmsLoginNew: language: " + language);
+            preferences.put(C_START_LANGUAGE, language);
             session.putValue(C_ADDITIONAL_INFO_PREFERENCES, preferences);    
-            session.putValue(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, langFile.getEncoding());        
+
+            langFile = new CmsXmlLanguageFile(cms, language);
+            if (DEBUG > 1) System.err.println("CmsLoginNew: encoding: " + langFile.getEncoding());           
+            cms.getRequestContext().setEncoding(langFile.getEncoding(), true);        
             
             // trigger call of "login()" JavaScript in Template on page load
             xmlTemplateDocument.setData("onload", "onload='login();'");

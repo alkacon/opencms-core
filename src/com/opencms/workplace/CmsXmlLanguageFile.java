@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/02/08 15:56:39 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/02/16 02:23:17 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.41 $ $Date: 2003/02/08 15:56:39 $
+ * @version $Revision: 1.42 $ $Date: 2003/02/16 02:23:17 $
  */
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -45,27 +45,25 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.flex.util.CmsMessages;
 
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 public class CmsXmlLanguageFile { 
 
     /** The name of the property file */
     public static final String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
-        
+    
+    /** Map of locales from the installed modules */
+    private static Map m_allModuleMessages = null;     
+    
+    /** Set of locales from the installed modules */
+    private static Set m_moduleMessages = null;  
+    
+    /** Map of encodings from the installed languages */
+    private static Map m_allEncodings = null;
+               
     /** Localized message access object for the default workplace */
     private CmsMessages m_messages;
-    
-    /** Set of locales form the installed modules */
-    private static Set m_moduleMessages = null;     
-    
+        
     /** Flag to indicate support for old locale mechanism */
     private boolean m_supportOldLocale = false;
     
@@ -95,8 +93,30 @@ public class CmsXmlLanguageFile {
     public CmsXmlLanguageFile(CmsObject cms, String locale) throws CmsException {
         m_cms = cms;
         m_locale = locale;
-        m_messages = new CmsMessages(C_BUNDLE_NAME, m_locale);        
-        m_moduleMessages = collectModuleMessages(m_cms);
+        m_messages = new CmsMessages(C_BUNDLE_NAME, m_locale);   
+        // initialize the static encodings map if required
+        if (m_allEncodings == null) {        
+            synchronized (this) {     
+                m_allEncodings = new HashMap(); 
+            }            
+        }  
+        // initialize the static hash if not already done
+        if (m_allModuleMessages == null) {        
+            synchronized (this) {     
+                m_allModuleMessages = new HashMap(); 
+            }            
+        }
+        // initialize the static module messages
+        Object obj = m_allModuleMessages.get(m_locale);
+        if (obj == null) {
+            synchronized (this) {    
+                m_moduleMessages = collectModuleMessages(m_cms, m_locale);
+                m_allModuleMessages.put(m_locale, m_moduleMessages);
+            }            
+        } else {
+            m_moduleMessages = (Set)obj;
+        }      
+        // set compatiblity flag for old locales
         Boolean flag = (Boolean)A_OpenCms.getRuntimeProperty("compatibility.support.oldlocales");
         m_supportOldLocale = (flag!=null)?flag.booleanValue():false;           
     }
@@ -105,12 +125,12 @@ public class CmsXmlLanguageFile {
      * Gathers all localization files for the workplace from the different modules.<p>
      * 
      * For a module named "my.module.name" the locale file must be named 
-     * "my.module.name.workplace" and be localed in the classpath so that the resource loader
+     * "my.module.name.workplace" and be located in the classpath so that the resource loader
      * can find it.<p>
      * 
      * @param cms for accessing system resources
      */
-    private Set collectModuleMessages(CmsObject cms) {
+    private synchronized Set collectModuleMessages(CmsObject cms, String locale) {
         HashSet bundles = new HashSet();
         Enumeration en = null;
         try {
@@ -123,7 +143,7 @@ public class CmsXmlLanguageFile {
                 String bundleName = ((String)en.nextElement()) + ".workplace";
                 // this should result in a name like "my.module.name.workplace"
                 try {
-                    ResourceBundle bundle = ResourceBundle.getBundle(bundleName, new Locale("en"));
+                    ResourceBundle bundle = ResourceBundle.getBundle(bundleName, new Locale(locale));
                     bundles.add(bundle);
                 } catch (MissingResourceException e) {
                     // can be ignored
@@ -139,14 +159,36 @@ public class CmsXmlLanguageFile {
      * @return String the the content encoding defined for this language
      */
     public String getEncoding() {
-        String result = null;
+        // try to read from static map
+        String result = (String)m_allEncodings.get(m_locale);
+        if (result != null) return result;
+        
+        // encoding not stored so far, let's try to figure it out
         try {
             result = m_messages.getString(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
         } catch (MissingResourceException e) {
+            // exception - just use the default encoding
             result = A_OpenCms.getDefaultEncoding();
         }
+        if (result.startsWith("{")) {
+            // this is a "supported set" - try to figure out the encoding to use
+            if (result.indexOf(A_OpenCms.getDefaultEncoding()) >= 0) {
+                // the current default encoding is supported, so we use this
+                result = A_OpenCms.getDefaultEncoding();
+            } else {
+                // default encoding is not supported, so we use the first given encoding in the set       
+                int index = result.indexOf(";");
+                if (index <= 1) {
+                    result = A_OpenCms.getDefaultEncoding();
+                } else { 
+                    result = result.substring(1, index);   
+                }             
+            }
+        }
+        // now store the result in the static map
+        m_allEncodings.put(m_locale, result);
         return result;
-    }
+    }    
 
     /**
      * Returns the messages initialized for this language file.
