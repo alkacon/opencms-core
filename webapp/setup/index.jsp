@@ -4,7 +4,7 @@ boolean isInitialized = false;
 boolean wizardEnabled = false;
 
 /* next page to be accessed */
-String nextPage = "content_encoding.jsp";
+String nextPage = "step_1_content_encoding.jsp";
 	
 /* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
@@ -42,7 +42,7 @@ try {
 <head> 
 	<title>OpenCms Setup Wizard</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="Stylesheet" type="text/css" href="style.css">
+	<link rel="Stylesheet" type="text/css" href="resources/style.css">
 </head>
 <body>
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
@@ -57,7 +57,7 @@ try {
 			</tr>
 
 			<tr>
-				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+                <td height="50" align="right"><img src="resources/opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
 			<% if(wizardEnabled && isInitialized)	{ %>
 			<tr>
@@ -67,17 +67,7 @@ try {
 							<td align="center" valign="top" height="125" class="bold">Welcome to the OpenCms Setup Wizard</td>
 						</tr>					
 						<tr>
-							<td align="center">Please choose the setup you want to use</td>
-						</tr>
-						<tr>
-							<td align="center">
-								<table border="0" cellpadding="10">
-									<tr>
-										<td class="bold"><input type="radio" name="setupType" value="false" <% if(!Bean.getSetupType()){out.print("checked");} %>> STANDARD</td>									
-										<td class="bold"><input type="radio" name="setupType" value="true" <% if(Bean.getSetupType()){out.print("checked");} %>> ADVANCED</td>
-									</tr>
-								</table>
-							</td>
+							<td align="center">Please press "continue" to start the setup wizard</td>
 						</tr>
 					</table>										
 				</td>

@@ -15,7 +15,7 @@
 <% 
 
 	/* next page to be accessed */
-	String nextPage ="create_database.jsp";
+    String nextPage ="step_4_database_creation.jsp";
 	
 	boolean submited = false;
 	
@@ -73,7 +73,7 @@
 <head> 
 	<title>OpenCms Setup Wizard</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="Stylesheet" type="text/css" href="style.css">
+    <link rel="Stylesheet" type="text/css" href="resources/style.css">
 	<script language="Javascript">
 	function checkSubmit()	{
 		if(document.forms[0].dbCreateConStr.value == "")	{
@@ -117,7 +117,7 @@
 			</tr>
 
 			<tr>
-				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+                <td height="50" align="right"><img src="resources/opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
 			
 			<% if(setupOk)	{ %>
@@ -133,7 +133,7 @@
 											Select Database
 										</td>
 										<td width="250">
-											<select name="database" style="width:250px;" size="1" width="250" onchange="location.href='database_connection.jsp?database='+this.options[this.selectedIndex].value;">
+                                            <select name="database" style="width:250px;" size="1" width="250" onchange="location.href='step_2_database_selection.jsp?database='+this.options[this.selectedIndex].value;">
 											<!-- --------------------- JSP CODE --------------------------- -->
 											<%
 												/* get all available databases */

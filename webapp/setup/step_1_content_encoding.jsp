@@ -6,7 +6,7 @@
 
 --%><%
 /* next page in the setup process */
-String nextPage = "database_connection.jsp";
+String nextPage = "step_2_database_selection.jsp";
 
 // Reading the system properties
 Properties vmProperties = System.getProperties();
@@ -23,7 +23,7 @@ if (encodingOk) {
 <head> 
 <title>OpenCms Setup Wizard</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link rel="Stylesheet" type="text/css" href="style.css">
+<link rel="Stylesheet" type="text/css" href="resources/style.css">
 </head>
 
 <body>
@@ -39,7 +39,7 @@ if (encodingOk) {
 			</tr>
 
 			<tr>
-				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+                <td height="50" align="right"><img src="resources/opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
 			
 			<tr>
@@ -65,7 +65,7 @@ if (encodingOk) {
 						<tr><td>
 						<table border="0" cellpadding="10" cellspacing="0">
 							<tr>
-							<td valign="middle"><img src="ampel_rot.gif" width="75" height="150"></td>
+                            <td valign="middle"><img src="resources/traffic_red.gif" width="75" height="150"></td>
 							<td>
 							To continue the setup process:
 							<ul>

@@ -25,10 +25,10 @@
     int unsupportedServletEngine = -1;
     
     /* add supported engines here */
-    String[] supportedEngines = {"Apache Tomcat/4.1", "Apache Tomcat/4.0"};
+    String[] supportedEngines = {"Apache Tomcat/4.1", "Apache Tomcat/4.0", "Apache Tomcat/5.0"};
     
     /* add unsupported enginges here */
-    String[] unsupportedEngines = {"Tomcat Web Server/3.2", "Tomcat Web Server/3.3", "Resin/2.0.b2"};
+    String[] unsupportedEngines = {"Tomcat Web Server/3.2", "Tomcat Web Server/3.3", "Resin/2.0.b2" };
     String[] unsEngMessages = {        
   		"OpenCms does not work correctly with Tomcat 3.2.x. Tomcat 3.2.x uses its own XML parser which results in major errors while using OpenCms. Please use Tomcat 4.x instead.", 
     	"Tomcat 3.3 is no longer supported. Please use Tomcat 4.x instead." , 
@@ -46,13 +46,8 @@
         
     if(setupOk) {
         
-        if(submited)    {
-            if(Bean.getSetupType()) {
-                nextPage = "advanced_1.jsp";
-            }
-            else    {
-                nextPage = "save_properties.jsp";
-            }
+        if(submited) {
+            nextPage = "step_6_save_properties.jsp";
         }
         else    {
             /* checking versions */
@@ -73,7 +68,7 @@
 <head> 
     <title>OpenCms Setup Wizard</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-    <link rel="Stylesheet" type="text/css" href="style.css">
+    <link rel="Stylesheet" type="text/css" href="resources/style.css">
 </head>
 
 <body>
@@ -89,7 +84,7 @@
             </tr>
 
             <tr>
-                <td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0">&nbsp;</td>
+                <td height="50" align="right"><img src="resources/opencms.gif" alt="OpenCms" border="0">&nbsp;</td>
             </tr>
             <% if(setupOk)  { %>
             <tr>
@@ -103,8 +98,8 @@
                             }
                         } else { %>                 
                     <table border="0" cellpadding="5">
-                        <tr><td class="bold" width="100">JDK version:</td><td width="300"><%= JDKVersion %></td><td width="30"><% if(supportedJDK)out.print("<img src='check.gif'>");else out.print("<img src='cross.gif'>"); %></td></tr>                                          
-                        <tr><td class="bold">Servlet engine:</td><td><%= servletEngine %></td><td><% if(supportedServletEngine)out.print("<img src='check.gif'>");else if (unsupportedServletEngine > -1)out.print("<img src='cross.gif'>");else out.print("<img src='unknown.gif'>"); %></td></tr>
+                        <tr><td class="bold" width="100">JDK version:</td><td width="300"><%= JDKVersion %></td><td width="30"><% if(supportedJDK)out.print("<img src='resources/check.gif'>");else out.print("<img src='resources/cross.gif'>"); %></td></tr>                                          
+                        <tr><td class="bold">Servlet engine:</td><td><%= servletEngine %></td><td><% if(supportedServletEngine)out.print("<img src='resources/check.gif'>");else if (unsupportedServletEngine > -1)out.print("<img src='resources/cross.gif'>");else out.print("<img src='resources/unknown.gif'>"); %></td></tr>
                         <tr><td colspan="3" height="30">&nbsp;</td></tr>
                         <tr><td align="center" valign="bottom">
                         <%  
@@ -114,13 +109,13 @@
                             boolean systemOk = !(red || yellow);
                             
                             if(red) {
-                                out.print("<img src='ampel_rot.gif'>");
+                                out.print("<img src='resources/traffic_red.gif'>");
                             }
                             else if (yellow)        {
-                                out.print("<img src='ampel_gelb.gif'>");
+                                out.print("<img src='resources/traffic_yellow.gif'>");
                             }
                             else    {
-                                out.print("<img src='ampel_gruen.gif'>");
+                                out.print("<img src='resources/traffic_green.gif'>");
                             }
                         %>
                         </td>

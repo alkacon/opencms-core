@@ -8,7 +8,7 @@
     boolean setupOk = (Bean.getProperties()!=null); 
     
     /* next page to be accessed */
-    String nextPage = "activex.jsp";
+    String nextPage = "step_8_browser_configuration_notes.jsp";
 
     
 %>
@@ -18,7 +18,7 @@
 <head> 
     <title>OpenCms Setup Wizard</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">    
-    <link rel="Stylesheet" type="text/css" href="style.css">
+    <link rel="Stylesheet" type="text/css" href="resources/style.css">
     <script language="Javascript">
             
         var enabled = false;
@@ -31,7 +31,7 @@
         function enable()   {
             enabled = true;
             
-            parent.data.location.href="data_import.jsp";
+            parent.data.location.href="step_7b_data_import.jsp";
             
             document.forms[0].info.value = message;
         }
@@ -103,7 +103,7 @@
             </tr>
 
             <tr>
-                <td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+                <td height="50" align="right"><img src="resources/opencms.gif" alt="OpenCms" border="0"></td>
             </tr>
             <% if(setupOk)  { %>
             <tr>

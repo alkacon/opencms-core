@@ -9,11 +9,8 @@
 <%@ page import="com.opencms.boot.*,java.util.*" %>
 
 <%
-	
 	/* next page to be accessed */
-	String nextPage = "check_versions.jsp";
-	
-	
+	String nextPage = "step_5_check_versions.jsp";
 	
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);
@@ -63,7 +60,7 @@
 			}
 			else {
 				if (createDb || createTables) {
-			  		nextPage = "create_database.jsp";
+                    nextPage = "step_4_database_creation.jsp";
 			  	}
 			}
 		}				
@@ -76,7 +73,7 @@
 <head> 
 	<title>OpenCms Setup Wizard</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="Stylesheet" type="text/css" href="style.css">
+    <link rel="Stylesheet" type="text/css" href="resources/style.css">
 </head>
 
 <body>
@@ -92,7 +89,7 @@
 			</tr>
 
 			<tr>
-				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+                <td height="50" align="right"><img src="resources/opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
 			<% if(setupOk)	{ %>
 			<tr>

@@ -18,18 +18,18 @@
     }
 
 	CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
-	if (!Bean.getSetupType()) {
-		param = request.getParameter("directoryTranslationEnabled");
-		Bean.setDirectoryTranslationEnabled( param );
-			
-		/* Save Properties to file "opencms.properties" and 2nd time */
-		Utils.saveProperties(Bean.getProperties(),"opencms.properties",true);
-	}
+    
+    param = request.getParameter("directoryTranslationEnabled");
+    Bean.setDirectoryTranslationEnabled( param );
+
+    /* Save Properties to file "opencms.properties" the 2nd time */
+    Utils.saveProperties(Bean.getProperties(), "opencms.properties", true);
+    
 	// Restore the registry.xml either to or from a backup file
 	Utils.backupRegistry("registry.xml", "registry.ori");							
     
     /* next page */
-    String nextPage = "activex.jsp";
+    String nextPage = "step_8_browser_configuration_notes.jsp";
 %>
 
 
@@ -40,12 +40,12 @@
 <head> 
     <title>OpenCms Setup Wizard</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-    <link rel="Stylesheet" type="text/css" href="style.css">    
+    <link rel="Stylesheet" type="text/css" href="resources/style.css">    
 </head>
 <% if(importWp) {   %>
 
 <frameset rows="100%,*">
-    <frame src="display_import.jsp" name="display">
+    <frame src="step_7a_display_import.jsp" name="display">
     <frame src="about:blank" name="data">
 </frameset> 
 
@@ -63,7 +63,7 @@
             </tr>
 
             <tr>
-                <td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+                <td height="50" align="right"><img src="resources/opencms.gif" alt="OpenCms" border="0"></td>
             </tr>
             <% if(setupOk)  { %>
             <tr>

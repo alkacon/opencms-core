@@ -21,7 +21,7 @@
 <head> 
 	<title>OpenCms Setup Wizard</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="Stylesheet" type="text/css" href="style.css">
+    <link rel="Stylesheet" type="text/css" href="resources/style.css">
 </head>
 
 <body>
@@ -37,7 +37,7 @@
 			</tr>
 
 			<tr>
-				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+                <td height="50" align="right"><img src="resources/opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
 			<tr>
 				<td height="375" align="center" valign="middle">

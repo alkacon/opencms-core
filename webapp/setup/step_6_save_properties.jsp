@@ -11,7 +11,7 @@
 <%
 	
 	/* next page to be accessed */
-	String nextPage = "run_import.jsp";
+	String nextPage = "step_7_import_workplace.jsp";
 	
 	/* true if properties are initialized */
 	boolean setupOk = Bean.checkProperties();
@@ -36,7 +36,7 @@
 <head> 
 	<title>OpenCms Setup Wizard</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="Stylesheet" type="text/css" href="style.css">
+	<link rel="Stylesheet" type="text/css" href="resources/style.css">
 </head>
 
 <body>
@@ -52,7 +52,7 @@
 			</tr>
 
 			<tr>
-				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+				<td height="50" align="right"><img src="resources/opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
 			<% if(setupOk)	{ %>
 			<tr>
@@ -90,11 +90,10 @@
 								<input type="radio" name="importWorkplace" value="false" > No
 							</td>
 						</tr>
-<% if (!Bean.getSetupType()) { %>
 						<tr>
 							<td align="center">
 								<b>Do you want to use directory translation?</b><br>
-								Activate this option if you want to import a site built with OpenCms versions prior 5.0 (beta 2).
+								Activate this option only if you want to import a site built with OpenCms version 4.x.
 							</td>
 						</tr>
 						<tr>
@@ -102,8 +101,7 @@
 								<input type="radio" name="directoryTranslationEnabled" value="true" <%=Bean.isChecked(Bean.getDirectoryTranslationEnabled(),"true")%>> Yes
 								<input type="radio" name="directoryTranslationEnabled" value="false" <%=Bean.isChecked(Bean.getDirectoryTranslationEnabled(),"false")%>> No
 							</td>
-						</tr>							
-<% } %>						
+						</tr>				
 					</table>
 				</td>
 			</tr>
@@ -112,11 +110,7 @@
 					<table border="0">
 						<tr>
 							<td width="200" align="right">
-<% if (Bean.getSetupType()) { %>
-								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-1)">
-<% } else { %>
 								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-2)">
-<% } %>
 							</td>
 							<td width="200" align="left">
 								<input type="submit" name="submit" class="button" style="width:150px;" width="150" value="Continue &#062;&#062;">

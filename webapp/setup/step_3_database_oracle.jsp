@@ -15,7 +15,7 @@
 <% 
 
 	/* next page to be accessed */
-	String nextPage ="create_database.jsp";
+    String nextPage ="step_4_database_creation.jsp";
 	
 	boolean submited = false;
 	
@@ -26,12 +26,16 @@
 		if(createDb == null)	{
 			createDb = "";
 		}
-			
+
+		String createTables = request.getParameter("createTables");
+		if(createTables == null)	{
+			createTables = "";
+		}
+					
 		submited = ((request.getParameter("submit") != null) && (conStr != null));
 		
 		if(submited)	{
-		
-			Bean.setDbCreateConStr(conStr.substring(0, conStr.lastIndexOf("?")));
+						
 			Bean.setDbWorkConStr(conStr);
 			
 			/* Set user and passwords manually. This is necessary because
@@ -42,6 +46,9 @@
 			
 			String dbWorkUser =		request.getParameter("dbWorkUser");			
 			String dbWorkPwd =		request.getParameter("dbWorkPwd");
+			String dbDefaultTablespace = request.getParameter("dbDefaultTablespace");
+			String dbTemporaryTablespace = request.getParameter("dbTemporaryTablespace");
+            String dbIndexTablespace = request.getParameter("dbIndexTablespace");
 
 			Bean.setDbCreateUser(dbCreateUser);
 			Bean.setDbCreatePwd(dbCreatePwd);
@@ -49,15 +56,22 @@
 			Bean.setDbWorkUser(dbWorkUser);
 			Bean.setDbWorkPwd(dbWorkPwd);
 			
-			
 			Hashtable replacer = new Hashtable();			
 			replacer.put("$$user$$",dbWorkUser);			
 			replacer.put("$$password$$",dbWorkPwd);
+			replacer.put("$$defaultTablespace$$", dbDefaultTablespace);
+            replacer.put("$$indexTablespace$$", dbIndexTablespace);
+			replacer.put("$$temporaryTablespace$$", dbTemporaryTablespace);
 			
 			Bean.setReplacer(replacer);
 						
+			session.setAttribute("createTables",createTables);
 			session.setAttribute("createDb",createDb);
 		
+		} else {
+			
+			// initialize the work user with the app name
+			Bean.setDbWorkUser(Bean.getAppName());
 		}
 				
 		
@@ -68,7 +82,7 @@
 <head> 
 	<title>OpenCms Setup Wizard</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="Stylesheet" type="text/css" href="style.css">
+	<link rel="Stylesheet" type="text/css" href="resources/style.css">
 	<script language="Javascript">
 	function checkSubmit()	{
 		if(document.forms[0].dbCreateConStr.value == "")	{
@@ -85,7 +99,22 @@
 			alert("Please insert password");
 			document.forms[0].dbWorkPwd.focus();
 			return false;
-		}		
+		}
+		else if (document.forms[0].createDb.value != "" && document.forms[0].dbDefaultTablespace.value == "") {
+			alert("Please insert name of default tablespace");
+			document.forms[0].dbWorkPwd.focus();
+			return false;
+		}
+        else if (document.forms[0].createDb.value != "" && document.forms[0].dbIndexTablespace.value == "") {
+            alert("Please insert name of index tablespace");
+            document.forms[0].dbWorkPwd.focus();
+            return false;
+        }
+		else if (document.forms[0].createDb.value != "" && document.forms[0].dbTemporaryTablespace.value == "") {
+			alert("Please insert name of temporary tablespace");
+			document.forms[0].dbWorkPwd.focus();
+			return false;
+		}
 		else	{
 			return true;
 		}
@@ -112,7 +141,7 @@
 			</tr>
 
 			<tr>
-				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+                <td height="50" align="right"><img src="resources/opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
 			
 			<% if(setupOk)	{ %>
@@ -128,26 +157,26 @@
 											Select Database
 										</td>
 										<td width="250">
-											<select name="resourceBroker" style="width:250px;" size="1" width="250" onchange="location.href='database_connection.jsp?resourceBroker='+this.options[this.selectedIndex].value;">
+                                            <select name="database" style="width:250px;" size="1" width="250" onchange="location.href='step_2_database_selection.jsp?database='+this.options[this.selectedIndex].value;">
 											<!-- --------------------- JSP CODE --------------------------- -->
 											<%
-												/* get all available resource brokers */
-												Vector resourceBrokers = Bean.getResourceBrokers();
-												Vector resourceBrokerNames = Bean.getResourceBrokerNames();
-												/* 	List all resource broker found in the dbsetup.properties */
-												if (resourceBrokers !=null && resourceBrokers.size() > 0)	{
-													for(int i=0;i<resourceBrokers.size();i++)	{
-														String rb = resourceBrokers.elementAt(i).toString();
-														String rn = resourceBrokerNames.elementAt(i).toString();
+												/* get all available databases */
+												Vector databases = Bean.getDatabases();
+												Vector databaseNames = Bean.getDatabaseNames();
+												/* 	List all databases found in the dbsetup.properties */
+												if (databases !=null && databases.size() > 0)	{
+													for(int i=0;i<databases.size();i++)	{
+														String db = databases.elementAt(i).toString();
+														String dn = databaseNames.elementAt(i).toString();
 														String selected = "";													
-														if(Bean.getResourceBroker().equals(rb))	{
+														if(Bean.getDatabase().equals(db))	{
 															selected = "selected";
 														}
-														out.println("<option value='"+rb+"' "+selected+">"+rn);
+														out.println("<option value='"+db+"' "+selected+">"+dn);
 													}
 												}
 												else	{
-													out.println("<option value='null'>no resource broker found");
+													out.println("<option value='null'>no database found");
 												}
 											%>
 											<!-- --------------------------------------------------------- -->
@@ -165,32 +194,43 @@
 								<table border="0" cellpadding="5" cellspacing="0" class="header">
 									<tr><td>&nbsp;</td><td>User</td><td>Password</td></tr>
 									<tr>
-										<td>Database Server Connection</td><td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td><td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>										
+										<td>Setup Connection</td><td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td><td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>										
 									</tr>
 									<%
 									String user = Bean.getDbWorkUser();
-									if(user.equals(""))	{
-										user = request.getContextPath();
-									}
-									if(user.startsWith("/"))	{
-										user = user.substring(1,user.length());
-									}
+									//if(user.equals(""))	{
+									//	user = request.getContextPath();
+									//}
+									//if(user.startsWith("/"))	{
+									//	user = user.substring(1,user.length());
+									//}
 									%>
 									<tr>
 										<td>OpenCms Connection</td><td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= user %>'></td><td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>
 									</tr>
-									<tr><td colspan="3"><hr></td></tr>
 									<tr>
 										<td>Connection String</td><td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:250px;" value='<%= Bean.getDbCreateConStr() %>'></td>
 									</tr>
+									<tr>
+									    <td>Create Database</td><td><input type="checkbox" name="createDb" value="true" checked> User</td><td><input type="checkbox" name="createTables" value="true" checked> Tables<input type="hidden" name="createTables" value="false"></td>
+									</tr>
+									<tr>
+										<td colspan="3" align="center"><b><font color="FF0000">Warning:</font></b> Existing database will be dropped !</font></b></td>
+									</tr>
 									<tr><td colspan="3"><hr></td></tr>
-									<tr><td colspan="3" align="center"><input type="checkbox" name="createDb" value="true" checked> Create database and tables<br>
-									<b><font color="FF0000">Warning:</font></b> Existing database will be dropped !<br></td></tr>
-									
+									<tr>
+										<td>Default Tablespace</td><td colspan="2"><input type="text" name="dbDefaultTablespace" size="8" style="width:250px;" value='<%= Bean.getDbDefaultTablespace() %>'></td>   
+									</tr>
+                                    <tr>
+                                        <td>Index Tablespace</td><td colspan="2"><input type="text" name="dbIndexTablespace" size="8" style="width:250px;" value='<%= Bean.getDbIndexTablespace() %>'></td>
+									</tr>
+                                    <tr>
+                                        <td>Temporary Tablespace</td><td colspan="2"><input type="text" name="dbTemporaryTablespace" size="8" style="width:250px;" value='<%= Bean.getDbTemporaryTablespace() %>'></td>
+                                    </tr>					
 								</table>
 							</td>
 						</tr>
-						<tr><td align="center"><b>Attention:</b> You must have a working sapdb driver in your /oclib and /lib folder!</td></tr>
+						<tr><td align="center"><b>Attention:</b> You must have a working oracle driver in your classpath!</td></tr>
 						
 					</table>
 				</td>
