@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDownloadGallery.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/02 14:59:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Generates the download gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.2
  */
@@ -138,8 +138,10 @@ public class CmsDownloadGallery extends A_CmsGallery {
             }
         } catch (CmsException e) {
             // reading the resource or property value failed
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn(e);
+            } else if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());
             }
         }
         return html.toString();

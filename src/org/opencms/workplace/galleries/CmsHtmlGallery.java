@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/02 14:59:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.2
  */
@@ -141,7 +141,9 @@ public class CmsHtmlGallery extends A_CmsGallery {
             }
         } catch (CmsException e) {
             // reading the resource failed
-            if (OpenCms.getLog(this).isErrorEnabled()) {
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn(e);
+            } else if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());
             }
         }
