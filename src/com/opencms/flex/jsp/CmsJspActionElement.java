@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/04/10 15:54:19 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/04/14 06:36:38 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -78,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.0 beta 2
  */
@@ -251,7 +250,7 @@ public class CmsJspActionElement {
      *
      * @see com.opencms.flex.jsp.CmsJspTagInclude
      */
-    public void include(String target) throws JspException {
+    public void include(String target) {
         this.include(target, null, null);
     }
     
@@ -265,7 +264,7 @@ public class CmsJspActionElement {
      *
      * @see com.opencms.flex.jsp.CmsJspTagInclude
      */    
-    public void include(String target, String element) throws JspException  {
+    public void include(String target, String element) {
         this.include(target, element, null);
     }
 
@@ -290,31 +289,35 @@ public class CmsJspActionElement {
      * 
      * @see com.opencms.flex.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, Map parameterMap) throws JspException {
+    public void include(String target, String element, Map parameterMap) {
         if (m_notInitialized) return;
-        if (parameterMap != null) {
-            try {
-                HashMap modParameterMap = new HashMap(parameterMap.size());
-                // ensure parameters are always of type String[] not just String
-                Iterator i = parameterMap.keySet().iterator();
-                while (i.hasNext()) {
-                    String key = (String)i.next();
-                    Object value = parameterMap.get(key);
-                    if (value instanceof String[]) {
-                        modParameterMap.put(key, value);
-                    } else {
-                        if (value == null)
-                            value = "null";
-                        String[] newValue = new String[] { value.toString()};
-                        modParameterMap.put(key, newValue);
+        try {
+            if (parameterMap != null) {
+                try {
+                    HashMap modParameterMap = new HashMap(parameterMap.size());
+                    // ensure parameters are always of type String[] not just String
+                    Iterator i = parameterMap.keySet().iterator();
+                    while (i.hasNext()) {
+                        String key = (String)i.next();
+                        Object value = parameterMap.get(key);
+                        if (value instanceof String[]) {
+                            modParameterMap.put(key, value);
+                        } else {
+                            if (value == null)
+                                value = "null";
+                            String[] newValue = new String[] { value.toString()};
+                            modParameterMap.put(key, newValue);
+                        }
                     }
+                    parameterMap = modParameterMap;
+                } catch (UnsupportedOperationException e) {
+                    // parameter map is immutable, just use it "as is"
                 }
-                parameterMap = modParameterMap;
-            } catch (UnsupportedOperationException e) {
-                // parameter map is immutable, just use it "as is"
             }
+            CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
+        } catch (Throwable t) {
+            handleException(t);
         }
-        CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
     }
             
     /**
@@ -748,7 +751,7 @@ public class CmsJspActionElement {
             System.err.println("Exception in " + this.getClass().getName() + ":");
             t.printStackTrace(System.err);
         } else {
-            throw new RuntimeException(t);
+            throw new RuntimeException("Exception in " + this.getClass().getName(), t);
         }
     }
 }
