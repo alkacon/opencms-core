@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2001/08/01 14:55:26 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/10/16 09:06:59 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import source.org.apache.java.util.*;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2001/08/01 14:55:26 $
+ * @version $Revision: 1.10 $ $Date: 2001/10/16 09:06:59 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -236,6 +236,7 @@ public class CmsSynchronize implements I_CmsConstants{
         File currentFile;
         CmsFile hashFile = null;
         CmsFolder hashFolder = null;
+        boolean notCreated = false;
         for (int i = 0; i < diskFiles.length; i++){
             currentFile = new File(sfsFile, diskFiles[i]);
             if (currentFile.isDirectory()){
@@ -250,15 +251,21 @@ public class CmsSynchronize implements I_CmsConstants{
                         // if the folder already exists do nothing
                         if (e.getType() != CmsException.C_FILE_EXISTS &&
                             e.getType() != CmsException.C_LOCKED){
-                            throw e;
+                            if (e.getType() == CmsException.C_BAD_NAME) {
+                                notCreated = true;
+                                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO,"["+this.getClass().getName()+"] Bad name: "+currentFile.getName());
+                            }else{
+                                throw e;
+                            }
                         }
                     }
                 }
                 hashFolder = null;
                 // now read the filelist of this folder
-                synchronizeVirtual(sfsAbsolutePath+currentFile.getName()+"/");
+                if (!notCreated){
+                    synchronizeVirtual(sfsAbsolutePath+currentFile.getName()+"/");
+                }
             } else {
-                //hashFile = (CmsFile)m_vfsFiles.get(sfsFile.getPath().replace(sfsFile.separatorChar,'/')+"/"+currentFile.getName());
                 hashFile = (CmsFile)m_vfsFiles.get(m_synchronizePath+resourceName+currentFile.getName());
                 if (hashFile == null){
                     // the file does not exist in the VFS, so add it from SFS
@@ -273,18 +280,13 @@ public class CmsSynchronize implements I_CmsConstants{
                                 m_cms.lockResource(sfsAbsolutePath+currentFile.getName());
                                 m_synchronizeList.putDates(sfsAbsolutePath+currentFile.getName(), newFile.getDateLastModified(), currentFile.lastModified());
                             } catch (CmsException e) {
-                                if (e.getType() == CmsException.C_FILE_EXISTS ||
-                                    e.getType() == CmsException.C_LOCKED){
-                                    //System.out.println("File "+sfsAbsolutePath+currentFile.getName()+" already exists!");
-                                    // if the file exists try to update the file
-                                    //try {
-                                    //  CmsFile updFile = m_cms.readFile(sfsAbsolutePath+currentFile.getName());
-                                    //  updFile.setContents(content);
-                                    //  m_cms.writeFile(sfsAbsolutePath+currentFile.getName());
-                                    //} catch (CmsException e){
-                                    //}
-                                } else {
-                                    throw e;
+                                if (e.getType() != CmsException.C_FILE_EXISTS &&
+                                    e.getType() != CmsException.C_LOCKED){
+                                    if(e.getType() == CmsException.C_BAD_NAME){
+                                        A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO,"["+this.getClass().getName()+"] Bad name: "+currentFile.getName());
+                                    } else {
+                                        throw e;
+                                    }
                                 }
                             }
                         }
