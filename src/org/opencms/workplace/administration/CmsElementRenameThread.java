@@ -34,12 +34,10 @@ package org.opencms.workplace.administration;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
-import org.opencms.report.I_CmsReport;
 
 /**
- * Thread for extended html import. <p>
+ * Thread for element rename.<p>
  * 
- * @author Michael Emmerich ((m.emmerich@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
  */
 public class CmsElementRenameThread extends A_CmsReportThread {
@@ -47,10 +45,10 @@ public class CmsElementRenameThread extends A_CmsReportThread {
     private CmsElementRename m_elementRename;
 
     /**
-     * Constructor, creates a new HtmlImportThreat.<p>
+     * Constructor, creates a new CmsElementRenameThread.<p>
      * 
      * @param cms the current CmsObject
-     * @param elementRename the CmsElementRename Object
+     * @param elementRename the initialized CmsElementRename Object
      */
     public CmsElementRenameThread(CmsObject cms, CmsElementRename elementRename) {
 
@@ -70,20 +68,18 @@ public class CmsElementRenameThread extends A_CmsReportThread {
     }
 
     /**
-     * The run method which starts the import process.<p>
+     * The run method which starts the rename process.<p>
      */
     public synchronized void run() {
 
         try {
-            // do the import
-            getReport().println("Xml Page Element Rename Start", I_CmsReport.C_FORMAT_HEADLINE);
+            // do the rename operation
             m_elementRename.actionRename(getReport());
         } catch (Exception e) {
             getReport().println(e);
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(e.getMessage());
             }
-        }
-        getReport().println("Xml Page Element Rename End", I_CmsReport.C_FORMAT_HEADLINE);
+        }        
     }
 }
