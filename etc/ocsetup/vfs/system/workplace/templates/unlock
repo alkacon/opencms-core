@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<MESSAGEBOX title="messagebox.title.unlock" message1="messagebox.message1.unlock" message2="messagebox.message2.unlock" button1="button.ok" button2="button.cancel" link1="lock.html?lock=true" link2="unlock.html?unlock=false" />
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<ERRORPAGE title="error.title.unlock" message="error.message.unlock" reason="error.reason.unlock" suggestion="error.suggestion.unlock" ref="explorer_files.html" />
+</TEMPLATE>
+</WORKPLACE>

@@ -10,21 +10,21 @@ import javax.servlet.http.*;
 import java.util.*;
 
 /**
- * Template class for displaying the lock screen of the OpenCms workplace.<P>
+ * Template class for displaying the unlock screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/10 13:15:36 $
+ * @version $Revision: 1.1 $ $Date: 2000/02/10 13:15:36 $
  */
-public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
+public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
            
 
     /**
-     * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
-     * Gets the content of the lock template and processed the data input.
+     * Overwrties the getContent method of the CmsWorkplaceDefault.<br>
+     * Gets the content of the unlock templated and processed the data input.
      * @param cms The CmsObject.
-     * @param templateFile The lock template file
+     * @param templateFile The unlock template file
      * @param elementName not used
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
@@ -40,17 +40,17 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // the template to be displayed
         String template=null;
         
-        String lock=(String)parameters.get(C_PARA_LOCK);
+        String unlock=(String)parameters.get(C_PARA_UNLOCK);
         String filename=(String)parameters.get(C_PARA_FILE);
         if (filename != null) {
             session.putValue(C_PARA_FILE,filename);        
         }
-        //check if the lock parameter was included in the request
-        // if not, the lock page is shown for the first time
+        //check if the unlock parameter was included in the request
+        // if not, the unlock page is shown for the first time
         filename=(String)session.getValue(C_PARA_FILE);
-        if (lock != null) {
-            if (lock.equals("true")) {
-                   cms.lockResource(filename);
+        if (unlock != null) {
+            if (unlock.equals("true")) {
+                   cms.unlockResource(filename);
             }
              // TODO: ErrorHandling
              // return to filelist
@@ -62,7 +62,7 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
-        
+       
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     

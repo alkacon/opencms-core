@@ -14,7 +14,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/08 15:31:21 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/10 13:15:36 $
  */
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                      I_CmsConstants {
@@ -89,7 +89,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
         String newFilelist=null;
 
         // the template to be displayed
-        String template="template";
+        String template=null;
         Hashtable preferences=new Hashtable();
        
         // get session and servlet root

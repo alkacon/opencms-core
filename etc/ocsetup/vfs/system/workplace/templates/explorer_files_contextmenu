@@ -33,7 +33,7 @@
 </contextmenue>
 
 <contextmenue name="folderlockuser">
-	<contextentry name="explorer.context.unlock" href="#"/>
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="#"/>
@@ -91,10 +91,10 @@
 </contextmenue>
 
 <contextmenue name="plainlockuser">
-	<contextentry name="explorer.context.unlock" href="#"/>
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.htmledit" href="#"/>
-	<contextentry name="explorer.context.edit" href="#"/>
+	<contextentry name="explorer.context.htmledit" href="javascript:doAction(DO_HTMLEDIT)"/>
+	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_EDIT)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="#"/>
@@ -151,7 +151,7 @@
 </contextmenue>
 
 <contextmenue name="XMLTemplatelockuser">
-	<contextentry name="explorer.context.unlock" href="#"/>
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.edit" href="#"/>
 	<contextspacer/>
@@ -212,10 +212,10 @@
 </contextmenue>
 
 <contextmenue name="pagelockuser">
-	<contextentry name="explorer.context.unlock" href="#"/>
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.edit" href="#"/>
-	<contextentry name="explorer.context.editcontrolfile" href="#"/>
+	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_TEMPLATEEDIT)"/>
+	<contextentry name="explorer.context.editcontrolfile" href="javascript:doAction(DO_EDIT)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="#"/>
@@ -267,7 +267,7 @@
 </contextmenue>
 
 <contextmenue name="imagelockuser">
-	<contextentry name="explorer.context.unlock" href="#"/>
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="#"/>
@@ -319,7 +319,7 @@
 </contextmenue>
 
 <contextmenue name="binarylockuser">
-	<contextentry name="explorer.context.unlock" href="#"/>
+	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="#"/>

@@ -88,6 +88,7 @@ var DO_METAVIEW=13;
 
 var DO_EDIT=14;
 var DO_HTMLEDIT=15;
+var DO_TEMPLATEEDIT=42;
 var DO_VIEW=16;
 var DO_EXPORT=17;
 
@@ -221,25 +222,21 @@ function checklyrheight(welche)
 
 }
 
-function doAction(action) // which action on layer is clicked
-{
+// which action on layer is clicked
+function doAction(action) {
 	hidemenu(letztelyr);
 	
-	switch(action)
-	{
-		case DO_LOCK:
-		{
+	switch(action)	{
+		case DO_LOCK: {
 			location.href='lock.html?file='+ kontextparam;
 			break;
-		}
+		} 
 		case 2:
 		{
 			location.href='explorer_files_lockchange.html';
 			break;
-		}
-		case 3:
-		{
-			location.href='explorer_files_unlock.html';
+		} case DO_UNLOCK: {
+			location.href='unlock.html?file='+ kontextparam;
 			break;
 		}
 		
@@ -293,17 +290,15 @@ function doAction(action) // which action on layer is clicked
 		{
 			location.href='explorer_files_metashow.html';
 			break;
-		}
-		
-		case 14:
-		{
-			top.location.href='edit_text.html';
+		} case DO_EDIT: {
+			top.location.href='Editor.html?file='+ kontextparam;
 			break;
-		}
-		case 15:
-		{
-			top.location.href='edit_html.html';
+		} case DO_HTMLEDIT: {
+			top.location.href='htmleditor.html?file='+ kontextparam;
 			break;
+		} case DO_TEMPLATEEDIT: {
+					top.location.href='templateeditor.html?file='+ kontextparam;
+					break;
 		}
 		case 16:
 		{

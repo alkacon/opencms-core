@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2000/02/10 10:24:53 $
+ * @version $Revision: 1.29 $ $Date: 2000/02/10 13:15:36 $
  */
 public interface I_CmsWpConstants {
 
@@ -41,7 +41,10 @@ public interface I_CmsWpConstants {
 
     /** Parameter for locking pages */
     public static final String C_PARA_LOCK = "lock";  
-  
+
+    /** Parameter for unlocking pages */
+    public static final String C_PARA_UNLOCK = "unlock"; 
+    
     /** Parameter for a filename */
     public static final String C_PARA_FILE = "file";  
     
