@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/01/29 15:13:32 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/02/01 13:59:02 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.14 $ $Date: 2002/01/29 15:13:32 $
+ * @version $Revision: 1.15 $ $Date: 2002/02/01 13:59:02 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -136,35 +136,43 @@ public class CmsStaticExport implements I_CmsConstants{
             }
             createDynamicRules();
         }else{
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
-                                    "[CmsStaticExport] Starting the static export.");
-            }
-            m_servletUrl = cms.getRequestContext().getRequest().getServletUrl();
-            m_webAppUrl = cms.getRequestContext().getRequest().getWebAppUrl();
-            createDynamicRules();
-            checkExportPath();
-            Vector exportLinks = null;
-            if(m_afterPublish){
-                exportLinks = getChangedLinks(changedResources);
-            }else{
-                exportLinks = getStartLinks();
-            }
-/*            // we only need the names of the projectResources
-            if(projectResources != null){
-                m_projectResources = new Vector(projectResources.size());
-                for(int i=0; i<projectResources.size(); i++){
-                    m_projectResources.addElement(
-                        ((CmsResource)projectResources.elementAt(i)).getAbsolutePath());
+            try{
+                m_servletUrl = cms.getRequestContext().getRequest().getServletUrl();
+                m_webAppUrl = cms.getRequestContext().getRequest().getWebAppUrl();
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                                        "[CmsStaticExport] Starting the static export.");
                 }
-            }
-*/            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
-                        "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
-            }
-            for(int i=0; i < exportLinks.size(); i++){
-                String aktLink = (String)exportLinks.elementAt(i);
-                exportLink(aktLink, exportLinks);
+                createDynamicRules();
+                checkExportPath();
+                Vector exportLinks = null;
+                if(m_afterPublish){
+                    exportLinks = getChangedLinks(changedResources);
+                }else{
+                    exportLinks = getStartLinks();
+                }
+    /*            // we only need the names of the projectResources
+                if(projectResources != null){
+                    m_projectResources = new Vector(projectResources.size());
+                    for(int i=0; i<projectResources.size(); i++){
+                        m_projectResources.addElement(
+                            ((CmsResource)projectResources.elementAt(i)).getAbsolutePath());
+                    }
+                }
+    */            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                            "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
+                }
+                for(int i=0; i < exportLinks.size(); i++){
+                    String aktLink = (String)exportLinks.elementAt(i);
+                    exportLink(aktLink, exportLinks);
+                }
+            }catch(NullPointerException e){
+                // no original request
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                                        "[CmsStaticExport] Nothing found to export.");
+                }
             }
         }
     }
