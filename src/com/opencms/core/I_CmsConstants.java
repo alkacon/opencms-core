@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/12/11 09:13:05 $
-* Version: $Revision: 1.191 $
+* Date   : $Date: 2001/12/20 15:29:37 $
+* Version: $Revision: 1.192 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.191 $ $Date: 2001/12/11 09:13:05 $
+ * @version $Revision: 1.192 $ $Date: 2001/12/20 15:29:37 $
  */
 public interface I_CmsConstants {
 
@@ -162,6 +162,18 @@ public interface I_CmsConstants {
      * Property for resource navigation title
      */
     static final String C_PROPERTY_VISIBLE = "visiblemethod";
+
+    /**
+     * Property for resource export name. When resource is exported
+     * by the static export this name is used instead of the realname.
+     */
+    static final String C_PROPERTY_EXPORTNAME = "exportname";
+
+    /**
+     * Property for resource export name. When resource is exported
+     * by the static export this name is used instead of the realname.
+     */
+    static final String C_PROPERTY_DYAMIC = "dynamic";
 
     /**
      * Property for resource navigation title
@@ -497,6 +509,26 @@ public interface I_CmsConstants {
      * A string in the configuration-file.
      */
     static final String C_STATICEXPORT_START = "staticexport.start";
+
+    /**
+     * A string in the configuration-file.
+     */
+    static final String C_URL_PREFIX_EXPORT = "url_prefix_export";
+
+    /**
+     * A string in the configuration-file.
+     */
+    static final String C_URL_PREFIX_HTTP = "url_prefix_http";
+
+    /**
+     * A string in the configuration-file.
+     */
+    static final String C_URL_PREFIX_HTTPS = "url_prefix_https";
+
+    /**
+     * A string in the configuration-file.
+     */
+    static final String C_URL_PREFIX_SERVERNAME = "url_prefix_servername";
 
     /**
      * The folder - seberator in this system

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.164 $
+* Date   : $Date: 2001/12/20 15:29:37 $
+* Version: $Revision: 1.165 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.164 $ $Date: 2001/11/15 16:41:21 $
+ * @version $Revision: 1.165 $ $Date: 2001/12/20 15:29:37 $
  *
  */
 
@@ -1390,6 +1390,24 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      */
     public Vector getResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition,
                                            String propertyValue, int resourceType) throws CmsException;
+
+   /**
+     * Returns a Vector with all resources of the given type that have set the given property to the given value.
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param propertyDefinition, the name of the propertydefinition to check.
+     *
+     * @return Vector with all resources.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public Vector getResourcesWithProperty(CmsUser currentUser, CmsProject currentProject,
+            String propertyDefinition) throws CmsException;
+
     /**
      * Returns a CmsResourceTypes.
      *

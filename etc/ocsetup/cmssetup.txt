@@ -36,6 +36,17 @@ createPropertydefinition module compatiblePlain
 createPropertydefinition Description binary
 createPropertydefinition Keywords binary
 createPropertydefinition Description image
+createPropertydefinition dynamic compatiblePlain
+createPropertydefinition dynamic folder
+createPropertydefinition dynamic plain
+createPropertydefinition dynamic page
+createPropertydefinition dynamic link
+createPropertydefinition exportname compatiblePlain
+createPropertydefinition exportname folder
+createPropertydefinition exportname plain
+createPropertydefinition exportname page
+createPropertydefinition exportname image
+createPropertydefinition exportname link
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/12/18 17:06:10 $
-* Version: $Revision: 1.230 $
+* Date   : $Date: 2001/12/20 15:29:37 $
+* Version: $Revision: 1.231 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.230 $ $Date: 2001/12/18 17:06:10 $ *
+ * @version $Revision: 1.231 $ $Date: 2001/12/20 15:29:37 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -3397,6 +3397,104 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
         return resources;
     }
+
+    /**
+     * Returns a Vector with all resources of the given type
+     * that have set the given property. For the start it is
+     * only used by the static export so it reads the online project only.
+     *
+     * @param projectid, the id of the project to test.
+     * @param propertyDefinition, the name of the propertydefinition to check.
+     *
+     * @return Vector with all resources.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public Vector getResourcesWithProperty(int projectId, String propertyDefinition)
+                throws CmsException {
+        Vector resources = new Vector();
+        ResultSet res = null;
+        PreparedStatement statement = null;
+        Connection con = null;
+        String usedPool = null;
+        String usedStatement = null;
+        //int onlineProject = getOnlineProject(projectId).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        if (projectId == onlineProject){
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+        } else {
+            usedPool = m_poolName;
+            usedStatement = "";
+        }
+        try {
+            con = DriverManager.getConnection(usedPool);
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_RESOURCE_WITH_PROPERTYDEF"+usedStatement));
+            statement.setInt(1, projectId);
+            statement.setString(2, propertyDefinition);
+            res = statement.executeQuery();
+            String lastResourcename = "";
+            // store the result into the vector
+            while (res.next()) {
+                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
+                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                CmsResource resResource = new CmsResource(resId,parentId,fileId,resName,resType,resFlags,userId,
+                                groupId,projectID,accessFlags,state,lockedBy,
+                                launcherType,launcherClass,created,modified,modifiedBy,
+                                resSize,lockedInProject);
+                if (!resName.equalsIgnoreCase(lastResourcename)){
+                    resources.addElement(resResource);
+                }
+                lastResourcename = resName;
+            }
+        } catch (SQLException e) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+        } catch (Exception exc) {
+            throw new CmsException("getResourcesWithProperty" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            // close all db-resources
+             if(res != null) {
+                 try {
+                     res.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+             }
+             if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+             }
+             if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+             }
+        }
+        return resources;
+    }
+
     /**
      * Reads the complete folder-tree for this project.<BR>
      *

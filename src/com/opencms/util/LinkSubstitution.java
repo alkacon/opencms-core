@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2001/11/23 15:22:56 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/12/20 15:29:38 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,13 @@ package com.opencms.util;
 
 import com.opencms.file.CmsObject;
 import com.opencms.core.*;
+import com.opencms.file.CmsStaticExport;
 import com.opencms.htmlconverter.*;
 import org.apache.oro.text.perl.*;
 import javax.servlet.http.*;
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 /**
  * Title:        OpenCms
@@ -164,6 +166,16 @@ public class LinkSubstitution {
                 }
             }
         }
+        // check if we are in a https page (then we have to set the http
+        // protocol ahead the "not-https-links" in this page
+        boolean httpsMode = false;
+        if(modus == cms.C_MODUS_ONLINE){
+            // https pages are always online
+            String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
+            if("https".equalsIgnoreCase(scheme)){
+                httpsMode = true;
+            }
+        }
         String[] rules = cms.getLinkRules(modus);
         if(rules == null || rules.length == 0){
             return link;
@@ -171,9 +183,17 @@ public class LinkSubstitution {
         String retValue = link;
         for(int i=0; i<rules.length; i++){
             try{
-                retValue = c_perlUtil.substitute(rules[i], link);
+                if("*dynamicRules*".equals(rules[i])){
+                    // here we go trough our dynamic rules
+                    retValue = CmsStaticExport.handleDynamicRules(link, modus);
+                }else{
+                    retValue = c_perlUtil.substitute(rules[i], link);
+                }
                 if(!link.equals(retValue)){
                     // found the match
+                    if(httpsMode && !retValue.startsWith("http")){
+                        retValue = cms.getUrlPrefixArray()[3] + retValue;
+                    }
                     return retValue;
                 }
             }catch(MalformedPerl5PatternException e){
@@ -182,7 +202,9 @@ public class LinkSubstitution {
                 }
             }
         }
-
+        if(httpsMode && !retValue.startsWith("http")){
+            retValue = cms.getUrlPrefixArray()[3] + retValue;
+        }
         return retValue;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportRequest.java,v $
-* Date   : $Date: 2001/11/15 15:56:45 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/12/20 15:29:37 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,11 +57,10 @@ public class CmsExportRequest implements I_CmsRequest {
         return enu;
     }
     public Object getOriginalRequest() {
-        return null;
+        throw new java.lang.UnsupportedOperationException("Method getOriginalRequest not supported in StaticExport.");
     }
     public int getOriginalRequestType() {
-        /**@todo: Implement this com.opencms.core.I_CmsRequest method*/
-        return 0;
+        throw new java.lang.UnsupportedOperationException("Method getOriginalRequestType not supported in StaticExport.");
     }
     public String getParameter(String name) {
         if(m_parameters != null){
@@ -107,7 +106,7 @@ public class CmsExportRequest implements I_CmsRequest {
      * http://www.myserver.com/opencms
      */
     public String getWebAppUrl() {
-        return null;
+        throw new java.lang.UnsupportedOperationException("Method getWebAppUrl not supported in StaticExport.");
     }
 
     /**
@@ -115,6 +114,6 @@ public class CmsExportRequest implements I_CmsRequest {
      * Web-Application.
      */
     public String getServletUrl() {
-        return null;
+        throw new java.lang.UnsupportedOperationException("Method getServletUrl not supported in StaticExport.");
     }
 }

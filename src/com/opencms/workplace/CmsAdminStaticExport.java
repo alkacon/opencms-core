@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2001/12/11 14:49:50 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/12/20 15:29:38 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.oro.text.perl.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -76,7 +76,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
 
         // get the parameters
         String action = (String)parameters.get("action");
-        if(action == null) {
+        if(action == null || "dynPrint".equals(action)) {
             // This is an initial request of the static export page
             Vector exportStartPoints = cms.getStaticExportStartPoints();
             String allStartPoints = "";
@@ -88,6 +88,25 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
             }
             xmlTemplateDocument.setData("exportpoints", allStartPoints);
             xmlTemplateDocument.setData("path", cms.getStaticExportPath());
+            if("dynPrint".equals(action)){
+                // print the dynamic rules to the errorlog
+                System.err.println("");
+                System.err.println("The dynamic rulesets created by OpenCms:");
+                System.err.println("----------------------------------------");
+                System.err.println("");
+                System.err.println("---- Online ----");
+                for(int i=0; i<CmsStaticExport.m_dynamicExportRulesOnline.size();System.err.println(CmsStaticExport.m_dynamicExportRulesOnline.elementAt(i++)));
+                System.err.println("");
+                System.err.println("---- Extern ----");
+                for(int i=0; i<CmsStaticExport.m_dynamicExportRulesExtern.size();System.err.println(CmsStaticExport.m_dynamicExportRulesExtern.elementAt(i++)));
+                System.err.println("");
+                System.err.println("---- nicename Online ----");
+                for(int i=0; i<CmsStaticExport.m_dynamicExportNameRules.size();System.err.println(CmsStaticExport.m_dynamicExportNameRules.elementAt(i++)));
+                System.err.println("");
+                System.err.println("---- nicename  Extern----");
+                for(int i=0; i<CmsStaticExport.m_dynamicExportNameRulesExtern.size();System.err.println(CmsStaticExport.m_dynamicExportNameRulesExtern.elementAt(i++)));
+                System.err.println("");
+            }
         }
 
         // special feature to test the regular expressions

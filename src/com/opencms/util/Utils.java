@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2001/11/09 11:23:40 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2001/12/20 15:29:38 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -360,14 +360,18 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
     }
 
     /**
-     * This method splits a overgiven string into substrings.
+     * This method replaces all occurences of the replaceKey in the toReplace string with the replaceWith String.
      *
-     * @param toSplit the String to split.
-     * @param at the delimeter.
+     * @param toReplace the String to replace something in.
+     * @param replaceKey the String that will be replaced.
+     * @param replaceWith The string that is inserted in the place marked with the replaceKey.
      *
-     * @return an Array of Strings.
+     * @return String.
      */
     public static final String replace(String toReplace, String replaceKey, String replaceWith) {
+        if(toReplace == null){
+            return null;
+        }
         StringBuffer retValue = new StringBuffer();
 
         int index = 0;

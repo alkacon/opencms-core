@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/12/20 15:26:47 $
-* Version: $Revision: 1.298 $
+* Date   : $Date: 2001/12/20 15:29:38 $
+* Version: $Revision: 1.299 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.298 $ $Date: 2001/12/20 15:26:47 $
+ * @version $Revision: 1.299 $ $Date: 2001/12/20 15:29:38 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3428,6 +3428,25 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
     }
 
     /**
+     * Returns a Vector with all resources of the given type that have set the given property to the given value.
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param propertyDefinition, the name of the propertydefinition to check.
+     *
+     * @return Vector with all resources.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public Vector getResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition)
+                                           throws CmsException {
+        return m_dbAccess.getResourcesWithProperty(currentProject.getId(), propertyDefinition);
+    }
+
+    /**
      * Returns a I_CmsResourceType.
      *
      * <B>Security:</B>
@@ -4355,7 +4374,7 @@ public void exportStaticResources(CmsUser currentUser, CmsProject currentProject
 
     if(isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject) ||
         isUser(currentUser, currentProject)) {
-        new CmsStaticExport(cms, startpoints);
+        new CmsStaticExport(cms, startpoints, true);
     } else {
          throw new CmsException("[" + this.getClass().getName() + "] exportResources",
              CmsException.C_NO_ACCESS);

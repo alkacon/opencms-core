@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2001/11/15 15:43:57 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2001/12/20 15:29:37 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.44 $ $Date: 2001/11/15 15:43:57 $
+ * @version $Revision: 1.45 $ $Date: 2001/12/20 15:29:37 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -265,25 +265,28 @@ public class CmsRequestContext implements I_CmsConstants {
 
         // Analyze the user's preferred languages coming with the request
         if(req != null) {
-            HttpServletRequest httpReq = (HttpServletRequest)req.getOriginalRequest();
-            String accLangs = null;
-            if(httpReq != null){
-                accLangs = httpReq.getHeader("Accept-Language");
-            }
-            if(accLangs != null) {
-                StringTokenizer toks = new StringTokenizer(accLangs, ",");
-                while(toks.hasMoreTokens()) {
-                    // Loop through all languages and cut off trailing extensions
-                    String current = toks.nextToken().trim();
-                    if(current.indexOf("-") > -1) {
-                        current = current.substring(0, current.indexOf("-"));
-                    }
-                    if(current.indexOf(";") > -1) {
-                        current = current.substring(0, current.indexOf(";"));
-                    }
-                    m_language.addElement(current);
-
+            try{
+                HttpServletRequest httpReq = (HttpServletRequest)req.getOriginalRequest();
+                String accLangs = null;
+                if(httpReq != null){
+                    accLangs = httpReq.getHeader("Accept-Language");
                 }
+                if(accLangs != null) {
+                    StringTokenizer toks = new StringTokenizer(accLangs, ",");
+                    while(toks.hasMoreTokens()) {
+                        // Loop through all languages and cut off trailing extensions
+                        String current = toks.nextToken().trim();
+                        if(current.indexOf("-") > -1) {
+                            current = current.substring(0, current.indexOf("-"));
+                        }
+                        if(current.indexOf(";") > -1) {
+                            current = current.substring(0, current.indexOf(";"));
+                        }
+                        m_language.addElement(current);
+
+                    }
+                }
+            }catch(UnsupportedOperationException e){
             }
         }
     }

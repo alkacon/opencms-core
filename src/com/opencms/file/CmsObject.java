@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/12/07 14:18:02 $
-* Version: $Revision: 1.212 $
+* Date   : $Date: 2001/12/20 15:29:37 $
+* Version: $Revision: 1.213 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.212 $ $Date: 2001/12/07 14:18:02 $
+ * @version $Revision: 1.213 $ $Date: 2001/12/20 15:29:37 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1694,6 +1694,14 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
     }
 
     /**
+     * Gets the prefix array for the linkreplacement
+     * @return String[4]
+     */
+    public String[] getUrlPrefixArray(){
+        return OpenCms.getUrlPrefixArray();
+    }
+
+    /**
      * Returns the mode this cmsObject is runnig in. AUTO mode (-1) means
      * it is no special case and returns online ore offline depending on the
      * current project.
@@ -1803,6 +1811,26 @@ public Vector getResourcesInFolder(String folder) throws CmsException {
         return m_rb.getResourcesWithProperty(m_context.currentUser(), m_context.currentProject(),
                                              propertyDefinition, propertyValue, resourceType);
     }
+
+   /**
+     * Returns a Vector with all resources of the given type that have set the given property.
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param propertyDefinition, the name of the propertydefinition to check.
+     * @param propertyValue, the value of the property for the resource.
+     * @param resourceType The resource type of the resource
+     *
+     * @return Vector with all resources.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public Vector getResourcesWithProperty(String propertyDefinition) throws CmsException {
+        return m_rb.getResourcesWithProperty(m_context.currentUser(), m_context.currentProject(),
+                                             propertyDefinition);
+    }
+
 /**
  * Returns a I_CmsResourceType.
  *

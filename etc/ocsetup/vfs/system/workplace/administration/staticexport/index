@@ -73,7 +73,7 @@ top.help_url='Administration/statischerExport.html';
                                 </td>
                             </tr>
                             <tr>
-                                <td class=formular width=10%>]]><LABEL value="staticexport.label.filename"/><![CDATA[<a href="index.html?action=regTest">:</a></td>
+                                <td class=formular width=10%>]]><LABEL value="staticexport.label.filename"/><![CDATA[<a href="index.html?action=dynPrint">:</a></td>
                                 <td class=dialogtxt><input type="text" class="textfeld3" maxlength="250" disabled name="filename" id="VNAME" value="]]><PROCESS>path</PROCESS><![CDATA["></td> 
                             </tr>
                             <!-- Beginn Leerzeile-->
