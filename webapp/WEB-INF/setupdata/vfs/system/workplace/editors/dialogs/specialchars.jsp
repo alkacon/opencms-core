@@ -12,8 +12,7 @@
 <script type="text/javascript">
 <!--
 function insertChar(thechar) {
-	opener.document.EDIT_HTML.focus();
-	opener.document.EDIT_HTML.DOM.selection.createRange().pasteHTML(thechar);
+	window.opener.insertHtml(thechar);
 	window.close();
 }
 //-->

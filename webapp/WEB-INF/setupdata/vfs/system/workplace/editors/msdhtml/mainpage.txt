@@ -93,6 +93,8 @@ var LANG_DELETECELL = "<%= wp.key("editor.context.deletecell") %>";
 var LANG_MERGECELL = "<%= wp.key("editor.context.mergecell") %>";
 var LANG_SPLITCELL = "<%= wp.key("editor.context.splitcell") %>";
 
+var LANG_NOSELECTION = "<%= wp.key("editor.message.noselection") %>";
+
 // popup window holder and counter
 var openWindow = null;
 var focusCount = 0;

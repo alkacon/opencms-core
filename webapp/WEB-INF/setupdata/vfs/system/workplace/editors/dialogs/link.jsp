@@ -8,15 +8,8 @@
 <script type="text/javascript">
 <!--
 
-var linkEditor = null;
-var linkEditorAll = null;
-var linkEditorRange = null;
-var linkEditorSelection = null;
-var linkEditorStyleInputs = false;
+var linkEditorStyleInputs = <%= request.getParameter("showCss") %>;
 var linkEditorPrefix = null;
-
-var foundRange = null;
-var foundLink = null;
 
 /**
 * Extends Javascript String to have a trim() function.
@@ -30,7 +23,6 @@ String.prototype.trim = function() {
 * Paste the calculated link to the calling editor.
 */
 function pasteLink() {
-	var linkurl = document.NEU.neulink.value;
 	var linktarget = document.NEU.linktarget.options[document.NEU.linktarget.selectedIndex].value;
 	if ("named" == linktarget) {
   		linktarget = document.NEU.targetname.value;
@@ -39,163 +31,77 @@ function pasteLink() {
   		}
 	}
 	
+	var linkInformation = new Object();
+	linkInformation["type"] = "link";
+	var linkAnchor = document.NEU.neulink.value;
+	if (linkAnchor.length > 0) {
+		linkAnchor = checkContext(linkAnchor, true);
+	}
+	linkInformation["href"] = linkAnchor;
+	linkInformation["name"] = "";
+	linkInformation["target"] = linktarget;
 	if (linkEditorStyleInputs) {
-  		var linkstyle = document.NEU.linkstyle.value;
-  		var linkstyleclass = document.NEU.linkstyleclass.value;
+		linkInformation["style"] = document.NEU.linkstyle.value;
+		linkInformation["class"] = document.NEU.linkstyleclass.value;
+	} else {
+		linkInformation["style"] = "";
+		linkInformation["class"] = "";
 	}
-
-	if (foundLink != null) {
-  		foundLink.removeNode();
-	}
-
-	if (linkurl.length > 0) {
-
-  		foundRange.execCommand("CreateLink", false, "/");
-
-  		var el = foundRange.parentElement();
-  		while ((el.tagName != "BODY") && (el.tagName != "A")) {
-      			if (el.tagName == "IMG") {
-          			// Set border to 0 for images, this is what you want in 99% of all cases
-          			el.border = 0;
-      			}
-      			el = el.parentElement;
-  		}
-
-	  	if (linkurl.length > 0) {
-	  			
-	      		el.setAttribute("HREF", checkContext(linkurl, true), 0);
-	  	} else {
-	      		el.removeAttribute("HREF", false);
-	  	}
-	
-	  	if ((linktarget.length > 0) && (linkurl.length > 0)) {
-	      		el.target = linktarget;
-	  	} else {
-	      		el.removeAttribute("TARGET", false);
-	  	}
-
-	  	if (linkEditorStyleInputs) {
-	      		if(linkstyle.length > 0) {
-	          		el.style.cssText = linkstyle;
-	      		}
-	
-	      		if(linkstyleclass.length > 0) {
-	          		el.className = linkstyleclass;
-	      		}
-	  	}
-	}
-
+	window.opener.createLink(linkInformation);
 	window.close();
 }
 
 /**
 * Set the current selection in the calling editor and fill the fields of the editor form.
-* You must set the following variables in the javascript of the opening window:
+* You must set the request parameters in the javascript of the opening window:
 *
-* linkEditor
-* linkEditorAll
-* linkEditorRange
-* linkEditorSelection
-* linkEditorStyleInputs
-* linkEditorPrefix
+* showCss
+* href
+* target
+* style
+* class
 */
 function init() {
-	// Get the editor element, a complete range of the editor and the editor selection
-	linkEditor = window.opener.linkEditor;
-	linkEditorAll = window.opener.linkEditorAll;
-	linkEditorRange = window.opener.linkEditorRange;
-	linkEditorSelection = window.opener.linkEditorSelection;
-	if (window.opener.linkEditorStyleInputs != null) {
-    	linkEditorStyleInputs = window.opener.linkEditorStyleInputs;
-	}
 	if (window.opener.linkEditorPrefix != null) {
     	linkEditorPrefix = window.opener.linkEditorPrefix;
 	}
-
-	// Get all links in editor (ie. tags like <A HREF>)
-	var allLinks = linkEditorAll.tags("A");
-
-	// Create a range on the current selection
-	var range = linkEditorSelection.createRange();
-
-	if (typeof(range.text) != 'undefined') {
-    // If this is undefined, the selection is a MS IE "ControlSelection",
-    // which can not be used for adding a link
-
-    for(i = 0; i < allLinks.length; i++) {
-        foundRange = null;
-
-        // Create range on whole text
-        var mainrange = linkEditorRange;
-
-        // Move range to the current A-element
-        mainrange.moveToElementText(allLinks[i]);
-
-        // Compare the selection with the current range, and expand if neccessary
-        if (mainrange.inRange(range)) {
-            foundRange = mainrange;
-        } else if (range.inRange(mainrange) || range.isEqual(mainrange)) {
-            foundRange = range;
+	var anchor = "<%= request.getParameter("href") %>";
+	if (anchor != "null") {
+		document.forms["NEU"].elements["neulink"].value = anchor;
+	}
+	if (linkEditorStyleInputs) {
+		var anchorStyle = "<%= request.getParameter("style") %>";
+		var anchorClass = "<%= request.getParameter("class") %>";
+		if (anchorStyle != "null") {
+			document.forms["NEU"].elements["linkstyle"].value = anchorStyle;
+		}
+		if (anchorClass != "null") {
+			document.forms["NEU"].elements["linkstyleclass"].value = anchorClass;
+		}
+	}
+	
+	document.forms["NEU"].elements["targetname"].value = "";
+	var anchorTarget = "<%= request.getParameter("target") %>";
+	if (anchorTarget != "null") {
+		if ((anchorTarget == "_self") || (anchorTarget == "") || (anchorTarget == null)) {
+    	    document.forms["NEU"].elements["linktarget"].selectedIndex = 0;
+        } else if (anchorTarget == "_blank") {
+            document.forms["NEU"].elements["linktarget"].selectedIndex = 1;
+        } else if (anchorTarget == "_top") {
+            document.forms["NEU"].elements["linktarget"].selectedIndex = 2;
         } else {
-            var s2e = range.compareEndPoints("StartToEnd", mainrange);
-            var s2s = range.compareEndPoints("StartToStart", mainrange);
-            var e2s = range.compareEndPoints("EndToStart", mainrange);
-            var e2e = range.compareEndPoints("EndToEnd", mainrange);
-            if ((s2s == -1) && (e2s >= 0)) {
-                foundRange = range;
-                foundRange.setEndPoint("EndToEnd", mainrange);
-            } else if ((s2e == -1) && (e2e >= 0)) {
-                foundRange = range;
-                foundRange.setEndPoint("StartToStart", mainrange);
-            }
+            document.forms["NEU"].elements["linktarget"].selectedIndex = 3;
+            document.forms["NEU"].elements["targetname"].value = anchorTarget;
         }
-
-        // Finally fill the input fields of the form
-        if (foundRange != null) {
-            // Use expanded selection to fill input areas
-            foundRange.select();
-            foundLink = allLinks[i];
-            document.forms["NEU"].elements["neulink"].value = checkContext(foundLink.getAttribute("HREF", 2), false);
-            if (linkEditorStyleInputs) {
-                document.forms["NEU"].elements["linkstyle"].value = foundLink.style.getAttribute("CSSTEXT", 2);
-                document.forms["NEU"].elements["linkstyleclass"].value = foundLink.getAttribute("CLASSNAME", 2);
-            }
-
-            document.forms["NEU"].elements["targetname"].value = "";
-            if((foundLink.target == "_self") || (foundLink.target == "") || (foundLink.target == null)) {
-                document.forms["NEU"].elements["linktarget"].selectedIndex = 0;
-            } else if(foundLink.target == "_blank") {
-                document.forms["NEU"].elements["linktarget"].selectedIndex = 1;
-            } else if(foundLink.target == "_top") {
-                document.forms["NEU"].elements["linktarget"].selectedIndex = 2;
-            } else {
-                document.forms["NEU"].elements["linktarget"].selectedIndex = 3;
-                document.forms["NEU"].elements["targetname"].value = foundLink.target;
-            }
-            setNameTarget(false);
-            break;
-        }
-    }
-
-    if (foundLink == null) {
-        // No previous "A" element found, set selection text in input area
-        foundRange = range;
-    }
-}
-
-if ((foundRange == null) || (foundRange.htmlText == "") || (foundRange.htmlText == null)) {
-    // No valid selection, display message and close window
-    alert("<%= wp.key("editor.message.noselection") %>");
-    window.close();
-} else {
-    document.forms["NEU"].elements["neulink"].focus();
-}
+        setNameTarget(false);
+	}
+	document.forms["NEU"].elements["neulink"].focus();
 }
 
 function setNameTarget(param) {
 	var select = document.forms["NEU"].elements["linktarget"];
 	var input  = document.forms["NEU"].elements["targetname"];
-	var span   = document.all["targetinput"];
+	var span   = document.getElementById("targetinput");
 	if (param) {
    		var target = input.value;
     	if ((target != null) && (target.trim() != "")) {
@@ -346,7 +252,7 @@ function checkContext(linkUrl, add) {
                 </tr>
                 <script type="text/javascript">
                 <!--
-                if (window.opener.linkEditorStyleInputs) {
+                if (linkEditorStyleInputs) {
                   document.write('<tr><td style="white-space: nowrap;"><%= wp.key("input.linkstyle") %>:</td>' +
                     '<td class="maxwidth"><input type="text" name="linkstyle" class="maxwidth"  />' +
                     '</td><td>&nbsp;</td></tr><tr>' +

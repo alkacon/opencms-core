@@ -28,6 +28,170 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+var foundRange = null;
+var foundLink = null;
+
+function hasSelectedText() {
+	// create a range on the current selection
+	var range = EDITOR.EDIT_HTML.DOM.selection.createRange();
+	var selectedRange = null;
+
+	if (typeof(range.text) != 'undefined') {
+	    // if this is undefined, the selection is a MS IE "ControlSelection", which can not be used
+	    selectedRange = range;
+	}
+
+	if ((selectedRange == null) || (selectedRange.htmlText == "") || (selectedRange.htmlText == null)) {
+	    // no valid selection, display message
+	    return false;
+	} else {
+	    return true;
+	}
+}
+
+// pastes the html content at the current cursor position 
+function insertHtml(htmlContent) {
+	document.EDIT_HTML.focus();
+	document.EDIT_HTML.DOM.selection.createRange().pasteHTML(htmlContent);
+}
+
+// creates a link at the selected position using the passed link information object
+function createLink(linkInformation) {
+	// remove old anchor
+	if (foundLink != null) {
+		foundLink.removeNode();
+	}
+	if (linkInformation["type"] == "anchor") {
+		// create an anchor
+		if (linkInformation["name"].length > 0) {
+			foundRange.execCommand("CreateLink", false, "/");
+			var el = foundRange.parentElement();
+			while ((el.tagName != "BODY") && (el.tagName != "A")) {
+  				if (el.tagName == "IMG") {
+      				// set border to 0 for images, this is what you want in 99% of all cases
+      				el.border = 0;
+  				}
+  				el = el.parentElement;
+			}
+   			el.name = linkInformation["name"];
+    		el.removeAttribute("HREF", false);
+
+  			if (USE_LINKSTYLEINPUTS) {
+      			if (linkInformation["style"].length > 0) {
+          			el.style.cssText = linkInformation["style"];
+      			}
+
+	      		if (linkInformation["class"].length > 0) {
+	          		el.className = linkInformation["class"];
+    	  		}
+  			}
+		}
+	} else {
+		// create a complete link
+		if (linkInformation["href"].length > 0) {
+			foundRange.execCommand("CreateLink", false, "/");
+
+			var el = foundRange.parentElement();
+			while ((el.tagName != "BODY") && (el.tagName != "A")) {
+  				if (el.tagName == "IMG") {
+      				// Set border to 0 for images, this is what you want in 99% of all cases
+      				el.border = 0;
+  				}
+  				el = el.parentElement;
+			}
+
+  			if (linkInformation["href"].length > 0) {	
+      			el.setAttribute("HREF", linkInformation["href"], 0);
+  			} else {
+      			el.removeAttribute("HREF", false);
+  			}
+
+  			if ((linkInformation["target"].length > 0) && (linkInformation["href"].length > 0)) {
+      			el.target = linkInformation["target"];
+  			} else {
+      			el.removeAttribute("TARGET", false);
+  			}
+
+  			if (USE_LINKSTYLEINPUTS) {
+      			if (linkInformation["style"].length > 0) {
+          			el.style.cssText = linkInformation["style"];
+      			}
+
+	      		if (linkInformation["class"].length > 0) {
+	          		el.className = linkInformation["class"];
+    	  		}
+  			}
+		}
+	}		
+}
+
+function getSelectedLink() {
+	// Get the editor element, a complete range of the editor and the editor selection
+	var link = null;
+	linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A");
+	linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
+	linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
+	foundLink = null;
+	foundRange = null;
+
+	// Get all links in editor (ie. tags like <A HREF>)
+	var allLinks = linkEditorAll;
+
+	// Create a range on the current selection
+	var range = linkEditorSelection.createRange();
+
+	if (typeof(range.text) != 'undefined') {
+	    // if this is undefined, the selection is a MS IE "ControlSelection", which can not be used for adding a link	
+	    for (i = 0; i < allLinks.length; i++) {
+	
+	        // cCreate range on whole text
+	        var mainrange = linkEditorRange;
+	
+	        // move range to the current A-element
+	        mainrange.moveToElementText(allLinks[i]);
+	
+	        // compare the selection with the current range, and expand if neccessary
+	        if (mainrange.inRange(range)) {
+	            foundRange = mainrange;
+	        } else if (range.inRange(mainrange) || range.isEqual(mainrange)) {
+	            foundRange = range;
+	        } else {
+	            var s2e = range.compareEndPoints("StartToEnd", mainrange);
+	            var s2s = range.compareEndPoints("StartToStart", mainrange);
+	            var e2s = range.compareEndPoints("EndToStart", mainrange);
+	            var e2e = range.compareEndPoints("EndToEnd", mainrange);
+	            if ((s2s == -1) && (e2s >= 0)) {
+	                foundRange = range;
+	                foundRange.setEndPoint("EndToEnd", mainrange);
+	            } else if ((s2e == -1) && (e2e >= 0)) {
+	                foundRange = range;
+	                foundRange.setEndPoint("StartToStart", mainrange);
+	            }
+	        }
+	
+	        // Finally fill the link object
+	        if (foundRange != null) {
+	            // Use expanded selection to fill input areas
+	            foundRange.select();
+	            link = new Object();
+	            foundLink = allLinks[i];
+	            link["href"] = encodeURIComponent(foundLink.getAttribute("HREF", 2));
+	            link["target"] = foundLink.target;
+	            link["name"] = foundLink.getAttribute("NAME", 2);
+	            if (USE_LINKSTYLEINPUTS) {
+	            	link["style"] = encodeURIComponent(foundLink.style.getAttribute("CSSTEXT", 2));
+	            	link["class"] = foundLink.getAttribute("CLASSNAME", 2);
+	            }
+	            break;
+	        }
+	    }
+	    if (foundRange == null) {
+	    	foundRange = range;
+	    }
+	}
+	return link;
+}
 
 // Script for MS DHTML editor
 var binlist=null;
@@ -404,15 +568,24 @@ function doEditHTML(para) {
 		_editor.ExecCommand(DECMD_HYPERLINK, 1);
 		break;
 	case 50:
-		var winheight = (USE_LINKSTYLEINPUTS?220:170);
-		linkEditor = EDITOR.EDIT_HTML;
-		linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A");
-		linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
-		linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
-		linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
-		openWindow = window.open('dialogs/link.jsp','SetLink', "width=480, height=" + winheight + ", resizable=no, top=300, left=250");
+		if (hasSelectedText()) {
+			var winheight = (USE_LINKSTYLEINPUTS?220:170);
+			var linkInformation = getSelectedLink();
+			var params = "?showCss=" + USE_LINKSTYLEINPUTS;
+			if (linkInformation != null) {
+				params += "&href=" + linkInformation["href"];
+				params += "&target=" + linkInformation["target"];
+				if (USE_LINKSTYLEINPUTS) {
+					params += "&style=" + linkInformation["style"];
+					params += "&class=" + linkInformation["class"];
+				}
+			}			
+		openWindow = window.open('dialogs/link.jsp' + params,'SetLink', "width=480, height=" + winheight + ", resizable=no, top=300, left=250");
 		focusCount = 1;
 		openWindow.focus();
+		} else {
+			alert (LANG_NOSELECTION);
+		}
 		break;
 	case 51:
 		checkTableElSelection("TR");
@@ -421,15 +594,23 @@ function doEditHTML(para) {
 		checkTableElSelection("TD");
 		break;
 	case 53:
-		var winheight = (USE_LINKSTYLEINPUTS?180:130);
-		linkEditor = EDITOR.EDIT_HTML;
-		linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A");
-		linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
-		linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
-		linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
-		openWindow  = window.open('dialogs/anchor.jsp','SetAnchor', "width=350, height=" + winheight + ", resizable=no, top=300, left=250");
-		focusCount = 1;
-		openWindow.focus();
+		if (hasSelectedText()) {
+			var winheight = (USE_LINKSTYLEINPUTS?180:130);
+			var linkInformation = getSelectedLink();
+			var params = "?showCss=" + USE_LINKSTYLEINPUTS;
+			if (linkInformation != null) {
+				params += "&name=" + linkInformation["name"];
+				if (USE_LINKSTYLEINPUTS) {
+					params += "&style=" + linkInformation["style"];
+					params += "&class=" + linkInformation["class"];
+				}
+			}			
+			openWindow  = window.open('dialogs/anchor.jsp' + params, 'SetAnchor', "width=350, height=" + winheight + ", resizable=no, top=300, left=250");
+			focusCount = 1;
+			openWindow.focus();
+		} else {
+			alert (LANG_NOSELECTION);
+		}
 		break;
 	case 56:
 		openWindow = window.open(workplacePath + 'action/linkbrowser.html?initial=true', 'LinkBrowser', "width=550, height=500, resizable=no, status=yes, top=300, left=250");
