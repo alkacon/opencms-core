@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/19 14:38:07 $
- * Version: $Revision: 1.168 $
+ * Date   : $Date: 2003/08/19 15:56:57 $
+ * Version: $Revision: 1.169 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.168 $ $Date: 2003/08/19 14:38:07 $
+ * @version $Revision: 1.169 $ $Date: 2003/08/19 15:56:57 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -3515,9 +3515,10 @@ public class CmsDriverManager extends Object {
                 resources = m_vfsDriver.getResourcesInFolder(context.currentProject().getId(), folderRes);
                 retValue = new Vector(resources.size());
 
-                //make sure that we have access to all these.
-                for (Enumeration e = resources.elements(); e.hasMoreElements();) {
-                    CmsResource res = (CmsResource) e.nextElement();
+                // make sure that we have access to all these
+                Iterator i = resources.iterator();
+                while(i.hasNext()) {
+                    CmsResource res = (CmsResource)i.next();
                     if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                         if (res.isFolder() && !res.getResourceName().endsWith("/")) {
                             res.setFullResourceName(folderRes.getFullResourceName() + res.getResourceName() + "/");
@@ -3532,7 +3533,7 @@ public class CmsDriverManager extends Object {
             }
         }
 
-        return (retValue == null) ? null : (Vector) retValue.clone();
+        return (retValue == null) ? null : (Vector)retValue.clone();
     }
 
     /**
