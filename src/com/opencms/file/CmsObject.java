@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/01/04 16:52:44 $ 
+ * @version $Revision: 1.11 $ $Date: 2000/01/04 18:12:52 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -73,7 +73,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @return the root-folder object.
 	 */
 	public CmsFolder rootFolder() {
-		return null;
+		return null; // TODO: implement this!
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @return the anonymous user object.
 	 */
 	public A_CmsUser anonymousUser() {
-		return null;
+		return null; // TODO: implement this!
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @return the onlineproject object.
 	 */
 	public A_CmsProject onlineProject() {
-		return null;
+		return null; // TODO: implement this!
 	}
 
 	/**
@@ -113,7 +113,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public A_CmsProject readProject(String name)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.readProject(m_context.currentUser(), 
+								 m_context.getCurrentProject(), name) );
 	}
 	
 	/**
@@ -121,16 +122,18 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
-	 * @param flags The flags for the project (e.g. visibility).
+	 * @param groupname the name of the group to be set.
+	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a project with the same name for this resource-type exists already.
 	 */
-	public A_CmsProject createProject(String name, String description, int flags)
-		throws CmsException { 
-		return null; // TODO: implement this! 
-	}
+	 public A_CmsProject createProject(String name, String description, 
+									   String groupname, int flags)
+		 throws CmsException {
+		 return( c_rb.createProject(m_context.currentUser(), 
+									m_context.getCurrentProject(), name, description, 
+									groupname, flags ) );
+	 }
 	
 	/**
 	 * Publishes a project.

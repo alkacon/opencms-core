@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/01/04 15:32:54 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/04 18:12:53 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -558,6 +558,36 @@ public class CmsShell implements I_CmsConstants {
 	public void deleteMountPoint(String mountpoint ) {
 		try {
 			m_cms.deleteMountPoint(mountpoint);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+	
+	/**
+	 * Creates a project.
+	 * 
+	 * @param name The name of the project to read.
+	 * @param description The description for the new project.
+	 * @param groupname the name of the group to be set.
+	 */
+	public void createProject(String name, String description, String groupname) {
+		try {
+			m_cms.createProject(name, description, groupname, C_FLAG_ENABLED);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Reads a project from the Cms.
+	 * 
+	 * @param name The name of the project to read.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void readProject(String name) {
+		try {
+			System.out.println( m_cms.readProject(name) );
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}		

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/01/04 16:52:44 $ 
+ * @version $Revision: 1.16 $ $Date: 2000/01/04 18:12:52 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -94,14 +94,14 @@ public abstract class A_CmsObject {
 	 * 
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
-	 * @param flags The flags for the project (e.g. visibility).
+	 * @param groupname the name of the group to be set.
+	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a project with the same name for this resource-type exists already.
 	 */
-	abstract public A_CmsProject createProject(String name, String description, int flags)
-		throws CmsException;
+	 abstract public A_CmsProject createProject(String name, String description, 
+												String groupname, int flags)
+		 throws CmsException;
 	
 	/**
 	 * Publishes a project.

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/01/04 16:52:44 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/04 18:12:52 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -58,7 +58,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_metadefRb = metadefRb;
 		m_propertyRb = propertyRb;
 		m_projectRb = projectRb;
-		// m_taskRb = taskRb;
+		// m_taskRb = taskRb; // TODO: add the taskRb here - if available
     
 	}
 
@@ -114,8 +114,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
 									 String name)
 		 throws CmsException {
-		// TODO: implement this!
-		 return null;
+		 return( m_projectRb.readProject(name) );
 	 }
 	
 	/**
@@ -128,19 +127,31 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentProject The current project of the user.
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
-	 * @param task The globe task.
-	 * @param owner The owner to be set.
-	 * @param group the group to be set.
+	 * @param groupname the name of the group to be set.
 	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject createProject(A_CmsUser currentUser, A_CmsProject currentProject, 
-									   String name, String description, A_CmsTask task, 
-									   A_CmsUser owner, A_CmsGroup group, int flags)
+									   String name, String description, String groupname,
+									   int flags)
 		 throws CmsException {
-		// TODO: implement this!
-		 return null;
+		 if( isAdmin(currentUser, currentProject) || 
+			 isProjectLeader(currentUser, currentProject)) {
+			 
+			 // create a new task for the project
+			 // TODO: create the task with the taskRb!
+			 A_CmsTask task = new CmsTask();
+			 
+			 // read the needed group from the cms
+			 A_CmsGroup group = readGroup(currentUser, currentProject, groupname);
+			 
+			 return( m_projectRb.createProject(name, description, task, 
+											   currentUser, group, C_FLAG_ENABLED ) );
+		} else {
+			 throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	 }
 	
 	/**
