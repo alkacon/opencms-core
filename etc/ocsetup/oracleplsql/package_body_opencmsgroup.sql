@@ -66,8 +66,10 @@ PACKAGE BODY OpenCmsGroup IS
            IF addInList(vSubId) THEN
              -- if the group wasn't called already => find subgroup and edit query-string
              vQueryStr := vQueryStr||' union select * from cms_groups where group_id='||to_char(vSubId);
-           END IF;
-           vSubId := opencmsgroup.getParent(vSubId);
+             vSubId := opencmsgroup.getParent(vSubId);
+           ELSE
+           	 vSubId := null;
+           END IF;           
          END LOOP;
        END IF;
      END LOOP;
