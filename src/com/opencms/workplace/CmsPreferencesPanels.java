@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/04/04 10:28:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/11 13:38:09 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/04/04 10:28:48 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/11 13:38:09 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -321,20 +321,19 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         // the data in the session.
         if ((parameters.get("OK") != null) || (parameters.get("CANCEL") != null) ){
   
-        session.removeValue("EXPLORERSETTINGS");
-        session.removeValue("TASKSETTINGS");
-        session.removeValue("USERSETTINGS");
-        session.removeValue("STARTSETTINGS");
-        session.removeValue(C_PARA_OLDPANEL);
+            session.removeValue("EXPLORERSETTINGS");
+            session.removeValue("TASKSETTINGS");
+            session.removeValue("USERSETTINGS");
+            session.removeValue("STARTSETTINGS");
+            session.removeValue(C_PARA_OLDPANEL);
    
-        try {
-               cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_RELOAD);
-            } catch (Exception e) {
-                  throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_RELOAD,CmsException.C_UNKNOWN_EXCEPTION,e);
-            }     
+            try {
+                   cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_RELOAD);
+                } catch (Exception e) {
+                    throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_RELOAD,CmsException.C_UNKNOWN_EXCEPTION,e);
+                }     
         }
-        
-        
+                    
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     }
 	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/05 14:43:38 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2000/04/11 13:38:08 $
+ * Version: $Revision: 1.63 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.62 $ $Date: 2000/04/05 14:43:38 $ 
+ * @version $Revision: 1.63 $ $Date: 2000/04/11 13:38:08 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -678,6 +678,22 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException { 
 		c_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), 
 						  foldername );
+	}
+    
+     /**
+	 * Copies a folder.
+	 * 
+	 * @param source The complete path of the sourcefolder.
+	 * @param destination The complete path of the destinationfolder.
+	 * 
+	 * @exception CmsException will be thrown, if the folder couldn't be copied. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */	
+	public void copyFolder(String source, String destination)
+		throws CmsException { 
+		c_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), 
+					  source, destination);
 	}
 
 	/**

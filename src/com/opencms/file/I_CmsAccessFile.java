@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessFile.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/11 13:38:08 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.16 $ $Date: 2000/04/11 13:38:08 $
  */
 interface I_CmsAccessFile {
 
@@ -324,6 +324,21 @@ interface I_CmsAccessFile {
       */
      public void removeFolder(A_CmsProject project, String foldername) 
         throws CmsException;
+     
+     /**
+	 * Copies a folder.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param source The complete path of the sourcefolder.
+	 * @param destination The complete path of the destinationfolder.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void copyFolder(A_CmsProject project,
+                            A_CmsProject onlineProject,
+                            String source, String destination)
+		throws CmsException;
      
 	/**
 	 * Returns a Vector with all subfolders.<BR/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/04/10 08:45:41 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2000/04/11 13:38:09 $
+ * Version: $Revision: 1.84 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,10 +34,13 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.83 $ $Date: 2000/04/10 08:45:41 $
+ * @version $Revision: 1.84 $ $Date: 2000/04/11 13:38:09 $
  */
 public interface I_CmsWpConstants {
 
+    /** Constant for the current language */
+    public final static String C_CURRENT_LANGUAGE = "de";
+    
 	/** Parameter for creating projects: copy content to project */
 	public static final String C_CONTENTPATH = "/content/";
 
@@ -222,6 +225,9 @@ public interface I_CmsWpConstants {
 
     /** The workplace */
     public static final String C_WP_RELOAD="workplace_reload.html";
+
+    /** The preferences update */
+    public static final String C_PREFERENCES_UPDATE="preferences_update.html";
     
     /** The preferences user panel */
     public static final String C_WP_EXPLORER_PREFERENCES="preferences.html?panel=user";

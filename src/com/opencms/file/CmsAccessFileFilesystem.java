@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/04/10 10:08:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/04/11 13:38:08 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/04/10 10:08:48 $
+ * @version $Revision: 1.22 $ $Date: 2000/04/11 13:38:08 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -99,6 +99,24 @@ import com.opencms.core.*;
 							
          throws CmsException {
          
+           int state= C_STATE_NEW;
+           
+               // Test if the file is already there and marked as deleted.
+           // If so, delete it
+           try {
+            System.err.println("Testing file "+filename);
+            CmsFile testfile=readFileHeader(project,filename);   
+            System.err.println("got file "+testfile);
+            if (testfile.getState()==C_STATE_DELETED) {
+                System.err.println("remove file");
+                // if the file is maked as deleted remove it!
+                removeFile(project,filename);
+                state=C_STATE_CHANGED;
+            }
+           } catch (CmsException e) {
+               System.err.println(e);
+             // do nothing here
+           }
         
          // create new file              
          File diskFile= new File(absoluteName(filename,project));
@@ -117,7 +135,7 @@ import com.opencms.core.*;
              // create a CmsFile from the given data.
              CmsFile file = new CmsFile(filename,resourceType.getResourceType(),flags,
                                         user.getId(),user.getDefaultGroupId(),project.getId(),
-                                        C_ACCESS_DEFAULT_FLAGS,C_STATE_NEW,C_UNKNOWN_ID,
+                                        C_ACCESS_DEFAULT_FLAGS,state,C_UNKNOWN_ID,
                                         resourceType.getLauncherType(),resourceType.getLauncherClass(),
                                         System.currentTimeMillis(),
                                         System.currentTimeMillis(),
@@ -148,6 +166,26 @@ import com.opencms.core.*;
                                CmsFile file, String filename)
          throws CmsException {
          
+           int state= C_STATE_NEW;
+           
+             
+           // Test if the file is already there and marked as deleted.
+           // If so, delete it
+           try {
+            System.err.println("Testing file "+filename);
+            CmsFile testfile=readFileHeader(project,filename);   
+            System.err.println("got file "+testfile);
+            if (testfile.getState()==C_STATE_DELETED) {
+                System.err.println("remove file");
+                // if the file is maked as deleted remove it!
+                removeFile(project,filename);
+                state=C_STATE_CHANGED;
+            }
+           } catch (CmsException e) {
+               System.err.println(e);
+             // do nothing here
+           }
+         
          // create new file                 
          File diskFile= new File(absoluteName(filename,project));
          // check if this file is already existing
@@ -165,7 +203,7 @@ import com.opencms.core.*;
              // create a CmsFile from the given file object
              CmsFile newfile = new CmsFile(filename,file.getType(),file.getFlags(),
                                         file.getOwnerId(),file.getGroupId(),project.getId(),
-                                        file.getAccessFlags(),C_STATE_NEW,file.isLockedBy(),
+                                        file.getAccessFlags(),state,file.isLockedBy(),
                                         file.getLauncherType(),file.getLauncherClassname(),
                                         file.getDateCreated(),
                                         System.currentTimeMillis(),
@@ -279,6 +317,7 @@ import com.opencms.core.*;
 			    } catch (Exception e) {
                       throw new CmsException("[" + this.getClass().getName() + "] "+filename+e.getMessage());
                 }
+                          
            } else {
                 // otherwise get the mountpoint defaults.
             
@@ -311,6 +350,9 @@ import com.opencms.core.*;
            } else {
             throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_NOT_FOUND);
            }
+            
+         //check if this resource is marked as deleted
+         
       return file;
      }
 
@@ -492,8 +534,6 @@ import com.opencms.core.*;
          } catch (Exception e) {
                throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
          }
-         
-         
      }
 	
      /**
@@ -511,8 +551,7 @@ import com.opencms.core.*;
          throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILESYSTEM_ERROR);
      }
      
-     
-  
+
      /**
       * Deletes a file in the filesytem. 
       * 
@@ -542,7 +581,6 @@ import com.opencms.core.*;
 					   	 throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILESYSTEM_ERROR);
 				    }
                 }
-                
              } else {
                  throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_NOT_FOUND);
              }
@@ -904,6 +942,24 @@ import com.opencms.core.*;
                 }
 			}
 		}
+     }
+     
+     /**
+	 * Copies a folder.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param source The complete path of the sourcefolder.
+	 * @param destination The complete path of the destinationfolder.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void copyFolder(A_CmsProject project,
+                            A_CmsProject onlineProject,
+                            String source, String destination)
+         throws CmsException {
+         
+     // todo: Implement this
      }
      
 	 /**

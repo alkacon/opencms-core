@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsContextmenue.java,v $
- * Date   : $Date: 2000/02/19 17:05:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/11 13:38:09 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,10 +43,12 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/02/19 17:05:41 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/11 13:38:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
+public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,
+                                                               I_CmsWpConstants,
+                                                               I_CmsConstants {
 
     /** Storage for contextmenue */
     private Hashtable m_storage= new Hashtable();
@@ -73,12 +75,26 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement, I
         // Read Contextmenue parameters
         String name = n.getAttribute("name");
 		String output;
-        
+     
+        // get the current langueag
+        Hashtable startSettings=null;
+        String currentLanguage=null;
+        startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+        // try to read it form the user additional info
+        if (startSettings != null) {
+            currentLanguage = (String)startSettings.get(C_START_LANGUAGE);  
+        }
+        // if no language was found so far, set it to default
+        if (currentLanguage == null) {        
+            currentLanguage = C_DEFAULT_LANGUAGE;
+        }
+     
+
 		// create the result
 		StringBuffer result = new StringBuffer();
 		
         // check if this contextmenu is already cached
-        output=(String)m_storage.get(name);
+        output=(String)m_storage.get(currentLanguage+name);
         if (output== null) {    
             // Get list definition and language values
             CmsXmlWpTemplateFile context = getContextmenueDefinitions(cms);
@@ -112,7 +128,7 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement, I
 		
 		    result.append(context.getProcessedXmlDataValue("CONTEXTFOOT", callingObject, parameters));
             output=result.toString();
-            m_storage.put(name,output);            
+            m_storage.put(currentLanguage+name,output);            
         }
         
 		// rerun the result

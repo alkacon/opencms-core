@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/04/05 14:43:31 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2000/04/11 13:38:08 $
+ * Version: $Revision: 1.62 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.61 $ $Date: 2000/04/05 14:43:31 $ 
+ * @version $Revision: 1.62 $ $Date: 2000/04/11 13:38:08 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -552,6 +552,19 @@ public abstract class A_CmsObject {
 	abstract public void deleteFolder(String foldername)
 		throws CmsException ;
 	
+     /**
+	 * Copies a folder.
+	 * 
+	 * @param source The complete path of the sourcefolder.
+	 * @param destination The complete path of the destinationfolder.
+	 * 
+	 * @exception CmsException will be thrown, if the folder couldn't be copied. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */	
+	abstract public void copyFolder(String source, String destination)
+		throws CmsException ;
+    
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 

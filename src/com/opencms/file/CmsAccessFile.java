@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/11 13:38:08 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.16 $ $Date: 2000/04/11 13:38:08 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -83,6 +83,8 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 							   byte[] contents, A_CmsResourceType resourceType)
         throws CmsException {
         
+         
+         
         return getFilesystem(filename).createFile(user,
                                                   project,onlineProject,
                                                   filename,flags,
@@ -417,6 +419,33 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
              getFilesystem(foldername).removeFolder(project,foldername);
      }
      
+     /**
+	 * Copies a folder.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param source The complete path of the sourcefolder.
+	 * @param destination The complete path of the destinationfolder.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void copyFolder(A_CmsProject project,
+                            A_CmsProject onlineProject,
+                            String source, String destination)
+         throws CmsException {
+        
+         // get the file systems for the source and the destination.
+         I_CmsAccessFile sourceFs=getFilesystem(source);
+         I_CmsAccessFile destinationFs=getFilesystem(destination);
+            
+         // todo: implement a more effective method to copy folders within a single
+         // access module
+         
+         // copy the file form the source filesystem to the destination one
+         CmsFolder folder=sourceFs.readFolder(project,source);
+         destinationFs.createFolder(project,folder,destination);        
+     }
+          
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 

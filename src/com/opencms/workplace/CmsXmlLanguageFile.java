@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/03/16 19:26:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/11 13:38:09 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,16 +39,12 @@ import java.util.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/03/16 19:26:44 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/11 13:38:09 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,
                                                                    I_CmsWpConstants,
                                                                    I_CmsConstants{
 
-    /** Constant for the current language
-     * HACK: replace this by the corresponding value from the user object
-     */
-    private final static String C_CURRENT_LANGUAGE = "de";
     
     /** Name of the class specific language section. */
     private String m_localSection = null;

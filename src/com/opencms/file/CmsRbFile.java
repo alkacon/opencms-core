@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFile.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/04/11 13:38:08 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.21 $ $Date: 2000/04/11 13:38:08 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -545,6 +545,41 @@ import com.opencms.core.*;
         m_accessFile.removeFolder(project,foldername);
      }
 
+      /**
+	 * Copies an empty folder in the Cms. <br>
+	 * 
+     * A folder can only be copied in an offline project. To copy a folder, the following
+	 * steps have to be done:
+	 * <ul>
+	 * <li> Copy the folder with the sourcename to a folder with the destinationname, the state 
+	 * of the new file is set to NEW (2). 
+	 * </ul>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read and write the sourceresource</li>
+	 * <li>the user can write the destinationresource</li>
+	 * <li>the sourceresource is locked by the user</li>
+	 * <li>the destinationresource dosn't exists</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param source The complete path of the sourcefile.
+	 * @param destination The complete path of the destinationfile.
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void copyFolder(A_CmsProject project,
+                           A_CmsProject onlineProject,
+                           String source,String destination)
+        throws CmsException {
+        m_accessFile.copyFolder(project,onlineProject,source,destination);
+    }
+    
+    
    	/**
 	 * Returns a Vector with all subfolders.<br>
 	 * 

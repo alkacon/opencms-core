@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/04/10 10:08:49 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2000/04/11 13:38:08 $
+ * Version: $Revision: 1.50 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.49 $ $Date: 2000/04/10 10:08:49 $
+ * @version $Revision: 1.50 $ $Date: 2000/04/11 13:38:08 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -367,7 +367,22 @@ import com.opencms.util.*;
 							   byte[] contents, A_CmsResourceType resourceType)
 							
          throws CmsException {
-                     
+
+           int state= C_STATE_NEW;
+           
+           // Test if the file is already there and marked as deleted.
+           // If so, delete it
+           try {
+            readFileHeader(project,filename);     
+           } catch (CmsException e) {
+               // if the file is maked as deleted remove it!
+               if (e.getType()==CmsException.C_RESOURCE_DELETED) {
+                    removeFile(project,filename);
+                    state=C_STATE_CHANGED;
+               }              
+           }
+         
+         
            try {             
                 PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
                 // write new resource to the database
@@ -386,7 +401,7 @@ import com.opencms.util.*;
                 //ACCESS_FLAGS
                 statementResourceWrite.setInt(7,C_ACCESS_DEFAULT_FLAGS);
                 //STATE
-                statementResourceWrite.setInt(8,C_STATE_NEW);
+                statementResourceWrite.setInt(8,state);
                 //LOCKED_BY
                 statementResourceWrite.setInt(9,C_UNKNOWN_ID);
                 //LAUNCHER_TYPE
@@ -432,7 +447,23 @@ import com.opencms.util.*;
                                A_CmsProject onlineProject,
                                CmsFile file,String filename)
          throws CmsException {
-              try {   
+         
+         
+           int state= C_STATE_NEW;
+           
+           // Test if the file is already there and marked as deleted.
+           // If so, delete it
+           try {
+            readFileHeader(project,filename);     
+           } catch (CmsException e) {
+               // if the file is maked as deleted remove it!
+               if (e.getType()==CmsException.C_RESOURCE_DELETED) {
+                    removeFile(project,filename);
+                    state=C_STATE_CHANGED;
+               }              
+           }
+           
+           try {   
                 PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
                 // write new resource to the database
                 //RESOURCE_NAME
@@ -450,7 +481,7 @@ import com.opencms.util.*;
                 //ACCESS_FLAGS
                 statementResourceWrite.setInt(7,file.getAccessFlags());
                 //STATE
-                statementResourceWrite.setInt(8,C_STATE_NEW);
+                statementResourceWrite.setInt(8,state);
                 //LOCKED_BY
                 statementResourceWrite.setInt(9,file.isLockedBy());
                 //LAUNCHER_TYPE
@@ -671,14 +702,16 @@ import com.opencms.util.*;
                                            );
                          // check if this resource is marked as deleted
                         if (file.getState() == C_STATE_DELETED) {
-                            throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
+                            throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
                         }
                } else {
                  throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);  
                }
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		} catch( Exception exc ) {
+         } catch (CmsException ex) {
+            throw ex;       
+         } catch( Exception exc ) {
 			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
         return file;
@@ -882,7 +915,12 @@ import com.opencms.util.*;
          // copy the file to the new name
          copyFile(project,onlineProject,oldname,newname);
          // delete the file with the old name
-         deleteFile(project,oldname);
+         try {
+            readFileHeader(onlineProject,oldname);
+            deleteFile(project,oldname);
+         } catch (CmsException e) {
+            removeFile(project,oldname);
+         }  
      }
 	
 	/**
@@ -1059,7 +1097,8 @@ import com.opencms.util.*;
                 // write new resource to the database
                 PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
                 //RESOURCE_NAME
-                statementResourceWrite.setString(1,absoluteName(folder.getAbsolutePath()));
+                //statementResourceWrite.setString(1,absoluteName(folder.getAbsolutePath()));
+                statementResourceWrite.setString(1,absoluteName(foldername));
                 //RESOURCE_TYPE
                 statementResourceWrite.setInt(2,folder.getType());
                 //RESOURCE_FLAGS
@@ -1090,7 +1129,8 @@ import com.opencms.util.*;
             } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
-         return readFolder(project,folder.getAbsolutePath());
+         //return readFolder(project,folder.getAbsolutePath());
+         return readFolder(project,foldername);
      }
 
 	 /**
@@ -1130,7 +1170,7 @@ import com.opencms.util.*;
                                                );
                         // check if this resource is marked as deleted
                         if (folder.getState() == C_STATE_DELETED) {
-                            throw new CmsException("["+this.getClass().getName()+"]"+folder.getAbsolutePath(),CmsException.C_NOT_FOUND);  
+                            throw new CmsException("["+this.getClass().getName()+"]"+folder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
                         }
                    }else {
                  throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);  
@@ -1284,6 +1324,24 @@ import com.opencms.util.*;
                  throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_EMPTY);  
          }
 	 }
+     
+     /**
+	 * Copies a folder.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param source The complete path of the sourcefolder.
+	 * @param destination The complete path of the destinationfolder.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void copyFolder(A_CmsProject project,
+                            A_CmsProject onlineProject,
+                            String source, String destination)
+         throws CmsException {
+         
+     // todo: Implement this
+     }
      
 	/**
 	 * Returns a Vector with all subfolders.<BR/>

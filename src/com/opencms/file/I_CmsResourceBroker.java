@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/05 14:43:50 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2000/04/11 13:38:09 $
+ * Version: $Revision: 1.57 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.56 $ $Date: 2000/04/05 14:43:50 $
+ * @version $Revision: 1.57 $ $Date: 2000/04/11 13:38:09 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -1373,7 +1373,30 @@ interface I_CmsResourceBroker {
 	public void deleteFolder(A_CmsUser currentUser, A_CmsProject currentProject,
 							 String foldername)
 		throws CmsException;
-								
+
+     /**
+	 * Copies a folder in the Cms. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the sourceresource</li>
+	 * <li>the user can create the destinationresource</li>
+	 * <li>the destinationresource dosn't exists</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param source The complete path of the sourcefolder.
+	 * @param destination The complete path to the destination.
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void copyFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+                         String source, String destination)
+		throws CmsException;
+    
    	/**
 	 * Returns a Vector with all subfolders.<br>
 	 * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2000/04/11 13:38:08 $
+ * Version: $Revision: 1.100 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.99 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.100 $ $Date: 2000/04/11 13:38:08 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2701,7 +2701,66 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				CmsException.C_NO_ACCESS);
 		}
      }
-	
+     
+    /**
+	 * Copies a folder in the Cms. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the sourceresource</li>
+	 * <li>the user can create the destinationresource</li>
+	 * <li>the destinationresource dosn't exists</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param source The complete path of the sourcefolder.
+	 * @param destination The complete path to the destination.
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void copyFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+                         String source, String destination)
+        throws CmsException {
+        	
+		// the name of the new file.
+		String filename;
+		// the name of the folder.
+		String foldername;
+		
+		// read the sourcefolder to check readaccess
+		CmsFolder folder=(CmsFolder)readFileHeader(currentUser, currentProject, source);
+		
+		foldername = destination.substring(0, destination.substring(0,destination.length()-1).lastIndexOf("/")+1);
+					
+		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, foldername);
+		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+				
+		    // write-acces  was granted - copy the folder and the properties
+	        m_fileRb.copyFolder(currentProject,onlineProject(currentUser,currentProject),
+                                source,destination);
+			
+			// copy the properties
+			m_metadefRb.writeMetainformations(m_metadefRb.readAllMetainformations(folder),
+											  currentProject.getId(), 
+											  destination, 
+											  folder.getType());			
+            
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), destination);            
+           
+        } else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + destination, 
+				CmsException.C_ACCESS_DENIED);
+		}
+        
+      
+    }
+    
+    
+    
    	/**
 	 * Returns a Vector with all subfolders.<br>
 	 * 
@@ -3012,7 +3071,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// checks, if the filename is valid, if not it throws a exception
 		validFilename(filename);
 		
-		A_CmsResource onlineResource = null;
+		/*A_CmsResource onlineResource = null;
 
 		// try to load the resource in the onlineproject
 		try {
@@ -3029,7 +3088,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// the resource exists in the onlineproject -> exception!
 			throw new CmsException("[" + this.getClass().getName() + "] " + folder + filename, 
 				CmsException.C_FILE_EXISTS);
-		}
+		}*/
 		
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
 												  folder);
