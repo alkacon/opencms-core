@@ -30,7 +30,7 @@ function show_help()
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
 <form id=DBEXPORT name=DBEXPORT action="administration_content_database_import.html?action=import" method="post">
-<table cellspacing=0 cellpadding=0 border=2 width=500>
+<table cellspacing=0 cellpadding=0 border=2 width=300>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 			
@@ -51,6 +51,7 @@ function show_help()
 				<table border=1 width=100%>
 					<tr><td class=dialogtxt>
 						<table border=0>
+							<!-- import now only to the root folder
 							<tr>
 								<td class=formular valign=top>]]><LABEL value="label.allfolders" /><![CDATA[:</td>
 								<td class=dialogtxt>
@@ -60,6 +61,7 @@ function show_help()
 								<td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=DBEXPORT&variable=selectallfolders', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
 								
 							</tr>
+							//-->
 							<tr>
 								<td class=formular>]]><LABEL value="database.label.files"/><![CDATA[:</td>
 								<td class=dialogtxt>
