@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbTask.java,v $
- * Date   : $Date: 2000/02/20 15:24:36 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/03/13 15:42:07 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.13 $ $Date: 2000/02/20 15:24:36 $
+ * @version $Revision: 1.14 $ $Date: 2000/03/13 15:42:07 $
  */
 interface I_CmsRbTask { 	
 
@@ -250,9 +250,6 @@ interface I_CmsRbTask {
 	 /**
 	  * Reads all tasks for a project.
 	  * 
-	  * <B>Security:</B>
-	  * // TODO: Add security-police here
-	  * 
 	  * @param project The Project in which the tasks are defined. Can be null for all tasks
 	  * @param tasktype Type of the tasks you want to read
 	  * @param orderBy Chooses, how to order the tasks. 
@@ -280,9 +277,6 @@ interface I_CmsRbTask {
 	 
 	 /**
 	  * Reads all tasks for a user in a project.
-	  * 
-	  * <B>Security:</B>
-	  * // TODO: Add security-police here
 	  * 
 	  * @param project The Project in which the tasks are defined.
 	  * @param user The user who has to process the task.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/09 09:36:22 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2000/03/13 15:42:07 $
+ * Version: $Revision: 1.47 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.46 $ $Date: 2000/03/09 09:36:22 $
+ * @version $Revision: 1.47 $ $Date: 2000/03/13 15:42:07 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -2102,6 +2102,24 @@ interface I_CmsResourceBroker {
 		 throws CmsException ;
 
 	 /**
+	  * Forwards a task to a new user.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task to forward.
+	  * @param newRole The new Group for the task
+	  * @param newUser The new user who gets the task.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void forwardTask(A_CmsUser currentUser, A_CmsProject currentProject, int taskid, 
+							 String newRoleName, String newUserName) 
+		 throws CmsException;
+	 
+	 /**
 	  * Ends a task from the Cms.
 	  * 
 	  * <B>Security:</B>
@@ -2176,5 +2194,39 @@ interface I_CmsResourceBroker {
 	  */
 	 public Vector readProjectLogs(A_CmsUser currentUser, A_CmsProject currentProject,
 								   String projectName)
+		 throws CmsException;
+
+ 	 /**
+	  * Set timeout of a task
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param new timeout value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setTimeout(A_CmsUser currentUser, A_CmsProject currentProject,
+							int taskId, long timeout)
+		 throws CmsException;
+
+	 /**
+	  * Set priority of a task
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param new priority value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setPriority(A_CmsUser currentUser, A_CmsProject currentProject,
+							 int taskId, int priority)
 		 throws CmsException;
 }

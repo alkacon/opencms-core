@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/03/09 09:36:21 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2000/03/13 15:42:08 $
+ * Version: $Revision: 1.53 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.52 $ $Date: 2000/03/09 09:36:21 $ 
+ * @version $Revision: 1.53 $ $Date: 2000/03/13 15:42:08 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -1904,6 +1904,21 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 }
 
 	 /**
+	  * Forwards a task to a new user.
+	  * 
+	  * @param taskid The Id of the task to forward.
+	  * @param newRole The new Group for the task
+	  * @param newUser The new user who gets the task.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void forwardTask(int taskid, String newRoleName, String newUserName) 
+		 throws CmsException {
+		 c_rb.forwardTask(m_context.currentUser(), m_context.currentProject(), taskid,
+						  newRoleName, newUserName);
+	 }
+
+	 /**
 	  * Ends a task from the Cms.
 	  * 
 	  * @param taskid The ID of the task to end.
@@ -1966,5 +1981,33 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 public Vector readProjectLogs(String projectName)
 		 throws CmsException {
 		 return c_rb.readProjectLogs(m_context.currentUser(), m_context.currentProject(), projectName);
+	 }
+
+ 	 /**
+	  * Set timeout of a task
+	  * 
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param new timeout value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setTimeout(int taskId, long timeout)
+		 throws CmsException {
+		 c_rb.setTimeout(m_context.currentUser(), m_context.currentProject(), 
+						 taskId, timeout);
+	 }
+
+	 /**
+	  * Set priority of a task
+	  * 
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param new priority value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setPriority(int taskId, int priority)
+		 throws CmsException {
+		 c_rb.setPriority(m_context.currentUser(), m_context.currentProject(), 
+						  taskId, priority);
 	 }
 }

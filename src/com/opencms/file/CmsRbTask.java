@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbTask.java,v $
- * Date   : $Date: 2000/02/20 15:24:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/03/13 15:42:08 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Rüdiger Gutfleisch
- * @version $Revision: 1.6 $ $Date: 2000/02/20 15:24:36 $
+ * @version $Revision: 1.7 $ $Date: 2000/03/13 15:42:08 $
  */
  class CmsRbTask implements I_CmsRbTask, I_CmsConstants {
 	 
@@ -535,7 +535,6 @@ import com.opencms.core.*;
 	 public int setTaskPar(int taskid, String parname, String parvalue)
 		 throws CmsException {
 		 
-		 // TODO security for calling user
 		 return( m_accessTask.setTaskPar(taskid, parname, parvalue));		
 	 }
 

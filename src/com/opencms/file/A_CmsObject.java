@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/03/09 09:36:21 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2000/03/13 15:42:08 $
+ * Version: $Revision: 1.52 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.51 $ $Date: 2000/03/09 09:36:21 $ 
+ * @version $Revision: 1.52 $ $Date: 2000/03/13 15:42:08 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1525,6 +1525,18 @@ public abstract class A_CmsObject {
 		 throws CmsException;
 
 	 /**
+	  * Forwards a task to a new user.
+	  * 
+	  * @param taskid The Id of the task to forward.
+	  * @param newRole The new Group for the task
+	  * @param newUser The new user who gets the task.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public void forwardTask(int taskid, String newRoleName, String newUserName) 
+		 throws CmsException;
+	 
+	 /**
 	  * Ends a task from the Cms.
 	  * 
 	  * @param taskid The ID of the task to end.
@@ -1575,5 +1587,27 @@ public abstract class A_CmsObject {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 abstract public Vector readProjectLogs(String projectName)
+		 throws CmsException;
+
+ 	 /**
+	  * Set timeout of a task
+	  * 
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param new timeout value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public void setTimeout(int taskId, long timeout)
+		 throws CmsException;
+
+	 /**
+	  * Set priority of a task
+	  * 
+	  * @param taskid The Id of the task to set the percentage.
+	  * @param new priority value
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public void setPriority(int taskId, int priority)
 		 throws CmsException;
 }
