@@ -220,7 +220,31 @@
 									</tr>										
 								</table>
 							</td>
-						</tr>	
+						</tr>
+						
+						
+						<tr>
+							<td align="center" valign="top" colspan="2">
+								<table width="440" border="0" valign="top"  cellspacing="0">
+									<tr>
+										<td align="center" class="header">
+											Maximum allowed upload file size
+										</td>
+									</tr>	
+									<tr>
+										<td align="left">
+											File size in kilobytes (enter "-1" for unlimited size):
+										</td>
+									</tr>									
+									<tr>
+										<td align="center">
+											<input type="text" size="70" name="fileMaxUploadSize" value="<%= Bean.getFileMaxUploadSize()%>">
+										</td>
+									</tr>										
+								</table>
+							</td>
+						</tr>		
+							
 												
 					</table>																			
 					</td>

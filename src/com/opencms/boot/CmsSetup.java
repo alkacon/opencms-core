@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/03/25 10:14:54 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/04/10 07:33:04 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -123,10 +123,22 @@ public class CmsSetup {
             return false;
         }
 
-        // currently, we check only the ethernet address
+        // check the ethernet address
         // in order to generate a random address, if not available                   
         if ("".equals(getEthernetAddress())) {
             setEthernetAddress(CmsUUID.getDummyEthernetAddress());
+        }
+        // check the maximum file size, set it to unlimited, if not valid 
+        String size = getFileMaxUploadSize();
+        if (size == null || "".equals(size)) {
+            setFileMaxUploadSize("-1");
+        }
+        else {
+            try {
+                Integer.parseInt(size);
+            } catch (Exception e) {
+                setFileMaxUploadSize("-1");
+            }
         }
  
         return true;
@@ -780,6 +792,16 @@ public class CmsSetup {
     /** Get the fictional mac ethernet address */
     public String getEthernetAddress() {
         return getExtProperty("server.ethernet.address");
+    }
+    
+    /** Set the maximum file upload size */
+    public void setFileMaxUploadSize(String size) {
+        setExtProperty("workplace.file.maxuploadsize", size);
+    }
+
+    /** Get the maximum file upload size */
+    public String getFileMaxUploadSize() {
+        return getExtProperty("workplace.file.maxuploadsize");
     }
 
 	public String getDbCreateConStr() {
