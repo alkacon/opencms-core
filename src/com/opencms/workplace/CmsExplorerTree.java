@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
- * Date   : $Date: 2000/03/24 08:21:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/04 10:03:10 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/03/24 08:21:28 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/04 10:03:10 $
  */
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -140,13 +140,13 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    /*public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
          
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
       
         // process the selected template
         return startProcessing(cms,xmlTemplateDocument,"",parameters,"template");
-    }
+    }*/
     
     /**
      * Creates the folder tree in the workplace explorer.
