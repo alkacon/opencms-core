@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDateUtil.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/13 11:09:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,12 +46,15 @@ import java.util.TimeZone;
  * Utilities to get and set formated dates in OpenCms.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public final class CmsDateUtil {
 
+    /** The "GMT" time zone, used when formatting http headers. */
+    protected static final TimeZone C_GMT_TIMEZONE = TimeZone.getTimeZone("GMT");
+
     /** The default format to use when formatting http headers. */
-    public static final DateFormat C_HEADER_DEFAULT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+    protected static final DateFormat C_HEADER_DEFAULT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
 
     /**
      * Hides the public constructor.<p>
@@ -59,14 +62,6 @@ public final class CmsDateUtil {
     private CmsDateUtil() {
 
         // noop
-    }
-
-    /**
-     * Static initializer to set GMT timezone as required by HTTP protocol for date headers.<p>
-     */
-    static {
-
-        C_HEADER_DEFAULT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     /**
@@ -138,6 +133,11 @@ public final class CmsDateUtil {
      * @return the formatted date 
      */
     public static String getHeaderDate(long time) {
+
+        if (C_HEADER_DEFAULT.getTimeZone() != C_GMT_TIMEZONE) {
+            // ensure GMT is used as time zone for the header generation
+            C_HEADER_DEFAULT.setTimeZone(C_GMT_TIMEZONE);
+        }
 
         return C_HEADER_DEFAULT.format(new Date(time));
     }
