@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/08/13 07:45:46 $
-* Version: $Revision: 1.253 $
+* Date   : $Date: 2002/08/15 09:16:42 $
+* Version: $Revision: 1.254 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.253 $ $Date: 2002/08/13 07:45:46 $ *
+ * @version $Revision: 1.254 $ $Date: 2002/08/15 09:16:42 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4618,8 +4618,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement = con.prepareStatement(m_cq.get("C_TASKPAR_INSERT"));
             statement.setInt(1, newId);
             statement.setInt(2, taskId);
-            statement.setString(3, parname);
-            statement.setString(4, parvalue);
+            statement.setString(3, checkNull(parname));
+            statement.setString(4, checkNull(parvalue));
             statement.executeUpdate();
         } catch( SQLException exc ) {
             throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
@@ -5960,7 +5960,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             // delete all project-resources.
             statement = con.prepareStatement(m_cq.get("C_LM_DELETE_ENTRYS"));
             statement.setInt(1, pageId);
-            statement.executeQuery();
+            statement.executeUpdate();
         } catch (SQLException e){
            throw new CmsException("["+this.getClass().getName()+"] deleteLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         }finally {
@@ -6090,7 +6090,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             // delete all project-resources.
             statement = con.prepareStatement(m_cq.get("C_LM_DELETE_ENTRYS_ONLINE"));
             statement.setInt(1, pageId);
-            statement.executeQuery();
+            statement.executeUpdate();
         } catch (SQLException e){
            throw new CmsException("["+this.getClass().getName()+"] deleteOnlineLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         }finally {
