@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 11:30:51 $
-* Version: $Revision: 1.91 $
+* Date   : $Date: 2003/05/20 13:25:18 $
+* Version: $Revision: 1.92 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.91 $ $Date: 2003/05/20 11:30:51 $ *
+ * @version $Revision: 1.92 $ $Date: 2003/05/20 13:25:18 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -176,10 +176,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * This method should be overloaded if other query strings should be used.
      */
     public com.opencms.file.genericSql.CmsQueries initQueries(String dbPoolUrl) {
-        com.opencms.file.mySql.CmsQueries queries = new com.opencms.file.mySql.CmsQueries();
-        queries.initJdbcPoolUrls(dbPoolUrl);
-    
-        return queries;
+        return new com.opencms.file.mySql.CmsQueries(dbPoolUrl);
     }
     
     /**

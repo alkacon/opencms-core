@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/20 11:30:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/05/20 13:25:18 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/05/20 11:30:51 $
+ * @version $Revision: 1.10 $ $Date: 2003/05/20 13:25:18 $
  */
 public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1495,10 +1495,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
     }
 
     public com.opencms.file.genericSql.CmsQueries initQueries(String dbPoolUrl) {
-        com.opencms.file.genericSql.CmsQueries queries = new com.opencms.file.genericSql.CmsQueries();
-        queries.initJdbcPoolUrls(dbPoolUrl);
-
-        return queries;
+        return new com.opencms.file.genericSql.CmsQueries(dbPoolUrl);
     }
 
     /**

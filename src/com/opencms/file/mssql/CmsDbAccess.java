@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mssql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 11:30:51 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/05/20 13:25:18 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import source.org.apache.java.util.Configurations;
  * the database.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2003/05/20 11:30:51 $ *
+ * @version $Revision: 1.10 $ $Date: 2003/05/20 13:25:18 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -139,7 +139,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * retrieve the correct instance of the queries holder.
      * This method should be overloaded if other query strings should be used.
      */
-    protected com.opencms.file.genericSql.CmsQueries getQueries() {
-        return new com.opencms.file.mssql.CmsQueries();
+    public com.opencms.file.genericSql.CmsQueries initQueries(String dbPoolUrl) {
+        return new com.opencms.file.mssql.CmsQueries(dbPoolUrl);
     }
 }

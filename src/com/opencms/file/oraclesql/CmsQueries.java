@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsQueries.java,v $
-* Date   : $Date: 2003/05/07 11:43:25 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/05/20 13:25:18 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,6 @@
 
 package com.opencms.file.oraclesql;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -41,28 +38,22 @@ import oracle.jdbc.driver.OracleResultSet;
  * Reads SQL queries from query.properties of this resource broker package.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/05/07 11:43:25 $ 
+ * @version $Revision: 1.7 $ $Date: 2003/05/20 13:25:18 $ 
  */
-public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
-{
+public class CmsQueries extends com.opencms.file.genericSql.CmsQueries {
+    
     private static Properties m_queries = null;
+    
+    private static final String C_PROPERTY_FILENAME = "com/opencms/file/oraclesql/query.properties";
+    
     /**
-     * CmsQueries constructor comment.
+     * CmsQueries constructor.
      */
-    public CmsQueries() {
-        if(m_queries == null) {
-            m_queries = new Properties();
-            try {
-                m_queries.load(getClass().getClassLoader().getResourceAsStream("com/opencms/file/oraclesql/query.properties"));
-            } catch(NullPointerException exc) {
-                if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsQueries] cannot get com/opencms/file/oraclesql/query.properties");
-                }
-            } catch(java.io.IOException exc) {
-                if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsQueries] cannot get com/opencms/file/oraclesql/query.properties");
-                }
-            }
+    public CmsQueries(String dbPoolUrl) {
+        super(dbPoolUrl);
+        
+        if (m_queries == null) {
+            m_queries = loadProperties(C_PROPERTY_FILENAME);
         }
     }
 
@@ -72,28 +63,19 @@ public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
      * @param queryName the name of the property
      * @return The value of the property
      */
-    public String get(String queryName){
-        if(m_queries == null) {
-            m_queries = new Properties();
-            try {
-                m_queries.load(getClass().getClassLoader().getResourceAsStream("com/opencms/file/oraclesql/query.properties"));
-            } catch(NullPointerException exc) {
-                if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsQueries] cannot get com/opencms/file/oraclesql/query.properties");
-                }
-            } catch(java.io.IOException exc) {
-                if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsQueries] cannot get com/opencms/file/oraclesql/query.properties");
-                }
-            }
+    public String get(String queryName) {
+        if (m_queries == null) {
+            m_queries = loadProperties(C_PROPERTY_FILENAME);
         }
+        
         String value = m_queries.getProperty(queryName);
-        if (value == null || "".equals(value)){
+        if (value == null || "".equals(value)) {
             value = super.get(queryName);
         }
+        
         return value;
     }
-    
+
     /**
      * Returns a byte array for a given table attribute in the result set.
      * 
@@ -102,12 +84,13 @@ public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
      * @return byte[]
      * @throws SQLException
      * @see com.opencms.file.genericSql.CmsQueries#getBytes(ResultSet, String)
-     */    
-    public byte[] getBytes(ResultSet res, String columnName) throws SQLException{       
+     */
+    public byte[] getBytes(ResultSet res, String columnName) throws SQLException {
         oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(columnName);
         byte[] content = new byte[(int) blob.length()];
         content = blob.getBytes(1, (int) blob.length());
-        
+
         return content;
-    }    
+    }
+    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2003/05/20 11:30:51 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2003/05/20 13:25:18 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.dbpool.CmsDbcp;
 import com.opencms.file.CmsProject;
 
 import java.io.ByteArrayInputStream;
@@ -45,7 +46,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-import com.opencms.dbpool.CmsDbcp;
 
 /**
  * A helper object to manage SQL queries. First, it loads key/value encoded SQL queries from a Java
@@ -65,51 +65,24 @@ import com.opencms.dbpool.CmsDbcp;
  * TODO: multiple instances of this class should not load the same property hashes multiple times.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.50 $ $Date: 2003/05/20 11:30:51 $
+ * @version $Revision: 1.51 $ $Date: 2003/05/20 13:25:18 $
  */
 public class CmsQueries extends Object {
 
     private static Properties m_queries = null;
-
-    /**
-     * The JDBC URL of the offline connection pool.
-     */
-    private static String m_JdbcUrlOffline;
-
-    /**
-     * The JDBC URL of the online connection pool.
-     */
-    private static String m_JdbcUrlOnline;
-
-    /**
-     * The JDBC URL of the backup connection pool.
-     */
-    private static String m_JdbcUrlBackup;
-
-    /**
-     * Internal flag whether the URLs of the JDBC connection pools 
-     * are read from the configurations object.
-     */
-    //protected static boolean poolUrlsInitialized = false;
+    
+    private static final String C_PROPERTY_FILENAME = "com/opencms/file/genericSql/query.properties";
+    
+    protected String m_dbPoolUrl;
 
     /**
      * CmsQueries constructor.
      */
-    public CmsQueries() {
+    public CmsQueries(String dbPoolUrl) {
+        m_dbPoolUrl = CmsDbcp.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
+        
         if (m_queries == null) {
-            m_queries = new Properties();
-
-            try {
-                m_queries.load(getClass().getClassLoader().getResourceAsStream("com/opencms/file/genericSql/query.properties"));
-            } catch (NullPointerException exc) {
-                if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsQueries] cannot get com/opencms/file/genericSql/query.properties");
-                }
-            } catch (java.io.IOException exc) {
-                if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsQueries] cannot get com/opencms/file/genericSql/query.properties");
-                }
-            }
+            m_queries = loadProperties(C_PROPERTY_FILENAME);            
         }
     }
     
@@ -128,72 +101,19 @@ public class CmsQueries extends Object {
      * @param queryKey the SQL query key
      * @return the the SQL query in this property list with the specified key
      */
-    public String get(String queryKey) {
+    public String get(String queryKey) {              
         if (m_queries == null) {
-            m_queries = new Properties();
-            try {
-                m_queries.load(getClass().getClassLoader().getResourceAsStream("com/opencms/file/genericSql/query.properties"));
-            } catch (NullPointerException exc) {
-                if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsQueries] cannot get com/opencms/file/genericSql/query.properties");
-                }
-            } catch (java.io.IOException exc) {
-                if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsQueries] cannot get com/opencms/file/genericSql/query.properties");
-                }
-            }
-        }
+            m_queries = loadProperties(C_PROPERTY_FILENAME);
+        }      
 
         String value = null;
-
         if ((value = m_queries.getProperty(queryKey)) == null) {
             if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsQueries] query '" + queryKey + "' not found in query.properties!");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] query '" + queryKey + "' not found in " + C_PROPERTY_FILENAME);
             }
         }
 
         return value;
-    }
-
-    /**
-     * Reads the URLs of the JDBC connection pools from the configurations object to
-     * choose a connection from the right connection pool depending on the CmsProject
-     * or project-ID.
-     * 
-     * @param config the configurations object
-     */
-    public void initJdbcPoolUrls(String dbPoolUrl) {
-//        if (!poolUrlsInitialized) {
-//            // get the broker name from the config.
-//            String brokerName = (String) config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER);
-//
-//            // get the URL of the offline JDBC pool
-//            m_JdbcUrlOffline = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + "." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-//            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database offline pool: " + m_JdbcUrlOffline);
-//            }
-//
-//            // get the URL of the online JDBC pool
-//            m_JdbcUrlOnline = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".online." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-//            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database online pool : " + m_JdbcUrlOnline);
-//            }
-//
-//            // get the URL of the backup JDBC pool
-//            m_JdbcUrlBackup = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".backup." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-//            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database backup pool : " + m_JdbcUrlBackup);
-//            }
-//
-//            // set the default JDBC URL for the ID generator
-//            com.opencms.dbpool.CmsIdGenerator.setDefaultPool(m_JdbcUrlOffline);
-//
-//            poolUrlsInitialized = true;
-//        }
-
-        m_JdbcUrlOffline = CmsDbcp.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
-        m_JdbcUrlOnline = CmsDbcp.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
-        m_JdbcUrlBackup = CmsDbcp.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
     }
 
     /**
@@ -230,8 +150,7 @@ public class CmsQueries extends Object {
      * @throws SQLException if a database access error occurs
      */
     public Connection getConnection(int projectId) throws SQLException {
-        String jdbcUrl = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? m_JdbcUrlOnline : m_JdbcUrlOffline;
-        return DriverManager.getConnection(jdbcUrl);
+        return DriverManager.getConnection(m_dbPoolUrl);
     }
 
     /**
@@ -267,7 +186,7 @@ public class CmsQueries extends Object {
      * @throws SQLException if a database access error occurs
      */
     public Connection getConnectionForBackup() throws SQLException {
-        return DriverManager.getConnection(m_JdbcUrlBackup);
+        return DriverManager.getConnection(m_dbPoolUrl);
     }
 
     /**
@@ -311,55 +230,6 @@ public class CmsQueries extends Object {
         String rawSql = get(Integer.MIN_VALUE, queryKey);
         return con.prepareStatement(rawSql);
     }
-
-//    /**
-//     * Generates a new primary key ID specified by the key of a SQL query and the project-ID.
-//     * 
-//     * @param projectId the ID of the specified CmsProject
-//     * @param queryKey the key of the SQL query
-//     * @return int a new primary key ID
-//     * @throws CmsException if a database access error occurs
-//     */
-//    public synchronized int nextPkId(int projectId, String queryKey) throws CmsException {
-//        String jdbcUrl = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? m_JdbcUrlOnline : m_JdbcUrlOffline;
-//        return nextPkId(jdbcUrl, get(projectId, queryKey));
-//    }
-//
-//    /**
-//     * Generates a new primary key ID specified by the key of a SQL query and the CmsProject.
-//     * 
-//     * @param project the specified CmsProject
-//     * @param queryKey the key of the SQL query
-//     * @return int a new primary key ID
-//     * @throws CmsException if a database access error occurs
-//     */
-//    public synchronized int nextPkId(CmsProject project, String queryKey) throws CmsException {
-//        return nextPkId(project.getId(), queryKey);
-//    }
-//
-//    /**
-//     * Generates a new primary key ID for a offline table specified by the key of a SQL query.
-//     * 
-//     * @param project the specified CmsProject
-//     * @param queryKey the key of the SQL query
-//     * @return int a new primary key ID
-//     * @throws CmsException if a database access error occurs
-//     */
-//    public synchronized int nextPkId(String queryKey) throws CmsException {
-//        return nextPkId(m_JdbcUrlOffline, get(Integer.MIN_VALUE, queryKey));
-//    }
-//
-//    /**
-//     * Generates a new primary key ID specified by the URL of the JDBC connection and the SQL query.
-//     * 
-//     * @param jdbcUrl
-//     * @param query
-//     * @return int a new primary key ID
-//     * @throws CmsException if a database access error occurs
-//     */
-//    protected synchronized int nextPkId(String jdbcUrl, String query) throws CmsException {
-//        return com.opencms.dbpool.CmsIdGenerator.nextId(jdbcUrl, query);
-//    }
 
     /**
      * Attemts to close the connection, statement and result set after a statement has been executed.
@@ -428,12 +298,50 @@ public class CmsQueries extends Object {
         return res.getBytes(attributeName);
     }
     
+    /**
+     * Wraps an exception in a new CmsException object. Optionally, a log message is
+     * written to the "critical" OpenCms logging channel.
+     * 
+     * @param o the object caused the exception
+     * @param message a message that is written to the log
+     * @param type the type of the exception
+     * @param rootCause the exception that was thrown
+     * @return CmsException
+     */
     public CmsException getCmsException(Object o, String message, int type, Throwable rootCause) {
         if (A_OpenCms.isLogging() && I_CmsLogChannels.C_LOGGING) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + o.getClass().getName() + "] " + ((message==null)?"":message) + rootCause.toString() );
         }
                 
         return new CmsException("[" + o.getClass().getName() + "] " + ((message==null)?"":message), type, rootCause);
+    }
+    
+    /**
+     * Loads a Java properties hash.
+     * 
+     * @param propertyFilename the package/filename of the properties hash
+     * @return Properties the new properties instance.
+     */
+    protected Properties loadProperties(String propertyFilename) {
+        Properties properties = new Properties();
+
+        try {
+            properties.load(getClass().getClassLoader().getResourceAsStream(propertyFilename));
+        } catch (NullPointerException exc) {
+            if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] error loading " + propertyFilename);
+            }
+
+            properties = null;
+        } catch (java.io.IOException exc) {
+            if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] error loading " + propertyFilename);
+            }
+
+            properties = null;
+        }
+
+        return properties;
     }
     
 }
