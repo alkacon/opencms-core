@@ -52,7 +52,7 @@ name="resourcesUri">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.adm
                     <tr><td class=dialogtxt>
                         <table border=0 width=100% height=200>
                             <tr><td class=dialogtxt>]]>
-                            <SELECT class="textfeld" name="USER" size="20" method="getUsers" width="330"  onchange=""/>
+                            <SELECT class="textfeld" name="USER" size="20" method="getUsers" width="470"  onchange=""/>
                             <![CDATA[
 
                             </td></tr>
