@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/10/09 14:40:46 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/10/11 15:16:21 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2002/10/09 14:40:46 $
+ * @version $Revision: 1.32 $ $Date: 2002/10/11 15:16:21 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -444,30 +444,29 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
                 if((state != C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
                     exportFile(m_cms.readFile(file.getAbsolutePath()));
                 }
-            }
-        }
+            }            
+            // release file header memory
+            subFiles.set(i, null);
+        }        
+        // all files are exported, release memory
+        subFiles = null;
 
         // walk through all subfolders and export them
         for(int i = 0; i < subFolders.size(); i++) {
             CmsResource folder = (CmsResource) subFolders.elementAt(i);
             if(folder.getState() != C_STATE_DELETED){
                 // check if this is a system-folder and if it should be included.
-                if(folder.getAbsolutePath().startsWith("/system/") ||
-                    folder.getAbsolutePath().startsWith("/pics/system/") ||
-                    folder.getAbsolutePath().startsWith("/moduledemos/")) {
-                    if(!m_excludeSystem) {
-                        // export this folder
-                        writeXmlEntrys(folder);
-                        // export all resources in this folder
-                        exportResources(folder.getAbsolutePath());
-                    }
-                } else {
+                if(!((folder.getAbsolutePath().startsWith("/system/") ||
+                      folder.getAbsolutePath().startsWith("/pics/system/") ||
+                      folder.getAbsolutePath().startsWith("/moduledemos/")) && m_excludeSystem)) {                        
                     // export this folder
                     writeXmlEntrys(folder);
                     // export all resources in this folder
                     exportResources(folder.getAbsolutePath());
                 }
-            }
+            }            
+            // release folder memory
+            subFolders.set(i, null);
         }
     }
     /**
