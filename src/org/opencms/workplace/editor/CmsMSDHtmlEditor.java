@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/04/13 13:02:34 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/05/03 07:26:51 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 5.1.12
  */
@@ -155,13 +155,12 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
             result.append("</body></html>");
             content = result.toString();       
         }
+        int warning = 0;
+        // TODO: this should really not only be one for MS DHTML, but for xmlage in general
+        content = CmsEncoder.escapeNonAscii(content);
         if (!save) {
             // set the content parameter to the modified content
             setParamContent(content);
-        } else {
-            // escape special characters for saving
-            // TODO: escape only if required because of encoding settings
-            content = CmsEncoder.escapeNonAscii(content);
         }
         return content.trim();
     }  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/04/28 22:34:06 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/05/03 07:26:51 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 5.1.12
  */
@@ -548,11 +548,15 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // set the element data
         if (m_page.hasElement(body, locale)) {
             m_page.setContent(getCms(), body, locale, content);
+            // setting the content might have mofified it
+            content = m_page.getContent(getCms(), body, locale, true);            
+            setParamContent(content);    
+            prepareContent(false);
             m_page.setEnabled(body, locale, enabled);
         }
-
+        
         // write the file
-        getCms().writeFile(m_page.write(m_file));
+        m_file = getCms().writeFile(m_page.write(m_file));
     }
     
     /**

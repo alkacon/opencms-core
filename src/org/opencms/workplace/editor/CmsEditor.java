@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/04/30 19:07:43 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/05/03 07:26:51 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1.12
  */
@@ -470,6 +470,32 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
+     * Encodes the given content so that it can be transfered to the client.<p>
+     * 
+     * Content is encoded so that it is compatible with the JavaScript
+     * "decodeURIComponent()" function.<p>
+     * 
+     * @param content the content to encode
+     * @return the encoded content
+     */
+    protected String encodeContent(String content) {
+        return CmsEncoder.escapeWBlanks(content, CmsEncoder.C_UTF8_ENCODING);
+    }    
+    
+    /**
+     * Decodes the given content the same way the client would do it.<p>
+     * 
+     * Content is decoded as if it was encoded using the JavaScript
+     * "encodeURIComponent()" function.<p>
+     * 
+     * @param content the content to decode
+     * @return the decoded content
+     */    
+    protected String decodeContent(String content) {
+        return CmsEncoder.unescape(content, CmsEncoder.C_UTF8_ENCODING);
+    }
+    
+    /**
      * Decodes an individual parameter value, ensuring the content is always decoded in UTF-8.<p>
      * 
      * For editors the content is always encoded using the 
@@ -500,27 +526,46 @@ public abstract class CmsEditor extends CmsDialog {
     /**
      * Shows the common error page in case of an exception.<p>
      * 
-     * @param theClass initialized instance of the editor class
-     * @param cmsException the current exception
-     * @param keySuffix the suffix for the localized error messages, e.g. "save" for key "error.message.editorsave"
+     * @param editor initialized instance of the editor class
+     * @param exception the current exception
+     * @param key the suffix key for the localized error messages, e.g. "save" for key "error.message.editorsave"
      * @throws JspException if inclusion of the error page fails
      */
-    protected void showErrorPage(Object theClass, CmsException cmsException, String keySuffix) throws JspException {
+    protected void showErrorPage(Object editor, CmsException exception, String key) throws JspException {
+        showErrorPage(editor, exception, key, C_FILE_DIALOG_SCREEN_ERROR);
+    }
+    
+    /**
+     * Shows the selected error page in case of an exception.<p>
+     * 
+     * @param editor initialized instance of the editor class
+     * @param exception the current exception
+     * @param key the suffix for the localized error messages, e.g. "save" for key "error.message.editorsave"
+     * @param dialogUri the URI of the error dialog to use in the VFS
+     * @throws JspException if inclusion of the error page fails
+     */    
+    protected void showErrorPage(Object editor, CmsException exception, String key, String dialogUri) throws JspException {
         // save initialized instance of the editor class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, theClass);
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, editor);
         // reading of file contents failed, show error dialog
         setAction(ACTION_SHOW_ERRORMESSAGE);
-        setParamErrorstack(cmsException.getStackTraceAsString());
-        setParamTitle(key("error.title.editor" + keySuffix));
-        setParamMessage(key("error.message.editor" + keySuffix));
-        String reasonSuggestion = key("error.reason.editor" + keySuffix) + "<br>\n" + key("error.suggestion.editor" + keySuffix) + "\n";
+        if (exception != null) {
+            setParamErrorstack(exception.getStackTraceAsString());
+        } else {
+            setParamErrorstack(null);
+        }
+        setParamTitle(key("error.title.editor" + key));
+        setParamMessage(key("error.message.editor" + key));
+        String reasonSuggestion = key("error.reason.editor" + key) + "<br>\n" + key("error.suggestion.editor" + key) + "\n";
         setParamReasonSuggestion(reasonSuggestion);
         // log the error 
-        String errorMessage = "Error while trying to " + keySuffix + " file " + getParamResource() + ": " + cmsException;
-        if (OpenCms.getLog(theClass).isErrorEnabled()) {
-            OpenCms.getLog(theClass).error(errorMessage, cmsException);
+        if (exception != null) {
+            String errorMessage = "Error while trying to " + key + " file " + getParamResource() + ": " + exception;
+            if (OpenCms.getLog(editor).isErrorEnabled()) {
+                OpenCms.getLog(editor).error(errorMessage, exception);
+            }
         }
         // include the common error dialog
-        getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        getJsp().include(dialogUri);
     }
 }
