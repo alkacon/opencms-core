@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/03/17 09:35:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/03/28 16:06:20 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.util.*;
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/03/17 09:35:40 $
+ * @version $Revision: 1.9 $ $Date: 2000/03/28 16:06:20 $
  */
 public class Utils implements I_CmsConstants, I_CmsLogChannels {
 	/** Constant for sorting files upward by name */
@@ -46,6 +46,12 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
 	/** Constant for sorting files downward by name */
     public static final int C_SORT_NAME_DOWN = 2;
 
+    /** Constant for sorting files upward by lastmodified date */
+    public static final int C_SORT_LASTMODIFIED_UP = 3;
+  
+    /** Constant for sorting files downward by lastmodified date */
+    public static final int C_SORT_LASTMODIFIED_DOWN = 4;
+    
     /**
 	 * This method splits a overgiven string into substrings. 
 	 * 
@@ -203,13 +209,21 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
          
          String titleA = fileA.getName();
          String titleB = fileB.getName();
-
+         long lastModifiedA=fileA.getDateLastModified();
+         long lastModifiedB=fileB.getDateLastModified();
+         
          switch(sorting) {
          case C_SORT_NAME_UP:                      
              cmp = (titleA.compareTo(titleB) > 0);
              break;
          case C_SORT_NAME_DOWN:
              cmp = (titleB.compareTo(titleA) > 0 );
+             break;
+         case C_SORT_LASTMODIFIED_UP:
+             cmp=( lastModifiedA > lastModifiedB);
+             break;
+         case C_SORT_LASTMODIFIED_DOWN:
+             cmp=( lastModifiedA < lastModifiedB);
              break;
          default:
              cmp = false;    

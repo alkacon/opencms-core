@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/03/27 16:22:10 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2000/03/28 16:06:19 $
+ * Version: $Revision: 1.57 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.56 $ $Date: 2000/03/27 16:22:10 $ 
+ * @version $Revision: 1.57 $ $Date: 2000/03/28 16:06:19 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -181,6 +181,16 @@ public abstract class A_CmsObject {
 	abstract public A_CmsProject readProject(String name)
 		throws CmsException;
 	
+     /**
+	 * Reads a project from the Cms.
+	 * 
+	 * @param name The resource of the project to read.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	abstract public A_CmsProject readProject(A_CmsResource res)
+		throws CmsException;
+    
 	/**
 	 * Creates a project.
 	 * 

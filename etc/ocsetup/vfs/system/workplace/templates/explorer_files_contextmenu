@@ -56,7 +56,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
@@ -76,7 +76,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
@@ -96,7 +96,7 @@
 	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for plain files end -->
@@ -117,7 +117,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
@@ -136,7 +136,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
@@ -195,7 +195,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
@@ -214,7 +214,7 @@
 	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for script files end -->
@@ -235,7 +235,7 @@
 	<contextdisabled name="explorer.context.chgrp"/>
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
@@ -254,7 +254,7 @@
 	<contextdisabled name="explorer.context.chgrp"/>
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
@@ -273,7 +273,7 @@
 	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
 	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for pages end -->
@@ -343,7 +343,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
-    <contextentry name="explorer.context.history" href="#"/>
+    <contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
@@ -360,7 +360,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
@@ -377,14 +377,14 @@
 	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for binary files end -->
 
 <!-- context menues for file not in project or in online project start -->
 <contextmenue name="online">
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for file not in project or in online project end -->

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/27 16:22:10 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2000/03/28 16:06:19 $
+ * Version: $Revision: 1.90 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.89 $ $Date: 2000/03/27 16:22:10 $
+ * @version $Revision: 1.90 $ $Date: 2000/03/28 16:06:19 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -201,6 +201,74 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		 throws CmsException {
 		 return( m_projectRb.readProject(name) );
 	 }
+     
+     /**
+	 * Reads a project from the Cms.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param res The resource to read the project of.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
+									 A_CmsResource res)
+		 throws CmsException {
+         int projectId=res.getProjectId();
+
+         A_CmsProject project=null;
+         
+         // for read all projets that are in the system.
+         // this has to be this way because there is no way to access all projects
+         // from the resource broker directly.
+        
+         Vector projects=m_projectRb.getAllProjects(this.C_PROJECT_STATE_ARCHIVE);
+         if (projects != null) {
+             for (int i=0;i<projects.size();i++) {
+                 if (((A_CmsProject)projects.elementAt(i)).getId() == projectId) {
+                     project=(A_CmsProject)projects.elementAt(i);
+                 }                                                                                  
+             }
+         }
+         if (project==null) {
+            projects=m_projectRb.getAllProjects(this.C_PROJECT_STATE_DELETED);
+            if (projects != null) {
+                 for (int i=0;i<projects.size();i++) {
+                     if (((A_CmsProject)projects.elementAt(i)).getId() == projectId) {
+                        project=(A_CmsProject)projects.elementAt(i);
+                    }                                                                                  
+                }
+            }
+         }
+         if (project==null) {
+            projects=m_projectRb.getAllProjects(this.C_PROJECT_STATE_LOCKED);                                                       
+            if (projects != null) {
+                 for (int i=0;i<projects.size();i++) {
+                     if (((A_CmsProject)projects.elementAt(i)).getId() == projectId) {
+                        project=(A_CmsProject)projects.elementAt(i);
+                    }                                                                                  
+                }
+            }
+         }
+        if (project==null) {
+            projects=m_projectRb.getAllProjects(this.C_PROJECT_STATE_UNLOCKED);                                                
+            if (projects != null) {
+                 for (int i=0;i<projects.size();i++) {
+                     if (((A_CmsProject)projects.elementAt(i)).getId() == projectId) {
+                        project=(A_CmsProject)projects.elementAt(i);
+                    }                                                                                  
+                }
+            }
+         }         
+         
+         
+         
+		 return project;
+	 }
+     
 	
 	/**
 	 * Creates a project.

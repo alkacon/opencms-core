@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/27 16:22:10 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2000/03/28 16:06:19 $
+ * Version: $Revision: 1.52 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.51 $ $Date: 2000/03/27 16:22:10 $
+ * @version $Revision: 1.52 $ $Date: 2000/03/28 16:06:19 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -95,6 +95,22 @@ interface I_CmsResourceBroker {
 	 */
 	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
 									 String name)
+		 throws CmsException ;
+     
+     /**
+	 * Reads a project from the Cms.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param res The resource to read the project of.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
+									 A_CmsResource res)
 		 throws CmsException ;
 	
 	/**

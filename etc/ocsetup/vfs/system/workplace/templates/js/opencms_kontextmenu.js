@@ -51,7 +51,7 @@ var DO_MOVEF=31;
 var DO_RENAMEF=32;
 var DO_DELETEF=33;
 
-var DO_HIST=40;
+var DO_HISTORY=40;
 var DO_HISTVIEW=41;
 //=======================================
 var DO_PUNLOCK=1;
@@ -258,11 +258,8 @@ function doAction(action) {
 		{
 			location.href='explorer_files_deletef.html';
 			break;
-		}
-		
-		case 40:
-		{
-			location.href='explorer_files_history.html';
+		} case 40:{
+		    location.href='history.html?file='+ kontextparam;
 			break;
 		}
 		case 41:

@@ -348,8 +348,8 @@ function check_radio(formname, radioname, i)
 
 function notImplemented(functionname)
 {
-	message = "Die Funktionalität '" + functionname + "' ist auf der Workplace noch nicht implementiert.\n\n";
-	message = message + "Der OpenCms-Kern bietet diese Funktionalität bereits an. Die Umsetzung auf der Workplace wird in Kürze erfolgen.";
+	message = "Die Funktionalität '" + functionname + "' ist derzeit noch nicht implementiert.\n\n";
+	//message = message + "Der OpenCms-Kern bietet diese Funktionalität bereits an. Die Umsetzung auf der Workplace wird in Kürze erfolgen.";
 	
 	// display the message
 	alert(message);
