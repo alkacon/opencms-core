@@ -40,6 +40,14 @@ function selectAll(theList) {
 	for (i=0; i<n; i++) {
 		theList.options[i].selected=true;
 	}
+	// umgehe das Problem mit Silverstream
+	var allResources="";
+	if (n>0) {
+		for (i=0; i<n; i++) {
+			allResources = allResources + theList.options[i].value + ';';
+		} 
+	} 
+	document.PROJECTNEW.ALLRES.value=allResources;
 }
 
 //-->
@@ -120,7 +128,7 @@ function selectAll(theList) {
 								</td>
 							</tr>
 							<input type="hidden" name="tempFolder" id="tempFolder" > 
-							
+							<input type="hidden" name="ALLRES" id="ALLRES" value="">
 							<tr>
 								<td colspan=3 class=leerzeile>&nbsp;</td>
 							</tr>
