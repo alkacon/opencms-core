@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/30 13:22:24 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/07/31 10:23:34 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.37 $ $Date: 2003/07/30 13:22:24 $
+ * @version $Revision: 1.38 $ $Date: 2003/07/31 10:23:34 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1213,7 +1213,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         if (e.getType() == CmsException.C_FILE_EXISTS) {
                             CmsFolder onlineFolder = null;
                             try {
-                                onlineFolder = m_driverManager.readFolder(context, currentFolder.getId(), false);
+                                // onlineFolder = m_driverManager.readFolder(context, currentFolder.getId(), false);
+                                // cw - we must read online resources really from the online project
+                                onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), newFolder.getId());
                             } catch (CmsException exc) {
                                 throw exc;
                             }
@@ -1256,7 +1258,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     
                     CmsFolder onlineFolder = null;
                     try {
-                        onlineFolder = m_driverManager.readFolder(context, currentFolder.getId(), false);
+                        // onlineFolder = m_driverManager.readFolder(context, currentFolder.getId(), false);
+                        // cw - we must read from the online project
+                        onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), currentFolder.getId());
                     } catch (CmsException exc) {
                         // if folder does not exist create it
                         if (exc.getType() == CmsException.C_NOT_FOUND) {                        
@@ -1423,7 +1427,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     
                     CmsFile onlineFile = null;
                     try {
-                        onlineFile = m_driverManager.readFile(context, currentFile.getId(), false);
+                        // onlineFile = m_driverManager.readFile(context, currentFile.getId(), false);
+                        // cw - we must read online resources from the online project
+                        onlineFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), false, currentFile.getId());
                     } catch (CmsException exc) {
                         if (exc.getType() == CmsException.C_NOT_FOUND) {                        
                             // create a new File
@@ -1496,7 +1502,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         if (e.getType() == CmsException.C_FILE_EXISTS) {
                             CmsFile onlineFile = null;
                             try {
-                                onlineFile = m_driverManager.readFile(context, currentFile.getId(), false);
+                                // onlineFile = m_driverManager.readFile(context, currentFile.getId(), false);
+                                // we must read online resources from the online project
+                                onlineFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), false, currentFile.getId());
                             } catch (CmsException exc) {
                                 throw exc;
                             }

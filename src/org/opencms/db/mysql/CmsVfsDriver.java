@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/29 15:58:46 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/31 10:23:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,14 +52,14 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/07/29 15:58:46 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/31 10:23:33 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createFile(com.opencms.file.CmsUser, com.opencms.file.CmsProject, java.lang.String, int, com.opencms.flex.util.CmsUUID, byte[], com.opencms.file.I_CmsResourceType)
-     */
+     *//*
     public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
         
         // TODO VFS links: refactor all upper methods to support the VFS link type param
@@ -138,7 +138,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         }
 
         return readFile(project.getId(), structureId, false);
-    }
+    }*/
 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#initQueries(java.lang.String)
