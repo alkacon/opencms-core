@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/11/28 16:28:09 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/12/12 11:32:41 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.32 $ $Date: 2000/11/28 16:28:09 $
+ * @version $Revision: 1.33 $ $Date: 2000/12/12 11:32:41 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -497,6 +497,10 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 					String name = getTextNodeValue(currentProperty, C_EXPORT_TAG_NAME);
 					String propertyType = getTextNodeValue(currentProperty, C_EXPORT_TAG_TYPE);
 					String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
+					if(value == null) {
+						// create an empty property 
+						value = "";
+					}
 					// store these informations
 					if ((name != null) && (value != null)) {
 						properties.put(name, value);
