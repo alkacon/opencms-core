@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/28 16:01:13 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/05/29 09:30:34 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import org.opencms.util.CmsPropertyUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -74,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.3.5
  */
@@ -89,6 +88,9 @@ public class OpenCmsTestCase extends TestCase {
     /** The path to the default setup data files */
     private static String m_setupDataPath;
     
+    /** The initialized OpenCms shell instance */
+    private static CmsShell m_shell; 
+    
     /** The path to the additional test data files */
     private static String m_testDataPath;
         
@@ -97,9 +99,6 @@ public class OpenCmsTestCase extends TestCase {
     
     /** The internal storages */
     private HashMap m_resourceStorages;
-    
-    /** The initialized OpenCms shell instance */
-    private CmsShell m_shell;    
     
     /**
      * Default JUnit constructor.<p>
@@ -110,6 +109,359 @@ public class OpenCmsTestCase extends TestCase {
         super(arg0);
         m_resourceStorages = new HashMap();
     }
+    
+    
+    /**
+     * Removes the initialized OpenCms database and all 
+     * temporary files created during the test run.<p>
+     */
+    public static void removeOpenCms() {
+        
+        // output a message
+        m_shell.printPrompt(); 
+        System.out.println("----- Test cases finished -----");        
+
+        // exit the shell
+        m_shell.exit();
+        
+        // remove the database
+        removeDatabase();
+
+        // get the name of the folder for the backup configuration files
+        File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
+        
+        // remove the backup configuration files
+        CmsStaticExportManager.purgeDirectory(configBackupDir);        
+    }
+    
+    /**
+     * Sets up a complete OpenCms instance, creating the usual projects,
+     * and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     */
+    public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
+        // create a new database first
+        setupDatabase();
+        
+        // kill any old shell that might have remained from a previous test 
+        if (m_shell != null) {
+            try {
+                m_shell.exit();
+                m_shell = null;
+            } catch (Throwable t) {
+                // ignore
+            }
+        }
+        
+        // create a shell instance
+        m_shell = new CmsShell(
+            getTestDataPath() + "WEB-INF" + File.separator,
+            "${user}@${project}>", 
+            null);
+        
+        // open the test script 
+        File script;
+        FileInputStream stream = null;
+        CmsObject cms = null;
+        
+        try {
+            // start the shell with the base script
+            script = new File(getTestDataPath() + "scripts/script_base.txt");
+            stream = new FileInputStream(script);
+            m_shell.start(stream);
+            
+            // add the default folders by script
+            script = new File(getTestDataPath() + "scripts/script_default_folders.txt");
+            stream = new FileInputStream(script);        
+            m_shell.start(stream); 
+            
+            // log in the Admin user and switch to the setup project
+            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+            cms.loginUser("Admin", "admin");
+            cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
+            
+            // import the "simpletest" files
+            importResources(cms, importFolder, targetFolder);  
+            
+            // publish the current project by script
+            script = new File(getTestDataPath() + "scripts/script_publish.txt");
+            stream = new FileInputStream(script);        
+            m_shell.start(stream);      
+            
+            // switch to the "Offline" project
+            cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+            cms.getRequestContext().setSiteRoot("/sites/default/");               
+            
+            // output a message 
+            System.out.println("----- Starting test cases -----");
+        } catch (Throwable t) {
+            fail("Unable to setup OpenCms\n" + CmsException.getStackTraceAsString(t));
+        }
+        // return the initialized cms context Object
+        return cms;
+    }
+    
+    /**
+     * Check the setup DB for errors that might have occured.<p>
+     * 
+     * @param setupDb the setup DB object to check
+     */
+    protected static void checkErrors(CmsSetupDb setupDb) {
+        if (! setupDb.noErrors()) {
+            Vector errors = setupDb.getErrors();
+            for (Iterator i = errors.iterator(); i.hasNext();) {
+                String error = (String)i.next();
+                System.err.println(error);
+            }
+            fail((String)setupDb.getErrors().get(0));
+        }                
+    }
+    
+    /**
+     * Tests database creation.<p>
+     * 
+     * @return the setup DB object used for connection to the DB
+     */
+    protected static CmsSetupDb createDatabase() {
+           
+        // create a setup DB object 
+        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, true);
+        
+        // create the database
+        setupDb.createDatabase(C_DB_PRODUCT, getReplacer());        
+        return setupDb;
+    }
+    
+    /**
+     * Tests table creation.<p>
+     * 
+     * @return the setup DB object used for connection to the DB
+     */
+    protected static CmsSetupDb createTables() {
+
+        // create a setup DB object 
+        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, false);
+        
+        // create the database tables
+        setupDb.createTables(C_DB_PRODUCT, getReplacer());      
+        return setupDb;     
+    }
+ 
+    /**
+     * Tests database removal.<p>
+     * 
+     * @return the setup DB object used for connection to the DB
+     */
+    protected static CmsSetupDb dropDatabase() {
+
+        // create a setup DB object for DB creation
+        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, true);
+        
+        // drop the database
+        setupDb.dropDatabase(C_DB_PRODUCT, getReplacer());
+        return setupDb;       
+    }
+    
+    /**
+     * Tests table removal.<p>
+     * 
+     * @return the setup DB object used for connection to the DB
+     */
+    protected static CmsSetupDb dropTables() {
+        
+        // create a setup DB object 
+        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, false);
+        
+        // create the database
+        setupDb.dropTables(C_DB_PRODUCT);
+        return setupDb;      
+    }
+
+    /**
+     * Returns an initialized replacer map.<p>
+     * 
+     * @return an initialized replacer map
+     */
+    protected static Map getReplacer() {
+        Map replacer = new HashMap();
+        replacer.put("${database}", C_DATABASE_NAME);
+        return replacer;
+    }
+    
+    /**
+     * Returns the path to the data files used by the setup wizard.<p>
+     * 
+     * Whenever possible use this path to ensure that the files 
+     * used for testing are actually the same as for the setup.<p>
+     * 
+     * @return the path to the data files used by the setup wizard
+     */
+    protected static synchronized String getSetupDataPath() {
+        
+        if (m_setupDataPath == null) {
+            // get URL of test input resource
+            URL basePathUrl = ClassLoader.getSystemResource("./");
+
+            // check if the db setup files are available
+            File setupDataFolder = new File(basePathUrl.getFile() + "../webapp/");
+            if (!setupDataFolder.exists()) {
+                fail("DB setup data not available at " + setupDataFolder.getAbsolutePath());
+            }
+            m_setupDataPath = setupDataFolder.getAbsolutePath() + File.separator;
+        }
+        // return the path name
+        return m_setupDataPath;
+    }
+
+    /**
+     * Returns an initialized DB setup object.<p>
+     *  
+     * @param dbProduct the name of the DB product to use, e.g. "mysql"
+     * @param create if true, the DB will be initialized for creation
+     * @return the initialized setup DB object
+     */
+    protected static CmsSetupDb getSetupDb(String dbProduct, boolean create) {
+        
+        ExtendedProperties dbConfiguration;
+        ExtendedProperties configuration;
+        try {
+            // load DB configuration
+            String dbConfigFile = getSetupDataPath() + "setup/database/" + dbProduct + "/database.properties";
+            dbConfiguration = CmsPropertyUtils.loadProperties(dbConfigFile);
+                    
+            // load test configuration
+            String propertyFile = getTestDataPath() + "WEB-INF/config/opencms.properties";        
+            configuration = CmsPropertyUtils.loadProperties(propertyFile);
+            configuration.setProperty("DATABASE_NAME", C_DATABASE_NAME);
+        } catch (IOException e) {
+            fail(e.toString());
+            return null;
+        }
+        
+        // get connection values from properties
+        String key = "default";        
+        String jdbcDriver = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_DRIVER);
+        String username = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_USERNAME);
+        String password = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_PASSWORD);        
+
+        String jdbcUrl;
+        if (create) {
+            jdbcUrl = dbConfiguration.getString(dbProduct + ".constr");
+        } else {
+            jdbcUrl = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL);
+        }
+        
+        // create setup DB instance
+        CmsSetupDb setupDb = new CmsSetupDb(getSetupDataPath());
+        
+        // connecto to the DB
+        setupDb.setConnection(jdbcDriver, jdbcUrl, username, password);
+                
+        // check for errors 
+        checkErrors(setupDb);
+        
+        // connect to the DB
+        return setupDb;
+    }
+        
+    /**
+     * Returns the path to the test data configuration files.<p>
+     * 
+     * Use this path in case you require input files for testing 
+     * that are modified or otherwise different from the setup data.<p>
+     * 
+     * @return the path to the test data configuration files
+     */    
+    protected static synchronized String getTestDataPath() {
+
+        if (m_testDataPath == null) {
+            // get URL of test input resource
+            URL basePathUrl = ClassLoader.getSystemResource("./");
+
+            // check if the db setup files are available
+            File testDataFolder = new File(basePathUrl.getFile() + "../test/data/");
+            if (!testDataFolder.exists()) {
+                fail("DB setup data not available at " + testDataFolder.getAbsolutePath());
+            }
+            m_testDataPath = testDataFolder.getAbsolutePath() + File.separator;
+        }
+        // return the path name
+        return m_testDataPath;    
+    }
+    
+    /**
+     * Imports a resource into the Cms.<p>
+     * 
+     * @param cms an initialized CmsObject
+     * @param importFile the name (absolute Path) of the import resource (zip or folder)
+     * @param targetPath the name (absolute Path) of the target folder in the VFS
+     * @throws CmsException if something goes wrong
+     */
+    protected static void importResources(CmsObject cms, String importFile, String targetPath) throws CmsException {
+        OpenCms.getImportExportManager().importData(cms, getTestDataPath() + File.separator + "imports" + File.separator + importFile, targetPath, new CmsShellReport());
+    }    
+    
+    /**
+     * Removes the OpenCms database test instance.<p>
+     */
+    protected static void removeDatabase() {
+        
+        CmsSetupDb setupDb;
+        setupDb = dropTables();
+        checkErrors(setupDb);
+        setupDb = dropDatabase();
+        checkErrors(setupDb);
+    }    
+    
+    /**
+     * Creates a new OpenCms test database including the tables.<p>
+     * 
+     * Any existing instance of the test database is forcefully removed first.<p>
+     */
+    protected static void setupDatabase() {
+                
+        // first kill any existing old database instance
+        dropDatabase();
+        
+        // now setup the new instance
+        CmsSetupDb setupDb;
+        setupDb = createDatabase();
+        checkErrors(setupDb);        
+        setupDb = createTables();            
+        checkErrors(setupDb);
+    }
+    
+    
+    
+    /**
+     * Compares two lists of CmsProperty objects and creates a list of all properties which are
+     * not included in a seperate exclude list.
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource the properties belong to
+     * @param storedResource the stored resource corresponding to the resourcename
+     * @param excludeList the list of properies to exclude in the test or null
+     * @return list of CmsProperty objects 
+     * @throws CmsException if something goes wrong
+     */
+    private static String compareProperties(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
+        throws CmsException {
+            String noMatches = "";
+            List storedProperties = storedResource.getProperties();
+            List properties = cms.readPropertyObjects(resourceName, false);
+            List unmatchedProperties;
+            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
+            if (unmatchedProperties.size() >0) {
+                noMatches += "[Properies missing "+unmatchedProperties.toString()+"]";   
+            }
+            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(properties, storedProperties, excludeList);
+            if (unmatchedProperties.size() >0) {
+                noMatches += "[Properies additional "+unmatchedProperties.toString()+"]";   
+            } 
+            return noMatches;
+    }    
     
     /**
      * Compares the current date last modified of a resource with a given date.<p>
@@ -161,7 +513,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param res a Cms resource representing the state after an operation
      * @param filter a filter to compare both resources
      */
-    protected void assertFilter(
+    public void assertFilter(
         CmsObject cms,
         OpenCmsTestResourceStorageEntry storedResource,
         CmsResource res,
@@ -374,28 +726,6 @@ public class OpenCmsTestCase extends TestCase {
     }
     
     /**
-     * Compares a resource to another given resource using a specified filter.<p>
-     * 
-     * @param cms the current user's Cms object
-     * @param resourceName1 resource #1
-     * @param resourceName2 resource #2
-     * @param filter the filter contianing the flags defining which attributes to compare
-     */
-    public void assertFilter(CmsObject cms, String resourceName1, String resourceName2, OpenCmsTestResourceFilter filter) {
-        try {
-            CmsResource res1 = cms.readFileHeader(resourceName1, CmsResourceFilter.ALL);
-            CmsResource res2 = cms.readFileHeader(resourceName2, CmsResourceFilter.ALL);
-            
-            // a dummy storage entry gets created here to share existing code
-            OpenCmsTestResourceStorageEntry dummy = new OpenCmsTestResourceStorageEntry(cms, resourceName2, res2);
-
-            assertFilter(cms, dummy, res1, filter);
-        } catch (CmsException e) {
-            fail("cannot read either resource " + resourceName1 + " or resource " + resourceName2 + " " + CmsException.getStackTraceAsString(e));
-        }        
-    }
-    
-    /**
      * Compares a resource to its stored version containing the state before a CmsObject
      * method was called.<p>
      * 
@@ -420,6 +750,91 @@ public class OpenCmsTestCase extends TestCase {
     }
     
     /**
+     * Compares a resource to another given resource using a specified filter.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param resourceName1 resource #1
+     * @param resourceName2 resource #2
+     * @param filter the filter contianing the flags defining which attributes to compare
+     */
+    public void assertFilter(CmsObject cms, String resourceName1, String resourceName2, OpenCmsTestResourceFilter filter) {
+        try {
+            CmsResource res1 = cms.readFileHeader(resourceName1, CmsResourceFilter.ALL);
+            CmsResource res2 = cms.readFileHeader(resourceName2, CmsResourceFilter.ALL);
+            
+            // a dummy storage entry gets created here to share existing code
+            OpenCmsTestResourceStorageEntry dummy = new OpenCmsTestResourceStorageEntry(cms, resourceName2, res2);
+
+            assertFilter(cms, dummy, res1, filter);
+        } catch (CmsException e) {
+            fail("cannot read either resource " + resourceName1 + " or resource " + resourceName2 + " " + CmsException.getStackTraceAsString(e));
+        }        
+    }
+    
+    /**
+     * Validates if a specified resource has a lock of a given type for the current user.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param resourceName the name of the resource to validate
+     * @param lockType the type of the lock
+     * @see CmsLock#C_TYPE_EXCLUSIVE
+     * @see CmsLock#C_TYPE_INHERITED
+     * @see CmsLock#C_TYPE_SHARED_EXCLUSIVE
+     * @see CmsLock#C_TYPE_SHARED_INHERITED
+     * @see CmsLock#C_TYPE_UNLOCKED
+     */
+    public void assertLock(CmsObject cms, String resourceName, int lockType) {
+        try {
+            // get the actual resource from the VFS
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsLock lock = cms.getLock(res);
+            
+            if (lockType == CmsLock.C_TYPE_UNLOCKED && !lock.isNullLock()) {
+                fail("[Lock " + resourceName + " must be unlocked]");
+            } else if (lock.isNullLock() || lock.getType() != lockType || !lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
+                fail("[Lock " + resourceName + " requires a lock of type " + lockType + " for user " + cms.getRequestContext().currentUser().getId() + "]");
+            }
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }        
+    }
+    
+    /**
+     * Validates the project status of a resource,
+     * i.e. if a resource has a "red flag" or not.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param resourceName the name of the resource to validate
+     * @param shouldHaveRedFlag true, if the resource should currently have a red flag
+     */
+    public void assertModifiedInCurrentProject(CmsObject cms, String resourceName, boolean shouldHaveRedFlag) {
+
+        boolean hasRedFlag = false;
+
+        try {
+            // get the actual resource from the VFS
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+
+            // the current resource has a red flag if it's state is changed/new/deleted
+            hasRedFlag = (res.getState() != I_CmsConstants.C_STATE_UNCHANGED);
+            // and if it was modified in the current project
+            hasRedFlag &= (res.getProjectLastModified() == cms.getRequestContext().currentProject().getId());
+            // and if it was modified by the current user
+            hasRedFlag &= (res.getUserLastModified().equals(cms.getRequestContext().currentUser().getId()));
+
+            if (shouldHaveRedFlag && !hasRedFlag) {
+                // it should have a red flag, but it hasn't
+                fail("[HasRedFlag " +  resourceName + " must have a red flag]");
+            } else if (hasRedFlag && !shouldHaveRedFlag) {
+                // it has a red flag, but it shouldn't
+                fail("[HasRedFlag " +  resourceName + " must not have a red flag]");
+            }
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+    
+    /**
      * Compares the current project of a resource with a given CmsProject.<p>
      * 
      * @param cms the CmsObject
@@ -438,29 +853,6 @@ public class OpenCmsTestCase extends TestCase {
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
-    }
-    
-    /**
-     * Validates if the current sibling count of a resource has been incremented
-     * compared to it's previous sibling count.<p>
-     * 
-     * @param cms the current user's Cms object
-     * @param resourceName the name of the resource to compare
-     */
-    public void assertSiblingCountIncremented(CmsObject cms, String resourceName) {
-        try {
-            // get the current resource from the VFS
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);            
-            // get the previous resource from resource storage
-            OpenCmsTestResourceStorageEntry entry = m_currentResourceStrorage.get(resourceName);
-            
-            if (res.getLinkCount() != (entry.getSiblingCount()+1)) {
-                fail("[SiblingCount " + res.getLinkCount() + " <-> " + entry.getSiblingCount() + "+1]");
-            }
-            
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
-        }        
     }
     
      /**
@@ -765,65 +1157,26 @@ public class OpenCmsTestCase extends TestCase {
     } 
     
     /**
-     * Validates if a specified resource has a lock of a given type for the current user.<p>
+     * Validates if the current sibling count of a resource has been incremented
+     * compared to it's previous sibling count.<p>
      * 
      * @param cms the current user's Cms object
-     * @param resourceName the name of the resource to validate
-     * @param lockType the type of the lock
-     * @see CmsLock#C_TYPE_EXCLUSIVE
-     * @see CmsLock#C_TYPE_INHERITED
-     * @see CmsLock#C_TYPE_SHARED_EXCLUSIVE
-     * @see CmsLock#C_TYPE_SHARED_INHERITED
-     * @see CmsLock#C_TYPE_UNLOCKED
+     * @param resourceName the name of the resource to compare
      */
-    public void assertLock(CmsObject cms, String resourceName, int lockType) {
+    public void assertSiblingCountIncremented(CmsObject cms, String resourceName) {
         try {
-            // get the actual resource from the VFS
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
-            CmsLock lock = cms.getLock(res);
+            // get the current resource from the VFS
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);            
+            // get the previous resource from resource storage
+            OpenCmsTestResourceStorageEntry entry = m_currentResourceStrorage.get(resourceName);
             
-            if (lockType == CmsLock.C_TYPE_UNLOCKED && !lock.isNullLock()) {
-                fail("[Lock " + resourceName + " must be unlocked]");
-            } else if (lock.isNullLock() || lock.getType() != lockType || !lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
-                fail("[Lock " + resourceName + " requires a lock of type " + lockType + " for user " + cms.getRequestContext().currentUser().getId() + "]");
+            if (res.getLinkCount() != (entry.getSiblingCount()+1)) {
+                fail("[SiblingCount " + res.getLinkCount() + " <-> " + entry.getSiblingCount() + "+1]");
             }
+            
         } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }        
-    }
-    
-    /**
-     * Validates if a resource has a red flag or not.<p>
-     * 
-     * @param cms the current user's Cms object
-     * @param resourceName the name of the resource to validate
-     * @param shouldHaveRedFlag true, if the resource should currently have a red flag
-     */
-    public void assertHasRedFlag(CmsObject cms, String resourceName, boolean shouldHaveRedFlag) {
-
-        boolean hasRedFlag = false;
-
-        try {
-            // get the actual resource from the VFS
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
-
-            // the current resource has a red flag if it's state is changed/new/deleted
-            hasRedFlag = (res.getState() != I_CmsConstants.C_STATE_UNCHANGED);
-            // and if it was modified in the current project
-            hasRedFlag &= (res.getProjectLastModified() == cms.getRequestContext().currentProject().getId());
-            // and if it was modified by the current user
-            hasRedFlag &= (res.getUserLastModified().equals(cms.getRequestContext().currentUser().getId()));
-
-            if (shouldHaveRedFlag && !hasRedFlag) {
-                // it should have a red flag, but it hasn't
-                fail("[HasRedFlag " +  resourceName + " must have a red flag]");
-            } else if (hasRedFlag && !shouldHaveRedFlag) {
-                // it has a red flag, but it shouldn't
-                fail("[HasRedFlag " +  resourceName + " must not have a red flag]");
-            }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
-        }
     }
     
     /**
@@ -903,115 +1256,14 @@ public class OpenCmsTestCase extends TestCase {
         return cms.getResourcesInTimeRange(resourceName, CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT);
     }
     
-    
     /**
-     * Removes the initialized OpenCms database and all 
-     * temporary files created during the test run.<p>
+     * Sets the mapping for resourcenames.<p>
+     *
+     * @param source the source resource name
+     * @param target the target resource name
      */
-    public void removeOpenCms() {
-        
-        // output a message
-        m_shell.printPrompt(); 
-        System.out.println("----- Test cases finished -----");        
-
-        // exit the shell
-        m_shell.exit();
-        
-        // remove the database
-        removeDatabase();
-
-        // remove the default storage        
-        removeStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
-
-        // get the name of the folder for the backup configuration files
-        File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
-        
-        // remove the backup configuration files
-        CmsStaticExportManager.purgeDirectory(configBackupDir);        
-    }
-    
-    /**
-     * Removes and deletes a storage object.<p>
-     * @param name the name of the storage
-     */
-    public void removeStorage(String name) {
-        OpenCmsTestResourceStorage storage = (OpenCmsTestResourceStorage)m_resourceStorages.get(name);
-        if (storage != null) {
-            m_resourceStorages.remove(name);
-            storage = null;
-        } 
-    }
-    
-    /**
-     * Sets up a complete OpenCms instance, creating the usual projects,
-     * and importing a default database.<p>
-     * 
-     * @param importFolder the folder to import in the "real" FS
-     * @param targetFolder the target folder of the import in the VFS
-     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
-     * @throws FileNotFoundException in case of file access errors
-     * @throws CmsException in case of OpenCms access errors
-     */
-    public CmsObject setupOpenCms(String importFolder, String targetFolder) throws FileNotFoundException, CmsException {
-        // create a new database first
-        setupDatabase();
-        
-        // kill any old shell that might have remained from a previous test 
-        if (m_shell != null) {
-            try {
-                m_shell.exit();
-                m_shell = null;
-            } catch (Throwable t) {
-                // ignore
-            }
-        }
-        
-        // create a shell instance
-        m_shell = new CmsShell(
-            getTestDataPath() + "WEB-INF" + File.separator,
-            "${user}@${project}>", 
-            null);
-        
-        // open the test script 
-        File script;
-        FileInputStream stream = null;
-        
-        // start the shell with the base script
-        script = new File(getTestDataPath() + "scripts/script_base.txt");
-        stream = new FileInputStream(script);
-        m_shell.start(stream);
-        
-        // add the default folders by script
-        script = new File(getTestDataPath() + "scripts/script_default_folders.txt");
-        stream = new FileInputStream(script);        
-        m_shell.start(stream); 
-        
-        // log in the Admin user and switch to the setup project
-        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        cms.loginUser("Admin", "admin");
-        cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
-        
-        // import the "simpletest" files
-        importResources(cms, importFolder, targetFolder);  
-        
-        // publish the current project by script
-        script = new File(getTestDataPath() + "scripts/script_publish.txt");
-        stream = new FileInputStream(script);        
-        m_shell.start(stream);      
-        
-        // switch to the "Offline" project
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        cms.getRequestContext().setSiteRoot("/sites/default/");               
-
-        // init the storage
-        createStorage(cms, OpenCmsTestResourceStorage.DEFAULT_STORAGE);
-        switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
-        
-        // output a message 
-        System.out.println("----- Starting test cases -----");
-        
-        // return the initialized cms context Object
-        return cms;
+    public void setMapping(String source, String target) {        
+        m_currentResourceStrorage.setMapping(source, target);
     }
     
     /**
@@ -1066,82 +1318,6 @@ public class OpenCmsTestCase extends TestCase {
     }
     
     /**
-     * Check the setup DB for errors that might have occured.<p>
-     * 
-     * @param setupDb the setup DB object to check
-     */
-    protected void checkErrors(CmsSetupDb setupDb) {
-        if (! setupDb.noErrors()) {
-            Vector errors = setupDb.getErrors();
-            for (Iterator i = errors.iterator(); i.hasNext();) {
-                String error = (String)i.next();
-                System.err.println(error);
-            }
-            fail((String)setupDb.getErrors().get(0));
-        }                
-    }
-    
-    /**
-     * Tests database creation.<p>
-     * 
-     * @return the setup DB object used for connection to the DB
-     */
-    protected CmsSetupDb createDatabase() {
-           
-        // create a setup DB object 
-        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, true);
-        
-        // create the database
-        setupDb.createDatabase(C_DB_PRODUCT, getReplacer());        
-        return setupDb;
-    }
-    
-    /**
-     * Tests table creation.<p>
-     * 
-     * @return the setup DB object used for connection to the DB
-     */
-    protected CmsSetupDb createTables() {
-
-        // create a setup DB object 
-        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, false);
-        
-        // create the database tables
-        setupDb.createTables(C_DB_PRODUCT, getReplacer());      
-        return setupDb;     
-    }
- 
-    /**
-     * Tests database removal.<p>
-     * 
-     * @return the setup DB object used for connection to the DB
-     */
-    protected CmsSetupDb dropDatabase() {
-
-        // create a setup DB object for DB creation
-        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, true);
-        
-        // drop the database
-        setupDb.dropDatabase(C_DB_PRODUCT, getReplacer());
-        return setupDb;       
-    }
-    
-    /**
-     * Tests table removal.<p>
-     * 
-     * @return the setup DB object used for connection to the DB
-     */
-    protected CmsSetupDb dropTables() {
-        
-        // create a setup DB object 
-        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, false);
-        
-        // create the database
-        setupDb.dropTables(C_DB_PRODUCT);
-        return setupDb;      
-    }
-    
-    /**
      * Writes a message to the current output stream.<p>
      * 
      * @param message the message to write
@@ -1150,199 +1326,40 @@ public class OpenCmsTestCase extends TestCase {
         m_shell.printPrompt();
         System.out.println(message);
     }   
-
-    /**
-     * Returns an initialized replacer map.<p>
-     * 
-     * @return an initialized replacer map
-     */
-    protected Map getReplacer() {
-        Map replacer = new HashMap();
-        replacer.put("${database}", C_DATABASE_NAME);
-        return replacer;
-    }
     
     /**
-     * Returns the path to the data files used by the setup wizard.<p>
+     * Returns an initialized CmsObject with admin user permissions,
+     * running in the "/sites/default" site root.<p>
      * 
-     * Whenever possible use this path to ensure that the files 
-     * used for testing are actually the same as for the setup.<p>
-     * 
-     * @return the path to the data files used by the setup wizard
+     * @return an initialized CmsObject with admin user permissions
+     * @throws CmsException in case of OpenCms access errors
      */
-    protected synchronized String getSetupDataPath() {
-        
-        if (m_setupDataPath == null) {
-            // get URL of test input resource
-            URL basePathUrl = ClassLoader.getSystemResource("./");
-
-            // check if the db setup files are available
-            File setupDataFolder = new File(basePathUrl.getFile() + "../webapp/");
-            if (!setupDataFolder.exists()) {
-                fail("DB setup data not available at " + setupDataFolder.getAbsolutePath());
-            }
-            m_setupDataPath = setupDataFolder.getAbsolutePath() + File.separator;
-        }
-        // return the path name
-        return m_setupDataPath;
-    }
-
-    /**
-     * Returns an initialized DB setup object.<p>
-     *  
-     * @param dbProduct the name of the DB product to use, e.g. "mysql"
-     * @param create if true, the DB will be initialized for creation
-     * @return the initialized setup DB object
-     */
-    protected CmsSetupDb getSetupDb(String dbProduct, boolean create) {
-        
-        ExtendedProperties dbConfiguration;
-        ExtendedProperties configuration;
-        try {
-            // load DB configuration
-            String dbConfigFile = getSetupDataPath() + "setup/database/" + dbProduct + "/database.properties";
-            dbConfiguration = CmsPropertyUtils.loadProperties(dbConfigFile);
-                    
-            // load test configuration
-            String propertyFile = getTestDataPath() + "WEB-INF/config/opencms.properties";        
-            configuration = CmsPropertyUtils.loadProperties(propertyFile);
-            configuration.setProperty("DATABASE_NAME", C_DATABASE_NAME);
-        } catch (IOException e) {
-            fail(e.toString());
-            return null;
-        }
-        
-        // get connection values from properties
-        String key = "default";        
-        String jdbcDriver = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_DRIVER);
-        String username = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_USERNAME);
-        String password = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_PASSWORD);        
-
-        String jdbcUrl;
-        if (create) {
-            jdbcUrl = dbConfiguration.getString(dbProduct + ".constr");
-        } else {
-            jdbcUrl = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL);
-        }
-        
-        // create setup DB instance
-        CmsSetupDb setupDb = new CmsSetupDb(getSetupDataPath());
-        
-        // connecto to the DB
-        setupDb.setConnection(jdbcDriver, jdbcUrl, username, password);
+    protected CmsObject getCmsObject() throws CmsException {
                 
-        // check for errors 
-        checkErrors(setupDb);
+        // log in the Admin user and switch to the setup project
+        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        cms.loginUser("Admin", "admin");
+        // switch to the "Offline" project
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.getRequestContext().setSiteRoot("/sites/default/");
         
-        // connect to the DB
-        return setupDb;
-    }
+        // init the storage
+        createStorage(cms, OpenCmsTestResourceStorage.DEFAULT_STORAGE);
+        switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
         
-    /**
-     * Returns the path to the test data configuration files.<p>
-     * 
-     * Use this path in case you require input files for testing 
-     * that are modified or otherwise different from the setup data.<p>
-     * 
-     * @return the path to the test data configuration files
-     */    
-    protected synchronized String getTestDataPath() {
-
-        if (m_testDataPath == null) {
-            // get URL of test input resource
-            URL basePathUrl = ClassLoader.getSystemResource("./");
-
-            // check if the db setup files are available
-            File testDataFolder = new File(basePathUrl.getFile() + "../test/data/");
-            if (!testDataFolder.exists()) {
-                fail("DB setup data not available at " + testDataFolder.getAbsolutePath());
-            }
-            m_testDataPath = testDataFolder.getAbsolutePath() + File.separator;
-        }
-        // return the path name
-        return m_testDataPath;    
+        // return the initialized cms context Object
+        return cms;        
     }
     
     /**
-     * Imports a resource into the Cms.<p>
-     * 
-     * @param cms an initialized CmsObject
-     * @param importFile the name (absolute Path) of the import resource (zip or folder)
-     * @param targetPath the name (absolute Path) of the target folder in the VFS
-     * @throws CmsException if something goes wrong
+     * Removes and deletes a storage object.<p>
+     * @param name the name of the storage
      */
-    protected void importResources(CmsObject cms, String importFile, String targetPath) throws CmsException {
-        OpenCms.getImportExportManager().importData(cms, getTestDataPath() + File.separator + "imports" + File.separator + importFile, targetPath, new CmsShellReport());
-    }    
-    
-    /**
-     * Removes the OpenCms database test instance.<p>
-     */
-    protected void removeDatabase() {
-        
-        CmsSetupDb setupDb;
-        setupDb = dropTables();
-        checkErrors(setupDb);
-        setupDb = dropDatabase();
-        checkErrors(setupDb);
-    }    
-    
-    /**
-     * Sets the mapping for resourcenames.<p>
-     *
-     * @param source the source resource name
-     * @param target the target resource name
-     */
-    protected void setMapping(String source, String target) {        
-        m_currentResourceStrorage.setMapping(source, target);
+    protected void removeStorage(String name) {
+        OpenCmsTestResourceStorage storage = (OpenCmsTestResourceStorage)m_resourceStorages.get(name);
+        if (storage != null) {
+            m_resourceStorages.remove(name);
+            storage = null;
+        } 
     }
-    
-    /**
-     * Creates a new OpenCms test database including the tables.<p>
-     * 
-     * Any existing instance of the test database is forcefully removed first.<p>
-     */
-    protected void setupDatabase() {
-                
-        // first kill any existing old database instance
-        dropDatabase();
-        
-        // now setup the new instance
-        CmsSetupDb setupDb;
-        setupDb = createDatabase();
-        checkErrors(setupDb);        
-        setupDb = createTables();            
-        checkErrors(setupDb);
-    }
-    
-    
-    
-    /**
-     * Compares two lists of CmsProperty objects and creates a list of all properties which are
-     * not included in a seperate exclude list.
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource the properties belong to
-     * @param storedResource the stored resource corresponding to the resourcename
-     * @param excludeList the list of properies to exclude in the test or null
-     * @return list of CmsProperty objects 
-     * @throws CmsException if something goes wrong
-     */
-    private String compareProperties(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
-        throws CmsException {
-            String noMatches = "";
-            List storedProperties = storedResource.getProperties();
-            List properties = cms.readPropertyObjects(resourceName, false);
-            List unmatchedProperties;
-            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
-            if (unmatchedProperties.size() >0) {
-                noMatches += "[Properies missing "+unmatchedProperties.toString()+"]";   
-            }
-            unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(properties, storedProperties, excludeList);
-            if (unmatchedProperties.size() >0) {
-                noMatches += "[Properies additional "+unmatchedProperties.toString()+"]";   
-            } 
-            return noMatches;
-    }
-    
-    
 }

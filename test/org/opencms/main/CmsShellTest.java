@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/Attic/CmsShellTest.java,v $
- * Date   : $Date: 2004/05/26 08:01:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/29 09:30:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.FileInputStream;
  * Test cases for the OpenCms shell.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0
  */
@@ -56,9 +56,36 @@ public class CmsShellTest extends OpenCmsTestCase {
     public CmsShellTest(String arg0) {
         super(arg0);
     }
+
+    /**
+     * Tests the Junit OpenCms VFS test setup using the "base" test class.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCmsSetup() throws Throwable {
+        
+        CmsObject cms;        
+        
+        // setup OpenCms using the base test class
+        cms = setupOpenCms("simpletest", "/sites/default/");        
+        // check the returned CmsObject
+        assertEquals(cms.getRequestContext().currentUser(), cms.readUser("Admin"));
+        assertEquals(cms.getRequestContext().currentProject(), cms.readProject("Offline"));
+        assertEquals(cms.getRequestContext().getSiteRoot(), "/sites/default");
+        
+        // check the CmsObject initialization
+        cms = getCmsObject();        
+        // check the returned CmsObject
+        assertEquals(cms.getRequestContext().currentUser(), cms.readUser("Admin"));
+        assertEquals(cms.getRequestContext().currentProject(), cms.readProject("Offline"));
+        assertEquals(cms.getRequestContext().getSiteRoot(), "/sites/default");
+                
+        // remove OpenCms
+        removeOpenCms();
+    }
     
     /**
-     * Tests the CmsShell.<p>
+     * Tests the CmsShell and setup procedure.<p>
      * 
      * @throws Throwable if something goes wrong
      */
@@ -111,23 +138,5 @@ public class CmsShellTest extends OpenCmsTestCase {
         
         // remove the backup configuration files
         CmsStaticExportManager.purgeDirectory(configBackupDir);
-    }
-
-    /**
-     * Tests the CmsShell setup using the "base" test class.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testCmsSetup() throws Throwable {
-        // setup OpenCms
-        CmsObject cms = setupOpenCms("simpletest", "/sites/default/");
-        
-        // check the returned CmsObject
-        assertEquals(cms.getRequestContext().currentUser(), cms.readUser("Admin"));
-        assertEquals(cms.getRequestContext().currentProject(), cms.readProject("Offline"));
-        assertEquals(cms.getRequestContext().getSiteRoot(), "/sites/default");
-        
-        // remove OpenCms
-        removeOpenCms();
     }
 }

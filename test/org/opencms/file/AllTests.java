@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/AllTests.java,v $
- * Date   : $Date: 2004/05/28 16:01:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/05/29 09:30:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import junit.framework.TestSuite;
 
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.0
  */
@@ -57,10 +57,10 @@ public final class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Tests for package org.opencms.file");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestTouch.class));
-        suite.addTest(new TestSuite(TestProperty.class));
-        suite.addTest(new TestSuite(TestSiblings.class));
-        suite.addTest(new TestSuite(TestUndoChanges.class));
+        suite.addTest(TestTouch.suite());
+        suite.addTest(TestProperty.suite());
+        suite.addTest(TestSiblings.suite());
+        suite.addTest(TestUndoChanges.suite());
         //$JUnit-END$
         return suite;
     }

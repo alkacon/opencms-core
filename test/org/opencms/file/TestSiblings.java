@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2004/05/28 16:01:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/29 09:30:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,15 @@ import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.List;
 
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 /**
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -55,29 +59,32 @@ public class TestSiblings extends OpenCmsTestCase {
 
         super(arg0);
     }
-
+    
     /**
-     * @throws Throwable if something goes wrong
+     * Test suite for this test class.<p>
+     * 
+     * @return the test suite
      */
-    public void testSiblings() throws Throwable {
-
-        String source = "/release/installation.html";
-        String target1 = "/release/installation_sibling1.html";
-        String target2 = "/release/installation_sibling2.html";
+    public static Test suite() {
         
-        CmsObject cms = setupOpenCms("simpletest", "/sites/default/");
-
-        echo("Copying " + source + " as a new sibling to " + target1);
-        copyResourceAsSibling(this, cms, source, target1);
-
-        echo("Unlocking " + target1 + " for the next test");
-        cms.unlockResource(target1, false);
+        TestSuite suite = new TestSuite();
         
-        echo("Creating a new sibling " + target2 + " from " + source);
-        createSibling(this, cms, source, target2);
-
-        removeOpenCms();
-    }
+        suite.addTest(new TestSiblings("testSiblingsCopy"));
+        suite.addTest(new TestSiblings("testSiblingsCreate"));
+        
+        TestSetup wrapper = new TestSetup(suite) {
+            
+            protected void setUp() {
+                setupOpenCms("simpletest", "/sites/default/");
+            }
+            
+            protected void tearDown() {
+                removeOpenCms();
+            }
+        };
+        
+        return wrapper;
+    }    
 
     /**
      * Creates a copy of a resource as a new sibling.<p>
@@ -106,7 +113,7 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the sibling count field has been incremented
         tc.assertSiblingCountIncremented(cms, source);
         // validate if the sibling does not have a red flag
-        tc.assertHasRedFlag(cms, source, false);
+        tc.assertModifiedInCurrentProject(cms, source, false);
         // validate if the lock is an exclusive shared lock for the current user
         tc.assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
 
@@ -117,7 +124,7 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the state of the new sibling is "new" (blue)
         tc.assertState(cms, target, I_CmsConstants.C_STATE_NEW);
         // validate if the new sibling has a red flag
-        tc.assertHasRedFlag(cms, target, true);
+        tc.assertModifiedInCurrentProject(cms, target, true);
         // validate if the lock is an exclusive lock for the current user
         tc.assertLock(cms, target, CmsLock.C_TYPE_EXCLUSIVE);        
     }
@@ -149,7 +156,7 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the sibling count field has been incremented
         tc.assertSiblingCountIncremented(cms, source);
         // validate if the sibling does not have a red flag
-        tc.assertHasRedFlag(cms, source, false);
+        tc.assertModifiedInCurrentProject(cms, source, false);
         // validate if the lock is an exclusive shared lock for the current user
         tc.assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);        
 
@@ -160,9 +167,37 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the state of the new sibling is "new" (blue)
         tc.assertState(cms, target, I_CmsConstants.C_STATE_NEW);
         // validate if the new sibling has a red flag
-        tc.assertHasRedFlag(cms, target, true);
+        tc.assertModifiedInCurrentProject(cms, target, true);
         // validate if the lock is an exclusive lock for the current user
         tc.assertLock(cms, target, CmsLock.C_TYPE_EXCLUSIVE);        
+    }    
+    
+    /**
+     * Tests the "copy as new sibling" function.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsCopy() throws Throwable {
+
+        CmsObject cms = getCmsObject(); 
+        String source = "/release/installation.html";
+        String target = "/release/installation_sibling.html";
+        echo("Copying " + source + " as a new sibling to " + target);
+        copyResourceAsSibling(this, cms, source, target);
+    }
+    
+    /**
+     * Tests the "copy as new sibling" function.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsCreate() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        String source = "/release/welcome.html";
+        String target = "/release/welcome_sibling.html";        
+        echo("Creating a new sibling " + target + " from " + source);
+        createSibling(this, cms, source, target);
     }
     
     /**
@@ -178,6 +213,15 @@ public class TestSiblings extends OpenCmsTestCase {
         // - this is to ensure that the new/changed/deleted other sibling still have a valid
         // state which consits of the last-modified-in-project ID plus the resource state
         // - otherwise this may result in grey flags
+
+        Another issue:
+        What happens if a user A has an exclusive lock on a resource X,
+        and user B does a "copy as sibling Y" of X, or "create 
+        new sibling Y" of X. The lock status of the resource X is exclusive
+        to A, but test implies that it would be switched to B after operation!
+        Maybe copy as / create new sibling must not be allowed if original is
+        currently locked by another user? 
+
     }
     */
 

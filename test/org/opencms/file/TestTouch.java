@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2004/05/28 15:04:59 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/29 09:30:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,11 +37,15 @@ import org.opencms.test.OpenCmsTestResourceFilter;
 import java.util.Iterator;
 import java.util.List;
 
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 /**
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestTouch extends OpenCmsTestCase {
   
@@ -53,26 +57,33 @@ public class TestTouch extends OpenCmsTestCase {
     public TestTouch(String arg0) {
         super(arg0);
     }
-
+    
     /**
-     * Test the touch method.<p>
+     * Test suite for this test class.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @return the test suite
      */
-    public void testTouchResource() throws Throwable {
-        CmsObject cms = setupOpenCms("simpletest", "/sites/default/");
+    public static Test suite() {
         
-        echo("Testing touch on file");
-        touchResource(this, cms, "/release/installation.html");   
-
-        echo("Testing touch on a folder (without recursion)");
-        touchResources(this, cms, "/tree/folder1/");
+        TestSuite suite = new TestSuite();
         
-        echo("Testing touch on a folder (_with_ recursion)");
-        touchResourcesRecursive(this, cms, "/tree/folder2/");   
+        suite.addTest(new TestTouch("testTouchFile"));
+        suite.addTest(new TestTouch("testTouchFolder"));
+        suite.addTest(new TestTouch("testTouchFolderRecursive"));
         
-        removeOpenCms();
-    }  
+        TestSetup wrapper = new TestSetup(suite) {
+            
+            protected void setUp() {
+                setupOpenCms("simpletest", "/sites/default/");
+            }
+            
+            protected void tearDown() {
+                removeOpenCms();
+            }
+        };
+        
+        return wrapper;
+    }     
     
     /**
      * Test the touch method to touch a single resource.<p>
@@ -183,5 +194,40 @@ public class TestTouch extends OpenCmsTestCase {
             tc.assertUserLastModified(cms, resName, cms.getRequestContext().currentUser());
         }                   
     }
- 
+    
+    /**
+     * Test the touch method on a file.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testTouchFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing touch on file");
+        touchResource(this, cms, "/release/installation.html");   
+    }  
+    
+    /**
+     * Test the touch method on a folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testTouchFolder() throws Throwable {
+        
+        CmsObject cms = getCmsObject();        
+        echo("Testing touch on a folder (without recursion)");
+        touchResources(this, cms, "/tree/folder1/");
+    }      
+    
+    /**
+     * Test the touch method on a folder and recusivly on all resources in the folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */    
+    public void testTouchFolderRecursive() throws Throwable {
+        
+        CmsObject cms = getCmsObject();        
+        echo("Testing touch on a folder (_with_ recursion)");
+        touchResourcesRecursive(this, cms, "/tree/folder2/");    
+    }  
 }

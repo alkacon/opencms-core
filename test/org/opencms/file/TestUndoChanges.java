@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2004/05/28 15:04:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/29 09:30:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,15 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.test.OpenCmsTestResourceStorage;
 
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 /**
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
   
@@ -51,20 +55,31 @@ public class TestUndoChanges extends OpenCmsTestCase {
     public TestUndoChanges(String arg0) {
         super(arg0);
     }
-
+    
     /**
-     * Test the undoChanges method to touch a single resource.<p>
+     * Test suite for this test class.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @return the test suite
      */
-    public void testUndoChanges() throws Throwable {
-        CmsObject cms = setupOpenCms("simpletest", "/sites/default/");
+    public static Test suite() {
         
-        echo("Testing undoChanges on a file");
-        undoChanges(this, cms, "/release/installation.html");   
+        TestSuite suite = new TestSuite();
         
-        removeOpenCms();
-    }  
+        suite.addTest(new TestUndoChanges("testUndoChanges"));
+        
+        TestSetup wrapper = new TestSetup(suite) {
+            
+            protected void setUp() {
+                setupOpenCms("simpletest", "/sites/default/");
+            }
+            
+            protected void tearDown() {
+                removeOpenCms();
+            }
+        };
+        
+        return wrapper;
+    }       
     
     /**
      * Test the touch method to touch a single resource.<p>
@@ -98,6 +113,16 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // project must be current project
         tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
     }
-    
-  
+
+    /**
+     * Test the undoChanges method to touch a single resource.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testUndoChanges() throws Throwable {
+        
+        CmsObject cms = getCmsObject();        
+        echo("Testing undoChanges on a file");
+        undoChanges(this, cms, "/release/installation.html");
+    }
 }

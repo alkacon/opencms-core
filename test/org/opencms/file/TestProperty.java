@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2004/05/28 16:02:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/29 09:30:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,15 +38,18 @@ import org.opencms.test.OpenCmsTestResourceFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 /**
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestProperty extends OpenCmsTestCase {
-        
-    
+            
     /**
      * Default JUnit constructor.<p>
      * 
@@ -55,60 +58,37 @@ public class TestProperty extends OpenCmsTestCase {
     public TestProperty(String arg0) {
         super(arg0);
     }
-    
+        
     /**
-     * Tests the writeProperty method.<p>
+     * Test suite for this test class.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @return the test suite
      */
-    public void testWritePropertyObject() throws Throwable {
+    public static Test suite() {
         
-        // setup OpenCms
-        CmsObject cms = setupOpenCms("simpletest", "/sites/default/");
-              
-        echo("Testing write property on resource");
-        CmsProperty property1 = new CmsProperty("Title", "OpenCms", null);  
-        writeProperty(this, cms, "/release/installation.html", property1);
-  
-        echo("Testing write properties on resource");
-        CmsProperty property2 = new CmsProperty("Title", "OpenCms", null);
-        CmsProperty property3 = new CmsProperty("NavPos", "1", null);
-        List propertyList1 = new ArrayList();
-        propertyList1.add(property2);
-        propertyList1.add(property3); 
-        writeProperties(this, cms, "/release/mailinglist.html", propertyList1);
+        TestSuite suite = new TestSuite();
         
-        echo("Testing remove property on resource");
-        CmsProperty property4 = new CmsProperty("Title", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);                 
-        removeProperty(this, cms, "/release/notes_5.0.0.html", property4);
+        suite.addTest(new TestProperty("testWriteProperty"));
+        suite.addTest(new TestProperty("testWriteProperties"));
+        suite.addTest(new TestProperty("testRemoveProperty"));
+        suite.addTest(new TestProperty("testRemoveProperties"));
+        suite.addTest(new TestProperty("testCreateProperty"));
+        suite.addTest(new TestProperty("testCreateProperties"));
+        suite.addTest(new TestProperty("testWritePropertyOnFolder"));
         
-        echo("Testing remove properties on resource");
-        CmsProperty property5 = new CmsProperty("Title", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);
-        CmsProperty property6 = new CmsProperty("NavPos", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);
-        List propertyList2 = new ArrayList();
-        propertyList1.add(property5);
-        propertyList1.add(property6);
-        removeProperties(this, cms, "/release/notes_5.0b2.html", propertyList2);
+        TestSetup wrapper = new TestSetup(suite) {
+            
+            protected void setUp() {
+                setupOpenCms("simpletest", "/sites/default/");
+            }
+            
+            protected void tearDown() {
+                removeOpenCms();
+            }
+        };
         
-        echo("Testing creating property on resource");
-        CmsProperty property7 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
-        createProperty(this, cms, "/release/notes_5.0rc1.html", property7);
-        
-        echo("Testing creating properties on resource");
-        CmsProperty property8 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
-        CmsProperty property9 = new CmsProperty("AnotherNewproperty", "anothervalue", null);  
-        List propertyList3 = new ArrayList();
-        propertyList1.add(property8);
-        propertyList1.add(property9);
-        createProperties(this, cms, "/release/notes_5.0rc2.html", propertyList3);
-        
-        echo("Testing write property on folder");
-        CmsProperty property10 = new CmsProperty("Title", "OpenCms", null);  
-        writeProperty(this, cms, "/release/", property10);
-                
-        // remove OpenCms
-        removeOpenCms();
-    }
+        return wrapper;
+    }  
     
     /**
      * Test the writeProperty method to create a list of properties.<p>
@@ -228,8 +208,7 @@ public class TestProperty extends OpenCmsTestCase {
          tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
          // the property must be removed
          tc.assertPropertyRemoved(cms, resource1, property1);       
-    }
-    
+    }       
     
     /**
      * Test the writeProperty method with a list of properties.<p>
@@ -291,4 +270,106 @@ public class TestProperty extends OpenCmsTestCase {
          tc.assertPropertyChanged(cms, resource1, property1);       
     }      
     
+    /**
+     * Tests the writePropertyObjects method for removing of properties.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateProperties() throws Throwable {  
+        
+        CmsObject cms = getCmsObject(); 
+        echo("Testing creating multiple properties on a resource");
+        CmsProperty property8 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
+        CmsProperty property9 = new CmsProperty("AnotherNewproperty", "anothervalue", null);  
+        List propertyList3 = new ArrayList();
+        propertyList3.add(property8);
+        propertyList3.add(property9);
+        createProperties(this, cms, "/release/notes_5.0rc2.html", propertyList3);
+    }
+        
+    /**
+     * Tests the writePropertyObject method for removing of properties.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateProperty() throws Throwable {  
+        
+        CmsObject cms = getCmsObject(); 
+        echo("Testing creating one property on a resource");
+        CmsProperty property7 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
+        createProperty(this, cms, "/release/notes_5.0rc1.html", property7);
+    }
+    
+    /**
+     * Tests the writePropertyObjects method for removing of multiple properties.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testRemoveProperties() throws Throwable {  
+            
+        CmsObject cms = getCmsObject(); 
+        echo("Testing removing multiple properties on a resource");
+        CmsProperty property5 = new CmsProperty("Title", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);
+        CmsProperty property6 = new CmsProperty("NavPos", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);
+        List propertyList2 = new ArrayList();
+        propertyList2.add(property5);
+        propertyList2.add(property6);
+        removeProperties(this, cms, "/release/notes_5.0b2.html", propertyList2);
+    }
+    
+    /**
+     * Tests the writePropertyObject method for removing of a single property.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testRemoveProperty() throws Throwable {  
+        
+        CmsObject cms = getCmsObject();  
+        echo("Testing removing one property on a resource");
+        CmsProperty property4 = new CmsProperty("Title", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);                 
+        removeProperty(this, cms, "/release/notes_5.0.0.html", property4);
+    }
+        
+    /**
+     * Tests the writeProperties method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testWriteProperties() throws Throwable {
+                
+        CmsObject cms = getCmsObject();         
+        echo("Testing writing multiple properties on a resource");
+        CmsProperty property2 = new CmsProperty("Title", "OpenCms", null);
+        CmsProperty property3 = new CmsProperty("NavPos", "1", null);
+        List propertyList1 = new ArrayList();
+        propertyList1.add(property2);
+        propertyList1.add(property3); 
+        writeProperties(this, cms, "/release/mailinglist.html", propertyList1);
+    }
+    
+    /**
+     * Tests the writePropertyObject method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testWriteProperty() throws Throwable {
+        
+        CmsObject cms = getCmsObject();              
+        echo("Testing writing one  property on a resource");
+        CmsProperty property1 = new CmsProperty("Title", "OpenCms", null);  
+        writeProperty(this, cms, "/release/installation.html", property1);
+    }
+    
+    /**
+     * Tests the writePropertyObject method for writing of a property on a folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testWritePropertyOnFolder() throws Throwable {  
+        
+        CmsObject cms = getCmsObject(); 
+        echo("Testing writing one property on a folder");
+        CmsProperty property10 = new CmsProperty("Title", "OpenCms", null);  
+        writeProperty(this, cms, "/release/", property10);
+    }    
 }
