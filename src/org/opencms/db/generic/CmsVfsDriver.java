@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2003/09/15 13:30:42 $
+ * Version: $Revision: 1.126 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
+import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsAdjacencyTree;
 import org.opencms.util.CmsUUID;
@@ -51,8 +53,6 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
-import com.opencms.flex.CmsEvent;
-import com.opencms.flex.I_CmsEventListener;
 import com.opencms.linkmanagement.CmsPageLinks;
 
 import java.io.ByteArrayInputStream;
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.125 $ $Date: 2003/09/15 10:51:14 $
+ * @version $Revision: 1.126 $ $Date: 2003/09/15 13:30:42 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {

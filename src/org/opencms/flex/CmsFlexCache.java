@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/15 13:30:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,11 @@ import org.opencms.cache.CmsLruCache;
 import org.opencms.cache.CmsLruHashMap;
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.CmsObject;
-import com.opencms.flex.I_CmsEventListener;
 
 import java.io.File;
 import java.util.HashMap;
@@ -88,7 +88,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -516,7 +516,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      *
      * @param event CmsEvent that has occurred
      */
-    public void cmsEvent(com.opencms.flex.CmsEvent event) {
+    public void cmsEvent(org.opencms.main.CmsEvent event) {
         if (! isEnabled()) return;
         
         switch (event.getType()) {
@@ -864,7 +864,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.1 $ 
+     * @version $Revision: 1.2 $ 
      */
     class CmsFlexCacheVariation extends Object implements org.opencms.cache.I_CmsLruCacheObject {
         

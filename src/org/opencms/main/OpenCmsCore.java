@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/09/15 13:30:42 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,8 +57,6 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResource;
-import com.opencms.flex.CmsEvent;
-import com.opencms.flex.I_CmsEventListener;
 import org.opencms.flex.CmsFlexCache;
 import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -92,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.1
  */
 public class OpenCmsCore {

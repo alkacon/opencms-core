@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/15 13:30:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.flex;
 
+import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.file.CmsObject;
-import com.opencms.flex.CmsEvent;
-import com.opencms.flex.I_CmsEventListener;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Arrays;
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            

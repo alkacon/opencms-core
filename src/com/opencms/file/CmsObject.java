@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/15 10:51:14 $
-* Version: $Revision: 1.405 $
+* Date   : $Date: 2003/09/15 13:30:42 $
+* Version: $Revision: 1.406 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishedResources;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -52,8 +54,6 @@ import com.opencms.core.CmsExportResponse;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
-import com.opencms.flex.CmsEvent;
-import com.opencms.flex.I_CmsEventListener;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
 import org.opencms.report.CmsShellReport;
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.405 $
+ * @version $Revision: 1.406 $
  */
 public class CmsObject {
 
@@ -2560,10 +2560,10 @@ public class CmsObject {
         // init the new user
         init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
 
-        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
+        this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
 
         // return the user-name
-        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
+        this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
         return (newUser.getName());
     }
 

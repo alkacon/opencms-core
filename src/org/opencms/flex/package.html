@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/package.html,v $
- Date   : $Date: 2003/09/15 10:51:13 $
- Version: $Revision: 1.1 $
+ Date   : $Date: 2003/09/15 13:30:42 $
+ Version: $Revision: 1.2 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -36,13 +36,47 @@
 </head>
 <body bgcolor="white">
 
-Implements the FlexCache, a declarative based cache for OpenCms VFS template resources.<p>
+Provides JSP integration funtionality for OpenCms, 
+also implements the FlexCache, a declarative parameter-based cache.<p>
+
+<h1>How the JSP integration is done:</h1>
+
+In OpenCms all resources are residing in the OpenCms Database, the so 
+called "Virtual File System" or VFS.
+However, all JSP engines available read the JSP code from a file in the local file system.
+The option to re-write a JSP engine so that it can read from the VFS would limit OpenCms
+to running with this JSP engine only, which was not a choice.
+So the approach that was taken is to dump the contents of the OpenCms JSP page from the VFS 
+to the "real" file system
+and then dispatch to the standard JSP engine.<p>
+
+Here is a top-level description of how this works:
+<ol>
+<li>OpenCms gets the request through the {@link org.opencms.main.OpenCmsServlet}
+<li>The requested resource is identified as a JSP page (resource type {@link com.opencms.file.CmsResourceTypeJsp})
+<li>The JSP loader is started up with the laucher manager {@link org.opencms.loader.CmsLoaderManager}
+<li>The JSP loader implements an additional interface: {@link org.opencms.loader.I_CmsResourceLoader}
+<li>A resource loader is a new interface that was introduced with the FLEX release. The main
+difference is that the original request / response is wrapped using a Servlet standard
+{@link javax.servlet.http.HttpServletRequestWrapper} / {@link javax.servlet.http.HttpServletResponseWrapper}.
+<li>On the first call to a page, the file contents of the JSP page are read from the OpenCms VFS
+using the {@link com.opencms.file.CmsObject}
+<li>The contents of the page are written to the "real" file system of the server,
+in the default configuration to the directories <code>{WEBAPP-PATH}/opencms/WEB-INF/jsp/online</code> or
+<code>{WEBAPP-PATH}/opencms/WEB-INF/jsp/offline</code> (depending if the request was for the online or the offline
+version of the page). The directory used can be configured in <code>opencms.properties</code>.
+<li>After the page is written to the "real" FS, the loader dispatches to the standard JSP mechanism with a simple
+<code>include()</code> call.
+<li>The standard JSP mechanim will handle the JSP and deliver the output through the wrapped request / response
+back to OpenCms.
+<li>OpenCms will then deliver the contents back to the user.
+</ol>
 
 <!-- Put @see and @since tags down here. -->
 
-@see com.opencms.flex.cache.CmsFlexCache
-@see com.opencms.flex.cache.CmsFlexCacheEntry
-@see com.opencms.flex.cache.CmsFlexCacheKey
+@see org.opencms.flex.CmsFlexCache
+@see org.opencms.flex.CmsFlexCacheEntry
+@see org.opencms.flex.CmsFlexCacheKey
 
 @since FLEX alpha 1
 

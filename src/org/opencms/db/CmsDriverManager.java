@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.213 $
+ * Date   : $Date: 2003/09/15 13:30:42 $
+ * Version: $Revision: 1.214 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import org.opencms.importexport.CmsImportModuledata;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockDispatcher;
 import org.opencms.lock.CmsLockException;
+import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.I_CmsPasswordValidation;
@@ -57,8 +59,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.exceptions.CmsResourceNotFoundException;
 import com.opencms.file.*;
-import com.opencms.flex.CmsEvent;
-import com.opencms.flex.I_CmsEventListener;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.io.BufferedReader;
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.213 $ $Date: 2003/09/15 10:51:13 $
+ * @version $Revision: 1.214 $ $Date: 2003/09/15 13:30:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {

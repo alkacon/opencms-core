@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2003/09/15 13:30:42 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import org.opencms.db.CmsDbUtil;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
@@ -54,8 +56,6 @@ import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.flex.CmsEvent;
-import com.opencms.flex.I_CmsEventListener;
 import com.opencms.linkmanagement.CmsPageLinks;
 
 import java.io.ByteArrayInputStream;
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.92 $ $Date: 2003/09/15 10:51:14 $
+ * @version $Revision: 1.93 $ $Date: 2003/09/15 13:30:42 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1

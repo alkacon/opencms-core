@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsEvent.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.7 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEvent.java,v $
+ * Date   : $Date: 2003/09/15 13:30:42 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.flex;
+package org.opencms.main;
 
 import com.opencms.file.CmsObject;
 
@@ -40,7 +40,7 @@ import com.opencms.file.CmsObject;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsEventListener
