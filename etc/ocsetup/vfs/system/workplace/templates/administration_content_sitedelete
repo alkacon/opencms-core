@@ -124,7 +124,8 @@
 <HEAD>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 </HEAD>
-<BODY onload="document.location='sitematrix.html'">
+<!-- <BODY onload="document.location='sitematrix.html'"> -->
+<BODY onload="top.head.location.reload();">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
