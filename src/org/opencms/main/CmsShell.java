@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/14 15:27:38 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/02/14 21:25:41 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,28 +58,330 @@ import java.util.TreeMap;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * A commad line interface to OpenCms which 
+ * A commad line interface to access OpenCms functions which 
  * is used for the initial setup and also can be used to directly access the OpenCms
  * repository without the Workplace.<p>
  * 
- * The CmsShell has direct access to all public methods in 
- * the {@link org.opencms.file.CmsObject} and the {@link org.opencms.main.CmsShellCommands}
- * that have only "primitive" data types as parameters.
- * Supported primitive types are <code>String, CmsUUID, boolean, int, long, double, float</code>.<p>
+ * The CmsShell has direct access to all methods in the "command objects".
+ * Currently the following classes are used as command objects:
+ * {@link org.opencms.main.CmsShellCommands},
+ * {@link org.opencms.file.CmsRequestContext} and
+ * {@link org.opencms.file.CmsObject}.<p>
+ * 
+ * Only public methods in the command objects that use just supported data types 
+ * as parameters can be called from the shell. Supported data types are:
+ * <code>String, CmsUUID, boolean, int, long, double, float</code>.<p>
  *
+ * If a method name is ambiguous, i.e. the method name with the same numer of parameter exist 
+ * in more then one of the command objects, the method is only executed on the first matching object.<p>
+ * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
+ * @see org.opencms.main.CmsShellCommands
+ * @see org.opencms.file.CmsRequestContext
+ * @see org.opencms.file.CmsObject
  */
 public class CmsShell {
+    
+    /**
+     * Command object class.<p>
+     */
+    private class CmsCommandObject {
+        
+        // The list of methods 
+        private Map m_methods;
+        
+        // The object to execute the methods on 
+        private Object m_object;
+        
+        /**
+         * Creates a new command object.<p>
+         * 
+         * @param object the object to execute the methods on
+         */
+        protected CmsCommandObject(Object object) {
+            m_object = object;
+            initShellMethods();
+        }
+        
+        /**
+         * Tries to execute a method for the provided parameters on this command object.<p>
+         * 
+         * If methods with the same name and number of parameters exist in this command object,
+         * the given parameters are tried to be converted from String to matching types.<p>
+         * 
+         * @param command the command entered by the user in the shell
+         * @param parameters the parameters entered by the user in the shell
+         * @return true if a method was executed, false otherwise
+         */
+        protected boolean executeMethod(String command, List parameters) {
+            
+            // build the method lookup
+            String lookup = buildMethodLookup(command, parameters.size());  
+            
+            // try to look up the methods of this command object
+            List possibleMethods = (List)m_methods.get(lookup);
+            if (possibleMethods == null) {
+                return false;
+            }
+            
+            // a match for the mehod name was found, now try to figure out if the parameters are ok 
+            Method onlyStringMethod = null;
+            Method foundMethod = null;
+            Object[] params = null;
+            Iterator i;
+            
+            // first check if there is one method with only has String parameters, make this the fallback
+            i = possibleMethods.iterator();
+            while (i.hasNext()) {
+                Method method = (Method)i.next();
+                Class[] clazz = method.getParameterTypes();
+                boolean onlyString = true;
+                for (int j=0; j<clazz.length; j++) {
+                    if (! (clazz[j].equals(String.class))) {
+                        onlyString = false;
+                        break;
+                    }
+                }
+                if (onlyString) {
+                    onlyStringMethod = method;
+                    break;
+                }
+            }
+            
+            // now check a method matches the provided parameters
+            // if so, use this method, else continue searching
+            i = possibleMethods.iterator();
+            while (i.hasNext()) {
+                Method method = (Method)i.next();
+                if (method == onlyStringMethod) {
+                    // skip the String only signature because this would always match
+                    continue;
+                }
+                // now try to convert the parameters to the required types
+                Class[] clazz = method.getParameterTypes();
+                Object[] converted = new Object[clazz.length];
+                boolean match = true;
+                for (int j=0; j<clazz.length; j++) {
+                    String value = (String)parameters.get(j);
+                    if (clazz[j].equals(String.class)) {
+                        // no conversion required for String
+                        converted[j] = value;
+                    } else if (clazz[j].equals(boolean.class)) {
+                        // try to convert to boolean
+                        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+                            converted[j] = Boolean.valueOf(value);
+                        } else {
+                            match = false;
+                        }
+                    } else if (clazz[j].equals(CmsUUID.class)) {
+                        // try to convert to CmsUUID
+                        try {
+                            converted[j] = new CmsUUID(value);
+                        } catch (NumberFormatException e) {
+                            match = false;
+                        }
+                    } else if (clazz[j].equals(int.class)) {
+                        // try to convert to int
+                        try {
+                            converted[j] = Integer.valueOf(value);
+                        } catch (NumberFormatException e) {
+                            match = false;
+                        }
+                    } else if (clazz[j].equals(long.class)) {
+                        // try to convert to long
+                        try {
+                            converted[j] = Long.valueOf(value);
+                        } catch (NumberFormatException e) {
+                            match = false;
+                        }                    
+                    } else if (clazz[j].equals(float.class)) {
+                        // try to convert to float
+                        try {
+                            converted[j] = Float.valueOf(value);
+                        } catch (NumberFormatException e) {
+                            match = false;
+                        }                       
+                    } else if (clazz[j].equals(double.class)) {
+                        // try to convert to double
+                        try {
+                            converted[j] = Double.valueOf(value);
+                        } catch (NumberFormatException e) {
+                            match = false;
+                        }                    
+                    }
+                    if (! match) {
+                        break;
+                    }
+                }
+                if (match) {
+                    // we found a matching method signature
+                    params = converted;
+                    foundMethod = method;
+                    break;
+                }
+                
+            }        
+            
+            if (onlyStringMethod != null) {
+                // no match found but String only signature available, use this
+                params = parameters.toArray();
+                foundMethod = onlyStringMethod;
+            }
+            
+            if (params == null) {
+                // no match found at all
+                return false;
+            }
+            
+            // now try to invoke the method
+            try {
+                Object result = foundMethod.invoke(m_object, params);
+                if (result != null) {
+                    if (result instanceof Collection) {
+                        Collection c = (Collection)result;
+                        System.out.println(c.getClass().getName() + " (size: " + c.size() + ")");                                                    
+                        int count = 0;
+                        if (result instanceof Map) {
+                            Map m = (Map)result;
+                            Iterator j = m.keySet().iterator();
+                            while (j.hasNext()) {                    
+                                Object key = j.next();
+                                System.out.println(count++ + ": " + key + "= " + m.get(key));                            
+                            }                       
+                        } else {
+                            Iterator j = c.iterator();
+                            while (j.hasNext()) {
+                                System.out.println(count++ + ": " + j.next());                            
+                            }                        
+                        }
+                    } else {
+                        System.out.println(result.toString());
+                    }
+                }
+            } catch (InvocationTargetException ite) {
+                System.out.println("Exception while calling method '" + foundMethod.getName() + "'");
+                ite.getTargetException().printStackTrace(System.out);
+            } catch (Throwable t) {
+                System.out.println("Exception while calling method '" + foundMethod.getName() + "'");
+                t.printStackTrace(System.out);            
+            }
+            
+            return true;
+        }
+        
+        /**
+         * Returns a signature overview of all methods containing the given search String.<p>
+         * 
+         * If no method name matches the given search String, the empty String is returned.<p>
+         * 
+         * @param searchString the String to search for, if null all methods are shown
+         * @return a signature overview of all methods containing the given search String
+         */
+        protected String getMethodHelp(String searchString) {
+            StringBuffer buf = new StringBuffer(512);
+            Iterator i = m_methods.keySet().iterator();
+            while (i.hasNext()) {
+                List l = (List)m_methods.get(i.next());
+                Iterator j = l.iterator();
+                while (j.hasNext()) {
+                    Method method = (Method)j.next();
+                    if ((searchString == null) || (method.getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)) {
+                        buf.append("* ");
+                        buf.append(method.getName());
+                        buf.append("(");
+                        Class[] params = method.getParameterTypes();
+                        for (int k = 0; k < params.length; k++) {
+                            String par = params[k].getName();
+                            par = par.substring(par.lastIndexOf(".") + 1);
+                            if (k != 0) {
+                                buf.append(", ");
+                            }
+                            buf.append(par);
+                        }
+                        buf.append(")\n");
+                    }
+                }
+            }
+            return buf.toString();
+        }  
+        
+        /**
+         * Returns the object to execute the methods on.<p>
+         * 
+         * @return the object to execute the methods on
+         */
+        protected Object getObject() {
+            return m_object;
+        }
+        
+        /**
+         * Builds a method lookup String.<p>
+         * 
+         * @param methodName the name of the method
+         * @param paramCount the parameter count of the method
+         * @return a method lookup String
+         */
+        private String buildMethodLookup(String methodName, int paramCount) {
+            StringBuffer buf = new StringBuffer(32);
+            buf.append(methodName.toLowerCase());
+            buf.append(" [");
+            buf.append(paramCount);
+            buf.append("]");
+            return buf.toString();
+        }        
+                
+        /**
+         * Initilizes the map of accessible methods.<p>
+         */
+        private void initShellMethods() {
+            Map result = new TreeMap();        
+            
+            Method[] methods = m_object.getClass().getMethods();
+            for (int i = 0; i < methods.length; i++) {
+                // only public methods directly declared in the base class can be used in the shell
+                if ((methods[i].getDeclaringClass() == m_object.getClass()) && (methods[i].getModifiers() == Modifier.PUBLIC)) {
+                    
+                    // check if the method signature only uses primitive data types
+                    boolean onlyPrimitive = true;
+                    Class[] clazz = methods[i].getParameterTypes();
+                    for (int j=0; j<clazz.length; j++) {
+                        if (!((clazz[j].equals(String.class))
+                                || (clazz[j].equals(CmsUUID.class))
+                                || (clazz[j].equals(boolean.class))
+                                || (clazz[j].equals(int.class))
+                                || (clazz[j].equals(long.class))
+                                || (clazz[j].equals(double.class))
+                                || (clazz[j].equals(float.class)))) {
+                            // complex data type methods can not be called from the shell
+                            onlyPrimitive = false;
+                            break;
+                        }                
+                    }
+                    
+                    if (onlyPrimitive) {    
+                        // add this method to the set of methods that can be called from the shell
+                        String lookup = buildMethodLookup(methods[i].getName(), methods[i].getParameterTypes().length);
+                        List l;
+                        if (result.containsKey(lookup)) {
+                            l = (List)result.get(lookup);
+                        } else {                   
+                            l = new ArrayList(1);
+                        }
+                        l.add(methods[i]);
+                        result.put(lookup, l);
+                    }
+                }
+            }    
+            m_methods = result;
+        }        
+    }
 
     /** The OpenCms context object */
     private CmsObject m_cms;
 
-    /** All shell callable methods in the CmsObject class */   
-    private Map m_cmsObjectMethods;
-    
-    /** All shell callable methods in the CmsShellCommands class */
-    private Map m_cmsShellMethods;
+    /** All shell callable objects */   
+    private List m_commandObjects;
 
     /** If set to true, all commands are echoed */
     private boolean m_echo;
@@ -115,7 +417,7 @@ public class CmsShell {
             m_opencms = OpenCmsCore.getInstance();
             // search for the WEB-INF folder
             if (webInfPath == null || "".equals(webInfPath)) {
-                System.err.println("No OpenCms home folder given. Trying to guess...");
+                System.out.println("No OpenCms home folder given. Trying to guess...");
                 System.out.println();         
                 webInfPath = m_opencms.searchWebInfFolder(System.getProperty("user.dir"));
                 if (webInfPath == null || "".equals(webInfPath)) {
@@ -138,11 +440,6 @@ public class CmsShell {
             System.out.println();            
             ExtendedProperties configuration = CmsSetupUtils.loadProperties(propertyPath);
             
-            // get all shell callable methods from the CmsObject
-            m_cmsObjectMethods = getShellMethods(CmsObject.class);
-            // get additional callable methods from the CmsShellCommands
-            m_cmsShellMethods = getShellMethods(CmsShellCommands.class);
-            
             // now upgrade to runlevel 2
             m_opencms = m_opencms.upgradeRunlevel(configuration);  
             
@@ -150,7 +447,16 @@ public class CmsShell {
             m_cms = m_opencms.initCmsObject(m_opencms.getDefaultUsers().getUserGuest());
             // set the site root to the default site
             m_cms.getRequestContext().setSiteRoot(m_opencms.getSiteManager().getDefaultSite().getSiteRoot());
-            
+
+            m_commandObjects = new ArrayList();   
+            m_shellCommands = new CmsShellCommands(this, m_cms);
+            // get all shell callable methods from the CmsShellCommands
+            m_commandObjects.add(new CmsCommandObject(m_shellCommands));          
+            // get all shell callable methods from the CmsRequestContext
+            m_commandObjects.add(new CmsCommandObject(m_cms.getRequestContext())); 
+            // get all shell callable methods from the CmsObject
+            m_commandObjects.add(new CmsCommandObject(m_cms));            
+
             // execute the commands from the input stream
             executeCommands(fileInputStream);            
         } catch (Throwable t) {
@@ -198,7 +504,7 @@ public class CmsShell {
                 // no script-file, use standard input stream
                 stream = new FileInputStream(FileDescriptor.in);
             }
-            new CmsShell(webInfPath, "$u@$p:$s/>", stream);
+            new CmsShell(webInfPath, "${user}@${project}:${siteroot}|${uri}>", stream);
         }
     }
 
@@ -210,27 +516,73 @@ public class CmsShell {
      */
     public static void startSetup(String webInfPath, String fileName) {
         try {
-            new CmsShell(webInfPath, "$u@$p>", new FileInputStream(new File(fileName)));
+            new CmsShell(webInfPath, "${user}@${project}>", new FileInputStream(new File(fileName)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Exits this shell.<p>
+     */
+    protected void exit() {
+        try {
+            m_opencms.destroy();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }        
+        m_exitCalled = true;
+    }
     
     /**
-     * Builds a method lookup String.<p>
+     * Sets the echo status.<p>
      * 
-     * @param methodName the name of the method
-     * @param paramCount the parameter count of the method
-     * @return a method lookup String
+     * @param echo the echo status to set
      */
-    private String buildMethodString(String methodName, int paramCount) {
-        StringBuffer buf = new StringBuffer(32);
-        buf.append(methodName.toLowerCase());
-        buf.append(" [");
-        buf.append(paramCount);
-        buf.append("]");
-        return buf.toString();
+    protected void setEcho(boolean echo) {
+        m_echo = echo;
     }
+    
+    /**
+     * Sets the current shell prompt.<p>
+     * 
+     * To set the prompt, the following variables are available:<p>
+     * 
+     * <code>$u</code> the current user name<br>
+     * <code>$s</code> the current site root<br>
+     * <code>$p</code> the current project name<p>
+     * 
+     * @param prompt the prompt to set
+     */
+    protected void setPrompt(String prompt) {
+        m_prompt = prompt;
+    }
+    
+    /**
+     * Shows the signature of all methods containing the given search String.<p>
+     *
+     * @param searchString the String to search for in the methods, if null all methods are shown
+     */
+    protected void help(String searchString) {
+        String commandList;
+        boolean foundSomething = false;
+        System.out.println();
+        
+        Iterator i = m_commandObjects.iterator();
+        while (i.hasNext()) {
+            CmsCommandObject cmdObj = (CmsCommandObject)i.next();
+            commandList = cmdObj.getMethodHelp(searchString);
+            if (! "".equals(commandList)) {
+                System.out.println("Available methods in " + cmdObj.getObject().getClass().getName() + ":");
+                System.out.println(commandList);
+                foundSomething = true;
+            }            
+        }
+        
+        if (! foundSomething) {
+            System.out.println("No methods available matching: '" + searchString + "'");
+        }        
+    }    
 
     /**
      * Executes a shell command with a list of parameters (the command must be the first item in the list).<p>
@@ -249,32 +601,20 @@ public class CmsShell {
         }
         
         // prepare to lookup a method in CmsObject or CmsShellCommands
-        String lookup = buildMethodString(command, parameters.size());
-        boolean executed = false;
-         
-        // check for a method in the CmsShellCommands
-        if (! executed) {
-            List possibleMethods = (List)m_cmsShellMethods.get(lookup);
-            if (possibleMethods != null) {  
-                executed = matchMethod(m_shellCommands, parameters, possibleMethods);
-            }
+        boolean executed = false;        
+        Iterator i = m_commandObjects.iterator();
+        while (!executed && i.hasNext()) {
+            CmsCommandObject cmdObj = (CmsCommandObject)i.next();
+            executed = cmdObj.executeMethod(command, parameters);
         }
-        
-        // check for a method in the CmsObject
-        if (! executed) {
-            List possibleMethods = (List)m_cmsObjectMethods.get(lookup);
-            if (possibleMethods != null) {        
-                executed = matchMethod(m_cms, parameters, possibleMethods);
-            }
-        }      
         
         if (! executed) {
             // method not found
             System.out.println();
             System.out.print("Requested method not found: " + command + "(");
-            for (int i=0; i<parameters.size(); i++) {
+            for (int j=0; j<parameters.size(); j++) {
                 System.out.print("value");
-                if (i<parameters.size()-1) {
+                if (j<parameters.size()-1) {
                     System.out.print(", ");
                 }
             }
@@ -292,7 +632,6 @@ public class CmsShell {
      */
     private void executeCommands(FileInputStream fileInputStream) {
         try {
-            m_shellCommands = new CmsShellCommands(this, m_cms);
             LineNumberReader lnr = new LineNumberReader(new InputStreamReader(fileInputStream));
             while (! m_exitCalled) {
                 printPrompt();
@@ -335,312 +674,14 @@ public class CmsShell {
     }
 
     /**
-     * Exits this shell.<p>
-     */
-    protected void exit() {
-        try {
-            m_opencms.destroy();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }        
-        m_exitCalled = true;
-    }
-
-    private Map getShellMethods(Class base) {
-        Map result = new TreeMap();        
-        
-        Method[] methods = base.getMethods();
-        for (int i = 0; i < methods.length; i++) {
-            // only public methods directly declared in the base class can be used in the shell
-            if ((methods[i].getDeclaringClass() == base) && (methods[i].getModifiers() == Modifier.PUBLIC)) {
-                
-                // check if the method signature only uses primitive data types
-                boolean onlyPrimitive = true;
-                Class[] clazz = methods[i].getParameterTypes();
-                for (int j=0; j<clazz.length; j++) {
-                    if (!((clazz[j].equals(String.class))
-                            || (clazz[j].equals(CmsUUID.class))
-                            || (clazz[j].equals(boolean.class))
-                            || (clazz[j].equals(int.class))
-                            || (clazz[j].equals(long.class))
-                            || (clazz[j].equals(double.class))
-                            || (clazz[j].equals(float.class)))) {
-                        // complex data type methods can not be called from the shell
-                        onlyPrimitive = false;
-                        break;
-                    }                
-                }
-                
-                if (onlyPrimitive) {    
-                    // add this method to the set of methods that can be called from the shell
-                    String lookup = buildMethodString(methods[i].getName(), methods[i].getParameterTypes().length);
-                    List l;
-                    if (result.containsKey(lookup)) {
-                        l = (List)result.get(lookup);
-                    } else {                   
-                        l = new ArrayList(1);
-                    }
-                    l.add(methods[i]);
-                    result.put(lookup, l);
-                }
-            }
-        }    
-        return result;
-    }
-    
-    /**
-     * Tries to find a mathing method for the provided parameters on the provided base class.<p>
-     * 
-     * If methods with the same name and number of parameters exist on the base class,
-     * the given parameters are tried to be converted from String to matching types.<p>
-     * 
-     * @param baseClass the class to execute the method on
-     * @param parameters the parameters entered by the user in the shell
-     * @param possibleMethods a List of possible method signatures to try with the parameters
-     * @return
-     */
-    private boolean matchMethod(Object baseClass, List parameters, List possibleMethods) {
-        Method onlyStringMethod = null;
-        Method foundMethod = null;
-        Object[] params = null;
-        Iterator i;
-        
-        // first check if there is one method with only has String parameters, this is the then fallback
-        i = possibleMethods.iterator();
-        while (i.hasNext()) {
-            Method method = (Method)i.next();
-            Class[] clazz = method.getParameterTypes();
-            boolean onlyString = true;
-            for (int j=0; j<clazz.length; j++) {
-                if (! (clazz[j].equals(String.class))) {
-                    onlyString = false;
-                    break;
-                }
-            }
-            if (onlyString) {
-                onlyStringMethod = method;
-                break;
-            }
-        }
-        
-        // now check a method matches the provided parameters
-        // if so, use this method, else continue searching
-        i = possibleMethods.iterator();
-        while (i.hasNext()) {
-            Method method = (Method)i.next();
-            if (method == onlyStringMethod) {
-                // skip the String only signature because this would always match
-                continue;
-            }
-            // now try to convert the parameters to the required types
-            Class[] clazz = method.getParameterTypes();
-            Object[] converted = new Object[clazz.length];
-            boolean match = true;
-            for (int j=0; j<clazz.length; j++) {
-                String value = (String)parameters.get(j);
-                if (clazz[j].equals(String.class)) {
-                    // no conversion required for String
-                    converted[j] = value;
-                } else if (clazz[j].equals(boolean.class)) {
-                    // try to convert to boolean
-                    if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
-                        converted[j] = Boolean.valueOf(value);
-                    } else {
-                        match = false;
-                    }
-                } else if (clazz[j].equals(CmsUUID.class)) {
-                    // try to convert to CmsUUID
-                    try {
-                        converted[j] = new CmsUUID(value);
-                    } catch (NumberFormatException e) {
-                        match = false;
-                    }
-                } else if (clazz[j].equals(int.class)) {
-                    // try to convert to int
-                    try {
-                        converted[j] = Integer.valueOf(value);
-                    } catch (NumberFormatException e) {
-                        match = false;
-                    }
-                } else if (clazz[j].equals(long.class)) {
-                    // try to convert to long
-                    try {
-                        converted[j] = Long.valueOf(value);
-                    } catch (NumberFormatException e) {
-                        match = false;
-                    }                    
-                } else if (clazz[j].equals(float.class)) {
-                    // try to convert to float
-                    try {
-                        converted[j] = Float.valueOf(value);
-                    } catch (NumberFormatException e) {
-                        match = false;
-                    }                       
-                } else if (clazz[j].equals(double.class)) {
-                    // try to convert to double
-                    try {
-                        converted[j] = Double.valueOf(value);
-                    } catch (NumberFormatException e) {
-                        match = false;
-                    }                    
-                }
-                if (! match) {
-                    break;
-                }
-            }
-            if (match) {
-                // we found a matching method signature
-                params = converted;
-                foundMethod = method;
-                break;
-            }
-            
-        }        
-        
-        if (onlyStringMethod != null) {
-            // no match found but String only signature available, use this
-            params = parameters.toArray();
-            foundMethod = onlyStringMethod;
-        }
-        
-        if (params == null) {
-            // no match found at all
-            return false;
-        }
-        
-        try {
-            Object result = foundMethod.invoke(baseClass, params);
-            if (result != null) {
-                if (result instanceof Collection) {
-                    Collection c = (Collection)result;
-                    System.out.println(c.getClass().getName() + " (size: " + c.size() + ")");                                                    
-                    int count = 0;
-                    if (result instanceof Map) {
-                        Map m = (Map)result;
-                        Iterator j = m.keySet().iterator();
-                        while (j.hasNext()) {                    
-                            Object key = j.next();
-                            System.out.println(count++ + ": " + key + "= " + m.get(key));                            
-                        }                       
-                    } else {
-                        Iterator j = c.iterator();
-                        while (j.hasNext()) {
-                            System.out.println(count++ + ": " + j.next());                            
-                        }                        
-                    }
-                } else {
-                    System.out.println(result.toString());
-                }
-            }
-        } catch (InvocationTargetException ite) {
-            System.err.println("Exception while calling method " + foundMethod.getName());
-            ite.getTargetException().printStackTrace(System.err);
-        } catch (Throwable t) {
-            System.err.println("Exception while calling method " + foundMethod.getName());
-            t.printStackTrace(System.err);            
-        }
-        
-        return true;
-    }
-    
-
-    /**
-     * Shows the signature of all methods containing the given search String.<p>
-     * 
-     * @param methods the Map of methods to search
-     * @param prefix a prefix to print in front of every method
-     * @param searchString the String to search for, if null all methods are shown
-     */
-    private String printMethod(Map methods, String prefix, String searchString) {
-        StringBuffer buf = new StringBuffer(512);
-        Iterator i = methods.keySet().iterator();
-        while (i.hasNext()) {
-            List l = (List)methods.get(i.next());
-            Iterator j = l.iterator();
-            while (j.hasNext()) {
-                Method method = (Method)j.next();
-                if ((searchString == null) || (method.getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)) {
-                    buf.append(prefix);
-                    buf.append(method.getName());
-                    buf.append("(");
-                    Class[] params = method.getParameterTypes();
-                    for (int k = 0; k < params.length; k++) {
-                        String par = params[k].getName();
-                        par = par.substring(par.lastIndexOf(".") + 1);
-                        if (k != 0) {
-                            buf.append(", ");
-                        }
-                        buf.append(par);
-                    }
-                    buf.append(")\n");
-                }
-            }
-        }
-        return buf.toString();
-    }
-    
-    /**
      * Prints the shell prompt.<p>
      */
     private void printPrompt() {
         String prompt = m_prompt;
-        prompt = CmsStringSubstitution.substitute(prompt, "$u", m_cms.getRequestContext().currentUser().getName());
-        prompt = CmsStringSubstitution.substitute(prompt, "$s", m_cms.getRequestContext().getSiteRoot());
-        prompt = CmsStringSubstitution.substitute(prompt, "$p", m_cms.getRequestContext().currentProject().getName());
+        prompt = CmsStringSubstitution.substitute(prompt, "${user}", m_cms.getRequestContext().currentUser().getName());
+        prompt = CmsStringSubstitution.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
+        prompt = CmsStringSubstitution.substitute(prompt, "${project}", m_cms.getRequestContext().currentProject().getName());
+        prompt = CmsStringSubstitution.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
         System.out.print(prompt);
     }
-    
-    /**
-     * Sets the echo status.<p>
-     * 
-     * @param echo the echo status to set
-     */
-    protected void setEcho(boolean echo) {
-        m_echo = echo;
-    }
-    
-    /**
-     * Sets the current shell prompt.<p>
-     * 
-     * To set the prompt, the following variables are available:<p>
-     * 
-     * <code>$u</code> the current user name<br>
-     * <code>$s</code> the current site root<br>
-     * <code>$p</code> the current project name<p>
-     * 
-     * @param prompt the prompt to set
-     */
-    protected void setPrompt(String prompt) {
-        m_prompt = prompt;
-    }
-    
-    /**
-     * Shows the signature of all methods containing the given search String.<p>
-     *
-     * @param searchString the String to search for in the methods, if null all methods are shown
-     */
-    protected void showHelp(String searchString) {
-        String commandList;
-        boolean foundSomething = false;
-
-        // iterate all methods in CmsShellCommands
-        commandList = printMethod(m_cmsShellMethods, "- ", searchString);
-        if (! "".equals(commandList)) {
-            System.out.println("\nAvailable methods in CmsShell:");
-            System.out.println(commandList);
-            foundSomething = true;
-        }
-        
-        // iterate all methods in CmsObject        
-        commandList = printMethod(m_cmsObjectMethods, "* ", searchString);
-        if (! "".equals(commandList)) {
-            System.out.println("\nAvailable methods in CmsObject:");
-            System.out.println(commandList);
-            foundSomething = true;            
-        }
-        
-        if (! foundSomething) {
-            System.out.println("\nNo methods available matching: '" + searchString + "'");
-        }        
-    }    
 }

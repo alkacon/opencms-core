@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsMail.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2004/02/14 21:25:41 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import javax.mail.internet.MimeMultipart;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2004/02/14 21:25:41 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread {
@@ -697,7 +697,7 @@ public class CmsMail extends Thread {
     
     /**
      * Check a given email address for conforms with
-     * RFC822 rules, see {@link http://www.rfc-editor.org/rfc.html}.<p>
+     * RFC822 rules, see <a href="http://www.rfc-editor.org/rfc.html">http://www.rfc-editor.org/rfc.html</a>.<p>
      * 
      * @param address Email address to be checked
      * @return <code>true</code> if the address is syntactically correct, <code>false</code> otherwise
@@ -721,7 +721,7 @@ public class CmsMail extends Thread {
      * 
      * @author  Alexander Kandzior (a.kandzior@alkacon.com)
      * 
-     * @version $Revision: 1.1 $ $Date: 2004/02/13 13:41:44 $
+     * @version $Revision: 1.2 $ $Date: 2004/02/14 21:25:41 $
      * @see org.opencms.util.CmsMail
      */
     class CmsByteArrayDataSource implements DataSource {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/14 15:27:38 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/02/14 21:25:41 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -57,19 +58,14 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
- * Additional commands for the CmsShell.<p>
+ * Provides additional commands for the CmsShell.<p>
  * 
- * The CmsShell has direct access to all public methods in 
- * the {@link org.opencms.file.CmsObject} that have only "primitive" data types as parameters.
- * Supported primitive types are <code>String, CmsUUID, boolean, int, long, double, float</code>.<p>
- *  
- * This class provides additional commands for the shell.
- * Such additional commands can access OpenCms functions not part of the CmsObject.
+ * Such additional commands can access OpenCms functions not available on "regular" OpenCms classes.
  * Also, wrapping methods to access some important functions in the CmsObject that
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 class CmsShellCommands {
 
@@ -148,6 +144,28 @@ class CmsShellCommands {
      */
     public CmsUser addWebUser(String name, String password, String group, String description) throws Exception {
         return m_cms.addWebUser(name, password, group, description, new Hashtable());
+    }
+    
+    /**
+     * Changes the current folder (i.e. the URI in the VFS).<p>
+     * 
+     * @param target the new URI
+     * @throws Exception if something goes wrong
+     * @see org.opencms.file.CmsRequestContext#setUri(String)
+     */
+    public void cd(String target) throws Exception {
+        String folder = m_cms.readAbsolutePath(m_cms.getRequestContext().currentFolder());
+        if (! target.endsWith("/")) {
+            target += "/";
+        }
+        String resolvedTarget = CmsLinkManager.getAbsoluteUri(target, folder);
+        CmsResource res = m_cms.readFileHeader(resolvedTarget);
+        if (! res.isFolder()) {
+            throw new Exception("Not a folder: " + resolvedTarget);
+        }
+        m_cms.getRequestContext().setUri(resolvedTarget);
+        System.out.println("\nThe current folder is now '" + resolvedTarget + "'"); 
+        System.out.println();        
     }
 
     /**
@@ -348,16 +366,6 @@ class CmsShellCommands {
     }
     
     /**
-     * Returns the current CmsShell context project.<p>
-     * 
-     * @return the current CmsShell context project
-     * @see org.opencms.file.CmsRequestContext#currentProject()
-     */
-    public CmsProject getCurrentProject() {
-        return m_cms.getRequestContext().currentProject();
-    }
-    
-    /**
      * Displays further information about a driver class.<p>
      * 
      * @param driverName the driver class name to display more information for
@@ -373,8 +381,8 @@ class CmsShellCommands {
     public void help() {
         System.out.println();
         System.out.println("help              Shows this text");
-        System.out.println("help *            Shows the signatures of all available commands");
-        System.out.println("help {string}     Shows the signatures of all commands containing this string");
+        System.out.println("help *            Shows the signatures of all available methods");
+        System.out.println("help {string}     Shows the signatures of all methods containing this string");
         System.out.println("exit or quit      Leaves this OpenCms Shell");
         System.out.println();
     }
@@ -386,47 +394,12 @@ class CmsShellCommands {
      */
     public void help(String command) {
         if ("*".equalsIgnoreCase(command)) {
-            m_shell.showHelp(null);
+            m_shell.help(null);
         } else if ("help".equalsIgnoreCase(command)) {
             help();
         } else {
-            m_shell.showHelp(command);
+            m_shell.help(command);
         }
-    }
-
-    /**
-     * Reads a given file from the local harddisk and imports
-     * it to the OpenCms system.<p>
-     *
-     * @param filename file to be uploaded
-     * @return the file content
-     * @throws CmsException if something goes wrong
-     */
-    private byte[] importFile(String filename) throws CmsException {
-        File file = null;
-        long len = 0;
-        FileInputStream importInput = null;
-        byte[] result;
-        // try to load the file
-        try {
-            file = new File(filename);
-        } catch (Exception e) {
-            file = null;
-        }
-        if (file == null) {
-            throw new CmsException("Could not load local file " + filename, CmsException.C_NOT_FOUND);
-        }
-        // now import the file
-        try {
-            len = file.length();
-            result = new byte[(int)len];
-            importInput = new FileInputStream(file);
-            importInput.read(result);
-            importInput.close();
-        } catch (Exception e) {
-            throw new CmsException(e.toString(), CmsException.C_UNKNOWN_EXCEPTION);
-        }
-        return result;
     }
 
     /**
@@ -502,16 +475,6 @@ class CmsShellCommands {
     }
 
     /**
-     * Checks if the current CmsSell user is a member of the administrator group.<p>
-     * 
-     * @return true if the user is an administrator
-     * @throws Exception if something goes wrong
-     */
-    public boolean isAdmin() throws Exception {
-        return m_cms.getRequestContext().isAdmin();
-    }
-
-    /**
      * Checks if the current CmsSell user is a member of the project manager group.<p>
      * 
      * @return true if the user is a project manager
@@ -530,10 +493,28 @@ class CmsShellCommands {
     public void login(String username, String password) {
         try {
             m_cms.loginUser(username, password);
-            whoami();
+            System.out.println("You are now logged in as user '" + whoami().getName() + "'.");
         } catch (Exception exc) {
             System.out.println("Login failed!");
         }
+    }
+    
+    /**
+     * Displays a list of all resources in the current folder.<p>
+     * 
+     * @throws Exception if something goes wrong
+     * @see CmsObject#getResourcesInFolder(String)
+     */
+    public void ls() throws Exception {
+        String folder = m_cms.readAbsolutePath(m_cms.getRequestContext().currentFolder());
+        Vector v = m_cms.getResourcesInFolder(folder);
+        System.out.println("\nThe current folder '" + folder + "' contains " + v.size() + " resources");
+        Iterator i = v.iterator();
+        while (i.hasNext()) {
+            CmsResource r = (CmsResource)i.next();
+            System.out.println(m_cms.readAbsolutePath(r));
+        }
+        System.out.println();
     }
 
     /**
@@ -638,6 +619,17 @@ class CmsShellCommands {
         m_cms.unlockProject(id);
         m_cms.publishProject();
     }
+    
+    /**
+     * Returns the current folder set as URI in the request context.<p>
+     * 
+     * @return the current folder
+     * @throws Exception if something goes wrong
+     * @see org.opencms.file.CmsRequestContext#currentFolder()
+     */
+    public String pwd() throws Exception {
+        return m_cms.readAbsolutePath(m_cms.getRequestContext().currentFolder());
+    }
 
     /**
      * Exits the shell.<p>
@@ -679,26 +671,6 @@ class CmsShellCommands {
      */
     public CmsUser readOwnerOfProject(int project) throws Exception {
         return m_cms.readOwner(m_cms.readProject(project));
-    }
-
-    /**
-     * Sets the current project for the CmsShell user.<p>
-     *
-     * @param id the id of the project to be set as current project
-     * @return the project that was set
-     * @throws Exception if something goes wrong
-     */
-    public CmsProject setCurrentProject(int id) throws Exception {
-        return m_cms.getRequestContext().setCurrentProject(id);
-    }
-
-    /**
-     * Set the site root for the current CmsShell context.<p>
-     * 
-     * @param siteRoot the site root to set
-     */
-    public void setSiteRoot(String siteRoot) {
-        m_cms.getRequestContext().setSiteRoot(siteRoot);
     }
 
     /**
@@ -746,8 +718,45 @@ class CmsShellCommands {
 
     /**
      * Returns the current user.<p>
+     * 
+     * @return the current user
      */
-    public void whoami() {
-        System.out.println(m_cms.getRequestContext().currentUser());
+    public CmsUser whoami() {
+        return m_cms.getRequestContext().currentUser();
+    }
+
+    /**
+     * Reads a given file from the local harddisk and imports
+     * it to the OpenCms system.<p>
+     *
+     * @param filename file to be uploaded
+     * @return the file content
+     * @throws CmsException if something goes wrong
+     */
+    private byte[] importFile(String filename) throws CmsException {
+        File file = null;
+        long len = 0;
+        FileInputStream importInput = null;
+        byte[] result;
+        // try to load the file
+        try {
+            file = new File(filename);
+        } catch (Exception e) {
+            file = null;
+        }
+        if (file == null) {
+            throw new CmsException("Could not load local file " + filename, CmsException.C_NOT_FOUND);
+        }
+        // now import the file
+        try {
+            len = file.length();
+            result = new byte[(int)len];
+            importInput = new FileInputStream(file);
+            importInput.read(result);
+            importInput.close();
+        } catch (Exception e) {
+            throw new CmsException(e.toString(), CmsException.C_UNKNOWN_EXCEPTION);
+        }
+        return result;
     }
 }

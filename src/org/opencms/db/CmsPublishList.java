@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/14 21:25:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,11 +50,11 @@ import java.util.List;
  * This allows the Cms app to pass the list around between classes, but with restricted access to 
  * create this list.<p>
  * 
- * {@link org.opencms.db.CmsDriverManager#getPublishList(CmsRequestContext, CmsResource, boolean, I_CmsReport)}
+ * {@link org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)}
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/14 21:25:41 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)
  */
@@ -95,7 +95,7 @@ public class CmsPublishList extends Object {
      * Constructs an empty publish list with additional information for a direct published resource.<p>
      * 
      * @param directPublishResource a Cms resource to be published directly
-     * @param isDirectPublishFile true if a Cms file gets published directly and the type of the current project is switched to {@link com.opencms.core.I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH}
+     * @param isDirectPublishFile true if a Cms file gets published directly
      */
     public CmsPublishList(CmsResource directPublishResource, boolean isDirectPublishFile) {
         m_fileList = (List) new ArrayList();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/14 21:25:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsRequestContext {
 
@@ -154,17 +154,6 @@ public class CmsRequestContext {
      */
     public CmsFolder currentFolder() throws CmsException {
         return m_driverManager.readFolder(this, addSiteRoot(getFolderUri()));
-    }
-    
-    /**
-     * Used to return the current group of the current user,
-     * deprecated, will return <code>null</code>.<p>
-     *
-     * @return null
-     * @deprecated the "current group" concept is not longer used in the ACL permission model
-     */
-    public CmsGroup currentGroup() {
-        return null;
     }
     
     /**
@@ -582,23 +571,6 @@ public class CmsRequestContext {
             m_attributeMap = new HashMap();
         }
         m_attributeMap.put(key, value);
-    } 
-
-    /**
-     * Used to set the current group of the current user,
-     * deprecated, does nothing.<p>
-     *
-     * @param groupname the name of the group to be set as current group.
-     * @throws CmsException never 
-     * @deprecated the "current group" concept is not longer used in the ACL permission model
-     */
-    public void setCurrentGroup(String groupname) throws CmsException {
-        OpenCms.getLog(this).warn("Deprecated method called: setCurrentGroup(" + groupname + ")");
-        if (false) {
-            // prevent compiler warning because of deprecated code
-            throw new CmsException();
-        }
-        return;
     }
 
     /**

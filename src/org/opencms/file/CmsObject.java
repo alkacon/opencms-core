@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/02/14 15:27:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/14 21:25:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsObject {
 
@@ -1866,13 +1866,11 @@ public class CmsObject {
     }
 
     /**
-     * Returns a Vector with the subresources for a folder.<br>
+     * Returns a Vector with the sub resources for a folder.<br>
      *
-     * @param folder The name of the folder to get the subresources from.
-     *
-     * @return subfolders A Vector with resources.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
+     * @param folder the name of the folder to get the subresources from.
+     * @return subfolders a Vector with resources
+     * @throws CmsException  if operation was not succesful
      */
     public Vector getResourcesInFolder(String folder) throws CmsException {
         return m_driverManager.getResourcesInFolder(m_context, addSiteRoot(folder));
@@ -2366,9 +2364,8 @@ public class CmsObject {
         // login the user
         CmsUser newUser = m_driverManager.loginUser(username, password, remoteAddress);
         // init the new user
-        CmsRequestContext context = new CmsRequestContext();
-        context.init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.getDirectoryTranslator(), m_context.getFileTranslator());
-        init(m_driverManager, context, m_sessionStorage);
+        m_context.init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        init(m_driverManager, m_context, m_sessionStorage);
         // fire a login event
         this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
         // return the user-name
@@ -2462,10 +2459,6 @@ public class CmsObject {
 
     /**
      * Direct publishes a specified resource.<p>
-     * 
-     * To direct publish a resource, the type of the project has to be set to
-     * {@link I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH} manually in the
-     * calling method before!<p>
      * 
      * @param report an instance of I_CmsReport to print messages
      * @param directPublishResource a CmsResource that gets directly published; or null if an entire project gets published

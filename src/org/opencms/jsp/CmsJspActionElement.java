@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/02/13 14:37:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/14 21:25:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0 beta 2
  */
@@ -391,7 +391,7 @@ public class CmsJspActionElement {
     
     /**
      * Includes a named sub-element supressing all Exceptions that occur during the include,
-     * otherwise the same as using {@link #include(String, String, Map null)}.<p>
+     * otherwise the same as using {@link #include(String, String, Map)}.<p>
      * 
      * This is a convenience method that allows to include elements on a page without checking 
      * if they exist or not. If the target element does not exist, nothing is printed to 
@@ -410,7 +410,7 @@ public class CmsJspActionElement {
 
     /**
      * Includes a named sub-element supressing all Exceptions that occur during the include,
-     * otherwise the same as using {@link #include(String, String, Map null)}.<p>
+     * otherwise the same as using {@link #include(String, String, Map)}.<p>
      * 
      * This is a convenience method that allows to include elements on a page without checking 
      * if they exist or not. If the target element does not exist, nothing is printed to 
@@ -532,7 +532,7 @@ public class CmsJspActionElement {
     /**
      * Returns a selected file property value, same as using 
      * the <code>&lt;cms:property name="..." /&gt;</code> tag or
-     * calling {@link #property(String name, String null, String null, boolean false)}.<p>
+     * calling {@link #property(String, String, String, boolean)}.<p>
      * 
      * @param name the name of the property to look for
      * @return the value of the property found, or null if the property could not be found
@@ -547,7 +547,7 @@ public class CmsJspActionElement {
     /**
      * Returns a selected file property value, same as using 
      * the <code>&lt;cms:property name="..." file="..." /&gt;</code> tag or
-     * calling {@link #property(String name, String file, String null, boolean false)}.<p>
+     * calling {@link #property(String, String, String, boolean)}.<p>
      * 
      * @param name the name of the property to look for
      * @param file the file (or folder) to look at for the property
@@ -563,7 +563,7 @@ public class CmsJspActionElement {
     /**
      * Returns a selected file property value, same as using
      * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag or
-     * calling {@link #property(String name, String file, String defaultValue, boolean false)}.<p>
+     * calling {@link #property(String, String, String, boolean)}.<p>
      *
      * @param name the name of the property to look for
      * @param file the file (or folder) to look at for the property
@@ -812,7 +812,7 @@ public class CmsJspActionElement {
     }
     
     /**
-     * Generates an initialized instance of {@link com.opencms.flex.util.CmsMessages} for 
+     * Generates an initialized instance of {@link CmsMessages} for 
      * convenient access to localized resource bundles.<p>
      * 
      * @param bundleName the name of the ResourceBundle to use
@@ -824,7 +824,7 @@ public class CmsJspActionElement {
     }
     
     /**
-     * Generates an initialized instance of {@link com.opencms.flex.util.CmsMessages} for 
+     * Generates an initialized instance of {@link CmsMessages} for 
      * convenient access to localized resource bundles.<p>
      * 
      * @param bundleName the name of the ResourceBundle to use
@@ -838,7 +838,7 @@ public class CmsJspActionElement {
     }
     
     /**
-     * Generates an initialized instance of {@link com.opencms.flex.util.CmsMessages} for 
+     * Generates an initialized instance of {@link CmsMessages} for 
      * convenient access to localized resource bundles.<p>
      * 
      * @param bundleName the name of the ResourceBundle to use

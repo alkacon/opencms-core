@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/14 21:25:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2004/02/13 13:41:46 $
+ * @version $Revision: 1.11 $ $Date: 2004/02/14 21:25:41 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -94,9 +94,6 @@ public class CmsHtmlLinkValidator extends Object {
     /**
      * Validates HTML links (hrefs and img tags) in the (body) content of the specified list of Cms resources.<p>
      * 
-     * You should refer to {@link CmsDriverManager#filterOfflineFiles(CmsRequestContext, CmsResource, boolean, I_CmsReport)}
-     * on how to obtain a list of one or more offline resources as a valid input for the HTML link validation.<p>
-     * 
      * The result is printed to a shell report.<p>
      * 
      * @param cms the current user's Cms object the current request context
@@ -110,9 +107,6 @@ public class CmsHtmlLinkValidator extends Object {
 
     /**
      * Validates HTML links (hrefs and img tags) in the (body) content of the specified list of Cms resources.<p>
-     * 
-     * You should refer to {@link CmsDriverManager#filterOfflineFiles(CmsRequestContext, CmsResource, boolean, I_CmsReport)}
-     * on how to obtain a list of one or more offline resources as a valid input for the HTML link validation.<p>
      * 
      * The result is printed to the given report.<p>
      * 
