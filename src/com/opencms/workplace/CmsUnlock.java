@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2002/07/10 15:01:55 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2002/07/12 17:48:13 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2002/07/10 15:01:55 $
+ * @version $Revision: 1.39 $ $Date: 2002/07/12 17:48:13 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -63,6 +63,26 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
+                
+        // Is there an unlock extension installed? 
+        Hashtable h = cms.getRegistry().getSystemValues("unlockextension");
+        if (h != null) {
+            // Unlock extension found, try generate in instance and use this instead of the default
+            if ("true".equals((String)h.get("enabled"))) {
+                String extensionClass = (String)h.get("class");
+                if (extensionClass != null) {
+                    try {
+                        parameters.put("__source", "CmsUnlock");                        
+                        I_CmsXmlTemplate extension = (I_CmsXmlTemplate)Class.forName(extensionClass).newInstance();
+                        return extension.getContent(cms, templateFile, elementName, parameters, templateSelector);
+                    } catch (Exception ex) {
+                        ex.printStackTrace(System.err);
+                        return "[Unlock extension caused exception]".getBytes();
+                    }
+                }                
+            }
+        }        
+                
         I_CmsSession session = cms.getRequestContext().getSession(true);
 
         // the template to be displayed

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/07/10 15:01:55 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2002/07/12 17:47:15 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -2007,9 +2007,37 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   */
 
   private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-    //return var
-    byte[] processResult = null;
 
+    // Is there an unlock extension installed? 
+    Hashtable h = cms.getRegistry().getSystemValues("unlockextension");
+    if (h != null) {
+        // Unlock extension found, try generate in instance and use this instead of the default
+        if ("true".equals((String)h.get("enabled"))) {
+            String extensionClass = (String)h.get("class");
+            if (extensionClass != null) {
+                try {
+                    parameters.put("__source", "A_CmsBackoffice");
+                    parameters.put("__cdclass", getContentDefinitionClass());
+                    parameters.put("__isExtendedList", "" + isExtendedList());
+                    parameters.put("__template", template);                    
+                    // Call extension class
+                    I_CmsXmlTemplate extension = (I_CmsXmlTemplate)Class.forName(extensionClass).newInstance();                    
+                    extension.getContent(cms, template.getAbsoluteFilename(), elementName, parameters, templateSelector);
+                    // startProcessing must be called in this method since access is protected
+                    template = (CmsXmlWpTemplateFile)parameters.get("__template");                    
+                    elementName = (String)parameters.get("__elementName");
+                    templateSelector = (String)parameters.get("__templateSelector");                    
+                    return startProcessing(cms, template, elementName, parameters, templateSelector);
+                } catch (Exception ex) {
+                    ex.printStackTrace(System.err);
+                    return "[Unlock extension caused exception]".getBytes();
+                }
+            }                
+        }
+    }        
+
+    byte[] processResult = null;
+    
     // now check if the "do you really want to lock" dialog should be shown.
     Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
     String showLockDialog = "off";
