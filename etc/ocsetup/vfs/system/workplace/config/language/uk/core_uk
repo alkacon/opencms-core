@@ -467,6 +467,9 @@
                 <mergecell>Merge Cells</mergecell>
                 <splitcell>Split Cells</splitcell>
             </context>
+            <message>
+            	<confirmhttp>The link URL you entered looks like a server name\nbut misses the required protocol (eg. 'http://').\n\nShould the http protocol be added to the URL?</confirmhttp>
+            </message>
         </editor>
         <explorer>
             <linkto>link to</linkto>
@@ -570,11 +573,12 @@
             <lastname>Name</lastname>
             <left>Left</left>
             <linkname>Name</linkname>
-            <linkto>Link</linkto>
+            <linkto>Link URL</linkto>
             <linktarget>Target</linktarget>
             <linktargetself>Same window</linktargetself>
             <linktargetblank>New window</linktargetblank>
-            <linktargettop>Top window</linktargettop>            
+            <linktargettop>Top window</linktargettop>  
+            <linktargetnamed>Named Window</linktargetnamed>
             <linkanchor>Anchor</linkanchor>
             <linkstyle>Styledefinitions</linkstyle>
             <linkstyleclass>Stylesheet class</linkstyleclass>                        
