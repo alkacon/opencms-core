@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/06/08 12:59:08 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2001/06/15 12:34:04 $
+* Version: $Revision: 1.13 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,8 @@ import java.util.*;
  * used keys.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2001/06/08 12:59:08 $
+ * @author Hanjo Riege
+ * @version $Revision: 1.13 $ $Date: 2001/06/15 12:34:04 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
@@ -164,6 +165,7 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
 
     /**
      * enables or disables the proxy public cache for this element.
+     * @param proxyPublic true if the flag should be set in the response header.
      */
     public void setProxyPublicCacheable(boolean proxPublic){
         m_userSetProxyPublic = true;
@@ -173,6 +175,7 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
 
     /**
      * enables or disables the proxy private cache for this element.
+     * @param proxyPrivate true if the flag should be set in the response header.
      */
     public void setProxyPrivateCacheable(boolean proxPrivate){
         m_userSetProxyPrivate = true;
@@ -182,6 +185,7 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
 
     /**
      * enables or disables the export for this element.
+     * @param export true if the flag should be set in the response header.
      */
     public void setExport(boolean export){
         m_userSetExport = true;
@@ -230,22 +234,38 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     }
 
     /**
-     * methods for the big question: has the user set the value or must we
-     * find the value by reading the accessrightrs for the file
+     * get the userSet information.
+     * @return <code>true</code> if the proxyPrivate flag was set, <code>false</code> otherwise.
      */
     public boolean userSetProxyPrivate(){
         return m_userSetProxyPrivate;
     }
+    /**
+     * get the userSet information.
+     * @return <code>true</code> if the proxyPublic flag was set, <code>false</code> otherwise.
+     */
     public boolean userSetProxyPublic(){
         return m_userSetProxyPublic;
     }
+    /**
+     * get the userSet information.
+     * @return <code>true</code> if the export flag was set, <code>false</code> otherwise.
+     */
     public boolean userSetExport(){
         return m_userSetExport;
     }
 
+    /**
+     * get information about the cacheKey.
+     * @return <code>true</code> if user or group is in the key, <code>false</code> otherwise.
+     */
     public boolean isUserPartOfKey(){
         return m_group || m_user;
     }
+    /**
+     * get information about the cacheKey.
+     * @return <code>true</code> if parameters are in the key, <code>false</code> otherwise.
+     */
     public boolean isParameterPartOfKey(){
         return (m_cacheParameter != null) && ( !m_cacheParameter.isEmpty());
     }
@@ -258,6 +278,10 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
         return m_timeout;
     }
 
+    /**
+     * Get information if the element is time critical.
+     * @return <code>true</code> if a timeout object was set, <code>false</code> otherwise.
+     */
     public boolean isTimeCritical(){
         return m_timecheck;
     }
@@ -395,18 +419,4 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
         m_dynamicParameter = parameterNames;
     }
 
-    /**
-     *
-     */
-/*    private void autoSetExternalCache(){
-        if (m_changeCd){
-            boolean proxPriv = m_uri && (m_cacheParameter == null || m_cacheParameter.isEmpty())
-                                && isInternalCacheable();
-            boolean proxPubl = proxPriv && m_user;
-            // ToDo: check the internal flag for export
-            boolean export = proxPubl; // && !flag(extenal);
-            setExternalCaching(isInternalCacheable(), proxPriv, proxPubl, export, isStreamable());
-        }
-    }
-*/
 }
