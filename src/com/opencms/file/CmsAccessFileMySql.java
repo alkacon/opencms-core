@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/06/05 13:37:53 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2000/06/05 14:31:59 $
+ * Version: $Revision: 1.58 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.57 $ $Date: 2000/06/05 13:37:53 $
+ * @version $Revision: 1.58 $ $Date: 2000/06/05 14:31:59 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -1511,14 +1511,18 @@ import com.opencms.util.*;
          Connection con=null;
            try {
             //  get all subfolders
+
              con=getConnection();
              Statement s = con.createStatement();		
+
   
                
                
              res =s.executeQuery(C_RESOURCE_GETSUBFOLDERS1+absoluteName(foldername)
                                 +C_RESOURCE_GETSUBFOLDERS2+project.getId()+
                                  C_RESOURCE_GETSUBFOLDERS3);
+               
+               
              putConnection(con); 
             /*   
             PreparedStatement statementGetSubFolder=con.prepareStatement(C_RESOURCE_GETSUBFOLDERS);
@@ -1526,6 +1530,7 @@ import com.opencms.util.*;
 		    statementGetSubFolder.setString(2,foldername+"%");
             res = statementGetSubFolder.executeQuery();*/
             
+
             // create new folder objects
 		    while ( res.next() ) {
                folder = new CmsFolder(res.getString(C_RESOURCE_NAME),
@@ -1571,12 +1576,12 @@ import com.opencms.util.*;
          Connection con=null;
            try {
             con=getConnection();
-            //  get all files in folder
-             Statement s = con.createStatement();		
-  
-             res =s.executeQuery(C_RESOURCE_GETFILESINFOLDER1+absoluteName(foldername)
+            Statement s = con.createStatement();		
+
+            res =s.executeQuery(C_RESOURCE_GETFILESINFOLDER1+absoluteName(foldername)
                                 +C_RESOURCE_GETFILESINFOLDER2+project.getId()+
-                                 C_RESOURCE_GETFILESINFOLDER3);
+                                C_RESOURCE_GETFILESINFOLDER3);
+                                
              putConnection(con);                    
             /*PreparedStatement statementGetFilesInFolder=con.prepareStatement(C_RESOURCE_GETFILESINFOLDER);
             statementGetFilesInFolder.setInt(1,project.getId());

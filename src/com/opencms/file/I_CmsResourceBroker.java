@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/05 13:43:15 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2000/06/05 14:31:59 $
+ * Version: $Revision: 1.69 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,38 +34,23 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This interface describes THE resource broker. It merges all resource broker
- * into one public class. The interface is local to package. <B>All</B> methods
+ * This interface describes THE resource broker. All DB-specific access modules must
+ * implement this interface.
+ * The interface is local to package. <B>All</B> methods
  * get additional parameters (callingUser and currentproject) to check the security-
  * police.
  * 
- * @author Andreas Schouten
- * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.68 $ $Date: 2000/06/05 13:43:15 $
+ * @version $Revision: 1.69 $ $Date: 2000/06/05 14:31:59 $
  * 
  */
 interface I_CmsResourceBroker {
 
-	// Projects:
-	
-	/**
-	 * Returns the onlineproject. This is the default project. All anonymous 
-	 * (CmsUser callingUser, or guest) user will see the rersources of this project.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @return the onlineproject object.
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public CmsProject onlineProject(CmsUser currentUser, 
-									  CmsProject currentProject)
-		throws CmsException;
+    
+    
+    // Methods working with projects
 
-	/**
+    /**
 	 * Tests if the user can access the project.
 	 * 
 	 * <B>Security:</B>
@@ -80,56 +65,8 @@ interface I_CmsResourceBroker {
 	public boolean accessProject(CmsUser currentUser, CmsProject currentProject,
 								 int projectId) 
 		throws CmsException;
-
-	/**
-	 * Reads a project from the Cms.
-	 * 
-	 * <B>Security</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param id The id of the project to read.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
-									 int id)
-		 throws CmsException ;
-     
+    
      /**
-	 * Reads a project from the Cms.
-	 * 
-	 * <B>Security</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param res The resource to read the project of.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
-									 CmsResource res)
-		 throws CmsException ;
-	
-    /**
-	 * Reads a project from the Cms.
-	 * 
-	 * <B>Security</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task to read the project of.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
-									 CmsTask task)
-		 throws CmsException ;
-	 
-	/**
 	 * Creates a project.
 	 * 
 	 * <B>Security</B>
@@ -169,7 +106,23 @@ interface I_CmsResourceBroker {
 									   int id, String name, String description, String group,
 									   String managergroupname)
 		 throws CmsException;
-	 
+     							
+	/**
+	 * Deletes a project.
+	 * 
+	 * <B>Security</B>
+	 * Only the admin or the owner of the project can do this.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public void deleteProject(CmsUser currentUser, CmsProject currentProject,
+							  int id)
+		throws CmsException;
+     
 	/**
 	 * Returns all projects, which are owned by the user or which are accessible
 	 * for the group of the user.
@@ -202,6 +155,23 @@ interface I_CmsResourceBroker {
 											CmsProject currentProject)
 		 throws CmsException;
 	 
+     
+	/**
+	 * Returns the onlineproject. This is the default project. All anonymous 
+	 * (CmsUser callingUser, or guest) user will see the rersources of this project.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return the onlineproject object.
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsProject onlineProject(CmsUser currentUser, 
+									CmsProject currentProject)
+		throws CmsException;
+
 	/**
 	 * Publishes a project.
 	 * 
@@ -218,6 +188,55 @@ interface I_CmsResourceBroker {
 	public Vector publishProject(CmsUser currentUser, CmsProject currentProject,
 								 int id)
 		throws CmsException;
+    
+	/**
+	 * Reads a project from the Cms.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the project to read.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
+								   int id)
+		 throws CmsException ;
+     
+     /**
+	 * Reads a project from the Cms.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param res The resource to read the project of.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
+								   CmsResource res)
+		 throws CmsException ;
+	
+    /**
+	 * Reads a project from the Cms.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read the project of.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
+									 CmsTask task)
+		 throws CmsException ;
+	 
 
 	/**
 	 * Unlocks all resources in this project.
@@ -233,114 +252,12 @@ interface I_CmsResourceBroker {
 	 */
 	public void unlockProject(CmsUser currentUser, CmsProject currentProject, int id)
 		throws CmsException;
-							
-	/**
-	 * Deletes a project.
-	 * 
-	 * <B>Security</B>
-	 * Only the admin or the owner of the project can do this.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param id The id of the project to be published.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void deleteProject(CmsUser currentUser, CmsProject currentProject,
-							  int id)
-		throws CmsException;
-	
-	// Properties, Propertydefinition
-	/**
-	 * Reads a definition for the given resource type.
-	 * 
-	 * <B>Security</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param name The name of the propertydefinition to read.
-	 * @param resourcetype The name of the resource type for which the propertydefinition 
-	 * is valid.
-	 * 
-	 * @return propertydefinition The propertydefinition that corresponds to the overgiven
-	 * arguments - or null if there is no valid propertydefinition.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public CmsPropertydefinition readPropertydefinition(CmsUser currentUser, 
-												  CmsProject currentProject, 
-												  String name, String resourcetype)
-		throws CmsException;
-	
-	/**
-	 * Writes the export-path for the system.
-	 * This path is used for db-export and db-import.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 */
-	public void writeExportPath(CmsUser currentUser, CmsProject currentProject, String path)
-		throws CmsException ;
-	
-	/**
-	 * Reads the export-path for the system.
-	 * This path is used for db-export and db-import.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @return the exportpath.
-	 */
-	public String readExportPath(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException ;
-							
-	/**
-	 * Reads all propertydefinitions for the given resource type.
-	 * 
-	 * <B>Security</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resourcetype The name of the resource type to read the propertydefinitions for.
-	 * 
-	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
-	 * The Vector is maybe empty.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */	
-	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
-										 String resourcetype)
-		throws CmsException;
-	
-	/**
-	 * Reads all propertydefinitions for the given resource type.
-	 * 
-	 * <B>Security</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resourcetype The name of the resource type to read the propertydefinitions for.
-	 * @param type The type of the propertydefinition (normal|mandatory|optional).
-	 * 
-	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
-	 * The Vector is maybe empty.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */	
-	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
-										 String resourcetype, int type)
-		throws CmsException;
 
-	/**
+	
+	// Methods working with properties and propertydefinitions
+
+
+    /**
 	 * Creates the propertydefinition for the resource type.<BR/>
 	 * 
 	 * <B>Security</B>
@@ -379,6 +296,146 @@ interface I_CmsResourceBroker {
 									 String name, String resourcetype)
 		throws CmsException;
 	
+    
+	/**
+	 * Deletes all propertyinformation for a file or folder.
+	 * 
+	 * <B>Security</B>
+	 * Only the user is granted, who has the right to write the resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The name of the resource of which the propertyinformations 
+	 * have to be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteAllProperties(CmsUser currentUser, 
+										  CmsProject currentProject, 
+										  String resource)
+		throws CmsException;
+
+	/**
+	 * Deletes a propertyinformation for a file or folder.
+	 * 
+	 * <B>Security</B>
+	 * Only the user is granted, who has the right to write the resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The name of the resource of which the propertyinformation 
+	 * has to be read.
+	 * @param property The propertydefinition-name of which the propertyinformation has to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteProperty(CmsUser currentUser, CmsProject currentProject, 
+									  String resource, String property)
+		throws CmsException;
+    
+    /**
+	 * Reads all propertydefinitions for the given resource type.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourcetype The name of the resource type to read the propertydefinitions for.
+	 * 
+	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
+										 String resourcetype)
+		throws CmsException;
+	
+	/**
+	 * Reads all propertydefinitions for the given resource type.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourcetype The name of the resource type to read the propertydefinitions for.
+	 * @param type The type of the propertydefinition (normal|mandatory|optional).
+	 * 
+	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
+										 String resourcetype, int type)
+		throws CmsException;
+    
+    /**
+	 * Reads a definition for the given resource type.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param name The name of the propertydefinition to read.
+	 * @param resourcetype The name of the resource type for which the propertydefinition 
+	 * is valid.
+	 * 
+	 * @return propertydefinition The propertydefinition that corresponds to the overgiven
+	 * arguments - or null if there is no valid propertydefinition.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsPropertydefinition readPropertydefinition(CmsUser currentUser, 
+												  CmsProject currentProject, 
+												  String name, String resourcetype)
+		throws CmsException;
+
+      
+	/**
+	 * Returns a list of all propertyinformations of a file or folder.
+	 * 
+	 * <B>Security</B>
+	 * Only the user is granted, who has the right to view the resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The name of the resource of which the propertyinformation has to be 
+	 * read.
+	 * 
+	 * @return Vector of propertyinformation as Strings.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public Hashtable readAllProperties(CmsUser currentUser, CmsProject currentProject, 
+											 String resource)
+		throws CmsException;
+	
+    
+    /**
+	 * Returns a propertyinformation of a file or folder.
+	 * 
+	 * <B>Security</B>
+	 * Only the user is granted, who has the right to view the resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The name of the resource of which the propertyinformation has 
+	 * to be read.
+	 * @param property The propertydefinition-name of which the propertyinformation has to be read.
+	 * 
+	 * @return propertyinfo The propertyinfo as string.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public String readProperty(CmsUser currentUser, CmsProject currentProject, 
+									  String resource, String property)
+		throws CmsException;
+    
+    
 	/**
 	 * Updates the propertydefinition for the resource type.<BR/>
 	 * 
@@ -398,25 +455,6 @@ interface I_CmsResourceBroker {
 												   CmsPropertydefinition propertydef)
 		throws CmsException;
 	
-	/**
-	 * Returns a propertyinformation of a file or folder.
-	 * 
-	 * <B>Security</B>
-	 * Only the user is granted, who has the right to view the resource.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The name of the resource of which the propertyinformation has 
-	 * to be read.
-	 * @param property The propertydefinition-name of which the propertyinformation has to be read.
-	 * 
-	 * @return propertyinfo The propertyinfo as string.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	public String readProperty(CmsUser currentUser, CmsProject currentProject, 
-									  String resource, String property)
-		throws CmsException;
 
 	/**
 	 * Writes a propertyinformation for a file or folder.
@@ -455,62 +493,226 @@ interface I_CmsResourceBroker {
 									  String resource, Hashtable propertyinfos)
 		throws CmsException;
 
+
+    // Methods working with system properties
+    
+	
 	/**
-	 * Returns a list of all propertyinformations of a file or folder.
+	 * Reads the export-path for the system.
+	 * This path is used for db-export and db-import.
 	 * 
-	 * <B>Security</B>
-	 * Only the user is granted, who has the right to view the resource.
+	 * <B>Security:</B>
+	 * All users are granted.<BR/>
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The name of the resource of which the propertyinformation has to be 
-	 * read.
-	 * 
-	 * @return Vector of propertyinformation as Strings.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
+	 * @return the exportpath.
 	 */
-	public Hashtable readAllProperties(CmsUser currentUser, CmsProject currentProject, 
-											 String resource)
+	public String readExportPath(CmsUser currentUser, CmsProject currentProject)
+		throws CmsException ;
+							
+    
+    
+	/**
+	 * Writes the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	public void writeExportPath(CmsUser currentUser, CmsProject currentProject, String path)
+		throws CmsException ;
+   
+    	
+	/** 
+	 * Sets the password for a user.
+	 * 
+	 * Only a adminstrator can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
+							String username, String newPassword)
 		throws CmsException;
 	
 	/**
-	 * Deletes all propertyinformation for a file or folder.
+	 * Gets the MimeTypes. 
+	 * The Mime-Types will be returned.
 	 * 
-	 * <B>Security</B>
-	 * Only the user is granted, who has the right to write the resource.
+	 * <B>Security:</B>
+	 * All users are garnted<BR/>
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The name of the resource of which the propertyinformations 
-	 * have to be deleted.
 	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
+	 * @return the mime-types.
 	 */
-	public void deleteAllProperties(CmsUser currentUser, 
+	public Hashtable readMimeTypes(CmsUser currentUser, CmsProject currentProject)
+		throws CmsException;
+	
+	/**
+	 * Gets the known file extensions (=suffixes) 
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted access<BR/>
+	 * 
+	 * @param currentUser The user who requested this method, not used here
+	 * @param currentProject The current project of the user, not used here
+	 * 
+	 * @return Hashtable with file extensions as Strings
+	 */
+	
+	public Hashtable readFileExtensions(CmsUser currentUser, CmsProject currentProject)
+		throws CmsException;
+	
+	
+	/**
+	 * Writes the file extensions  
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "Administrators" are authorized.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param extensions Holds extensions as keys and resourcetypes (Stings) as values
+	 */
+	
+	public void writeFileExtensions(CmsUser currentUser, CmsProject currentProject,
+									Hashtable extensions)
+		throws CmsException;
+	
+	/**
+	 * adds a file extension to the list of known file extensions 
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param extension a file extension like 'html'
+	 * @param resTypeName name of the resource type associated to the extension
+	 */
+	
+	public void addFileExtension(CmsUser currentUser, CmsProject currentProject,
+								 String extension, String resTypeName)
+		throws CmsException;
+	
+	
+    /**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a mysql filesystem is added.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param driver The driver for the db-system. 
+	 * @param connect The connectstring to access the db-system.
+	 * @param name A name to describe the mountpoint.
+	 */
+	public void addMountPoint(CmsUser currentUser, CmsProject currentProject, 
+							  String mountpoint, String driver, String connect,
+							  String name)
+		throws CmsException ;
+
+    /**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a disc filesystem is added.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param mountpath The physical location this mount point directs to. 
+	 * @param name The name of this mountpoint.
+	 * @param user The default user for this mountpoint.
+	 * @param group The default group for this mountpoint.
+	 * @param type The default resourcetype for this mountpoint.
+	 * @param accessFLags The access-flags for this mountpoint.
+	 */
+	public void addMountPoint(CmsUser currentUser, CmsProject currentProject,
+							  String mountpoint, String mountpath, String name, 
+							  String user, String group, String type, int accessFlags)
+		throws CmsException;
+	
+	/**
+	 * Gets a CmsMountPoint. 
+	 * A mountpoint will be returned.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * 
+	 * @return the mountpoint - or null if it doesen't exists.
+	 */
+	public CmsMountPoint readMountPoint(CmsUser currentUser, 
 										  CmsProject currentProject, 
-										  String resource)
+										  String mountpoint )
+		throws CmsException;
+	
+    /**
+	 * Deletes a CmsMountPoint. 
+	 * A mountpoint will be deleted.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	public void deleteMountPoint(CmsUser currentUser, CmsProject currentProject, 
+								 String mountpoint )
 		throws CmsException;
 
 	/**
-	 * Deletes a propertyinformation for a file or folder.
+	 * Gets all CmsMountPoints. 
+	 * All mountpoints will be returned.
 	 * 
-	 * <B>Security</B>
-	 * Only the user is granted, who has the right to write the resource.
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param resource The name of the resource of which the propertyinformation 
-	 * has to be read.
-	 * @param property The propertydefinition-name of which the propertyinformation has to be set.
 	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
+	 * @return the mountpoints - or null if they doesen't exists.
 	 */
-	public void deleteProperty(CmsUser currentUser, CmsProject currentProject, 
-									  String resource, String property)
-		throws CmsException;
+	public Hashtable getAllMountPoints(CmsUser currentUser, CmsProject currentProject)
+		throws CmsException ;
 
-	// user and group stuff
+
+    /**
+     * Gets all mountpoint mappings, i.e. system mountpoints and their mounted paths.
+     * 
+     * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+     */
+    public Hashtable getMountPointMappings(CmsUser currentUser,  CmsProject currentProject)
+        throws CmsException;
+    
+
+	//  Methods working with user and groups
 	
 	/**
 	 * Logs a user into the Cms, if the password is correct.
@@ -529,7 +731,43 @@ interface I_CmsResourceBroker {
 	public CmsUser loginUser(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String password) 
 		throws CmsException;
-							
+
+    	
+	/**
+	 * Reads the agent of a task from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read the agent from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public CmsUser readAgent(CmsUser currentUser, CmsProject currentProject, 
+							   CmsTask task) 
+		throws CmsException ;
+    
+    
+	/**
+	 * Reads the original agent of a task from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read the original agent from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public CmsUser readOriginalAgent(CmsUser currentUser, CmsProject currentProject, 
+									   CmsTask task) 
+		throws CmsException ;
+    
 	/**
 	 * Reads the owner of a resource from the OpenCms.
 	 * 
@@ -577,40 +815,6 @@ interface I_CmsResourceBroker {
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
 		throws CmsException;
-	
-	/**
-	 * Reads the agent of a task from the OpenCms.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task to read the agent from.
-	 * @return The owner of a task.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */
-	public CmsUser readAgent(CmsUser currentUser, CmsProject currentProject, 
-							   CmsTask task) 
-		throws CmsException ;
-
-	/**
-	 * Reads the original agent of a task from the OpenCms.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task to read the original agent from.
-	 * @return The owner of a task.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */
-	public CmsUser readOriginalAgent(CmsUser currentUser, CmsProject currentProject, 
-									   CmsTask task) 
-		throws CmsException ;
 							
 	/**
 	 * Reads the group of a resource from the OpenCms.
@@ -1142,178 +1346,11 @@ interface I_CmsResourceBroker {
 	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
 							String username, String oldPassword, String newPassword)
 		throws CmsException;
-	
-	/** 
-	 * Sets the password for a user.
-	 * 
-	 * Only a adminstrator can do this.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param username The name of the user.
-	 * @param newPassword The new password.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 */
-	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
-							String username, String newPassword)
-		throws CmsException;
-	
-	/**
-	 * Gets the MimeTypes. 
-	 * The Mime-Types will be returned.
-	 * 
-	 * <B>Security:</B>
-	 * All users are garnted<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * 
-	 * @return the mime-types.
-	 */
-	public Hashtable readMimeTypes(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException;
-	
-	/**
-	 * Gets the known file extensions (=suffixes) 
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted access<BR/>
-	 * 
-	 * @param currentUser The user who requested this method, not used here
-	 * @param currentProject The current project of the user, not used here
-	 * 
-	 * @return Hashtable with file extensions as Strings
-	 */
-	
-	public Hashtable readFileExtensions(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException;
-	
-	
-	/**
-	 * Writes the file extensions  
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "Administrators" are authorized.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param extensions Holds extensions as keys and resourcetypes (Stings) as values
-	 */
-	
-	public void writeFileExtensions(CmsUser currentUser, CmsProject currentProject,
-									Hashtable extensions)
-		throws CmsException;
-	
-	/**
-	 * adds a file extension to the list of known file extensions 
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param extension a file extension like 'html'
-	 * @param resTypeName name of the resource type associated to the extension
-	 */
-	
-	public void addFileExtension(CmsUser currentUser, CmsProject currentProject,
-								 String extension, String resTypeName)
-		throws CmsException;
-	
-	
-    /**
-	 * Adds a new CmsMountPoint. 
-	 * A new mountpoint for a mysql filesystem is added.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * @param driver The driver for the db-system. 
-	 * @param connect The connectstring to access the db-system.
-	 * @param name A name to describe the mountpoint.
-	 */
-	public void addMountPoint(CmsUser currentUser, CmsProject currentProject, 
-							  String mountpoint, String driver, String connect,
-							  String name)
-		throws CmsException ;
 
-    /**
-	 * Adds a new CmsMountPoint. 
-	 * A new mountpoint for a disc filesystem is added.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * @param mountpath The physical location this mount point directs to. 
-	 * @param name The name of this mountpoint.
-	 * @param user The default user for this mountpoint.
-	 * @param group The default group for this mountpoint.
-	 * @param type The default resourcetype for this mountpoint.
-	 * @param accessFLags The access-flags for this mountpoint.
-	 */
-	public void addMountPoint(CmsUser currentUser, CmsProject currentProject,
-							  String mountpoint, String mountpath, String name, 
-							  String user, String group, String type, int accessFlags)
-		throws CmsException;
-	
-	/**
-	 * Gets a CmsMountPoint. 
-	 * A mountpoint will be returned.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 * 
-	 * @return the mountpoint - or null if it doesen't exists.
-	 */
-	public CmsMountPoint readMountPoint(CmsUser currentUser, 
-										  CmsProject currentProject, 
-										  String mountpoint )
-		throws CmsException;
-	
-    /**
-	 * Deletes a CmsMountPoint. 
-	 * A mountpoint will be deleted.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param mountpoint The mount point in the Cms filesystem.
-	 */
-	public void deleteMountPoint(CmsUser currentUser, CmsProject currentProject, 
-								 String mountpoint )
-		throws CmsException;
-
-	/**
-	 * Gets all CmsMountPoints. 
-	 * All mountpoints will be returned.
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * 
-	 * @return the mountpoints - or null if they doesen't exists.
-	 */
-	public Hashtable getAllMountPoints(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException ;
-
+    
+    
+	//  Methods working with resources
+    
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 
@@ -1335,7 +1372,30 @@ interface I_CmsResourceBroker {
 	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
 							 String filename)
 		throws CmsException;
-
+    
+     /**
+	 * Reads a file from a previous project of the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param projectId The id of the project to read the file from.
+	 * @param filename The name of the file to be read.
+     * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * */
+	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
+							 int projectId, String filename)
+		throws CmsException;
+     
 	 /**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent. <br>
@@ -1361,7 +1421,35 @@ interface I_CmsResourceBroker {
 										 CmsProject currentProject, String filename)
 		 throws CmsException;
 
-							 
+	
+      /**
+	 * Reads a file header a previous project of the Cms.<BR/>
+	 * The reading excludes the filecontent. <br>
+	 * 
+	 * A file header can be read from an offline project or the online project.
+	 *  
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param projectId The id of the project to read the file from.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public CmsResource readFileHeader(CmsUser currentUser, 
+									   CmsProject currentProject,
+                                       int projectId,
+                                       String filename)
+		 throws CmsException;
+     
     /**
      * Copies a resource from the online project to a new, specified project.<br>
      * Copying a resource will copy the file header or folder into the specified 
@@ -2072,6 +2160,27 @@ interface I_CmsResourceBroker {
 											 int resourceType)
 		throws CmsException;
 	
+    
+    
+    /**
+     * Returns the parent resource of a resouce.
+     * 
+     * <B>Security:</B>
+	 * All users are granted.
+     * 
+     * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public CmsResource getParentResource(CmsUser currentUser, CmsProject currentProject,
+                                         String resourcename) 
+        throws CmsException;
+    
+    
 	/**
 	 * Adds a CmsResourceTypes.
 	 * 
@@ -2093,6 +2202,74 @@ interface I_CmsResourceBroker {
 											 String resourceType, int launcherType, 
 											 String launcherClass) 
 		throws CmsException;
+    
+    	
+	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject);
+
+    
+        
+	/**
+	 * Checks, if the user may read this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	public boolean accessRead(CmsUser currentUser, CmsProject currentProject,
+							   CmsResource resource) throws CmsException;
+
+	/**
+	 * Checks, if the user may create this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
+								 CmsResource resource) throws CmsException;
+			
+	/**
+	 * Checks, if the user may write this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
+								CmsResource resource) throws CmsException;
+    	
+	/**
+	 * Checks, if the user may lock this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user may lock this resource, or not.
+	 */
+	public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
+							   CmsResource resource) throws CmsException;
+
+    // Methods working with Tasks
 
 	/**
 	  * Creates a new project for task handling.
@@ -2112,26 +2289,6 @@ interface I_CmsResourceBroker {
 									String roleName, long timeout, 
 									int priority)
 		 throws CmsException;
-	
-	
-	/**
-	 * This method can be called, to determine if the file-system was changed 
-	 * in the past. A module can compare its previosly stored number with this
-	 * returned number. If they differ, a change was made.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * 
-	 * @return the number of file-system-changes.
-	 */
-	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject);
-
-	
-	/////////////////////////////////////////////
-	// task stuff
 	
 	 /**
 	  * Creates a new task.
@@ -2199,62 +2356,7 @@ interface I_CmsResourceBroker {
 	 */
 	public int getTaskType(String taskname)
 		throws CmsException; 
-	 
-	
-	// database import and export stuff
-    
-	/**
-	 * Imports a import-resource (folder or zipfile) to the cms.
-	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
-	 * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
-	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
-	 * @param importPath the name (absolute Path) of folder in which should be imported
-	 * @param cms the cms-object to use for the import.
-	 * 
-	 * @exception Throws CmsException if something goes wrong.
-	 */
-	public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
-		throws CmsException;
-	
-	/**
-	 * Exports cms-resources to zip.
-	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
-	 * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
-	 * @param exportFile the name (absolute Path) of the export resource (zip)
-	 * @param exportPath the name (absolute Path) of folder from which should be exported
-	 * @param cms the cms-object to use for the export.
-	 * 
-	 * @exception Throws CmsException if something goes wrong.
-	 */
-	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms)
-		throws CmsException;
-	
-	/**
-	 * Exports cms-resources to zip.
-	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
-	 * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
-	 * @param exportFile the name (absolute Path) of the export resource (zip)
-	 * @param exportPath the name (absolute Path) of folder from which should be exported
-	 * @param includeSystem, desides if to include the system resources to the export.
-	 * @param cms the cms-object to use for the export.
-	 * 
-	 * @exception Throws CmsException if something goes wrong.
-	 */
-	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms, boolean includeSystem)
-		throws CmsException;
-	
+
 	/**
 	 * Checks, if the user may read this resource.
 	 * 
@@ -2264,8 +2366,8 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	public boolean accessRead(CmsUser currentUser, CmsProject currentProject,
-							   CmsResource resource) throws CmsException;
+	public boolean accessRead(A_CmsUser currentUser, A_CmsProject currentProject,
+							   A_CmsResource resource) throws CmsException;
 
 	/**
 	 * Checks, if the user may create this resource.
@@ -2276,8 +2378,8 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
-								 CmsResource resource) throws CmsException;
+	public boolean accessCreate(A_CmsUser currentUser, A_CmsProject currentProject,
+								 A_CmsResource resource) throws CmsException;
 			
 	/**
 	 * Checks, if the user may write this resource.
@@ -2288,8 +2390,8 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
-								CmsResource resource) throws CmsException;
+	public boolean accessWrite(A_CmsUser currentUser, A_CmsProject currentProject,
+								A_CmsResource resource) throws CmsException;
     	
 	/**
 	 * Checks, if the user may lock this resource.
@@ -2300,9 +2402,9 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @return wether the user may lock this resource, or not.
 	 */
-	public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
-							   CmsResource resource) throws CmsException;
-    
+	public boolean accessLock(A_CmsUser currentUser, A_CmsProject currentProject,
+							   A_CmsResource resource) throws CmsException;
+   
 	 /**
 	  * Set a Parameter for a task.
 	  * 
@@ -2612,4 +2714,102 @@ interface I_CmsResourceBroker {
 	 public void setName(CmsUser currentUser, CmsProject currentProject, 
 						 int taskId, String name)
 		 throws CmsException;
+     
+     	 
+	
+	// Methods working with database import and export
+    
+    /**
+	 * exports database (files, groups, users) into a specified file
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param exportFile the name (absolute Path) for the XML file
+	 * @param exportPath the name (absolute Path) for the folder to export
+	 * @param exportType what to export:
+	 *			C_EXPORTUSERSFILES exports all
+	 *			C_EXPORTONLYUSERS  exports only users and groups
+	 *			C_EXPORTONLYFILES  exports only files
+	 * 
+	 * @exception throws exception
+	 * 
+	 */
+	public void exportDb(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, int exportType)
+		throws Exception;
+	
+	/**
+	 * imports a (files, groups, users) XML file into database
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * @param importFile the name (absolute Path) of the XML import file
+	 * 
+	 * @exception throws Exception
+	 * 
+	 */
+	public void importDb(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath)
+		throws Exception;
+    
+    /**
+	 * Imports a import-resource (folder or zipfile) to the cms.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * @param cms the cms-object to use for the import.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
+		throws CmsException;
+	
+	/**
+	 * Exports cms-resources to zip.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * @param cms the cms-object to use for the export.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms)
+		throws CmsException;
+	
+	/**
+	 * Exports cms-resources to zip.
+	 * 
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 * 
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param exportPath the name (absolute Path) of folder from which should be exported
+	 * @param includeSystem, desides if to include the system resources to the export.
+	 * @param cms the cms-object to use for the export.
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms, boolean includeSystem)
+		throws CmsException;
+    
+    
+
+
 }
