@@ -35,7 +35,7 @@
             <indentin>Indent</indentin>
             <indentout>Unindent</indentout>
             <italic>Italic</italic>
-            <link>Link</link>
+            <linkto>Link</linkto>
             <linklist>External links gallery</linklist>
             <login>Login</login>
             <new>New</new>
@@ -341,7 +341,7 @@
                 <compatiblePlain>compatiblePlain</compatiblePlain>
                 <folder>Folder</folder>
                 <image>Image</image>
-                <link>Link</link>
+                <linkto>Link</linkto>
                 <newspage>News-Article</newspage>
                 <othertype>Other Type</othertype>
                 <page>Page</page>
@@ -487,7 +487,7 @@
             <lastelement>at the last position</lastelement>
             <lastname>Name</lastname>
             <left>Left</left>
-            <link>Link</link>
+            <linkto>Link</linkto>
             <lockedby>Locked by</lockedby>
             <lockuser>Disable User</lockuser>
             <messageaccept>Message when accepted</messageaccept>
@@ -589,7 +589,7 @@
             <histdetailok>Close</histdetailok>
             <imagelist>Imagelist</imagelist>
             <inactive>inactive</inactive>
-            <link>Link</link>
+            <linkto>Link</linkto>
             <linklist>External Links</linklist>
             <loading>Loading...</loading>
             <modulecreatedate>Date created</modulecreatedate>

@@ -74,7 +74,7 @@ return true;
         <td colspan=2 class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="40" method="setValue" action="onfocus='NEU.WEITER.disabled=false;'"/><![CDATA[</td>
     </tr>
     <tr>
-            <td class=formular>]]><LABEL value="input.link" /><![CDATA[:</td>
+            <td class=formular>]]><LABEL value="input.linkto" /><![CDATA[:</td>
             
             <td class=dialogtxt>
                 <input type="text" name="neulink" class="textfeld3" size=31 >   
@@ -149,12 +149,12 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
     </tr>
     <!--<tr>
-            <td class=formular>]]><LABEL value="input.link" /><![CDATA[:</td>
+            <td class=formular>]]><LABEL value="input.linkto" /><![CDATA[:</td>
             <td class=dialogtxt><input name="NEULINK" class="textfeld2" size="40" maxlength="100" value="]]><PROCESS>LINKVALUE</PROCESS><![CDATA["> </td>
             
     </tr>-->
     <tr>
-                <td class=formular>]]><LABEL value="input.link" /><![CDATA[:</td>
+                <td class=formular>]]><LABEL value="input.linkto" /><![CDATA[:</td>
                 
                 <td class=dialogtxt>
                     <input type="text" name="neulink" class="textfeld3" size=31 value="]]><PROCESS>LINKVALUE</PROCESS><![CDATA[" >  
