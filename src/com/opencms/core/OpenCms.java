@@ -20,11 +20,12 @@ import com.opencms.launcher.*;
 * <p>
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.7 $ $Date: 2000/01/13 13:41:03 $  
+* @author Alexander Lucas
+* @version $Revision: 1.8 $ $Date: 2000/01/13 17:39:56 $  
 * 
 */
 
-class OpenCms implements I_CmsConstants 
+class OpenCms implements I_CmsConstants, I_CmsLogChannels 
 {
      /**
       * The session storage for all active users.
@@ -95,5 +96,28 @@ class OpenCms implements I_CmsConstants
         }}
         return file;
     }
-    
+
+     
+    /**
+     * Selects the appropriate launcher for a given file by analyzing the 
+     * file's launcher id and calls the initlaunch() method to initiate the 
+     * generating of the output.
+     * 
+     * @param cms A_CmsObject containing all document and user information
+     * @param file CmsFile object representing the selected file.
+     * @exception CmsException
+     */
+    void showResource(A_CmsObject cms, CmsFile file) throws CmsException { 
+        int launcherId = file.getLauncherType();
+        I_CmsLauncher launcher = m_launcherManager.getLauncher(launcherId);
+        if(launcher == null) {
+            String errorMessage = "Could not launch file " + file.getName() 
+                + ". Launcher for requested launcher ID " + launcherId + " could not be found.";
+            if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_INFO, "[OpenCms] " + errorMessage);
+            }
+            throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+        }
+        launcher.initlaunch(cms, file);
+    }
 }
