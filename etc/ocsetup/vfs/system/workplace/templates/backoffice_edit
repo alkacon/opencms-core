@@ -36,7 +36,38 @@
 <media_content>
 <![CDATA[
 <SCRIPT language="JavaScript">
-	]]><PROCESS>preview</PROCESS><![CDATA[
+    ]]><PROCESS>preview</PROCESS><![CDATA[
+    
+    function setMediaAction(para) {
+        window.top.body.admin_content.Editor.backofficepage.value=window.top.body.admin_head.backofficepage.value;
+        switch(para) {
+        case 1: {
+                document.Editor.media_action.value = "delPicture";
+                document.Editor.submit();
+                break;
+                }
+        case 2: {   
+                document.Editor.media_action.value = "editPicture";
+                document.Editor.submit();
+                break;
+                }
+        case 3: {
+                document.Editor.media_action.value = "prevPicture";
+                document.Editor.submit();
+                break;
+                }
+        case 4: {
+                document.Editor.media_action.value = "addPicture";
+                document.Editor.submit();
+                break;
+                }
+        case 5: {
+                document.Editor.media_action.value = "clear";
+                document.Editor.submit();
+                break;
+                }
+          }
+    }
 </script>
 
 <center>
@@ -55,7 +86,7 @@
         ]]><Label value="media.mediaPosition"/><![CDATA[:
     </td>
     <td>
-    	]]><select name="media_position" width="150" style="width:150px" method="getMediaPosition"/><![CDATA[
+        ]]><select name="media_position" width="150" style="width:150px" method="getMediaPosition"/><![CDATA[
     </td>    
 </tr>
 <tr>
@@ -66,7 +97,7 @@
 </tr>
 <tr>
     <td colspan=5>
-       	&nbsp;
+        &nbsp;
     </td>
 </tr>
 <tr>
@@ -83,8 +114,8 @@
 <table width="100%" cellspacing=5>
     <tr>
         <td>
-       		&nbsp;
-    	</td>
+            &nbsp;
+        </td>
         <td>
             <b>]]><LABEL value="media.mediaName"/><![CDATA[:
         </td>
