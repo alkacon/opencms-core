@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/03/06 18:53:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/03/19 13:51:59 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2004/03/06 18:53:15 $
+ * @version $Revision: 1.10 $ $Date: 2004/03/19 13:51:59 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -312,6 +312,8 @@ public class CmsImportExportManager extends Object {
                 if (handler.matches(manifest)) {
                     return handler;
                 }
+                
+                handler = null;
             }
         } catch (Exception e) {
             throw new CmsException("Error creating instance of import/export handler " + classname, e);
