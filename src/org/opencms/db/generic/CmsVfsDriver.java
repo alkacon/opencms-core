@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/04/01 12:28:47 $
- * Version: $Revision: 1.167 $
+ * Date   : $Date: 2004/04/01 12:50:52 $
+ * Version: $Revision: 1.168 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.167 $ $Date: 2004/04/01 12:28:47 $
+ * @version $Revision: 1.168 $ $Date: 2004/04/01 12:50:52 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1516,12 +1516,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_FILES_WITH_PROPERTY");
-            stmt.setInt(1, projectId);
+            stmt.setString(1, propertyDefinition);
             stmt.setString(2, propertyValue);
-            stmt.setString(3, propertyDefinition);
+            stmt.setInt(3, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
+            stmt.setInt(4, CmsProperty.C_RESOURCE_RECORD_MAPPING);
             res = stmt.executeQuery();
 
-            // store the result into the vector
             while (res.next()) {
                 String result = res.getString(1);
                 names.addElement(result);
@@ -1529,9 +1529,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, "getFilesWithProperty(int, String, String)", CmsException.C_UNKNOWN_EXCEPTION, exc, false);
+            throw m_sqlManager.getCmsException(this, "readResourceNames", CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
-            // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
         }
 
@@ -1631,10 +1630,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_WITH_PROPERTYDEF");
-            stmt.setInt(1, projectId);
-            stmt.setString(2, propertyDefName);
-            stmt.setInt(3, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
-            stmt.setInt(4, CmsProperty.C_RESOURCE_RECORD_MAPPING);
+            stmt.setString(1, propertyDefName);
+            stmt.setInt(2, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
+            stmt.setInt(3, CmsProperty.C_RESOURCE_RECORD_MAPPING);
             res = stmt.executeQuery();
 
             while (res.next()) {
