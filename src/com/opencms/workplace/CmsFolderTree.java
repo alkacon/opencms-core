@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/02 15:28:57 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/03 10:08:49 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -103,7 +103,6 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
       
         // process the selected template
         return startProcessing(cms,xmlTemplateDocument,"",parameters,"template");
-    
     }
     
     /**

@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/02 11:28:25 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/03 10:08:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -105,9 +105,18 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     
     /** The lockedby value column */
     private final static String C_LOCKED_VALUE_USER="COLUMN_LOCK_VALUE_USER";
+
+    /** The name value column */
+    private final static String C_NAME_VALUE_FILE="COLUMN_NAME_VALUE_FILE";
+
+    /** The name value column */
+    private final static String C_NAME_VALUE_FOLDER="COLUMN_NAME_VALUE_FOLDER";
     
     /** The lockedby key */  
     private final static String C_LOCKEDBY = "LOCKEDBY";
+    
+    /** The filefolder key */  
+    private final static String C_NAME_FILEFOLDER="NAME_FILEFOLDER";
     
     /** The style for unchanged files or folders */
     private final static String C_STYLE_UNCHANGED="dateingeaendert";
@@ -231,13 +240,14 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 if (res.isFolder()) {
                     folder=(CmsFolder)res; 
                     // Set output style class according to the project and state of the file.
-                    template.setXmlData(C_CLASS_VALUE,getStyle(cms,folder));        
+                    template.setXmlData(C_CLASS_VALUE,getStyle(cms,folder));   
+                    // set the link
+                    template.setXmlData(C_LINK_VALUE,folder.getAbsolutePath());                      
                     // set the lock icon if nescessary
                     template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,folder,template,lang),this));  
                     // set the folder name
-                    template.setXmlData(C_NAME_VALUE,folder.getName());     
-                    // set the link
-                    template.setXmlData(C_LINK_VALUE,"explorer_files.html?folder="+folder.getAbsolutePath());    
+                    template.setXmlData(C_NAME_VALUE,folder.getName());
+                    template.setXmlData(C_NAME_FILEFOLDER,template.getProcessedXmlDataValue(getName(cms,folder),this));     
                     // set the folder title
                     String title=cms.readMetainformation(folder.getAbsolutePath(),C_METAINFO_TITLE);
                     if (title==null) {
@@ -278,12 +288,15 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     file=(CmsFile)res; 
                     // Set output style class according to the project and state of the file.
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));        
+                    // set the link
+                    template.setXmlData(C_LINK_VALUE,file.getName());  
                     // set the lock icon if nescessary
                     template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),this));                      
                     // set the filename
+                    //template.setXmlData(C_NAME_VALUE,template.getProcessedXmlDataValue("COLUMN_NAME_VALUE_FILE",this));   
                     template.setXmlData(C_NAME_VALUE,file.getName());     
-                    // set the link
-                    template.setXmlData(C_LINK_VALUE,file.getName());    
+                    template.setXmlData(C_NAME_FILEFOLDER,template.getProcessedXmlDataValue(getName(cms,file),this));     
+                   
                     // set the file title
                     String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
                     if (title==null) {
@@ -326,7 +339,6 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
          return output.toString();
      }            
     
-     
      /**
       * Checks which columns in the file list must be displayed.
       * Tests which flags in the user preferences are NOT set and delete those columns in 
@@ -496,7 +508,6 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                                               CmsXmlLanguageFile lang)
          throws CmsException {
          StringBuffer output = new StringBuffer();
-         // still HACK here
          // the file is locked
          if (file.isLocked()) {
            int locked=file.isLockedBy();
@@ -514,6 +525,22 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
          return output.toString();
      }
      
+     /**
+     * Gets the name (including link) for a entry in the file list.
+     * @param cms The CmsObject.
+     * @param file The CmsResource displayed in the the file list.
+     * @return The name used for the actual entry.
+     */
+     private String getName(A_CmsObject cms, CmsResource file) {
+        StringBuffer output = new StringBuffer();  
+        if (file.isFile()) {
+            output.append(C_NAME_VALUE_FILE);    
+        } else {
+            output.append(C_NAME_VALUE_FOLDER);     
+        }
+        return output.toString();
+        
+     }
      
      /**
      * Gets the style for a entry in the file list.
