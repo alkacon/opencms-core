@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/11/05 16:10:28 $
-* Version: $Revision: 1.288 $
+* Date   : $Date: 2001/11/07 09:31:22 $
+* Version: $Revision: 1.289 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.288 $ $Date: 2001/11/05 16:10:28 $
+ * @version $Revision: 1.289 $ $Date: 2001/11/07 09:31:22 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1005,6 +1005,81 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
                     CmsException.C_SHORT_PASSWORD);
         }
 
+    }
+
+     /**
+     * Adds a web user to the Cms. <br>
+     *
+     * A web user has no access to the workplace but is able to access personalized
+     * functions controlled by the OpenCms.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param name The new name for the user.
+     * @param password The new password for the user.
+     * @param group The default groupname for the user.
+     * @param additionalGroup An additional group for the user.
+     * @param description The description for the user.
+     * @param additionalInfos A Hashtable with additional infos for the user. These
+     * Infos may be stored into the Usertables (depending on the implementation).
+     * @param flags The flags for a user (e.g. C_FLAG_ENABLED)
+     *
+     * @return user The added user will be returned.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesfull.
+     */
+    public CmsUser addWebUser(CmsUser currentUser, CmsProject currentProject,
+                             String name, String password,
+                             String group, String additionalGroup,
+                             String description,
+                             Hashtable additionalInfos, int flags)
+        throws CmsException {
+        // no space before or after the name
+        name = name.trim();
+        // check the username
+        validFilename(name);
+         // check the password minimumsize
+        if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
+            CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
+            CmsUser newUser = m_dbAccess.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_WEBUSER);
+            CmsUser user;
+            CmsGroup usergroup;
+            CmsGroup addGroup;
+
+            user=m_dbAccess.readUser(newUser.getName(),C_USER_TYPE_WEBUSER);
+            //check if the user exists
+            if (user != null) {
+                usergroup=readGroup(currentUser,currentProject,group);
+                //check if group exists
+                if (usergroup != null && isWebgroup(usergroup)){
+                    //add this user to the group
+                    m_dbAccess.addUserToGroup(user.getId(),usergroup.getId());
+                    // update the cache
+                    m_usergroupsCache.clear();
+                } else {
+                    throw new CmsException("["+this.getClass().getName()+"]"+group,CmsException.C_NO_GROUP);
+                }
+                // if an additional groupname is given and the group does not belong to
+                // Users, Administrators or Projectmanager add the user to this group
+                if (additionalGroup != null && !"".equals(additionalGroup)){
+                    addGroup = readGroup(currentUser, currentProject, additionalGroup);
+                    if(addGroup != null && isWebgroup(addGroup)){
+                        //add this user to the group
+                        m_dbAccess.addUserToGroup(user.getId(), addGroup.getId());
+                        // update the cache
+                        m_usergroupsCache.clear();
+                    } else {
+                        throw new CmsException("["+this.getClass().getName()+"]"+additionalGroup,CmsException.C_NO_GROUP);
+                    }
+                }
+            } else {
+                throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
+            }
+            return newUser;
+        } else {
+            throw new CmsException("[" + this.getClass().getName() + "] " + name,
+                                 CmsException.C_SHORT_PASSWORD);
+        }
     }
 /**
  * Returns the anonymous user object.<P/>
@@ -6336,11 +6411,10 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
     /**
      * Sets the password for a user.
      *
-     * Only a adminstrator or the curretuser can do this.<P/>
+     * Every user who knows the username and the password can do this.<P/>
      *
      * <B>Security:</B>
-     * Users, which are in the group "administrators" are granted.<BR/>
-     * Current users can change their own password.
+     * Users, who knows the username and the old password are granted.<BR/>
      *
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
@@ -6362,23 +6436,23 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         // read the user
         CmsUser user;
         try {
-            user = readUser(currentUser, currentProject, username, oldPassword);
+            user = m_dbAccess.readUser(username, oldPassword, C_USER_TYPE_SYSTEMUSER);
         } catch(CmsException exc) {
             // this is no system-user - maybe a webuser?
             try{
-                user = readWebUser(currentUser, currentProject, username, oldPassword);
+                user = m_dbAccess.readUser(username, oldPassword, C_USER_TYPE_WEBUSER);
             } catch(CmsException e) {
                 throw exc;
             }
         }
-        if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) &&
-            ( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
+        //if( !anonymousUser(currentUser, currentProject).equals( currentUser )) {
             m_dbAccess.setPassword(username, newPassword);
-        } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
-                CmsException.C_NO_ACCESS);
-        }
+        //} else {
+        //    throw new CmsException("[" + this.getClass().getName() + "] " + username,
+        //        CmsException.C_NO_ACCESS);
+        //}
     }
+
     /**
      * Set priority of a task
      *
@@ -7305,5 +7379,37 @@ protected void validName(String name, boolean blank) throws CmsException {
                               long publishDate, CmsUser currentUser) throws CmsException{
         CmsProject project = m_dbAccess.readProject(projectId);
         m_dbAccess.backupProject(project, versionId, publishDate, currentUser);
+    }
+
+    /**
+     * Checks if this is a valid group for webusers
+     *
+     * @param group The group to be checked
+     * @return boolean If the group does not belong to Users, Administrators or Projectmanagers return true
+     */
+    protected boolean isWebgroup(CmsGroup group){
+        try{
+            int user = m_dbAccess.readGroup(C_GROUP_USERS).getId();
+            int admin = m_dbAccess.readGroup(C_GROUP_ADMIN).getId();
+            int manager = m_dbAccess.readGroup(C_GROUP_PROJECTLEADER).getId();
+            if(group.getId() == user || group.getId() == admin || group.getId() == manager){
+                return false;
+            } else {
+                int parentId = group.getParentId();
+                // check if the group belongs to Users, Administrators or Projectmanager
+                if (parentId != C_UNKNOWN_ID){
+                    if(parentId == user || parentId == admin || parentId == manager){
+                        // the parent
+                        return false;
+                    } else {
+                        // check is the parentgroup is a webgroup
+                        isWebgroup(m_dbAccess.readGroup(parentId));
+                    }
+                }
+            }
+        } catch (Exception e){
+            return false;
+        }
+        return true;
     }
 }
