@@ -175,11 +175,13 @@
                 <adduser> Leider konnte der Benutzer nicht angelegt werden.</adduser>
                 <addgroup>Die Gruppe konnte nicht angelegt werden.</addgroup>
                 <database>Leider konnte die Datenbank nicht exportiert oder importiert werden.</database>
+                <linkcheckerror>Zu der angegebenen URL konnte keine Verbindung aufgebaut werden. Sie haben die Möglichkeit, die Verknüpfung trotzdem speichern oder sie zu korrigieren.</linkcheckerror>
                 <lock>Leider konnte die Datei nicht auf Sie gesperrt werden.</lock>
                 <lockchange>Leider konnte die Dateisperrung nicht übernommen werden.</lockchange>
                 <login>Der Benutzer konnte nicht im System angemeldet werden.</login> 
                 <projectlockchange>Leider konnte das Projekt nicht wieder freigegeben werden.</projectlockchange>
-                <newproject>Leider konnte das Projekt nicht angelegt werden.</newproject>
+                <newlink>Leider konnte die Verknüpfung nicht angelegt werden.</newlink>
+				<newproject>Leider konnte das Projekt nicht angelegt werden.</newproject>
                 <newprop>Die neue Eigenschaft konnte leider nicht angelegt werden.</newprop>
                 <newextension>Die neue Dateiendung konnte leider nicht zugeordnet werden.</newextension>
                 <newtask>Leider konnte die Aufgabe nicht angelegt werden.</newtask>
@@ -243,7 +245,8 @@
                 <titlemissing>Bitte geben Sie einen Titel ein.</titlemissing>
                 <newproject>Die Projektdaten sind ungültig oder falsch eingegeben.</newproject>
                 <newextformat>Ihre Eingabe war im falschen Format.</newextformat>
-                <newprop>siehe Details</newprop>
+                <newlink>Sie haben eventuell keine Berechtigung, einen Link anzulegen oder es existiert bereits eine Datei gleichen Namens.</newlink>
+				<newprop>siehe Details</newprop>
                 <newprop1>Eigenschaft</newprop1>
                 <newprop2>von</newprop2>
                 <newprop3>konnte nicht angelegt werden.</newprop3>
@@ -295,7 +298,8 @@
                 <login>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</login>
                 <picnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Bildergalerien an.</picnogallery>
                 <projectlockchange>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</projectlockchange>
-                <newproject>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</newproject>
+                <newlink>Bitte überprüfen Sie Ihre Eingaben oder wenden Sie sich an den Systemadministrator.</newlink>
+				<newproject>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</newproject>
                 <newprop>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</newprop>
                 <newextformat>Geben Sie immer nur eine Endung auf einmal ein. Sternchen oder Punkt brauchen nicht eingegeben zu werden.</newextformat>
                 <newextension>Kontaktieren Sie Ihren Systemadministrator.</newextension>
@@ -340,7 +344,8 @@
                 <lockchange>Datei Sperrung übernehmen</lockchange>
                 <login>Anmeldungsfehler</login>
                 <projectlockchange>Dateisperrungen für Projekt aufheben</projectlockchange>
-                <newproject>Neues Projekt</newproject>
+                <newlink>Neue Verknüpfung anlegen</newlink>
+				<newproject>Neues Projekt</newproject>
                 <newprop>Neue Eigenschaft für Dateityp</newprop>
                 <newextension>Neue Dateiendung zuordnen</newextension>
                 <newtask>Neue Aufgabe</newtask>
@@ -387,13 +392,16 @@
             <downloadgallery>Downloadgalerien<![CDATA[<br>]]>verwalten</downloadgallery>
             <export>Export</export>
             <exportmoduledata>Export Moduldaten</exportmoduledata>
-            <groups>Gruppe</groups>
+            <extlinkgallery>Externe Links<![CDATA[<br>]]>verwalten</extlinkgallery>
+			<groups>Gruppe</groups>
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>
-            <logfileviewer>Logfileviewer</logfileviewer>
+            <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
+			<logfileviewer>Logfileviewer</logfileviewer>
             <module>Modul- verwaltung</module>
             <mountpoint>Mountpoint- </mountpoint>
-            <newgallery>Neue Galerie</newgallery>
+            <newlink>Neue externe Verknüpfung</newlink>
+			<newgallery>Neue Galerie</newgallery>
             <newproject>Neues Projekt</newproject>
             <picgallery>Bildergalerien<![CDATA[<br>]]>verwalten</picgallery>
             <processmanagement>Vorgangs- verwaltung</processmanagement>

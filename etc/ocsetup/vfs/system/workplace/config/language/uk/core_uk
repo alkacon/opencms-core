@@ -177,14 +177,16 @@
                 <adduser> Sorry, the user could not be created.</adduser>
                 <addgroup>Sorry, the group could not be created..</addgroup>
                 <database>Sorry, the database could not be imported / exported.</database>
-                <lock>Sorry, the file could not be locked.</lock>
+                <linkcheckerror>The url could not be connected. You can store the link now or you can change it.</linkcheckerror>
+				<lock>Sorry, the file could not be locked.</lock>
                 <lockchange>Sorry, the file lock could not be stolen.</lockchange>
                 <login>Sorry, the user could not log in to the system.</login>
                 <projectlockchange>Sorry, the project could not be unlocked.</projectlockchange>
                 <newproject>Sorry, the new project could not be created.</newproject>
                 <newprop>Sorry, the new propertydefinition could not be created.</newprop>
                 <newextension>Sorry, the new file extension could not be assigned.</newextension>
-                <newtask>Sorry, the new task could not be created.</newtask>
+                <newlink>Sorry, the link could not be created.</newlink>
+				<newtask>Sorry, the new task could not be created.</newtask>
                 <picbrowser>Sorry, you can't use the picture browser yet.</picbrowser>
                 <picgallery>You don't have permission to create a new gallery in this project.</picgallery>
                 <propinuse>Some file uses this property.<![CDATA[<br>]]>You cannot delete it.</propinuse>
@@ -246,7 +248,8 @@
                 <titlemissing>The field Title must be filled out.</titlemissing>
                 <newproject>The entered project data is invalid.</newproject>
                 <newextformat>Your input was in the wrong format.</newextformat>
-                <newprop>see details</newprop>
+                <newlink>Maybe you don't have the needed permissions or this link already exist.</newlink>
+				<newprop>see details</newprop>
                 <newprop1>Property</newprop1>
                 <newprop2>of</newprop2>
                 <newprop3>could not be established.</newprop3>
@@ -300,7 +303,8 @@
                 <newprop>Please try again later, or contact your system administrator.</newprop>
                 <newextformat>Please enter only one file extension at a time. You need not enter the star and the dot.</newextformat>
                 <newextension>Please contact your system administrator.</newextension>              
-                <newtask>Please check the entered data or contact your system administrator.</newtask>
+                <newlink>Please check the entered data or contact your system administrator.</newlink>
+				<newtask>Please check the entered data or contact your system administrator.</newtask>
                 <none></none>
                 <picbrowser>Create the folder for the picture galleries or contact your system administrator.</picbrowser>
                 <picgallery>Creating a picture gallery</picgallery>
@@ -344,7 +348,8 @@
                 <projectlockchange>Release lock for project</projectlockchange>
                 <newprop>New property for resource type</newprop>
                 <newextension>Associate new file extension</newextension>
-                <newproject>New Project</newproject>
+                <newlink>New Link</newlink>
+				<newproject>New Project</newproject>
                 <newtask>New Task</newtask>
                 <picbrowser>Picture Browser</picbrowser>
                 <picgallery>Creating new Picture Gallery</picgallery>
@@ -389,14 +394,17 @@
             <downloadgallery>Download galleries<![CDATA[<br>]]>management</downloadgallery>
             <export>Export</export>
             <exportmoduledata>Export Moduldata</exportmoduledata>
-            <groups>Edit Groups</groups> 
+            <extlinkgallery>External links<![CDATA[<br>]]>management</extlinkgallery>
+			<groups>Edit Groups</groups> 
             <imagelist>image list</imagelist>
             <import>Import</import>
-            <logfileviewer>Logfileviewer</logfileviewer>
+            <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
+			<logfileviewer>Logfileviewer</logfileviewer>
             <module>Module- management</module>
             <mountpoint>Mountpoints</mountpoint> 
             <newgallery>new gallery</newgallery>
-            <newproject>New Project</newproject>
+            <newlink>New external link</newlink>
+			<newproject>New Project</newproject>
             <picgallery>Picture galleries<![CDATA[<br>]]>management</picgallery>
             <processmanagement>Scheduler</processmanagement>
             <project>Project- management</project>
