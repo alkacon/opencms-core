@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
- * Date   : $Date: 2000/03/16 10:02:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/03/20 13:21:33 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/03/16 10:02:32 $
+ * @version $Revision: 1.9 $ $Date: 2000/03/20 13:21:33 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -110,7 +110,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
 		}
 		
 		// is the listbox chosen?
-		if((parameters.get("filter") != null) && (parameters.get("filter") != "-")) {
+		if((parameters.get("filter") != null) && ( !(parameters.get("filter").equals("-"))) ) {
 			session.putValue(C_SESSION_TASK_FILTER, parameters.get("filter"));
 		}
 		

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/03/17 13:29:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/03/20 13:21:33 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/03/17 13:29:01 $
+ * @version $Revision: 1.7 $ $Date: 2000/03/20 13:21:33 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -576,7 +576,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
        taskSettings.put(C_TASK_MESSAGES,new Integer(taskMessages));
              
         String filter=(String)parameters.get("filter");
-        if (filter != null) {  
+        if ((filter != null) && (!filter.equals("-"))) {  
           
             taskSettings.put(C_TASK_FILTER,parameters.get("filter")); 
      
