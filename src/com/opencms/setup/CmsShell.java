@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/01/13 16:11:48 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/21 15:18:55 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -553,6 +553,29 @@ public class CmsShell implements I_CmsConstants {
 							  String connect, String name) {
 		try {
 			m_cms.addMountPoint( mountpoint, driver, connect, name );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+    /**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a disc filesystem is added.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param mountpath The physical location this mount point directs to. 
+	 * @param name The name of this mountpoint.
+	 * @param user The default user for this mountpoint.
+	 * @param group The default group for this mountpoint.
+	 * @param type The default resourcetype for this mountpoint.
+	 * @param accessFLags The access-flags for this mountpoint.
+	 */
+	public void addMountPoint(String mountpoint, String mountpath, 
+							  String name, String user, String group,
+							  String type, String accessFlags) {
+		try {
+			m_cms.addMountPoint( mountpoint, mountpath, name, user, group, type, 
+								 Integer.parseInt(accessFlags) );
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}		

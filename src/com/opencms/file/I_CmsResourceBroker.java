@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2000/01/14 12:52:41 $
+ * @version $Revision: 1.23 $ $Date: 2000/01/21 15:18:55 $
  */
 interface I_CmsResourceBroker {
 
@@ -740,6 +740,28 @@ interface I_CmsResourceBroker {
 							  String name)
 		throws CmsException ;
 
+    /**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a disc filesystem is added.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param mountpath The physical location this mount point directs to. 
+	 * @param name The name of this mountpoint.
+	 * @param user The default user for this mountpoint.
+	 * @param group The default group for this mountpoint.
+	 * @param type The default resourcetype for this mountpoint.
+	 * @param accessFLags The access-flags for this mountpoint.
+	 */
+	public void addMountPoint(A_CmsUser currentUser, A_CmsProject currentProject,
+							  String mountpoint, String mountpath, String name, 
+							  String user, String group, String type, int accessFlags)
+		throws CmsException;
+	
 	/**
 	 * Gets a CmsMountPoint. 
 	 * A mountpoint will be returned.

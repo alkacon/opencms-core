@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/13 12:13:39 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/21 15:18:55 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -89,14 +89,14 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 		}
 	}
 	
-	
 	/**
 	 * Returns the current folder object.
 	 * 
 	 * @return the current folder object.
 	 */
-	public CmsFolder currentFolder() {
-		return(null); // TODO: implement this!
+	public CmsFolder currentFolder() 
+		throws CmsException	{
+		return( m_rb.readFolder(currentUser(), currentProject(), getUri(), "") );
 	}
 
 	/**
@@ -205,18 +205,5 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 */
 	public I_CmsResponse getResponse() {
 		return( m_resp );
-	}
-
-	/**
-	 * Translates the url-path to the cms-path.
-	 * 
-	 * @param path The url-path.
-	 * 
-	 * @return the cms-path.
-	 */
-	private String translatePath(String path) {
-		// TODO: find a mechanism to translate the path nicely.
-		// TODO: in this moment there is NO translation!
-		return( path );
 	}
 }

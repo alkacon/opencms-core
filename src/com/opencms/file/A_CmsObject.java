@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2000/01/14 10:59:14 $ 
+ * @version $Revision: 1.28 $ $Date: 2000/01/21 15:18:55 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1039,6 +1039,23 @@ public abstract class A_CmsObject {
 									   String connect, String name)
 		throws CmsException;
 
+    /**
+	 * Adds a new CmsMountPoint. 
+	 * A new mountpoint for a disc filesystem is added.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 * @param mountpath The physical location this mount point directs to. 
+	 * @param name The name of this mountpoint.
+	 * @param user The default user for this mountpoint.
+	 * @param group The default group for this mountpoint.
+	 * @param type The default resourcetype for this mountpoint.
+	 * @param accessFLags The access-flags for this mountpoint.
+	 */
+	abstract public void addMountPoint(String mountpoint, String mountpath, 
+									   String name, String user, String group,
+									   String type, int accessFlags)
+		throws CmsException;
+	
     /**
 	 * Gets a CmsMountPoint. 
 	 * A mountpoint will be returned.
