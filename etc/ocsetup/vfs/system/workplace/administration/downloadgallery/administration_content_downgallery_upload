@@ -38,12 +38,13 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 		<td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id=DATEINAME name=DATEINAME onfocus="UPLOAD.WEITER.disabled=false"></td>
 	</tr>
 	<tr>
-		<td colspan=2 class=leerzeile>&nbsp;</td>
+		<td class=formular colspan=2><input type=checkbox name="unzip" name="unzip">&nbsp;]]><LABEL value="button.unzip" /><![CDATA[</td>
 	<tr>
 		<td colspan=2 class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
 				<INPUT type="hidden" name="STEP" id="STEP" value="1">
+				<INPUT type="hidden" name="NOFOLDER" id="NOFOLDER" value="NOFOLDER">
 				<td class=formular align=right width=60%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='administration_content_downgallery_upload.html';"></td>
 				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="submit" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER></td>
 				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl;"></td>

@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/02/07 14:30:07 $
+* Date   : $Date: 2001/03/13 16:37:34 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.14 $ $Date: 2001/02/07 14:30:07 $
+ * @version $Revision: 1.15 $ $Date: 2001/03/13 16:37:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -65,6 +65,8 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
+
+         String unzip = (String) parameters.get("unzip");
 
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
@@ -195,6 +197,34 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
                                 xmlTemplateDocument.setData("details", filename);
                             }
                             else {
+                                if(unzip != null) {
+                                    // try to unzip the file here ...
+                                    CmsImportFolder zip = new CmsImportFolder(
+                                        filecontent, foldername, cms, true);
+                                    if( zip.isValidZipFile() ) {
+
+                                    // remove the values form the session
+                                    session.removeValue(C_PARA_FILE);
+                                    session.removeValue(C_PARA_FILECONTENT);
+                                    session.removeValue(C_PARA_NEWTYPE);
+                                    session.removeValue("unzip");
+                                    // return to the filelist
+                                    try {
+                                        if((lasturl != null) && (lasturl != "")) {
+                                            cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                                        }
+                                        else {
+                                            cms.getRequestContext().getResponse().sendCmsRedirect(
+                                                getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+                                        }
+                                    } catch(Exception ex) {
+                                        throw new CmsException(
+                                            "Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
+                                            + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                    }
+                                    return null;
+                                    }
+                                } // else, zip was not valid, so continue ...
                                 xmlTemplateDocument.setData("MIME", filename);
                                 xmlTemplateDocument.setData("SIZE", "Not yet available");
                                 xmlTemplateDocument.setData("FILESIZE",

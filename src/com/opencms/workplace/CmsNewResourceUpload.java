@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2001/02/05 15:51:41 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/03/13 16:37:44 $
+* Version: $Revision: 1.27 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2001/02/05 15:51:41 $
+ * @version $Revision: 1.27 $ $Date: 2001/03/13 16:37:44 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -86,6 +86,10 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 
         // get the parameters from the request and session
         String step = (String)parameters.get("STEP");
+
+        String unzip = (String) parameters.get("unzip");
+        String nofolder = (String) parameters.get("NOFOLDER");
+
         String currentFolder = (String)parameters.get(C_PARA_FILELIST);
         if(currentFolder != null) {
             session.putValue(C_PARA_FILELIST, currentFolder);
@@ -144,6 +148,35 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                         xmlTemplateDocument.setData("details", filename);
                     }
                     else {
+                        if(unzip != null) {
+                            // try to unzip the file here ...
+                            boolean noSubFolder = (nofolder != null ? true : false);
+                            CmsImportFolder zip = new CmsImportFolder(
+                                filecontent, currentFolder, cms, noSubFolder);
+                            if( zip.isValidZipFile() ) {
+
+                                // remove the values form the session
+                                session.removeValue(C_PARA_FILE);
+                                session.removeValue(C_PARA_FILECONTENT);
+                                session.removeValue(C_PARA_NEWTYPE);
+                                // return to the filelist
+                                try {
+                                    //cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                                    if((lastUrl != null) && (lastUrl != "")) {
+                                        cms.getRequestContext().getResponse().sendRedirect(lastUrl);
+                                    }
+                                    else {
+                                        cms.getRequestContext().getResponse().sendCmsRedirect(
+                                            getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+                                    }
+                                } catch(Exception ex) {
+                                    throw new CmsException(
+                                        "Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
+                                        + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                }
+                                return null;
+                            }
+                        } // else, zip was not valid, so continue ...
                         template = "step1";
                     }
                 }
@@ -165,6 +198,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 
                         // create the new file.
                         // todo: error handling if file already exits
+
                         try{
                             cms.createFile(currentFolder, filename, filecontent, type.getResourceName());
                             cms.lockResource(currentFolder+filename);
@@ -175,6 +209,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                             session.removeValue(C_PARA_NEWTYPE);
                             xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
                             return startProcessing(cms, xmlTemplateDocument, "", parameters, "error2");
+
                         }
                         // remove the values form the session
                         session.removeValue(C_PARA_FILE);

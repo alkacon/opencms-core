@@ -36,7 +36,7 @@ top.help_url='FunkButtonNeu/index.html';
 		<td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id=DATEINAME name=DATEINAME onfocus="UPLOAD.WEITER.disabled=false"></td>
 	</tr>
 	<tr>
-		<td colspan=2 class=leerzeile>&nbsp;</td>
+		<td class=formular colspan=2><input type=checkbox name="unzip" name="unzip">&nbsp;]]><LABEL value="button.unzip" /><![CDATA[</td>
 	<tr>
 		<td colspan=2 class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
