@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2004/02/27 14:26:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/04/30 10:01:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,19 +32,16 @@
 package org.opencms.file;
 
 import org.opencms.loader.CmsPointerLoader;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * Implementation of a resource type for external links
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
@@ -82,50 +79,12 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
      * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
      */
     public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
-        HashMap targetProperties = null;
-        Vector linkPropertyDefs = null;
 
-        // create the new link
+        // create the new pointer
         CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
         contents = null;
-
-        // lock the new file
-        cms.lockResource(resourcename);
-
-        if (parameter != null) {
-            targetProperties = (HashMap)parameter;
-
-            // read all existing properties defined for links
-            Vector propertyDefs = cms.readAllPropertydefinitions(getResourceTypeName());
-            Enumeration allPropertyDefs = propertyDefs.elements();
-            linkPropertyDefs = new Vector(propertyDefs.size());
-
-            while (allPropertyDefs.hasMoreElements()) {
-                CmsPropertydefinition currentPropertyDefinition = (CmsPropertydefinition)allPropertyDefs.nextElement();
-                linkPropertyDefs.add(currentPropertyDefinition.getName());
-            }
-
-            // copy all properties of the target to the link
-            Iterator i = targetProperties.keySet().iterator();
-            while (i.hasNext()) {
-                String currentProperty = (String)i.next();
-
-                if (!linkPropertyDefs.contains(currentProperty)) {
-                    // add the property definition if the property is not yet defined for links
-                    if (DEBUG > 0) {
-                        System.out.println("adding property definition " + currentProperty + " for resource type " + getResourceTypeName());
-                    }
-                    cms.createPropertydefinition(currentProperty, getResourceType());
-                }
-
-                // write the target property on the link
-                if (DEBUG > 0) {
-                    System.out.println("writing property " + currentProperty + " with value " + (String)targetProperties.get(currentProperty));
-                }
-                cms.writeProperty(resourcename, currentProperty, (String)targetProperties.get(currentProperty));
-            }
-        }
-
+        // TODO: Move locking of resource to CmsObject or CmsDriverManager
+        cms.doLockResource(cms.readAbsolutePath(res), CmsLock.C_MODE_COMMON);
         return res;
     }    
 }
