@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
- * Date   : $Date: 2000/05/29 11:24:25 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/05/29 16:36:25 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,39 +54,82 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/05/29 11:24:25 $
+ * @version $Revision: 1.15 $ $Date: 2000/05/29 16:36:25 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants { 	
         
     /**
  	 * Unitary method to start generating the output.
- 	 * Every launcher has to implement this method.
- 	 * In it possibly the selected file will be analyzed, and the
- 	 * Canonical Root will be called with the appropriate 
- 	 * template class, template file and parameters. At least the 
- 	 * canonical root's output must be written to the HttpServletResponse.
+	 * Every launcher has to implement this method.
+	 * In it possibly the selected file will be analyzed, and the
+	 * Canonical Root will be called with the appropriate 
+	 * template class, template file and parameters. At least the 
+	 * canonical root's output must be written to the HttpServletResponse.
  	 * 
 	 * @param cms A_CmsObject Object for accessing system resources
 	 * @param file CmsFile Object with the selected resource to be shown
-	 * @param startTemplateClass Name of the template class to start with.
+     * @param startTemplateClass Name of the template class to start with.
 	 * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
 	 */	
-	protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
-  
-         
+    protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) 
+		throws CmsException {
+   
         // get the CmsRequest 
         I_CmsRequest req = cms.getRequestContext().getRequest();
         byte[] result = null;
         
-        CmsXmlControlFile doc = null;
+        result = generateOutput(cms, file, startTemplateClass, req);
+           
+        if(result != null) {
+            writeBytesToResponse(cms, result);
+        }
+       
+    }
+
+    /**
+     * Internal utility method for checking and loading a given template file.
+     * @param cms A_CmsObject for accessing system resources.
+     * @param templateName Name of the requestet template file.
+     * @param doc CmsXmlControlFile object containig the parsed body file.
+     * @return CmsFile object of the requested template file.
+     * @exception CmsException
+     */
+    private CmsFile loadMasterTemplateFile(A_CmsObject cms, String templateName, com.opencms.template.CmsXmlControlFile doc) 
+        throws CmsException {
+        	
+        CmsFile masterTemplate = null;
+        try {
+            masterTemplate = cms.readFile(templateName);
+        } catch(Exception e) {
+            handleException(cms, e, "Cannot load master template " + templateName + ". ");
+            doc.removeFromFileCache();
+        }
+        return masterTemplate;
+    }
+    
+	/**
+ 	 * Starts generating the output.
+ 	 * Calls the canonical root with the appropriate template class.
+ 	 * 
+	 * @param cms A_CmsObject Object for accessing system resources
+	 * @param file CmsFile Object with the selected resource to be shown
+     * @param startTemplateClass Name of the template class to start with.
+     * @exception CmsException
+	 */	
+	protected byte[] generateOutput(A_CmsObject cms, CmsFile file, String startTemplateClass, I_CmsRequest req)
+			throws CmsException {
+		
+		byte[] output = null;
+		
+		CmsXmlControlFile doc = null;
         try {
             //doc.init(cms, file);
             doc = new CmsXmlControlFile(cms, file);
         } catch(Exception e) {
             // there was an error while parsing the document
             handleException(cms, e, "There was an error while parsing XML file " + file.getAbsolutePath());
-            return;
+            return "".getBytes();
         }
         
         String templateClass = doc.getTemplateClass();
@@ -176,7 +219,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
             }
         }
        try {
-            result = callCanonicalRoot(cms, (I_CmsTemplate)tmpl, masterTemplate, newParameters);
+            output = callCanonicalRoot(cms, (I_CmsTemplate)tmpl, masterTemplate, newParameters);
         } catch (CmsException e) {
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] There were exceptions while generating output for " + file.getAbsolutePath());
@@ -185,34 +228,10 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
             doc.removeFromFileCache();
             throw e;
         }
-           
-        if(result != null) {
-            writeBytesToResponse(cms, result);
-        }
-       
-    }
-
-    /**
-     * Internal utility method for checking and loading a given template file.
-     * @param cms A_CmsObject for accessing system resources.
-     * @param templateName Name of the requestet template file.
-     * @param doc CmsXmlControlFile object containig the parsed body file.
-     * @return CmsFile object of the requested template file.
-     * @exception CmsException
-     */
-    private CmsFile loadMasterTemplateFile(A_CmsObject cms, String templateName, com.opencms.template.CmsXmlControlFile doc) 
-        throws CmsException {
-        	
-        CmsFile masterTemplate = null;
-        try {
-            masterTemplate = cms.readFile(templateName);
-        } catch(Exception e) {
-            handleException(cms, e, "Cannot load master template " + templateName + ". ");
-            doc.removeFromFileCache();
-        }
-        return masterTemplate;
-    }
-                    
+	   
+	   return output;
+	}
+	
     /**
      * Gets the ID that indicates the type of the launcher.
      * @return launcher ID
