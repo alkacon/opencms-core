@@ -115,6 +115,8 @@ function buttonAction(para) {
 		// preview selected	
 		saveContent();		
 		_form.action.value = "<%= wp.EDITOR_PREVIEW %>";
+		openWindow = window.open("about:blank", "PREVIEW", "width=950,height=700,left=10,top=10,resizable=yes,scrollbars=yes,location=yes,menubar=yes,toolbar=yes,dependent=yes");
+		focusCount = 1;
 		_form.target = "PREVIEW";
 		_form.submit();
 		break;
