@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/01/23 10:46:16 $
- * Version: $Revision: 1.435 $
+ * Date   : $Date: 2003/01/24 20:36:09 $
+ * Version: $Revision: 1.436 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,8 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+* Fixed an issue with JSP error pages not working in Tomcat 4.1,
+  see comment for the setting "flex.jsp.errorpagecommit" in opencms.properties
 * Fixed issues #43, 44 and 45 from Bugzilla
 * CmsMethodElement could produce NullPointerExceptions in rare circumstances
 * Fixed issue with text editor not displaying save/exit buttons in IE if ActiveX is not installed

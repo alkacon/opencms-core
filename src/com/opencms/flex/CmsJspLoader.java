@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/12/16 13:21:01 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/01/24 20:36:09 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -92,6 +92,10 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
     
     /** Export URL for JSP pages */
     private static String m_jspExportUrl;
+    
+    /** Flag to indicate if error pages are mared a "commited" */
+    // TODO: This is a hack, investigate this issue with different runtime environments
+    private static boolean m_errorPagesAreNotCommited = false; // should work for Tomcat 4.1
 
     /** Special JSP directive tag start (<code>&lt;%@</code>)*/
     public static final String C_DIRECTIVE_START = "<%@";
@@ -123,6 +127,9 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
     
     /** Name of export URL runtime property */
     public static final String C_LOADER_JSPEXPORTURL = "flex.jsp.exporturl";
+    
+    /** Name of "error pages are commited or not" runtime property*/ 
+    public static final String C_LOADER_ERRORPAGECOMMIT = "flex.jsp.errorpagecommit";
     
     /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
     private static final int DEBUG = 0;
@@ -464,6 +471,9 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "JSP repository (web application path): " + m_jspWebAppRepository);              
             A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "JSP export URL: " + m_jspExportUrl);
         }
+        // Get the "error pages are commited or not" flag from the runtime properties
+        Boolean errorPagesAreNotCommited = (Boolean)openCms.getRuntimeProperty(C_LOADER_ERRORPAGECOMMIT);
+        if (errorPagesAreNotCommited != null) m_errorPagesAreNotCommited = errorPagesAreNotCommited.booleanValue();
     }
     
     /**
@@ -558,7 +568,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             }            
             if (! streaming && ! w_res.isSuspended()) {
                 try {      
-                    if (! res.isCommitted()) {
+                    if (! res.isCommitted() || m_errorPagesAreNotCommited) {
                         // If a JSP errorpage was triggered the response will be already committed here
                         byte[] result = w_res.getWriterBytes();
                         
@@ -584,6 +594,8 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                         CmsFlexResponse.processHeaders(w_res.getHeaders(), res);                        
                         res.getOutputStream().write(result);
                         res.getOutputStream().flush();
+                    } else if (DEBUG > 1) {
+                        System.err.println("JspLoader.load() resource is already commited!");
                     }
                 } catch (IllegalStateException e) {
                     // Uncritical, might happen if JSP error page was used
@@ -948,7 +960,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
 	        // Check if this Exception has already been marked
 	        String msg = e.getMessage();
 	        if (DEBUG > 1) System.err.println("JspLauncher: Caught ServletException " + e );
-	        if (msg.startsWith(C_LOADER_EXCEPTION_PREFIX)) throw e;
+	        if ((msg != null) && msg.startsWith(C_LOADER_EXCEPTION_PREFIX)) throw e;
 	        // Not marked, imprint current JSP file and stack trace
 	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + file.getAbsolutePath() + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);           
 	    } catch (Exception e) {
