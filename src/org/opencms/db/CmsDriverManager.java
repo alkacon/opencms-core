@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/12/12 10:26:20 $
- * Version: $Revision: 1.299 $
+ * Date   : $Date: 2004/01/06 14:42:34 $
+ * Version: $Revision: 1.300 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.299 $ $Date: 2003/12/12 10:26:20 $
+ * @version $Revision: 1.300 $ $Date: 2004/01/06 14:42:34 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -821,6 +821,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         try {
             // check if the user has write access to the resource
+            m_permissionCache.clear();
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
         } catch (CmsSecurityException e) {
             // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
@@ -838,6 +839,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_lockDispatcher.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId());
 
         clearResourceCache();
+        m_permissionCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
@@ -4807,6 +4809,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // update the resource cache
         clearResourceCache();
+        
+        // cw/060104 we must also clear the permission cache
+        m_permissionCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
@@ -7693,6 +7698,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_lockDispatcher.removeResourcesInProject(projectId);
             clearResourceCache();
             m_projectCache.clear();
+            // cw/060104 we must also clear the permission cache
+            m_permissionCache.clear();
         } else if (!isAdmin(context) && !isManagerOfProject(context)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] unlockProject() " + projectId, CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         } else {
@@ -7711,6 +7718,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
         clearResourceCache();
+        // cw/060104 we must also clear the permission cache
+        m_permissionCache.clear();
 
         CmsResource resource = readFileHeader(context, resourcename);
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
