@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/05/17 10:54:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/01 15:25:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,12 +45,13 @@ import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.CmsXmlValidationErrorHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,9 +70,14 @@ import org.dom4j.DocumentType;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
-import org.dom4j.io.SAXValidator;
 import org.dom4j.io.XMLWriter;
+import org.dom4j.util.XMLErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Implementation of a page object used to access and manage xml data.<p>
@@ -85,7 +91,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsXmlPage {
     
@@ -239,7 +245,7 @@ public class CmsXmlPage {
                 // this usually only triggered by a save operation                
                 try {
                     String contentStr = new String(content, encoding);
-                    newPage = read(contentStr, encoding);
+                    newPage = read(contentStr, encoding); 
                 } catch (UnsupportedEncodingException e) {
                     throw new CmsXmlException("Invalid encoding selected for xmlPage: " + encoding, e);
                 }                
@@ -265,11 +271,9 @@ public class CmsXmlPage {
      */
     public static CmsXmlPage read(String xmlData, String encoding) throws CmsXmlException {        
         try {
-            SAXReader reader = new SAXReader();
-            reader.setEntityResolver(CmsXmlEntityResolver.getResolver());
-            Document document = reader.read(new StringReader(xmlData));
-            return new CmsXmlPage(document, encoding);
-        } catch (DocumentException e) {
+            byte[] xmlBytes = xmlData.getBytes(encoding);
+            return read(xmlBytes, encoding);
+        } catch (UnsupportedEncodingException e) {
             throw new CmsXmlException("Reading xml page from a String failed: " + e.getMessage(), e);
         }
     }
@@ -286,6 +290,7 @@ public class CmsXmlPage {
         try {
             SAXReader reader = new SAXReader();
             reader.setEntityResolver(CmsXmlEntityResolver.getResolver());
+            reader.setMergeAdjacentText(true);
             Document document = reader.read(new ByteArrayInputStream(xmlData));
             return new CmsXmlPage(document, encoding);
         } catch (DocumentException e) {
@@ -653,7 +658,7 @@ public class CmsXmlPage {
         }
         // write the modifed xml back to the xmlpage 
         return write();
-    }       
+    }    
     
     /**
      * Validates the xml structure of the page with the xmlpage dtd.<p>
@@ -665,22 +670,90 @@ public class CmsXmlPage {
      */
     public void validateXmlStructure() throws CmsXmlException  {
 
-        // create a new validator and validate the xml structure
-        SAXValidator validator = new SAXValidator();
+        XMLReader reader;
         try {
-            // set the OpenCms xml validation error handler 
-            validator.setErrorHandler(new CmsXmlValidationErrorHandler());
-            // set the xmlpage entitiy resolver for the validation XML reader
-            validator.getXMLReader().setEntityResolver(CmsXmlEntityResolver.getResolver());
-            // validate the document
-            validator.validate(m_document);                        
+            reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
         } catch (SAXException e) {
-            // there was an validation error, so throw an exception
-            throw new CmsXmlException("XML validation error " + e.getMessage());
-        } finally {
-           // clean up some memory
-           validator = null;
-        }           
+            // xerces parser not available - no schema validation possible
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Could not initialize Xerces SAX reader for validation", e);
+            }
+            // no validation of the content is possible
+            return;
+        }
+        // turn on validation
+        try {
+            reader.setFeature("http://xml.org/sax/features/validation", true);
+            // turn on schema validation
+            reader.setFeature("http://apache.org/xml/features/validation/schema", true);
+            // configure namespace support
+            reader.setFeature("http://xml.org/sax/features/namespaces", true);
+            reader.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
+        } catch (SAXNotRecognizedException e) {
+            // should not happen as Xerces 2 support this feature
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Required SAX reader feature not recognized", e);
+            }
+            // no validation of the content is possible
+            return;
+        } catch (SAXNotSupportedException e) {
+            // should not happen as Xerces 2 support this feature
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Required SAX reader feature not supported", e);
+            }
+            // no validation of the content is possible
+            return;
+        }
+
+        // set the resolver for the "opencms://" URIs
+        reader.setEntityResolver(CmsXmlEntityResolver.getResolver());
+
+        // add an error handler which turns any errors into XML
+        XMLErrorHandler errorHandler = new XMLErrorHandler();
+        reader.setErrorHandler(errorHandler);
+
+        String content = null;
+        try {
+            // generate a new byte array from the content and parse this
+            byte[] contentBytes = ((ByteArrayOutputStream)write(new ByteArrayOutputStream(512), getEncoding())).toByteArray();
+            content = new String(contentBytes, getEncoding());
+            reader.parse(new InputSource(new ByteArrayInputStream(contentBytes)));
+        } catch (IOException e) {
+            // should not happen since we read form a byte array
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Could not read XML from byte array", e);
+            }
+            return;
+        } catch (SAXException e) {
+            // should not happen since all errors are handled in the XML error handler
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Unexpected SAX exception while parsing content", e);
+            }
+            return;
+        }
+
+        if (errorHandler.getErrors().elements().size() > 0) {                        
+            // there was at last one validation error, so throw an exception
+            StringWriter out = new StringWriter(256);
+            OutputFormat format = OutputFormat.createPrettyPrint();            
+            XMLWriter writer = new XMLWriter(out, format);   
+            try {
+                writer.write(errorHandler.getErrors());
+                writer.close();
+            } catch (IOException e) {
+                // should not happen since we write to a StringWriter
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Unexpected IO exception while writing to StringWriter", e);
+                }
+            }
+            if (content != null) {
+                out.write("\n\nThe verfified XML page content was:");
+                out.write("\n-------------------------------------------------------------------\n");
+                out.write(content);
+                out.write("\n-------------------------------------------------------------------\n");
+            }
+            throw new CmsXmlException("XML validation error:\n" + out.toString() + "\n");
+        }        
     }
         
     /**
