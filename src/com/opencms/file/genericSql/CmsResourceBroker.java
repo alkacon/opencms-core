@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/04/04 12:19:31 $
- * Version: $Revision: 1.236 $
+ * Date   : $Date: 2001/04/20 09:50:54 $
+ * Version: $Revision: 1.237 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.236 $ $Date: 2001/04/04 12:19:31 $
+ * @version $Revision: 1.237 $ $Date: 2001/04/20 09:50:54 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4070,6 +4070,43 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
     }
     return project;
 }
+
+/**
+ * Creates a static export of a Cmsresource in the filesystem
+ *
+ * @param exportTo The Directory to where the files should be exported.
+ * @param exportFile .
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void exportStaticResources(String exportTo, CmsFile file) throws CmsException {
+
+    m_dbAccess.exportStaticResources(exportTo, file);
+}
+/**
+ * Creates a static export to the filesystem
+ *
+ * @param exportTo The Directory to where the files should be exported.
+ * @param res The compleate path of the folder or the resource to be exported ..
+ * @param projectId The id of the current project.
+ * @param onlineId The id of the online project.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void exportStaticResources(String exportTo, String res, int projectId, int onlineId) throws CmsException {
+
+    m_dbAccess.exportStaticResources(exportTo, res, projectId, onlineId);
+}
+
+/**
+ * Sets a special CmsObject for the static export in the dbAccess.
+ *
+ * @param cms The CmsObject created for the export.
+ */
+public void setCmsObjectForStaticExport(CmsObject cms){
+    m_dbAccess.setCmsObjectForStaticExport(cms);
+}
+
 /**
  * Publishes a project.
  *

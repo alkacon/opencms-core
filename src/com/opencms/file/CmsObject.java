@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/03/01 13:43:10 $
- * Version: $Revision: 1.154 $
+ * Date   : $Date: 2001/04/20 09:50:26 $
+ * Version: $Revision: 1.155 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.154 $ $Date: 2001/03/01 13:43:10 $
+ * @version $Revision: 1.155 $ $Date: 2001/04/20 09:50:26 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -796,6 +796,53 @@ public void exportResources(String exportFile, String[] exportPaths, boolean inc
 }
 
 /**
+ * Creates a static export of a Cmsresource in the filesystem
+ *
+ * @param exportTo The Directory to where the files should be exported.
+ * @param exportFile .
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void exportStaticResources(String exportTo, CmsFile file) throws CmsException {
+
+    setCmsObjectForStaticExport(getRequestContext().currentProject().getId());
+    m_rb.exportStaticResources(exportTo, file);
+}
+
+/**
+ * Creates a static export to the filesystem
+ *
+ * @param exportTo The Directory to where the files should be exported.
+ * @param res The compleate path of the folder or the resource to be exported.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void exportStaticResources(String exportTo, String res) throws CmsException {
+
+    setCmsObjectForStaticExport(getRequestContext().currentProject().getId());
+    m_rb.exportStaticResources(exportTo, res, getRequestContext().currentProject().getId(),
+                                onlineProject().getId());
+}
+
+/**
+ * Creates a special CmsObject for the static export and set it in the RB.
+ *
+ * @param projectId The current project id.
+ * @exception CmsException if operation was not successful.
+ */
+private void setCmsObjectForStaticExport(int projectId) throws CmsException{
+
+	CmsObject cmsForStaticExport = new CmsObject();
+    CmsDummyRequest dReq = new CmsDummyRequest((HttpServletRequest)m_context.getRequest().getOriginalRequest());
+    CmsDummyResponse dRes = new CmsDummyResponse();
+
+    cmsForStaticExport.init(m_rb, dReq, dRes, C_USER_GUEST,
+                             C_GROUP_GUEST, projectId, false);
+    cmsForStaticExport.setLauncherManager(getLauncherManager());
+    m_rb.setCmsObjectForStaticExport(cmsForStaticExport);
+}
+
+/**
  * Forwards a task to a new user.
  *
  * @param taskid the id of the task which will be forwarded.
@@ -1358,6 +1405,7 @@ public CmsProject onlineProject() throws CmsException {
  */
 public void publishProject(int id) throws CmsException {
 	clearcache();
+//    setCmsObjectForStaticExport(id);
 	m_rb.publishProject(m_context.currentUser(), m_context.currentProject(), id);
 	clearcache();
 }

@@ -113,7 +113,12 @@
 				<files>bestehende Dateien</files>
 			</label>
 		</database>
-		
+		<staticexport>
+			<label>
+				<titleexport>Statischer Export</titleexport>
+				<filename>Exportieren nach</filename>
+			</label>
+		</staticexport>
 		<error>		
 			<message>
 				<accessdenied>Leider konnte auf die Resource nicht zugegriffen werden.</accessdenied>
@@ -152,6 +157,7 @@
 				<publishproject>Leider konnte das Projekt nicht veröffentlicht werden.</publishproject>
 				<rmdefault>Leider konnten nicht alle Benutzerzugehörigkeiten geändert werden.</rmdefault>
 				<deleteproject>Leider konnte das Projekt nicht gelöscht werden.</deleteproject>
+				<staticexport>Leider konnte der statische Export nicht vollständig ausgführt werden.</staticexport>
 				<syncfolder>Leider konnten die Ordner nicht synchronisiert werden.</syncfolder>
 				<syncproperties>Die Daten für die Synchronisierung konnten nicht gespeichert werden.</syncproperties>
 				<unlock>Leider konnte die Datei nicht wieder frei gegeben werden.</unlock>
@@ -210,6 +216,7 @@
 				<projectdatamissing>Die Felder Projektname und Verzeichnisse müssen ausgefüllt werden.</projectdatamissing>
 				<rmdefault>Einer oder mehrere Benutzer, die aus der Gruppe gelöscht werden sollten, hatten diese als Default Gruppe eingestellt.</rmdefault>
 				<deleteproject>Sie haben nicht das Recht dieses Projekt zu löschen.</deleteproject>
+				<staticexport>Eventuell existiert der angegebene Export-Ordner nicht.</staticexport>
 				<syncfolder>Eventuell existieren die zu synchronisierenden Ressourcen oder der Synchronisationspfad nicht.</syncfolder>
 				<syncproperties>Eventuell existieren die angegebenen Ressourcen nicht im gewählten Projekt.</syncproperties>
 				<syncdatamissing>Sie haben noch kein Projekt, keine zu synchronisierenden Ressourcen oder keinen Zielpfad gewählt.</syncdatamissing>
@@ -325,6 +332,7 @@
 			<project>Projekt- verwaltung</project>
 			<projecthistory>Projekt Historie</projecthistory>
 			<properties>Eigenschaftsverwaltung</properties>
+			<staticexport>Statischer Export</staticexport>
 			<syncfolder>Synchronisations- verwaltung</syncfolder>
 			<user>Benutzer- verwaltung</user>
 			<users>Benutzer</users>

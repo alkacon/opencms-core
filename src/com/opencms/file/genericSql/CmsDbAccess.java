@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/03/01 13:43:22 $
- * Version: $Revision: 1.192 $
+ * Date   : $Date: 2001/04/20 09:50:54 $
+ * Version: $Revision: 1.193 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -40,6 +40,7 @@ import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.file.utils.*;
 import com.opencms.util.*;
+import com.opencms.launcher.*;
 
 
 /**
@@ -51,7 +52,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.192 $ $Date: 2001/03/01 13:43:22 $ *
+ * @version $Revision: 1.193 $ $Date: 2001/04/20 09:50:54 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -160,6 +161,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	 * Storage for all exportpoints
 	 */
 	protected Hashtable m_exportpointStorage=null;
+
+	/**
+	 * Dummy CmsObject for static export.
+	 */
+	protected CmsObject m_cmsForStaticExport = null;
 
    /**
 	 * 'Constants' file.
@@ -2353,6 +2359,106 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		}
 	}
 
+/**
+ * Sets a special CmsObject for the static export.
+ *
+ * @param cms The cmsObject created for the export.
+ */
+public void setCmsObjectForStaticExport(CmsObject cms){
+    m_cmsForStaticExport = cms;
+}
+
+/**
+ * Creates a static export to the filesystem
+ *
+ * @param exportTo The Directory to where the files should be exported.
+ * @param res The compleate path of the folder or the resource to be exported.
+ * @param projectId the id of the current project.
+ * @param onlineId The id of the online project.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void exportStaticResources(String exportTo, String res, int projectId, int onlineId) throws CmsException {
+
+    // first check if it is a file or a folder
+    if (!res.endsWith("/")){
+        // it is a file thats easy
+        exportStaticResources(exportTo, readFileHeader(projectId, res));
+    }else{
+        // a folder. we have to export all files in it and all files in the subfolder and so on.
+        CmsFolder onlineFolder = readFolder(onlineId, res);
+        CmsFolder offlineFolder = readFolder(projectId, res);
+        Vector resources = getResourcesInFolder(onlineFolder.getResourceId(), offlineFolder.getResourceId());
+        for(int i =0; i < resources.size(); i++){
+            CmsResource resource = (CmsResource) resources.elementAt(i);
+            if (resource.isFile()){
+                // TODO: write a new methode for getAllFilesInFolder so we dont have to read them twice
+                exportStaticResources(exportTo, readFileHeader(resource.getResourceId()));
+            }else{
+                // it is a folder so call this again
+                exportStaticResources(exportTo, resource.getAbsolutePath(), projectId, onlineId);
+            }
+        }
+    }
+}
+
+/**
+ * Exports one file to the filesystem.
+ *
+ * @param exportTo The path to where the file should be exported.
+ * @param file The file to be exported.
+ */
+public void exportStaticResources(String exportTo, CmsFile file) throws CmsException {
+
+    // first check the directory structure
+    if(exportTo.endsWith("/")){
+        exportTo = exportTo.substring(0, exportTo.length()-1);
+    }
+    String path = file.getAbsolutePath();
+
+    // is the exportfoleder present?
+    File discFolder = new File(exportTo + "/");
+    if (!discFolder.exists()){
+        throw new CmsException("[" + this.getClass().getName() + "] " + "the export folder does not exist", CmsException.C_BAD_NAME);
+    }
+    // now check all other folders and ceate them if nessesary
+    String folder = path.substring(0, path.lastIndexOf('/'));
+    discFolder = new File(exportTo + folder);
+    if(!discFolder.exists()){
+        if(!discFolder.mkdirs()){
+            throw new CmsException("[" + this.getClass().getName() + "] " + "couldnt create all Folders ", CmsException.C_UNKNOWN_EXCEPTION);
+        }
+    }
+    // all folders exist now create the file
+    File discFile = new File(exportTo + path);
+    try{
+        OutputStream outStream = new FileOutputStream(discFile);
+        // now put the stream in the faked response object
+        ((CmsDummyResponse)m_cmsForStaticExport.getRequestContext().getResponse()).putOutputStream(outStream);
+    }catch (Exception e){
+        throw new CmsException("[" + this.getClass().getName() + "] " + "couldnt open file "+exportTo+path
+            + "  " + e.getMessage(), CmsException.C_UNKNOWN_EXCEPTION);
+    }
+
+    // the method showResource from the OpenCms Class
+    int launcherId = file.getLauncherType();
+    String startTemplateClass = file.getLauncherClassname();
+    I_CmsLauncher launcher = m_cmsForStaticExport.getLauncherManager().getLauncher(launcherId);
+    if(launcher == null) {
+        String errorMessage = "Could not launch file " + file.getName() + ". Launcher for requested launcher ID "
+                + launcherId + " could not be found.";
+        if(A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] exportStaticResource() " + errorMessage);
+        }
+        throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+    }
+
+    // set the filename in the dummy request
+    ((CmsDummyRequest)m_cmsForStaticExport.getRequestContext().getRequest()).setRequestedResource(file.getAbsolutePath());
+    launcher.initlaunch(m_cmsForStaticExport, file, startTemplateClass, null);
+
+}
+
 	/**
 	 * Private method to init all default-resources
 	 */
@@ -4136,30 +4242,23 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		// read all folders in offlineProject
 
 		offlineFolders = readFolders(projectId);
-		for (int i = 0; i < offlineFolders.size(); i++)
-		{
+		for (int i = 0; i < offlineFolders.size(); i++){
 			currentFolder = ((CmsFolder) offlineFolders.elementAt(i));
 
 			// C_STATE_DELETE
-			if (currentFolder.getState() == C_STATE_DELETED)
-			{
+			if (currentFolder.getState() == C_STATE_DELETED){
 				deletedFolders.addElement(currentFolder);
-				// C_STATE_NEW
-			}
-			else
-				if (currentFolder.getState() == C_STATE_NEW)
-				{
 
+				// C_STATE_NEW
+			}else if (currentFolder.getState() == C_STATE_NEW){
 					// export to filesystem if necessary
 					String exportKey = checkExport(currentFolder.getAbsolutePath());
-					if (exportKey != null)
-					{
+					if (exportKey != null){
 						discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
 					}
 					// get parentId for onlineFolder either from folderIdIndex or from the database
 					Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
-					if (parentId == null)
-					{
+					if (parentId == null){
 						CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
 						parentId = new Integer(currentOnlineParent.getResourceId());
 						folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
@@ -4238,34 +4337,23 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + newFolder.toString() + " Message= " + exc.getMessage());
 						}
 					}
-					// C_STATE_CHANGED
 
-				}
-				else
-					if (currentFolder.getState() == C_STATE_CHANGED)
-					{
+					// C_STATE_CHANGED
+				}else if (currentFolder.getState() == C_STATE_CHANGED){
 						// export to filesystem if necessary
 						String exportKey = checkExport(currentFolder.getAbsolutePath());
-						if (exportKey != null)
-						{
+						if (exportKey != null){
 							discAccess.createFolder(currentFolder.getAbsolutePath(), exportKey);
 						}
 						CmsFolder onlineFolder = null;
-						try
-						{
+						try{
 							onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
-						}
-						catch (CmsException exc)
-						{
-
+						}catch (CmsException exc){
 							// if folder does not exist create it
-							if (exc.getType() == CmsException.C_NOT_FOUND)
-							{
-
+							if (exc.getType() == CmsException.C_NOT_FOUND){
 								// get parentId for onlineFolder either from folderIdIndex or from the database
 								Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
-								if (parentId == null)
-								{
+								if (parentId == null){
 									CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
 									parentId = new Integer(currentOnlineParent.getResourceId());
 									folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
@@ -4274,16 +4362,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 								onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
 								onlineFolder.setState(C_STATE_UNCHANGED);
 								writeFolder(onlineProject, onlineFolder, false);
-							}
-							else
-							{
+							}else{
 								throw exc;
 							}
 						} // end of catch
 						Connection con = null;
 						PreparedStatement statement = null;
-						try
-						{
+						try{
 							con = DriverManager.getConnection(m_poolName);
 							// update the onlineFolder with data from offlineFolder
 							statement = con.prepareStatement(m_cq.C_RESOURCES_UPDATE);
@@ -4303,13 +4388,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 							statement.setInt(14, currentFolder.getFileId());
 							statement.setInt(15, onlineFolder.getResourceId());
 							statement.executeUpdate();
-						}
-						catch (SQLException e)
-						{
+						}catch (SQLException e){
 							throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-						}
-						finally
-						{
+						}finally{
 							if(statement != null) {
 								 try {
 									 statement.close();
@@ -4327,37 +4408,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 						}
 						folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(onlineFolder.getResourceId()));
 						// copy properties
-						try
-						{
+						try{
 							deleteAllProperties(onlineFolder.getResourceId());
 							Hashtable props = readAllProperties(currentFolder.getResourceId(), currentFolder.getType());
 							writeProperties(props, onlineFolder.getResourceId(), currentFolder.getType());
-						}
-						catch (CmsException exc)
-						{
-							if (A_OpenCms.isLogging())
-							{
+						}catch (CmsException exc){
+							if (A_OpenCms.isLogging()){
 								A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
 							}
 						}
+
 						// C_STATE_UNCHANGED
-					}
-					else
-						if (currentFolder.getState() == C_STATE_UNCHANGED)
-						{
+					}else if (currentFolder.getState() == C_STATE_UNCHANGED){
 							CmsFolder onlineFolder = null;
-							try
-							{
+							try{
 								onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
-							}
-							catch (CmsException exc)
-							{
-								if (exc.getType() == CmsException.C_NOT_FOUND)
-								{
+							}catch (CmsException exc){
+								if (exc.getType() == CmsException.C_NOT_FOUND){
 									// get parentId for onlineFolder either from folderIdIndex or from the database
 									Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
-									if (parentId == null)
-									{
+									if (parentId == null){
 										CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
 										parentId = new Integer(currentOnlineParent.getResourceId());
 										folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
@@ -4367,21 +4437,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 									onlineFolder.setState(C_STATE_UNCHANGED);
 									writeFolder(onlineProject, onlineFolder, false);
 									// copy properties
-									try
-									{
+									try{
 										Hashtable props = readAllProperties(currentFolder.getResourceId(), currentFolder.getType());
 										writeProperties(props, onlineFolder.getResourceId(), onlineFolder.getType());
-									}
-									catch (CmsException exc2)
-									{
-										if (A_OpenCms.isLogging())
-										{
+									}catch (CmsException exc2){
+										if (A_OpenCms.isLogging()){
 											A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
 										}
 									}
-								}
-								else
-								{
+								}else{
 									throw exc;
 								}
 							} // end of catch
@@ -4392,77 +4456,53 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
 		// now read all FILES in offlineProject
 		offlineFiles = readFiles(projectId);
-		for (int i = 0; i < offlineFiles.size(); i++)
-		{
+		for (int i = 0; i < offlineFiles.size(); i++){
 			currentFile = ((CmsFile) offlineFiles.elementAt(i));
-			if (currentFile.getName().startsWith(C_TEMP_PREFIX))
-			{
+			if (currentFile.getName().startsWith(C_TEMP_PREFIX)){
 				removeFile(projectId, currentFile.getAbsolutePath());
 
 				// C_STATE_DELETE
-			}
-			else
-				if (currentFile.getState() == C_STATE_DELETED)
-				{
+			}else if (currentFile.getState() == C_STATE_DELETED){
+
 					// delete in filesystem if necessary
 					String exportKey = checkExport(currentFile.getAbsolutePath());
-					if (exportKey != null)
-					{
-						try
-						{
+					if (exportKey != null){
+						try{
 							discAccess.removeResource(currentFile.getAbsolutePath(), exportKey);
-						}
-						catch (Exception ex)
-						{
+						}catch (Exception ex){
 						}
 					}
 					CmsFile currentOnlineFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getAbsolutePath());
-					try
-					{
+					try{
 						deleteAllProperties(currentOnlineFile.getResourceId());
-					}
-					catch (CmsException exc)
-					{
-						if (A_OpenCms.isLogging())
-						{
+					}catch (CmsException exc){
+						if (A_OpenCms.isLogging()){
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
 						}
-					}
-					try
-					{
+					}try{
 						deleteResource(currentOnlineFile.getResourceId());
-					}
-					catch (CmsException exc)
-					{
-						if (A_OpenCms.isLogging())
-						{
+					}catch (CmsException exc){
+						if (A_OpenCms.isLogging()){
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
 						}
 					}
+
 					// C_STATE_CHANGED
-				}
-				else
-					if (currentFile.getState() == C_STATE_CHANGED)
-					{
+				}else if (currentFile.getState() == C_STATE_CHANGED){
+
 						// export to filesystem if necessary
 						String exportKey = checkExport(currentFile.getAbsolutePath());
-						if (exportKey != null)
-						{
+						if (exportKey != null){
 							discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, readFileContent(currentFile.getFileId()));
 						}
 						CmsFile onlineFile = null;
-						try
-						{
+						try{
 							onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
-						}
-						catch (CmsException exc)
-						{
-							if (exc.getType() == CmsException.C_NOT_FOUND)
-							{
+						}catch (CmsException exc){
+							if (exc.getType() == CmsException.C_NOT_FOUND){
 								// get parentId for onlineFolder either from folderIdIndex or from the database
 								Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
-								if (parentId == null)
-								{
+								if (parentId == null){
 									CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
 									parentId = new Integer(currentOnlineParent.getResourceId());
 									folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
@@ -4474,8 +4514,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 						} // end of catch
 						Connection con = null;
 						PreparedStatement statement = null;
-						try
-						{
+						try{
 							con = DriverManager.getConnection(m_poolName);
 							// update the onlineFile with data from offlineFile
 							statement = con.prepareStatement(m_cq.C_RESOURCES_UPDATE_FILE);
@@ -4495,13 +4534,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 							statement.setInt(14, currentFile.getFileId());
 							statement.setInt(15, onlineFile.getResourceId());
 							statement.executeUpdate();
-						}
-						catch (SQLException e)
-						{
+						}catch (SQLException e){
 							throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-						}
-						finally
-						{
+						}finally{
 							if(statement != null) {
 								 try {
 									 statement.close();
@@ -4518,36 +4553,27 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 							}
 						}
 						// copy properties
-						try
-						{
+						try{
 							deleteAllProperties(onlineFile.getResourceId());
 							Hashtable props = readAllProperties(currentFile.getResourceId(), currentFile.getType());
 							writeProperties(props, onlineFile.getResourceId(), currentFile.getType());
-						}
-						catch (CmsException exc)
-						{
-							if (A_OpenCms.isLogging())
-							{
+						}catch (CmsException exc){
+							if (A_OpenCms.isLogging()){
 								A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + onlineFile.toString() + " Message= " + exc.getMessage());
 							}
 						}
 
 						// C_STATE_NEW
-					}
-					else
-						if (currentFile.getState() == C_STATE_NEW)
-						{
+					}else if (currentFile.getState() == C_STATE_NEW){
+
 							// export to filesystem if necessary
 							String exportKey = checkExport(currentFile.getAbsolutePath());
-							if (exportKey != null)
-							{
+							if (exportKey != null){
 								discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, readFileContent(currentFile.getFileId()));
 							}
-
 							// get parentId for onlineFile either from folderIdIndex or from the database
 							Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
-							if (parentId == null)
-							{
+							if (parentId == null){
 								CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFile.getParent());
 								parentId = new Integer(currentOnlineParent.getResourceId());
 								folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
@@ -4611,37 +4637,27 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 								}
 							}
 							// copy properties
-							try
-							{
+							try{
 								Hashtable props = readAllProperties(currentFile.getResourceId(), currentFile.getType());
 								writeProperties(props, newFile.getResourceId(), newFile.getType());
-							}
-							catch (CmsException exc)
-							{
-								if (A_OpenCms.isLogging())
-								{
+							}catch (CmsException exc){
+								if (A_OpenCms.isLogging()){
 									A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + newFile.toString() + " Message= " + exc.getMessage());
 								}
 							}
 						}
 		} // end of for(...
 		// now delete the "deleted" folders
-		for (int i = deletedFolders.size() - 1; i > -1; i--)
-		{
+		for (int i = deletedFolders.size() - 1; i > -1; i--){
 			currentFolder = ((CmsFolder) deletedFolders.elementAt(i));
 			String exportKey = checkExport(currentFolder.getAbsolutePath());
-			if (exportKey != null)
-			{
+			if (exportKey != null){
 				discAccess.removeResource(currentFolder.getAbsolutePath(), exportKey);
 			}
-			try
-			{
+			try{
 				deleteAllProperties(currentFolder.getResourceId());
-			}
-			catch (CmsException exc)
-			{
-				if (A_OpenCms.isLogging())
-				{
+			}catch (CmsException exc){
+				if (A_OpenCms.isLogging()){
 					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentFolder.toString() + " Message= " + exc.getMessage());
 				}
 			}

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/03/01 13:43:11 $
- * Version: $Revision: 1.141 $
+ * Date   : $Date: 2001/04/20 09:50:26 $
+ * Version: $Revision: 1.142 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.141 $ $Date: 2001/03/01 13:43:11 $
+ * @version $Revision: 1.142 $ $Date: 2001/04/20 09:50:26 $
  *
  */
 
@@ -952,6 +952,31 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	 */
 	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata)
 		throws CmsException;
+
+    /**
+     * Creates a static export of a Cmsresource in the filesystem
+     *
+     * @param exportTo The Directory to where the files should be exported.
+     * @param exportFile .
+     *
+     * @exception CmsException if operation was not successful.
+     */
+    public void exportStaticResources(String exportTo, CmsFile file) throws CmsException ;
+
+    /**
+     * Creates a static export to the filesystem
+     *
+     * @param exportTo The Directory to where the files should be exported.
+     * @param res The compleate path of the folder or the resource to be exported.
+     * @param projectId The id of the current project.
+     * @param onlineId The id of the online project.
+     *
+     * @exception CmsException if operation was not successful.
+     */
+    public void exportStaticResources(String exportTo, String res, int projectId, int onlineId) throws CmsException ;
+
+    public void setCmsObjectForStaticExport(CmsObject cms);
+
 	 /**
 	  * Forwards a task to a new user.
 	  *

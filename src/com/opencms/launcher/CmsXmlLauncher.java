@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/01/24 09:42:27 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/04/20 09:54:40 $
+* Version: $Revision: 1.19 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -46,22 +46,22 @@ import javax.servlet.http.*;
  * &lt;PAGE&gt;<BR>
  * &nbsp;&nbsp;&lt;CLASS&gt;...&lt;/CLASS&gt;<BR>
  * &lt;/PAGE&gt;</CODE><P>
- * 
+ *
  * If no start template is defined, the class given by the parameters
  * will be used.
  * <P>
  * If even this is not defined, CmsXmlTemplate will
  * be used to create output.
- * 
+ *
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2001/01/24 09:42:27 $
+ * @version $Revision: 1.19 $ $Date: 2001/04/20 09:54:40 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
-    
+
     /**
      * Starts generating the output.
      * Calls the canonical root with the appropriate template class.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
      * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
@@ -71,12 +71,11 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
         byte[] output = null;
         CmsXmlControlFile doc = null;
         try {
-            
+
             //doc.init(cms, file);
             doc = new CmsXmlControlFile(cms, file);
         }
         catch(Exception e) {
-            
             // there was an error while parsing the document
             handleException(cms, e, "There was an error while parsing XML file " + file.getAbsolutePath());
             return "".getBytes();
@@ -98,10 +97,10 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             }
             throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
         }
-        
-        // Now look for parameters in the page file...                
+
+        // Now look for parameters in the page file...
         Hashtable newParameters = new Hashtable();
-        
+
         // ... first the params of the master template...
         Enumeration masterTemplateParams = doc.getParameterNames();
         while(masterTemplateParams.hasMoreElements()) {
@@ -109,7 +108,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             String paramValue = doc.getParameter(paramName);
             newParameters.put(C_ROOT_TEMPLATE_NAME + "." + paramName, paramValue);
         }
-        
+
         // ... and now the params of all subtemplates
         Enumeration elementDefinitions = doc.getElementDefinitions();
         while(elementDefinitions.hasMoreElements()) {
@@ -137,8 +136,8 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                 }
             }
         }
-        
-        // Now check URL parameters      
+
+        // Now check URL parameters
         String datafor = req.getParameter("datafor");
         if(datafor == null) {
             datafor = "";
@@ -176,7 +175,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
         }
         return output;
     }
-    
+
     /**
      * Gets the ID that indicates the type of the launcher.
      * @return launcher ID
@@ -184,15 +183,15 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
     public int getLauncherId() {
         return C_TYPE_XML;
     }
-    
+
     /**
      * Unitary method to start generating the output.
      * Every launcher has to implement this method.
      * In it possibly the selected file will be analyzed, and the
-     * Canonical Root will be called with the appropriate 
-     * template class, template file and parameters. At least the 
+     * Canonical Root will be called with the appropriate
+     * template class, template file and parameters. At least the
      * canonical root's output must be written to the HttpServletResponse.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
      * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
@@ -200,8 +199,8 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
      * @exception CmsException
      */
     protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
-        
-        // get the CmsRequest 
+
+        // get the CmsRequest
         I_CmsRequest req = cms.getRequestContext().getRequest();
         byte[] result = null;
         result = generateOutput(cms, file, startTemplateClass, req);
@@ -209,7 +208,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             writeBytesToResponse(cms, result);
         }
     }
-    
+
     /**
      * Internal utility method for checking and loading a given template file.
      * @param cms CmsObject for accessing system resources.

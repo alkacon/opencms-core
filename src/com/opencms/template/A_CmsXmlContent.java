@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/02/28 10:57:46 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2001/04/20 09:56:08 $
+* Version: $Revision: 1.40 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -77,7 +77,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2001/02/28 10:57:46 $
+ * @version $Revision: 1.40 $ $Date: 2001/04/20 09:56:08 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -1309,9 +1309,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
             // We have to throw an exception.
             throwException("Normalizing the XML document failed. Possibly you are using concurrent versions of " + "the XML parser with different DOM levels. ", e, CmsException.C_XML_PARSING_ERROR);
         }
-
         // Delete all unnecessary text nodes from the tree.
-
         // These nodes could cause errors when serializing this document otherwise
         Node loop = parsedDoc.getDocumentElement();
         while(loop != null) {
@@ -1946,16 +1944,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     protected Node treeWalker(Node root, Node n) {
         Node nextnode = null;
         if(n.hasChildNodes()) {
-
             // child has child notes itself
-
             // process these first in the next loop
             nextnode = n.getFirstChild();
-        }
-        else {
-
+        }else {
             // child has no subchild.
-
             // so we take the next sibling
             nextnode = treeWalkerWidth(root, n);
         }

@@ -112,6 +112,13 @@
 				<titleimport>Import Database</titleimport>
 			</label>
 		</database>
+
+		<staticexport>
+			<label>
+				<titleexport>Static Export</titleexport>
+				<filename>Export to</filename>
+			</label>
+		</staticexport>
 		
 		<error>
 			<message>
@@ -151,6 +158,7 @@
 				<publishproject>Sorry, the project could not be published.</publishproject> 
 				<rmdefault>Sorry, not all users could be removed.</rmdefault>
 				<deleteproject>Sorry, the project could not be deleted.</deleteproject>
+				<staticexport>Sorry, the Resources could not be exported.</staticexport>
 				<syncfolder>Sorry, the folders could not be synchronized.</syncfolder>
 				<syncproperties>Sorry, the properties for synchronisation could not be saved.</syncproperties>
 				<unlock>Sorry, the file could not be locked.</unlock>
@@ -208,6 +216,7 @@
 				<publishproject>There are still locked files in the project.</publishproject>
 				<rmdefault>At last one user that should be removed from this group had this group set as default.</rmdefault>
 				<deleteproject>You don't have the permissions to delete the project.</deleteproject>
+				<staticexport>Maybe the export folder does not exist.</staticexport>
 				<syncfolder>Maybe the resource to be synchronized or the synchronize path not exist.</syncfolder>
 				<syncproperties>Maybe a resource does not exist in the choosen project.</syncproperties>
 				<syncdatamissing>You did not choose a project, the resources to be synchronised or the destination path</syncdatamissing>
@@ -324,6 +333,7 @@
 			<project>Project- management</project>
 			<projecthistory>Project History</projecthistory>
 			<properties>Properties<![CDATA[<br>]]>management</properties>
+			<staticexport>Static Export</staticexport>
 			<syncfolder>Synchronisation- management</syncfolder>
 			<user>User- management</user>
 			<users>Edit Users</users>

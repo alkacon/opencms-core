@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2001/02/06 13:57:27 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/04/20 09:56:08 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import java.util.*;
  * generation of the master template class to be used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2001/02/06 13:57:27 $
+ * @version $Revision: 1.24 $ $Date: 2001/04/20 09:56:08 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
 
@@ -93,7 +93,6 @@ public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
         if(!resp.containsHeader("Cache-Control")) {
 
             // only if the resource is cacheable and if the current project is online,
-
             // then the browser may cache the resource
             if(cd.isProxyPublicCacheable() || cd.isProxyPrivateCacheable()) {
 
@@ -102,14 +101,13 @@ public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
                 if(cd.isProxyPrivateCacheable()) {
                     resp.addHeader("Cache-Control", "private");
                 }
-            }
+
+
+           }
             else {
-
                 // set the http-header to pragma no-cache.
-
                 //HTTP 1.1
                 resp.setHeader("Cache-Control", "no-cache");
-
                 //HTTP 1.0
                 resp.setHeader("Pragma", "no-cache");
             }
