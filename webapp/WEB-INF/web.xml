@@ -10,13 +10,24 @@
     
     <description>
         OpenCms, the Open Source Content Management System. 
-        For more details about OpenCms, please see http://www.opencms.org/
+        (c) 2002 - 2004 Alkacon Software with contributions from the OpenCms community.
+        For more details about OpenCms, please see http://www.opencms.org/.
+        For more details about Alkacon Software, please see http://www.alkacon.com/.    
     </description>
 
-	<context-param>
-		<param-name>OpenCmsServlet</param-name>
-		<param-value>/opencms/*</param-value>
-	</context-param>
+    <!--
+        Changing the servlet name from "opencms" to something else requires 3 changes in this file.        
+        For example, to change the servlet name to "mycms" you must:
+        
+        1. Change the <context-param> called "OpenCmsServlet" from "/opencms/*" to "/mycms/*"
+        2. Change the <servlet-mapping> for "OpenCmsServlet" from "/opencms/*" to "/mycms/*"
+        3. Change the <error-page> setting for the 404 error from "/opencms/handle404" to "/mycms/handle404"
+    -->
+
+    <context-param>
+        <param-name>OpenCmsServlet</param-name>
+        <param-value>/opencms/*</param-value>
+    </context-param>
     
     <context-param>
         <param-name>DefaultWebApplication</param-name>
