@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/08 11:04:57 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/08 11:50:44 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/07/08 11:04:57 $
+ * @version $Revision: 1.13 $ $Date: 2003/07/08 11:50:44 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3743,7 +3743,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      * @see org.opencms.db.I_CmsVfsDriver#fetchProjectsForPath(com.opencms.file.CmsProject, java.lang.String)
      */
     public int[] getProjectsForPath(int projectId, String path) throws CmsException {
-        int[] projectID = null;
+    	int projectIds[] = new int[0];
         Connection conn = null;
         PreparedStatement stmt = null;   
         ResultSet res = null;
@@ -3756,26 +3756,29 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(1,path);
             stmt.setInt(2, projectId);
             res = stmt.executeQuery();
+
+            //while (res.next()) {
+            //    rowCount++;
+            //}
             
-            while (res.next()) {
-                rowCount++;
-            }
-            
-            if (rowCount>0) {
-                res.beforeFirst();
-                projectID = new int[rowCount];
+            //if (rowCount>0) {
+            //    res.beforeFirst();
+            //    projectID = new int[rowCount];
                 
-                for (int i=0;res.next() && i<rowCount;i++) {
-                    projectID[i] = res.getInt(m_sqlManager.get("C_RESOURCES_PROJECT_ID"));
-                }                
-            }
+            for (rowCount=0;res.next();rowCount++) {
+            	int temp[] = new int[projectIds.length+1];
+            	System.arraycopy(projectIds, 0, temp, 0, projectIds.length);
+            	temp[projectIds.length] = res.getInt(m_sqlManager.get("C_RESOURCES_PROJECT_ID"));
+            	projectIds = temp;
+            }                
+            // }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }                  
         
-        return projectID;
+        return projectIds;
     }     
     
     public List readAllFileHeaders(CmsProject currentProject) throws CmsException {
