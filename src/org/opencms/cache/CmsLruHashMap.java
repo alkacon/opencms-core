@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/Attic/CmsLruHashMap.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/05 17:40:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Map;
  * and a "last-recently-used" cache policy of the mapped key/values.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @see CmsFlexLruCache
  * @see I_CmsLruCacheObject
  */
@@ -54,9 +54,11 @@ public class CmsLruHashMap extends HashMap {
      * Creates a LRU hash map with an initial capacity of (16), a load factor 
      * of (0.75), and a max. size of cacheable objects of (36).<p>
      */
+    // TODO: never used
+    /*
     public CmsLruHashMap() {
         this(16, (float)0.75, 36);
-    }
+    }*/
 
     /**
      * Creates a LRU hash map with a given initial capacity, a load factor 
@@ -74,10 +76,12 @@ public class CmsLruHashMap extends HashMap {
      * 
      * @param initialCapacity the initial capacity of the hash map
      * @param loadFactor the load factor of the hash map before it is rehashed
-     */    
+     */
+    // TODO: never used
+    /*    
     public CmsLruHashMap(int initialCapacity, float loadFactor) {
         this(initialCapacity, loadFactor, (int)(initialCapacity*3*loadFactor));
-    }
+    }*/
     
     /**
      * Creates a LRU hash map with a given initial capacity, a load factor of (0.75), 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2003/10/17 10:28:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/05 17:40:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  *
  * @see org.opencms.cache.I_CmsLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsLruCache extends java.lang.Object {
     
@@ -109,9 +109,11 @@ public class CmsLruCache extends java.lang.Object {
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
      * @param theMaxObjectCosts the max. allowed cache costs per object. Set theMaxObjectCosts to -1 if you don't want to limit the max. allowed cache costs per object
      */
+    // TODO: never used
+    /*
     public CmsLruCache(int theMaxCacheCosts, int theAvgCacheCosts, int theMaxObjectCosts) {
         this(theMaxCacheCosts, theAvgCacheCosts, theMaxObjectCosts, false);
-    }
+    }*/
     
     /**
      * Constructor for a LRU cache with forced garbage collection/finalization, the max. allowed costs of cacheable
@@ -120,9 +122,11 @@ public class CmsLruCache extends java.lang.Object {
      * @param theMaxCacheCosts the max. cache costs of all cached objects
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
      */
+    // TODO: never used
+    /*
     public CmsLruCache(int theMaxCacheCosts, int theAvgCacheCosts) {
         this(theMaxCacheCosts, theAvgCacheCosts, theMaxCacheCosts/4, false);
-    }
+    }*/
     
     /**
      * Constructor for a LRU cache where the max. allowed costs of cacheable objects is 1/4 of the max. costs of all cached objects.<p>
@@ -131,9 +135,11 @@ public class CmsLruCache extends java.lang.Object {
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
      * @param forceFinalization should be true if a system wide garbage collection/finalization is forced after objects were removed from the cache
      */
+    // TODO: never used
+    /*
     public CmsLruCache(int theMaxCacheCosts, int theAvgCacheCosts, boolean forceFinalization) {
         this(theMaxCacheCosts, theAvgCacheCosts, theMaxCacheCosts/4, forceFinalization);
-    }
+    }*/
     
     /**
      * Returns a string representing the current state of the cache.<p>
