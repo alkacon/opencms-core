@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/07/15 10:17:20 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/07/15 12:30:13 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.73 $ $Date: 2003/07/15 10:17:20 $
+ * @version $Revision: 1.74 $ $Date: 2003/07/15 12:30:13 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
 
@@ -165,7 +165,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
                     CmsResource file = null;
                     if (! currentFilelist.endsWith(C_FOLDER_SEPARATOR)) currentFilelist += C_FOLDER_SEPARATOR;
-                    file = ((CmsResourceTypeNewPage)cms.getResourceType(CmsResourceTypeNewPage.C_RESOURCE_TYPE_NAME)).createResourceForTemplate(cms, currentFilelist + newFile, prop, content, templatefile);
+                    file = ((CmsResourceTypeNewPage)cms.getResourceType(CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID)).createResourceForTemplate(cms, currentFilelist + newFile, prop, content, templatefile);
                         
                     if (! C_SIMPLE_PAGE) {    
                         CmsFile bodyFile = cms.readFile(C_VFS_PATH_BODIES + currentFilelist.substring(1,currentFilelist.length()), newFile);

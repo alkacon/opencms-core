@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/15 12:17:04 $
-* Version: $Revision: 1.92 $
+* Date   : $Date: 2003/07/15 12:30:13 $
+* Version: $Revision: 1.93 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.92 $ $Date: 2003/07/15 12:17:04 $
+ * @version $Revision: 1.93 $ $Date: 2003/07/15 12:30:13 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -311,7 +311,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void chtype(String filename, String newType) {
         try {
-            m_cms.chtype(filename, newType);
+            m_cms.chtype(filename, m_cms.getResourceTypeId(newType));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }

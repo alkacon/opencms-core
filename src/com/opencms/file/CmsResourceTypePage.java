@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/15 12:17:05 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2003/07/15 12:30:13 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -142,11 +142,11 @@ public class CmsResourceTypePage implements I_CmsResourceType {
             cms.doTouch(bodyPath, timestamp);
         }
     }
-
+    
     /**
-     * @see com.opencms.file.I_CmsResourceType#chtype(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     * @see com.opencms.file.I_CmsResourceType#chtype(com.opencms.file.CmsObject, java.lang.String, int)
      */
-    public void chtype(CmsObject cms, String resourcename, String newType) throws CmsException {
+    public void chtype(CmsObject cms, String resourcename, int newType) throws CmsException {
         CmsFile file = cms.readFile(resourcename);
         // check if the current user has the right to change the group of the
         // resource. Only the owner of a file and the admin are allowed to do this.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/15 12:17:05 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/07/15 12:30:13 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -173,7 +173,7 @@ public interface I_CmsResourceType {
      * @param newtype the name of the new resource type for this resource
      * @throws CmsException if something goes wrong
      */
-    void chtype(CmsObject cms, String resourcename, String newtype) throws CmsException;
+    void chtype(CmsObject cms, String resourcename, int newtype) throws CmsException;
     
     /**
      * Replaces the content and properties of a resource.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/07/15 12:17:05 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/07/15 12:30:13 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.34 $ $Date: 2003/07/15 12:17:05 $
+ * @version $Revision: 1.35 $ $Date: 2003/07/15 12:30:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -283,7 +283,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                         if("2".equals(step)) {
 
                             // get the selected resource and check if it is an image
-                            I_CmsResourceType type = cms.getResourceType(newtype);
+                            int type = cms.getResourceTypeId(newtype);
                             if(newtype.equals(CmsResourceTypeImage.C_RESOURCE_TYPE_NAME)) {
 
                                 // the file type is an image
@@ -298,7 +298,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                 // todo: error handling if file already exits
 
                                 try{
-                                    cms.createResource(foldername, filename, type.getResourceType(), new Hashtable(), filecontent);
+                                    cms.createResource(foldername, filename, type, new Hashtable(), filecontent);
                                 }catch(CmsException e){
                                     // remove the values form the session
                                     session.removeValue(C_PARA_FILE);
@@ -343,13 +343,13 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                 // create the new file.
 
                                 // todo: error handling if file already exits
-                                I_CmsResourceType type = cms.getResourceType(newtype);
+                                int type = cms.getResourceTypeId(newtype);
                                 Hashtable prop = new Hashtable();
                                 // check if a file title was given
                                 if(title != null) {
                                     prop.put(C_PROPERTY_TITLE, title);
                                 }
-                                cms.createResource(foldername, filename, type.getResourceType(), prop, filecontent);
+                                cms.createResource(foldername, filename, type, prop, filecontent);
 
                                 // remove the values form the session
                                 session.removeValue(C_PARA_FILE);

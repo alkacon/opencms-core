@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/15 12:17:05 $
-* Version: $Revision: 1.320 $
+* Date   : $Date: 2003/07/15 12:30:13 $
+* Version: $Revision: 1.321 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.320 $
+ * @version $Revision: 1.321 $
  */
 public class CmsObject extends Object {
 
@@ -473,7 +473,7 @@ public class CmsObject extends Object {
      *
      * @throws CmsException if operation was not successful.
      */
-    public void chtype(String filename, String newType) throws CmsException {
+    public void chtype(String filename, int newType) throws CmsException {
         CmsResource res = readFileHeader(filename);
         I_CmsResourceType rt = getResourceType(res.getType());
         rt.chtype(this, filename, newType);
@@ -1106,7 +1106,7 @@ public class CmsObject extends Object {
      *
      * @throws CmsException if operation was not successful.
      */
-    protected void doChtype(String filename, String newType) throws CmsException {
+    protected void doChtype(String filename, int newType) throws CmsException {
         m_driverManager.chtype(m_context, addSiteRoot(filename), newType);
     }
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/15 12:17:05 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/07/15 12:30:13 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -180,10 +180,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#chtype(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     * @see com.opencms.file.I_CmsResourceType#chtype(com.opencms.file.CmsObject, java.lang.String, int)
      */
-    public void chtype(CmsObject cms, String filename, String newType) throws CmsException {
-
+    public void chtype(CmsObject cms, String filename, int newType) throws CmsException {
         // it is not possible to change the type of a folder
         throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
     }

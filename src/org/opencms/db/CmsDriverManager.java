@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 12:17:05 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/07/15 12:30:13 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.46 $ $Date: 2003/07/15 12:17:05 $
+ * @version $Revision: 1.47 $ $Date: 2003/07/15 12:30:13 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -994,7 +994,7 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void chtype(CmsRequestContext context, String filename, String newType) throws CmsException {
+    public void chtype(CmsRequestContext context, String filename, int newType) throws CmsException {
 
         I_CmsResourceType type = getResourceType(context, newType);
 
