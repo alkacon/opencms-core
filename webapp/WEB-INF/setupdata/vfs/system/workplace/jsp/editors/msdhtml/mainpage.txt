@@ -5,173 +5,223 @@
 
 <link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>files/css_workplace.css">
 
+<script language="JavaScript" for="EDIT_HTML" event="DisplayChanged">
+// EVENT HANDLER: Update the Font display on change
+return DisplayChanged();
+</script>
+
+<script language="JavaScript" for="EDIT_HTML" event="ShowContextMenu">
+// EVENT HANDLER: Show a context menu if the right mousebutton is clicked
+ShowContextMenu();
+</script>
+
+<script language="JavaScript" for="EDIT_HTML" event="ContextMenuAction(itemIndex)">
+// EVENT HANDLER: Invoke a context menu action
+ContextMenuAction(itemIndex);
+</script>
+
+<script language="JavaScript" for="EDIT_HTML" event="onkeyup">
+// EVENT HANDLER: Delete empty A tags after key was pressed
+function checkContentByKeyUp() {
+    var cBackSpace  = 8;
+    var cDelete     = 46;
+    var cReturn     = 13;
+    var keyPressed = document.EDITOR.EDIT_HTML.DOM.parentWindow.event.keyCode;      
+    if (keyPressed == cBackSpace || keyPressed == cDelete || keyPressed == cReturn) {
+        deleteEmptyATags();
+    }
+}
+checkContentByKeyUp();
+</script>
+
 <script type="text/javascript">
+// Sets some display variables
+var USE_LINKSTYLEINPUTS = <%= options.showElement("linkstyleinputs") %>;
+var USE_FONTFACE = <%= options.showElement("font.face") %>;
+var USE_FONTSIZE = <%= options.showElement("font.size") %>; 
 
-	var openWindow = null;
-	var focusCount = 0;
+// determines if the simple editor should be loaded 
+var loadSimple = false;
 
-	// which button is clicked
-	function doTemplSubmit(para)
-	{
-		document.EDITOR.action.value = "";
-		switch (para)
-		{
-		case 1:
-			// reload the editor
-			doSubmit();
-			document.EDITOR.action.value = "show";
-			document.EDITOR.target = "_self";
-			document.EDITOR.submit();
-			break;
-		case 2:
-			// preview selected	
-			doSubmit();		
-			document.EDITOR.action.value = "preview";
-			document.EDITOR.target = "PREVIEW";
-			document.EDITOR.submit();
-			break;
-		case 3:
-			// change body;
-			doSubmit();
-			document.EDITOR.action.value = "<%= wp.EDITOR_CHANGE_BODY %>";
-			document.EDITOR.target = "_self";
-			document.EDITOR.submit();
-			break;
-		case 4:
-			// open elements window;
-			focusCount = 1;
-			dialogElementWindow = window.open("about:blank","dialogElementWindow","width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
-			document.ELEMENTS.submit();
-			openWindow = dialogElementWindow;
-			dialogElementWindow.focus();
-			break;		
-		case 5:
-			// open properties window;
-			focusCount = 1;
-			dialogPropertyWindow = window.open("about:blank","dialogPropertyWindow","width=600,height=280,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
-			document.PROPERTIES.submit();
-			openWindow = dialogPropertyWindow;
-			dialogPropertyWindow.focus();
-			break;
+// OpenCms context prefix, required for page editor because no link replacement is done here
+var linkEditorPrefix = "<%= org.opencms.main.OpenCms.getOpenCmsContext() %>";
+
+// Sets the Document Source-Code for later including into the editor
+var text="<%= wp.getParamContent() %>";
+
+// URL for pictures
+var pfad="<%= wp.getPicsUri() %>";
+
+// Filename 
+var filename="<%= wp.getParamResource() %>";
+
+// Workplacepath needed in included javascript files
+var workplacePath="<%= cms.link("/system/workplace/") %>";
+
+// Skin URI needed in included javascript files 
+var skinUri = "<%= wp.getSkinUri() %>";
+
+// Object for color picker modaldialog
+var colorPicker = new Object();
+colorPicker.title = "<%= wp.key("dialog.color.title") %>";
+colorPicker.color = "000000";
+
+var LANG_CUT = "<%= wp.key("editor.context.cut") %>";
+var LANG_COPY = "<%= wp.key("editor.context.copy") %>";
+var LANG_PASTE = "<%= wp.key("editor.context.paste") %>";
+var LANG_INSERTROW = "<%= wp.key("editor.context.insertrow") %>";
+var LANG_DELETEROW = "<%= wp.key("editor.context.deleterow") %>";
+var LANG_INSERTCOL = "<%= wp.key("editor.context.insertcol") %>";
+var LANG_DELETECOL = "<%= wp.key("editor.context.deletecol") %>";
+var LANG_INSERTCELL = "<%= wp.key("editor.context.insertcell") %>";
+var LANG_DELETECELL = "<%= wp.key("editor.context.deletecell") %>";
+var LANG_MERGECELL = "<%= wp.key("editor.context.mergecell") %>";
+var LANG_SPLITCELL = "<%= wp.key("editor.context.splitcell") %>";
+
+// popup window holder and counter
+var openWindow = null;
+var focusCount = 0;
+
+// which button is clicked
+function doTemplSubmit(para) {
+
+	var _form = document.EDITOR;
+	_form.action.value = "";
+
+	switch (para) {
+	case 1:
+		// reload the editor
+		doSubmit();
+		_form.action.value = "show";
+		_form.target = "_self";
+		_form.submit();
+		break;
+	case 2:
+		// preview selected	
+		doSubmit();		
+		_form.action.value = "preview";
+		_form.target = "PREVIEW";
+		_form.submit();
+		break;
+	case 3:
+		// change body;
+		doSubmit();
+		_form.action.value = "<%= wp.EDITOR_CHANGE_BODY %>";
+		_form.target = "_self";
+		_form.submit();
+		break;
+	case 4:
+		// open elements window;
+		openWindow = window.open("about:blank", "dialogElementWindow", "width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+		focusCount = 1;
+		document.ELEMENTS.submit();
+		openWindow.focus();
+		break;		
+	case 5:
+		// open properties window;
+		openWindow = window.open("about:blank", "dialogPropertyWindow", "width=600,height=280,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+		focusCount = 1;
+		document.PROPERTIES.submit();
+		openWindow.focus();
+		break;
+	}
+}
+
+function confirmExitHTML() {
+	if (EDITOR.EDIT_HTML.IsDirty) {
+		if (confirm("<%= wp.key("editor.message.exit") %>")) {
+			doEditHTML(1);
 		}
-	}
-	
-	<!-- Sets some display variables -->
-	var USE_LINKSTYLEINPUTS = <%= options.showElement("linkstyleinputs") %>;
-	var USE_FONTFACE = <%= options.showElement("font.face") %>;
-	var USE_FONTSIZE = <%= options.showElement("font.size") %>; 
-        
-    <!-- determines if the simple editor should be loaded -->
-    var loadSimple = false;
-	
-	<!-- OpenCms context prefix, required for page editor because no link replacement is done here -->
-	var linkEditorPrefix = "<%= org.opencms.main.OpenCms.getOpenCmsContext() %>";
-
-	<!-- Sets the Document Source-Code for later including into the editor -->
-	var text="<%= wp.getParamContent() %>";
-
-	<!-- URL for pictures -->
-	var pfad="<%= wp.getPicsUri() %>";
-
-	<!-- Filename -->
-	var filename="<%= wp.getParamResource() %>";
-	
-	<!-- Workplacepath needed in included javascript files -->
-	var workplacePath="<%= cms.link("/system/workplace/") %>";
-	
-	<!-- Skin URI needed in included javascript files -->
-	var skinUri = "<%= wp.getSkinUri() %>";
-
-	<!-- Object for color picker modaldialog -->
-	var colorPicker = new Object();
-	colorPicker.title = "<%= wp.key("dialog.color.title") %>";
-	colorPicker.color = "000000";
-	
-	var NS = null;
-	var IE = null;
-
-	NS = (document.layers)? true:false;
-	IE = (document.all)? true:false;
-
-	var LANG_CUT = "<%= wp.key("editor.context.cut") %>";
-	var LANG_COPY = "<%= wp.key("editor.context.copy") %>";
-	var LANG_PASTE = "<%= wp.key("editor.context.paste") %>";
-	var LANG_INSERTROW = "<%= wp.key("editor.context.insertrow") %>";
-	var LANG_DELETEROW = "<%= wp.key("editor.context.deleterow") %>";
-	var LANG_INSERTCOL = "<%= wp.key("editor.context.insertcol") %>";
-	var LANG_DELETECOL = "<%= wp.key("editor.context.deletecol") %>";
-	var LANG_INSERTCELL = "<%= wp.key("editor.context.insertcell") %>";
-	var LANG_DELETECELL = "<%= wp.key("editor.context.deletecell") %>";
-	var LANG_MERGECELL = "<%= wp.key("editor.context.mergecell") %>";
-	var LANG_SPLITCELL = "<%= wp.key("editor.context.splitcell") %>";
-</script>
-<%
-	if ("edit".equals(wp.getParamEditormode()) || ("true".equals(wp.getParamNoactivex()) && "edit".equals(wp.getParamEditormode()))) {
-		%><script type="text/javascript" src="<%= wp.getEditorResourceUri() %>scripts/edit.js"></script><%  
 	} else {
-		%><script type="text/javascript" src="<%= wp.getEditorResourceUri() %>scripts/edithtml.js"></script><%
+		doEditHTML(1);
 	}
-%>
-<!-- Update the Font display on change -->
-<script type="text/javascript" for="EDIT_HTML" event="DisplayChanged">
-<!--
-	function displayChangedHandle()
-	{
-	if (IE==true) return DisplayChanged();
-	}
-	displayChangedHandle();
-	//-->
-</script>
+}
 
-<!-- Show a context menu if the right mousebutton is clicked -->
-<script type="text/javascript" for="EDIT_HTML" event="ShowContextMenu">
-<!--
-	function showContextMenuHandle()
-	{
-	if (IE==true) return ShowContextMenu();
+function confirmExit() {
+	if (EDITOR.edit1.IsModified(2)) {
+		if (confirm("<%= wp.key("editor.message.exit") %>")) {
+			doEdit(1);
+		}
+	} else {
+		doEdit(1);
 	}
-	showContextMenuHandle();
-//-->
-</script>
+}
 
-<!-- Invoke a context menu action -->
-<script type="text/javascript" for="EDIT_HTML" event="ContextMenuAction(itemIndex)">
-<!--
-	function contextMenuActionHandle()
-	{
-	if (IE==true) return ContextMenuAction(itemIndex);
-	}
-	contextMenuActionHandle();
-//-->
-</script>
-
-<script type="text/javascript" for="EDIT_HTML" event="onkeyup">
-<!--
-/**
- * if the user selected a text or a image, that has a link and delete
- * then the link will be clean.
- * this function is for pasted text from word to mshtml editor,too.
- */
-	function checkContentByKeyUp()
-	{
-	var cBackSpace  = 8;
-	var cDelete		= 46;
-	var cReturn		= 13;
-		if (IE==true) 
-		{			
-			var keyPressed;	
-			keyPressed = document.EDITOR.EDIT_HTML.DOM.parentWindow.event.keyCode;		
-			if (keyPressed == cBackSpace || keyPressed == cDelete || keyPressed == cReturn)
-			{
-				deleteEmptyATags();
+function deleteEditorContent(bodyName, language) {
+	if (bodyName == document.EDITOR.bodyname.value && language == document.EDITOR.bodylanguage.value) {
+		if (document.EDITOR.EDIT_HTML) {
+			document.EDITOR.EDIT_HTML.DocumentHTML = "";
+		} else {
+			if (isLedit) {
+				document.EDITOR.edit1.Text = "";
+			} else {
+				document.EDITOR.edit1.value = "";
 			}
 		}
 	}
-	checkContentByKeyUp();
-//-->
+}
+
+function changeBody(bodyName, language) {
+	if (bodyName != document.EDITOR.bodyname.value && language == document.EDITOR.bodylanguage.value) {
+		document.EDITOR.bodyname.value = bodyName;
+		doTemplSubmit(3);	
+	} else {
+		doTemplSubmit(1);
+	}
+}
+
+function closeDialog() {
+	if (openWindow) {
+		window.openWindow.close();
+	}
+	if (document.EDITOR.action.value == "null" || document.EDITOR.action.value == "") {
+		top.closeframe.closePage("<%= wp.getParamTempfile() %>", "<%= wp.getParamResource() %>");
+	}
+}
+
+function opensmallwin(url, name, w, h) {
+	encodedurl = encodeURI(url);
+	smallwindow = window.open(encodedurl, name, 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
+	if(smallwindow != null) {
+		if (smallwindow.opener == null) {
+			smallwindow.opener = self;
+		}
+	}
+	return smallwindow;
+}
+
+function checkPopup() {
+	if (openWindow && focusCount > 0) {
+		openWindow.focus();
+		focusCount = 0;
+	}
+}
+	
+if (loadSimple) {
+	document.EDITOR.action.value = "show";
+	document.EDITOR.content.value = text;
+	document.EDITOR.noactivex.value = "true";
+	document.EDITOR.target = "_self";
+	document.EDITOR.submit();
+}
+
 </script>
 
+<%
+
+// include JavaScript for WYSIWYG or text mode
+if ("edit".equals(wp.getParamEditormode()) || ("true".equals(wp.getParamNoactivex()) && "edit".equals(wp.getParamEditormode()))) {
+	%><script type="text/javascript" src="<%= wp.getEditorResourceUri() %>scripts/edit.js"></script><%  
+} else {
+	%><script type="text/javascript" src="<%= wp.getEditorResourceUri() %>scripts/edithtml.js"></script><%
+}
+
+%>
+
 <script LANGUAGE="vbscript">
+' Ugly VB Script that sets the contents of the "Format" selection
+' These _must_ be localized or the MS DHTML will not work
+' I just don't know how to do this in JavaScript
 Sub getStyles()
 	' Create the block fmt names holder
 	Set fmt = CreateObject("DEGetBlockFmtNamesParam.DEGetBlockFmtNamesParam.1")
@@ -187,98 +237,6 @@ Sub getStyles()
 	Next
 End Sub
 </script>
-
-<!-- Ask user whether he really wants to leave Texteditor without saving -->
-<script type="text/javascript">
-<!--
-	function confirmExit()
-	{
-		if (confirm("<%= wp.key("editor.message.exit") %>")) {
-			doEdit(1);
-		}
-	}
-	
-	function confirmExit()
-	{
-		if (EDITOR.edit1.IsModified(2)) {
-			if (confirm("<%= wp.key("editor.message.exit") %>")) {
-				doEdit(1);
-			}
-		} else {
-				doEdit(1);
-		}
-	}
-	
-	function deleteEditorContent(bodyName, language) {
-		if (bodyName == document.EDITOR.bodyname.value && language == document.EDITOR.bodylanguage.value) {
-			if (document.EDITOR.EDIT_HTML) {
-				document.EDITOR.EDIT_HTML.DocumentHTML = "";
-			} else {
-				if (isLedit) {
-					document.EDITOR.edit1.Text = "";
-				} else {
-        			document.EDITOR.edit1.value = "";
-				}
-			}
-		}
-	}
-	
-	function changeBody(bodyName, language) {
-		if (bodyName != document.EDITOR.bodyname.value && language == document.EDITOR.bodylanguage.value) {
-			document.EDITOR.bodyname.value = bodyName;
-			doTemplSubmit(3);	
-		} else {
-			doTemplSubmit(1);
-		}
-	}
-	
-	function closeDialog() {
-		if (openWindow) {
-			window.openWindow.close();
-		}
-		if (document.EDITOR.action.value == "null" || document.EDITOR.action.value == "") {
-			top.closeframe.closePage("<%= wp.getParamTempfile() %>", "<%= wp.getParamResource() %>");
-		}
-	}
-	
-	function opensmallwin(url, name, w, h) {
-    	encodedurl = encodeURI(url);
-    	smallwindow = window.open(encodedurl, name, 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
-    	if(smallwindow != null) {
-       		if (smallwindow.opener == null) {
-         		smallwindow.opener = self;
-        	}
-		}
-	    return smallwindow;
-	}
-	
-	function checkPopup() {
-		if (openWindow && focusCount > 0) {
-			openWindow.focus();
-			focusCount = 0;
-		}
-	}
-	
-//-->
-</script>
-
-<!-- Ask user whether he really wants to leave HTML-Editor without saving -->
-<script type="text/javascript">
-<!--
-	function confirmExitHTML()
-	{
-		
-		if (EDITOR.EDIT_HTML.IsDirty) {
-			if (confirm("<%= wp.key("editor.message.exit") %>")) {
-				doEditHTML(1);
-			}
-		} else {
-				doEditHTML(1);
-		}
-	}
-//-->
-</script>
-
 </head>
 
 <body class="buttons-head" unselectable="on" onload="setText(); initStyles();" onunload="closeDialog();">
@@ -296,8 +254,7 @@ End Sub
 <input type="hidden" name="oldbodylanguage" value="<%= wp.getParamBodylanguage() %>">
 <input type="hidden" name="backlink" value="<%= wp.getParamBacklink() %>">
 
-	<tr>
-		<td>
+<tr><td>
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
@@ -339,7 +296,7 @@ if ("true".equals(wp.getParamNoactivex())  && "edit".equals(wp.getParamEditormod
 	
 </form>
 
-<form name="ELEMENTS" action="dialogs/elements.html" target="dialogElementWindow" method="post">
+<form style="display:none" name="ELEMENTS" action="dialogs/elements.html" target="dialogElementWindow" method="post">
 <input type="hidden" name="tempfile" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>">
 <input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>">
@@ -347,7 +304,7 @@ if ("true".equals(wp.getParamNoactivex())  && "edit".equals(wp.getParamEditormod
 <input type="hidden" name="ispopup" value="true">
 </form>
 
-<form name="PROPERTIES" action="../dialogs/property.html" target="dialogPropertyWindow" method="post">
+<form style="display:none" name="PROPERTIES" action="../dialogs/property.html" target="dialogPropertyWindow" method="post">
 <input type="hidden" name="resource" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="okfunctions" value="window.close();">
 <input type="hidden" name="usetempfileproject" value="true">
@@ -356,18 +313,6 @@ if ("true".equals(wp.getParamNoactivex())  && "edit".equals(wp.getParamEditormod
 
 </td></tr>
 </table>
-
-<script type="text/javascript">
-<!--
-if (loadSimple) {
-    document.EDITOR.action.value = "show";
-    document.EDITOR.content.value = text;
-    document.EDITOR.noactivex.value = "true";
-    document.EDITOR.target = "_self";
-    document.EDITOR.submit();
-}
-//-->
-</script>
 
 </body>
 <%= wp.htmlEnd() %>
