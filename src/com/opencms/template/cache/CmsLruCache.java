@@ -1,8 +1,8 @@
 package com.opencms.template.cache;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
- * Date   : $Date: 2001/05/15 10:31:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/05/17 13:06:15 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -41,6 +41,9 @@ package com.opencms.template.cache;
 
 public class CmsLruCache {
 
+    // enables the login. Just for debugging.
+    private static final boolean C_DEBUG = false;
+
     // the array to store everthing
     private CacheItem[] m_cache;
 
@@ -73,7 +76,9 @@ public class CmsLruCache {
      * @param size The size of the cache.
      */
     public CmsLruCache(int size) {
-//System.err.println("mgm--Cache started with "+size);
+        if(C_DEBUG){
+            System.err.println("--LruCache started with "+size);
+        }
         m_cache = new CacheItem[size];
         m_maxSize = size;
     }
@@ -87,7 +92,9 @@ public class CmsLruCache {
         int hashIndex = (key.hashCode() & 0x7FFFFFFF) % m_maxSize;
         CacheItem item = m_cache[hashIndex];
         CacheItem newItem = null;
-//System.err.println("mgm--put in cache "+(String)key );
+        if(C_DEBUG){
+            System.err.println("put in cache:   "+key);
+        }
         if(item != null){
             // there is a item allready. Collision.
             // lets look if the new item was inserted before
@@ -167,8 +174,10 @@ public class CmsLruCache {
     public synchronized Object get(Object key){
         int hashIndex = (key.hashCode() & 0x7FFFFFFF) % m_maxSize;
         CacheItem item = m_cache[hashIndex];
-//System.err.println("mgm--get from Cache: "+(String)key);
-//checkCondition();
+        if(C_DEBUG){
+            System.err.println("get from Cache: "+key);
+            //checkCondition();
+        }
         while (item != null){
             if(item.key.equals(key)){
                 // got it
@@ -189,7 +198,9 @@ public class CmsLruCache {
             }
             item = item.chain;
         }
-//System.err.println("    mgm-- not found in Cache!!!!");
+        if(C_DEBUG){
+            System.err.println("    not found in Cache!!!!");
+        }
         return null;
     }
 
@@ -198,7 +209,9 @@ public class CmsLruCache {
      * @param oldItem The item to be deleted.
      */
     private void remove(CacheItem oldItem){
-//System.err.println("mgm--removing from cache: "+(String)oldItem.key);
+        if(C_DEBUG){
+            System.err.println("mgm--removing from cache: "+(String)oldItem.key);
+        }
         int hashIndex = ((oldItem.key).hashCode() & 0x7FFFFFFF) % m_maxSize;
         CacheItem item = m_cache[hashIndex];
         if(item == oldItem){
@@ -228,16 +241,16 @@ public class CmsLruCache {
         System.err.println("mgm--");
         System.err.println("mgm--testing content from head to tail:");
         while(item!=null){
-            System.err.println("mgm--"+count+". "+(String)item.key);
+            System.err.println("    mgm--"+count+". "+(String)item.key);
             count++;
             item=item.next;
         }
-        System.err.println("mgm--");
+        System.err.println("");
         System.err.println("mgm--now from tail to head:");
         item = tail;
         count--;
         while(item!=null){
-            System.err.println("mgm--"+count+". "+(String)item.key);
+            System.err.println("    mgm--"+count+". "+(String)item.key);
             count--;
             item=item.previous;
         }

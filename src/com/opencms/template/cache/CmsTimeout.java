@@ -26,21 +26,60 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 package com.opencms.template.cache;
-
 /**
- * Title:
- * Description:
- * Copyright:    Copyright (c) 2001
- * Company:
- * @author
+ * This class is used in the CmsCacheDirectives. If an element can be cached for
+ * a specific time, a CmsTimeout must be set. It is planned to have diffrent modi
+ * for this Class. In this moment we have only one mode:
+ *
+ * 0: use the constructor with int x. It means the element has to be new generated
+ *      at 00:00 and then every x minutes.
+ *
+ * @author Hanjo Riege
  * @version 1.0
  */
 
 public class CmsTimeout {
 
-    private int m_timeinterval;
+    // indicates the mode this CmsTimeout is running in
+    private int modus;
 
-    public CmsTimeout(int timeInterval) {
-        m_timeinterval = timeInterval;
+    // USED FOR MODUS 0
+    // this is time a element is valid (in millisec)
+    private long m_timeinterval;
+    // here is the time 0:00 for this day, it is recalculated only if needed
+    private static long m_daystart = 0;
+    // 24 hours in millisec (24*60*60*1000)
+    private static final long C_24_HOURS = 86400000;
+
+    // Constructor for modus 0
+    public CmsTimeout(int minutes) {
+        modus = 0;
+        m_timeinterval = minutes * 60 * 1000;
+    }
+
+    /**
+     * Returns the last time when the element had to be new generated.
+     *
+     * @return last change time.
+     */
+    public long getLastChange(){
+        long time = System.currentTimeMillis();
+
+        // MODUS 0 (the only one for now)
+
+        // the time since 0:00 (should be < 24 hours)
+        long daytime = time - m_daystart;
+        if ( daytime > C_24_HOURS) {
+            // the daystart has to be recalculated
+            java.util.Calendar timeCal = java.util.Calendar.getInstance();
+            timeCal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+            timeCal.set(java.util.Calendar.SECOND, 0);
+            timeCal.set(java.util.Calendar.MINUTE, 0);
+            timeCal.set(java.util.Calendar.MILLISECOND, 0);
+            m_daystart = timeCal.getTime().getTime();
+            daytime = time - m_daystart;
+        }
+        return m_daystart + (daytime - (daytime % m_timeinterval));
+
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/05/10 12:32:37 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/05/17 13:06:15 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -60,6 +60,9 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /** Cache directives of this element. */
     private CmsCacheDirectives m_cacheDirectives;
 
+    /** Last time this element was generated.(used for CacheDirectives timeout) */
+    protected long m_timestamp = 0;
+
     /** All definitions declared in this element. */
     protected CmsElementDefinitionCollection m_elementDefinitions;
 
@@ -110,6 +113,14 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
             CmsBase.log(C_OPENCMS_ELEMENTCACHE, toString() + " adding variant \"" + key + "\" to cache. ");
         }
         m_variants.put(key, variant);
+    }
+
+    /**
+     * Clears all variants. Used for TimeCritical elements.
+     */
+    public void clearVariantCache(){
+        m_variants.clear();
+        m_timestamp = System.currentTimeMillis();
     }
 
     /**

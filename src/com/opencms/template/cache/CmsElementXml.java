@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/05/10 12:32:56 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/05/17 13:06:15 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -109,8 +109,12 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
         // Now check, if there is a variant of this element in the cache.
         //if(cacheable && !templateClass.shouldReload(cms, m_templateName, m_elementName, parameters, null)) {
         if(cd.isInternalCacheable()) {
-            //variant = getVariant(templateClass.getKey(cms, m_templateName, parameters, null));
-            variant = getVariant(cd.getCacheKey(cms, parameters));
+            if (cd.isTimeCritical() && (m_timestamp < cd.getTimeout().getLastChange())){
+                clearVariantCache();
+            }else{
+                //variant = getVariant(templateClass.getKey(cms, m_templateName, parameters, null));
+                variant = getVariant(cd.getCacheKey(cms, parameters));
+            }
             if(variant != null) {
                 result = resolveVariant(cms, variant, elementCache, mergedElDefs, elementName, parameters);
             }

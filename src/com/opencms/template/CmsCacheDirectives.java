@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/05/08 13:56:41 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/05/17 13:06:15 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.util.*;
  * used keys.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2001/05/08 13:56:41 $
+ * @version $Revision: 1.6 $ $Date: 2001/05/17 13:06:15 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
@@ -67,6 +67,7 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
 
     // the timeout object
     private CmsTimeout m_timeout;
+    boolean m_timecheck = false;
 
     /** Flag for internal cacheable */
     public static final int C_CACHE_INTERNAL = 1;
@@ -204,10 +205,14 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
         return m_timeout;
     }
 
+    public boolean isTimeCritical(){
+        return m_timecheck;
+    }
     /**
      * set the timeout object(used if the element should be reloaded every x minutes.
      */
     public void setTimeout(CmsTimeout timeout) {
+        m_timecheck = true;
         m_timeout = timeout;
     }
 
