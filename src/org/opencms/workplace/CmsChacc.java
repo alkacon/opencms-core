@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/16 14:30:03 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/07/18 08:33:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,15 @@ package org.opencms.workplace;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.flex.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -60,7 +62,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -479,16 +481,15 @@ public class CmsChacc extends CmsDialog {
             // for extended view, add short permissions and hidden div
             retValue.append("&nbsp;("+entry.getPermissions().getPermissionString()+")");
             retValue.append(dialogRow(HTML_END));
+            // show the resource from which the ace is inherited if present
+            if (inheritRes != null && !"".equals(inheritRes)) {
+                retValue.append("<div class=\"dialogpermissioninherit\">"+key("dialog.permission.list.inherited")+"  ");
+                retValue.append(inheritRes);
+                retValue.append("</div>\n");
+            }
             retValue.append("<div id =\""+type+name+entry.getResource()+"\" class=\"hide\">");
         } else {
             retValue.append(dialogRow(HTML_END));
-        }
-        
-        // show the resource from which the ace is inherited if present
-        if (inheritRes != null && !"".equals(inheritRes)) {
-            retValue.append("<div class=\"dialogpermissioninherit\">"+key("dialog.permission.list.inherited")+"  ");
-            retValue.append(inheritRes);
-            retValue.append("</div>\n");
         }
         
         retValue.append("<table class=\"dialogpermissiondetails\">\n");
@@ -581,9 +582,10 @@ public class CmsChacc extends CmsDialog {
      * Builds a StringBuffer with HTML code to show a list of all inherited access control entries.<p>
      * 
      * @param entries ArrayList with all entries to show for the long view
+     * @param parents Map of parent resources needed to get the connected resources for the detailed view
      * @return StringBuffer with HTML code for all entries
      */
-    private StringBuffer buildInheritedList(ArrayList entries) {       
+    private StringBuffer buildInheritedList(ArrayList entries, Map parents) {       
         StringBuffer retValue = new StringBuffer("");
         String view = getSettings().getPermissionDetailView();       
         Iterator i;
@@ -594,7 +596,7 @@ public class CmsChacc extends CmsDialog {
             while (i.hasNext()) {
                 CmsAccessControlEntry curEntry = (CmsAccessControlEntry)i.next();
                 // build the list with enabled extended view and resource name
-                retValue.append(buildPermissionEntryForm(curEntry, false, false, true, getConnectedResource(curEntry)));
+                retValue.append(buildPermissionEntryForm(curEntry, false, false, true, getConnectedResource(curEntry, parents)));
             }
         } else {
             // show the short view, use an ACL to build the list
@@ -657,7 +659,7 @@ public class CmsChacc extends CmsDialog {
      * @return HTML code for inherited and own entries of the current resource
      */
     public String buildRightsList() {
-        StringBuffer retValue = new StringBuffer("");
+        StringBuffer retValue = new StringBuffer(2048);
         
         // create headline for inherited entries
         retValue.append(dialogSubheadline(key("dialog.permission.headline.inherited")));
@@ -695,6 +697,21 @@ public class CmsChacc extends CmsDialog {
         try {
             allEntries = getCms().getAccessControlEntries(getParamFile(), true);
         } catch (CmsException e) { }
+        
+        // store all parent folder ids together with path in a map
+        Map parents = new HashMap();
+        String path = CmsResource.getParent(getParamFile());
+        List parentResources = new ArrayList();
+        try {
+            // get all parent folders of the current file
+            parentResources = getCms().readPath(path, false);
+        } catch (CmsException e) { }
+        Iterator k = parentResources.iterator();
+        while (k.hasNext()) {
+            // add the current folder to the map
+            CmsResource curRes = (CmsResource)k.next();
+            parents.put(curRes.getResourceId(), curRes.getFullResourceName());
+        }        
 
         // create new ArrayLists in which inherited and non inherited entries are stored
         ArrayList ownEntries = new ArrayList(0);
@@ -702,7 +719,6 @@ public class CmsChacc extends CmsDialog {
 
         for (int i=0; i<allEntries.size(); i++) {
             CmsAccessControlEntry curEntry = (CmsAccessControlEntry)allEntries.elementAt(i);
-    
             if (curEntry.isInherited()) {
                 // add the entry to the inherited rights list for the "long" view
                 if ("long".equals(getSettings().getPermissionDetailView())) {       
@@ -716,8 +732,11 @@ public class CmsChacc extends CmsDialog {
         
         // now create the inherited entries box
         retValue.append(dialogWhiteBox(HTML_START));
-        retValue.append(buildInheritedList(inheritedEntries));       
+        retValue.append(buildInheritedList(inheritedEntries, parents));       
         retValue.append(dialogWhiteBox(HTML_END));
+        
+        // create the add user/group form
+        retValue.append(buildAddForm());
 
         // create the resource entries box
         retValue.append(buildResourceList(ownEntries));
@@ -730,8 +749,8 @@ public class CmsChacc extends CmsDialog {
      * 
      * @return HTML String with the form
      */
-    public String buildAddForm() {
-        StringBuffer retValue = new StringBuffer("");
+    private String buildAddForm() {
+        StringBuffer retValue = new StringBuffer(256);
         
         // only display form if the current user has the "control" right
         if (getEditable()) { 
@@ -864,19 +883,16 @@ public class CmsChacc extends CmsDialog {
      * Returns the resource on which the specified access control entry was set.<p>
      * 
      * @param entry the current access control entry
+     * @param parents the parent resources to determine the connected resource
      * @return the resource name of the corresponding resource
      */
-    protected String getConnectedResource(CmsAccessControlEntry entry) {
-        // TODO: make this work and return the absolute path!
+    protected String getConnectedResource(CmsAccessControlEntry entry, Map parents) {
         CmsUUID resId = entry.getResource();
-        try {
-            CmsFolder folder = getCms().readFolder(resId, false);   
-            getCms().readAbsolutePath(folder);
-            return folder.getFullResourceName();
-        } catch (CmsException e) {
-            // return null;
-            return resId.toString();
+        String resName = (String)parents.get(resId);
+        if (resName != null && !"".equals(resName)) {
+            return resName;
         }
+        return resId.toString();       
     }
     
     /**
