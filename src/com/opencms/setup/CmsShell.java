@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2000/02/09 09:53:53 $
+ * @version $Revision: 1.24 $ $Date: 2000/02/10 07:55:58 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -373,6 +373,37 @@ public class CmsShell implements I_CmsConstants {
 		}
 	}
 
+	/**
+	 * Adds a user to the cms.
+	 * 
+	 * @param name The new name for the user.
+	 * @param password The new password for the user.
+	 * @param group The default groupname for the user.
+	 * @param description The description for the user.
+	 * @param flags The flags for the user.
+	 */
+	public void addUser( String name, String password, 
+						 String group, String description,
+						 String firstname, String lastname, String email) {
+		try {
+			A_CmsUser user = m_cms.addUser( name, password, group, 
+											description, new Hashtable(), C_FLAG_ENABLED);
+			user.setEmail(email);
+			user.setFirstname(firstname);
+			user.setLastname(lastname);
+			user.setAdditionalInfo("test", "AS");
+			m_cms.writeUser(user);
+			A_CmsUser newUser = m_cms.readUser(name);
+			System.out.println(user);
+			System.out.println(user.getFirstname());
+			System.out.println(user.getLastname());
+			System.out.println(user.getEmail());
+			System.out.println(user.getAdditionalInfo("test"));
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
 	/** 
 	 * Deletes a user from the Cms.
 	 * 

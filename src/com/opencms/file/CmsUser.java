@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/10 07:55:58 $
  */
 
 public class CmsUser extends A_CmsUser implements I_CmsConstants {
@@ -227,7 +227,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
 	 * @param obj The additinoal information value.
 	 * 
 	 */
-    void setAdditionalInfo(String key, Object obj)  {
+    public void setAdditionalInfo(String key, Object obj)  {
         m_additionalInfo.put(key,obj);
     }
      
@@ -273,7 +273,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
 	 * 
 	 * @param The new email adress.
      */
-    void setEmail(String value) {
+    public void setEmail(String value) {
         m_email = value;
     }
 
@@ -291,7 +291,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
 	 * 
 	 * @param the USER_FIRSTNAME.
 	 */
-	void setFirstname(String firstname) {
+	public void setFirstname(String firstname) {
 		m_firstname = firstname;
     }
 	
@@ -309,7 +309,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
 	 * 
 	 * @return the USER_SURNAME, or null.
 	 */
-	void setLastname(String lastname) {
+	public void setLastname(String lastname) {
         m_lastname = lastname;
     }
 	
@@ -329,7 +329,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
      *	 
      * @param value The user adress.
 	 */
-    void setAddress(String value) {
+    public void setAddress(String value) {
         m_additionalInfo.put(C_ADDITIONAL_INFO_ADDRESS,value);
     }
 
@@ -349,7 +349,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
 	 * 
 	 * @param value The new user section.
 	 */
-    void setSection(String value) {
+    public void setSection(String value) {
         m_additionalInfo.put(C_ADDITIONAL_INFO_SECTION,value);
     }
     

@@ -7,7 +7,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/28 17:42:30 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/10 07:55:58 $
  */
 public abstract class A_CmsUser {
 	
@@ -103,7 +103,7 @@ public abstract class A_CmsUser {
 	 * @param obj The additinoal information value.
 	 * 
 	 */
-	abstract void setAdditionalInfo(String key, Object obj);
+	abstract public void setAdditionalInfo(String key, Object obj);
     
     /**
 	 * Returns the complete Hashtable with additional information about the user. <BR/>
@@ -141,14 +141,14 @@ public abstract class A_CmsUser {
 	 * @param value The new email adress.
      */
     
-	abstract void setEmail(String value);
+	abstract public void setEmail(String value);
 
 	/**
 	 * Sets the firstname.
 	 * 
 	 * @param the USER_FIRSTNAME.
 	 */
-	abstract void setFirstname(String firstname);
+	abstract public void setFirstname(String firstname);
 	
 	/**
 	 * Gets the firstname.
@@ -162,7 +162,7 @@ public abstract class A_CmsUser {
 	 * 
 	 * @param the USER_SURNAME.
 	 */
-	abstract void setLastname(String lastname);
+	abstract public void setLastname(String lastname);
 	
 	/**
 	 * Gets the lastname.
@@ -183,7 +183,7 @@ public abstract class A_CmsUser {
      *	 
      * @param value The user adress.
 	 */
-	abstract void setAddress(String value);
+	abstract public void setAddress(String value);
 
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_SECTION);</pre>
@@ -197,7 +197,7 @@ public abstract class A_CmsUser {
 	 * 
 	 * @param value The new user section.
 	 */
-	abstract void setSection(String value);
+	abstract public void setSection(String value);
     /**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP_ID);</pre>
 	 * 

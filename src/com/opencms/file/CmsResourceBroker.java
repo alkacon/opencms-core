@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.47 $ $Date: 2000/02/09 15:12:10 $
+ * @version $Revision: 1.48 $ $Date: 2000/02/10 07:55:58 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -778,7 +778,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// first write the lastlogin-time.
 			newUser.setLastlogin(new Date().getTime());
 			// write the user back to the cms.
-			// TODO: m_userRb.writeUser(newUser);
+			m_userRb.writeUser(newUser);
 			return(newUser);
 		} else {
 			// No Access!
@@ -1781,8 +1781,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		// try to get the resource-type
 		try { 
-			return((A_CmsResourceType)getAllResourceTypes(currentUser, currentProject).
-				get(resourceType));
+			A_CmsResourceType type = (A_CmsResourceType)getAllResourceTypes(currentUser, currentProject).get(resourceType);
+			if(type == null) {
+				throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, 
+					CmsException.C_NOT_FOUND);
+			}
+			return type;
 		} catch(NullPointerException exc) {
 			// was not found - throw exception
 			throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, 
@@ -3434,311 +3438,5 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		} catch(NullPointerException exc) {
 			// resources was null - nothing was changed - ignore it
 		}
-	}
-	
-	
-	// Now the task-stuff
-	
-	/**
-	 * Creates a new task.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param agent User who will edit the task 
-	 * @param role Usergroup for the task
-	 * @param taskname Name of the task
-	 * @param taskcomment Description of the task
-	 * @param timeout Time when the task must finished
-	 * @param priority Id for the priority
-	 * 
-	 * @return A new Task Object
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	
-	public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject currentProject, 
-								A_CmsUser agent, A_CmsGroup role, 
-								String taskname, String taskcomment, 
-								java.sql.Timestamp timeout, int priority)
-		throws CmsException {
-		// TODO: task: timeout must be a long
-		return m_taskRb.createTask(currentUser, currentProject, agent, role, 
-								   taskname, taskcomment, timeout, priority);
-	}
-
-	/**
-	 * Ends a task from the Cms.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task to end.
-	 
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void endTask(A_CmsUser currentUser, A_CmsProject currentProject, A_CmsTask task) 
-		throws CmsException {
-		// TODO: task: param task must be a string!
-		m_taskRb.endTask(currentUser, task);
-	}
-
-	/**
-	 * Forwards a task to a new user.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task to forward.
-	 * @param newUser The user to forward to.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void forwardTask(A_CmsUser currentUser, A_CmsProject currentProject,
-							A_CmsTask task, String newUserName )
-		throws CmsException {
-		// TODO: task: param task must be a string!
-		A_CmsUser newUser = this.readUser(currentUser, currentProject, newUserName);
-		m_taskRb.forwardTask(currentUser, task, newUser);
-	}
-
-	/**
-	 * Accept a task from the Cms.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task to accept.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void acceptTask(A_CmsUser currentUser, A_CmsProject currentProject,
-						   A_CmsTask task)
-		throws CmsException {
-		// TODO: task: param task must be a string!
-		m_taskRb.acceptTask(currentUser, task);
-	}
-	
-	/**
-	 * Set Percentage of a task
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task to set the percentage.
-	 * @param new percentage value
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void setPercentage(A_CmsUser currentUser, A_CmsProject currentProject,
-							  A_CmsTask task, int percentage)
-		throws CmsException {
-		// TODO: task: param task must be a string!
-		m_taskRb.setPercentage(currentUser, task, percentage);
-	}
-
-	/**
-	 * Reads all tasks for a project.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param projectName The Project in which the tasks are defined. Can be null for all tasks
-	 * @param orderBy Chooses, how to order the tasks. Valid tasktypes are:
-	 * C_TASKS_NEW, C_TASKS_OPEN, C_TASKS_ACTIVE, C_TASKS_DONE
-	 * @param orderBy Chooses, how to order the tasks.
-	 * @param sort Choose who to sort the tasks. C_TASK_ASC, C_TASK_DESC, or null
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public Vector readTasks(A_CmsUser currentUser, A_CmsProject currentProject,
-							String projectName, int tasktype, String orderBy, 
-							String sort)
-		throws CmsException {
-		A_CmsProject project = null;
-		if(projectName != null) {
-			project = readProject(currentUser, currentProject, projectName);
-		}
-		return m_taskRb.readTasks(currentUser, project, tasktype, orderBy, sort);
-	}
-
-	/**
-	 * Reads all tasks for a user in a project.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param projectName The Project in which the tasks are defined or null for all projects.
-	 * @param agentName The user who has to process the task or null for all users.
-	 * @param tasktype Type of the tasks
-	 * @param orderBy Chooses, how to order the tasks. Valid tasktypes are:
-	 * C_TASKS_NEW, C_TASKS_OPEN, C_TASKS_ACTIVE, C_TASKS_DONE
-	 * @param orderBy Chooses, how to order the tasks.
-	 * @param sort Choose who to sort the tasks. C_TASK_ASC, C_TASK_DESC, or null
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public Vector readTasks(A_CmsUser currentUser, A_CmsProject currentProject,
-							String projectName, String agentName, 
-							int tasktype, String orderBy, String sort) 
-		throws CmsException {
-		A_CmsProject project = null;
-		A_CmsUser agent = null;
-		if(projectName != null) {
-			project = readProject(currentUser, currentProject, projectName);
-		}
-		if(agentName != null) {
-			agent = readUser(currentUser, currentProject, agentName);
-		}
-		return m_taskRb.readTasks(currentUser, project, agent, tasktype, orderBy, sort);
-	}
-
-	/**
-	 * Reads all posed tasks of a project.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param project The Project in which the tasks are defined or null for all projects..
-	 * @param owner The owner who has to process the task or null for all owner.
-	 * @param orderBy Chooses, how to order the tasks. Valid tasktypes are:
-	 * C_TASKS_NEW, C_TASKS_OPEN, C_TASKS_ACTIVE, C_TASKS_DONE
-	 * @param orderBy Chooses, how to order the tasks.
-	 * @param sort Choose who to sort the tasks. C_TASK_ASC, C_TASK_DESC, or null
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public Vector readPosedTasks(A_CmsUser currentUser, A_CmsProject currentProject,
-								 String projectName, String ownerName, int taskType, 
-								 String orderBy, String sort) 
-		throws CmsException {
-		A_CmsProject project = null;
-		A_CmsUser owner = null;
-		if(projectName != null) {
-			project = readProject(currentUser, currentProject, projectName);
-		}
-		if(ownerName != null) {
-			owner = readUser(currentUser, currentProject, ownerName);
-		}
-		return m_taskRb.readPosedTasks(currentUser, project, owner, taskType, 
-									   orderBy, sort);
-	}
-
-	/**
-	 * Writes a new user tasklog for a task.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task .
-	 * @param user User who added the Log
-	 * @param comment Description for the log
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void writeTaskLog(A_CmsUser currentUser, A_CmsProject currentProject,
-							 A_CmsTask task, A_CmsUser user, String comment)
-		throws CmsException {
-		// TODO: task: param task must be a string!
-		// TODO: task: what is the difference between currentUser and user???
-		// TODO: task: Some parameters may be strings!
-		m_taskRb.writeTaskLog(currentUser, task, user, comment);
-	}
-
-	/**
-	 * Reads log entries for a task.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task for the tasklog to read .
-	 * @return A Vector of new TaskLog objects 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public Vector readTaskLogs(A_CmsUser currentUser, A_CmsProject currentProject,
-							   A_CmsTask task)
-		throws CmsException {
-		// TODO: task: param task must be a string!
-		return m_taskRb.readTaskLogs(currentUser, task);
-	}
-	
-	/**
-	 * Reads log entries for a project.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @return A Vector of new TaskLog objects 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public Vector readProjectLogs(A_CmsUser currentUser, A_CmsProject currentProject)
-		throws CmsException {
-		return m_taskRb.readProjectLogs(currentUser, currentProject);
-	}
-	
-	/**
-	 * Set a Parameter for a task.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task.
-	 * @param parname Name of the parameter.
-	 * @param parvalue Value if the parameter.
-	 * 
-	 * @return The id of the inserted parameter or 0 if the parameter already exists for this task.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public int setTaskPar(A_CmsUser currentUser, A_CmsProject currentProject,
-						  A_CmsTask task, String parname, String parvalue)
-		throws CmsException {
-		// TODO: task: param task must be a string!
-		return m_taskRb.setTaskPar(currentUser, task, parname, parvalue);
-	}
-
-	/**
-	 * Get a parameter value for a task.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param task The task.
-	 * @param parname Name of the parameter.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public String getTaskPar(A_CmsUser currentUser, A_CmsProject currentProject,
-							 A_CmsTask task, String parname)
-		throws CmsException {
-		// TODO: task: param task must be a string!
-		return m_taskRb.getTaskPar(currentUser, task, parname);
 	}
 }
