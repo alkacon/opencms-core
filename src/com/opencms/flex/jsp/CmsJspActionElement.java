@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/04/04 16:37:45 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/04/08 07:15:31 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.flex.util.CmsMessages;
 import com.opencms.launcher.CmsDumpLauncher;
+import com.opencms.launcher.CmsLinkLauncher;
 import com.opencms.launcher.CmsXmlLauncher;
 import com.opencms.launcher.I_CmsLauncher;
 import com.opencms.template.CmsXmlTemplate;
@@ -77,7 +78,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.0 beta 2
  */
@@ -620,6 +621,10 @@ public class CmsJspActionElement {
                     // static page
                     CmsFile file = getCmsObject().readFile(target);
                     return new String(file.getContents(), getRequestContext().getEncoding());
+                } else if (launcher instanceof CmsLinkLauncher) {
+                    // link
+                    CmsFile file = getCmsObject().readFile(target);
+                    return new String(file.getContents());
                 }
             } catch (CmsException ce) {
                 return "??? " + ce.getMessage() + " ???";
