@@ -2,87 +2,12 @@
 <export>
     <info>
         <creator>Alexander Kandzior (a.kandzior@alkacon.com)</creator>
-        <opencms_version>5.0_beta_2 Kaitain</opencms_version>
-        <createdate>11.11.2002 90:00</createdate>
+        <opencms_version>5.0_rc_1 Kaitain</opencms_version>
+        <createdate>17.12.2002 12:00</createdate>
         <project>Offline</project>
         <export_version>1</export_version>
     </info>
     <files>
-        <file>
-            <source>index.jsp</source>
-            <destination>index.jsp</destination>
-            <type>jsp</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>content-encoding</name>
-                    <type>8</type>
-                    <value><![CDATA[ISO-8859-1]]></value>
-                </property>
-                <property>
-                    <name>NavText</name>
-                    <type>8</type>
-                    <value><![CDATA[Welcome to OpenCms]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>8</type>
-                    <value><![CDATA[1.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>8</type>
-                    <value><![CDATA[Welcome to OpenCms]]></value>
-                </property>
-                <property>
-                    <name>template</name>
-                    <type>8</type>
-                    <value><![CDATA[/system/modules/default/frametemplates/default]]></value>
-                </property>
-                <property>
-                    <name>export</name>
-                    <type>8</type>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>notes_5.0b2.html</source>
-            <destination>notes_5.0b2.html</destination>
-            <type>page</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>content-encoding</name>
-                    <type>1</type>
-                    <value><![CDATA[ISO-8859-1]]></value>
-                </property>
-                <property>
-                    <name>NavText</name>
-                    <type>1</type>
-                    <value><![CDATA[5.0 beta 2 release notes]]></value>
-                </property>
-                <property>
-                    <name>NavPos</name>
-                    <type>1</type>
-                    <value><![CDATA[2.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>1</type>
-                    <value><![CDATA[5.0 beta 2 release notes]]></value>
-                </property>
-                <property>
-                    <name>export</name>
-                    <type>1</type>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-        </file>
         <file>
             <destination>system</destination>
             <type>folder</type>
@@ -104,15 +29,6 @@
                     <value><![CDATA[false]]></value>
                 </property>
             </properties>
-        </file>
-        <file>
-            <source>system/bodies/notes_5.0b2.html</source>
-            <destination>system/bodies/notes_5.0b2.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties/>
         </file>
         <file>
             <destination>system/galleries</destination>
@@ -317,21 +233,6 @@
             </properties>
         </file>
         <file>
-            <source>system/modules/default/contenttemplates/empty.xml</source>
-            <destination>system/modules/default/contenttemplates/empty.xml</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>4</type>
-                    <value><![CDATA[Empty body loader]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
             <destination>system/modules/default/default_bodies</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -355,80 +256,12 @@
             </properties>
         </file>
         <file>
-            <destination>system/modules/default/elements</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/modules/default/elements/default_nav.jsp</source>
-            <destination>system/modules/default/elements/default_nav.jsp</destination>
-            <type>jsp</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>content-encoding</name>
-                    <type>8</type>
-                    <value><![CDATA[ISO-8859-1]]></value>
-                </property>
-                <property>
-                    <name>cache</name>
-                    <type>8</type>
-                    <value><![CDATA[uri]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>8</type>
-                    <value><![CDATA[Default template navigation]]></value>
-                </property>
-                <property>
-                    <name>export</name>
-                    <type>8</type>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
             <destination>system/modules/default/frametemplates</destination>
             <type>folder</type>
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
             <properties/>
-        </file>
-        <file>
-            <source>system/modules/default/frametemplates/default</source>
-            <destination>system/modules/default/frametemplates/default</destination>
-            <type>jsp</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>content-encoding</name>
-                    <type>8</type>
-                    <value><![CDATA[ISO-8859-1]]></value>
-                </property>
-                <property>
-                    <name>cache</name>
-                    <type>8</type>
-                    <value><![CDATA[uri;params=(_templatepart)]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>8</type>
-                    <value><![CDATA[Default template]]></value>
-                </property>
-                <property>
-                    <name>export</name>
-                    <type>8</type>
-                    <value><![CDATA[false]]></value>
-                </property>
-            </properties>
         </file>
         <file>
             <source>system/modules/default/frametemplates/empty</source>
@@ -446,68 +279,12 @@
             </properties>
         </file>
         <file>
-            <destination>system/modules/default/resources</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/modules/default/resources/default.css</source>
-            <destination>system/modules/default/resources/default.css</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Default template style sheet]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>system/modules/default/resources/logo_opencms_large.gif</source>
-            <destination>system/modules/default/resources/logo_opencms_large.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/modules/default/resources/logo_opencms_power.gif</source>
-            <destination>system/modules/default/resources/logo_opencms_power.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties/>
-        </file>
-        <file>
             <destination>system/modules/default/templates</destination>
             <type>folder</type>
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
             <properties/>
-        </file>
-        <file>
-            <source>system/modules/default/templates/default</source>
-            <destination>system/modules/default/templates/default</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Default template]]></value>
-                </property>
-            </properties>
         </file>
         <file>
             <source>system/modules/default/templates/empty</source>
@@ -2735,15 +2512,6 @@
             </properties>
         </file>
         <file>
-            <source>system/workplace/administration/module/empty.html</source>
-            <destination>system/workplace/administration/module/empty.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>47</access>
-            <properties/>
-        </file>        
-        <file>
             <source>system/workplace/administration/module/delete_warning_content</source>
             <destination>system/workplace/administration/module/delete_warning_content</destination>
             <type>plain</type>
@@ -2756,6 +2524,15 @@
             <source>system/workplace/administration/module/delete_warning_content.html</source>
             <destination>system/workplace/administration/module/delete_warning_content.html</destination>
             <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>47</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/module/empty.html</source>
+            <destination>system/workplace/administration/module/empty.html</destination>
+            <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
             <access>47</access>
@@ -3310,7 +3087,7 @@
             <group>Users</group>
             <access>47</access>
             <properties/>
-        </file>        
+        </file>
         <file>
             <source>system/workplace/administration/project/currentprojects/index.html</source>
             <destination>system/workplace/administration/project/currentprojects/index.html</destination>
@@ -7685,13 +7462,7 @@
             <user>Admin</user>
             <group>Users</group>
             <access>15</access>
-            <properties>
-                <property>
-                    <name>content-encoding</name>
-                    <type>3</type>
-                    <value><![CDATA[UTF-8]]></value>
-                </property>
-            </properties>
+            <properties/>
         </file>
         <file>
             <destination>system/workplace/locales/en</destination>
@@ -7708,13 +7479,7 @@
             <user>Admin</user>
             <group>Users</group>
             <access>15</access>
-            <properties>
-                <property>
-                    <name>content-encoding</name>
-                    <type>3</type>
-                    <value><![CDATA[UTF-8]]></value>
-                </property>
-            </properties>
+            <properties/>
         </file>
         <file>
             <destination>system/workplace/locales/it</destination>
@@ -7731,13 +7496,7 @@
             <user>Admin</user>
             <group>Users</group>
             <access>15</access>
-            <properties>
-                <property>
-                    <name>content-encoding</name>
-                    <type>3</type>
-                    <value><![CDATA[UTF-8]]></value>
-                </property>
-            </properties>
+            <properties/>
         </file>
         <file>
             <destination>system/workplace/resources</destination>
