@@ -197,13 +197,13 @@ function doAction(action) {
 			location.href='unlock.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 4: {
-			location.href='lasturl=' + encLasturl + '&copy.html?file='+ kontextparam;
+			location.href='copy.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 5: {
-			location.href='lasturl=' + encLasturl + '&move.html?file='+ kontextparam;
+			location.href='move.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 6: {
-			location.href='lasturl=' + encLasturl + '&rename.html?file='+ kontextparam;
+			location.href='rename.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 7: {
 			location.href='delete.html?lasturl=' + encLasturl + '&file='+ kontextparam;
