@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/01/31 10:18:41 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/02/14 14:32:09 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ import com.opencms.core.*;
 import com.opencms.defaults.*;
 import com.opencms.file.*;
 import java.util.*;
+import java.util.zip.*;
+import org.w3c.dom.*;
 import com.opencms.template.*;
 
 /**
@@ -43,8 +45,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.14 $
- * $Date: 2002/01/31 10:18:41 $
+ * $Revision: 1.15 $
+ * $Date: 2002/02/14 14:32:09 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -314,6 +316,29 @@ public abstract class CmsMasterContent
     }
 
     /**
+     * import method
+     * to importthe current content of the content definition to the database.
+     * @param cms the CmsObject to use.
+     */
+    public void importMaster(CmsObject cms) throws Exception {
+        getDbAccessObject(getSubId()).insert(m_cms, this, m_dataSet);
+        // everything is written - so lockstate was updated
+        m_lockstateWasChanged = false;
+        // for next access to the media - clean them so they must be read again
+        // from the db
+        m_dataSet.m_media = null;
+        m_dataSet.m_mediaToAdd = new Vector();
+        m_dataSet.m_mediaToDelete = new Vector();
+        m_dataSet.m_mediaToUpdate = new Vector();
+
+        // for next access to the channels - clean them so they must be read again
+        // from the db
+        m_dataSet.m_channel = null;
+        m_dataSet.m_channelToAdd = new Vector();
+        m_dataSet.m_channelToDelete = new Vector();
+    }
+
+    /**
      * gets the unique Id of a content definition instance
      * @param cms the CmsObject to use.
      * @returns a string with the Id
@@ -368,7 +393,7 @@ public abstract class CmsMasterContent
      */
     public String getOwnerName() {
         String retValue = m_dataSet.m_userId + "";
-        if(m_dataSet.m_userName == null) {
+        if(m_dataSet.m_userName == null || "".equals(m_dataSet.m_userName.trim())) {
             try { // to read the real name of this user
                 retValue = m_cms.readUser(m_dataSet.m_userId).getName();
             } catch(CmsException exc) {
@@ -394,7 +419,7 @@ public abstract class CmsMasterContent
      */
     public String getGroup() {
         String retValue = m_dataSet.m_groupId + "";
-        if(m_dataSet.m_groupName == null) {
+        if(m_dataSet.m_groupName == null || "".equals(m_dataSet.m_groupName.trim())) {
             try { // to read the real name of this group
                 retValue = m_cms.readGroup(m_dataSet.m_groupId).getName();
             } catch(CmsException exc) {
@@ -628,6 +653,16 @@ public abstract class CmsMasterContent
         getDbAccessObject(subId).publishProject(cms, enableHistory, projectId,
             versionId, publishingDate, subId, contentDefinitionClassName,
             changedRessources, changedModuleData );
+    }
+
+    /**
+     * Returns a Vector with the datasets of the contentdefinitions in the given channel.
+     * @param subId the id-type of the contentdefinition.
+     * @param channelId the id of the channel.
+     * @retruns Vector the vector that includes the datasets
+     */
+    protected static Vector readAllByChannel(CmsObject cms, int channelId, int subId) throws CmsException{
+        return getDbAccessObject(subId).readAllByChannel(cms, channelId, subId);
     }
 
     /**
