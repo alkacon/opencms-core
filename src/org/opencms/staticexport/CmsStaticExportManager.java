@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/03/26 16:53:00 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/03/29 09:56:41 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -136,6 +136,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     
     /** Export url to send internal requests to */
     private String m_exportUrl;
+    
+    /** Matcher for  selecting those resources which should be part of the staic export*/
+    private static CmsExportFolderMatcher m_exportFolderMatcher;
     
     /**
      * Creates a new static export property object.<p>
@@ -210,6 +213,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             exportVfsFolders = new String[0];
         }
         exportManager.setExportVfsFolders(exportVfsFolders);
+        m_exportFolderMatcher = new CmsExportFolderMatcher(exportVfsFolders);
       
         
         // set the path for the export
@@ -563,29 +567,34 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             
             vfsName = pupRes.getRootPath();
             
-            // only export VFS files. COS data and foldersis handled elsewhere 
-            if (pupRes.isVfsResource() && (pupRes.isFile())) {
-                // get the export data object. if null is returned, this resource cannot be
-                // exported.
-                CmsStaticExportData exportData = getExportData(vfsName, cms);
-              
-                //
-                if (exportData != null) {
-                    // check loader for current resource if it must be processed before exported
-                    I_CmsResourceLoader loader = OpenCms.getLoaderManager().getLoader(exportData.getResource().getLoaderId());
-                    if (! loader.isStaticExportProcessable()) {
-                        // this resource must not be process, so export it if its not marked as deleted
-                        if (pupRes.getState() != I_CmsConstants.C_STATE_DELETED) {
-                            // mark the resource for export to the real file system     
-                            resourcesToExport.add(exportData);
-                        } 
-                    } else {
-                        // the resource is a template resource. so store the name of it in the DB
-                        // for further use.                       
-                        templatesFound = true;
-                        cms.writeStaticExportPublishedResource(exportData.getRfsName(), 0, "");                            
-                    }              
-                }                    
+            // only process this resource, if it is within the tree of allowed folders for static 
+            // export
+            if (m_exportFolderMatcher.match(vfsName)) {
+            
+                // only export VFS files. COS data and foldersis handled elsewhere 
+                if (pupRes.isVfsResource() && (pupRes.isFile())) {
+                    // get the export data object. if null is returned, this resource cannot be
+                    // exported.
+                    CmsStaticExportData exportData = getExportData(vfsName, cms);
+                  
+                    //
+                    if (exportData != null) {
+                        // check loader for current resource if it must be processed before exported
+                        I_CmsResourceLoader loader = OpenCms.getLoaderManager().getLoader(exportData.getResource().getLoaderId());
+                        if (! loader.isStaticExportProcessable()) {
+                            // this resource must not be process, so export it if its not marked as deleted
+                            if (pupRes.getState() != I_CmsConstants.C_STATE_DELETED) {
+                                // mark the resource for export to the real file system                  
+                                resourcesToExport.add(exportData);
+                            } 
+                        } else {
+                            // the resource is a template resource. so store the name of it in the DB
+                            // for further use.                       
+                            templatesFound = true;
+                            cms.writeStaticExportPublishedResource(exportData.getRfsName(), 0, "");                            
+                        }              
+                    }                    
+                }
             }
         }
                 
