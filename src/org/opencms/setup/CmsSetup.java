@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/17 12:32:13 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/17 16:01:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,15 +30,13 @@
  */
 package org.opencms.setup;
 
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.util.CmsUUID;
 
 import java.io.File;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.io.FileInputStream;
+import java.util.*;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -50,14 +48,19 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  */
 public class CmsSetup {
-
-    /**
-     * The database properties
-     */
-    private static final String C_DB_PROPERTIES = "org/opencms/setup/dbsetup.properties";
+    
+    /** Required setup files per database server.<p> */
+    public static final String[] requiredDbSetupFiles = {
+            "step_3_database_setup.jsp",
+            "database.properties",
+            "create_db.sql",
+            "create_tables.sql",
+            "drop_db.sql",
+            "drop_tables.sql"
+    };    
     
     /** 
      * Contains error messages, displayed by the setup wizard 
@@ -68,11 +71,6 @@ public class CmsSetup {
      * Contains the properties from the opencms.properties file 
      */
     private ExtendedProperties m_extProperties;
-
-    /** 
-     * Properties from dbsetup.properties 
-     */
-    private Properties m_dbProperties;
     
     /**
      * Contains the HTML fragments for the output of the setup pages
@@ -91,6 +89,19 @@ public class CmsSetup {
      * Database password used to drop and create database
      */
     private String m_dbCreatePwd;
+    
+    private List m_databaseKeys;
+    private List m_databaseNames;
+    private Map m_databaseProperties;
+    
+    /**
+     * Default constructor.<p>
+     */
+    public CmsSetup() {
+        m_databaseKeys = null;
+        m_databaseNames = null;
+        m_databaseProperties = null;
+    }
 
     /** 
      * This method reads the properties from the opencms.property file
@@ -101,11 +112,11 @@ public class CmsSetup {
      * @param props path to the properties file
      */
     public void initProperties(String props) {
+        getDatabaseNames();
+        
         String path = getConfigFolder() + props;
         try {
             m_extProperties = CmsSetupUtils.loadProperties(path);
-            m_dbProperties = new Properties();
-            m_dbProperties.load(getClass().getClassLoader().getResourceAsStream(C_DB_PROPERTIES));
             m_htmlProps = new Properties();
             m_htmlProps.load(getClass().getClassLoader().getResourceAsStream(OpenCmsCore.C_FILE_HTML_MESSAGES));
         } catch (Exception e) {
@@ -173,7 +184,11 @@ public class CmsSetup {
      * @param value The value of the property
      */
     public void setDbProperty(String key, String value) {
-        m_dbProperties.put(key, value);
+        String databaseKey = key.substring(0, key.indexOf("."));
+        Map databaseProperties = (Map) getDatabaseProperties().get(databaseKey);
+        databaseProperties.put(key, value);
+        
+        //m_dbProperties.put(key, value);
     }
 
     /**
@@ -184,7 +199,10 @@ public class CmsSetup {
      */
     public String getDbProperty(String key) {
         Object value = null;
-        return ((value = m_dbProperties.get(key)) != null) ? value.toString() : "";
+        String databaseKey = key.substring(0, key.indexOf("."));
+        Map databaseProperties = (Map) getDatabaseProperties().get(databaseKey);
+
+        return ((value = databaseProperties.get(key)) != null) ? (String) value : "";
     }
 
     /** 
@@ -264,9 +282,11 @@ public class CmsSetup {
         if (m_database == null) {
             m_database = this.getExtProperty("db.name");
         }
+
         if (m_database == null || "".equals(m_database)) {
-            m_database = (String)this.getDatabases().firstElement();
+            m_database = (String) getDatabases().get(0);
         }
+
         return m_database;
     }
 
@@ -275,31 +295,131 @@ public class CmsSetup {
      *
      * @return List of names of possible databases 
      */
-    public Vector getDatabases() {
-        Vector values = new Vector();
+    public List getDatabases() {
+        File databaseSetupFolder = null;
+        File[] childResources = null;
+        File childResource = null;
+        File setupFile = null;
+        boolean hasMissingSetupFiles = false;
 
-        String value = this.getDbProperty("databases");
-        StringTokenizer tokenizer = new StringTokenizer(value, ",");
-        while (tokenizer.hasMoreTokens()) {
-            values.add(tokenizer.nextToken().trim());
+        if (m_databaseKeys != null) {
+            return m_databaseKeys;
         }
-        return values;
+
+        try {
+            m_databaseKeys = (List) new ArrayList();
+            databaseSetupFolder = new File(m_basePath + File.separator + "setup" + File.separator + "database");
+            childResources = databaseSetupFolder.listFiles();
+
+            if (childResources != null) {
+                for (int i = 0; i < childResources.length; i++) {
+                    childResource = childResources[i];
+                    hasMissingSetupFiles = false;
+
+                    if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
+                        for (int j = 0; j < requiredDbSetupFiles.length; j++) {
+                            setupFile = new File(childResource.getPath() + File.separator + requiredDbSetupFiles[j]);
+
+                            if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
+                                hasMissingSetupFiles = true;
+                                System.err.println("[" + this.getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
+                                break;
+                            }
+                        }
+
+                        if (!hasMissingSetupFiles) {
+                            m_databaseKeys.add(childResource.getName().trim());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            e.printStackTrace(System.err);
+            m_databaseKeys = Collections.EMPTY_LIST;
+        }
+
+        return m_databaseKeys;
     }
 
     /** 
-     * Returns "nice display names" for all databases found in 'dbsetup.properties' 
+     * Returns a list with the clear text names of all available database configurations.<p>
+     * Second, this method stores the properties of all available database configurations in a
+     * map keyed by their database key names (e.g. "mysql", "generic" or "oracle").<p>
      *
-     * @return List of display names for possible databases 
+     * @return a list with the clear text names of all available database configurations
+     * @see #getDatabaseProperties()
      */
-    public Vector getDatabaseNames() {
-        Vector values = new Vector();
-
-        String value = this.getDbProperty("databaseNames");
-        StringTokenizer tokenizer = new StringTokenizer(value, ",");
-        while (tokenizer.hasMoreTokens()) {
-            values.add(tokenizer.nextToken().trim());
+    public List getDatabaseNames() {
+        List databaseKeys = null;
+        String databaseKey = null;
+        String databaseName = null;
+        FileInputStream input = null;
+        String configPath = null;
+        Properties databaseProperties = null;
+        
+        if (m_databaseNames != null) {
+            return m_databaseNames;
         }
-        return values;
+        
+        m_databaseNames = (List) new ArrayList();
+        m_databaseProperties = (Map) new HashMap();
+        databaseKeys = getDatabases();
+        
+        for (int i = 0; i < databaseKeys.size(); i++) {
+            databaseKey = (String) databaseKeys.get(i);
+            configPath = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + "database.properties";
+
+            try {
+                input = new FileInputStream(new File(configPath));
+                databaseProperties = new Properties();
+                databaseProperties.load(input);
+                
+                databaseName = databaseProperties.getProperty(databaseKey + ".name");                
+                m_databaseNames.add(databaseName);
+                m_databaseProperties.put(databaseKey, databaseProperties);
+            } catch (Exception e) {
+                System.err.println(e.toString());
+                e.printStackTrace(System.err);
+                continue;
+            } finally {
+                try {
+                    if (input != null) {
+                        input.close();
+                    }
+                } catch (Exception e) {
+                    // noop
+                }
+            }
+        }                      
+                
+        return m_databaseNames;
+    }
+    
+    /**
+     * Returns the map with the database properties of *all* available database configurations keyed
+     * by their database key names (e.g. "mysql", "generic" or "oracle").<p>
+     * 
+     * @return the map with the database properties of *all* available database configurations
+     */
+    public Map getDatabaseProperties() {
+        if (m_databaseProperties != null) {
+            return m_databaseProperties;
+        }
+        
+        getDatabaseNames();
+        return m_databaseProperties;
+    }
+    
+    /**
+     * Returns the URI of a database config page (in step 3) for a specified database key.<p>
+     * 
+     * 
+     * @param key the database key (e.g. "mysql", "generic" or "oracle")
+     * @return the URI of a database config page
+     */
+    public String getDatabaseConfigPage(String key) {
+        return "database" + I_CmsConstants.C_FOLDER_SEPARATOR + key + I_CmsConstants.C_FOLDER_SEPARATOR + "step_3_database_setup.jsp";
     }
 
     /** 
@@ -694,9 +814,9 @@ public class CmsSetup {
      * 
      * @return the database setup properties
      */
-    public Properties getDbSetupProps() {
-        return m_dbProperties;
-    }
+//    public Properties getDbSetupProps() {
+//        return m_dbProperties;
+//    }
 
     /**
      * Sets filename translation to enabled / disabled.<p>
