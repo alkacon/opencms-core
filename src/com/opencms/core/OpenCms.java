@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/04/09 11:06:25 $
-* Version: $Revision: 1.121 $
+* Date   : $Date: 2003/04/10 15:54:53 $
+* Version: $Revision: 1.122 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,8 +35,6 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRbManager;
 import com.opencms.file.CmsStaticExport;
-import com.opencms.file.I_CmsRegistry;
-import com.opencms.file.I_CmsResourceBroker;
 import com.opencms.flex.CmsJspLoader;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsUUID;
@@ -82,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.121 $ $Date: 2003/04/09 11:06:25 $
+ * @version $Revision: 1.122 $ $Date: 2003/04/10 15:54:53 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -90,11 +88,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      * The default mimetype
      */
     private static final String C_DEFAULT_MIMETYPE = "text/html";
-    
-    /**
-     * The resource-broker to access the database.
-     */
-    private static I_CmsResourceBroker c_rb;
 
     /**
      * The cron scheduler to schedule the cronjobs
@@ -252,7 +245,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         try {           
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
-            c_rb = CmsRbManager.init(conf);
+            m_resourceBroker = CmsRbManager.init(conf);
         } catch(Exception e) {
             if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, ". Critical init error/3: " + e.getMessage());
             // any exception here is fatal and will cause a stop in processing
@@ -261,7 +254,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         
         try {       
             // initalize the Hashtable with all available mimetypes
-            m_mt = c_rb.readMimeTypes(null, null);
+            m_mt = m_resourceBroker.readMimeTypes(null, null);
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Found mime types     : " + m_mt.size() + " entrys");
 
             // Check, if the HTTP streaming should be enabled
@@ -271,7 +264,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if(!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
                 // now initialise the OpenCms scheduler to launch cronjobs
-                m_table = new CmsCronTable(c_rb.readCronTable(null, null));
+                m_table = new CmsCronTable(m_resourceBroker.readCronTable(null, null));
                 m_scheduler = new CmsCronScheduler(this, m_table);
                 if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms scheduler    : enabled");
             } else {
@@ -672,7 +665,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
     public void destroy() throws CmsException {
         m_scheduler.shutDown();
         CmsObject cms = new CmsObject();
-        cms.init(c_rb);
+        cms.init(m_resourceBroker);
         cms.destroy();
     }
 
@@ -849,9 +842,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             String group, int project, CmsCoreSession sessionStorage) throws CmsException {
 
         if((!m_enableElementCache) || (project == C_PROJECT_ONLINE_ID)){
-            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage, m_directoryTranslator, m_fileTranslator);
+            cms.init(m_resourceBroker, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage, m_directoryTranslator, m_fileTranslator);
         }else{
-            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage, m_directoryTranslator, m_fileTranslator);
+            cms.init(m_resourceBroker, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage, m_directoryTranslator, m_fileTranslator);
         }
     }
 
@@ -923,7 +916,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         // is session-failopver enabled?
         if(m_sessionFailover) {
             // yes
-            return c_rb.restoreSession(oldSessionId);
+            return m_resourceBroker.restoreSession(oldSessionId);
         }
         else {
             // no - do nothing
@@ -943,23 +936,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         // is session failover enabled?
         if(m_sessionFailover) {
             // yes
-            c_rb.storeSession(sessionId, sessionData);
+            m_resourceBroker.storeSession(sessionId, sessionData);
         }
     }
-
-    /**
-     * Returns the registry to read values from it. 
-     * You don't have the permissions to write values. 
-     * This is useful for modules to read module-parameters.
-     *
-     * @return The registry to READ values from it.
-     * 
-     * @throws CmsException, if the registry can not be returned.
-     */
-    public static I_CmsRegistry getRegistry() throws CmsException {
-        return c_rb.getRegistry(null, null, null);
-    }
-
 
     /**
      * Starts a schedule job with a correct instantiated CmsObject.
@@ -986,7 +965,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      */
     void updateCronTable() {
         try {
-            m_table.update(c_rb.readCronTable(null, null));
+            m_table.update(m_resourceBroker.readCronTable(null, null));
         } catch(Exception exc) {
             if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) {
                 log(C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");
