@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2003/11/08 10:32:44 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/06/14 16:04:30 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ final class CmsHtmlConverterTools {
     }
 
     /**
-     * Scans a String and replaces umlauts and other special characters
+     * Scans a String and replaces umlauts and other special characters.<p>
      * @param testString is the String which has to be scanned
      * @param rStrings lists all subStrings wich have to be replaced
      * @return String with replaced special characters
@@ -212,7 +212,7 @@ final class CmsHtmlConverterTools {
     }
 
     /**
-     * TODO: add javadoc
+     * TODO: add javadoc.
      * 
      * @param orgUrl the original url
      * @param valueParam the value parameter
@@ -291,7 +291,7 @@ final class CmsHtmlConverterTools {
     }
         
     /**
-     * TODO: add javadoc comment
+     * TODO: add javadoc comment.
      * 
      * @param replace tbd
      * @param node tbd

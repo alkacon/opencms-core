@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterObjectReplaceExtendedChars.java,v $
-* Date   : $Date: 2003/09/12 12:10:58 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2004/06/14 16:04:30 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,14 +38,14 @@ final class CmsHtmlConverterObjectReplaceExtendedChars extends CmsHtmlConverterO
 
 
     /**
-     * default constructor creates object with empty Strings
+     * default constructor creates object with empty Strings.<p>
      */
     protected CmsHtmlConverterObjectReplaceExtendedChars () {
         super();
     }
 
     /**
-     * constructor creates object with parameter values
+     * constructor creates object with parameter values.<p>
      * @param sC String searchChar
      * @param rC String replaceChar
      */

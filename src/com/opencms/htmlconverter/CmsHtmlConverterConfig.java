@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterConfig.java,v $
-* Date   : $Date: 2003/11/03 09:05:53 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2004/06/14 16:04:30 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,137 +41,137 @@ import java.io.*;
  */
 final class CmsHtmlConverterConfig {
 
-    /** Comment node in xml-configuration */
+    /** Comment node in xml-configuration. */
     private static final int C_COMMENT_NODE = 0;
-    /** "ConverterConfig" node in xml-configuration */
+    /** "ConverterConfig" node in xml-configuration. */
     private static final int C_CONFIG_NODE = 1;
-    /** "defaults" node in xml-configuration */
+    /** "defaults" node in xml-configuration. */
     private static final int C_DEFAULT_NODE = 10;
-    /** "replacecontent" node in xml-configuration */
+    /** "replacecontent" node in xml-configuration. */
     private static final int C_REPLACECONTENT_NODE = 11;
-    /** "inlinetags" node in xml-configuration */
+    /** "inlinetags" node in xml-configuration. */
     private static final int C_INLINETAG_NODE = 12;
-    /** "removetags" node in xml-configuration */
+    /** "removetags" node in xml-configuration. */
     private static final int C_REMOVETAG_NODE = 13;
-    /** "removeblocks" node in xml-configuration */
+    /** "removeblocks" node in xml-configuration. */
     private static final int C_REMOVEBLOCK_NODE = 14;
-    /** "replacetags" node in xml-configuration */
+    /** "replacetags" node in xml-configuration. */
     private static final int C_REPLACETAG_NODE = 15;
-    /** "replaceblocks" node in xml-configuration */
+    /** "replaceblocks" node in xml-configuration. */
     private static final int C_REPLACEBLOCK_NODE = 16;
-    /** "replacestrings" node in xml-configuration */
+    /** "replacestrings" node in xml-configuration. */
     private static final int C_REPLACESTRING_NODE = 17;
 
-    /** "xhtmloutput" node in defaults: xml-configuration */
+    /** "xhtmloutput" node in defaults: xml-configuration. */
     private static final int C_XHTMLOUTPUT_NODE = 20;
-    /** "globalprefix" node in defaults: xml-configuration */
+    /** "globalprefix" node in defaults: xml-configuration. */
     private static final int C_GLOBALPREFIX_NODE = 21;
-    /** "globalsuffix" node in defaults: xml-configuration */
+    /** "globalsuffix" node in defaults: xml-configuration. */
     private static final int C_GLOBALSUFFIX_NODE = 22;
-    /** "globaladdeveryline" node in defaults: xml-configuration */
+    /** "globaladdeveryline" node in defaults: xml-configuration. */
     private static final int C_GLOBALADDEVERYLINE_NODE = 23;
-    /** "usebrackets" node in defaults: xml-configuration */
+    /** "usebrackets" node in defaults: xml-configuration. */
     private static final int C_USEBRACKETS_NODE = 24;
-    /** "encodequotationmarks" node in defaults: xml-configuration */
+    /** "encodequotationmarks" node in defaults: xml-configuration. */
     private static final int C_ENCODEQUOTATIONMARKS_NODE = 25;
 
-    /** "addeveryline" node in replacenodes: xml-configuration */
+    /** "addeveryline" node in replacenodes: xml-configuration. */
     private static final int C_ADDEVERYLINE_NODE = 30;
-    /** "prefix" node in replacenodes: xml-configuration */
+    /** "prefix" node in replacenodes: xml-configuration. */
     private static final int C_PREFIX_NODE = 31;
-    /** "suffix" node in replacenodes: xml-configuration */
+    /** "suffix" node in replacenodes: xml-configuration. */
     private static final int C_SUFFIX_NODE = 32;
-    /** "tag" node in replacenodes: xml-configuration */
+    /** "tag" node in replacenodes: xml-configuration. */
     private static final int C_TAG_NODE = 33;
-    /** "string" node in replacenodes: xml-configuration */
+    /** "string" node in replacenodes: xml-configuration. */
     private static final int C_STRING_NODE = 34;
 
-    /** check if output has to be XHTML */
+    /** check if output has to be XHTML. */
     private boolean m_xhtmlOutput = false;
-    /** stores global prefix */
+    /** stores global prefix. */
     private String m_globalPrefix = "";
-    /** stores global suffix */
+    /** stores global suffix. */
     private String m_globalSuffix = "";
-    /** check if prefix and suffix have to be added to every new line */
+    /** check if prefix and suffix have to be added to every new line. */
     private boolean m_globalAddEveryLine = false;
-    /** code for html bracket "<" */
+    /** code for html bracket "<". */
     private String m_openBracket = "";
-    /** code for html bracket ">" */
+    /** code for html bracket ">". */
     private String m_closeBracket = "";
-    /** check if brackets are used */
+    /** check if brackets are used. */
     private boolean m_useBrackets = false;
-    /** check if quotationmarks must be encoded */
+    /** check if quotationmarks must be encoded. */
     private boolean m_encodeQuotationmarks = false;
-    /** stores code for quotationmarks */
+    /** stores code for quotationmarks. */
     private String m_quotationmark = "";
-    /** stores prefix for replacetags */
+    /** stores prefix for replacetags. */
     private String m_replaceTagsPrefix = "";
-    /** stores suffix for replacetags */
+    /** stores suffix for replacetags. */
     private String m_replaceTagsSuffix = "";
-    /** check if replaced content needs new lines */
+    /** check if replaced content needs new lines. */
     private boolean m_replaceTagsAddEveryLine = false;
-    /** check if default values are used */
+    /** check if default values are used. */
     private boolean m_replaceTagsUseDefaults = false;
 
-    /** stores prefix for replaceblocks */
+    /** stores prefix for replaceblocks. */
     private String m_replaceBlocksPrefix = "";
-    /** stores suffix for replaceblocks */
+    /** stores suffix for replaceblocks. */
     private String m_replaceBlocksSuffix = "";
-    /** check if replaced content needs new lines */
+    /** check if replaced content needs new lines. */
     private boolean m_replaceBlocksAddEveryLine = false;
-    /** check if default values are used */
+    /** check if default values are used. */
     private boolean m_replaceBlocksUseDefaults = false;
 
-    /** stores prefix for replacestrings */
+    /** stores prefix for replacestrings. */
     private String m_replaceStringsPrefix = "";
-    /** stores suffix for replacestrings */
+    /** stores suffix for replacestrings. */
     private String m_replaceStringsSuffix = "";
-    /** check if replaced content needs new lines */
+    /** check if replaced content needs new lines. */
     private boolean m_replaceStringsAddEveryLine = false;
-    /** check if default values are used */
+    /** check if default values are used. */
     private boolean m_replaceStringsUseDefaults = false;
 
-    /** list with objects which will be replaced in run #1 */
+    /** list with objects which will be replaced in run #1. */
     private ArrayList m_replaceContent = new ArrayList();
-    /** list with tags to be removed */
+    /** list with tags to be removed. */
     private HashSet m_removeTags = new HashSet();
-    /** list with blocks to be removed */
+    /** list with blocks to be removed. */
     private HashSet m_removeBlocks = new HashSet();
-    /** list with all inline tags */
+    /** list with all inline tags. */
     private HashSet m_inlineTags = new HashSet();
-    /** list with extended chars which are replaced in text nodes */
+    /** list with extended chars which are replaced in text nodes. */
     private ArrayList m_replaceExtendedChars = new ArrayList();
-    /** list with Strings whihch are replaced */
+    /** list with Strings whihch are replaced. */
     private ArrayList m_replaceStrings = new ArrayList();
-    /** list with tags which are replaced */
+    /** list with tags which are replaced. */
     private ArrayList m_replaceTags = new ArrayList();
-    /** list with blocks which are replaced */
+    /** list with blocks which are replaced. */
     private ArrayList m_replaceBlocks = new ArrayList();
 
-    /** temporary list of replacecontent */
+    /** temporary list of replacecontent. */
     private ArrayList m_tempReplaceContent = new ArrayList();
-    /** temporary list of replacestrings */
+    /** temporary list of replacestrings. */
     private ArrayList m_tempReplaceStrings = new ArrayList();
-    /** temporary list of replacetags */
+    /** temporary list of replacetags. */
     private ArrayList m_tempReplaceTags = new ArrayList();
-    /** temporary list of replaceblocks */
+    /** temporary list of replaceblocks. */
     private ArrayList m_tempReplaceBlocks = new ArrayList();
 
-    /** instance of CmsHtmlConverterTools */
+    /** instance of CmsHtmlConverterTools. */
     private CmsHtmlConverterTools m_tools = new CmsHtmlConverterTools();
 
-    /** to check if instance has already been configured */
+    /** to check if instance has already been configured. */
     private boolean m_isConfigured = false;
 
     /**
-     * default constructor
+     * default constructor.<p>
      */
     protected CmsHtmlConverterConfig() {
         // empty
     }
 
     /**
-     * creates configuration from String
+     * creates configuration from String.<p>
      * @param confString String with XML configuration
      */
     protected CmsHtmlConverterConfig(String confString) {
@@ -179,7 +179,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * creates configuration from InputStream
+     * creates configuration from InputStream.<p>
      * @param in InputStream with XML configuration
      */
     protected CmsHtmlConverterConfig(InputStream in) {
@@ -187,7 +187,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns all tags which are removed from html input
+     * returns all tags which are removed from html input.<p>
      * @return HashSet with tags
      */
     protected HashSet getRemoveTags() {
@@ -195,7 +195,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns all blocks which are removed from html input
+     * returns all blocks which are removed from html input.<p>
      * @return HashSet with blocks
      */
     protected HashSet getRemoveBlocks() {
@@ -203,7 +203,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns all inline tags defined in configuration
+     * returns all inline tags defined in configuration.<p>
      * @return HashSet with inline tags
      */
     protected HashSet getInlineTags() {
@@ -211,7 +211,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns all Strings which are replaced in run #1
+     * returns all Strings which are replaced in run #1.<p>
      * @return ArrayList with CmsHtmlConverterObjectReplaceContent
      */
     protected ArrayList getReplaceContent() {
@@ -219,7 +219,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns extended characters which are replaced in text nodes
+     * returns extended characters which are replaced in text nodes.<p>
      * @return ArrayList with CmsHtmlConverterObjectReplaceExtendedChars
      */
     protected ArrayList getReplaceExtendedChars() {
@@ -227,7 +227,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns all Strings which are replaced in run #2
+     * returns all Strings which are replaced in run #2.<p>
      * @return ArrayList with CmsHtmlConverterObjectReplaceStrings
      */
     protected ArrayList getReplaceStrings() {
@@ -235,7 +235,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns all tags which are replaced in html input
+     * returns all tags which are replaced in html input.<p>
      * @return ArrayList with CmsHtmlConverterObjectReplaceTags
      */
     protected ArrayList getReplaceTags() {
@@ -243,7 +243,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns all Blocks which are replaced in html input
+     * returns all Blocks which are replaced in html input.<p>
      * @return ArrayList with CmsHtmlConverterObjectReplaceBlocks
      */
     protected ArrayList getReplaceBlocks() {
@@ -251,7 +251,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns boolean if output is in XHTML format
+     * returns boolean if output is in XHTML format.<p>
      * @return true, if output has to be XHTML, otherwise false
      */
     protected boolean getXhtmlOutput() {
@@ -259,7 +259,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns global prefix defined in configuration
+     * returns global prefix defined in configuration.<p>
      * @return String with global prefix
      */
     protected String getGlobalPrefix() {
@@ -267,7 +267,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns global suffix defined in configuration
+     * returns global suffix defined in configuration.<p>
      * @return String with global suffix
      */
     protected String getGlobalSuffix() {
@@ -275,7 +275,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns boolean if global prefix and suffix have to be added to every new line
+     * returns boolean if global prefix and suffix have to be added to every new line.<p>
      * @return true, if prefix and suffix are added in every new line, otherwise false
      */
     protected boolean getGlobalAddEveryLine() {
@@ -283,7 +283,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns boolean if encoded brackets are used
+     * returns boolean if encoded brackets are used.<p>
      * @return true, when encoded brackets are defined, otherwise false
      */
     protected boolean getUseBrackets() {
@@ -291,7 +291,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns boolean if quotationmarks must be encoded
+     * returns boolean if quotationmarks must be encoded.<p>
      * @return true, when quotationmarks must be encoded
      */
     protected boolean getEncodeQuotationmarks() {
@@ -299,7 +299,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * returns the String for quotationmarks
+     * returns the String for quotationmarks.<p>
      * @return String with value for quotationmarks
      */
     protected String getQuotationmark() {
@@ -307,7 +307,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * adds new object to ArrayList m_replaceTags
+     * adds new object to ArrayList m_replaceTags.<p>
      * @param prefix prefix String
      * @param tagName tagname String
      * @param attributeName attributeName String
@@ -344,7 +344,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * removes object from position index from ArrayList m_replaceTags
+     * removes object from position index from ArrayList m_replaceTags.<p>
      * @param index index of removed object
      */
     protected void removeObjectReplaceTag(int index) {
@@ -352,7 +352,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * adds new object to ArrayList m_replaceBlocks
+     * adds new object to ArrayList m_replaceBlocks.<p>
      * @param prefix prefix String
      * @param tagName tagname String
      * @param attributeName attributeName String
@@ -382,7 +382,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * removes object from position index from ArrayList m_replaceBlocks
+     * removes object from position index from ArrayList m_replaceBlocks.<p>
      * @param index index of removed object
      */
     protected void removeObjectReplaceBlock(int index) {
@@ -390,7 +390,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * scans a String for coded bracket subStrings and replaces them
+     * scans a String for coded bracket subStrings and replaces them.<p>
      * @param content String to scan
      * @return String with real "<" and ">"
      */
@@ -401,7 +401,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * initialises configuration from String
+     * initialises configuration from String.<p>
      * @param confString String with XML configuration
      */
     protected void init(String confString) {
@@ -410,7 +410,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * initialises configuration from InputStream
+     * initialises configuration from InputStream.<p>
      * @param in InputStream with XML configuration
      */
     protected void init(InputStream in) {
@@ -432,7 +432,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * clears all variables and objects if the configuration is redefined
+     * clears all variables and objects if the configuration is redefined.<p>
      */
     private void clearConfiguration() {
         m_globalAddEveryLine = false;
@@ -471,7 +471,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * builds all objects after XML configuration was parsed
+     * builds all objects after XML configuration was parsed.<p>
      */
     private void buildObjects() {
         boolean added = true;
@@ -511,7 +511,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * creates ArrayList of objects with CmsHtmlConverterObjectReplaceContent
+     * creates ArrayList of objects with CmsHtmlConverterObjectReplaceContent.<p>
      */
     private void buildObjectReplaceContent() {
         boolean added = true;
@@ -538,7 +538,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * creates ArrayList of objects with CmsHtmlConverterObjectReplaceTags
+     * creates ArrayList of objects with CmsHtmlConverterObjectReplaceTags.<p>
      */
     private void buildObjectReplaceTags() {
         boolean added = true;
@@ -599,7 +599,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * creates ArrayList of objects with CmsHtmlConverterObjectReplaceBlocks
+     * creates ArrayList of objects with CmsHtmlConverterObjectReplaceBlocks.<p>
      */
     private void buildObjectReplaceBlocks() {
         boolean added = true;
@@ -653,7 +653,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * creates ArrayList of objects with CmsHtmlConverterObjectReplaceStrings
+     * creates ArrayList of objects with CmsHtmlConverterObjectReplaceStrings.<p>
      */
     private void buildObjectReplaceStrings() {
         boolean added = true;
@@ -706,7 +706,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * parses XML configuration input
+     * parses XML configuration input.<p>
      * @param node actual node of XML configuration
      */
     private void parseConfig(Node node) {
@@ -809,7 +809,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * reads default values from XML configuration
+     * reads default values from XML configuration.<p>
      * @param node analysed node from default block
      */
     private void parseDefaults(Node node) {
@@ -871,7 +871,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * reads replacecontent definitions from XML configuration
+     * reads replacecontent definitions from XML configuration.<p>
      * @param node analysed node from replacecontent block
      */
     private void parseReplaceContent(Node node) {
@@ -903,7 +903,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * reads replacetags definitions from XML configuration
+     * reads replacetags definitions from XML configuration.<p>
      * @param node analysed node from replacetags block
      */
     private void parseReplaceTags(Node node) {
@@ -998,7 +998,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * reads replaceblocks definitions from XML configuration
+     * reads replaceblocks definitions from XML configuration.<p>
      * @param node analysed node from replaceblocks block
      */
     private void parseReplaceBlocks(Node node) {
@@ -1078,7 +1078,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * reads replacestrings definitions from XML configuration
+     * reads replacestrings definitions from XML configuration.<p>
      * @param node analysed node from replacestrings block
      */
     private void parseReplaceStrings(Node node) {
@@ -1133,7 +1133,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * reads tag definitions (removetags, removeblocks, inlinetags) from XML configuration
+     * reads tag definitions (removetags, removeblocks, inlinetags) from XML configuration.<p>
      * @param node analysed node from blocks removetags, removeblocks, inlinetags
      * @return value of attribute "name" of analysed node
      */
@@ -1158,7 +1158,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * analyses attribute values and returns
+     * analyses attribute values and returns.<p>
      * @param node analysed node
      * @param number analysed attribute number of node
      * @return true, if attribute value is "true"; false, if value is "false"
@@ -1177,7 +1177,7 @@ final class CmsHtmlConverterConfig {
     }
 
     /**
-     * tests if a node name is allowed in XML configuration
+     * tests if a node name is allowed in XML configuration.<p>
      * @param name String which is tested
      * @return value of node name, -1 for commentnode, exit if name was not recognized
      */

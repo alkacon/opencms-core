@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/I_CmsHtmlConverterInterface.java,v $
-* Date   : $Date: 2003/09/12 12:18:05 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2004/06/14 16:04:30 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,79 +39,79 @@ import java.io.*;
 public interface I_CmsHtmlConverterInterface {
 
     /**
-     * Configures JTidy from file
+     * Configures JTidy from file.<p>
      * @param fileName filename of JTidy configuration file
      */
     void setTidyConfFile(String fileName);
 
     /**
-     * If defined, returns JTidy configuration filename
+     * If defined, returns JTidy configuration filename.<p>
      * @return filename of JTidy configuration file
      */
     String getTidyConfFile();
 
     /**
-     * Checks whether JTidy is already configured or not
+     * Checks whether JTidy is already configured or not.<p>
      * @return true if JTidy configuration file is set, otherwise false
      */
     boolean tidyConfigured();
 
 
     /**
-     * Configures CmsHtmlConverter from file
+     * Configures CmsHtmlConverter from file.<p>
      * @param confFile filename of configuration file
      */
     void setConverterConfFile(String confFile);
 
     /**
-     * Configures CmsHtmlConverter from string
+     * Configures CmsHtmlConverter from string.<p>
      * @param configuration string with CmsHtmlConverter configuration
      */
     void setConverterConfString(String configuration);
 
     /**
-     * If defined, returns filename of CmsHtmlConverter configuration file
+     * If defined, returns filename of CmsHtmlConverter configuration file.<p>
      * @return filename of configuration file
      */
     String getConverterConfFile();
 
     /**
-     * Checks whether CmsHtmlConverter is already configured or not
+     * Checks whether CmsHtmlConverter is already configured or not.<p>
      * @return true if CmsHtmlConverter configuration is set, otherwise false
      */
     boolean converterConfigured();
 
 
     /**
-     * Checks if HTML code has errors
+     * Checks if HTML code has errors.<p>
      * @param inString String with HTML code
      * @return true if errors were detected, otherwise false
      */
     boolean hasErrors (String inString);
 
     /**
-     * Checks if HTML code has errors
+     * Checks if HTML code has errors.<p>
      * @param input InputStream with HTML code
      * @return true if errors were detected, otherwise false
      */
     boolean hasErrors (InputStream input);
 
     /**
-     * returns number of found errors in last parsed html code
+     * returns number of found errors in last parsed html code.<p>
      * @return int with number of errors
      */
     int getNumberErrors();
 
 
     /**
-     * Checks if HTML code has errors and lists errors
+     * Checks if HTML code has errors and lists errors.<p>
      * @param inString String with HTML code
      * @return String with detected errors
      */
     String showErrors (String inString);
 
     /**
-     * Checks if HTML code has errors and lists errors
+     * Checks if HTML code has errors and lists errors.<p>
      * @param input InputStream with HTML code
      * @param output OutputStream with detected errors
      */
@@ -119,14 +119,14 @@ public interface I_CmsHtmlConverterInterface {
 
 
     /**
-     * Transforms HTML code into user defined output
+     * Transforms HTML code into user defined output.<p>
      * @param inString String with HTML code
      * @return String with transformed code
      */
     String convertHTML (String inString);
 
     /**
-     * Transforms HTML code into user defined output
+     * Transforms HTML code into user defined output.<p>
      * @param in InputStream with HTML code
      * @param out OutputStream with transformed code
      */

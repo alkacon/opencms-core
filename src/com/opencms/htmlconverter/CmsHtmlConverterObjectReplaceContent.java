@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterObjectReplaceContent.java,v $
-* Date   : $Date: 2001/11/21 10:58:33 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2004/06/14 16:04:30 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,13 +36,13 @@ package com.opencms.htmlconverter;
  */
 class CmsHtmlConverterObjectReplaceContent {
 
-    /** String which will be replaced */
+    /** String which will be replaced. */
     private String m_searchString;
-    /** String which replaces old content */
+    /** String which replaces old content. */
     private String m_replaceString;
 
     /**
-     * default constructor creates object with empty Strings
+     * default constructor creates object with empty Strings.<p>
      */
     protected CmsHtmlConverterObjectReplaceContent () {
         m_searchString = "";
@@ -50,7 +50,7 @@ class CmsHtmlConverterObjectReplaceContent {
     }
 
     /**
-     * constructor creates object with parameter values
+     * constructor creates object with parameter values.<p>
      * @param sS String searchString
      * @param rS String replaceString
      */
@@ -60,7 +60,7 @@ class CmsHtmlConverterObjectReplaceContent {
     }
 
     /**
-     * returns the String to be found
+     * returns the String to be found.<p>
      * @return String to be found
      */
     protected String getSearchString() {
@@ -68,7 +68,7 @@ class CmsHtmlConverterObjectReplaceContent {
     }
 
     /**
-     * returns the new content
+     * returns the new content.<p>
      * @return new content without prefix and suffix
      */
     protected String getReplaceItem() {
