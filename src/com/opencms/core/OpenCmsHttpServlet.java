@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/08/29 17:24:21 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/09/04 08:37:34 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2002/08/29 17:24:21 $
+ * @version $Revision: 1.31 $ $Date: 2002/09/04 08:37:34 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -108,8 +108,20 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      */
     private String m_clusterurl = null;
     
+    /**
+     * Flag to indicate if basic or form based authentication is used
+     */
     private boolean m_UseBasicAuthentication;
+    
+    /**
+     * URI of the authentication form (read from properties)
+     */
     private String m_AuthenticationFormURI;
+    
+    /**
+     * Flag for debugging
+     */
+    private static final boolean DEBUG = false;
 
     /**
      * Checks if the requested resource must be redirected to the server docroot and
@@ -379,10 +391,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         super.init(config);
         
         String base = config.getInitParameter("opencms.home");
-            System.err.println("BASE: " + config.getServletContext().getRealPath("/"));
-            System.err.println("BASE2: " + System.getProperty("user.dir"));
+        if (DEBUG) System.err.println("BASE: " + config.getServletContext().getRealPath("/"));
+        if (DEBUG) System.err.println("BASE2: " + System.getProperty("user.dir"));
         if(base == null || "".equals(base)) {
-            System.err.println("No OpenCms home folder given. Trying to guess...");
+            if (DEBUG) System.err.println("No OpenCms home folder given. Trying to guess...");
             base = CmsMain.searchBaseFolder(config.getServletContext().getRealPath("/"));
             if(base == null || "".equals(base)) {
                 throw new ServletException("OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.");
