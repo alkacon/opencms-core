@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/04/02 08:11:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/04/02 14:37:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2004/04/02 08:11:20 $
+ * @version $Revision: 1.7 $ $Date: 2004/04/02 14:37:04 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -163,13 +163,18 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @return a list of CmsProperty objects
      */
     public static List toList(Map map) {
-
+        
         String key = null;
         String value = null;
         CmsProperty property = null;
-        List properties = (List)new ArrayList(map.size());
+        List properties = null;
         Object[] keys = null;
+        
+        if (map == null || map.size() == 0) {
+            return Collections.EMPTY_LIST;
+        }
 
+        properties = (List)new ArrayList(map.size());
         keys = map.keySet().toArray();
         for (int i = 0; i < keys.length; i++) {
             key = (String)keys[i];
