@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsJavascriptTemplate.java,v $
- * Date   : $Date: 2000/04/19 13:10:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/05/10 16:00:27 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @version 1.0
  * @author 
- */
+ **/
 public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
     /**
      * Gets the content of a given template file with the given parameters.

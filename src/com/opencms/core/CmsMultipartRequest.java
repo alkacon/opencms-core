@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartRequest.java,v $
- * Date   : $Date: 2000/03/28 09:10:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/05/10 16:01:07 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,9 +54,9 @@ import com.opencms.file.*;
 * 
 * @author Alexander Kandzior
 * @author Michael Emmerich
-* @version $Revision: 1.7 $ $Date: 2000/03/28 09:10:40 $  
+* @version $Revision: 1.8 $ $Date: 2000/05/10 16:01:07 $  
 * 
-*/
+* */
 public class CmsMultipartRequest implements HttpServletRequest {
 
   /**

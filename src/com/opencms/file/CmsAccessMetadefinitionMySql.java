@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessMetadefinitionMySql.java,v $
- * Date   : $Date: 2000/04/13 22:05:41 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/05/10 16:01:59 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,6 +33,8 @@ import java.sql.*;
 
 import com.opencms.core.*;
 
+/**
+ */
 class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsConstants {
 	
     /**

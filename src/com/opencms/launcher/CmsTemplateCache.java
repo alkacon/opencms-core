@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsTemplateCache.java,v $
- * Date   : $Date: 2000/04/04 09:59:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/05/10 16:02:12 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,6 +32,8 @@ import com.opencms.core.*;
 import java.util.*;
 
 
+/**
+ */
 class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
 
     /** Hashtable to store the cached data */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/05/03 14:41:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/05/10 15:59:51 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.13 $ $Date: 2000/05/03 14:41:15 $
+ * @version $Revision: 1.14 $ $Date: 2000/05/10 15:59:51 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 	
@@ -75,7 +75,7 @@ public class CmsXmlNav extends A_CmsNavBase {
      */
     public Object getFolderCurrent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-	
+			
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
 		return currentFolder.getBytes();
 	}

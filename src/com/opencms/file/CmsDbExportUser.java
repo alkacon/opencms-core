@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportUser.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/10 16:02:03 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,6 +38,8 @@ import com.opencms.core.*;
 import com.opencms.template.*;
 
 
+/**
+ */
 public class CmsDbExportUser
 {
 	final static String C_FELEMENT = "USERS";

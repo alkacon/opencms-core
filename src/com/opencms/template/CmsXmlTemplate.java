@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/05/08 10:13:10 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/05/10 16:00:33 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2000/05/08 10:13:10 $
+ * @version $Revision: 1.34 $ $Date: 2000/05/10 16:00:33 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -512,7 +512,22 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 
       	return cms.getRequestContext().getFileUri().getBytes();
 	}
+	
+	/** 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getUri(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+		
+      	return cms.getRequestContext().getUri().substring(1).getBytes();
+	}
 
+	
     /**
      * Inserts the correct servlet path title into the template.
      * <P>

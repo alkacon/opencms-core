@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/05/10 14:25:44 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/05/10 16:01:16 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,9 +66,9 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.35 $ $Date: 2000/05/10 14:25:44 $  
+* @version $Revision: 1.36 $ $Date: 2000/05/10 16:01:16 $  
 * 
-*/
+* */
 
 public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_CmsLogChannels {
     /**

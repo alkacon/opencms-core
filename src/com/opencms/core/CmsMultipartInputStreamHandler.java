@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
- * Date   : $Date: 2000/04/19 12:55:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/05/10 16:01:03 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
 * 
 * @author Michael Emmerich
 * @author Alexander Lucas
-*/
+* */
 class CmsMultipartInputStreamHandler
 {
 
