@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/10 08:01:17 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2003/09/10 12:53:27 $
+ * Version: $Revision: 1.96 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.95 $
+ * @version $Revision: 1.96 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -766,7 +766,7 @@ public class CmsRegistry extends A_CmsXmlContent {
 
 
     /**
-      * This method gets the backup enalbe state.<p>
+      * This method gets the backup enable state.<p>
       *
       * @return true or false
       */
