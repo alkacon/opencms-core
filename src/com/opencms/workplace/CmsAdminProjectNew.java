@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/06/02 11:18:45 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/06/02 11:51:45 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.27 $ $Date: 2000/06/02 11:18:45 $
+ * @version $Revision: 1.28 $ $Date: 2000/06/02 11:51:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -214,19 +214,21 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 				// check if all the resources are writeable
 				// if not, don't create a project
 				Vector notWriteable = new Vector();
-				for (int i=0; i<numRes; i++) {
+				for (int i=numRes-1; i>=0; i--) {
 					String theFolder = (String) folders.elementAt(i);
 					if (!checkWriteable(cms, theFolder)) {
 						notWriteable.addElement(theFolder);
 						if (!(picspath.equals(theFolder) || downloadpath.equals(theFolder) || 
 							  C_CONTENTPATH.equals(theFolder))) {
 							templateSelector = "errornewproject";
+						} else {
+							// ignore problems with these three folders, which were added automatically	
+							folders.removeElementAt(i);
 						}
-						// ignore problems with these three folders, which were added automatically
 					}
-				} 
-                //test if the given folder is existing and writeable  
+				}    
 				if(!"errornewproject".equals(templateSelector)) {   
+					// finally create the project
          			A_CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
 					// change the current project
 					reqCont.setCurrentProject(project.getId());
@@ -395,9 +397,10 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                
          return access;
      }
+	 
 	  /** Parse the string which holds all resources
       *  
-      * @param resources containts the full pathnames of all the resources, separated by a semicolon
+      * @param resources containts the full pathnames of all the resources, separated by semicolons
       * @return A vector with the same resources
       */
 	 
