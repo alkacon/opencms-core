@@ -3,6 +3,9 @@
 		<name>English</name>
 
 		<sitemanagement>
+			<title>
+				<deletesite>Delete site</deletesite>
+			</title>
 			<label>
 				<createnewsite>Create new site</createnewsite>
 				<editsite>Edit site</editsite>
@@ -10,7 +13,9 @@
 				<domainname>Domain name</domainname>
 				<domain>Domain</domain>
 				<languagelabel>Language</languagelabel>
-				<categories>Categories</categories>
+				<categories>Category</categories>
+				<suredeletingsite1>Are you sure that you want to delete the site </suredeletingsite1>
+				<suredeletingsite2>?</suredeletingsite2>
 				
 			</label>
 			<error>
@@ -24,6 +29,7 @@
 					<newsite>Sorry, the new site could not be created.</newsite>
 					<editsite>Sorry, the site could not be changed.</editsite>
 					<datamissing>Sorry, the new site could not be created.</datamissing>
+					<deletesite>The site could not be deleted</deletesite>
 				</message>
 				
 				<reason>
