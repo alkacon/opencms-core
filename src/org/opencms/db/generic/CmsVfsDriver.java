@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/08 11:37:51 $
- * Version: $Revision: 1.117 $
+ * Date   : $Date: 2003/09/09 14:28:34 $
+ * Version: $Revision: 1.118 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.117 $ $Date: 2003/09/08 11:37:51 $
+ * @version $Revision: 1.118 $ $Date: 2003/09/09 14:28:34 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -475,26 +475,36 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } else {
             newState = I_CmsConstants.C_STATE_NEW;
         }
-
-        // check if the structure already exists
+        
+        // check if the resource already exists
+        CmsResource res = null;
+        CmsUUID newStructureId = resource.getId();
         try {
-            readFileHeader(project.getId(), parentId, filename, false);
-            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-        } catch (CmsException e) {
-            if (e.getType() == CmsException.C_RESOURCE_DELETED) {
+            res = readFileHeader(project.getId(), parentId, filename, true);
+            if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
                 // if an existing resource is deleted, it will be finally removed now
-                removeFile(project, parentId, filename);
+                // but we have to reuse its id in order to avoid orphanes in the online project
+                newStructureId = res.getId();
                 newState = I_CmsConstants.C_STATE_CHANGED;
+                
+                // remove the existing file
+                removeFile(project, parentId, filename);
+                // the properties of the removed file are deleted 
+                // during the next publishing process!                           
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
             }
+        } catch (CmsException e) {
             if (e.getType() == CmsException.C_FILE_EXISTS) {
                 // we have a collision which has to be handled in the app.
                 throw e;
             }
-        }
+        }        
         
         // check if the resource already exists
-        if (!existsResourceId(project.getId(), resource.getResourceId()))
+        if (!existsResourceId(project.getId(), resource.getResourceId())) {
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_NOT_FOUND);
+        }
 
         // write a new structure referring to the resource
         try {
@@ -502,7 +512,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             // write the structure
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
-            stmt.setString(1, resource.getId().toString());
+            stmt.setString(1, newStructureId.toString());
             stmt.setString(2, parentId.toString());
             stmt.setString(3, resource.getResourceId().toString());
             stmt.setString(4, filename);
@@ -531,7 +541,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(conn, stmt, null);
         }
 
-        return readFileHeader(project.getId(), resource.getId(), false); 
+        return readFileHeader(project.getId(), newStructureId, false); 
     }
         
     /**
