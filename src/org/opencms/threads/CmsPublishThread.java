@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/10/31 17:07:48 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,13 @@ import com.opencms.file.CmsObject;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
     
     private String m_resourceName;
+    private boolean m_directPublishSiblings;
 
     /**
      * Creates a Thread that publishes the current users project.<p>
@@ -58,7 +59,7 @@ public class CmsPublishThread extends A_CmsReportThread {
     public CmsPublishThread(CmsObject cms) {
         super(cms, "OpenCms: Publishing of project " + cms.getRequestContext().currentProject().getName());
         initHtmlReport();
-    }  
+    } 
     
     /**
      * Creates a Thread that publishes a selected resource directly.<p>
@@ -66,9 +67,10 @@ public class CmsPublishThread extends A_CmsReportThread {
      * @param cms the current OpenCms context object
      * @param resourceName the name of the resource to publish directly
      */
-    public CmsPublishThread(CmsObject cms, String resourceName) {
+    public CmsPublishThread(CmsObject cms, String resourceName, boolean directPublishSiblings) {
         super(cms, "OpenCms: Publishing of resource " + resourceName);
         m_resourceName = resourceName;
+        m_directPublishSiblings = directPublishSiblings;
         initHtmlReport();
     }  
     
@@ -87,7 +89,7 @@ public class CmsPublishThread extends A_CmsReportThread {
             if (m_resourceName != null) {
                 // "publish resource directly" case
                 getReport().println(getReport().key("report.publish_resource_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-                getCms().publishResource(m_resourceName, false, getReport());
+                getCms().publishResource(m_resourceName, false, m_directPublishSiblings, getReport());
                 getReport().println(getReport().key("report.publish_resource_end"), I_CmsReport.C_FORMAT_HEADLINE);
             } else {
                 // "publish current project" case

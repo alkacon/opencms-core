@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/10/28 11:31:27 $
-* Version: $Revision: 1.429 $
+* Date   : $Date: 2003/10/31 17:07:49 $
+* Version: $Revision: 1.430 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.429 $
+ * @version $Revision: 1.430 $
  */
 public class CmsObject {
 
@@ -2678,9 +2678,7 @@ public class CmsObject {
         synchronized (m_driverManager) {            
             try {
                                 
-                // TODO use the directPublishSiblings argument here instead of reading the runtime property when the direct-publish-dialog got customized with an option to publish siblings
-                boolean rtimeProp = ((String)OpenCms.getRuntimeProperty("workplace.directpublish.siblings")).equalsIgnoreCase("true");
-                m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource, rtimeProp);
+                m_driverManager.publishProject(this, m_context, report, publishHistoryId, directPublishResource, directPublishSiblings);
 
                 if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
                     CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
@@ -2756,16 +2754,16 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void publishResource(String resourcename, boolean justPrepare) throws CmsException {
-        publishResource(resourcename, justPrepare, justPrepare ? null : new CmsShellReport());
+        publishResource(resourcename, justPrepare, false, justPrepare ? null : new CmsShellReport());
     }
 
-    public void publishResource(String resourcename, boolean justPrepare, I_CmsReport report) throws CmsException {
+    public void publishResource(String resourcename, boolean justPrepare, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
         int oldProjectType = m_context.currentProject().getType();
         CmsResource resource = resource = readFileHeader(resourcename, true);
         
         try {
             m_context.currentProject().setType(I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH);
-            publishProject(report, resource, false);
+            publishProject(report, resource, directPublishSiblings);
         } catch (CmsException e) {
             throw e;
         } finally {
