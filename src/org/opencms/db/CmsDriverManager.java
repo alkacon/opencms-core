@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.337 $
+ * Date   : $Date: 2004/03/19 13:50:36 $
+ * Version: $Revision: 1.338 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.337 $ $Date: 2004/03/12 16:00:48 $
+ * @version $Revision: 1.338 $ $Date: 2004/03/19 13:50:36 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6372,6 +6372,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             state=I_CmsConstants.C_STATE_DELETED;
         } else if (filter.equals("all")) {
             state=I_CmsConstants.C_STATE_UNCHANGED;
+        } else {
+            // this method was called with an unknown filter key
+            // filter all changed/new/deleted resources
+            state=I_CmsConstants.C_STATE_UNCHANGED;
         }
         
         // depending on the selected filter, we must use different methods to get the required 
@@ -8040,21 +8044,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearResourceCache();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
-    }
-
-    /**
-     * Writes a propertyinformation for a file or folder.<p>
-     *
-     * Only the user is granted, who has the right to write the resource.
-     *
-     * @param context the current request context
-     * @param resource the name of the resource of which the propertyinformation has to be read
-     * @param property the propertydefinition-name of which the propertyinformation has to be set
-     * @param value the value for the propertyinfo to be set
-     * @throws CmsException if operation was not succesful
-     */
-    public void writeProperty(CmsRequestContext context, String resource, String property, String value) throws CmsException {
-        writeProperty(context, resource, property, value, false);
     }
     
     /**
