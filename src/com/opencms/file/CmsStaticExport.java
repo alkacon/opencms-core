@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/04/03 16:55:22 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.43 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.44 $ $Date: 2003/04/03 16:55:22 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -588,14 +588,16 @@ public class CmsStaticExport implements I_CmsConstants{
                 }
                 // all folders exist now create the file
                 File discFile = new File(m_exportPath + correctur + externLink);
-                deleteFileOnError = m_exportPath + correctur + externLink;
-                try{
-                    // link the File to the request
-                    outStream = new FileOutputStream(discFile);
-                    dRes.putOutputStream(outStream);
-                }catch(Exception e){
-                    throw new CmsException("["+this.getClass().getName() + "] " + "couldn't open file "
-                                + m_exportPath + correctur + externLink + ": " + e.getMessage());
+                if (! discFile.isDirectory()) {
+                    deleteFileOnError = m_exportPath + correctur + externLink;
+                    try{
+                        // link the File to the request
+                        outStream = new FileOutputStream(discFile);
+                        dRes.putOutputStream(outStream);
+                    }catch(Exception e){
+                        throw new CmsException("["+this.getClass().getName() + "] " + "couldn't open file "
+                                    + m_exportPath + correctur + externLink + ": " + e.getMessage());
+                    }
                 }
             }else{
                 // update the report
