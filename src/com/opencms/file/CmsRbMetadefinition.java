@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/01/11 10:24:30 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/21 12:02:16 $
  */
 public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	
@@ -188,6 +188,25 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	}	
 
 	/**
+	 * Returns a Metainformation of a file or folder.
+	 * 
+	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @return metainfo The metainfo as string or null if the metainfo not exists.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public String readMetainformation(String meta, int projectId, String path, 
+									  int resourceType)
+		throws CmsException {
+		return(m_accessMetadefinition.readMetainformation(meta, projectId, 
+														  path, resourceType));
+	}
+	
+	/**
 	 * Writes a Metainformation for a file or folder.
 	 * 
 	 * @param resource The resource of which the Metainformation has to be read.
@@ -203,6 +222,24 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	}
 
 	/**
+	 * Writes a Metainformation for a file or folder.
+	 * 
+	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
+	 * @param value The value for the metainfo to be set.
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void writeMetainformation(String meta, String value, int projectId, 
+									 String path, int resourceType)
+		throws CmsException {
+		m_accessMetadefinition.writeMetainformation(meta, value, projectId, 
+													path, resourceType);
+	}
+	
+	/**
 	 * Writes a couple of Metainformation for a file or folder.
 	 * 
 	 * @param resource The resource of which the Metainformation has to be read.
@@ -215,6 +252,23 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 		m_accessMetadefinition.writeMetainformations(resource, metainfos);
 	}
 
+	/**
+	 * Writes a couple of Metainformation for a file or folder.
+	 * 
+	 * @param metainfos A Hashtable with Metadefinition- metainfo-pairs as strings.
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void writeMetainformations(Hashtable metainfos, int projectId, 
+									  String path, int resourceType)
+		throws CmsException {
+		m_accessMetadefinition.writeMetainformations(metainfos, projectId, 
+													 path, resourceType);
+	}
+	
 	/**
 	 * Returns a list of all Metainformations of a file or folder.
 	 * 
@@ -230,6 +284,24 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	}
 	
 	/**
+	 * Returns a list of all Metainformations of a file or folder.
+	 * 
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @return Vector of Metainformation as Strings.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public Hashtable readAllMetainformations(int projectId, String path, 
+											 int resourceType)
+		throws CmsException {
+		return(m_accessMetadefinition.readAllMetainformations(projectId, path, 
+															  resourceType));
+	}
+	
+	/**
 	 * Deletes all Metainformation for a file or folder.
 	 * 
 	 * @param resource The resource of which the Metainformation has to be read.
@@ -242,6 +314,19 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	}
 
 	/**
+	 * Deletes all Metainformation for a file or folder.
+	 * 
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteAllMetainformations(int projectId, String path)
+		throws CmsException {
+		m_accessMetadefinition.deleteAllMetainformations(projectId, path);
+	}
+	
+	/**
 	 * Deletes a Metainformation for a file or folder.
 	 * 
 	 * @param resource The resource of which the Metainformation has to be read.
@@ -252,5 +337,21 @@ public class CmsRbMetadefinition implements I_CmsRbMetadefinition {
 	public void deleteMetainformation(A_CmsResource resource, String meta)
 		throws CmsException {
 		m_accessMetadefinition.deleteMetainformation(resource, meta);
+	}
+	
+	/**
+	 * Deletes a Metainformation for a file or folder.
+	 * 
+	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteMetainformation(String meta, int projectId, String path, 
+									  int resourceType)
+		throws CmsException {
+		m_accessMetadefinition.deleteMetainformation(meta, projectId, path, resourceType);
 	}
 }

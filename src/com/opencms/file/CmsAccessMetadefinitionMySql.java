@@ -499,14 +499,33 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	 */
 	public String readMetainformation(A_CmsResource resource, String meta)
 		throws CmsException {
+		return( readMetainformation(meta, resource.getProjectId(), 
+									resource.getPath(), resource.getType()) );
+	}
+
+	/**
+	 * Returns a Metainformation of a file or folder.
+	 * 
+	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @return metainfo The metainfo as string or null if the metainfo not exists.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public String readMetainformation(String meta, int projectId, String path, 
+									  int resourceType)
+		throws CmsException {
 		 try {
 			 ResultSet result;
 			 
 			 synchronized(m_statementReadMetainfo) {
-				m_statementReadMetainfo.setString(1, resource.getPath());
-				m_statementReadMetainfo.setInt(2, resource.getProjectId());
+				m_statementReadMetainfo.setString(1, path);
+				m_statementReadMetainfo.setInt(2, projectId);
 				m_statementReadMetainfo.setString(3, meta);
-				m_statementReadMetainfo.setInt(4, resource.getType());
+				m_statementReadMetainfo.setInt(4, resourceType);
 
 				result = m_statementReadMetainfo.executeQuery();
 			 }
@@ -521,7 +540,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
 	}
-
+	
 	/**
 	 * Writes a Metainformation for a file or folder.
 	 * 
@@ -534,7 +553,25 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	public void writeMetainformation(A_CmsResource resource, String meta,
 							  String value)
 		throws CmsException {
-		A_CmsMetadefinition metadef = readMetadefinition(meta, resource.getType());
+		writeMetainformation(meta, value, resource.getProjectId(), 
+							 resource.getAbsolutePath(), resource.getType());
+	}
+	
+	/**
+	 * Writes a Metainformation for a file or folder.
+	 * 
+	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
+	 * @param value The value for the metainfo to be set.
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void writeMetainformation(String meta, String value, int projectId, 
+									 String path, int resourceType)
+		throws CmsException {
+		A_CmsMetadefinition metadef = readMetadefinition(meta, resourceType);
 		
 		if( metadef == null) {
 			// there is no metadefinition for with the overgiven name for the resource
@@ -542,12 +579,12 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 		} else {
 			// write the metainfo into the db
 			try {
-				if( readMetainformation(resource, metadef.getName()) != null) {
+				if( readMetainformation(metadef.getName(), projectId, path, resourceType) != null) {
 					// metainfo exists already - use update.
 					synchronized(m_statementUpdateMetainfo) {
 						m_statementUpdateMetainfo.setString(1, value);
-						m_statementUpdateMetainfo.setString(2, resource.getAbsolutePath());
-						m_statementUpdateMetainfo.setInt(3, resource.getProjectId());
+						m_statementUpdateMetainfo.setString(2, path);
+						m_statementUpdateMetainfo.setInt(3, projectId);
 						m_statementUpdateMetainfo.setInt(4, metadef.getId());
 						m_statementUpdateMetainfo.executeUpdate();
 					}
@@ -555,8 +592,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 					// metainfo dosen't exist - use create.
 					synchronized(m_statementCreateMetainfo) {
 						m_statementCreateMetainfo.setInt(1, metadef.getId());
-						m_statementCreateMetainfo.setString(2, resource.getAbsolutePath());
-						m_statementCreateMetainfo.setInt(3, resource.getProjectId());
+						m_statementCreateMetainfo.setString(2, path);
+						m_statementCreateMetainfo.setInt(3, projectId);
 						m_statementCreateMetainfo.setString(4, value);
 						m_statementCreateMetainfo.executeUpdate();
 					}
@@ -577,6 +614,23 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	 */
 	public void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
 		throws CmsException {
+		writeMetainformations(metainfos, resource.getProjectId(), 
+							  resource.getAbsolutePath(), resource.getType());
+	}
+
+	/**
+	 * Writes a couple of Metainformation for a file or folder.
+	 * 
+	 * @param metainfos A Hashtable with Metadefinition- metainfo-pairs as strings.
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void writeMetainformations(Hashtable metainfos, int projectId, 
+									  String path, int resourceType)
+		throws CmsException {
 		
 		// get all metadefs
 		Enumeration keys = metainfos.keys();
@@ -586,10 +640,11 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 		
 		while(keys.hasMoreElements()) {
 			key = (String) keys.nextElement();
-			this.writeMetainformation(resource, key, (String) metainfos.get(key));
+			writeMetainformation(key, (String) metainfos.get(key), projectId, 
+								 path, resourceType);
 		}		
 	}
-
+	
 	/**
 	 * Returns a list of all Metainformations of a file or folder.
 	 * 
@@ -601,15 +656,34 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	 */
 	public Hashtable readAllMetainformations(A_CmsResource resource)
 		throws CmsException {
+		return( readAllMetainformations( resource.getProjectId(), 
+										 resource.getAbsolutePath(),
+										 resource.getType() ) );
+	}
+	
+	/**
+	 * Returns a list of all Metainformations of a file or folder.
+	 * 
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @return Vector of Metainformation as Strings.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public Hashtable readAllMetainformations(int projectId, String path, 
+											 int resourceType)
+		throws CmsException {
 		
 		Hashtable returnValue = new Hashtable();
 		
 		try {
 			ResultSet result;
 			synchronized(m_statementReadAllMetainfo) {
-				m_statementReadAllMetainfo.setString(1, resource.getAbsolutePath());
-				m_statementReadAllMetainfo.setInt(2, resource.getProjectId());
-				m_statementReadAllMetainfo.setInt(3, resource.getType());
+				m_statementReadAllMetainfo.setString(1, path);
+				m_statementReadAllMetainfo.setInt(2, projectId);
+				m_statementReadAllMetainfo.setInt(3, resourceType);
 
 				result = m_statementReadAllMetainfo.executeQuery();
 			}
@@ -635,11 +709,24 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	 */
 	public void deleteAllMetainformations(A_CmsResource resource)
 		throws CmsException {
+		deleteAllMetainformations(resource.getProjectId(), resource.getAbsolutePath());
+	}
+
+	/**
+	 * Deletes all Metainformation for a file or folder.
+	 * 
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteAllMetainformations(int projectId, String path)
+		throws CmsException {
 		
 		try {
 			synchronized(m_statementDeleteAllMetainfo) {
-				m_statementDeleteAllMetainfo.setString(1, resource.getAbsolutePath());
-				m_statementDeleteAllMetainfo.setInt(2, resource.getProjectId());
+				m_statementDeleteAllMetainfo.setString(1, path);
+				m_statementDeleteAllMetainfo.setInt(2, projectId);
 
 				m_statementDeleteAllMetainfo.executeQuery();
 			}			
@@ -647,7 +734,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		}
 	}
-
+	
 	/**
 	 * Deletes a Metainformation for a file or folder.
 	 * 
@@ -658,7 +745,24 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 	 */
 	public void deleteMetainformation(A_CmsResource resource, String meta)
 		throws CmsException {
-		A_CmsMetadefinition metadef = readMetadefinition(meta, resource.getType());
+		deleteMetainformation(meta, resource.getProjectId(), resource.getAbsolutePath(), 
+							  resource.getType());
+	}
+
+	/**
+	 * Deletes a Metainformation for a file or folder.
+	 * 
+	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
+	 * @param projectId The id of the project.
+	 * @param path The path of the resource.
+	 * @param resourceType The Type of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteMetainformation(String meta, int projectId, String path, 
+									  int resourceType)
+		throws CmsException {
+		A_CmsMetadefinition metadef = readMetadefinition(meta, resourceType);
 		
 		if( metadef == null) {
 			// there is no metadefinition with the overgiven name for the resource
@@ -668,8 +772,8 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			try {
 				synchronized(m_statementDeleteMetainfo) {
 					m_statementDeleteMetainfo.setInt(1, metadef.getId());
-					m_statementDeleteMetainfo.setString(2, resource.getAbsolutePath());
-					m_statementDeleteMetainfo.setInt(3, resource.getProjectId());
+					m_statementDeleteMetainfo.setString(2, path);
+					m_statementDeleteMetainfo.setInt(3, projectId);
 					m_statementDeleteMetainfo.executeUpdate();
 				}
 			} catch(SQLException exc) {
@@ -677,7 +781,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition {
 			}
 		}
 	}
-
+	
 	/**
      * Connects to the metadefinition database.
      * 
