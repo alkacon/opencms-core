@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/02/01 19:14:45 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/02/10 12:19:09 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.41 $ $Date: 2003/02/01 19:14:45 $
+ * @version $Revision: 1.42 $ $Date: 2003/02/10 12:19:09 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -151,6 +151,23 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     }   
     
     /**
+     * Throws a servlet exception that is also logged and written to the output consule.<p>
+     * 
+     * @param cause
+     * @throws ServletException
+     */
+    private void throwInitException(ServletException cause) throws ServletException {
+        String message = cause.getMessage();
+        if (message == null) message = cause.toString();
+        System.err.println("\n--------------------\nCritical error during OpenCms servlet init phase:\n" + message);
+        System.err.println("Giving up, unable to start OpenCms.\n--------------------");        
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, message);
+        }         
+        throw cause;
+    }
+        
+    /**
      * Initialization of the OpenCms servlet (overloaded Servlet API method).<p>
      *
      * The connection information for the database is read 
@@ -173,20 +190,20 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             if (DEBUG) System.err.println("No OpenCms home folder given. Trying to guess...");
             base = CmsMain.searchBaseFolder(config.getServletContext().getRealPath("/"));
             if(base == null || "".equals(base)) {
-                throw new ServletException(C_ERRORMSG + "OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.\n\n");
+                throwInitException(new ServletException(C_ERRORMSG + "OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.\n\n"));
             }
         }
         base = CmsBase.setBasePath(base);        
         
         String logFile;
-        ExtendedProperties extendedProperties;
+        ExtendedProperties extendedProperties = null;
         
         // Collect the configurations        
         try {
             extendedProperties = new ExtendedProperties(CmsBase.getPropertiesPath(true));
         }
         catch(Exception e) {
-            throw new ServletException(C_ERRORMSG + "Trouble reading property file " + CmsBase.getPropertiesPath(true) + ".\n\n", e);
+            throwInitException(new ServletException(C_ERRORMSG + "Trouble reading property file " + CmsBase.getPropertiesPath(true) + ".\n\n", e));
         }
         
         // Change path to log file, if given path is not absolute
@@ -224,10 +241,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             m_opencms = new OpenCms(m_configurations);
         } catch (CmsException cmsex) {
             if (cmsex.getType() == CmsException.C_RB_INIT_ERROR) {
-                throw new ServletException(C_ERRORMSG + "Could not connect to the database. Is the database up and running?\n\n", cmsex);                
+                throwInitException(new ServletException(C_ERRORMSG + "Could not connect to the database. Is the database up and running?\n\n", cmsex));                
             }
         } catch(Exception exc) {
-            throw new ServletException(C_ERRORMSG + "Trouble creating the com.opencms.core.CmsObject. Please check the root cause for more information.\n\n", exc);
+            throwInitException(new ServletException(C_ERRORMSG + "Trouble creating the com.opencms.core.CmsObject. Please check the root cause for more information.\n\n", exc));
         }
 
         // initalize the session storage
