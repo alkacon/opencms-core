@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/03/27 14:06:01 $
-* Version: $Revision: 1.93 $
+* Date   : $Date: 2002/04/02 09:03:34 $
+* Version: $Revision: 1.94 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.93 $ $Date: 2002/03/27 14:06:01 $
+ * @version $Revision: 1.94 $ $Date: 2002/04/02 09:03:34 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -467,6 +467,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
+     * @deprecated instead of this method you should use the link tag.
      */
     public Object getServletPath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         return cms.getRequestContext().getRequest().getServletUrl() + "/";
