@@ -4,7 +4,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/01/21 10:33:07 $
+ * @version $Revision: 1.16 $ $Date: 2000/01/24 18:56:36 $
  */
 public class CmsException extends Exception {
 	
@@ -168,6 +168,11 @@ public class CmsException extends Exception {
      */
     public final static int C_CLASSLOADER_ERROR = 28;
     
+    /**
+     * Definition of error code for error "Password to short".
+     */
+    public final static int C_SHORT_PASSWORD = 29;
+	
 	public final static String C_EXTXT[] = {
 							"Unknown exception ",
 							"Access denied ",
@@ -199,6 +204,7 @@ public class CmsException extends Exception {
                             "No XML template class ",
                             "Error while launching template class ",
                             "OpenCms class loader error ",
+                            "New password is to short ",
 };
     
 	/** 

@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/01/21 16:23:33 $
+ * @version $Revision: 1.20 $ $Date: 2000/01/24 18:56:36 $
  */
 public interface I_CmsConstants
 {
@@ -15,6 +15,11 @@ public interface I_CmsConstants
 	 */
 	 static String C_VERSION = "Release 3.01 \"pre Caladan Leto\" $Name:  $";
 
+	/**
+	 * The minimum-size of a passwordstring.
+	 */
+	 static final int C_PASSWORD_MINIMUMSIZE = 4;
+	 
 	/**
 	 * This flag is set for enabled entrys in the database.
 	 * (GROUP_FLAGS for example)

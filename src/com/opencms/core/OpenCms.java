@@ -27,7 +27,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.13 $ $Date: 2000/01/24 12:01:46 $  
+* @version $Revision: 1.14 $ $Date: 2000/01/24 18:56:36 $  
 * 
 */
 
@@ -112,9 +112,7 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
         CmsFile file=null;
         try {
             //read the requested file
-            file =cms.readFile(cms.getRequestContext().currentUser(),
-                               cms.getRequestContext().currentProject(),
-                               cms.getRequestContext().getUri());
+            file =cms.readFile(cms.getRequestContext().getUri());
         } catch (CmsException e ) {
            /* if (e.getType() == CmsException.C_NOT_FOUND) {
                 

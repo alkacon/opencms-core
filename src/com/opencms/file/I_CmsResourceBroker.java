@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.25 $ $Date: 2000/01/21 16:56:46 $
+ * @version $Revision: 1.26 $ $Date: 2000/01/24 18:56:36 $
  */
 interface I_CmsResourceBroker {
 
@@ -718,7 +718,7 @@ interface I_CmsResourceBroker {
     
     
     /**
-	 * Returns all child groups of a groups<P/>
+	 * Returns all child groups of a group<P/>
 	 * 
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
@@ -726,13 +726,46 @@ interface I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param groupname The name of the group.
-	 * @return users A Vector of all child groups or null.
+	 * @return groups A Vector of all child groups or null.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public Vector getChild(A_CmsUser currentUser, A_CmsProject currentProject, 
 						   String groupname)
         throws CmsException ;	
 
+    /**
+	 * Returns all child groups of a group<P/>
+	 * This method also returns all sub-child groups of the current group.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param groupname The name of the group.
+	 * @return groups A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public Vector getChilds(A_CmsUser currentUser, A_CmsProject currentProject, 
+							String groupname)
+        throws CmsException ;	
+							  
+    /**
+	 * Returns the parent group of a group<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param groupname The name of the group.
+	 * @return group The parent group or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup getParent(A_CmsUser currentUser, A_CmsProject currentProject, 
+								String groupname)
+        throws CmsException ;	
+	
 	/** 
 	 * Sets the password for a user.
 	 * 

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2000/01/24 10:34:43 $ 
+ * @version $Revision: 1.31 $ $Date: 2000/01/24 18:56:36 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -897,7 +897,33 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 							  groupname ) );
 	}
 
-		
+    /**
+	 * Returns all child groups of a group<P/>
+	 * This method also returns all sub-child groups of the current group.
+	 * 
+	 * @param groupname The name of the group.
+	 * @return groups A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public Vector getChilds(String groupname)
+		throws CmsException {
+		return( c_rb.getChilds(m_context.currentUser(), m_context.currentProject(), 
+							   groupname ) );
+	}
+	
+    /**
+	 * Returns the parent group of a group<P/>
+	 * 
+	 * @param groupname The name of the group.
+	 * @return group The parent group or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup getParent(String groupname)
+		throws CmsException {
+		return( c_rb.getParent(m_context.currentUser(), m_context.currentProject(), 
+							   groupname ) );
+	}
+							
 	/**
 	 * Returns a user in the Cms.
 	 * 
@@ -950,7 +976,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 			return(newUser.getName());
 		} else {
 			// No Access!
-			throw new CmsException(this.getClass().getName() + ": " + username, 
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
 				CmsException.C_NO_ACCESS );
 		}		
 	}
@@ -1392,22 +1418,6 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		return( c_rb.getAllMountPoints(m_context.currentUser(), 
 									   m_context.currentProject()) );
 	}
-
-	/**
-	 * Reads a file from the Cms.<BR/>
-	 * 
-	 * @param filename The name of the file to be read.
-	 * 
-	 * @return The file read from the Cms.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 * */
-	 public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
-							 String filename)
-		 throws CmsException {
-		 return( c_rb.readFile(m_context.currentUser(), 
-							   m_context.currentProject(), filename ) );
-	 }
 
 	/**
 	 * Returns a version-string for this OpenCms.

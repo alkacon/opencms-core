@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/24 10:34:44 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/24 18:56:36 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -131,7 +131,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 			m_currentGroup = m_rb.readGroup(m_user, m_currentProject, groupname);
 		} else {
 			// No - throw exception.
-			throw new CmsException(this.getClass().getName() + ": " + groupname,
+			throw new CmsException("[" + this.getClass().getName() + "] " + groupname,
 				CmsException.C_NO_ACCESS);
 		}
 	}

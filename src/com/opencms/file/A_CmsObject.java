@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2000/01/21 16:56:46 $ 
+ * @version $Revision: 1.32 $ $Date: 2000/01/24 18:56:36 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -889,6 +889,27 @@ public abstract class A_CmsObject {
 	abstract public Vector getChild(String groupname)
         throws CmsException;
 
+    /**
+	 * Returns all child groups of a group<P/>
+	 * This method also returns all sub-child groups of the current group.
+	 * 
+	 * @param groupname The name of the group.
+	 * @return groups A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	abstract public Vector getChilds(String groupname)
+		throws CmsException;
+
+	/**
+	 * Returns the parent group of a group<P/>
+	 * 
+	 * @param groupname The name of the group.
+	 * @return group The parent group or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	abstract public A_CmsGroup getParent(String groupname)
+		throws CmsException;
+	
 	/**
 	 * Tests, if a user is in a group.
 	 * 
@@ -1113,19 +1134,6 @@ public abstract class A_CmsObject {
 	 */
 	abstract public Hashtable getAllMountPoints()
 		throws CmsException;
-
-	/**
-	 * Reads a file from the Cms.<BR/>
-	 * 
-	 * @param filename The name of the file to be read.
-	 * 
-	 * @return The file read from the Cms.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	abstract public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
-							 String filename)
-		 throws CmsException;
 
 	/**
 	 * Returns a version-string for this OpenCms.

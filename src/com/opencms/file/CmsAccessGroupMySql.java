@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/01/24 12:43:41 $
+ * @version $Revision: 1.14 $ $Date: 2000/01/24 18:56:36 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -119,72 +119,6 @@ import com.opencms.core.*;
     * This is the connection object to the database
     */
     private Connection m_Con  = null;
-	    
-    /**
-     * Prepared SQL Statement for reading a group.
-     */
-    private PreparedStatement m_statementGroupRead;
-    
-    /**
-    * Prepared SQL Statement for a group by its id.
-    */
-    private PreparedStatement m_statementGroupReadId;
-    
-    /**
-    * Prepared SQL Statement for creating a group.
-    */
-    private PreparedStatement m_statementGroupCreate;
-    
-    /**
-    * Prepared SQL Statement for writing a group.
-    */
-    private PreparedStatement m_statementGroupWrite;
-    
-    /**
-    * Prepared SQL Statement for deleting a group.
-    */
-    private PreparedStatement m_statementGroupDelete;
-    
-    /**
-    * Prepared SQL Statement for getting all groups.
-    */
-    private PreparedStatement m_statementGroupGetAll;
-    
-    /**
-    * Prepared SQL Statement for reading all childs of a group.
-    */
-    private PreparedStatement m_statementGroupChilds;
-
-    /**
-    * Prepared SQL Statement for reading the parent goup of a group.
-    */
-    private PreparedStatement m_statementGroupParent;
-    
-    /**
-    * Prepared SQL Statement for adding a user to a group.
-    */
-    private PreparedStatement m_statementAddUserToGroup;
-
-    /**
-    * Prepared SQL Statement for removing a user form a group.
-    */
-    private PreparedStatement m_statementRemoveUserFromGroup;
-    
-    /**
-    * Prepared SQL Statement for check if a user is in a group.
-    */
-    private PreparedStatement m_statementUserInGroup;
-    
-    /**
-    * Prepared SQL Statement for getting all users id's of a group.
-    */
-    private PreparedStatement m_statementGetUsersInGroup;
- 
-    /**
-    * Prepared SQL Statement for getting all groups of a user.
-    */
-    private PreparedStatement m_statementGetGroupsOfUser;
-    
     
     
      /**
@@ -201,7 +135,6 @@ import com.opencms.core.*;
         throws CmsException, ClassNotFoundException {
         Class.forName(driver);
         initConnections(conUrl);
-        initStatements();
     }
 	/**
 	 * Returns a list of groups of a user.<P/>
@@ -216,15 +149,13 @@ import com.opencms.core.*;
         Vector groups=new Vector();
         ResultSet res = null;
          try {
-          /*   synchronized (m_statementGetGroupsOfUser) {
-                //  get all all groups of the user
-                m_statementGetGroupsOfUser.setInt(1,userid);
-                res = m_statementGetGroupsOfUser.executeQuery();
-             }*/
-            Statement s = m_Con.createStatement();			
-			s.setEscapeProcessing(false);	
-			res = s.executeQuery("SELECT GROUPS.* FROM GROUPS,GROUPUSERS WHERE USER_ID = "
-                                 +userid+" AND GROUPS.GROUP_ID = GROUPUSERS.GROUP_ID");
+			//  get all all groups of the user
+			// create statement
+			PreparedStatement statementGetGroupsOfUser =
+				m_Con.prepareStatement(C_GETGROUPSOFUSER);
+
+			statementGetGroupsOfUser.setInt(1,userid);
+			res = statementGetGroupsOfUser.executeQuery();
           
             // create new Vector.
 		    while ( res.next() ) {
@@ -237,7 +168,7 @@ import com.opencms.core.*;
              }
   
          } catch (SQLException e){
-             throw new CmsException("[CmsAccessGroupMySql/getGroupsOfUser(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
+             throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
          
         
@@ -260,14 +191,13 @@ import com.opencms.core.*;
          ResultSet res = null;
    
          try{ 
-            /* synchronized (m_statementGroupRead) {
-                // read the group from the database
-                m_statementGroupRead.setString(1,groupname);
-                res = m_statementGroupRead.executeQuery();
-             } */
-            Statement s = m_Con.createStatement();			
-			s.setEscapeProcessing(false);	
-			res = s.executeQuery("SELECT * FROM GROUPS WHERE GROUP_NAME = '"+groupname+"'");
+			 // create statement
+			 PreparedStatement statementGroupRead=m_Con.prepareStatement(C_GROUP_READ);
+			 
+			 // read the group from the database
+			 statementGroupRead.setString(1,groupname);
+			 res = statementGroupRead.executeQuery();
+			 
              // create new Cms group object
 			 if(res.next()) {
                 group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -276,11 +206,11 @@ import com.opencms.core.*;
                                    res.getString(C_GROUP_DESCRIPTION),
                                    res.getInt(C_GROUP_FLAGS));                                
              } else {
-                 throw new CmsException("[CmsAccessGroupMySql/readGRoup(groupname)]:"+groupname,CmsException.C_NO_GROUP);
+                 throw new CmsException("[" + this.getClass().getName() + "] "+groupname,CmsException.C_NO_GROUP);
              }
        
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessGroupMySql/readGRoup(groupname)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return group;
      }
@@ -300,11 +230,13 @@ import com.opencms.core.*;
          ResultSet res = null;
    
          try{
-            /* synchronized(m_statementGroupReadId) {
-                 // read the group from the database
-                m_statementGroupReadId.setInt(1,id);
-                res = m_statementGroupReadId.executeQuery();
-             }*/
+			 // create statement
+			 PreparedStatement statementGroupReadId=m_Con.prepareStatement(C_GROUP_READID);
+			 
+			 // read the group from the database
+			 statementGroupReadId.setInt(1,id);
+			 res = statementGroupReadId.executeQuery();
+			 
             Statement s = m_Con.createStatement();			
 			s.setEscapeProcessing(false);	
             res = s.executeQuery("SELECT * FROM GROUPS WHERE GROUP_ID = "+id);
@@ -317,11 +249,11 @@ import com.opencms.core.*;
                                    res.getString(C_GROUP_DESCRIPTION),
                                    res.getInt(C_GROUP_FLAGS));                                
              } else {
-                 throw new CmsException("[CmsAccessGroupMySql/readGroup(id)]:"+id,CmsException.C_NO_GROUP);
+                 throw new CmsException("[" + this.getClass().getName() + "] "+id,CmsException.C_NO_GROUP);
              }
        
          } catch (SQLException e){
-             throw new CmsException("[CmsAccessGroupMySql/readGroup(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return group;
      }
@@ -339,18 +271,20 @@ import com.opencms.core.*;
          Vector userid=new Vector();
          ResultSet res = null;
          try {
-             synchronized (m_statementGetUsersInGroup) {
-                //  get all all users id's of this group.
-                m_statementGetUsersInGroup.setInt(1,groupId);
-                res = m_statementGetUsersInGroup.executeQuery();
-             }
+			// create statement
+			PreparedStatement statementGetUsersInGroup =
+				m_Con.prepareStatement(C_GETUSERSINGROUP);
+			 
+			//  get all all users id's of this group.
+			statementGetUsersInGroup.setInt(1,groupId);
+			res = statementGetUsersInGroup.executeQuery();
             // create new Vector.
 		    while ( res.next() ) {
                   userid.addElement(new Integer(res.getInt(C_USER_ID)));
              }
   
          } catch (SQLException e){
-             throw new CmsException("[CmsAccessGroupMySql/getUsersOfGroup(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
          
          return userid;
@@ -371,16 +305,18 @@ import com.opencms.core.*;
          ResultSet res=null;
                      
         try {
-            synchronized (m_statementUserInGroup) {
-                m_statementUserInGroup.setInt(1,groupid);
-                m_statementUserInGroup.setInt(2,userid);
-                res = m_statementUserInGroup.executeQuery();
-            }
+			// create statement
+			PreparedStatement statementUserInGroup =
+				m_Con.prepareStatement(C_USERINGROUP);
+			
+			statementUserInGroup.setInt(1,groupid);
+			statementUserInGroup.setInt(2,userid);
+			res = statementUserInGroup.executeQuery();
             if (res.next()){        
                 userInGroup=true;
             }                     
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessGroupMySql/userInGroup(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}             
          return userInGroup;
      }
@@ -413,22 +349,23 @@ import com.opencms.core.*;
             if ((parent != null) && (!"".equals(parent))) {
                 parentId=readGroup(parent).getId();
             }
-            synchronized (m_statementGroupCreate){
-                // write new group to the database
-                m_statementGroupCreate.setInt(1,0);
-                m_statementGroupCreate.setInt(2,parentId);
-                m_statementGroupCreate.setString(3,name);
-                m_statementGroupCreate.setString(4,description);
-                m_statementGroupCreate.setInt(5,flags);
-                m_statementGroupCreate.executeUpdate();
-            }
+			// create statement
+			PreparedStatement statementGroupCreate=m_Con.prepareStatement(C_GROUP_CREATE);
+
+            // write new group to the database
+            statementGroupCreate.setInt(1,0);
+            statementGroupCreate.setInt(2,parentId);
+            statementGroupCreate.setString(3,name);
+            statementGroupCreate.setString(4,description);
+            statementGroupCreate.setInt(5,flags);
+            statementGroupCreate.executeUpdate();
             
             // create the user group by reading it from the database.
             // this is nescessary to get the group id which is generated in the
             // database.
             group=readGroup(name);
          } catch (SQLException e){
-             throw new CmsException("[CmsAccessGroupMySql/createGroup(id)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
   		}
          return group;
      }
@@ -446,17 +383,18 @@ import com.opencms.core.*;
          throws CmsException {
          try {
             if (group != null){
-                synchronized (m_statementGroupWrite) {
-                    m_statementGroupWrite.setString(1,group.getDescription());
-                    m_statementGroupWrite.setInt(2,group.getFlags());
-                    m_statementGroupWrite.setInt(3,group.getId());
-                    m_statementGroupWrite.executeUpdate();  
-                }
+				// create statement
+				PreparedStatement statementGroupWrite=m_Con.prepareStatement(C_GROUP_WRITE);
+				
+				statementGroupWrite.setString(1,group.getDescription());
+				statementGroupWrite.setInt(2,group.getFlags());
+				statementGroupWrite.setInt(3,group.getId());
+				statementGroupWrite.executeUpdate();  
             } else {
-                throw new CmsException("[CmsAccessGroupMySql/writeGroup(group)]:",CmsException.C_NO_GROUP);	
+                throw new CmsException("[" + this.getClass().getName() + "] ",CmsException.C_NO_GROUP);	
             }
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessGroupMySql/writeGroup(group)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
      }
 
@@ -472,12 +410,13 @@ import com.opencms.core.*;
 	 public void deleteGroup(String delgroup)
          throws CmsException {
          try {
-             synchronized (m_statementGroupDelete) {
-                m_statementGroupDelete.setString(1,delgroup);
-                m_statementGroupDelete.executeUpdate();
-             }
+			 // create statement
+			 PreparedStatement statementGroupDelete=m_Con.prepareStatement(C_GROUP_DELETE);
+			 
+			 statementGroupDelete.setString(1,delgroup);
+			 statementGroupDelete.executeUpdate();
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessGroupMySql/delete(group)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
      }
 
@@ -497,17 +436,19 @@ import com.opencms.core.*;
         if (!userInGroup(userid,groupid)) {
             // if not, add this user to the group
             try {
-                synchronized (m_statementAddUserToGroup) {    
-                    // write the new assingment to the database
-                    m_statementAddUserToGroup.setInt(1,groupid);
-                    m_statementAddUserToGroup.setInt(2,userid);
-                    //flag field is not used yet
-                    m_statementAddUserToGroup.setInt(3,C_UNKNOWN_INT);
-                    m_statementAddUserToGroup.executeUpdate();
-                }
+				// create statement
+				PreparedStatement statementAddUserToGroup =
+					m_Con.prepareStatement(C_ADDUSERTOGROUP);
+				
+				// write the new assingment to the database
+				statementAddUserToGroup.setInt(1,groupid);
+				statementAddUserToGroup.setInt(2,userid);
+				// flag field is not used yet
+				statementAddUserToGroup.setInt(3,C_UNKNOWN_INT);
+				statementAddUserToGroup.executeUpdate();
    
              } catch (SQLException e){
-                 throw new CmsException("[CmsAccessGroupMySql/addUserToGroup(userid,groupid)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+                 throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
           
 	    	}
         }
@@ -526,13 +467,15 @@ import com.opencms.core.*;
 	 public void removeUserFromGroup(int userid, int groupid)
          throws CmsException {
          try {
-             synchronized (m_statementRemoveUserFromGroup) {
-                m_statementRemoveUserFromGroup.setInt(1,groupid);
-                m_statementRemoveUserFromGroup.setInt(2,userid);
-                m_statementRemoveUserFromGroup.executeUpdate();
-             }
+			 // create statement
+			 PreparedStatement statementRemoveUserFromGroup =
+				m_Con.prepareStatement(C_REMOVEUSERFROMGROUP);
+			 
+			 statementRemoveUserFromGroup.setInt(1,groupid);
+			 statementRemoveUserFromGroup.setInt(2,userid);
+			 statementRemoveUserFromGroup.executeUpdate();
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessGroupMySql/removeUserFromGroup(userid,groupid)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
      }
 
@@ -550,9 +493,10 @@ import com.opencms.core.*;
          
          try {
             //  get all groups
-             synchronized (m_statementGroupGetAll) {
-                res = m_statementGroupGetAll.executeQuery();
-             }
+			// create statement
+			PreparedStatement statementGroupGetAll=m_Con.prepareStatement(C_GROUP_GETALL);
+ 
+			res = statementGroupGetAll.executeQuery();			
             // create new Cms group objects
 		    while ( res.next() ) {
                     group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -565,7 +509,7 @@ import com.opencms.core.*;
              
        
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessGroupMySql/getGroups()]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);		
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
       return groups;
      }
@@ -591,10 +535,13 @@ import com.opencms.core.*;
              parent=readGroup(groupname);
             // parent group exists, so get all childs
             if (parent != null) {
-                synchronized (m_statementGroupChilds) {
-                    m_statementGroupChilds.setInt(1,parent.getId());
-                    res = m_statementGroupChilds.executeQuery();
-                }
+				// create statement
+				PreparedStatement statementGroupChilds =
+					m_Con.prepareStatement(C_GROUP_CHILDS);
+				
+				statementGroupChilds.setInt(1,parent.getId());
+				res = statementGroupChilds.executeQuery();
+				
                 // create new Cms group objects
 		    	while ( res.next() ) {
                     group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -607,7 +554,7 @@ import com.opencms.core.*;
              }
        
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessGroupMySql/getChild(groupname)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          //check if the child vector has no elements, set it to null.
          if (childs.size() == 0) {
@@ -634,12 +581,13 @@ import com.opencms.core.*;
         
         ResultSet res = null;
    
-        try{ 
-             synchronized (m_statementGroupParent) {
-                // read the group from the database
-                m_statementGroupParent.setInt(1,group.getParentId());
-                res = m_statementGroupParent.executeQuery();
-             }
+        try{
+			 // read the group from the database
+			 // create statement
+			 PreparedStatement statementGroupParent=m_Con.prepareStatement(C_GROUP_PARENT);
+			
+			 statementGroupParent.setInt(1,group.getParentId());
+			 res = statementGroupParent.executeQuery();
              // create new Cms group object
 			 if(res.next()) {
                 parent=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -650,37 +598,10 @@ import com.opencms.core.*;
              }
        
          } catch (SQLException e){
-            throw new CmsException("[CmsAccessGroupMySql/getParent(groupname)]:"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
         return parent;
     }
-    
-    /**
-     * This method creates all preparted SQL statements required in this class.
-     * 
-     * @exception CmsException Throws CmsException if something goes wrong.
-     */
-     private void initStatements()
-       throws CmsException{
-         try{
-              m_statementGroupRead=m_Con.prepareStatement(C_GROUP_READ);
-              m_statementGroupReadId=m_Con.prepareStatement(C_GROUP_READID);
-              m_statementGroupCreate=m_Con.prepareStatement(C_GROUP_CREATE);
-              m_statementGroupWrite=m_Con.prepareStatement(C_GROUP_WRITE);
-              m_statementGroupDelete=m_Con.prepareStatement(C_GROUP_DELETE);
-              m_statementGroupGetAll=m_Con.prepareStatement(C_GROUP_GETALL);
-              m_statementGroupChilds=m_Con.prepareStatement(C_GROUP_CHILDS);
-              m_statementGroupParent=m_Con.prepareStatement(C_GROUP_PARENT);
-              m_statementAddUserToGroup=m_Con.prepareStatement(C_ADDUSERTOGROUP);
-              m_statementRemoveUserFromGroup=m_Con.prepareStatement(C_REMOVEUSERFROMGROUP);
-              m_statementUserInGroup=m_Con.prepareStatement(C_USERINGROUP);
-              m_statementGetUsersInGroup=m_Con.prepareStatement(C_GETUSERSINGROUP);
-              m_statementGetGroupsOfUser=m_Con.prepareStatement(C_GETGROUPSOFUSER);
-         } catch (SQLException e){
-           
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
-     }
     
      /**
      * Connects to the property database.
@@ -695,8 +616,7 @@ import com.opencms.core.*;
         try {
         	m_Con = DriverManager.getConnection(conUrl);
        	} catch (SQLException e)	{
-         	throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);
+         	throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
     }
-    
-}
+ }

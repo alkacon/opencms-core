@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/01/06 11:52:08 $
+ * @version $Revision: 1.14 $ $Date: 2000/01/24 18:56:36 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -435,8 +435,8 @@ import com.opencms.core.*;
         return childs;
      }
      
-         /**
-	 * Returns all child groups of a groups<P/>
+    /**
+	 * Returns all child groups of a group<P/>
 	 * This method also returns all sub-child groups of the current group.
 	 * 
 	 * 

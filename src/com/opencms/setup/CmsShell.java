@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/01/21 15:18:55 $
+ * @version $Revision: 1.14 $ $Date: 2000/01/24 18:56:36 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1297,6 +1297,40 @@ public class CmsShell implements I_CmsConstants {
 			Vector files = m_cms.readAllFileHeaders(filename);
 			for( int i = 0; i < files.size(); i++ ) {
 				System.out.println( (A_CmsResource)files.elementAt(i) );
+			}
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+    /**
+	 * Returns the parent group of a group<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param groupname The name of the group.
+	 */
+	public void getParent(String groupname) {
+		try {
+			System.out.println(m_cms.getParent(groupname));
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+    /**
+	 * Returns all child groups of a group<P/>
+	 * This method also returns all sub-child groups of the current group.
+	 * 
+	 * @param groupname The name of the group.
+	 */
+	public void getChilds(String groupname)
+		throws CmsException {
+		try {
+			Vector groups = m_cms.getChilds(groupname);
+			for( int i = 0; i < groups.size(); i++ ) {
+				System.out.println( (A_CmsGroup)groups.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			System.err.println(exc);

@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/01/24 12:10:31 $
+ * @version $Revision: 1.11 $ $Date: 2000/01/24 18:56:36 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -19,31 +19,6 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
      * This is the connection object to the database
      */
     private Connection m_con  = null;
-
-	/**
-	 * A prepared statement to access the database.
-	 */
-	private PreparedStatement m_statementCreateProject;
-	
-	/**
-	 * A prepared statement to access the database.
-	 */
-	private PreparedStatement m_statementReadProject;
-
-	/**
-	 * A prepared statement to access the database.
-	 */
-	private PreparedStatement m_statementGetProjectsByUser;
-
-	/**
-	 * A prepared statement to access the database.
-	 */
-	private PreparedStatement m_statementGetProjectsByGroup;
-
-	/**
-	 * A prepared statement to access the database.
-	 */
-	private PreparedStatement m_statementUpdateProject;
 
 	/**
 	 * Column name
@@ -131,7 +106,6 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
         throws CmsException, ClassNotFoundException {
         Class.forName(driver);
         initConnections(conUrl);
-		initStatements();
     }
 
 	/**
@@ -145,16 +119,13 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 		 throws CmsException {		 
 		 try {
 			 ResultSet result;
-/*			 synchronized(m_statementReadProject) {
-				m_statementReadProject.setString(1,name);
-				result = m_statementReadProject.executeQuery();
-			 } */
+			 // create the statement
+			 PreparedStatement statementReadProject = 
+				m_con.prepareStatement(C_PROJECT_READ);
 			 
-            Statement s = m_con.createStatement();			
-			s.setEscapeProcessing(false);	
+			 statementReadProject.setString(1,name);
+			 result = statementReadProject.executeQuery();			
 			
-            result = s.executeQuery("Select * from PROJECTS where " + C_PROJECT_NAME + " = '" + name + "'");
-			 
 			 // if resultset exists - return it
 			 if(result.next()) {
 				 return( new CmsProject(result.getInt(C_PROJECT_ID),
@@ -166,11 +137,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 										result.getInt(C_PROJECT_FLAGS)));
 			 } else {
 				 // project not found!
-				 throw new CmsException(this.getClass().getName() + ": " + name, 
+				 throw new CmsException("[" + this.getClass().getName() + "] " + name, 
 					 CmsException.C_NOT_FOUND);
 			 }
 		 } catch( SQLException exc ) {
-			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }
 	 }
@@ -191,17 +162,20 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 								A_CmsUser owner, A_CmsGroup group, int flags)
 		throws CmsException {
 		 try {
-			 synchronized(m_statementCreateProject) {
-				m_statementCreateProject.setInt(1,owner.getId());
-				m_statementCreateProject.setInt(2,group.getId());
-				m_statementCreateProject.setInt(3,task.getId());
-				m_statementCreateProject.setString(4,name);
-				m_statementCreateProject.setString(5,description);
-				m_statementCreateProject.setInt(6,flags);
-				m_statementCreateProject.executeUpdate();
-			 }
+			 
+			 // create the statement
+			 PreparedStatement statementCreateProject = 
+				m_con.prepareStatement(C_PROJECT_CREATE);
+			 
+			 statementCreateProject.setInt(1,owner.getId());
+			 statementCreateProject.setInt(2,group.getId());
+			 statementCreateProject.setInt(3,task.getId());
+			 statementCreateProject.setString(4,name);
+			 statementCreateProject.setString(5,description);
+			 statementCreateProject.setInt(6,flags);
+			 statementCreateProject.executeUpdate();
 		 } catch( SQLException exc ) {
-			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }
 		 return(readProject(name));
@@ -216,18 +190,20 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 */
 	 public A_CmsProject writeProject(A_CmsProject project)
 		 throws CmsException {
-		 try {    
-			 synchronized(m_statementUpdateProject) {
-				m_statementUpdateProject.setInt(1,project.getOwnerId());
-				m_statementUpdateProject.setInt(2,project.getGroupId());
-				m_statementUpdateProject.setInt(3,project.getTaskId());
-				m_statementUpdateProject.setString(4,project.getDescription());
-				m_statementUpdateProject.setInt(5,project.getFlags());
-				m_statementUpdateProject.setString(6,project.getName());
-				m_statementUpdateProject.executeUpdate();
-			 }
+		 try {
+			 // create the statement
+			 PreparedStatement statementUpdateProject = 
+				m_con.prepareStatement(C_PROJECT_UPDATE);
+			 
+			 statementUpdateProject.setInt(1,project.getOwnerId());
+			 statementUpdateProject.setInt(2,project.getGroupId());
+			 statementUpdateProject.setInt(3,project.getTaskId());
+			 statementUpdateProject.setString(4,project.getDescription());
+			 statementUpdateProject.setInt(5,project.getFlags());
+			 statementUpdateProject.setString(6,project.getName());
+			 statementUpdateProject.executeUpdate();
 		 } catch( SQLException exc ) {
-			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }
 		 return(readProject(project.getName()));
@@ -246,10 +222,13 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
 		 try {
 			 ResultSet result;
-			 synchronized(m_statementGetProjectsByUser) {
-				m_statementGetProjectsByUser.setInt(1,user.getId());
-				result = m_statementGetProjectsByUser.executeQuery();
-			 }
+			 
+			 // create the statement
+			 PreparedStatement statementGetProjectsByUser = 
+				m_con.prepareStatement(C_PROJECT_GET_BY_USER);
+
+			 statementGetProjectsByUser.setInt(1,user.getId());
+			 result = statementGetProjectsByUser.executeQuery();
 			 
 			 while(result.next()) {
 				 projects.addElement( new CmsProject(result.getInt(C_PROJECT_ID),
@@ -262,7 +241,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 			 }
 			 return(projects);
 		 } catch( SQLException exc ) {
-			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }
 	 }
@@ -280,10 +259,13 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
 		 try {
 			 ResultSet result;
-			 synchronized(m_statementGetProjectsByGroup) {
-				m_statementGetProjectsByGroup.setInt(1,group.getId());
-				result = m_statementGetProjectsByGroup.executeQuery();
-			 }
+			 
+			 // create the statement
+			PreparedStatement statementGetProjectsByGroup = 
+				m_con.prepareStatement(C_PROJECT_GET_BY_GROUP);
+			
+			statementGetProjectsByGroup.setInt(1,group.getId());
+			result = statementGetProjectsByGroup.executeQuery();
 			 
 			 while(result.next()) {
 				 projects.addElement( new CmsProject(result.getInt(C_PROJECT_ID),
@@ -296,7 +278,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 			 }
 			 return(projects);
 		 } catch( SQLException exc ) {
-			 throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }
 	 }
@@ -314,25 +296,8 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
         try {
         	m_con = DriverManager.getConnection(conUrl);
        	} catch (SQLException e)	{
-         	throw new CmsException(this.getClass().getName() + ": " + e.getMessage(), 
+         	throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), 
 				CmsException.C_SQL_ERROR, e);
 		}
     }
-	
-	/**
-	 * Inits all prepared statements.
-	 */
-	private void initStatements()
-		throws CmsException {
-		try {
-			m_statementCreateProject = m_con.prepareStatement(C_PROJECT_CREATE);
-			m_statementUpdateProject = m_con.prepareStatement(C_PROJECT_UPDATE);
-			m_statementReadProject = m_con.prepareStatement(C_PROJECT_READ);
-			m_statementGetProjectsByUser = m_con.prepareStatement(C_PROJECT_GET_BY_USER);
-			m_statementGetProjectsByGroup = m_con.prepareStatement(C_PROJECT_GET_BY_GROUP);
-		} catch (SQLException exc) {
-			throw new CmsException(this.getClass().getName() + ": " + exc.getMessage(), 
-				CmsException.C_SQL_ERROR, exc);
-		}
-	}
 }

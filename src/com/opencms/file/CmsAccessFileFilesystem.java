@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/24 12:01:39 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/24 18:56:36 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -74,10 +74,10 @@ import com.opencms.core.*;
                  s.write(contents);
                  s.close();
              } catch (Exception e) {
-               throw new CmsException("[CmsAccessFileFilesystem/createFile()]:"+e.getMessage());
+               throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
              }
          } else {
-             throw new CmsException("[CmsAccessFileFilesystem/createFile()]:"+filename,CmsException.C_FILE_EXISTS);
+             throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILE_EXISTS);
          }
          return readFile(project,onlineProject,filename);
      }
@@ -109,10 +109,10 @@ import com.opencms.core.*;
                  s.write(file.getContents());
                  s.close();
              } catch (Exception e) {
-               throw new CmsException("[CmsAccessFileFilesystem/createFile()]:"+e.getMessage());
+               throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
              }
          } else {
-             throw new CmsException("[CmsAccessFileFilesystem/createFile()]:"+filename,CmsException.C_FILE_EXISTS);
+             throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILE_EXISTS);
          }
          return readFile(project,onlineProject,filename);
       
@@ -170,11 +170,11 @@ import com.opencms.core.*;
                     }
 				    s.close();
 			   } catch (Exception e) {
-                      throw new CmsException("[CmsAccessFileFilesystem/readFile()]:"+filename+e.getMessage());
+                      throw new CmsException("[" + this.getClass().getName() + "] "+filename+e.getMessage());
               }
 		    } 
          } else {
-             throw new CmsException(filename,CmsException.C_NOT_FOUND);
+             throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_NOT_FOUND);
          }
 		  return file;
      }
@@ -215,7 +215,7 @@ import com.opencms.core.*;
                               new byte[0],
                               0);
          } else {
-             throw new CmsException("[CmsAccessFileFilesystem/readFile()]:"+filename,CmsException.C_NOT_FOUND);
+             throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_NOT_FOUND);
          }
       return file;
        }
@@ -267,10 +267,10 @@ import com.opencms.core.*;
                  s.write(file.getContents());
                  s.close();
              } catch (Exception e) {
-               throw new CmsException("[CmsAccessFileFilesystem/writeFile()]:"+e.getMessage());
+               throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
              }
          } else {
-             throw new CmsException("[CmsAccessFileFilesystem/writeFile()]:"+file.getAbsolutePath(),CmsException.C_FILE_EXISTS);
+             throw new CmsException("[" + this.getClass().getName() + "] "+file.getAbsolutePath(),CmsException.C_FILE_EXISTS);
          }
      }
 	
@@ -315,13 +315,13 @@ import com.opencms.core.*;
                 if (discFile.isFile()) {
 					boolean success=discFile.renameTo(newDiscFile);
 					if (!success) {
-                        throw new CmsException("[CmsAccessFileFilesystem/renameFile()]:"+oldname,CmsException.C_FILESYSTEM_ERROR);
+                        throw new CmsException("[" + this.getClass().getName() + "] "+oldname,CmsException.C_FILESYSTEM_ERROR);
 					}
                 } else {
-                    throw new CmsException("[CmsAccessFileFilesystem/renameFile()]:"+oldname,CmsException.C_NOT_FOUND);
+                    throw new CmsException("[" + this.getClass().getName() + "] "+oldname,CmsException.C_NOT_FOUND);
                 }
             } else {
-                  throw new CmsException("[CmsAccessFileFilesystem/renameFile()]:"+oldname,CmsException.C_NOT_FOUND);
+                  throw new CmsException("[" + this.getClass().getName() + "] "+oldname,CmsException.C_NOT_FOUND);
             }
      }
 	
@@ -342,13 +342,13 @@ import com.opencms.core.*;
              if(discFile.isFile()) {
 				boolean success=discFile.delete();
 				if (!success) {
-						 throw new CmsException("[CmsAccessFileFilesystem/deleteFile()]:"+filename,CmsException.C_FILESYSTEM_ERROR);
+						 throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_FILESYSTEM_ERROR);
 				}
              } else {
-                 throw new CmsException("[CmsAccessFileFilesystem/deleteFile()]:"+filename,CmsException.C_NOT_FOUND);
+                 throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_NOT_FOUND);
              }
          } 	else {
-             throw new CmsException("[CmsAccessFileFilesystem/deleteFile()]:"+filename,CmsException.C_NOT_FOUND);
+             throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_NOT_FOUND);
          }
      }
 	
@@ -380,10 +380,10 @@ import com.opencms.core.*;
                  s.write(sourcefile.getContents());
                  s.close();
              } catch (Exception e) {
-               throw new CmsException("[CmsAccessFileFilesystem/copyFile()]:"+e.getMessage());
+               throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage());
              }
          } else {
-             throw new CmsException("[CmsAccessFileFilesystem/copyFile()]:"+destination,CmsException.C_FILE_EXISTS);
+             throw new CmsException("[" + this.getClass().getName() + "] "+destination,CmsException.C_FILE_EXISTS);
          }
      }
 	
@@ -411,10 +411,10 @@ import com.opencms.core.*;
 		  if (!discFolder.exists())	{
 			boolean success=discFolder.mkdir();
 			if (!success) {
-				throw new CmsException("[CmsAccessFileFilesystem/createFolder()]:"+foldername,CmsException.C_FILESYSTEM_ERROR);
+				throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_FILESYSTEM_ERROR);
 			}
           } else {
-              throw new CmsException("[CmsAccessFileFilesystem/createFolder()]:"+foldername,CmsException.C_FILE_EXISTS);
+              throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_FILE_EXISTS);
           }
         return readFolder(project,foldername);
      }
@@ -468,7 +468,7 @@ import com.opencms.core.*;
                                       discFolder.lastModified());
 		   }
 	     } else {
-             throw new CmsException("[CmsAccessFileFilesystem/readFolder()]:"+foldername,CmsException.C_NOT_FOUND);
+             throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_NOT_FOUND);
          }
 	   return folder;       
     }
@@ -514,7 +514,7 @@ import com.opencms.core.*;
 				if (discFolder.isDirectory()) {
 					boolean success=discFolder.delete();
 					if (!success) {
-						throw new CmsException("[CmsAccessFileFilesystem/deleteFolder]:"+"Error deleting folder");
+						throw new CmsException("[" + this.getClass().getName() + "] "+foldername, CmsException.C_FILESYSTEM_ERROR);
 					}
 				}
 			}
