@@ -5,14 +5,14 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This interface describes the access to projects in the Cms.<BR/>
+ * This abstract class describes the access to projects in the Cms.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/10 11:10:23 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
  */
-public interface I_CmsAccessProject {
+abstract class A_CmsAccessProject {
 
 	/**
 	 * Reads a project from the Cms.
@@ -22,7 +22,7 @@ public interface I_CmsAccessProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 I_CmsProject readProject(String name)
+	 abstract I_CmsProject readProject(String name)
 		throws CmsException;
 	
 	/**
@@ -37,7 +37,7 @@ public interface I_CmsAccessProject {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a project with the same name for this resource-type exists already.
 	 */
-	 I_CmsProject createProject(String name, String description, int flags)
+	 abstract I_CmsProject createProject(String name, String description, int flags)
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
@@ -48,5 +48,5 @@ public interface I_CmsAccessProject {
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 Vector getAllAccessibleProjects(String projectname);
+	 abstract Vector getAllAccessibleProjects(String projectname);
 }

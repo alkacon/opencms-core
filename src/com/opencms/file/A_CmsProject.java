@@ -1,27 +1,27 @@
 package com.opencms.file;
 
 /**
- * This interface describes a project. A project is used to handle versions of one
- * resource.
+ * This abstract class describes a project. A project is used to handle versions of 
+ * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 1999/12/10 11:10:23 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
  */
-public interface I_CmsProject
+abstract public class A_CmsProject
 {
 	/**
 	 * Returns the name of this project.
 	 * 
 	 * @return the name of this project.
 	 */
-    public String getName();
+    abstract public String getName();
 
 	/**
 	 * Returns the description of this project.
 	 * 
 	 * @return description The description of this project.
 	 */
-	public String getDescription();
+	abstract public String getDescription();
 
 	/**
 	 * Returns the state of this project.<BR/>
@@ -29,28 +29,28 @@ public interface I_CmsProject
 	 * 
 	 * @return the state of this project.
 	 */
-	public int getState();
+	abstract public int getState();
 
 	/**
 	 * Returns the id of this project.
 	 * 
 	 * @return the id of this project.
 	 */	
-    long getID();
+    abstract long getID();
 	
 	/**
 	 * Returns the userid of the project owner.
 	 * 
 	 * @return the userid of the project owner.
 	 */
-	long getOwnerID();
+	abstract long getOwnerID();
 	
 	/**
 	 * Returns the groupid of this project.
 	 * 
 	 * @return the groupid of this project.
 	 */
-    long getGroupID();
+    abstract long getGroupID();
 	
 	/**
 	 * Returns a string-representation for this object.
@@ -58,19 +58,19 @@ public interface I_CmsProject
 	 * 
 	 * @return string-representation for this object.
 	 */
-	public String toString();
+	abstract public String toString();
 	
 	/**
 	 * Compares the overgiven object with this object.
 	 * 
 	 * @return true, if the object is identically else it returns false.
 	 */
-    public boolean equals(Object obj);
+    abstract public boolean equals(Object obj);
 
 	/**
 	 * Returns the hashcode for this object.
 	 * 
 	 * @return the hashcode for this object.
 	 */
-    public int hashCode();    
+    abstract public int hashCode();    
 }

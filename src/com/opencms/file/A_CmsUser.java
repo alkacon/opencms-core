@@ -3,68 +3,68 @@ package com.opencms.file;
 import java.util.*;
 
 /**
- * This interface describes a user.
+ * This abstract class describes a user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/10 11:10:23 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
  */
-public interface I_CmsUser {
+public abstract class A_CmsUser {
 	
 	/**
 	 * Gets the login-name of the user.
 	 * 
 	 * @return the login-name of the user.
 	 */
-	public String getName();
+	abstract public String getName();
 	
 	/**
 	 * Gets the id of this user.
 	 * 
 	 * @return the id of this user.
 	 */
-	long getID();
+	abstract long getID();
 	
 	/**
 	 * Gets the description of this user.
 	 * 
 	 * @return the description of this user.
 	 */
-	public String getDescription();
+	abstract public String getDescription();
 	
     /**
      * Desides, if this user is disabled.
      * 
      * @return USER_FLAGS == C_FLAG_DISABLED
      */
-    public boolean getDisabled();
+    abstract public boolean getDisabled();
 	
 	/**
 	 * Returns the USER_FLAGS.
 	 * 
 	 * @return the USER_FLAGS.
 	 */
-	public int getFlags();
+	abstract public int getFlags();
 	
 	/**
 	 * Returns the last login date.
 	 * 
 	 * @return the last login date.
 	 */	 
-	public long getLastLoginDate();
+	abstract public long getLastLoginDate();
 	
 	/**
 	 * Returns the default group for this user.
 	 * 
 	 * @return the default group for this user.
 	 */
-	public I_CmsGroup getDefaultGroup();
+	abstract public I_CmsGroup getDefaultGroup();
 
 	/**
 	 * Returns the current group for this user.
 	 * 
 	 * @return the current group for this user.
 	 */
-	public I_CmsGroup getCurrentGroup();
+	abstract public I_CmsGroup getCurrentGroup();
 
 	
 	/**
@@ -73,21 +73,21 @@ public interface I_CmsUser {
 	 * 
 	 * @return string-representation for this object.
 	 */
-	public String toString();
+	abstract public String toString();
 	
 	/**
 	 * Compares the overgiven object with this object.
 	 * 
 	 * @return true, if the object is identically else it returns false.
 	 */
-    public boolean equals(Object obj);
+    abstract public boolean equals(Object obj);
 
 	/**
 	 * Returns the hashcode for this object.
 	 * 
 	 * @return the hashcode for this object.
 	 */
-    public int hashCode();
+    abstract public int hashCode();
 	
 	/**
 	 * Returns additional information about the user. <BR/>
@@ -102,42 +102,42 @@ public interface I_CmsUser {
 	 * does not exists, it returns null.
 	 * 
 	 */
-	public String getAdditionalInfo(String key);
+	abstract public String getAdditionalInfo(String key);
 	
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_EMAIL);</pre>
 	 * 
 	 * @return the USER_EMAIL, or null.
 	 */
-	public String getAdditionalInfoEmail();
+	abstract public String getAdditionalInfoEmail();
 
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_FIRSTNAME);</pre>
 	 * 
 	 * @return the USER_FIRSTNAME, or null.
 	 */
-	public String getAdditionalInfoFirstname();
+	abstract public String getAdditionalInfoFirstname();
 
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_SURNAME);</pre>
 	 * 
 	 * @return the USER_SURNAME, or null.
 	 */
-	public String getAdditionalInfoSurname();
+	abstract public String getAdditionalInfoSurname();
 	
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_ADDRESS);</pre>
 	 * 
 	 * @return the USER_ADDRESS, or null.
 	 */
-	public String getAdditionalInfoAddress();
+	abstract public String getAdditionalInfoAddress();
 
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_SECTION);</pre>
 	 * 
 	 * @return the USER_SECTION, or null.
 	 */
-	public String getAdditionalInfoSection();
+	abstract public String getAdditionalInfoSection();
 
 	// the following methods are not used, because the functionality is handled by
 	// a I_CmsObjectBase:

@@ -1,12 +1,12 @@
 package com.opencms.file;
 
 /**
- * This interface describes a task in the Cms.
+ * This abstract class describes a task in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/10 11:10:23 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
  */
-public interface I_CmsTask
+public abstract class A_CmsTask
 {
 	
 	// TODO: add task-methods here.
@@ -17,20 +17,19 @@ public interface I_CmsTask
 	 * 
 	 * @return string-representation for this object.
 	 */
-	public String toString();
+	abstract public String toString();
 	
 	/**
 	 * Compares the overgiven object with this object.
 	 * 
 	 * @return true, if the object is identically else it returns false.
 	 */
-    public boolean equals(Object obj);
+    abstract public boolean equals(Object obj);
 
 	/**
 	 * Returns the hashcode for this object.
 	 * 
 	 * @return the hashcode for this object.
 	 */
-    public int hashCode();    
-	
+    abstract public int hashCode();    
 }

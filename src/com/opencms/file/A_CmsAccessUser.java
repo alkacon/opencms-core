@@ -6,14 +6,14 @@ import javax.servlet.http.*;
 import com.opencms.core.*;
 
 /**
- * This interface describes the access to groups and users in the Cms.<BR/>
+ * This abstract class describes the access to groups and users in the Cms.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/10 11:10:23 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
  */
-public interface I_CmsAccessUser {
+abstract interface A_CmsAccessUser {
 
 	/**
 	 * Returns a user object.<P/>
@@ -23,7 +23,7 @@ public interface I_CmsAccessUser {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	I_CmsUser readUser(String username)
+	abstract I_CmsUser readUser(String username)
 		throws CmsException;
 	
 	/**
@@ -36,7 +36,7 @@ public interface I_CmsAccessUser {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	I_CmsUser readUser(String username, String password)
+	abstract I_CmsUser readUser(String username, String password)
 		throws CmsException;
 	
 	/**
@@ -47,7 +47,7 @@ public interface I_CmsAccessUser {
 	 * @return Vector of groups
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	Vector getGroupsOfUser(String username)
+	abstract Vector getGroupsOfUser(String username)
 		throws CmsException;
 
 	/**
@@ -59,7 +59,7 @@ public interface I_CmsAccessUser {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	I_CmsGroup readGroup(String groupname)
+	abstract I_CmsGroup readGroup(String groupname)
 		throws CmsException;
 
 	/**
@@ -70,7 +70,7 @@ public interface I_CmsAccessUser {
 	 * @return Vector of users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	Vector getUsersOfGroup(String groupname)
+	abstract Vector getUsersOfGroup(String groupname)
 		throws CmsException;
 
 	/**
@@ -83,7 +83,7 @@ public interface I_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	boolean userInGroup(String username, String groupname)
+	abstract boolean userInGroup(String username, String groupname)
 		throws CmsException;
 
 	/** 
@@ -106,7 +106,7 @@ public interface I_CmsAccessUser {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a user with the given username exists already.
 	 */
-	I_CmsUser addUser(String name, String password, 
+	abstract I_CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
 		throws CmsException, CmsDuplicateKeyException;
@@ -121,7 +121,7 @@ public interface I_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	void deleteUser(String username)
+	abstract void deleteUser(String username)
 		throws CmsException;
 
 	/**
@@ -136,7 +136,7 @@ public interface I_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	void updateUser(String username, 
+	abstract void updateUser(String username, 
 					Hashtable additionalInfos, int flag)
 		throws CmsException;
 
@@ -156,7 +156,7 @@ public interface I_CmsAccessUser {
 	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
 	 * same group already exists.
 	 */	
-	I_CmsGroup addGroup(String name, String description, int flags)
+	abstract I_CmsGroup addGroup(String name, String description, int flags)
 		throws CmsException, CmsDuplicateKeyException;
 
 	/**
@@ -168,7 +168,7 @@ public interface I_CmsAccessUser {
 	 * @param delgroup The name of the group that is to be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	void deleteGroup(String delgroup)
+	abstract void deleteGroup(String delgroup)
 		throws CmsException;
 
 	/**
@@ -181,7 +181,7 @@ public interface I_CmsAccessUser {
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	void addUserToGroup(String username, String groupname)
+	abstract void addUserToGroup(String username, String groupname)
 		throws CmsException;
 
 	/**
@@ -194,7 +194,7 @@ public interface I_CmsAccessUser {
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	void removeUserFromGroup(String username, String groupname)
+	abstract void removeUserFromGroup(String username, String groupname)
 		throws CmsException;
 
 	/**
@@ -203,7 +203,7 @@ public interface I_CmsAccessUser {
 	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing users.
 	 */
-	Vector getUsers();
+	abstract Vector getUsers();
 	
 	/**
 	 * Returns all groups<P/>
@@ -211,7 +211,7 @@ public interface I_CmsAccessUser {
 	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing groups.
 	 */
-	Vector getGroups();	
+	abstract Vector getGroups();	
 
 	/** 
 	 * Sets the password for a user.
@@ -224,6 +224,6 @@ public interface I_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	void setPassword(String username, String newPassword)
+	abstract void setPassword(String username, String newPassword)
 		throws CmsException;
 }

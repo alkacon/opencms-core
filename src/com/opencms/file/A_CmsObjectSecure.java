@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * I_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/13 15:19:10 $ 
+ * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $ 
  * 
  */
 interface I_CmsObjectSecure {	

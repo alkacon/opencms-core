@@ -5,14 +5,14 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This interface describes the access to files and folders in the Cms.<BR/>
+ * This abstract class describes the access to files and folders in the Cms.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 15:19:10 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
  */
-public interface I_CmsAccessFile {
+abstract class A_CmsAccessFile {
 
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
@@ -42,7 +42,7 @@ public interface I_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	I_CmsFile createFile(String project, String folder, String filename, 
+	abstract I_CmsFile createFile(String project, String folder, String filename, 
 								byte[] contents, I_CmsResourceType type, 
 								Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
@@ -61,7 +61,7 @@ public interface I_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	I_CmsFile readFile(String project, String folder, String filename)
+	abstract I_CmsFile readFile(String project, String folder, String filename)
 		throws CmsException;
 	
 	/**
@@ -79,7 +79,7 @@ public interface I_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	I_CmsResource readFileHeader(String project, String folder, 
+	abstract I_CmsResource readFileHeader(String project, String folder, 
 										String filename)
 		throws CmsException;
 	
@@ -100,7 +100,7 @@ public interface I_CmsAccessFile {
 	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
 	 * if the user has not the rights for this resource.
 	 */	
-	void writeFile(String project, 
+	abstract void writeFile(String project, 
 				   I_CmsFile file, Hashtable metainfos)
 		throws CmsException;
 	
@@ -121,7 +121,7 @@ public interface I_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	void writeFileHeader(String project, 
+	abstract void writeFileHeader(String project, 
 						 I_CmsResource resource, Hashtable metainfos)
 		throws CmsException;
 
@@ -137,7 +137,7 @@ public interface I_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */		
-	void renameFile(String project, 
+	abstract void renameFile(String project, 
 					String oldname, String newname)
 		throws CmsException;
 	
@@ -152,7 +152,7 @@ public interface I_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	void deleteFile(String project, String filename)
+	abstract void deleteFile(String project, String filename)
 		throws CmsException;
 	
 	/**
@@ -169,7 +169,7 @@ public interface I_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	void copyFile(String project, String source, String destination)
+	abstract void copyFile(String project, String source, String destination)
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
@@ -186,7 +186,7 @@ public interface I_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	void moveFile(String project, String source, 
+	abstract void moveFile(String project, String source, 
 				  String destination)
 		throws CmsException, CmsDuplicateKeyException;
 	
@@ -203,7 +203,7 @@ public interface I_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	void setResourceType(String project, String resource, 
+	abstract void setResourceType(String project, String resource, 
 								I_CmsResourceType newType, Hashtable metainfos)
 		throws CmsException;
 	
@@ -233,7 +233,7 @@ public interface I_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	I_CmsFolder createFolder(String project, String folder, 
+	abstract I_CmsFolder createFolder(String project, String folder, 
 								  String newFolderName, Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
 
@@ -252,7 +252,7 @@ public interface I_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	I_CmsFolder readFolder(String project, String folder, String folderName)
+	abstract I_CmsFolder readFolder(String project, String folder, String folderName)
 		throws CmsException;
 	
 	/**
@@ -272,7 +272,7 @@ public interface I_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */		
-	void renameFolder(String project, String oldname, 
+	abstract void renameFolder(String project, String oldname, 
 							 String newname, boolean force)
 		throws CmsException;
 	
@@ -292,7 +292,7 @@ public interface I_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	void deleteFolder(String project, String foldername, boolean force)
+	abstract void deleteFolder(String project, String foldername, boolean force)
 		throws CmsException;
 	
 	/**
@@ -314,8 +314,8 @@ public interface I_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination foldername.
 	 */	
-	void copyFolder(String project, String source, String destination, 
-						   boolean force)
+	abstract void copyFolder(String project, String source, String destination, 
+						    boolean force)
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
@@ -337,38 +337,38 @@ public interface I_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	void moveFolder(String project, String source, 
+	abstract void moveFolder(String project, String source, 
 						   String destination, boolean force)
 		throws CmsException, CmsDuplicateKeyException;
 
 	/**
-	 * Returns a Vector with all subfolders.<BR/>
+	 * Returns a abstract Vector with all subfolders.<BR/>
 	 * 
 	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param foldername the complete path to the folder.
 	 * 
-	 * @return subfolders A Vector with all subfolders for the overgiven folder.
+	 * @return subfolders A abstract Vector with all subfolders for the overgiven folder.
 	 * 
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	Vector getSubFolders(String project, String foldername)
+	abstract Vector getSubFolders(String project, String foldername)
 		throws CmsException;
 	
 	/**
-	 * Returns a Vector with all subfiles.<BR/>
+	 * Returns a abstract Vector with all subfiles.<BR/>
 	 * 
 	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param foldername the complete path to the folder.
 	 * 
-	 * @return subfiles A Vector with all subfiles for the overgiven folder.
+	 * @return subfiles A abstract Vector with all subfiles for the overgiven folder.
 	 * 
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	Vector getFilesInFolder(String project, String foldername)
+	abstract Vector getFilesInFolder(String project, String foldername)
 		throws CmsException;
 	
 	/**
@@ -384,7 +384,7 @@ public interface I_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	void chmod(String project, String filename, int flags)
+	abstract void chmod(String project, String filename, int flags)
 		throws CmsException;
 	
 	/**
@@ -400,7 +400,7 @@ public interface I_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if the newOwner doesn't exists.
 	 */
-	void chown(String project, String filename, String newOwner)
+	abstract void chown(String project, String filename, String newOwner)
 		throws CmsException;
 
 	/**
@@ -416,7 +416,7 @@ public interface I_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if the newGroup doesn't exists.
 	 */
-	void chgrp(String project, String filename, String newGroup)
+	abstract void chgrp(String project, String filename, String newGroup)
 		throws CmsException;
 
 	/**
@@ -434,7 +434,7 @@ public interface I_CmsAccessFile {
 	 * for this resource. It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	void lockFile(String project, String resource, boolean force)
+	abstract void lockFile(String project, String resource, boolean force)
 		throws CmsException;
 	
 	/**
@@ -452,7 +452,7 @@ public interface I_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	boolean isLocked(String project, String resource)
+	abstract boolean isLocked(String project, String resource)
 		throws CmsException;
 	
 	/**
@@ -470,7 +470,7 @@ public interface I_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	I_CmsUser lockedBy(String project, String resource)
+	abstract I_CmsUser lockedBy(String project, String resource)
 		throws CmsException;
 
 	/**
@@ -485,7 +485,7 @@ public interface I_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	String readMetaInformation(String project, String name, String meta)
+	abstract String readMetaInformation(String project, String name, String meta)
 		throws CmsException;	
 
 	/**
@@ -498,7 +498,7 @@ public interface I_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	void writeMetaInformations(String project, String name, 
+	abstract void writeMetaInformations(String project, String name, 
 									  Hashtable metainfos)
 		throws CmsException;
 
@@ -509,11 +509,11 @@ public interface I_CmsAccessFile {
 	 * @param project The project in which the resource will be used.
 	 * @param name The resource-name of which the MetaInformation has to be read
 	 * 
-	 * @return Vector of MetaInformation as Strings.
+	 * @return abstract Vector of MetaInformation as Strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	Vector readAllMetaInformations(String project, String name)
+	abstract Vector readAllMetaInformations(String project, String name)
 		throws CmsException;
 	
 	/**
@@ -525,7 +525,7 @@ public interface I_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	void deleteAllMetaInformations(String project, String resourcename)
+	abstract void deleteAllMetaInformations(String project, String resourcename)
 		throws CmsException;
 
 	/**
@@ -538,7 +538,7 @@ public interface I_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	void deleteMetaInformation(String project, String resourcename, 
+	abstract void deleteMetaInformation(String project, String resourcename, 
 									  String meta)
 		throws CmsException;
 
@@ -551,7 +551,7 @@ public interface I_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	void declineResource(String project, String resource)
+	abstract void declineResource(String project, String resource)
 		throws CmsException;
 
 	/**
@@ -564,7 +564,6 @@ public interface I_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	void rejectResource(String project, String resource)
+	abstract void rejectResource(String project, String resource)
 		throws CmsException;
-
 }

@@ -5,16 +5,16 @@ import java.io.*;
 import com.opencms.core.*;
 
 /**
- * This interface describes the access to propertys in the Cms.<BR/>
+ * This abstract class describes the access to propertys in the Cms.<BR/>
  * Only the system can access propertys. Propertys are for internal use
  * only. A property is a serializable object.
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 15:19:10 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:29:59 $
  */
-public abstract class A_CmsAccessProperty {
+abstract class A_CmsAccessProperty {
 	
 	/**
 	 * Reads a serializable object from the propertys.

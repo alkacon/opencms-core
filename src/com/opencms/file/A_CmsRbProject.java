@@ -5,7 +5,7 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This interface describes a resource broker for projects in the Cms.<BR/>
+ * This abstract class describes a resource broker for projects in the Cms.<BR/>
  * <B>All</B> Methods get a first parameter: I_CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
@@ -13,9 +13,9 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/10 11:10:23 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
  */
- public interface I_CmsRbProject {
+ abstract interface A_CmsRbProject {
 	
 	/**
 	 * Returns the onlineproject. This is the default project. All anonymous 
@@ -27,7 +27,7 @@ import com.opencms.core.*;
 	 * @param callingUser The user who wants to use this method.
 	 * @return the onlineproject object.
 	 */
-	 I_CmsProject onlineProject(I_CmsUser callingUSer);
+	abstract I_CmsProject onlineProject(I_CmsUser callingUSer);
 
 	/**
 	 * Tests if the user can access the project.
@@ -40,7 +40,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return true, if the user has access, else returns false.
 	 */
-	 boolean accessProject(I_CmsUser callingUSer, String projectname);
+	abstract boolean accessProject(I_CmsUser callingUSer, String projectname);
 
 	/**
 	 * Reads a project from the Cms.
@@ -53,7 +53,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 I_CmsProject readProject(I_CmsUser callingUSer, String name)
+	abstract I_CmsProject readProject(I_CmsUser callingUSer, String name)
 		throws CmsException;
 	
 	/**
@@ -71,7 +71,7 @@ import com.opencms.core.*;
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a project with the same name for this resource-type exists already.
 	 */
-	 I_CmsProject createProject(I_CmsUser callingUSer, String name, String description, int flags)
+	abstract I_CmsProject createProject(I_CmsUser callingUSer, String name, String description, int flags)
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
@@ -85,7 +85,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 I_CmsProject publishProject(I_CmsUser callingUSer, String name)
+	abstract I_CmsProject publishProject(I_CmsUser callingUSer, String name)
 		throws CmsException;
 	
 	/**
@@ -99,5 +99,5 @@ import com.opencms.core.*;
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 Vector getAllAccessibleProjects(I_CmsUser callingUSer, String projectname);
+	abstract Vector getAllAccessibleProjects(I_CmsUser callingUSer, String projectname);
 }
