@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/06/30 22:00:02 $
-* Version: $Revision: 1.248 $
+* Date   : $Date: 2002/07/10 08:02:28 $
+* Version: $Revision: 1.249 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.248 $ $Date: 2002/06/30 22:00:02 $ *
+ * @version $Revision: 1.249 $ $Date: 2002/07/10 08:02:28 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -5395,6 +5395,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 statement.setInt(1, fileId);
                 // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2, content);
                 m_doSetBytes(statement,2,content);
+                statement.setInt(3, versionId);
                 statement.executeUpdate();
                 statement.close();
             }
@@ -5443,6 +5444,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     statement.setInt(2, propdef.getId());
                     statement.setInt(3, resourceId);
                     statement.setString(4, checkNull(value));
+                    statement.setInt(5, versionId);
                     statement.executeUpdate();
                     statement.close();
                 }
@@ -12253,6 +12255,96 @@ public CmsTask readTask(int id) throws CmsException {
             }
         }
         return files;
+    }
+
+    /**
+     * Deletes the versions from the backup tables that are older then the given date
+     * 
+     * @param maxdate The date of the last version that should be remained after deleting
+     * @return int The oldest remaining version
+     */
+    public int deleteBackups(long maxdate) throws CmsException{
+        ResultSet res = null;
+        PreparedStatement statement = null;
+        Connection con = null;
+        int maxVersion = 0;
+        try{
+            con = DriverManager.getConnection(m_poolNameBackup);
+            // read the max. version_id from database by the publish_date
+            statement = con.prepareStatement(m_cq.get("C_BACKUP_READ_MAXVERSION"));
+            statement.setTimestamp(1, new Timestamp(maxdate));
+            res = statement.executeQuery();
+            if(res.next()){
+                maxVersion = res.getInt(1);
+            }
+            res.close();
+            statement.close();
+            if(maxVersion > 0){
+                // delete the elder backup projects by versionId
+                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_PROJECT_BYVERSION"));
+                statement.setInt(1, maxVersion);
+                statement.executeUpdate();
+                statement.close();
+                // delete the elder backup projectresources by versionId
+                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_PROJECTRESOURCES_BYVERSION"));
+                statement.setInt(1, maxVersion);
+                statement.executeUpdate();
+                statement.close();
+                // delete the elder backup resources by versionId
+                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_RESOURCES_BYVERSION"));
+                statement.setInt(1, maxVersion);
+                statement.executeUpdate();
+                statement.close();
+                // delete the elder backup files by versionId
+                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_FILES_BYVERSION"));
+                statement.setInt(1, maxVersion);
+                statement.executeUpdate();
+                statement.close();
+                // delete the elder backup properties by versionId     
+                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_PROPERTIES_BYVERSION"));
+                statement.setInt(1, maxVersion);
+                statement.executeUpdate();
+                statement.close();
+                // delete the elder backup moduledata by versionId
+                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_MODULEMASTER_BYVERSION"));
+                statement.setInt(1, maxVersion);
+                statement.executeUpdate();
+                statement.close();
+                // delete the elder backup module media by versionId
+                statement = con.prepareStatement(m_cq.get("C_BACKUP_DELETE_MODULEMEDIA_BYVERSION"));
+                statement.setInt(1, maxVersion);
+                statement.executeUpdate();
+                statement.close();
+            }           
+        } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch (Exception ex) {
+            throw new CmsException("["+this.getClass().getName()+"]", ex);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                try {
+                    res.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(con != null) {
+                try {
+                    con.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+        }
+        return maxVersion;            
     }
 
     /**
