@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.15 Gom Jabbar   - xx September 2001
+OpenCms 4.4.5  Gom Jabbar   - 12 October 2001
 * When an exception occurs while changing the owner, group or access flags of the files in a folder
   keep on changing the next file and write the error message into log file.
 
