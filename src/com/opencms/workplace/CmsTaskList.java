@@ -16,7 +16,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;tasklist&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/02/20 10:14:00 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/22 09:00:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -120,18 +120,48 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 					style = listdef.getProcessedXmlDataValue("style_activ", callingObject);
 				}
 			}
-			  
+			
+			String agent = "";
+			String group = "";
+			String owner = "";
+			String due = "";
+			String from = "";
+			try {
+				agent = cms.readAgent(task).getName();
+			} catch(Exception exc) {
+				// ignore the exception
+			}
+			try {
+				group = cms.readGroup(task).getName();
+			} catch(Exception exc) {
+				// ignore the exception
+			}
+			try {
+				owner = cms.readOwner(task).getName();
+			} catch(Exception exc) {
+				// ignore the exception
+			}
+			try {
+				due = Utils.getNiceShortDate(timeout);
+			} catch(Exception exc) {
+				// ignore the exception
+			}
+			try {
+				from = Utils.getNiceShortDate(startTime);
+			} catch(Exception exc) {
+				// ignore the exception
+			}
 			// get the processed list.
 			listdef.setXmlData("stateicon", stateIcon);
 			listdef.setXmlData("style", style);
 			listdef.setXmlData("priority", priority);
 			listdef.setXmlData("taskid", task.getId() + "");
 			listdef.setXmlData("task", task.getName());
-			listdef.setXmlData("foruser", cms.readAgent(task).getName());
-			listdef.setXmlData("forrole", cms.readGroup(task).getName());
-			listdef.setXmlData("actuator", cms.readOwner(task).getName());
-			listdef.setXmlData("due", Utils.getNiceShortDate(timeout));
-			listdef.setXmlData("from", Utils.getNiceShortDate(startTime));
+			listdef.setXmlData("foruser", agent);
+			listdef.setXmlData("forrole", group);
+			listdef.setXmlData("actuator", owner);
+			listdef.setXmlData("due", due);
+			listdef.setXmlData("from", from);
 			listdef.setXmlData("project", projectname);
 			
 			result.append(listdef.getProcessedXmlDataValue("defaulttasklist", callingObject, parameters));
