@@ -33,20 +33,25 @@ You can <tt>exit</tt> and go on to the next step.
 
 
 Step 4
-Unzip the OpenCms distribution (opencms_40xxx.zip). We currently have no
+Unzip the OpenCms distribution (opencms_4.1xxx.zip). We currently have no
 RPM or setup.exe available, but this is a planned project for the future.
+
 Copy the opencms.properties from the config folder and the opencms.jar to your
-servlets directory. Copy the pics folder residing in the workplace to your apache document root folder.
+servlets directory. 
+
+Copy the pics folder residing in the workplace to your apache document root folder.
+Create a new folder download in the apache document root folder.
+
 Create two new folders ExternalComponents and logs in your servlet directory.
 
-Get the database driver mysql_uncomp.jar and xerces.jar described in Components
-and copy them to the newly created ExternalComponents folder and to the opencms
+Get the database driver mysql.jar and xerces.jar described in Components
+and copy them to the newly created ExternalComponents folder as well as to the opencms
 folder extracted from the zip file.
 
 Your servlets folder now looks like this: 
 
 (your servlet path)/servlets/ExternalComponents/xerces.jar
-(your servlet path)/servlets/ExternalComponents/mysql_uncomp.jar
+(your servlet path)/servlets/ExternalComponents/mysql.jar
 (your servlet path)/servlets/logs/
 (your servlet path)/servlets/opencms.jar
 (your servlet path)/servlets/opencms.properties
@@ -88,6 +93,14 @@ Edit the opencms.properties and set the path for the log file:
 
 log.file=(your servlet path)/servlets/logs/opencms.log
 
+Also change the entries for your registry and your publishing export path
+in your opencms.properties:
+
+registry = (your opencms folder)/config/registry.xml
+exportpoint.path.0 = (your apache docroot)/pics/
+exportpoint.path.1 = (your apache docroot)/download/
+exportpoint.path.2 = (your apache docroot)/pics/system/
+
 On UNIX systems the system may have problems writing to the logs folder.
 For this reason you should set its owner to nobody.
 
@@ -96,7 +109,7 @@ Change the export path to an existing empty folder in the line beginning with
 cd to the parent opencms folder and initialize the database with all workplace 
 default files by calling:
 
-java -mx64M -classpath opencms.jar:xerces.jar:mysql_uncomp.jar 
+java -mx64M -classpath opencms.jar:xerces.jar:mysql.jar 
    com.opencms.core.CmsShell config/opencms.properties < config/cmssetup.txt
 
 This must be written in one single command line. The Java binary java
@@ -109,14 +122,14 @@ by semicolons.
 
 Some Java VM need additional settings for the classpath. Try to add the current
 directory . and (for JDK 1.1.x) the classes.zip
-in the lib folder of your JDK installation to your classpath, if
-the command above doesn't work and throws a ClassNotFoundException.
+in the lib folder of your JDK installation to the "-classpath" switch
+of your command above, if you get a ClassNotFoundException.
 
-The OpenCms database should now be set up completely. You are now
+The OpenCms database is now set up completely. You are now
 able to check the basic OpenCms system. Call the OpenCms console by
 entering
 
-java -mx64M -classpath opencms.jar:xerces.jar:mysql_uncomp.jar 
+java -mx64M -classpath opencms.jar:xerces.jar:mysql.jar 
    com.opencms.core.CmsShell config/opencms.properties
    
 (This command is similar to the one above. Note that the pipe 
@@ -146,10 +159,11 @@ wrapper.bin.parameters=-mx64M
 and
 
 root.properties=(your servlet configuration path)/zone.properties
+
 Update your zone.properties and set the following repositories:
 repositories=(your servlet path)/servlets/opencms.jar
 repositories=(your servlet path)/servlets/ExternalComponents/xerces.jar
-repositories=(your servlet path)/servlets/ExternalComponents/mysql_uncomp.jar
+repositories=(your servlet path)/servlets/ExternalComponents/mysql.jar
 and add the lines:
 
 servlet.opencms.code=com.opencms.core.OpenCmsServlet
