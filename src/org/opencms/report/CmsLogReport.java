@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2003/10/08 18:11:13 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/22 11:50:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.report;
 
 import org.opencms.main.OpenCms;
 
-import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.workplace.I_CmsWpConstants;
 
 /**
@@ -42,7 +41,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * This prints all messages in the logfile at INFO level.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsLogReport extends A_CmsReport {
 
@@ -137,16 +136,6 @@ public class CmsLogReport extends A_CmsReport {
             OpenCms.getLog(m_clazz).info(m_buffer.toString());
         }
         m_buffer = new StringBuffer();
-    }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#println(com.opencms.linkmanagement.CmsPageLinks)
-     */
-    public synchronized void println(CmsPageLinks value) {        
-        println(value.getResourceName());
-        for (int index=0; index<value.getLinkTargets().size(); index++) {
-            println("     " + key("report.broken_link_to") + (String)value.getLinkTargets().elementAt(index));
-        }
     }
     
     /**

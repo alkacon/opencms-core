@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/21 10:33:42 $
- * Version: $Revision: 1.306 $
+ * Date   : $Date: 2004/01/22 11:50:01 $
+ * Version: $Revision: 1.307 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.306 $ $Date: 2004/01/21 10:33:42 $
+ * @version $Revision: 1.307 $ $Date: 2004/01/22 11:50:01 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1874,28 +1874,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Creates a link entry for each of the link targets in the linktable.<p>
-     *
-     * @param pageId the resourceId (offline) of the page whose liks should be traced
-     * @param linkTargets a vector of strings (the linkdestinations)
-     * @throws CmsException if operation was not successfull
-     */
-    public void createLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException {
-        m_projectDriver.createLinkEntries(pageId, linkTargets);
-    }
-
-    /**
-     * Creates a link entry for each of the link targets in the online linktable.<p>
-     *
-     * @param pageId The resourceId (online) of the page whose liks should be traced.
-     * @param linkTarget A vector of strings (the linkdestinations).
-     * @throws CmsException if operation was not successfull
-     */
-    public void createOnlineLinkEntrys(CmsUUID pageId, Vector linkTarget) throws CmsException {
-        m_projectDriver.createLinkEntriesOnline(pageId, linkTarget);
-    }
-
-    /**
      * Creates a new project for task handling.<p>
      *
      * @param context the current request context
@@ -2512,16 +2490,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteGroup() " + delgroup, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
-    }
-
-    /**
-     * Deletes all entrys in the link table that belong to the pageId.<p>
-     *
-     * @param pageId The resourceId (offline) of the page whose links should be deleted
-     * @throws CmsException if operation was not succesfull
-     */
-    public void deleteLinkEntrys(CmsUUID pageId) throws CmsException {
-        m_projectDriver.deleteLinkEntries(pageId);
     }
 
     /**
@@ -3174,16 +3142,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Returns a Vector with all export links.<p>
-     *
-     * @return Vector (Strings) with all export links
-     * @throws CmsException if operation was not succesful
-     */
-    public Vector getAllExportLinks() throws CmsException {
-        return m_projectDriver.readExportLinks();
-    }
-
-    /**
      * Returns all projects, which are owned by the user or which are manageable for the group of the user.<p>
      *
      * All users are granted.
@@ -3424,17 +3382,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public ExtendedProperties getConfigurations() {
         return m_configuration;
-    }
-
-    /**
-     * Reads all export links that depend on the resource.
-     * 
-     * @param res the resourceName() of the resource that has changed (or the String that describes a contentdefinition).
-     * @return a Vector(of Strings) with the linkrequest names
-     * @throws CmsException if operation was not succesful
-     */
-    public Vector getDependingExportLinks(Vector res) throws CmsException {
-        return m_projectDriver.readExportLinks(res);
     }
 
     /**
@@ -3689,16 +3636,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public CmsLock getLock(CmsRequestContext context, String resourcename) throws CmsException {
         return m_lockManager.getLock(this, context, resourcename);
-    }
-
-    /**
-     * Searches for broken links in the online project.<p>
-     *
-     * @return A Vector with a CmsPageLinks object for each page containing broken links this CmsPageLinks object contains all links on the page withouth a valid target.
-     * @throws CmsException if operation was not succesful
-     */
-    public Vector getOnlineBrokenLinks() throws CmsException {
-        return m_projectDriver.readBrokenLinksOnline();
     }
 
     /**
@@ -6266,17 +6203,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Returns a Vector (Strings) with the link destinations of all links on the page with the pageId.<p>
-     *
-     * @param pageId the resourceId (offline) of the page whose liks should be read
-     * @return vector of link destinations
-     * @throws CmsException if operation was not succesful
-     */
-    public Vector readLinkEntrys(CmsUUID pageId) throws CmsException {
-        return m_projectDriver.readLinkEntries(pageId);
-    }
-
-    /**
      * Reads the manager group of a project from the OpenCms.<p>
      *
      * All users are granted.
@@ -6323,17 +6249,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             }
         }
         return props;
-    }
-
-    /** 
-     * Returns a Vector (Strings) with the link destinations of all links on the page with the pageId.<p>
-     *
-     * @param pageId the resourceId (online) of the page whose liks should be read
-     * @return vector of link destinations
-     * @throws CmsException if operation was not succesful
-     */
-    public Vector readOnlineLinkEntrys(CmsUUID pageId) throws CmsException {
-        return m_projectDriver.readLinkEntriesOnline(pageId);
     }
 
     /**
@@ -7939,19 +7854,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
 
         return oldLock;
-    }
-
-    /**
-     * When a project is published this method aktualises the online link table.<p>
-     *
-     * @param deleted a Vector (of CmsResources) with the deleted resources of the project
-     * @param changed a Vector (of CmsResources) with the changed resources of the project
-     * @param newRes a Vector (of CmsResources) with the newRes resources of the project
-     * @param pageType the page type
-     * @throws CmsException if something goes wrong
-     */
-    public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
-        m_projectDriver.writeProjectLinksOnline(deleted, changed, newRes, pageType);
     }
 
     /**

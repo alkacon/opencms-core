@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
-* Date   : $Date: 2003/11/27 16:26:49 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2004/01/22 11:50:01 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeXmlPage;
-import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Encoder;
 
@@ -58,7 +57,7 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2003/11/27 16:26:49 $
+ * @version $Revision: 1.3 $ $Date: 2004/01/22 11:50:01 $
  */
 public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 

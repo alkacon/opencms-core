@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/22 11:50:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package org.opencms.report;
 
-import com.opencms.linkmanagement.CmsPageLinks;
 
 /** 
  * This is the interface for the report classes which are used for the output
@@ -39,7 +38,7 @@ import com.opencms.linkmanagement.CmsPageLinks;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public interface I_CmsReport {
         
@@ -121,17 +120,7 @@ public interface I_CmsReport {
     /**
      * Adds a line break to the report.<p>
      */
-    void println();
-    
-    /**
-     * Adds a CmsPageLinks object to the report<p>
-     * 
-     * The object will be stored and the output will later be processed
-     * in a special way.<p>
-     *
-     * @param value the CmsPageLinks object to add to the report
-     */
-    void println(CmsPageLinks value);        
+    void println();     
 
     /**
      * Prints a String with line break to the report.<p>

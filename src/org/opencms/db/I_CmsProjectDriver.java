@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/01/14 12:55:58 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/01/22 11:50:01 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,28 +55,10 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.40 $ $Date: 2004/01/14 12:55:58 $
+ * @version $Revision: 1.41 $ $Date: 2004/01/22 11:50:01 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
-
-    /**
-     * Creates a link entry for each of the link targets in the linktable.<p>
-     *
-     * @param pageId The resourceId (offline) of the page whose liks should be traced
-     * @param linkTargets A vector of strings (the linkdestinations)
-     * @throws CmsException if something goes wrong  
-     */
-    void createLinkEntries(CmsUUID pageId, Vector linkTargets) throws CmsException;
-
-    /**
-     * Creates a link entry for each of the link targets in the online linktable.<p>
-     *
-     * @param pageId The resourceId (online) of the page whose liks should be traced
-     * @param linkTargets A vector of strings (the linkdestinations)
-     * @throws CmsException if something goes wrong
-     */
-    void createLinkEntriesOnline(CmsUUID pageId, Vector linkTargets) throws CmsException;
 
     /**
     * Creates a project.<p>
@@ -114,22 +96,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     Serializable createSystemProperty(String name, Serializable object) throws CmsException;
-
-    /**
-     * Deletes all entrys in the link table that belong to the pageId.<p>
-     *
-     * @param pageId the resourceId (offline) of the page whose links should be deleted
-     * @throws CmsException if something goes wrong
-     */
-    void deleteLinkEntries(CmsUUID pageId) throws CmsException;
-
-    /**
-     * Deletes all entrys in the online link table that belong to the pageId.<p>
-     *
-     * @param pageId the resourceId (online) of the page whose links should be deleted
-     * @throws CmsException if something goes wrong
-     */
-    void deleteLinkEntriesOnline(CmsUUID pageId) throws CmsException;
 
     /**
      * Deletes a project from the cms.<p>
@@ -294,52 +260,6 @@ public interface I_CmsProjectDriver {
     void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsUUID publishHistoryId, CmsResource directPublishResource, boolean directPublishSiblings, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
 
     /**
-     * Searches for broken links in the online project.<p>
-     *
-     * @return a Vector with a CmsPageLinks object for each page containing broken links
-     *          this CmsPageLinks object contains all links on the page withouth a valid target
-     * @throws CmsException if something goes wrong
-     */
-    Vector readBrokenLinksOnline() throws CmsException;
-
-    /**
-     * Reads all export links.<p>
-     *
-     * @return a Vector(of Strings) with the links
-     * @throws CmsException if something goes wrong
-     */
-    Vector readExportLinks() throws CmsException;
-
-    /**
-     * Reads all export links that depend on the resource.<p>
-     * 
-     * @param resources vector of resources 
-     * @return a Vector(of Strings) with the linkrequest names
-     * @throws CmsException if something goes wrong
-     */
-    Vector readExportLinks(Vector resources) throws CmsException;
-
-    /**
-     * Returns a Vector (Strings) with the link destinations of all links on the page with
-     * the pageId.<p>
-     *
-     * @param pageId The resourceId (offline) of the page whose liks should be read
-     * @return the vector of link destinations
-     * @throws CmsException if something goes wrong
-     */
-    Vector readLinkEntries(CmsUUID pageId) throws CmsException;
-
-    /**
-     * Returns a Vector (Strings) with the link destinations of all links on the page with
-     * the pageId.<p>
-     *
-     * @param pageId The resourceId (online) of the page whose liks should be read
-     * @return the vector of link destinations
-     * @throws CmsException if something goes wrong
-     */
-    Vector readLinkEntriesOnline(CmsUUID pageId) throws CmsException;
-
-    /**
      * Reads a project by task-id.<p>
      *
      * @param task the task to read the project for
@@ -461,17 +381,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException Throws if something goes wrong
      */
     Serializable readSystemProperty(String name) throws CmsException;
-
-    /**
-     * Update the online link table (after a project is published).<p>
-     *
-     * @param deleted vector (of CmsResources) with the deleted resources of the project
-     * @param changed vector (of CmsResources) with the changed resources of the project
-     * @param newRes vector (of CmsResources) with the newRes resources of the project
-     * @param pageType the page type
-     * @throws CmsException if something goes wrong
-     */
-    void writeProjectLinksOnline(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException;
 
     /**
      * Inserts an entry in the publish history for a published VFS resource.<p>

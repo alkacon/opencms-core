@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/01/21 10:33:42 $
- * Version: $Revision: 1.143 $
+ * Date   : $Date: 2004/01/22 11:50:01 $
+ * Version: $Revision: 1.144 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,6 @@ import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.linkmanagement.CmsPageLinks;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -76,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.143 $ $Date: 2004/01/21 10:33:42 $
+ * @version $Revision: 1.144 $ $Date: 2004/01/22 11:50:01 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -170,80 +169,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 break;
             }
         }
-
-    /**
-     * creates a link entry for each of the link targets in the linktable.<p>
-     *
-     * @param pageId The resourceId (offline) of the page whose liks should be traced
-     * @param linkTargets A vector of strings (the linkdestinations)
-     * @throws CmsException if something goes wrong  
-     */
-    public void createLinkEntries(CmsUUID pageId, Vector linkTargets) throws CmsException {
-        //first delete old entrys in the database
-        deleteLinkEntries(pageId);
-        if (linkTargets == null || linkTargets.size() == 0) {
-            return;
-        }
-        // now write it
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            // TODO all the link management methods should be carefully turned into project dependent code!
-            int dummyProjectId = Integer.MAX_VALUE;
-            conn = m_sqlManager.getConnection(dummyProjectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_WRITE_ENTRY");
-            stmt.setString(1, pageId.toString());
-            for (int i = 0; i < linkTargets.size(); i++) {
-                try {
-                    stmt.setString(2, (String) linkTargets.elementAt(i));
-                    stmt.executeUpdate();
-                } catch (SQLException e) {
-                    // ignore
-                }
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "createLinkEntrys(CmsUUID, Vector)", CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * creates a link entry for each of the link targets in the online linktable.<p>
-     *
-     * @param pageId The resourceId (online) of the page whose liks should be traced
-     * @param linkTargets A vector of strings (the linkdestinations)
-     * @throws CmsException if something goes wrong
-     */
-    public void createLinkEntriesOnline(CmsUUID pageId, Vector linkTargets) throws CmsException {
-        //first delete old entrys in the database
-        deleteLinkEntries(pageId);
-        if (linkTargets == null || linkTargets.size() == 0) {
-            return;
-        }
-        // now write it
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            // TODO all the link management methods should be carefully turned into project dependent code!          
-            int dummyProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
-            conn = m_sqlManager.getConnection(dummyProjectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_WRITE_ENTRY");
-            stmt.setString(1, pageId.toString());
-            for (int i = 0; i < linkTargets.size(); i++) {
-                try {
-                    stmt.setString(2, (String) linkTargets.elementAt(i));
-                    stmt.executeUpdate();
-                } catch (SQLException e) {
-                    // ignore
-                }
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "createOnlineLinkEntrys(CmsUUID, Vector)", CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createProject(com.opencms.file.CmsUser, com.opencms.file.CmsGroup, com.opencms.file.CmsGroup, org.opencms.workflow.CmsTask, java.lang.String, java.lang.String, int, int, java.lang.Object)
@@ -382,53 +307,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /****************     methods for link management            ****************************/
-
-    /**
-     * Deletes all entrys in the link table that belong to the pageId.<p>
-     *
-     * @param pageId The resourceId (offline) of the page whose links should be deleted
-     * @throws CmsException if something goes wrong
-     */
-    public void deleteLinkEntries(CmsUUID pageId) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            // TODO all the link management methods should be carefully turned into project dependent code!       
-            int dummyProjectId = Integer.MAX_VALUE;
-            conn = m_sqlManager.getConnection(dummyProjectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_DELETE_ENTRYS");
-            stmt.setString(1, pageId.toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "deleteLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Deletes all entrys in the online link table that belong to the pageId.<p>
-     *
-     * @param pageId The resourceId (online) of the page whose links should be deleted
-     * @throws CmsException if something goes wrong
-     */
-    public void deleteLinkEntriesOnline(CmsUUID pageId) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            // TODO all the link management methods should be carefully turned into project dependent code!      
-            int dummyProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
-            conn = m_sqlManager.getConnection(dummyProjectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_DELETE_ENTRYS");
-            // delete all project-resources.
-            stmt.setString(1, pageId.toString());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "deleteOnlineLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
 
     /**
      * Deletes a project from the cms.
@@ -685,42 +563,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         return new org.opencms.db.generic.CmsSqlManager();
     }
 
-    /**
-     * Reads the online id of a offline file.<p>
-     * 
-     * @param filename name of the file
-     * @return the id or -1 if not found (should not happen)
-     * @throws CmsException if something goes wrong
-     */
-    protected CmsUUID internalReadOnlineId(String filename) throws CmsException {
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        CmsUUID resourceId = CmsUUID.getNullUUID();
-
-        try {
-            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_READ_ONLINE_ID");
-            // read file data from database
-            stmt.setString(1, filename);
-            res = stmt.executeQuery();
-            // read the id
-            if (res.next()) {
-                resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        return resourceId;
-    }  
-    
     /**
      * Resets the state to UNCHANGED and the last-modified-in-project-ID to 0 for a specified resource.<p>
      * 
@@ -1804,208 +1646,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * Searches for broken links in the online project.<p>
-     *
-     * @return A Vector with a CmsPageLinks object for each page containing broken links
-     *          this CmsPageLinks object contains all links on the page withouth a valid target
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readBrokenLinksOnline() throws CmsException {
-        Vector result = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_LM_GET_ONLINE_BROKEN_LINKS");
-            res = stmt.executeQuery();
-            CmsUUID current = CmsUUID.getNullUUID();
-            CmsPageLinks links = null;
-            while (res.next()) {
-                CmsUUID next = new CmsUUID(res.getString(m_sqlManager.readQuery("C_LM_PAGE_ID")));
-                if (!next.equals(current)) {
-                    if (links != null) {
-                        result.add(links);
-                    }
-                    links = new CmsPageLinks(next);
-                    links.addLinkTarget(res.getString(m_sqlManager.readQuery("C_LM_LINK_DEST")));
-                    try {
-                        links.setResourceName((m_driverManager.getVfsDriver().readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next, false)).getName());
-                    } catch (CmsException e) {
-                        links.setResourceName("id=" + next + ". Sorry, can't read resource. " + e.getMessage());
-                    }
-                    links.setOnline(true);
-                } else {
-                    links.addLinkTarget(res.getString(m_sqlManager.readQuery("C_LM_LINK_DEST")));
-                }
-                current = next;
-            }
-            if (links != null) {
-                result.add(links);
-            }
-            return result;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
-     * Reads all export links.<p>
-     *
-     * @return a Vector(of Strings) with the links
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readExportLinks() throws CmsException {
-        Vector retValue = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_GET_ALL_LINKS");
-            res = stmt.executeQuery();
-            while (res.next()) {
-                retValue.add(res.getString(m_sqlManager.readQuery("C_EXPORT_LINK")));
-            }
-            return retValue;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getAllExportLinks()", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "getAllExportLinks()", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
-    * Reads all export links that depend on the resource.<p>
-    * 
-    * @param resources vector of resources 
-    * @return a Vector(of Strings) with the linkrequest names
-    * @throws CmsException if something goes wrong
-    */
-    public Vector readExportLinks(Vector resources) throws CmsException {
-        Vector retValue = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            Vector firstResult = new Vector();
-            Vector secondResult = new Vector();
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_GET_ALL_DEPENDENCIES");
-            res = stmt.executeQuery();
-            while (res.next()) {
-                firstResult.add(res.getString(m_sqlManager.readQuery("C_EXPORT_DEPENDENCIES_RESOURCE")));
-                secondResult.add(res.getString(m_sqlManager.readQuery("C_EXPORT_LINK")));
-            }
-            // now we have all dependencies that are there. We can search now for
-            // the ones we need
-            for (int i = 0; i < resources.size(); i++) {
-                for (int j = 0; j < firstResult.size(); j++) {
-                    if (((String) firstResult.elementAt(j)).startsWith((String) resources.elementAt(i))) {
-                        if (!retValue.contains(secondResult.elementAt(j))) {
-                            retValue.add(secondResult.elementAt(j));
-                        }
-                    } else if (((String) resources.elementAt(i)).startsWith((String) firstResult.elementAt(j))) {
-                        if (!retValue.contains(secondResult.elementAt(j))) {
-                            // only direct subfolders count
-                            int index = ((String) firstResult.elementAt(j)).length();
-                            String test = ((String) resources.elementAt(i)).substring(index);
-                            index = test.indexOf("/");
-                            if (index == -1 || index + 1 == test.length()) {
-                                retValue.add(secondResult.elementAt(j));
-                            }
-                        }
-                    }
-                }
-            }
-            return retValue;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "getDependingExportlinks(Vector)", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "getDependingExportLinks(Vector)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
-     * Returns a Vector (Strings) with the link destinations of all links on the page with
-     * the pageId.<p>
-     *
-     * @param pageId The resourceId (offline) of the page whose liks should be read
-     * @return the vector of link destinations
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readLinkEntries(CmsUUID pageId) throws CmsException {
-        Vector result = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            // TODO all the link management methods should be carefully turned into project dependent code!    
-            int dummyProjectId = Integer.MAX_VALUE;
-            conn = m_sqlManager.getConnection(dummyProjectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_READ_ENTRYS");
-            stmt.setString(1, pageId.toString());
-            res = stmt.executeQuery();
-            while (res.next()) {
-                result.add(res.getString(m_sqlManager.readQuery("C_LM_LINK_DEST")));
-            }
-            return result;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "readLinkEntrys(CmsUUID)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
-     * Returns a Vector (Strings) with the link destinations of all links on the page with
-     * the pageId.<p>
-     *
-     * @param pageId The resourceId (online) of the page whose liks should be read
-     * @return the vector of link destinations
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readLinkEntriesOnline(CmsUUID pageId) throws CmsException {
-        Vector result = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            // TODO all the link management methods should be carefully turned into project dependent code!        
-            int dummyProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
-            conn = m_sqlManager.getConnection(dummyProjectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, dummyProjectId, "C_LM_READ_ENTRYS");
-            stmt.setString(1, pageId.toString());
-            res = stmt.executeQuery();
-            while (res.next()) {
-                result.add(res.getString(m_sqlManager.readQuery("C_LM_LINK_DEST")));
-            }
-            return result;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "readOnlineLinkEntrys(CmsUUID)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
      * Reads a project by task-id.<p>
      *
      * @param task the task to read the project for
@@ -2546,52 +2186,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Update the online link table (after a project is published).<p>
-     *
-     * @param deleted vector (of CmsResources) with the deleted resources of the project
-     * @param changed vector (of CmsResources) with the changed resources of the project
-     * @param newRes vector (of CmsResources) with the newRes resources of the project
-     * @param pageType the page type
-     * @throws CmsException if something goes wrong
-     */
-    public void writeProjectLinksOnline(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
-        if (deleted != null) {
-            for (int i = 0; i < deleted.size(); i++) {
-                // delete the old values in the online table
-                if (((CmsResource) deleted.elementAt(i)).getType() == pageType) {
-                    CmsUUID id = internalReadOnlineId(((CmsResource) deleted.elementAt(i)).getName());
-                    if (!id.isNullUUID()) {
-                        deleteLinkEntriesOnline(id);
-                    }
-                }
-            }
-        }
-        if (changed != null) {
-            for (int i = 0; i < changed.size(); i++) {
-                // delete the old values and copy the new values from the project link table
-                if (((CmsResource) changed.elementAt(i)).getType() == pageType) {
-                    CmsUUID id = internalReadOnlineId(((CmsResource) changed.elementAt(i)).getName());
-                    if (!id.isNullUUID()) {
-                        deleteLinkEntriesOnline(id);
-                        createLinkEntriesOnline(id, readLinkEntries(((CmsResource) changed.elementAt(i)).getResourceId()));
-                    }
-                }
-            }
-        }
-        if (newRes != null) {
-            for (int i = 0; i < newRes.size(); i++) {
-                // copy the values from the project link table
-                if (((CmsResource) newRes.elementAt(i)).getType() == pageType) {
-                    CmsUUID id = internalReadOnlineId(((CmsResource) newRes.elementAt(i)).getName());
-                    if (!id.isNullUUID()) {
-                        createLinkEntriesOnline(id, readLinkEntries(((CmsResource) newRes.elementAt(i)).getResourceId()));
-                    }
-                }
-            }
         }
     }
 

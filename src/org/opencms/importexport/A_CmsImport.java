@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/01/19 08:20:43 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/01/22 11:50:01 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypePointer;
-import com.opencms.linkmanagement.CmsPageLinks;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -529,25 +528,4 @@ public abstract class A_CmsImport implements I_CmsImport {
         }
     }
 
-    /**
-     * Checks all new imported pages and create or updates the entrys in the
-     * database for the linkmanagement.<p>
-     */
-    protected void updatePageLinks() {
-        int importPagesSize = m_importedPages.size();
-        for (int i = 0; i < importPagesSize; i++) {
-            m_report.print(" ( " + (i + 1) + " / " + importPagesSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
-            try {
-                // first parse the page
-                CmsPageLinks links = m_cms.getPageLinks((String)m_importedPages.elementAt(i));
-                m_report.print(m_report.key("report.checking_page"), I_CmsReport.C_FORMAT_NOTE);
-                m_report.println((String)m_importedPages.elementAt(i));
-                // now save the result in the database
-                m_cms.createLinkEntrys(links.getResourceId(), links.getLinkTargets());
-            } catch (CmsException e) {
-                m_report.println(e);
-                // m_report.println(m_report.key("report.problems_with") + m_importedPages.elementAt(i) + ": " + e.getMessage());
-            }
-        }
-    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2003/10/08 18:11:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/22 11:50:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.report;
 
-import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.workplace.I_CmsWpConstants;
 
 /**
@@ -40,7 +39,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * It stores nothing. It just prints everthing to <code>System.out</code>.
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsShellReport extends A_CmsReport {
         
@@ -111,16 +110,6 @@ public class CmsShellReport extends A_CmsReport {
      */
     public synchronized void println() {
         System.out.println();
-    }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#println(com.opencms.linkmanagement.CmsPageLinks)
-     */
-    public synchronized void println(CmsPageLinks value) {        
-        this.println(value.getResourceName());
-        for (int index=0; index<value.getLinkTargets().size(); index++) {
-            this.println("     " + key("report.broken_link_to") + (String)value.getLinkTargets().elementAt(index));
-        }
     }
     
     /**

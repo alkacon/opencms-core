@@ -209,34 +209,10 @@ create table CMS_SYSTEMID               (TABLE_KEY varchar(255) not null,
                                          ID int not null,
                                          primary key(TABLE_KEY));
 
-create table CMS_EXPORT_LINKS           (LINK_ID int not null,
-                                         LINK varchar(255) not null,
-                                         CREATEDATE DATETIME not null,
-                                         PROCESSED bit,
-                                         primary key (LINK_ID),
-                                         key(LINK(100)),
-                                         unique (LINK));
-
 create table CMS_EXPORT_DEPENDENCIES    (LINK_ID int not null,
                                          RESOURCENAME varchar(255),
                                          key (LINK_ID),
                                          unique(LINK_ID, RESOURCENAME));
-
-create table CMS_OFFLINE_LINKS          (PAGE_ID VARCHAR(36) NOT NULL,
-                                         LINK_DEST varchar(255) not null,
-                                         key (PAGE_ID),
-                                         unique (PAGE_ID, LINK_DEST));
-
-create table CMS_ONLINE_LINKS           (PAGE_ID VARCHAR(36) NOT NULL,
-                                         LINK_DEST varchar(255) not null,
-                                         key (PAGE_ID),
-                                         unique (PAGE_ID, LINK_DEST));
-
-create table CMS_SESSIONS               (SESSION_ID varchar(255) not null,
-                                         SESSION_LASTUSED datetime not null,
-                                         SESSION_DATA mediumblob not null,
-                                         index session_lastused (SESSION_LASTUSED),
-                                         primary key(SESSION_ID));
                                                                                  
 CREATE TABLE CMS_TASK 					(  AUTOFINISH int(11),
                                            ENDTIME datetime,

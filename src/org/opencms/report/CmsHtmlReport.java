@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2004/01/21 16:57:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/01/22 11:50:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.report;
 
 import org.opencms.util.CmsStringSubstitution;
 
-import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
@@ -47,7 +46,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsHtmlReport extends A_CmsReport {
     
@@ -213,45 +212,7 @@ public class CmsHtmlReport extends A_CmsReport {
         }
 
         return buf;
-    }
-    
-    /**
-     * Output helper method to format a reported <code>CmsPageLinks</code> element.<p>
-     * 
-     * This method formats the link source.<p>
-     *
-     * @param link the link resource
-     * @return the formatted StringBuffer
-     */
-//    private StringBuffer getLinkElement(String link) {
-//        StringBuffer buf = new StringBuffer();
-//        buf.append("<span class='link1'>");
-//        buf.append(key("report.checking"));
-//        buf.append("</span>");        
-//        // TODO: Check for absolute path when link management is working again
-//        buf.append(link);
-//        buf.append(getLineBreak());
-//        return buf;        
-//    }
-    
-    /**
-     * Output helper method to format a reported <code>CmsPageLinks</code> element.<p>
-     *
-      * This method formats the link targets.<p>
-      * 
-     * @param target the link target resource
-     * @return the formatted StringBuffer
-     */    
-//    private StringBuffer getLinkTargetElement(String target) {
-//        StringBuffer buf = new StringBuffer("<span class='link2'>");
-//        buf.append(key("report.broken_link_to"));
-//        buf.append("<span class='link3'>");
-//        // TODO: Check for absolute path when link management is working again
-//        buf.append(target);
-//        buf.append("</span></span>");        
-//        buf.append(getLineBreak());
-//        return buf;
-//    }   
+    } 
     
     /**
      * Returns the corrent linebreak notation depending on the output style of thsi report.
@@ -269,14 +230,7 @@ public class CmsHtmlReport extends A_CmsReport {
         StringBuffer result = new StringBuffer();
         int indexEnd = m_content.size();
         for (int i=m_indexNext; i<indexEnd; i++) {
-            Object obj = m_content.get(i);
-//            if (obj instanceof CmsPageLinks) {
-//                CmsPageLinks links = (CmsPageLinks)m_content.get(i);
-//                result.append(getLinkElement(links.getResourceName()));                                
-//                for (int index=0; index<links.getLinkTargets().size(); index++) {                    
-//                    result.append(getLinkTargetElement((String)links.getLinkTargets().elementAt(index)));
-//                }                                
-//            } else 
+            Object obj = m_content.get(i); 
             if (obj instanceof String || obj instanceof StringBuffer) {
                 result.append(obj);
             } else if (obj instanceof Throwable) {
@@ -391,13 +345,6 @@ public class CmsHtmlReport extends A_CmsReport {
     public synchronized void println() {
         this.print(getLineBreak());
     }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#println(com.opencms.linkmanagement.CmsPageLinks)
-     */
-    public synchronized void println(CmsPageLinks value) {
-        m_content.add(value);
-    }
 
     /**
      * @see org.opencms.report.I_CmsReport#println(java.lang.String)
@@ -419,4 +366,5 @@ public class CmsHtmlReport extends A_CmsReport {
     public synchronized void println(Throwable t) {
         m_content.add(t);
     }
+    
 }

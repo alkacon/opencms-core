@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/22 10:39:36 $
-* Version: $Revision: 1.442 $
+* Date   : $Date: 2004/01/22 11:50:01 $
+* Version: $Revision: 1.443 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -55,9 +55,6 @@ import com.opencms.core.CmsExportResponse;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
-import com.opencms.linkmanagement.CmsPageLinks;
-import com.opencms.linkmanagement.LinkChecker;
-import com.opencms.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.442 $
+ * @version $Revision: 1.443 $
  */
 public class CmsObject {
 
@@ -101,11 +98,6 @@ public class CmsObject {
     private CmsDriverManager m_driverManager;
 
     /**
-     * The class for linkmanagement.
-     */
-    private LinkChecker m_linkChecker;
-
-    /**
      * the modus the cmsObject runs in (used i.e. for static export)
      */
     private int m_mode = I_CmsConstants.C_MODUS_AUTO;
@@ -119,17 +111,7 @@ public class CmsObject {
      * The default constructor.
      */
     public CmsObject() {
-    }
-
-    /**
-     * Initializes the CmsObject without a request-context (current-user,
-     * current-group, current-project).
-     *
-     * @param driverManager the driver manager to access the database.
-     * @throws CmsException if operation was not successful.
-     */
-    public void init(CmsDriverManager driverManager) throws CmsException {
-        m_driverManager = driverManager;
+        // noop
     }
 
     /**
@@ -147,25 +129,20 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void init(
-        CmsDriverManager driverManager,
-        CmsRequestContext context,
-        I_CmsRequest req, 
-        I_CmsResponse resp, 
-        String user, 
-        int projectId, 
-        String site, 
-        CmsSessionInfoManager sessionStorage, 
-        CmsResourceTranslator directoryTranslator, 
-        CmsResourceTranslator fileTranslator
+            CmsDriverManager driverManager,
+            CmsRequestContext context,
+            I_CmsRequest req, 
+            I_CmsResponse resp, 
+            String user, 
+            int projectId, 
+            String site, 
+            CmsSessionInfoManager sessionStorage, 
+            CmsResourceTranslator directoryTranslator, 
+            CmsResourceTranslator fileTranslator
     ) throws CmsException {
         m_sessionStorage = sessionStorage;
         m_driverManager = driverManager;
         m_context = context;
-        try {
-            m_linkChecker = new LinkChecker();
-        } catch (java.lang.NoClassDefFoundError error) {
-            // ignore this error - no substitution is needed here
-        }
     }
     
     /**
@@ -762,16 +739,6 @@ public class CmsObject {
     }
 
     /**
-     * creates a link entry for each of the link targets in the linktable.
-     *
-     * @param pageId The resourceId (offline) of the page whose liks should be traced
-     * @param linkTargets A vector of strings (the linkdestinations)
-     * @throws CmsException if something goes wrong
-     */
-    public void createLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException {
-        m_driverManager.createLinkEntrys(pageId, linkTargets);
-    }
-    /**
       * Creates a new project for task handling.
       *
       * @param projectname the name of the project
@@ -1042,18 +1009,6 @@ public class CmsObject {
      */
     public void deleteGroup(String delgroup) throws CmsException {
         m_driverManager.deleteGroup(m_context, delgroup);
-    }
-
-    /****************     methods for link management            ****************************/
-
-    /**
-     * deletes all entrys in the link table that belong to the pageId
-     *
-     * @param pageId The resourceId (offline) of the page whose links should be deleted
-     * @throws CmsException if something goes wrong
-     */
-    public void deleteLinkEntrys(CmsUUID pageId) throws CmsException {
-        m_driverManager.deleteLinkEntrys(pageId);
     }
 
     /**
@@ -1797,17 +1752,6 @@ public class CmsObject {
     }
 
     /**
-     * Returns a Vector with all export links
-     *
-     * @return Vector (Strings) with all export links.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public Vector getAllExportLinks() throws CmsException {
-        return m_driverManager.getAllExportLinks();
-    }
-
-    /**
      * Returns all projects which are owned by the current user or which are manageable
      * for the group of the user.
      *
@@ -1914,17 +1858,6 @@ public class CmsObject {
      */
     public ExtendedProperties getConfigurations() {
         return m_driverManager.getConfigurations();
-    }
-
-    /**
-     * Reads all export links that depend on the resource.
-     * @param res the resourceName() of the resources that has changed (or the String
-     * that describes a contentdefinition).
-     * @return a Vector(of Strings) with the linkrequest names
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getDependings(Vector res) throws CmsException {
-        return m_driverManager.getDependingExportLinks(res);
     }
 
     /**
@@ -2105,28 +2038,6 @@ public class CmsObject {
             }
         }
         return m_mode;
-    }
-
-    /**
-     * serches for broken links in the online project.
-     *
-     * @return A Vector with a CmsPageLinks object for each page containing broken links
-     *          this CmsPageLinks object contains all links on the page withouth a valid target.
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getOnlineBrokenLinks() throws CmsException {
-        return m_driverManager.getOnlineBrokenLinks();
-    }
-
-    /**
-     * extracts the links of the page and returns them in a CmsPageLinks object.
-     *
-     * @param page The page to process.
-     * @return CmsPageLinks The link destinations on the page
-     * @throws CmsException if something goes wrong
-     */
-    public CmsPageLinks getPageLinks(String page) throws CmsException {
-        return m_linkChecker.extractLinks(this, page);
     }
 
     /**
@@ -3462,19 +3373,6 @@ public class CmsObject {
     }
 
     /**
-     * returns a Vector (Strings) with the link destinations of all links on the page with
-     * the pageId.
-     *
-     * @param pageId The resourceId (offline) of the page whose liks should be read
-     * @return vector of link destinations
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readLinkEntrys(CmsUUID pageId) throws CmsException {
-        return m_driverManager.readLinkEntrys(pageId);
-    }
-
-    /**
      * Reads the managergroup of a project from the Cms.
      *
      * @param project the project 
@@ -3495,19 +3393,6 @@ public class CmsObject {
      */
     public Hashtable readMimeTypes() throws CmsException  {
         return m_driverManager.readMimeTypes();
-    }
-
-    /**
-     * Returns a Vector (Strings) with the link destinations of all links on the page with
-     * the pageId.
-     *
-     * @param pageId The resourceId (online) of the page whose liks should be read.
-     * @return vector of link destinations
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public Vector readOnlineLinkEntrys(CmsUUID pageId) throws CmsException {
-        return m_driverManager.readOnlineLinkEntrys(pageId);
     }
 
     /**
@@ -4256,16 +4141,6 @@ public class CmsObject {
     public void unlockResource(String resource, boolean forceRecursive) throws CmsException {
         getResourceType(readFileHeader(resource,true).getType()).unlockResource(this, resource, forceRecursive);
     }
-
-    /**
-     * When a project is published this method aktualises the online link table.
-     *
-     * @param projectId of the project that is published.
-     */
-    public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
-        m_driverManager.updateOnlineProjectLinks(deleted, changed, newRes, pageType);
-    }
-
 
     /**
      * Tests, if a user is member of the given group.

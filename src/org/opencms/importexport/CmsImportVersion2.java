@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/01/22 10:39:35 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/01/22 11:50:01 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -428,12 +428,6 @@ public class CmsImportVersion2 extends A_CmsImport {
                     m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(translatedName);
                 }
-            }
-            if (!m_importingChannelData) {
-                // at last we have to get the links from all new imported pages for the  linkmanagement
-                m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-                updatePageLinks();
-                m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);
             }
 
             // now merge the body and page control files. this only has to be done if the import
