@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/03 11:57:52 $
- * Version: $Revision: 1.191 $
+ * Date   : $Date: 2003/09/03 14:09:21 $
+ * Version: $Revision: 1.192 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.191 $ $Date: 2003/09/03 11:57:52 $
+ * @version $Revision: 1.192 $ $Date: 2003/09/03 14:09:21 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -789,9 +789,11 @@ public class CmsDriverManager extends Object {
         // include deleted resources, otherwise publishing of them will not work
         List path = readPath(context, resourcename, true);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
+        
+        // update the project flag of a modified resource as "modified inside the current project"
+        m_vfsDriver.updateProjectId(context.currentProject(), resource);
+        //m_vfsDriver.changeLockedInProject(projectId, resource.getResourceId());        
 
-        m_vfsDriver.changeLockedInProject(projectId, resource.getResourceId());
-        //clearResourceCache(resourcename, new CmsProject(projectId, 0), context.currentUser());
         clearResourceCache();
         
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/03 11:23:40 $
-* Version: $Revision: 1.393 $
+* Date   : $Date: 2003/09/03 14:09:21 $
+* Version: $Revision: 1.394 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.393 $
+ * @version $Revision: 1.394 $
  */
 public class CmsObject {
 
@@ -2663,18 +2663,18 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void publishProject(I_CmsReport report, CmsResource directPublishResource) throws CmsException {
+        Vector newResources = null;
+        Vector deletedResources = null;
+        Vector changedResources = null;
+        Vector changedModuleMasters = null;
+        boolean success = false;
+        CmsPublishedResources publishedResources = null;
+
+        clearcache();
 
         synchronized (m_driverManager) {
-            Vector newResources = null;
-            Vector deletedResources = null;
-            Vector changedResources = null;
-            Vector changedModuleMasters = null;
-            boolean success = false;
-            CmsPublishedResources publishedResources = null;
-
-            clearcache();
-
             publishedResources = new CmsPublishedResources(m_context.currentProject());
+            
             try {
 
                 // first we remember the new resources for the link management
@@ -2715,7 +2715,7 @@ public class CmsObject {
                     System.err.println("Vector of changed resources:");
                     if (changedResources != null) {
                         for (int i = 0; i < changedResources.size(); i++) {
-                            System.err.println("    -- " + i + " -->" + (String)changedResources.get(i) + "<--");
+                            System.err.println("    -- " + i + " -->" + (String) changedResources.get(i) + "<--");
                         }
                     }
                 }
