@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupLoggingThread.java,v $
- * Date   : $Date: 2004/02/20 18:20:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/20 19:52:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,14 @@ import java.io.*;
  * the getMessages() method.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsSetupLoggingThread extends Thread {
     private static Vector messages;
     private PipedInputStream m_pipedIn;
     private LineNumberReader m_lineReader;
     private boolean m_stopThread;
+    private PipedOutputStream m_pipedOut;
 
     /** 
      * Constructor.<p>
@@ -56,17 +57,19 @@ public class CmsSetupLoggingThread extends Thread {
 
         super("OpenCms: Setup logging");
 
+        m_pipedOut = pipedOut;
         messages = new Vector();
         m_stopThread = false;
+
         try {
             m_pipedIn = new PipedInputStream();
-            m_pipedIn.connect(pipedOut);
+            m_pipedIn.connect(m_pipedOut);
             m_lineReader = new LineNumberReader(new BufferedReader(new InputStreamReader(m_pipedIn)));
         } catch (Exception e) {
             messages.addElement(e.toString());
-        }
+        }    
     }
-
+    
     /**
      * @see java.lang.Runnable#run()
      */
@@ -74,24 +77,16 @@ public class CmsSetupLoggingThread extends Thread {
         int lineNr = 0;
         String line = null;
         while (!m_stopThread) {
+            lineNr = m_lineReader.getLineNumber();
             try {
-                lineNr = m_lineReader.getLineNumber();
                 line = m_lineReader.readLine();
             } catch (IOException e) {
-                messages.addElement(e.toString());
-                m_stopThread = true;
+                // "Write end dead" IO exceptions can be ignored                
             }
             if (line != null) {
                 messages.addElement(lineNr + ":\t" + line);
-            } else {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e1) {
-                    m_stopThread = true;
-                }
-            }
+            }          
         }
-
         try {
             m_pipedIn.close();
         } catch (IOException e) {
