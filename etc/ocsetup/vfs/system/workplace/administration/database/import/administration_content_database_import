@@ -68,7 +68,7 @@ function show_help()
 							<tr>
 								<td class=formular>]]><LABEL value="database.label.files"/><![CDATA[:</td>
 								<td class=dialogtxt>
-									]]><SELECT class="textfeld" name="existingfile" width="150" method="getExportFiles" onchange=""/><![CDATA[
+									]]><SELECT class="textfeld" name="existingfile" width="400" style="width:400px" method="getExportFiles" onchange=""/><![CDATA[
 								</td>
 								<td></td>
 							</tr>
