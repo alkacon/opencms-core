@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationCopyResource.java,v $
- * Date   : $Date: 2005/03/19 13:58:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/20 13:46:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.configuration;
 
 import org.opencms.file.types.A_CmsResourceType;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsMacroResolver;
 
 /**
  * Describes a resource to copy during the creation of a new resource.<p>
@@ -43,7 +43,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.2
  */
 public class CmsConfigurationCopyResource {
@@ -87,7 +87,7 @@ public class CmsConfigurationCopyResource {
         m_source = source;
 
         if (target == null) {
-            m_target = CmsStringUtil.formatMacro(A_CmsResourceType.MACRO_RESOURCE_FOLDER_PATH);
+            m_target = CmsMacroResolver.formatMacro(A_CmsResourceType.MACRO_RESOURCE_FOLDER_PATH);
             m_targetWasNull = true;
         } else {
             m_target = target;

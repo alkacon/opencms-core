@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/03/19 13:58:18 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/03/20 13:46:17 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -67,14 +67,6 @@ public final class CmsStringUtil {
      */
     public static final String C_LINE_SEPARATOR = System.getProperty("line.separator");
 
-    /** String to indicate the start of a macro. */
-    public static final String C_MACRO_DELIMITER = "$";
-
-    /** String to indicate the end of a macro. */
-    public static final String C_MACRO_END = "}";
-
-    /** String to indicate the start of a macro. */
-    public static final String C_MACRO_START = "{";
     /**
      * just a convienient shorthand to the tabulation constant.<p>
      */
@@ -372,24 +364,6 @@ public final class CmsStringUtil {
             }
         }
         return result;
-    }
-
-    /**
-     * Adds macro delelimiters to the given key, 
-     * for example <code>key</code> becomes <code>${key}</code>.<p>
-     * 
-     * @param key the key to format as macro
-     * 
-     * @return the key formatted as a macro
-     */
-    public static String formatMacro(String key) {
-
-        StringBuffer result = new StringBuffer(32);
-        result.append(C_MACRO_DELIMITER);
-        result.append(C_MACRO_START);
-        result.append(key);
-        result.append(C_MACRO_END);
-        return result.toString();
     }
 
     /**
@@ -709,85 +683,6 @@ public final class CmsStringUtil {
             m_contextReplace = "$1" + CmsStringUtil.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/";
         }
         return substitutePerl(htmlContent, m_contextSearch, m_contextReplace, "g");
-    }
-
-    /**
-     * Substitutes macro keys the content.<p>
-     * 
-     * A macro ${key} in the content is replaced with its assigned value
-     * returned by the getValue method of the specified <code>I_CmsStringMapper</code> class.<p>
-     * 
-     * Macros that couldn't be replaced are quitely removed from the content string.<p>
-     * 
-     * @param content the content which is scanned
-     * @param substitution string mapper to obtain the value for a key
-     * @return the value assigned to the given key
-     */
-    public static String substituteMacros(String content, I_CmsStringMapper substitution) {
-
-        return substituteMacros(content, substitution, false);
-    }
-
-    /**
-     * Substitutes macro keys the content.<p>
-     * 
-     * A substring ${key} in the content is replaced with its assigned value
-     * returned by the getValue method of the given <code>StringMapper</code> class.
-     * 
-     * @param content the content which is scanned
-     * @param substitution string mapper to obtain the value for a key
-     * @param keepUnreplacedMacros if true, macros that couldn't be replaced are left unchanged in the content string, otherwise they are removed quietyl from the content string
-     * @return the value assigned to the given key
-     */
-    public static String substituteMacros(String content, I_CmsStringMapper substitution, boolean keepUnreplacedMacros) {
-
-        String segments[];
-        String replacements[];
-        String macros[];
-
-        if (content == null) {
-            return null;
-        } else {
-            segments = (String[])splitAsList(content, C_MACRO_DELIMITER).toArray(new String[10]);
-            replacements = new String[segments.length];
-            macros = new String[segments.length];
-        }
-
-        if (segments.length == 1) {
-            return content;
-        }
-
-        int totalLength = 0;
-        for (int i = 0; i < segments.length && segments[i] != null; i++) {
-            int len = segments[i].length(), pos;
-            if (segments[i].startsWith(C_MACRO_START) && (pos = segments[i].indexOf(C_MACRO_END)) > 0) {
-                macros[i] = segments[i].substring(1, pos);
-                replacements[i] = substitution.getValue(macros[i]);
-                segments[i] = segments[i].substring(pos + 1);
-                len = (replacements[i] != null) ? replacements[i].length() : 0;
-                len += (segments[i] != null) ? segments[i].length() : 0;
-            } else if (i > 0) {
-                replacements[i] = C_MACRO_DELIMITER;
-                len += 1;
-            }
-            totalLength += len;
-        }
-
-        StringBuffer sb = new StringBuffer(totalLength);
-        for (int i = 0; i < segments.length && segments[i] != null; i++) {
-
-            if (replacements[i] != null) {
-                sb.append(replacements[i]);
-            } else if (keepUnreplacedMacros && macros[i] != null) {
-                sb.append(C_MACRO_DELIMITER).append(C_MACRO_START).append(macros[i]).append(C_MACRO_END);
-            }
-
-            if (segments[i] != null) {
-                sb.append(segments[i]);
-            }
-        }
-
-        return sb.toString();
     }
 
     /**

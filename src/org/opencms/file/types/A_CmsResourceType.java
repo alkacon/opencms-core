@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/03/20 13:46:17 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.file.types;
 
-import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationCopyResource;
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -46,8 +46,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsStringMapper;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsMacroResolver;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +60,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -93,10 +92,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** Indicates that the configuration of the resource type has been frozen. */
     protected boolean m_frozen;
 
-    /** 
-     * The list of all resourcetype mappings.<p>
-     * Contains those file extensions mapped to the resourcetype.
-     */
+    /**  Contains the file extensions mapped to this resource type. */
     protected List m_mappings;
 
     /** The configured id of this resource type. */
@@ -318,11 +314,11 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         List properties
     ) throws CmsException {
 
-        // initialize the String mapper with the current user OpenCms context
-        CmsStringMapper mapper = getStringMapper(cms, resourcename);
+        // initialize a macroresolver with the current user OpenCms context
+        CmsMacroResolver resolver = getMacroResolver(cms, resourcename);
         
         // add the predefined property values from the XML configuration to the resource
-        List newProperties = processDefaultProperties(properties, mapper);
+        List newProperties = processDefaultProperties(properties, resolver);
         
         CmsResource result = securityManager.createResource(
             cms.getRequestContext(), 
@@ -332,7 +328,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             newProperties);
         
         // process the (optional) copy resources from the configuration
-        processCopyResources(cms, resourcename, mapper);
+        processCopyResources(cms, resourcename, resolver);
         
         // return the created resource
         return result;        
@@ -412,17 +408,17 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
-     */
-    public abstract int getLoaderId();
-
-    /**
      * @see org.opencms.file.types.I_CmsResourceType#getConfiguredMappings()
      */
     public List getConfiguredMappings() {
 
         return m_mappings;
     }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
+     */
+    public abstract int getLoaderId();
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
@@ -791,6 +787,31 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }  
 
     /**
+     * Creates a macro resolver based on the current users OpenCms context and the provided resource name.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param resourcename the resource name for macros like {@link A_CmsResourceType#MACRO_RESOURCE_FOLDER_PATH}
+     *  
+     * @return a macro resolver based on the current users OpenCms context and the provided resource name
+     */
+    protected CmsMacroResolver getMacroResolver(CmsObject cms, String resourcename) {
+
+        CmsMacroResolver result = CmsMacroResolver.newInstance().setCmsObject(cms);
+        if (isFolder() && (!CmsResource.isFolder(resourcename))) {
+            // ensure folder ends with "/" so
+            resourcename = resourcename.concat("/");
+        }
+        // add special mappings for macros in default properties
+        result.addMacro(MACRO_RESOURCE_ROOT_PATH, cms.getRequestContext().addSiteRoot(resourcename));
+        result.addMacro(MACRO_RESOURCE_SITE_PATH, resourcename);
+        result.addMacro(MACRO_RESOURCE_FOLDER_PATH, CmsResource.getFolderPath(resourcename));
+        result.addMacro(MACRO_RESOURCE_PARENT_PATH, CmsResource.getParentFolder(resourcename));
+        result.addMacro(MACRO_RESOURCE_NAME, CmsResource.getName(resourcename));
+
+        return result;
+    }
+
+    /**
      * Convenience method to return the initialized resource type 
      * instance for the given id.<p>
      * 
@@ -806,50 +827,25 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * Creates a String mapper based on the current users OpenCms context and the provided resource name.<p>
-     * 
-     * @param cms the current OpenCms user context
-     * @param resourcename the resource name for macros like {@link A_CmsResourceType#MACRO_RESOURCE_FOLDER_PATH}
-     *  
-     * @return a String mapper based on the current users OpenCms context and the provided resource name
-     */
-    protected CmsStringMapper getStringMapper(CmsObject cms, String resourcename) {
-
-        CmsStringMapper result = new CmsStringMapper(cms);
-        if (isFolder() && (!CmsResource.isFolder(resourcename))) {
-            // ensure folder ends with "/" so
-            resourcename = resourcename.concat("/");
-        }
-        // add special mappings for macros in default properties
-        result.addMapping(MACRO_RESOURCE_ROOT_PATH, cms.getRequestContext().addSiteRoot(resourcename));
-        result.addMapping(MACRO_RESOURCE_SITE_PATH, resourcename);
-        result.addMapping(MACRO_RESOURCE_FOLDER_PATH, CmsResource.getFolderPath(resourcename));
-        result.addMapping(MACRO_RESOURCE_PARENT_PATH, CmsResource.getParentFolder(resourcename));
-        result.addMapping(MACRO_RESOURCE_NAME, CmsResource.getName(resourcename));
-
-        return result;
-    }
-
-    /**
-     * Processes the copy resources f this resource type.<p> 
+     * Processes the copy resources of this resource type.<p> 
      * 
      * @param cms the current OpenCms user context
      * @param resourcename the name of the base resource 
-     * @param mapper the mapper used for resolving target macro names
+     * @param resolver the resolver used for resolving target macro names
      */
-    protected void processCopyResources(CmsObject cms, String resourcename, CmsStringMapper mapper) {
+    protected void processCopyResources(CmsObject cms, String resourcename, CmsMacroResolver resolver) {
 
         Iterator i = m_copyResources.iterator();
         while (i.hasNext()) {
             CmsConfigurationCopyResource copyResource = (CmsConfigurationCopyResource)i.next();
 
             String target = copyResource.getTarget();
-            if (copyResource.isTargetWasNull() || target.equals(CmsStringUtil.formatMacro(MACRO_RESOURCE_FOLDER_PATH))) {
+            if (copyResource.isTargetWasNull() || target.equals(CmsMacroResolver.formatMacro(MACRO_RESOURCE_FOLDER_PATH))) {
                 // target is just the resource folder, must add source file name to target
                 target = target.concat(CmsResource.getName(copyResource.getSource()));
             }
             // now resolve the macros in the target name
-            target = CmsStringUtil.substituteMacros(target, mapper);
+            target = resolver.resolveMacros(target);
             // now resolve possible releative paths in the target
             target = CmsFileUtil.normalizePath(CmsLinkManager.getAbsoluteUri(target, resourcename), '/');
 
@@ -877,14 +873,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * Returns a list of property objects that are attached to the resource on creation.<p>
      * 
      * It's possible to use OpenCms macros for the property values. 
-     * Please see {@link CmsStringMapper#CmsStringMapper(CmsObject)} for allowed macro values.<p>
+     * Please see {@link CmsMacroResolver} for allowed macro values.<p>
      * 
      * @param properties the (optional) properties provided by the user
-     * @param mapper the initialized String mapper to resolve the macro values
+     * @param resolver the resolver used to resolve the macro values
      * 
      * @return a list of property objects that are attached to the resource on creation
      */
-    protected List processDefaultProperties(List properties, CmsStringMapper mapper) {
+    protected List processDefaultProperties(List properties, CmsMacroResolver resolver) {
 
         if ((m_defaultProperties == null) || (m_defaultProperties.size() == 0)) {
             // no default properties are defined
@@ -902,10 +898,10 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
             // resolve possible macros in the property values
             if (property.getResourceValue() != null) {
-                property.setResourceValue(CmsStringUtil.substituteMacros(property.getResourceValue(), mapper));
+                property.setResourceValue(resolver.resolveMacros(property.getResourceValue()));
             }
             if (property.getStructureValue() != null) {
-                property.setStructureValue(CmsStringUtil.substituteMacros(property.getStructureValue(), mapper));
+                property.setStructureValue(resolver.resolveMacros(property.getStructureValue()));
             }
 
             // save the new property in the result list

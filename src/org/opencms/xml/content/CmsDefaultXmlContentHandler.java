@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/02/26 13:53:31 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/03/20 13:46:17 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,8 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
-import org.opencms.util.CmsStringMapper;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.I_CmsStringMapper;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -63,7 +62,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -186,7 +185,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }        
         if (defaultValue != null) {            
             // return the default value with processed macros
-            return CmsStringUtil.substituteMacros(defaultValue, new CmsStringMapper(this, null, locale, cms));
+            CmsMacroResolver resolver = CmsMacroResolver.newInstance()
+                .setCmsObject(cms)
+                .setXmlContentHandler(this)
+                .setLocale(locale);            
+            return resolver.resolveMacros(defaultValue);
         }
         // no default value is available
         return null; 
@@ -531,13 +534,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             }
         }
 
+        // create additional macro values
         Map additionalValues = new HashMap();
-        additionalValues.put(I_CmsStringMapper.KEY_VALIDATION_VALUE, valueStr);
-        additionalValues.put(I_CmsStringMapper.KEY_VALIDATION_REGEX, ((!matchResult) ? "!" : "") + regex);
-        additionalValues.put(I_CmsStringMapper.KEY_VALIDATION_PATH, value.getPath());
+        additionalValues.put(CmsMacroResolver.KEY_VALIDATION_VALUE, valueStr);
+        additionalValues.put(CmsMacroResolver.KEY_VALIDATION_REGEX, ((!matchResult) ? "!" : "") + regex);
+        additionalValues.put(CmsMacroResolver.KEY_VALIDATION_PATH, value.getPath());
 
-        return CmsStringUtil
-            .substituteMacros(message, new CmsStringMapper(this, additionalValues, null, cms));
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance()
+            .setCmsObject(cms)
+            .setXmlContentHandler(this)
+            .setAdditionalMacros(additionalValues);
+        
+        return resolver.resolveMacros(message);
     }
 
     /**

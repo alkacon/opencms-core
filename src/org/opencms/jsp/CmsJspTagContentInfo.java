@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/20 13:46:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.jsp;
 
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.I_CmsMacroResolver;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -49,7 +50,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * Used to access and display XML content item information from the VFS.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 6.0 alpha 3
  */
 public class CmsJspTagContentInfo extends TagSupport {
@@ -201,11 +202,14 @@ public class CmsJspTagContentInfo extends TagSupport {
      */
     protected String getVariableName(String value) {
 
+        int todo = 0;
+        // TODO: replace with macro resolver
+        
         int dotIndex = -1;
         String variableName = null;
 
-        if (value.startsWith(CmsStringUtil.C_MACRO_DELIMITER + CmsStringUtil.C_MACRO_START)
-            && value.endsWith(CmsStringUtil.C_MACRO_END)
+        if (value.startsWith(I_CmsMacroResolver.C_MACRO_DELIMITER + I_CmsMacroResolver.C_MACRO_START)
+            && value.endsWith(I_CmsMacroResolver.C_MACRO_END)
             && (dotIndex = value.indexOf(".")) > 0) {
 
             variableName = value.substring(2, dotIndex);
@@ -221,12 +225,15 @@ public class CmsJspTagContentInfo extends TagSupport {
      * @return the variable name, e.g. "resultSize"
      */
     protected String getVariableValue(String value) {
-
+        
+        int todo = 0;
+        // TODO: replace with macro resolver
+        
         int dotIndex = -1;
         String variableValue = null;
 
-        if (value.startsWith(CmsStringUtil.C_MACRO_DELIMITER + CmsStringUtil.C_MACRO_START)
-            && value.endsWith(CmsStringUtil.C_MACRO_END)
+        if (value.startsWith(I_CmsMacroResolver.C_MACRO_DELIMITER + I_CmsMacroResolver.C_MACRO_START)
+            && value.endsWith(I_CmsMacroResolver.C_MACRO_END)
             && (dotIndex = value.indexOf(".")) > 0) {
 
             variableValue = value.substring(dotIndex + 1, value.length() - 1);

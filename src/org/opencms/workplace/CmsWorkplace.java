@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/02/26 13:53:32 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2005/03/20 13:46:17 $
+ * Version: $Revision: 1.105 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.104 $
+ * @version $Revision: 1.105 $
  * 
  * @since 5.1
  */
@@ -1535,7 +1535,8 @@ public abstract class CmsWorkplace {
      */
     public String resolveMacros(String input) {
 
-        return CmsStringUtil.substituteMacros(input, new CmsLocalizedKeyMapper(m_settings));
+        CmsLocalizedKeyResolver keyMapper = CmsLocalizedKeyResolver.newInstance().setWorkplaceSettings(m_settings);       
+        return keyMapper.resolveMacros(input);
     }
 
     /**

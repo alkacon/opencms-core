@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/20 13:46:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringMapper;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.I_CmsMacroResolver;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -55,16 +56,13 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
 
     /** Name of the content node element to show. */
     private String m_element;
-    
-    /** The string mapper to resolve EL like strings in tag attributes. */
-    private CmsStringMapper m_stringMapper;
 
     /**
      * Internal action method to show an element from a XML content document.<p>
@@ -115,7 +113,6 @@ public class CmsJspTagContentShow extends TagSupport {
         // initialize a string mapper to resolve EL like strings in tag attributes
         CmsFlexController controller = (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         CmsObject cms = controller.getCmsObject();        
-        m_stringMapper = new CmsStringMapper(cms, pageContext);
 
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
@@ -136,12 +133,20 @@ public class CmsJspTagContentShow extends TagSupport {
             element = CmsXmlUtils.concatXpath(contentContainer.getXmlDocumentElement(), element);
         }
 
-        String content;
-        if (element.startsWith(CmsStringUtil.C_MACRO_DELIMITER + CmsStringUtil.C_MACRO_START)
-            && element.endsWith(CmsStringUtil.C_MACRO_END)) {
 
+            
+        String content;
+        if (element.startsWith(I_CmsMacroResolver.C_MACRO_DELIMITER + I_CmsMacroResolver.C_MACRO_START)
+            && element.endsWith(I_CmsMacroResolver.C_MACRO_END)) {
+            // initialize a string mapper to resolve EL like strings in tag attributes
+            String resourcename = CmsJspTagContentLoad.getResourceName(cms, contentContainer);
+            CmsMacroResolver resolver = CmsMacroResolver.newInstance()
+                .setCmsObject(cms)
+                .setJspPageContext(pageContext)
+                .setResourceName(resourcename)            
+                .setKeepEmptyMacros(true);
             // this is an EL like string
-            content = m_stringMapper.map(element, contentContainer, true);
+            content = resolver.resolveMacros(element);
         } else if (xmlContent == null) {
             // no XML content- no output
             content = null;

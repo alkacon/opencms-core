@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/20 13:46:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.util.CmsStringMapper;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides the necessary information to create an input form, email messages and confirmation outputs.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsForm {
     
@@ -918,7 +918,10 @@ public class CmsForm {
                 // only fill in values from configuration file if called initially
                 String fieldValue = content.getStringValue(cms, inputFieldPath + C_NODE_FIELDDEFAULTVALUE, locale);
                 if (CmsStringUtil.isNotEmpty(fieldValue)) {
-                    field.setValue(CmsStringUtil.substituteMacros(fieldValue, new CmsStringMapper(cms, jsp.getJspContext())));
+                    CmsMacroResolver resolver = CmsMacroResolver.newInstance()
+                        .setCmsObject(cms)
+                        .setJspPageContext(jsp.getJspContext());                    
+                    field.setValue(resolver.resolveMacros(fieldValue));
                 }               
             } else {
                 // get field value from request for standard fields

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2005/03/19 13:59:19 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/20 13:46:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,9 @@ package org.opencms.main;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.types.CmsResourceTypeJsp;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
-import org.opencms.util.CmsStringMapper;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsMacroResolver;
 
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
   
@@ -238,8 +237,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
                 jspEncoding = property.getValue();
                 // resolve the macro
                 CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-                CmsStringMapper mapper = new CmsStringMapper(cms);
-                jspEncoding = CmsStringUtil.substituteMacros(jspEncoding, mapper);
+                jspEncoding = CmsMacroResolver.newInstance().setCmsObject(cms).resolveMacros(jspEncoding);
                 break;
             }
         }
