@@ -47,7 +47,7 @@
 </contextmenue>
 <contextmenue name="task6">
 	<contextentry name="task.button.query" href="javascript:doTAction(DO_TQUERY)"/>
-	<contextentry name="task.button.accept" href="javascript:doTAction(DO_TFORWARD)"/>
+	<contextentry name="task.button.accept" href="javascript:doTAction(DO_TACCEPT)"/>
 	<contextspacer/>
  	<contextdisabled name="task.button.due" href="#"/>
 	<contextdisabled name="task.button.priority" href="#"/>
