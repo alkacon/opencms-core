@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/02/06 14:03:20 $
-  * Version: $Revision: 1.21 $
+  * Date   : $Date: 2001/02/23 15:23:52 $
+  * Version: $Revision: 1.22 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -565,7 +565,8 @@ function addDir(nodid){
     pfad='/'+pfad;
 
 	//window.frames[1].frames[1].PROJECTNEW.tempFolder.value=pfad;
-	window.frames[1].frames[1].frames[1].document.forms[0].folder.value=pfad;
+	if(window.frames[1].frames[1].frames[1])window.frames[1].frames[1].frames[1].document.forms[0].folder.value=pfad;
+	else window.frames[1].frames[1].document.forms[0].folder.value=pfad;
 
 }
  
