@@ -1182,8 +1182,8 @@ CREATE OR REPLACE PACKAGE BODY opencmsresource IS
       FETCH curProperties INTO recProperties;
       EXIT WHEN curProperties%NOTFOUND;
       vNewPropertiesId := getNextId('CMS_BACKUP_PROPERTIES');
-      insert into cms_backup_properties (property_id, propertydef_id, resource_id, property_value)
-      values(vNewPropertiesId, recProperties.propertydef_id, vNewResourceId, recProperties.property_value);
+      insert into cms_backup_properties (property_id, propertydef_id, resource_id, property_value, version_id)
+      values(vNewPropertiesId, recProperties.propertydef_id, vNewResourceId, recProperties.property_value, pVersionId);
     END LOOP;
     CLOSE curProperties;
     commit;
@@ -1240,9 +1240,9 @@ CREATE OR REPLACE PACKAGE BODY opencmsresource IS
     END;
     vNewFileId := getNextId('CMS_BACKUP_FILES');
 	IF pFile.file_content IS NULL THEN
-	  insert into cms_backup_files (file_id, file_content) values(vNewFileId, empty_blob());
+	  insert into cms_backup_files (file_id, file_content, version_id) values(vNewFileId, empty_blob(), pVersionId);
 	ELSE
-      insert into cms_backup_files (file_id, file_content) values(vNewFileId, pFile.file_content);
+      insert into cms_backup_files (file_id, file_content, version_id) values(vNewFileId, pFile.file_content, pVersionId);
     END IF;
 	vNewResourceId := getNextId('CMS_BACKUP_RESOURCES');
     insert into cms_backup_resources
@@ -1260,8 +1260,8 @@ CREATE OR REPLACE PACKAGE BODY opencmsresource IS
       FETCH curProperties INTO recProperties;
       EXIT WHEN curProperties%NOTFOUND;
       vNewPropertiesId := getNextId('CMS_BACKUP_PROPERTIES');
-      insert into cms_backup_properties (property_id, propertydef_id, resource_id, property_value)
-      values(vNewPropertiesId, recProperties.propertydef_id, vNewResourceId, recProperties.property_value);
+      insert into cms_backup_properties (property_id, propertydef_id, resource_id, property_value, version_id)
+      values(vNewPropertiesId, recProperties.propertydef_id, vNewResourceId, recProperties.property_value, pVersionId);
     END LOOP;
     CLOSE curProperties;
     commit;
