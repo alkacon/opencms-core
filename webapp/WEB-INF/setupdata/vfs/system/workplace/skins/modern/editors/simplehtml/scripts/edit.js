@@ -39,11 +39,12 @@ var SAVECLOSE=2;
 var SAVE=3;
 var SAVEACTION=55;
 
+// dialog windows
+var dialogElementWindow = null;
+var dialogPropertyWindow = null;
+
 // Indicates if the text of the editor window is already set
 var textSetted = false;
-
-// dialog window
-var dialogWindow = null;
 
 // loads the file content into the editor
 function setText()
@@ -139,15 +140,15 @@ function doTemplSubmit(para) {
 		break;
 	case 4:
 		// open elements window;
-		dialogWindow = window.open("about:blank","DIALOG","width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+		dialogElementWindow = window.open("about:blank","DIALOGELEMENT","width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
 		document.ELEMENTS.submit();
-		dialogWindow.focus();
+		dialogElementWindow.focus();
 		break;		
 	case 5:
 		// open properties window;
-		dialogWindow = window.open("about:blank","DIALOG","width=600,height=320,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+		dialogPropertyWindow = window.open("about:blank","DIALOGPROPERTY","width=600,height=320,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
 		document.PROPERTIES.submit();
-		dialogWindow.focus();
+		dialogPropertyWindow.focus();
 		break;
 	}
 }
@@ -164,12 +165,6 @@ function changeBody(bodyName, language) {
 		doTemplSubmit(3);	
 	} else {
 		doTemplSubmit(1);
-	}
-}
-
-function closeDialog() {
-	if (dialogWindow) {
-		window.dialogWindow.close();
 	}
 }
 

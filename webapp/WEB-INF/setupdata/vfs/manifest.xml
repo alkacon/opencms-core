@@ -6384,6 +6384,33 @@
 		<accesscontrol/>
 	</file>
 	<file>
+		<source>system/workplace/jsp/editors/editor_close.html</source>
+		<destination>system/workplace/jsp/editors/editor_close.html</destination>
+		<type>jsp</type>
+		<uuidresource>5ea75c09-500e-11d8-ae10-b4e84286f35a</uuidresource>
+		<uuidcontent>5ea75c0a-500e-11d8-ae10-b4e84286f35a</uuidcontent>
+		<datelastmodified>1075134339000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1075128365000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Close editor frame]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file> 
+	<file>
 		<source>system/workplace/jsp/editors/editor_main.html</source>
 		<destination>system/workplace/jsp/editors/editor_main.html</destination>
 		<type>jsp</type>

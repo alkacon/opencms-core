@@ -9,7 +9,6 @@
 
 	var openWindow = null;
 	var focusCount = 0;
-	var dialogWindow = null;
 
 	// which button is clicked
 	function doTemplSubmit(para)
@@ -231,8 +230,11 @@ End Sub
 	}
 	
 	function closeDialog() {
-		if (dialogWindow) {
-			window.dialogWindow.close();
+		if (openWindow) {
+			window.openWindow.close();
+		}
+		if (document.EDITOR.action.value == "null" || document.EDITOR.action.value == "") {
+			top.closeframe.closePage("<%= wp.getParamTempfile() %>", "<%= wp.getParamResource() %>");
 		}
 	}
 	

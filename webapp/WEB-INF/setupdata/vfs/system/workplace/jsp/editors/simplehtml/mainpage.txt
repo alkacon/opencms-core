@@ -22,6 +22,19 @@
 			doNsEdit(1);
 		}
 	}
+	
+	function closeDialog() {
+		if (dialogElementWindow) {
+			window.dialogElementWindow.close();
+		}
+		if (dialogPropertyWindow) {
+			window.dialogPropertyWindow.close();
+		}
+		if (document.EDITOR.action.value == "null" || document.EDITOR.action.value == "") {
+			top.closeframe.closePage("<%= wp.getParamTempfile() %>", "<%= wp.getParamResource() %>");
+		}
+	}
+	
 //-->
 </script>
 
@@ -103,7 +116,7 @@ if (wp.isHelpEnabled()) {%>
 		
 </form>
 
-<form name="ELEMENTS" action="dialogs/elements.html" target="DIALOG" method="post">
+<form name="ELEMENTS" action="dialogs/elements.html" target="DIALOGELEMENT" method="post">
 <input type="hidden" name="tempfile" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>">
 <input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>">
@@ -111,7 +124,7 @@ if (wp.isHelpEnabled()) {%>
 <input type="hidden" name="ispopup" value="true">
 </form>
 
-<form name="PROPERTIES" action="../dialogs/property.html" target="DIALOG" method="post">
+<form name="PROPERTIES" action="../dialogs/property.html" target="DIALOGPROPERTY" method="post">
 <input type="hidden" name="resource" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="okfunctions" value="window.close();">
 <input type="hidden" name="usetempfileproject" value="true">

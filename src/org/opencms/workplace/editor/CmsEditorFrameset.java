@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2004/01/09 08:30:37 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/01/26 16:34:08 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */
@@ -152,6 +152,27 @@ public class CmsEditorFrameset extends CmsEditor implements I_CmsEditorHandler {
             }
         }
         return retValue.toString();
+    }
+    
+    /**
+     * Deletes the temporary file and unlocks the edited resource when in direct edit mode.<p>
+     * 
+     * This method is needed in the editor close help frame, which is called when the user presses
+     * the "back" button or closes the browser window when editing a page.<p>
+     * 
+     * @param forceUnlock if true, the resource will be unlocked anyway
+     */
+    public void actionClear(boolean forceUnlock) {
+        // delete the temporary file        
+        deleteTempFile();
+        if ("true".equals(getParamDirectedit()) || forceUnlock) {
+            // unlock the resource when in direct edit mode or force unlock is true
+            try {
+                getCms().unlockResource(getParamResource(), false);
+            } catch (CmsException e) {
+                // ignore this exception
+            }
+        }
     }
     
     /**
