@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2004/03/11 09:47:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/04/30 01:51:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Provides methods to build a context menu for an explorer resource type.<p>
@@ -51,7 +52,7 @@ import java.util.List;
  * in the OpenCms configuration.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
@@ -97,13 +98,14 @@ public class CmsExplorerContextMenu {
      * @param cms the CmsObject
      * @param settings the explorer type settings for which the context menu is created
      * @param resTypeId the id of the resource type which uses the context menu
-     * @param messages the localized workplace messages 
+     * @param locale the locale to generate the context menu for
      * @return the JavaScript output to create the context menu
      */
-    public String getJSEntries(CmsObject cms, CmsExplorerTypeSettings settings, int resTypeId, CmsWorkplaceMessages messages) {
+    public String getJSEntries(CmsObject cms, CmsExplorerTypeSettings settings, int resTypeId, Locale locale) {
         // try to get the stored entries from the Map
-        String entries = (String)m_generatedScripts.get(cms.getRequestContext().getLocale());
+        String entries = (String)m_generatedScripts.get(locale);
         if (entries == null) { 
+            CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, locale);
             // entries not yet in Map, so generate them
             StringBuffer result = new StringBuffer(3072);
             String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplace.C_PATH_WORKPLACE);  
@@ -154,7 +156,7 @@ public class CmsExplorerContextMenu {
             }
             entries = result.toString();
             // store the generated entries
-            m_generatedScripts.put(cms.getRequestContext().getLocale(), entries);
+            m_generatedScripts.put(locale, entries);
         }
         
         // determine if this resource type is editable for the current user

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/04/30 01:51:05 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 5.1
  */
@@ -117,7 +117,7 @@ public class CmsFrameset extends CmsWorkplace {
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getEplorerTypeSetting(resType.getResourceTypeName());
             if (settings != null) {
                 // append the context menu of the current resource type 
-                result.append(settings.getContextMenu().getJSEntries(getCms(), settings, resTypeId, getSettings().getMessages()));
+                result.append(settings.getContextMenu().getJSEntries(getCms(), settings, resTypeId, getSettings().getUserSettings().getLocale()));
             }
         }         
         return result.toString();      
