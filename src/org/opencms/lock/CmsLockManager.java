@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/01/08 13:15:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/02 10:23:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.4
  * 
@@ -110,11 +110,15 @@ public final class CmsLockManager extends Object {
         CmsLock lock = getLock(driverManager, context, resourcename);
 
         if (!lock.isNullLock() && !lock.getUserId().equals(context.currentUser().getId())) {
-            throw new CmsLockException("Resource is already locked by the current user", CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER);
+            throw new CmsLockException("Resource is already locked by another user", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
         }
 
-        CmsLock newLock = new CmsLock(resourcename, userId, projectId, CmsLock.C_TYPE_EXCLUSIVE, mode);
-        m_exclusiveLocks.put(resourcename, newLock);
+        if (lock.isNullLock()) {
+            // create a new exclusive lock unless the resource has already a shared lock due to a
+            // exclusive locked sibling
+            CmsLock newLock = new CmsLock(resourcename, userId, projectId, CmsLock.C_TYPE_EXCLUSIVE, mode);
+            m_exclusiveLocks.put(resourcename, newLock);
+        }
 
         // handle collisions with exclusive locked sub-resources in case of a folder
         if (resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
