@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.159 $
+ * Date   : $Date: 2003/08/08 12:21:06 $
+ * Version: $Revision: 1.160 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.159 $
+ * @version $Revision: 1.160 $
  */
 public final class OpenCms extends A_OpenCms {
 
@@ -143,11 +143,6 @@ public final class OpenCms extends A_OpenCms {
     public OpenCms(Configurations conf) throws Exception {
         // Save the configuration
         setConfiguration(conf);
-        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ".");
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms startup      : System time is " + new Date());
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ".");
-        }
         // this will initialize the encoding with some default from the A_OpenCms
         String defaultEncoding = getDefaultEncoding();
         // check the opencms.properties for a different setting
@@ -213,26 +208,7 @@ public final class OpenCms extends A_OpenCms {
         }
                 
         // Read the default user configuration
-        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Default user names   : initializing");
-        }        
-        try {
-            String[] defaultUserArray = conf.getStringArray("db.default.users");
-            CmsDefaultUsers defaultUsers = new CmsDefaultUsers(defaultUserArray);
-            setDefaultUsers(defaultUsers);         
-        } catch (Exception e) {
-            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/6: " + e.getMessage());
-            }
-        }
-        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Admin user           : " + getDefaultUsers().getUserAdmin());
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Guest user           : " + getDefaultUsers().getUserGuest());
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Administrators group : " + getDefaultUsers().getGroupAdministrators());
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Projectmanagers group: " + getDefaultUsers().getGroupProjectmanagers());
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Users group          : " + getDefaultUsers().getGroupUsers());
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ". Guests group         : " + getDefaultUsers().getGroupGuests());
-        }           
+        setDefaultUsers(CmsDefaultUsers.initialize(conf));      
 
         try {
             // init the rb via the manager with the configuration
@@ -578,12 +554,7 @@ public final class OpenCms extends A_OpenCms {
         } catch (Exception e) {
             if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
                 log(I_CmsLogChannels.C_OPENCMS_INIT, ". Link rules init      : non-critical error " + e.toString());
-        }
-        if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ".");
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ". OpenCms startup      : Finished!");
-            log(I_CmsLogChannels.C_OPENCMS_INIT, ".");
-        }        
+        }     
     }
 
     /**
