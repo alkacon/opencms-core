@@ -2,4 +2,11 @@
 # Start script for the OpenCms Shell
 # Please make sure that "servlet.jar" is found, the path used below was tested with Tomcat 4.1
 
-java -classpath .:../../../common/lib/servlet.jar:../../../common/lib/servlet-api.jar:../../../common/lib/jsp-api.jar:lib/commons-dbcp-1.2.1.jar:lib/commons-pool-1.2.jar:lib/commons-collections-3.1.jar:lib/commons-digester-1.6.jar:lib/commons-beanutils-1.7.0.jar:lib/commons-fileupload-1.0.jar:lib/commons-codec-1.3.jar:lib/commons-email-1.0-mod.jar:lib/commons-httpclient-2.0.2.jar:lib/commons-logging-1.0.4.jar:lib/ojdbc14.jar:lib/log4j-1.2.8.jar:lib/opencms.jar:lib/opencms-legacy.jar:lib/activation.jar:lib/htmlparser-1.41.jar:lib/jakarta-oro-2.0.8.jar:lib/mysql-connector-java-3.0.15-ga-bin.jar:lib/jaxen-1.1-beta-4.jar:lib/jtidy-r8-05102004.jar:lib/mail.jar:lib/jug-1.1.2.jar:lib/dom4j-1.5.jar:lib/lucene-1.4.1.jar:lib/poi-2.5.1-final-20040804.jar:lib/snowball-1.0.jar:lib/PDFBox-0.6.6.jar:lib/quartz-1.4.2.jar:lib/xercesImpl-2.6.2.jar:lib/xml-apis-2.6.2.jar:classes org.opencms.main.CmsShell "$@"
+OCMSLIBPATH=""
+for i in lib/*.jar; do
+   OCMSLIBPATH="$OCMSLIBPATH":"$i"
+done
+
+TOMCATLIB="../../../common/lib/servlet.jar:../../../common/lib/servlet-api.jar:../../../common/lib/jsp-api.jar"
+
+java -classpath .:$TOMCATLIB$OCMSLIBPATH:classes org.opencms.main.CmsShell "$@"
