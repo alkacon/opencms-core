@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/04/18 15:16:33 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.21 $ $Date: 2000/04/18 15:16:33 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -82,9 +82,21 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         String username=null;
         HttpSession session=null;
         A_CmsUser user;
-        // the template to be displayed
+		String paraTaskid = (String)parameters.get("taskid");
+		
+		if(paraTaskid == null) {
+			paraTaskid = "";
+		}
+
+		// the template to be displayed		
         String template=templateSelector;
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
+		
+		if (!paraTaskid.equals("")) {
+			xmlTemplateDocument.setData("taskid","?taskid="+paraTaskid);
+		} else {
+			xmlTemplateDocument.setData("taskid","");
+		}
 		
         Hashtable preferences=new Hashtable();
         // get user name and password
@@ -137,6 +149,24 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     preferences=getDefaultPreferences();
                 }
                 session.putValue(C_ADDITIONAL_INFO_PREFERENCES,preferences);
+				
+				// check if this is a link of a task
+				if ( (paraTaskid!=null) && (!paraTaskid.equals(""))) {
+					Vector viewNames = new Vector();
+					Vector viewLinks = new Vector();
+					CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+					configFile.getWorkplaceIniData(viewNames, viewLinks,"WORKPLACEVIEWS","VIEW");
+					String link="";
+					for (int i=0;i<viewNames.size();i++) {
+						if (((String)viewNames.elementAt(i)).equals("tasks")) {
+							link=(String)viewLinks.elementAt(i);
+							break;
+						}
+					}
+					session.putValue(C_PARA_VIEW,link);
+					session.putValue(C_PARA_TASKID,parameters.get("taskid"));
+				}
+		
             }
         } else {
             // This is a new login!
