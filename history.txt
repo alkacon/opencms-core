@@ -15,6 +15,7 @@ OpenCms 4.3.35 Bela Tegeuse - ?? July 2001
   /content/bodys/ to the project, too.
 * Fixed bug: No java-script errors when using the download-gallery contextmenus.
 * Fixed bug when undo changes of a folder with new resources.
+- Switched project-resent-files to new filelist.
 - Import: if a folder is already there the properties, owner, group and access are updated if necessary. 
 
 OpenCms 4.3.34 Bela Tegeuse - 26 July 2001

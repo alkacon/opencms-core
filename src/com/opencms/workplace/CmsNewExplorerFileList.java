@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/07/26 10:06:58 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2001/07/27 09:09:48 $
+* Version: $Revision: 1.30 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2001/07/26 10:06:58 $
+ * @version $Revision: 1.30 $ $Date: 2001/07/27 09:09:48 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -160,6 +160,8 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
         // if the parameter mode=listonly is set, only the list will be shown
         boolean listonly = "listonly".equals(parameters.get("mode"));
+        // if the parameter mode=projectview is set, all changed files in that project will be shown
+        boolean projectView = "projectview".equals(parameters.get("mode"));
 
         // the flaturl to use for changing folders
         String flaturl = (String) parameters.get("flaturl");
@@ -188,6 +190,11 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         } else {
             content.append(" top.openfolderMethod='openthisfolder';\n");
         }
+        if(projectView) {
+            content.append(" top.projectView=true;\n");
+        } else {
+            content.append(" top.projectView=false;\n");
+        }
 
         // the flaturl
         if(flaturl != null) {
@@ -210,7 +217,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         content.append(" top.setDirectory(" + currentFolderId + ",\"" + currentFolder + "\");\n");
         content.append(" top.rD();\n\n");
         // now the entries for the filelist
-        Vector resources = cms.getResourcesInFolder(currentFolder);
+        Vector resources = getRessources(cms, currentFolder, projectView);
         for(int i = 0;i < resources.size();i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
             content.append(" top.aF(");
@@ -350,7 +357,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 }
             }
         }
-        if(listonly) {
+        if(listonly || projectView) {
             // only show the filelist
             content.append(" top.dUL(document); \n");
         } else {
@@ -489,4 +496,13 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         return new CmsElementDump(getClass().getName(), templateFile, null, getCacheDirectives(cms, templateFile, null, parameters, null),
                                     cms.getRequestContext().getElementCache().getVariantCachesize());
     }
+
+    private Vector getRessources(CmsObject cms, String param, boolean projectView) throws CmsException {
+        if(projectView) {
+            return cms.readFileHeaders(cms.getRequestContext().currentProject().getId());
+        } else {
+            return cms.getResourcesInFolder(param);
+        }
+    }
+
 }
