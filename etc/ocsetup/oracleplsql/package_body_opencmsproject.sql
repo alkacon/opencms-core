@@ -27,8 +27,7 @@ PACKAGE BODY OpenCmsProject IS
 
       vCursor userTypes.anyCursor := opencmsgroup.getGroupsOfUser (pUserID);
       recAllAccProjects userTypes.anyCursor;
-      recGroupId cms_groups.group_id%TYPE;
-      recGroupName cms_groups.group_name%TYPE;
+      recGroup cms_groups%ROWTYPE;
       recProject cms_projects%ROWTYPE;
       vQueryStr VARCHAR2(32767) := '';
 	BEGIN
@@ -41,9 +40,9 @@ PACKAGE BODY OpenCmsProject IS
       END LOOP;
       -- all projects where the groups, which the user belongs to, have access
 	  LOOP
-	    FETCH vCursor INTO recGroupId, recGroupName;
-	    EXIT WHEN vCursor%NOTFOUND;
-        IF recGroupName = opencmsConstants.C_GROUP_ADMIN THEN
+	    FETCH vCursor INTO recGroup;
+	    EXIT WHEN vCursor%NOTFOUND;	    
+        IF recGroup.group_name = opencmsConstants.C_GROUP_ADMIN THEN
           -- if the user is member of the group administrators then list all projects
           FOR recProject IN cProjAdmin LOOP
             IF addInList(recProject.project_id) THEN
@@ -51,18 +50,19 @@ PACKAGE BODY OpenCmsProject IS
             END IF;
           END LOOP;
         ELSE
-          FOR recProject IN cProjGroup(recGroupID) LOOP
+          FOR recProject IN cProjGroup(recGroup.group_id) LOOP
             IF addInList(recProject.project_id) THEN
               vQueryStr := vQueryStr||' union select * from cms_projects where project_flags = 0'||
-                                      ' and (group_id = '||to_char(recGroupID)||' or managergroup_id = '||
-                                      to_char(recGroupID)||')';
+                                      ' and (group_id = '||to_char(recGroup.group_id)||' or managergroup_id = '||
+                                      to_char(recGroup.group_id)||')';
             END IF;
           END LOOP;
         END IF;
 	  END LOOP;
       CLOSE vCursor;
       bAnyList := '';
-      -- return the cursor
+      -- return the cursor 
+       
       OPEN recAllAccProjects FOR 'select * from (select * from cms_projects where user_id = '||to_char(pUserID)||' and project_flags = 0 '||
                                   vQueryStr||') order by project_name';
       RETURN recAllAccProjects;
@@ -618,9 +618,9 @@ PACKAGE BODY OpenCmsProject IS
         OPEN curOnlineProject FOR select * from cms_projects where project_id = pProjectId;
       END IF;
     END IF;
-*/ 
+*/
     OPEN curOnlineProject FOR select * from cms_projects
-                              where project_id = openCmsConstants.C_PROJECT_ONLINE_ID order by project_name;   
+                              where project_id = openCmsConstants.C_PROJECT_ONLINE_ID order by project_name;
     RETURN curOnlineProject;
   END onlineProject;
 ------------------------------------------------------------------------------------------
