@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/17 14:35:31 $
  */
 abstract class A_CmsRbMetadefinition {
 	
@@ -31,7 +31,7 @@ abstract class A_CmsRbMetadefinition {
 	 * @return metadefinition The metadefinition that corresponds to the overgiven
 	 * arguments - or null if there is no valid metadefinition.
 	 */
-	abstract A_CmsMetaDefinition readMetaDefinition(A_CmsUser callingUser, String name, A_CmsResourceType type);
+	abstract A_CmsMetadefinition readMetaDefinition(A_CmsUser callingUser, String name, A_CmsResourceType type);
 	
 	/**
 	 * Reads all metadefinitions for the given resource type.

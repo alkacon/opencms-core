@@ -5,7 +5,7 @@ package com.opencms.file;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/16 18:55:53 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/17 14:35:31 $
  */
 abstract public class A_CmsProject
 {
@@ -44,14 +44,14 @@ abstract public class A_CmsProject
 	 * 
 	 * @return the userid of the project owner.
 	 */
-	abstract int getOwnerID();
+	abstract int getOwnerId();
 	
 	/**
 	 * Returns the groupid of this project.
 	 * 
 	 * @return the groupid of this project.
 	 */
-    abstract int getGroupID();
+    abstract int getGroupId();
 	
 	/**
 	 * Returns a string-representation for this object.

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/15 15:09:33 $ 
+ * @version $Revision: 1.2 $ $Date: 1999/12/17 14:35:31 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -946,7 +946,7 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public A_CmsMetaDefinition readMetaDefinition(String name, 
+	abstract public A_CmsMetadefinition readMetaDefinition(String name, 
 														   A_CmsResourceType type)
 		throws CmsException;
 

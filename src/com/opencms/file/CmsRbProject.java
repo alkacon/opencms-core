@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/16 18:55:53 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/17 14:35:31 $
  */
 class CmsRbProject extends A_CmsRbProject implements I_CmsConstants {
 	
@@ -53,17 +53,18 @@ class CmsRbProject extends A_CmsRbProject implements I_CmsConstants {
 	 * @param task The globe task.
 	 * @param owner The owner to be set.
 	 * @param group the group to be set.
+	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a project with the same name for this resource-type exists already.
 	 */
 	 A_CmsProject createProject(String name, String description, A_CmsTask task, 
-								A_CmsUser owner, A_CmsGroup group)
+								A_CmsUser owner, A_CmsGroup group, int flags)
 		 throws CmsException, CmsDuplicateKeyException {
 		 return( m_accessProject.createProject(name, description, task.getId(), 
 											   owner.getId(), group.getId(),
-											   C_PROJECT_STATE_UNLOCKED) );
+											   flags) );
 	 }
 	
 	/**
@@ -74,17 +75,18 @@ class CmsRbProject extends A_CmsRbProject implements I_CmsConstants {
 	 * @param task The globe task.
 	 * @param owner The owner to be set.
 	 * @param group the group to be set.
+	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a project with the same name for this resource-type exists already.
 	 */
 	 A_CmsProject updateProject(String name, String description, A_CmsTask task, 
-								A_CmsUser owner, A_CmsGroup group)
+								A_CmsUser owner, A_CmsGroup group, int flags)
 		 throws CmsException, CmsDuplicateKeyException {
 		 return( m_accessProject.createProject(name, description, task.getId(), 
 											   owner.getId(), group.getId(),
-											   C_PROJECT_STATE_UNLOCKED) );
+											   flags) );
 	 }
 
 	/**

@@ -10,51 +10,56 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/17 14:35:31 $
  */
 abstract class A_CmsAccessMetadefinition {
 
 	/**
 	 * Reads a metadefinition for the given resource type.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The name of the metadefinition to read.
 	 * @param type The resource type for which the metadefinition is valid.
 	 * 
 	 * @return metadefinition The metadefinition that corresponds to the overgiven
 	 * arguments - or null if there is no valid metadefinition.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract A_CmsMetaDefinition readMetaDefinition(String name, A_CmsResourceType type);
+	abstract A_CmsMetadefinition readMetadefinition(String name, int type)
+		throws CmsException;
 	
 	/**
 	 * Reads all metadefinitions for the given resource type.
 	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param type The resource type to read the metadefinitions for.
+	 * @param resourcetype The resource type to read the metadefinitions for.
 	 * 
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
 	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	abstract Vector readAllMetaDefinitions(A_CmsResourceType type);
+	abstract Vector readAllMetadefinitions(int resourcetype)
+		throws CmsException;
 	
 	/**
 	 * Reads all metadefinitions for the given resource type.
 	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param type The resource type to read the metadefinitions for.
+	 * @param resourcetype The resource type to read the metadefinitions for.
 	 * @param type The type of the metadefinition (normal|mandatory|optional).
 	 * 
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
 	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	abstract Vector readAllMetaDefinitions(A_CmsResourceType resourcetype, int type);
-	
+	abstract Vector readAllMetadefinitions(int resourcetype, int type)
+		throws CmsException;
+
 	/**
-	 * Writes the metadefinition for the resource type.<BR/>
+	 * Creates the metadefinition for the resource type.<BR/>
 	 * 
 	 * Only the admin can do this.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The name of the metadefinition to overwrite.
 	 * @param resourcetype The resource-type for the metadefinition.
 	 * @param type The type of the metadefinition (normal|mandatory|optional)
@@ -63,22 +68,20 @@ abstract class A_CmsAccessMetadefinition {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a metadefinition with the same name for this resource-type exists already.
 	 */
-	abstract void writeMetaDefinition(String name, A_CmsResourceType resourcetype, 
-									int type)
+	abstract A_CmsMetadefinition createMetadefinition(String name, int resourcetype, 
+													  int type)
 		throws CmsDuplicateKeyException, CmsException;
-	
+		
 	/**
 	 * Delete the metadefinition for the resource type.<BR/>
 	 * 
 	 * Only the admin can do this.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The name of the metadefinition to overwrite.
 	 * @param resourcetype The resource-type for the metadefinition.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void deleteMetaDefinition(String name, A_CmsResourceType type)
+	abstract void deleteMetadefinition(String name, int type)
 		throws CmsException;
-
 }

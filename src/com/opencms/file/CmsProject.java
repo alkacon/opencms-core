@@ -7,7 +7,7 @@ import com.opencms.core.*;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/16 18:55:53 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/17 14:35:31 $
  */
 public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	
@@ -101,7 +101,7 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	 * 
 	 * @return the userid of the project owner.
 	 */
-	int getOwnerID() {
+	int getOwnerId() {
 		return(m_ownerId);
 	}
 	
@@ -110,7 +110,7 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	 * 
 	 * @return the groupid of this project.
 	 */
-    int getGroupID() {
+    int getGroupId() {
 		return(m_groupId);
 	}
 	
