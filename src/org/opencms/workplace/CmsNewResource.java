@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2004/03/12 17:03:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/12 17:05:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,14 +42,13 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
  * The new resource entry dialog which displays the possible "new actions" for the current user.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -156,10 +155,11 @@ public class CmsNewResource extends CmsDialog {
     }
     
     /**
+     * Redirects to the next page of the new resource wizard.<p>
      * 
-     * @throws JspException
+     * @throws IOException if redirection fails
      */
-    public void actionNext() throws JspException, IOException {
+    public void actionNext() throws IOException {
         // String nextUri = C_PATH_DIALOGS + getParamNewResourceUri();
         // getJsp().include(nextUri);
         String nextUri = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/" + getParamNewResourceUri();
