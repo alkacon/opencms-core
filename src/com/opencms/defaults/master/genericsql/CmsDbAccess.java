@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
  * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/05 16:11:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/11/08 15:12:41 $
+ * Version: $Revision: 1.7 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -1637,8 +1637,9 @@ public class CmsDbAccess {
                     con2 = null;
                     con2 = DriverManager.getConnection(m_onlinePoolName);
                     stmnt2 = sqlPrepare(con2, "insert_channel_online");
-                    stmnt2.setInt(1, res.getInt(1));
-                    stmnt2.setInt(2, masterId);
+                    stmnt2.setInt(1, masterId);
+                    stmnt2.setInt(2, res.getInt(1));
+                    stmnt2.executeUpdate();
                 } catch (SQLException ex){
                     throw ex;
                 } finally {
