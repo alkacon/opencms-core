@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/01/22 11:50:01 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/02/02 09:08:00 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,17 @@
 
 package org.opencms.importexport;
 
-import org.opencms.main.OpenCms;
-import org.opencms.report.I_CmsReport;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.util.CmsUUID;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypePointer;
+
+import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.util.CmsUUID;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -213,6 +214,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @throws CmsException if something goes wrong
      */
     protected void convertPointerToLinks() throws CmsException {
+        HashSet checkedProperties = new HashSet();
         Iterator keys = m_linkStorage.keySet().iterator();
         int linksSize = m_linkStorage.size();
         int i = 0;
@@ -265,6 +267,20 @@ public abstract class A_CmsImport implements I_CmsImport {
                 }
 
             } else {
+                    // make sure all found properties are already defined
+                    Iterator propKeys = properties.keySet().iterator();
+                    while (propKeys.hasNext()) {
+                        String property = (String)propKeys.next();
+                        if (!checkedProperties.contains(property)) {
+                            try {
+                                m_cms.readPropertydefinition(property, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);                                
+                            } catch (CmsException e) {
+                                // property is not defined for pointer, so create it
+                                m_cms.createPropertydefinition(property, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
+                            }
+                            checkedProperties.add(property);
+                        }
+                    }
                     m_cms.createResource(key, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, properties, link.getBytes(), null);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);  
             }
