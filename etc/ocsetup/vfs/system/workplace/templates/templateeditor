@@ -4,7 +4,7 @@
 <![CDATA[
 <html>
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">	
@@ -68,11 +68,27 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_]]><PROCESS>editor</PROCESS><![CDATA[.js"></SCRIPT>
 
-<script LANGUAGE="javascript" FOR="EDITHTML.EDIT_HTML" EVENT="DisplayChanged">
+<!-- Update the Font display on change -->
+<SCRIPT LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="DisplayChanged">
 <!--
 return DisplayChanged()
 //-->
 </script>
+
+<!-- Show a context menu if the right mousebutton is clicked -->
+<script LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="ShowContextMenu">
+<!--
+return ShowContextMenu()
+//-->
+</script>
+
+<!-- Invoke a context menu action -->
+<script LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="ContextMenuAction(itemIndex)">
+<!--
+return ContextMenuAction(itemIndex)
+//-->
+</script>
+
 
 </head>
 
@@ -129,7 +145,7 @@ return DisplayChanged()
 
 <TEMPLATE name="parseerror">
 <![CDATA[
-]]><ERRORPAGE title="error.title.login" message="error.message.login" reason="error.reason.login" suggestion="error.suggestion.login" ref="login.html" /><![CDATA[
+]]><ERRORPAGE title="error.title.login" message="error.message.login" reason="error.reason.login" suggestion="error.suggestion.login" ref="templateeditor.html" /><![CDATA[
 ]]>
 </TEMPLATE>
 </workplace>
