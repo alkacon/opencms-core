@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/07/17 07:16:05 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2001/07/18 15:05:55 $
+* Version: $Revision: 1.52 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.51 $ $Date: 2001/07/17 07:16:05 $
+ * @version $Revision: 1.52 $ $Date: 2001/07/18 15:05:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -290,48 +290,16 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
         // first we look if the thread is allready running
         if((action != null) && ("working".equals(action))) {
-
-            // still working?
-        /*
-            Thread doProjectNew = (Thread)session.getValue(C_PROJECTNEW_THREAD);
-            if(doProjectNew.isAlive()) {
-                String time = (String)parameters.get("time");
-                int wert = Integer.parseInt(time);
-                wert += 20;
-                xmlTemplateDocument.setData("time", "" + wert);
-                return startProcessing(cms, xmlTemplateDocument, elementName, parameters,
-                        "wait");
-            }
-            else {
-        */
-                // thread has come to an end, was there an error?
-                //String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
-                //if(errordetails == null) {
-                    // project ready; clear the session
-                    session.removeValue(C_NEWNAME);
-                    session.removeValue(C_NEWGROUP);
-                    session.removeValue(C_NEWDESCRIPTION);
-                    session.removeValue(C_NEWMANAGERGROUP);
-                    session.removeValue(C_NEWFOLDER);
-                    session.removeValue(C_NEWTYPE);
-                    session.removeValue("lasturl");
-                    session.removeValue("newProjectCallingFrom");
-                    return startProcessing(cms, xmlTemplateDocument, elementName,
-                            parameters, "done");
-                /*}
-                else {
-                    // get errorpage:
-                    xmlTemplateDocument.setData(C_NEWNAME, newName);
-                    xmlTemplateDocument.setData(C_NEWDESCRIPTION, newDescription);
-                    xmlTemplateDocument.setData(C_NEWTYPE, newType);
-                    xmlTemplateDocument.setData("details", errordetails);
-                    //session.removeValue(C_SESSION_THREAD_ERROR);
-                    return startProcessing(cms, xmlTemplateDocument, elementName,
-                            parameters, "errornewproject"+errorTemplateAddOn);
-                }
-
-            }
-            */
+            // project ready; clear the session
+            session.removeValue(C_NEWNAME);
+            session.removeValue(C_NEWGROUP);
+            session.removeValue(C_NEWDESCRIPTION);
+            session.removeValue(C_NEWMANAGERGROUP);
+            session.removeValue(C_NEWFOLDER);
+            session.removeValue(C_NEWTYPE);
+            session.removeValue("lasturl");
+            session.removeValue("newProjectCallingFrom");
+            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
         }
 
         if(parameters.get("submitform") != null) {
@@ -367,27 +335,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
             // create new Project
             try {
-                // append the /content/bodys/, /pics/ and /download/ path to the list of all resources
+                // append the /pics/ and /download/ path to the list of all resources
                 String picspath = getConfigFile(cms).getPicGalleryPath();
                 String downloadpath = getConfigFile(cms).getDownGalleryPath();
-                //String contentpath = ";"+C_CONTENTPATH;
-                // only append the /content/bodys/ for the folders of the new project
-                // and the folders /content/default_bodies/, /content/internal/, /content/templates/
-                String contentpath = ";"+C_CONTENTDEFAULTBODIESPATH+
-                                     ";"+C_CONTENTINTERNALPATH+
-                                     ";"+C_CONTENTTEMPLATEPATH;
-                /* the existing contentbodys path is added with copyResourceToProject
-                Vector addResources = parseResources(allResources);
-                for (int j = 0; j < addResources.size(); j++){
-                    String foldername = (String)addResources.get(j);
-                    if(!(foldername.startsWith(C_CONTENTPATH) ||
-                        foldername.startsWith(picspath)||
-                        foldername.startsWith(downloadpath)||
-                        foldername.startsWith("/system/"))){
-                        contentpath = contentpath+";/content/bodys"+foldername;
-                    }
-                }
-                */
                 allResources = allResources + ";" + picspath + ";"
                         + downloadpath;
                 // 'allResurces' has the "form res1;res2;...resk;"
@@ -409,17 +359,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                         newManagerGroup, projectType);
                 // change the current project
                 reqCont.setCurrentProject(project.getId());
-
-                // start the thread for: copy the resources to the project
-                // first clear the session entry if necessary
-                //if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-                //    session.removeValue(C_SESSION_THREAD_ERROR);
-                //}
-
-                //Thread doProjectNew = new CmsAdminNewProjectThread(cms, folders, session);
-                //doProjectNew.start();
-                //session.putValue(C_PROJECTNEW_THREAD, doProjectNew);
-                //xmlTemplateDocument.setData("time", "10");
                 templateSelector = "wait";
                 // copy the resources to the actual project
                 try {
@@ -428,12 +367,18 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                         cms.copyResourceToProject((String)folders.elementAt(i));
                     }
                 } catch(CmsException e) {
+                    // if there are no projectresources in the project then delete the project
+                    Vector projectResources = cms.readAllProjectResources(project.getId());
+                    if((projectResources == null) || (projectResources.size() == 0)){
+                        cms.deleteProject(project.getId());
+                        reqCont.setCurrentProject(C_PROJECT_ONLINE_ID);
+                    }
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
                     }
                     throw e;
                 }
-            }catch(CmsException exc) {
+            } catch(CmsException exc) {
                 xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
                 templateSelector = "errornewproject"+errorTemplateAddOn;
             }
