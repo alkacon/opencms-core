@@ -4,10 +4,10 @@ import java.util.*;
 
 /**
  * This interface describes a resource in the Cms.
- * This resource can be a I_CmsFile or a I_CmsFolder.
+ * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
  */
 abstract class A_CmsResource {
 	/**
@@ -50,7 +50,7 @@ abstract class A_CmsResource {
 	 * 
 	 * @return the type of this resource.
 	 */
-	abstract public I_CmsResourceType getType();
+	abstract public A_CmsResourceType getType();
 
 	/**
 	 * Returns the date of the creation for this resource.
@@ -93,7 +93,7 @@ abstract class A_CmsResource {
 	 * 
 	 * @return the resource-header without any file or folder specific stuff.
 	 */
-	abstract public I_CmsResource getHeader();
+	abstract public A_CmsResource getHeader();
     
 	/**
 	 * Returns the userid of the resource owner.
@@ -159,17 +159,17 @@ abstract class A_CmsResource {
 	 * @return the user that locked this resource.
 	 * If this resource is free it returns null.
 	 */
-	abstract public I_CmsUser isLockedBy();
+	abstract public A_CmsUser isLockedBy();
 
 	/**
 	 * Returns the project for this resource.
 	 * 
 	 * @return the project for this resource.
 	 */
-	abstract public I_CmsProject getProject();
+	abstract public A_CmsProject getProject();
 	
 	// the following methods are not used, because the functionality is handled by
-	// a I_CmsObjectBase:
+	// a A_CmsObjectBase:
 	/*
 	public boolean canRead();
     public boolean canWrite();
@@ -178,17 +178,17 @@ abstract class A_CmsResource {
     public boolean accessPublicWrite();
     public boolean accessPublicVisible();
     public boolean accessInternalRead();
-    public boolean accessUser(I_CmsUser user, int flags);
-    public boolean accessUserRead(I_CmsUser user);
-    public boolean accessUserWrite(I_CmsUser user);
-    public boolean accessUserVisible(I_CmsUser user);
-    public boolean accessGroupRead(I_CmsGroup group);
-    public boolean accessGroupWrite(I_CmsGroup group);
-    public boolean accessGroupVisible(I_CmsGroup group);
-    public boolean isOwnedBy(I_CmsUser user);
+    public boolean accessUser(A_CmsUser user, int flags);
+    public boolean accessUserRead(A_CmsUser user);
+    public boolean accessUserWrite(A_CmsUser user);
+    public boolean accessUserVisible(A_CmsUser user);
+    public boolean accessGroupRead(A_CmsGroup group);
+    public boolean accessGroupWrite(A_CmsGroup group);
+    public boolean accessGroupVisible(A_CmsGroup group);
+    public boolean isOwnedBy(A_CmsUser user);
     public boolean isOwnedBy(int id);
-    public boolean isOfGroup(I_CmsUser user);
-    public boolean isOfGroup(I_CmsGroup group);
+    public boolean isOfGroup(A_CmsUser user);
+    public boolean isOfGroup(A_CmsGroup group);
     public boolean isOfGroup(int id);   
 	*/
 }

@@ -6,20 +6,20 @@ import com.opencms.core.*;
 
 /**
  * This abstract class describes a resource broker for projects in the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: I_CmsUser. It is the current user. This 
+ * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
  */
  abstract interface A_CmsRbProject {
 	
 	/**
 	 * Returns the onlineproject. This is the default project. All anonymous 
-	 * (I_CmsUser callingUSer, or guest) user will see the rersources of this project.
+	 * (A_CmsUser callingUSer, or guest) user will see the rersources of this project.
 	 * 
 	 * <B>Security:</B>
 	 * All users are granted.
@@ -27,7 +27,7 @@ import com.opencms.core.*;
 	 * @param callingUser The user who wants to use this method.
 	 * @return the onlineproject object.
 	 */
-	abstract I_CmsProject onlineProject(I_CmsUser callingUSer);
+	abstract A_CmsProject onlineProject(A_CmsUser callingUSer);
 
 	/**
 	 * Tests if the user can access the project.
@@ -40,7 +40,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return true, if the user has access, else returns false.
 	 */
-	abstract boolean accessProject(I_CmsUser callingUSer, String projectname);
+	abstract boolean accessProject(A_CmsUser callingUSer, String projectname);
 
 	/**
 	 * Reads a project from the Cms.
@@ -53,7 +53,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract I_CmsProject readProject(I_CmsUser callingUSer, String name)
+	abstract A_CmsProject readProject(A_CmsUser callingUSer, String name)
 		throws CmsException;
 	
 	/**
@@ -65,13 +65,13 @@ import com.opencms.core.*;
 	 * @param callingUser The user who wants to use this method.
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
-	 * @param flags The flags for the project (I_CmsUser callingUSer, e.g. visibility).
+	 * @param flags The flags for the project (A_CmsUser callingUSer, e.g. visibility).
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a project with the same name for this resource-type exists already.
 	 */
-	abstract I_CmsProject createProject(I_CmsUser callingUSer, String name, String description, int flags)
+	abstract A_CmsProject createProject(A_CmsUser callingUSer, String name, String description, int flags)
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
@@ -85,7 +85,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract I_CmsProject publishProject(I_CmsUser callingUSer, String name)
+	abstract A_CmsProject publishProject(A_CmsUser callingUSer, String name)
 		throws CmsException;
 	
 	/**
@@ -99,5 +99,5 @@ import com.opencms.core.*;
 	 * 
 	 * @return a Vector of projects.
 	 */
-	abstract Vector getAllAccessibleProjects(I_CmsUser callingUSer, String projectname);
+	abstract Vector getAllAccessibleProjects(A_CmsUser callingUSer, String projectname);
 }

@@ -6,7 +6,7 @@ import java.util.*;
  * This abstract class describes a group in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
  */
 abstract public class A_CmsGroup { 
 	
@@ -82,10 +82,10 @@ abstract public class A_CmsGroup {
     abstract public int hashCode();    
 	
 	// the following methods are not used, because the functionality is handled by
-	// a I_CmsObjectBase:
+	// a A_CmsObjectBase:
 	/*
     abstract public boolean isAdminGroup();
     abstract public Vector getUsers();
-    abstract public boolean contains(I_CmsUser user);
+    abstract public boolean contains(A_CmsUser user);
 	*/
 }

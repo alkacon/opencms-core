@@ -6,7 +6,7 @@ import java.util.*;
  * This abstract class describes a user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
  */
 public abstract class A_CmsUser {
 	
@@ -57,14 +57,14 @@ public abstract class A_CmsUser {
 	 * 
 	 * @return the default group for this user.
 	 */
-	abstract public I_CmsGroup getDefaultGroup();
+	abstract public A_CmsGroup getDefaultGroup();
 
 	/**
 	 * Returns the current group for this user.
 	 * 
 	 * @return the current group for this user.
 	 */
-	abstract public I_CmsGroup getCurrentGroup();
+	abstract public A_CmsGroup getCurrentGroup();
 
 	
 	/**
@@ -140,10 +140,10 @@ public abstract class A_CmsUser {
 	abstract public String getAdditionalInfoSection();
 
 	// the following methods are not used, because the functionality is handled by
-	// a I_CmsObjectBase:
+	// a A_CmsObjectBase:
 	/*
 	public boolean isAdminUser();
     public Vector getGroups();
-    public boolean isMemberOf(I_CmsGroup group);
+    public boolean isMemberOf(A_CmsGroup group);
 	*/
 }

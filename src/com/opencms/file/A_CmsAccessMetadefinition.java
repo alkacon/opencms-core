@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
  */
 abstract class A_CmsAccessMetadefinition {
 
@@ -24,7 +24,7 @@ abstract class A_CmsAccessMetadefinition {
 	 * @return metadefinition The metadefinition that corresponds to the overgiven
 	 * arguments - or null if there is no valid metadefinition.
 	 */
-	abstract I_CmsMetaDefinition readMetaDefinition(String name, I_CmsResourceType type);
+	abstract A_CmsMetaDefinition readMetaDefinition(String name, A_CmsResourceType type);
 	
 	/**
 	 * Reads all metadefinitions for the given resource type.
@@ -35,7 +35,7 @@ abstract class A_CmsAccessMetadefinition {
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
 	 * The Vector is maybe empty.
 	 */	
-	abstract Vector readAllMetaDefinitions(I_CmsResourceType type);
+	abstract Vector readAllMetaDefinitions(A_CmsResourceType type);
 	
 	/**
 	 * Reads all metadefinitions for the given resource type.
@@ -47,7 +47,7 @@ abstract class A_CmsAccessMetadefinition {
 	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
 	 * The Vector is maybe empty.
 	 */	
-	abstract Vector readAllMetaDefinitions(I_CmsResourceType resourcetype, int type);
+	abstract Vector readAllMetaDefinitions(A_CmsResourceType resourcetype, int type);
 	
 	/**
 	 * Writes the metadefinition for the resource type.<BR/>
@@ -63,7 +63,7 @@ abstract class A_CmsAccessMetadefinition {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a metadefinition with the same name for this resource-type exists already.
 	 */
-	abstract void writeMetaDefinition(String name, I_CmsResourceType resourcetype, 
+	abstract void writeMetaDefinition(String name, A_CmsResourceType resourcetype, 
 									int type)
 		throws CmsDuplicateKeyException, CmsException;
 	
@@ -78,7 +78,7 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void deleteMetaDefinition(String name, I_CmsResourceType type)
+	abstract void deleteMetaDefinition(String name, A_CmsResourceType type)
 		throws CmsException;
 
 }

@@ -7,14 +7,14 @@ import com.opencms.core.*;
 /**
  * This abstract class describes a resource broker for files and folders in 
  * the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: I_CmsUser. It is the current user. This 
+ * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
  */
 abstract class A_CmsRbFile {
 	
@@ -27,7 +27,7 @@ abstract class A_CmsRbFile {
 	 * @param callingUser The user who wants to use this method.
 	 * @return the root-folder object.
 	 */
-	abstract I_CmsFolder rootFolder(I_CmsUser callingUser);
+	abstract A_CmsFolder rootFolder(A_CmsUser callingUser);
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
@@ -50,7 +50,7 @@ abstract class A_CmsRbFile {
 	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param folder The complete path to the folder in which the file will be created.
-	 * @param filename The name of the new file (I_CmsUser callingUser, No pathinformation allowed).
+	 * @param filename The name of the new file (A_CmsUser callingUser, No pathinformation allowed).
 	 * @param contents The contents of the new file.
 	 * @param type The resourcetype of the new file.
 	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
@@ -66,8 +66,8 @@ abstract class A_CmsRbFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract I_CmsFile createFile(I_CmsUser callingUser, String project, String folder, String filename, 
-								byte[] contents, I_CmsResourceType type, 
+	abstract A_CmsFile createFile(A_CmsUser callingUser, String project, String folder, String filename, 
+								byte[] contents, A_CmsResourceType type, 
 								Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
 	
@@ -92,7 +92,7 @@ abstract class A_CmsRbFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract I_CmsFile readFile(I_CmsUser callingUser, String project, String folder, String filename)
+	abstract A_CmsFile readFile(A_CmsUser callingUser, String project, String folder, String filename)
 		throws CmsException;
 	
 	/**
@@ -117,7 +117,7 @@ abstract class A_CmsRbFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract I_CmsResource readFileHeader(I_CmsUser callingUser, String project, String folder, 
+	abstract A_CmsResource readFileHeader(A_CmsUser callingUser, String project, String folder, 
 										String filename)
 		throws CmsException;
 	
@@ -146,8 +146,8 @@ abstract class A_CmsRbFile {
 	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
 	 * if the user has not the rights for this resource.
 	 */	
-	abstract void writeFile(I_CmsUser callingUser, String project, 
-				   I_CmsFile file, Hashtable metainfos)
+	abstract void writeFile(A_CmsUser callingUser, String project, 
+				   A_CmsFile file, Hashtable metainfos)
 		throws CmsException;
 	
 	/**
@@ -175,8 +175,8 @@ abstract class A_CmsRbFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract void writeFileHeader(I_CmsUser callingUser, String project, 
-						 I_CmsResource resource, Hashtable metainfos)
+	abstract void writeFileHeader(A_CmsUser callingUser, String project, 
+						 A_CmsResource resource, Hashtable metainfos)
 		throws CmsException;
 
 	/**
@@ -193,13 +193,13 @@ abstract class A_CmsRbFile {
 	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (I_CmsUser callingUser, No path information allowed).
+	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
 	 * 
 	 * @exception CmsException will be thrown, if the file couldn't be renamed. 
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */		
-	abstract void renameFile(I_CmsUser callingUser, String project, 
+	abstract void renameFile(A_CmsUser callingUser, String project, 
 					String oldname, String newname)
 		throws CmsException;
 	
@@ -222,7 +222,7 @@ abstract class A_CmsRbFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract void deleteFile(I_CmsUser callingUser, String project, String filename)
+	abstract void deleteFile(A_CmsUser callingUser, String project, String filename)
 		throws CmsException;
 	
 	/**
@@ -248,7 +248,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	abstract void copyFile(I_CmsUser callingUser, String project, String source, String destination)
+	abstract void copyFile(A_CmsUser callingUser, String project, String source, String destination)
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
@@ -275,7 +275,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	abstract void moveFile(I_CmsUser callingUser, String project, String source, 
+	abstract void moveFile(A_CmsUser callingUser, String project, String source, 
 				  String destination)
 		throws CmsException, CmsDuplicateKeyException;
 	
@@ -300,8 +300,8 @@ abstract class A_CmsRbFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract void setResourceType(I_CmsUser callingUser, String project, String resource, 
-								I_CmsResourceType newType, Hashtable metainfos)
+	abstract void setResourceType(A_CmsUser callingUser, String project, String resource, 
+								A_CmsResourceType newType, Hashtable metainfos)
 		throws CmsException;
 
 	/**
@@ -324,7 +324,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if 
 	 * same templfile already exists
 	 */		
-    abstract I_CmsFile copyTemporaryFile(I_CmsUser callingUser, String source)
+    abstract A_CmsFile copyTemporaryFile(A_CmsUser callingUser, String source)
             throws CmsException, CmsDuplicateKeyException;    
     
     /**
@@ -344,7 +344,7 @@ abstract class A_CmsRbFile {
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-    abstract void commitTemporaryFile(I_CmsUser callingUser, String source) 
+    abstract void commitTemporaryFile(A_CmsUser callingUser, String source) 
             throws CmsException;
     
     /**
@@ -363,7 +363,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-    abstract void deleteTemporaryFile(I_CmsUser callingUser, String source) 
+    abstract void deleteTemporaryFile(A_CmsUser callingUser, String source) 
             throws CmsException;
 	
 	/**
@@ -387,7 +387,7 @@ abstract class A_CmsRbFile {
 	 * @param project The project in which the resource will be used.
 	 * @param folder The complete path to the folder in which the new folder will 
 	 * be created.
-	 * @param newFolderName The name of the new folder (I_CmsUser callingUser, No pathinformation allowed).
+	 * @param newFolderName The name of the new folder (A_CmsUser callingUser, No pathinformation allowed).
 	 * @param metainfos A Hashtable of metainfos, that should be set for this folder.
 	 * The keys for this Hashtable are the names for metadefinitions, the values are
 	 * the values for the metainfos.
@@ -400,7 +400,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract I_CmsFolder createFolder(I_CmsUser callingUser, String project, String folder, 
+	abstract A_CmsFolder createFolder(A_CmsUser callingUser, String project, String folder, 
 								  String newFolderName, Hashtable metainfos)
 		throws CmsException, CmsDuplicateKeyException;
 
@@ -426,7 +426,7 @@ abstract class A_CmsRbFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract I_CmsFolder readFolder(I_CmsUser callingUser, String project, String folder, String folderName)
+	abstract A_CmsFolder readFolder(A_CmsUser callingUser, String project, String folder, String folderName)
 		throws CmsException;
 	
 	/**
@@ -446,7 +446,7 @@ abstract class A_CmsRbFile {
 	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (I_CmsUser callingUser, No path information allowed).
+	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
 	 * @param force If force is set to true, all sub-resources will be renamed.
 	 * If force is set to false, the folder will be renamed only if it is empty.
 	 * 
@@ -454,7 +454,7 @@ abstract class A_CmsRbFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */		
-	abstract void renameFolder(I_CmsUser callingUser, String project, String oldname, 
+	abstract void renameFolder(A_CmsUser callingUser, String project, String oldname, 
 							 String newname, boolean force)
 		throws CmsException;
 	
@@ -482,7 +482,7 @@ abstract class A_CmsRbFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract void deleteFolder(I_CmsUser callingUser, String project, String foldername, boolean force)
+	abstract void deleteFolder(A_CmsUser callingUser, String project, String foldername, boolean force)
 		throws CmsException;
 	
 	/**
@@ -514,7 +514,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination foldername.
 	 */	
-	abstract void copyFolder(I_CmsUser callingUser, String project, String source, String destination, 
+	abstract void copyFolder(A_CmsUser callingUser, String project, String source, String destination, 
 						   boolean force)
 		throws CmsException, CmsDuplicateKeyException;
 	
@@ -547,7 +547,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	abstract void moveFolder(I_CmsUser callingUser, String project, String source, 
+	abstract void moveFolder(A_CmsUser callingUser, String project, String source, 
 						   String destination, boolean force)
 		throws CmsException, CmsDuplicateKeyException;
 
@@ -570,7 +570,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract Vector getSubFolders(I_CmsUser callingUser, String project, String foldername)
+	abstract Vector getSubFolders(A_CmsUser callingUser, String project, String foldername)
 		throws CmsException;
 	
 	/**
@@ -592,7 +592,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract Vector getFilesInFolder(I_CmsUser callingUser, String project, String foldername)
+	abstract Vector getFilesInFolder(A_CmsUser callingUser, String project, String foldername)
 		throws CmsException;
 	
 	/**
@@ -613,7 +613,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @return true, if the user has full access, else returns false.
 	 */
-	abstract boolean accessFile(I_CmsUser callingUser, String project, String filename);
+	abstract boolean accessFile(A_CmsUser callingUser, String project, String filename);
 
 	/**
 	 * Tests if the user may read the resource.
@@ -632,7 +632,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @return true, if the user may read, else returns false.
 	 */
-	abstract boolean isReadable(I_CmsUser callingUser, String project, String filename);	
+	abstract boolean isReadable(A_CmsUser callingUser, String project, String filename);	
 
 	/**
 	 * Tests if the user may write the resource.
@@ -652,7 +652,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @return true, if the user may write, else returns false.
 	 */
-	abstract boolean isWriteable(I_CmsUser callingUser, String project, String filename);
+	abstract boolean isWriteable(A_CmsUser callingUser, String project, String filename);
 
 	/**
 	 * Tests if the user may view the resource.
@@ -671,7 +671,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @return true, if the user may view, else returns false.
 	 */
-	abstract boolean isViewable(I_CmsUser callingUser, String project, String filename);
+	abstract boolean isViewable(A_CmsUser callingUser, String project, String filename);
 
 	/**
 	 * Tests if the resource is an internal resource.
@@ -691,7 +691,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @return true, if the resource is internal, else returns false.
 	 */
-	abstract boolean isInternal(I_CmsUser callingUser, String project, String filename);	
+	abstract boolean isInternal(A_CmsUser callingUser, String project, String filename);	
 
 	/**
 	 * Tests if the resource exists.
@@ -710,7 +710,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @return true, if the resource exists, else returns false.
 	 */
-	abstract boolean fileExists(I_CmsUser callingUser, String project, String filename);
+	abstract boolean fileExists(A_CmsUser callingUser, String project, String filename);
 
 	/**
 	 * Tests, if the user has admin-rights to this resource. Admin-rights
@@ -731,7 +731,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @return true, if the user has admin-rights, else returns false.
 	 */
-	abstract boolean adminResource(I_CmsUser callingUser, String project, String filename);
+	abstract boolean adminResource(A_CmsUser callingUser, String project, String filename);
 	
 	/**
 	 * Changes the flags for this resource<BR/>
@@ -754,7 +754,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract void chmod(I_CmsUser callingUser, String project, String filename, int flags)
+	abstract void chmod(A_CmsUser callingUser, String project, String filename, int flags)
 		throws CmsException;
 	
 	/**
@@ -778,7 +778,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if the newOwner doesn't exists.
 	 */
-	abstract void chown(I_CmsUser callingUser, String project, String filename, String newOwner)
+	abstract void chown(A_CmsUser callingUser, String project, String filename, String newOwner)
 		throws CmsException;
 
 	/**
@@ -802,7 +802,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if the newGroup doesn't exists.
 	 */
-	abstract void chgrp(I_CmsUser callingUser, String project, String filename, String newGroup)
+	abstract void chgrp(A_CmsUser callingUser, String project, String filename, String newGroup)
 		throws CmsException;
 
 	/**
@@ -828,7 +828,7 @@ abstract class A_CmsRbFile {
 	 * for this resource. It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	abstract void lockFile(I_CmsUser callingUser, String project, String resource, boolean force)
+	abstract void lockFile(A_CmsUser callingUser, String project, String resource, boolean force)
 		throws CmsException;
 	
 	/**
@@ -853,7 +853,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	abstract boolean isLocked(I_CmsUser callingUser, String project, String resource)
+	abstract boolean isLocked(A_CmsUser callingUser, String project, String resource)
 		throws CmsException;
 	
 	/**
@@ -878,7 +878,7 @@ abstract class A_CmsRbFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	abstract I_CmsUser lockedBy(I_CmsUser callingUser, String project, String resource)
+	abstract A_CmsUser lockedBy(A_CmsUser callingUser, String project, String resource)
 		throws CmsException;
 
 	/**
@@ -900,7 +900,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract String readMetaInformation(I_CmsUser callingUser, String project, String name, String meta)
+	abstract String readMetaInformation(A_CmsUser callingUser, String project, String name, String meta)
 		throws CmsException;	
 
 	/**
@@ -922,7 +922,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void writeMetaInformation(I_CmsUser callingUser, String project, String name, 
+	abstract void writeMetaInformation(A_CmsUser callingUser, String project, String name, 
 									 String meta, String value)
 		throws CmsException;
 
@@ -944,7 +944,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void writeMetaInformations(I_CmsUser callingUser, String project, String name, 
+	abstract void writeMetaInformations(A_CmsUser callingUser, String project, String name, 
 									  Hashtable metainfos)
 		throws CmsException;
 
@@ -966,7 +966,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract Vector readAllMetaInformations(I_CmsUser callingUser, String project, String name)
+	abstract Vector readAllMetaInformations(A_CmsUser callingUser, String project, String name)
 		throws CmsException;
 	
 	/**
@@ -986,7 +986,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void deleteAllMetaInformations(I_CmsUser callingUser, String project, String resourcename)
+	abstract void deleteAllMetaInformations(A_CmsUser callingUser, String project, String resourcename)
 		throws CmsException;
 
 	/**
@@ -1007,7 +1007,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void deleteMetaInformation(I_CmsUser callingUser, String project, String resourcename, 
+	abstract void deleteMetaInformation(A_CmsUser callingUser, String project, String resourcename, 
 									  String meta)
 		throws CmsException;
 
@@ -1026,7 +1026,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void declineResource(I_CmsUser callingUser, String project, String resource)
+	abstract void declineResource(A_CmsUser callingUser, String project, String resource)
 		throws CmsException;
 
 	/**
@@ -1045,7 +1045,7 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void rejectResource(I_CmsUser callingUser, String project, String resource)
+	abstract void rejectResource(A_CmsUser callingUser, String project, String resource)
 		throws CmsException;
 
 	/**
@@ -1057,5 +1057,5 @@ abstract class A_CmsRbFile {
 	 * 
 	 * @return the actual number of Filesystem-changes since starting the cms.
 	 */
-	abstract long getNumberOfFsChanges(I_CmsUser callingUser);
+	abstract long getNumberOfFsChanges(A_CmsUser callingUser);
 }

@@ -7,14 +7,14 @@ import com.opencms.core.*;
 
 /**
  * This abstract class describes a resource broker for user and groups in the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: I_CmsUser. It is the current user. This 
+ * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
  */
 abstract class A_CmsRbUser {
 
@@ -28,7 +28,7 @@ abstract class A_CmsRbUser {
 	 * @return true, if the users current group is the admin-group, 
 	 * else it returns false.
 	 */	
-	abstract boolean isAdmin(I_CmsUser callingUSer);
+	abstract boolean isAdmin(A_CmsUser callingUSer);
 
 	/**
 	 * Determines, if the users current group is the projectleader-group.<BR/>
@@ -41,7 +41,7 @@ abstract class A_CmsRbUser {
 	 * @return true, if the users current group is the projectleader-group, 
 	 * else it returns false.
 	 */	
-	abstract boolean isProjectLeader(I_CmsUser callingUSer);
+	abstract boolean isProjectLeader(A_CmsUser callingUSer);
 
 	/**
 	 * Returns the anonymous user object.<P/>
@@ -52,7 +52,7 @@ abstract class A_CmsRbUser {
 	 * @param callingUser The user who wants to use this method.
 	 * @return the anonymous user object.
 	 */
-	abstract I_CmsUser anonymousUser(I_CmsUser callingUSer);
+	abstract A_CmsUser anonymousUser(A_CmsUser callingUSer);
 	
 	/**
 	 * Returns a user object.<P/>
@@ -65,7 +65,7 @@ abstract class A_CmsRbUser {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract I_CmsUser readUser(I_CmsUser callingUSer, String username)
+	abstract A_CmsUser readUser(A_CmsUser callingUSer, String username)
 		throws CmsException;
 	
 	/**
@@ -81,7 +81,7 @@ abstract class A_CmsRbUser {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	abstract I_CmsUser readUser(I_CmsUser callingUser, String username, String password)
+	abstract A_CmsUser readUser(A_CmsUser callingUser, String username, String password)
 		throws CmsException;
 	
 	/**
@@ -101,7 +101,7 @@ abstract class A_CmsRbUser {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	abstract I_CmsUser loginUser(I_CmsUser callingUser, HttpSession session, 
+	abstract A_CmsUser loginUser(A_CmsUser callingUser, HttpSession session, 
 						String username, String password)
 		throws CmsException;
 
@@ -116,7 +116,7 @@ abstract class A_CmsRbUser {
 	 * @return Vector of groups
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract Vector getGroupsOfUser(I_CmsUser callingUser, String username)
+	abstract Vector getGroupsOfUser(A_CmsUser callingUser, String username)
 		throws CmsException;
 
 	/**
@@ -131,7 +131,7 @@ abstract class A_CmsRbUser {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	abstract I_CmsGroup readGroup(I_CmsUser callingUser, String groupname)
+	abstract A_CmsGroup readGroup(A_CmsUser callingUser, String groupname)
 		throws CmsException;
 
 	/**
@@ -145,7 +145,7 @@ abstract class A_CmsRbUser {
 	 * @return Vector of users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getUsersOfGroup(I_CmsUser callingUser, String groupname)
+	abstract Vector getUsersOfGroup(A_CmsUser callingUser, String groupname)
 		throws CmsException;
 
 	/**
@@ -161,7 +161,7 @@ abstract class A_CmsRbUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract boolean userInGroup(I_CmsUser callingUser, String username, String groupname)
+	abstract boolean userInGroup(A_CmsUser callingUser, String username, String groupname)
 		throws CmsException;
 
 	/** 
@@ -187,7 +187,7 @@ abstract class A_CmsRbUser {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a user with the given username exists already.
 	 */
-	abstract I_CmsUser addUser(I_CmsUser callingUser, String name, String password, 
+	abstract A_CmsUser addUser(A_CmsUser callingUser, String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
 		throws CmsException, CmsDuplicateKeyException;
@@ -205,7 +205,7 @@ abstract class A_CmsRbUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract void deleteUser(I_CmsUser callingUser, String username)
+	abstract void deleteUser(A_CmsUser callingUser, String username)
 		throws CmsException;
 
 	/**
@@ -223,7 +223,7 @@ abstract class A_CmsRbUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void updateUser(I_CmsUser callingUser, String username, 
+	abstract void updateUser(A_CmsUser callingUser, String username, 
 					Hashtable additionalInfos, int flag)
 		throws CmsException;
 
@@ -246,7 +246,7 @@ abstract class A_CmsRbUser {
 	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
 	 * same group already exists.
 	 */	
-	abstract I_CmsGroup addGroup(I_CmsUser callingUser, String name, String description, int flags)
+	abstract A_CmsGroup addGroup(A_CmsUser callingUser, String name, String description, int flags)
 		throws CmsException, CmsDuplicateKeyException;
 
 	/**
@@ -261,7 +261,7 @@ abstract class A_CmsRbUser {
 	 * @param delgroup The name of the group that is to be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	abstract void deleteGroup(I_CmsUser callingUser, String delgroup)
+	abstract void deleteGroup(A_CmsUser callingUser, String delgroup)
 		throws CmsException;
 
 	/**
@@ -277,7 +277,7 @@ abstract class A_CmsRbUser {
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	abstract void addUserToGroup(I_CmsUser callingUser, String username, String groupname)
+	abstract void addUserToGroup(A_CmsUser callingUser, String username, String groupname)
 		throws CmsException;
 
 	/**
@@ -293,7 +293,7 @@ abstract class A_CmsRbUser {
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract void removeUserFromGroup(I_CmsUser callingUser, String username, String groupname)
+	abstract void removeUserFromGroup(A_CmsUser callingUser, String username, String groupname)
 		throws CmsException;
 
 	/**
@@ -305,7 +305,7 @@ abstract class A_CmsRbUser {
 	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing users.
 	 */
-	abstract Vector getUsers(I_CmsUser callingUser);
+	abstract Vector getUsers(A_CmsUser callingUser);
 	
 	/**
 	 * Returns all groups<P/>
@@ -316,7 +316,7 @@ abstract class A_CmsRbUser {
 	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing groups.
 	 */
-	abstract Vector getGroups(I_CmsUser callingUser);	
+	abstract Vector getGroups(A_CmsUser callingUser);	
 
 	/** 
 	 * Sets the password for a user.
@@ -333,6 +333,6 @@ abstract class A_CmsRbUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract void setPassword(I_CmsUser callingUser, String username, String newPassword)
+	abstract void setPassword(A_CmsUser callingUser, String username, String newPassword)
 		throws CmsException;
 }

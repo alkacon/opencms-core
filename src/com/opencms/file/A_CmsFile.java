@@ -6,7 +6,7 @@ import java.io.*;
  * This abstract class describes a file in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
  */
 public abstract class A_CmsFile extends A_CmsResource { 	
 
@@ -40,7 +40,7 @@ public abstract class A_CmsFile extends A_CmsResource {
     abstract public String getExtension();
     
 	// the following methods are not used, because the functionality is handled by
-	// a I_CmsObjectBase:
+	// a A_CmsObjectBase:
 	/*
 	public boolean delete();
     public boolean exists();
@@ -48,7 +48,7 @@ public abstract class A_CmsFile extends A_CmsResource {
     public boolean mkdirs();
     // What about this
 	// No! Use CmsObject!
-    public boolean renameTo( I_CmsFile dest );
+    public boolean renameTo( A_CmsFile dest );
     public String[] list();
 	*/
 }

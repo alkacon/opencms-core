@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
  */
 abstract interface A_CmsAccessUser {
 
@@ -23,7 +23,7 @@ abstract interface A_CmsAccessUser {
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract I_CmsUser readUser(String username)
+	abstract A_CmsUser readUser(String username)
 		throws CmsException;
 	
 	/**
@@ -36,7 +36,7 @@ abstract interface A_CmsAccessUser {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	abstract I_CmsUser readUser(String username, String password)
+	abstract A_CmsUser readUser(String username, String password)
 		throws CmsException;
 	
 	/**
@@ -59,7 +59,7 @@ abstract interface A_CmsAccessUser {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	abstract I_CmsGroup readGroup(String groupname)
+	abstract A_CmsGroup readGroup(String groupname)
 		throws CmsException;
 
 	/**
@@ -106,7 +106,7 @@ abstract interface A_CmsAccessUser {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a user with the given username exists already.
 	 */
-	abstract I_CmsUser addUser(String name, String password, 
+	abstract A_CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
 		throws CmsException, CmsDuplicateKeyException;
@@ -156,7 +156,7 @@ abstract interface A_CmsAccessUser {
 	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
 	 * same group already exists.
 	 */	
-	abstract I_CmsGroup addGroup(String name, String description, int flags)
+	abstract A_CmsGroup addGroup(String name, String description, int flags)
 		throws CmsException, CmsDuplicateKeyException;
 
 	/**

@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
  */
 abstract class A_CmsAccessProject {
 
@@ -22,7 +22,7 @@ abstract class A_CmsAccessProject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 abstract I_CmsProject readProject(String name)
+	 abstract A_CmsProject readProject(String name)
 		throws CmsException;
 	
 	/**
@@ -37,7 +37,7 @@ abstract class A_CmsAccessProject {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a project with the same name for this resource-type exists already.
 	 */
-	 abstract I_CmsProject createProject(String name, String description, int flags)
+	 abstract A_CmsProject createProject(String name, String description, int flags)
 		throws CmsException, CmsDuplicateKeyException;
 	
 	/**
