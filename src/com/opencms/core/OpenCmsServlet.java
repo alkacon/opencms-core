@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
-* Date   : $Date: 2001/02/20 15:20:17 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2001/02/20 16:51:12 $
+* Version: $Revision: 1.78 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,6 +44,8 @@ public class OpenCmsServlet extends HttpServlet {
 
     private HttpServlet m_servlet;
 
+    private CmsClassLoader m_loader;
+
     private ServletConfig m_config;
 
     /**
@@ -60,8 +62,8 @@ public class OpenCmsServlet extends HttpServlet {
         m_config = config;
         String classname = "com.opencms.core.OpenCmsHttpServlet";
         try {
-            ClassLoader loader = new CmsClassLoader();
-            Class c = loader.loadClass(classname);
+            m_loader = new CmsClassLoader();
+            Class c = m_loader.loadClass(classname);
             // Now we have to look for the constructor
             m_servlet = (HttpServlet)c.newInstance();
         } catch(Exception e) {
@@ -75,7 +77,7 @@ public class OpenCmsServlet extends HttpServlet {
      */
     public void service(ServletRequest p0, ServletResponse p1) throws ServletException, IOException {
         // test if we must create a new http-servlet
-        if (    false){ //m_servlet.shouldReloadClasses()){
+        if (m_loader.shouldReload()){
             System.err.println("[OpenCmsServlet] there are new Classes,"
                         +" we have to create a new http-servlet to throw away the old ones.");
             System.err.println("[OpenCmsServlet] first destroy the old http-servlet.");

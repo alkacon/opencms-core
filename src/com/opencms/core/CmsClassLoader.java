@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
-* Date   : $Date: 2001/02/20 16:25:06 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/02/20 16:51:12 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -107,7 +107,7 @@ import java.lang.reflect.*;
  * with a parent classloader. Normally this should be the classloader
  * that loaded this loader.
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2001/02/20 16:25:06 $
+ * @version $Revision: 1.24 $ $Date: 2001/02/20 16:51:12 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -118,7 +118,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
     private boolean m_shouldReload = false;
 
     /** Boolean for additional debug output control */
-    private static final boolean C_DEBUG = true;
+    private static final boolean C_DEBUG = false;
 
     /**
      * Generation counter, incremented for each classloader as they are
