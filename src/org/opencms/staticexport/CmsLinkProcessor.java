@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/06/29 14:38:57 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/07/27 14:43:53 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 
@@ -51,7 +53,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -143,17 +145,34 @@ public class CmsLinkProcessor {
      * 
      * @param imageTag the tag to process
      */
-    protected void processImageTag(ImageTag imageTag) {             
+    protected void processImageTag(ImageTag imageTag) {        
+        
         switch (m_mode) {
             case C_REPLACE_LINKS:
                 if (imageTag.getAttribute("src") != null) {
                     String targetUri = imageTag.getImageURL();   
                     String internalUri = CmsLinkManager.getSitePath(m_cms, m_relativePath, targetUri);
+                    boolean hasAltAttrib = (imageTag.getAttribute("alt") != null);
+                    String title = null;
                     
                     if (internalUri != null) {
                         imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), internalUri, true)));
+                        
+                        if (!hasAltAttrib) {
+                            try {
+                                title = m_cms.readPropertyObject(internalUri, I_CmsConstants.C_PROPERTY_TITLE, false).getValue("\"\"");                                
+                            } catch (CmsException e) {
+                                title = "\"\"";
+                            }
+                            
+                            imageTag.setAttribute("alt", title);
+                        }
                     } else {
                         imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), targetUri, false)));
+                        
+                        if (!hasAltAttrib) {
+                            imageTag.setAttribute("alt", "\"\"");
+                        }
                     }
                 }
                 break;
@@ -168,7 +187,7 @@ public class CmsLinkProcessor {
                     } else {
                         // might happen if the HTML is malformed, this prevents a NPE
                         imageTag.setImageURL(imageUrl);
-                    }
+                    }                                        
                 }
                 break;
                 
