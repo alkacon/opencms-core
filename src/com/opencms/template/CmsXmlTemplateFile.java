@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/07/03 11:53:57 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2001/07/06 07:47:08 $
+* Version: $Revision: 1.43 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2001/07/03 11:53:57 $
+ * @version $Revision: 1.43 $ $Date: 2001/07/06 07:47:08 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -106,6 +106,17 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public Vector getAllSubElements() throws CmsException {
         NodeList nl = getXmlDocument().getDocumentElement().getElementsByTagName("*");
         return getNamesFromNodeList(nl, "ELEMENT", false);
+    }
+
+    /**
+     * Gets an enumeration of all subelements defined in all sections of
+     * of this template file.
+     * @return Vector of all subtemplate names.
+     * @exception CmsException
+     */
+    public Vector getAllSubElementDefinitions() throws CmsException {
+        NodeList nl = getXmlDocument().getDocumentElement().getElementsByTagName("*");
+        return getNamesFromNodeList(nl, "ELEMENTDEF", false);
     }
 
     /**
