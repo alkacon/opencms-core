@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/05 06:35:11 $
-* Version: $Revision: 1.312 $
+* Date   : $Date: 2002/04/10 21:36:26 $
+* Version: $Revision: 1.313 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.312 $ $Date: 2002/04/05 06:35:11 $
+ * @version $Revision: 1.313 $ $Date: 2002/04/10 21:36:26 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6022,7 +6022,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
     public Vector readTaskLogs(CmsUser currentUser, CmsProject currentProject,
                                int taskid)
         throws CmsException {
-        return m_dbAccess.readTaskLogs(taskid);;
+        return m_dbAccess.readTaskLogs(taskid);
     }
     /**
      * Reads all tasks for a project.
