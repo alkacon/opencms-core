@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/13 15:56:46 $
- * Version: $Revision: 1.154 $
+ * Date   : $Date: 2003/08/14 12:50:53 $
+ * Version: $Revision: 1.155 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.154 $ $Date: 2003/08/13 15:56:46 $
+ * @version $Revision: 1.155 $ $Date: 2003/08/14 12:50:53 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1919,7 +1919,7 @@ public class CmsDriverManager extends Object {
                     // try to read the corresponding online resource to decide if the resource should be either removed or deleted
                     CmsResource onlineFile =readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
                     if (onlineFile.getResourceId().equals(resource.getResourceId())) {
-                        existsOnline = true;
+                    existsOnline = true;
                     } else {
                         existsOnline = false;
                     }
@@ -4139,6 +4139,8 @@ public class CmsDriverManager extends Object {
         m_projectDriver = projectDriver;
         m_workflowDriver = workflowDriver;
         m_backupDriver = backupDriver;
+        
+        m_configuration = config;
 
         // initalize the caches 
         m_userCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".user", 50)));
@@ -4604,11 +4606,12 @@ public class CmsDriverManager extends Object {
     *
     * @param context the current request context
     * @param resourcename the complete path of the sourcefile.
+    * @param copyResource true, if the resource should be copied to its destination inside the lost+found folder
     * @return location of the moved resource
     * @throws CmsException if the user has not the rights to move this resource,
     * or if the file couldn't be moved.
     */
-    public String copyToLostAndFound(CmsRequestContext context, String resourcename) throws CmsException {
+    public String copyToLostAndFound(CmsRequestContext context, String resourcename, boolean copyResource) throws CmsException {
 
         String siteRoot=context.getSiteRoot();
         Stack storage=new Stack();
@@ -4652,10 +4655,12 @@ public class CmsDriverManager extends Object {
                     found=false; 
                 }
             }
-            destination=des;                     
-            // copy the exsisting resource to the lost and foud folder
-            moveResource(context,resourcename,destination) ;
-            //copyFile(context, resourcename, destination, false, false, I_CmsConstants.C_COPY_AS_LINK);           
+            destination=des;     
+            
+            if (copyResource) {                
+                // move the existing resource to the lost and foud folder
+                moveResource(context,resourcename,destination);
+            }           
           } catch (CmsException e2) {
             throw e2;           
         } finally {
@@ -7086,7 +7091,7 @@ public class CmsDriverManager extends Object {
 
         // read the existing resource
         resource = readFileHeader(context, resourceName, false);
-        
+
         // check if the user has write access 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
@@ -7711,7 +7716,7 @@ public class CmsDriverManager extends Object {
         m_projectDriver.updateOnlineProjectLinks(deleted, changed, newRes, pageType);
     }
 
-
+         
     /**
      * Checks if a user is member of a group.<P/>
      *
@@ -8420,6 +8425,94 @@ public class CmsDriverManager extends Object {
         }
 
         return false;
+    }
+    
+    public CmsResource recoverResource(CmsRequestContext context, String resourcename) throws CmsException {
+        CmsFile onlineFile = null;
+        byte[] contents = null;
+        Map properties = null;
+        CmsFile newFile = null;
+        CmsFolder newFolder = null;
+        CmsResource newResource = null;
+        CmsFolder parentFolder = null;
+        CmsFolder onlineFolder = null;
+        CmsProject oldProject = null;
+
+        try {
+            parentFolder = readFolder(context, CmsResource.getPath(resourcename));
+
+            // switch to the online project
+            oldProject = context.currentProject();
+            context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+
+            if (!resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                // read the file content plus properties in the online project                   
+                onlineFile = readFile(context, resourcename);
+                contents = onlineFile.getContents();
+                properties = readProperties(context, resourcename, context.getAdjustedSiteRoot(resourcename), false);
+            } else {
+                // contents and properties for a folder
+                onlineFolder = readFolder(context, resourcename);
+                contents = new byte[0];
+                properties = readProperties(context, resourcename, context.getAdjustedSiteRoot(resourcename), false);
+            }
+
+            // switch back to the previous project
+            context.setCurrentProject(oldProject.getId());
+
+            if (!resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                // create the file in the offline project     
+                newFile = new CmsFile(
+                    onlineFile.getId(), 
+                    onlineFile.getResourceId(), 
+                    parentFolder.getId(), 
+                    onlineFile.getFileId(), 
+                    CmsResource.getName(resourcename), 
+                    onlineFile.getType(), 
+                    onlineFile.getFlags(), 
+                    0, 
+                    com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED, 
+                    getResourceType(onlineFile.getType()).getLoaderId(), 
+                    0, 
+                    context.currentUser().getId(), 
+                    0, 
+                    context.currentUser().getId(), 
+                    contents, 
+                    contents.length, 
+                    1);
+                newResource = (CmsResource) m_vfsDriver.createFile(context.currentProject(), newFile, context.currentUser().getId(), parentFolder.getId(), CmsResource.getName(resourcename));
+            } else {
+                // create the folder in the offline project  
+                newFolder = new CmsFolder(
+                    onlineFolder.getId(), 
+                    onlineFolder.getResourceId(), 
+                    parentFolder.getId(), 
+                    CmsUUID.getNullUUID(), 
+                    CmsResource.getName(resourcename), 
+                    CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, 
+                    onlineFolder.getFlags(), 
+                    0, 
+                    com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED, 
+                    0, 
+                    context.currentUser().getId(), 
+                    0, 
+                    context.currentUser().getId(), 
+                    1);
+                newResource = (CmsResource) m_vfsDriver.createFolder(context.currentUser(), context.currentProject(), newFolder, parentFolder.getId(), CmsResource.getName(resourcename));
+            }
+
+            writeProperties(context, resourcename, properties);
+        } catch (CmsException e) {
+            // the exception is caught just to switch back to the previous project
+            // the exception should be handled in the upper app. layer
+            throw e;
+        } finally {
+            // switch back to the previous project
+            context.setCurrentProject(oldProject.getId());                        
+            clearResourceCache();
+        }
+
+        return newResource;
     }
 
 }

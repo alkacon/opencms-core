@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/13 15:56:46 $
-* Version: $Revision: 1.374 $
+* Date   : $Date: 2003/08/14 12:50:53 $
+* Version: $Revision: 1.375 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.374 $
+ * @version $Revision: 1.375 $
  */
 public class CmsObject {
 
@@ -1349,13 +1349,14 @@ public class CmsObject {
     /**
     * Moves a resource to the lost and found folder
     *
-    * @param resourcename the complete path of the sourcefile.
+    * @param resourcename the complete path of the sourcefile
+    * @param copyResource true, if the resource should be copied to its destination inside the lost+found folder
     * @return location of the moved resource
     * @throws CmsException if the user has not the rights to move this resource,
     * or if the file couldn't be moved.
     */
-    protected String doCopyToLostAndFound(String resourcename) throws CmsException {
-        return m_driverManager.copyToLostAndFound(m_context, addSiteRoot(resourcename));
+    protected String doCopyToLostAndFound(String resourcename, boolean copyResource) throws CmsException {
+        return m_driverManager.copyToLostAndFound(m_context, addSiteRoot(resourcename), copyResource);
     }
        
 
@@ -2641,7 +2642,7 @@ public class CmsObject {
      * or if the file couldn't be moved.
      */
     public String copyToLostAndFound(String source) throws CmsException {
-        return getResourceType(readFileHeader(source).getType()).copyToLostAndFound(this, source);
+        return getResourceType(readFileHeader(source).getType()).copyToLostAndFound(this, source, true);
     }
 
     /**
@@ -4321,6 +4322,10 @@ public class CmsObject {
      */
     public boolean isInsideCurrentProject(CmsResource resource) {
         return m_driverManager.isInsideCurrentProject(m_context, resource);
+    }
+    
+    public CmsResource recoverResource(String resourcename) throws CmsException {
+        return m_driverManager.recoverResource(m_context, m_context.addSiteRoot(resourcename));        
     }
 
 }
