@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFile.java,v $
- * Date   : $Date: 2000/02/24 14:45:03 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/02/24 16:42:11 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/02/24 14:45:03 $
+ * @version $Revision: 1.16 $ $Date: 2000/02/24 16:42:11 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -756,10 +756,10 @@ import com.opencms.core.*;
         resource.setLocked(user.getId());
         //update resource
         if (resourcename.endsWith("/")) { 
-            System.err.println("Locking folder "+resource.getName());
+          
             writeFolder(project,(CmsFolder)resource);
         } else {
-            System.err.println("Locking file "+resource.getName());
+           
             writeFileHeader(project,onlineProject,(CmsFile)resource,false);
         }
      }
@@ -814,7 +814,7 @@ import com.opencms.core.*;
                 if (resourcename.endsWith("/")) {   
                     writeFolder(project,(CmsFolder)resource);
                 } else {
-                    System.err.println("Unlocking file "+resource.getName());
+                 
                     writeFileHeader(project,onlineProject,(CmsFile)resource,false);
                 }
             } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/24 14:45:03 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/02/24 16:42:11 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2000/02/24 14:45:03 $
+ * @version $Revision: 1.33 $ $Date: 2000/02/24 16:42:11 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -723,7 +723,7 @@ import com.opencms.util.*;
                            A_CmsProject onlineProject,
                            CmsFile file,boolean changed)
        throws CmsException {
-       System.err.println("Write File Header for "+file.getName()+":"+changed);
+    
         
            try {   
              // update the file header in the RESOURCE database.
@@ -756,7 +756,6 @@ import com.opencms.util.*;
                                  CmsFile file,boolean changed)
          throws CmsException {
          
-         System.err.println("Write File Header for "+file.getName()+":"+changed);
            ResultSet res;
            ResultSet tmpres;
            byte[] content;
@@ -766,7 +765,8 @@ import com.opencms.util.*;
                 // offline project. If not, load it from the online project and add it
                 // to the offline project.
                 //System.err.println("WFH] Try to write File header for "+file.getAbsolutePath());
-                if (file.getState() == C_STATE_UNCHANGED) {
+                  
+               if (file.getState() == C_STATE_UNCHANGED) {
                     // read file content form the online project
     
                     PreparedStatement statementFileRead=m_Con.prepareStatement(C_FILE_READ);
