@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/04/24 07:15:16 $
-* Version: $Revision: 1.241 $
+* Date   : $Date: 2002/04/30 09:27:57 $
+* Version: $Revision: 1.242 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.241 $ $Date: 2002/04/24 07:15:16 $ *
+ * @version $Revision: 1.242 $ $Date: 2002/04/30 09:27:57 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -11428,9 +11428,8 @@ public CmsTask readTask(int id) throws CmsException {
         try {
             con = DriverManager.getConnection(usedPool);
             // read resource data from database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READ_LIKENAME"+usedStatement));
-            statement.setString(1, '%'+resourcename+'%');
-            statement.setInt(2,project.getId());
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READ_LIKENAME_1"+usedStatement)+resourcename+m_cq.get("C_RESOURCES_READ_LIKENAME_2"+usedStatement));
+            statement.setInt(1,project.getId());
             res = statement.executeQuery();
             // create new resource
             while(res.next()) {
@@ -11453,7 +11452,6 @@ public CmsTask readTask(int id) throws CmsException {
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-
                 file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
                                      userId,groupId,projectId,accessFlags,state,lockedBy,
                                      launcherType,launcherClass,created,modified,modifiedBy,
@@ -11489,6 +11487,100 @@ public CmsTask readTask(int id) throws CmsException {
             }
         }
         return resources;
+    }
+
+    /**
+     * Reads all files from the Cms, that are of the given type.<BR/>
+     *
+     * @param projectId A project id for reading online or offline resources
+     * @param resourcetype The type of the files.
+     *
+     * @return A Vector of files.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+    public Vector readFilesByType(int projectId, int resourcetype) throws CmsException {
+
+        Vector files = new Vector();
+        CmsFile file;
+        ResultSet res = null;
+        PreparedStatement statement = null;
+        Connection con = null;
+        String usedPool;
+        String usedStatement;
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        if (projectId == onlineProject) {
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+        } else {
+            usedPool = m_poolName;
+            usedStatement = "";
+        }
+        try {
+            con = DriverManager.getConnection(usedPool);
+            // read file data from database
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READ_FILESBYTYPE"+usedStatement));
+            statement.setInt(1, resourcetype);
+            res = statement.executeQuery();
+            // create new file
+            while(res.next()) {
+                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
+                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+                int launcherType= res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+                String launcherClass=  res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+                int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+                byte[] fileContent = res.getBytes(m_cq.get("C_FILE_CONTENT"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                file = new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
+                                groupId,projectID,accessFlags,state,lockedBy,
+                                launcherType,launcherClass,created,modified,modifiedBy,
+                                fileContent,resSize,lockedInProject);
+
+                files.addElement(file);
+            }
+        } catch (SQLException e){
+        e.printStackTrace();
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch (Exception ex) {
+            throw new CmsException("["+this.getClass().getName()+"]", ex);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                try {
+                    res.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(con != null) {
+                try {
+                    con.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+        }
+        return files;
     }
 
     /**
