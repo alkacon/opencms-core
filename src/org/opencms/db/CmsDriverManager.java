@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/07 09:37:45 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/07/07 14:13:26 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.22 $ $Date: 2003/07/07 09:37:45 $
+ * @version $Revision: 1.23 $ $Date: 2003/07/07 14:13:26 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1012,7 +1012,7 @@ public class CmsDriverManager extends Object {
             }
             m_vfsDriver.writeFileHeader(currentProject, (CmsFile) resource, true, currentUser.getId());
         }
-        clearResourceCache(resource.getName(), currentProject, currentUser);
+        clearResourceCache(resource.getFullResourceName(), currentProject, currentUser);
         fileSystemChanged(isFolder);
     }
 
@@ -1576,7 +1576,7 @@ public class CmsDriverManager extends Object {
         }
 
         CmsResource newResource = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), parentFolder.getId(), CmsUUID.getNullUUID(), resourceName, resourceType, 0, owner.getId(), group.getId(), currentProject.getId(), accessFlags, I_CmsConstants.C_STATE_NEW, currentUser.getId(), launcherType, launcherClassname, lastmodified, lastmodified, currentUser.getId(), filecontent.length, currentProject.getId());
-        newResource.setDateLastModified(lastmodified);
+        //newResource.setDateLastModified(lastmodified);
 
         // create the folder.
         newResource = m_vfsDriver.importResource(currentProject, parentFolder.getId(), newResource, filecontent, currentUser.getId(), isFolder);
@@ -3070,7 +3070,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
             // make sure that we have access to all these.
             for (Iterator e = resources.iterator(); e.hasNext();) {
                 CmsResource res = (CmsResource) e.next();
-                if (!CmsResource.getAbsolutePath(readPath(currentUser,currentProject,res, false)).startsWith(lastcheck)) {
+                if (!CmsResource.getAbsolutePath(readPath(currentUser,currentProject,res, true)).startsWith(lastcheck)) {
                     if (hasPermissions(currentUser, currentProject, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                         retValue.add(res);
 

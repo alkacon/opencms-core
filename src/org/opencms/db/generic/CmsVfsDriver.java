@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/07 12:47:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/07 14:13:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/07/07 12:47:14 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/07 14:13:26 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -826,12 +826,12 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         int state = 0;
         CmsUUID modifiedByUserId = userId;
-        long dateModified = newResource.isTouched() ? newResource.getDateLastModified() : System.currentTimeMillis();
+        //long dateModified = newResource.isTouched() ? newResource.getDateLastModified() : System.currentTimeMillis();
 
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             state = newResource.getState();
             modifiedByUserId = newResource.getResourceLastModifiedBy();
-            dateModified = newResource.getDateLastModified();
+            //dateModified = newResource.getDateLastModified();
         } else {
             state = I_CmsConstants.C_STATE_NEW;
         }
@@ -890,7 +890,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(8, newResource.getLauncherType());
             stmt.setString(9, newResource.getLauncherClassname());
             stmt.setTimestamp(10, new Timestamp(newResource.getDateCreated()));
-            stmt.setTimestamp(11, new Timestamp(dateModified));
+            stmt.setTimestamp(11, new Timestamp(newResource.getDateLastModified()));
             stmt.setInt(12, newResource.getLength());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
