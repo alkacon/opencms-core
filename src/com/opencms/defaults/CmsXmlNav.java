@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2002/11/04 13:35:55 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2002/11/28 14:16:58 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,8 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.41 $ $Date: 2002/11/04 13:35:55 $
+ * @author Thomas Weckert
+ * @version $Revision: 1.42 $ $Date: 2002/11/28 14:16:58 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -831,6 +832,287 @@ public class CmsXmlNav extends A_CmsNavBase {
         }
         return buildNav(cms,doc,userObject,resources).getBytes();
     }
+    
+    /**
+     * Builds the path from the root folder down to the current folder. Usage:
+     * <p>
+     * Build the path from the root folder down to the current folder:  
+     * <pre>&lt;METHOD name="getNavPath"&gt;absolute,this,0&lt;/METHOD&gt;</pre>
+     * <p>
+     * Build the path from the root folder down to the parent of the current folder:
+     * <pre>&lt;METHOD name="getNavPath"&gt;absolute,parent,0&lt;/METHOD&gt;</pre>
+     * <p>
+     * Build the path for the last three navigation levels down to the parent of the current folder:
+     * <pre>&lt;METHOD name="getNavPath"&gt;relative,parent,3&lt;/METHOD&gt;</pre>
+     * <p>
+     * Build the path for the last three navigation levels down to the current folder: 
+     * <pre>&lt;METHOD name="getNavPath"&gt;relative,this,3&lt;/METHOD&gt;</pre>
+     * 
+     * @param cms CmsObject to access the VFS
+     * @param tagcontent includes the values for the start and end navigation level, comma separated
+     * @param doc the XML template
+     * @param userObj Hashtable with parameters (??)
+     * @return byte[] the HTML of this element
+     * @exception CmsException
+     */
+    public Object getNavPath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {        
+        // the result string holding the entire generated navigation path
+        String navPath = "";
+
+        // get the template file
+        CmsXmlTemplateFile template = (CmsXmlTemplateFile)doc;
+        
+        // start absolute from root, or relative from the current folder?
+        boolean startAbsolute = true;
+        
+        // the depth of the navigation path (= # of navigation levels)
+        int requestedNavLevels = 1;
+        
+        // include the current folder in the path or not
+        boolean includeCurrentFolder = true;
+        
+        // the navigation levels where we start and end to calculate the path
+        int startLevel = 0, endLevel = 0;
+      
+        
+        // if there is no "naventry" datablock in the template, return an empty string
+        if (!template.hasData("naventry")) {
+            return "".getBytes();
+        }    
+        
+        // if there is no "navcurrent" datablock in the template, use the "naventry" instead
+        if (!template.hasData("navcurrent")) {
+            template.setData("navcurrent", template.getData("naventry"));
+        }  
+        
+        // parse the tag content
+        if (!"".equals(tagcontent)) {
+            StringTokenizer tagContentTokenizer = new StringTokenizer( tagcontent, "," );
+            
+            if (tagContentTokenizer.countTokens()>=3) {
+                // start absolute or relative?
+                if (tagContentTokenizer.hasMoreTokens()) {
+                    startAbsolute = tagContentTokenizer.nextToken().trim().equalsIgnoreCase("absolute");
+                }
+                
+                // include the current folder or not?
+                if (tagContentTokenizer.hasMoreTokens()) {
+                    includeCurrentFolder = tagContentTokenizer.nextToken().trim().equalsIgnoreCase("this");
+                }                
+                
+                // max. depth
+                if (tagContentTokenizer.hasMoreTokens()) {
+                    try {
+                        requestedNavLevels = Integer.parseInt( tagContentTokenizer.nextToken() );
+                    }
+                    catch (Exception e) {
+                        requestedNavLevels = 1;
+                    }
+                } 
+            }                       
+        }           
+        
+        // get the requested folder
+        String requestedFolder = cms.getRequestContext().currentFolder().getAbsolutePath();
+        
+        // calculate the end navigation level in the path
+        endLevel = extractLevel( cms, requestedFolder );
+        if (includeCurrentFolder) {
+            endLevel++;
+        }        
+        
+        // calculate the start navigation level in the path
+        if (startAbsolute) {
+            startLevel = 1;
+        }
+        else {
+            startLevel = endLevel - requestedNavLevels + 1;
+        }        
+                
+        for (int i=startLevel;i<=endLevel;i++) {
+            String currentFolder = extractFolder(cms,i,"false");
+            
+            // register the current folder for changes in the beloved element cache
+            Vector vfsDeps = new Vector();
+            vfsDeps.add( cms.readFolder(currentFolder) );
+            registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null, (Hashtable)userObject, vfsDeps, null, null);
+            
+            // add the current folder as the unique resource
+            Vector resources = new Vector();       
+            resources.addElement( cms.readFolder(currentFolder,false) );                             
+            
+            // build the navigation for the current folder and append to the path
+            String currentNav = buildNav(cms,doc,userObject,resources);
+            navPath += currentNav;          
+        }
+
+        return navPath.getBytes();
+    }   
+    
+    /**
+     * Builds a catalogue or navigation sitemap. Usage: 
+     * <pre>&lt;method name="getNavMap"&gt;1,3&lt;/method&gt;</pre> to build
+     * a sitemap including everything between navigation levels 1 and 3.
+     * 
+     * @param cms CmsObject to access the VFS
+     * @param tagcontent includes the values for the start and end navigation level, comma separated
+     * @param doc the XML template
+     * @param userObj Hashtable with parameters (??)
+     * @return byte[] the HTML of this element
+     * @exception CmsException
+     */    
+    public Object getNavMap(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {                   
+        // the result string holding the entire generated HTML of the navigation map
+        String navMap = "";   
+        
+        // the navigation level where the map starts
+        int startLevel = 1;
+        
+        // dito, where the map ends
+        int endLevel = 2; 
+        
+        // get the template file
+        CmsXmlTemplateFile template = (CmsXmlTemplateFile)doc;
+        
+        // if there is no "naventry" datablock in the template, return an empty string
+        if (!template.hasData("naventry")) {
+            return "".getBytes();
+        }    
+        
+        // if there is no "navcurrent" datablock in the template, use the "naventry" instead
+        if (!template.hasData("navcurrent")) {
+            template.setData("navcurrent", template.getData("naventry"));
+        }        
+        
+        
+        // parse the tag content
+        if (!"".equals(tagcontent)) {
+            int commaIndex = tagcontent.indexOf(",");
+            
+            if (commaIndex!=-1 && tagcontent.length()>=3) {
+                try {
+                    startLevel = Integer.parseInt( tagcontent.substring(0,commaIndex) );
+                    endLevel = Integer.parseInt( tagcontent.substring(commaIndex+1) );
+                }
+                catch (Exception e) {
+                    // use default values in case of an exception
+                    startLevel = 1;
+                    endLevel = 2; 
+                }
+            }
+        }
+        
+        // # of navigation levels needed to build the map
+        int recursion = endLevel - startLevel;
+        
+        // extract the folder at the right depth where we want to start
+        String currentFolder = extractFolder( cms, startLevel, "false" );                         
+        
+        // build the map finally
+        navMap = this.buildMap( cms, doc, userObject, currentFolder, "naventry", 0, recursion ).toString();
+        
+        return navMap.getBytes();
+    } 
+    
+    /**
+     * This method invokes recursively itself to build a catalogue or map of the OpenCms
+     * VFS structure. For each navigation level, it tries to process the datablock
+     * naventry, naventrysub, naventrysubsub,...,naventry{n*times}sub for a depth of n levels.
+     * 
+     * @param cms CmsObject object for accessing the VFS
+     * @param doc the XML template holding the datablock to process
+     * @param userObj Hashtable with parameters.
+     * @return currentFolder the current folder for which we build the (sub) map 
+     * @param datablock the name of the datablock in the XML template to generate the HTML for the current depth
+     * @param currentResursionLevel the name says it all: the current recursion level (= curr. navigation level)
+     * @param maxRecursionLevel dito, the max. recursion level (= navigation level depth)
+     * @return byte[] the HTML of this element
+     */
+    protected StringBuffer buildMap(CmsObject cms, A_CmsXmlContent doc, Object userObject, String currentFolder, String datablock, int currentResursionLevel, int maxRecursionLevel) throws CmsException {
+        StringBuffer result = new StringBuffer();
+        CmsXmlTemplateFile template = (CmsXmlTemplateFile)doc;
+        LinkSubstitution ls = new LinkSubstitution();
+        boolean isFolder = false;
+        
+        // register the current folder for changes in the beloved element cache
+        Vector vfsDeps = new Vector();
+        vfsDeps.add( cms.readFolder(currentFolder) );
+        registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null, (Hashtable)userObject, vfsDeps, null, null);        
+     
+        // collect all files and subfolders
+        Vector resources = cms.getSubFolders(currentFolder);       
+        Vector files = cms.getFilesInFolder(currentFolder);
+        resources.ensureCapacity(resources.size() + files.size());
+        
+        Enumeration allFiles = files.elements();
+        while (allFiles.hasMoreElements()) {
+            resources.addElement(allFiles.nextElement());
+        }    
+        
+        // evaluate the navigation properties properties
+        int size = resources.size();
+        String navLink[] = new String[size];
+        String navText[] = new String[size];
+        float navPos[] = new float[size];
+        int navResourceCount = extractNav( cms, resources, navLink, navText, navPos );  
+        
+        for (int i=0;i<navResourceCount;i++) {
+            isFolder = false;
+            String currentNavLink = null;
+            
+            // set the navigation data/properties in the template
+            template.setData("navtext", navText[i]);
+            template.setData("navcount", new Integer(i+1).toString());
+            template.setData("navlevel", new Integer(extractLevel(cms,navLink[i])).toString());
+            
+            if (navLink[i].endsWith("/")) {
+                // the current resource is a folder
+                isFolder = true;
+                
+                String navIndex = cms.readProperty(navLink[i],C_PROPERTY_NAVINDEX);
+                if (navIndex==null) {
+                    navIndex = C_NAVINDEX;
+                }
+                
+                currentNavLink = navLink[i] + navIndex;
+            } 
+            else {
+                // the current resource is a file
+                currentNavLink = navLink[i];
+            }
+            
+            // test if the file exists or not to avoid broken links
+            try {
+                cms.readFile(currentNavLink);
+                template.setData("navlink", ls.getLinkSubstitution(cms,currentNavLink) );
+            } 
+            catch (CmsException e) {
+                template.setData("navlink", "#");
+            }       
+            
+            // append the resource itself to the map
+            result.append(template.getProcessedDataValue(datablock, this, userObject));
+            
+            // append the resource's submap, too
+            if (isFolder && (currentResursionLevel + 1 <= maxRecursionLevel)) {
+                String subMapNavEntryDatablock = "naventry";
+                for (int j = 0; j <= currentResursionLevel; j++) {
+                    subMapNavEntryDatablock += "sub";
+                }
+                
+                // if there is no "naventrysubsub..." datablock in the template, use the "naventry" instead
+                if (!template.hasData(subMapNavEntryDatablock)) {
+                    subMapNavEntryDatablock = "naventry";
+                }                
+
+                StringBuffer subMap = this.buildMap(cms, doc, userObject, navLink[i], subMapNavEntryDatablock, currentResursionLevel+1, maxRecursionLevel);               
+                result.append(subMap.toString());
+            }
+        }          
+        
+        return result;      
+    }    
+    
     /**
      * gets the navigation of folders recursive.
      *
