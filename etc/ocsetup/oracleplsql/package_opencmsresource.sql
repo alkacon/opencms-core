@@ -45,5 +45,7 @@ PACKAGE opencmsResource IS
 
   FUNCTION getParent(pResourceName VARCHAR2) RETURN VARCHAR2;
   FUNCTION getParentId(pProjectID NUMBER, pResourceId NUMBER) RETURN NUMBER;
+  
+  PROCEDURE removeTemporaryFiles(pFilename IN VARCHAR2);
 END;
 /

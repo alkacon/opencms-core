@@ -344,6 +344,9 @@ PACKAGE BODY OpenCmsProject IS
       FETCH curFiles INTO recFiles;
       EXIT WHEN curFiles%NOTFOUND;
       -- do not publish files that are locked in another project
+      IF (recFiles.locked_by = opencmsConstants.C_UNKNOWN_ID) THEN
+      	opencmsresource.removeTemporaryFiles(recFiles.resource_name);
+      END IF;
       IF (recFiles.locked_by != opencmsConstants.C_UNKNOWN_ID) THEN
         -- do nothing;
         null;

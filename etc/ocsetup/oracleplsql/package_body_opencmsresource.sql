@@ -1328,6 +1328,20 @@ PACKAGE BODY opencmsresource IS
     bPathList(newIndex) := pName;
 	RETURN TRUE;
   END addPathInList;
+---------------------------------------------------------------------------------------
+-- remove the temporary files of the given resource
+---------------------------------------------------------------------------------------
+  PROCEDURE removeTemporaryFiles(pFilename IN VARCHAR2) IS
+  	vPath VARCHAR2(250);
+  	vName VARCHAR2(250);
+  	vTempfile VARCHAR2(250);
+  BEGIN
+  	vPath := substr(pFilename,0, instr(pFilename,'/',-1));
+  	vName := substr(pFilename,instr(pFilename,'/',-1)+1);
+  	vTempfile := vPath||'~'||vName||'%';
+  	delete from cms_resources where resource_name like vTempfile;
+  	commit;
+  END;
 -------------------------------------------------------------------------
 END;
 /
