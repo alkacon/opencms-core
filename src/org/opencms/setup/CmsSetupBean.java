@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/04/05 05:41:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -779,10 +779,11 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             m_sortedDatabaseKeys = null;
             
             setWebAppRfsPath(webAppRfsPath);
+            m_errors = new Vector();
+            
             if (appName != null) {
                 // workaround for JUnit test cases that have no context
                 m_extProperties = loadProperties(m_configRfsPath + "opencms.properties");
-                m_errors = new Vector();
                 
                 if (appName != null && appName.length() > 0) {
                     setAppName(appName);
@@ -1411,6 +1412,11 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     private void setWebAppRfsPath(String webInfRfsPath) {
         m_webAppRfsPath = webInfRfsPath;
+        if ("".equals(webInfRfsPath)) {
+            // required for test cases
+            m_configRfsPath = "";
+            return;
+        }
         if (!m_webAppRfsPath.endsWith(File.separator)) {
             // make sure that Path always ends with a separator, not always the case in different 
             // environments since getServletContext().getRealPath("/") does not end with a "/" in 
