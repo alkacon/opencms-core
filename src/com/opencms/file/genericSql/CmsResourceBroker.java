@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/07/31 15:50:14 $
-* Version: $Revision: 1.264 $
+* Date   : $Date: 2001/08/07 14:04:27 $
+* Version: $Revision: 1.265 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.264 $ $Date: 2001/07/31 15:50:14 $
+ * @version $Revision: 1.265 $ $Date: 2001/08/07 14:04:27 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2242,7 +2242,8 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         // read the project that should be deleted.
         CmsProject deleteProject = readProject(currentUser, currentProject, id);
 
-        if(isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, deleteProject)) {
+        if((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, deleteProject))
+            && (id != C_PROJECT_ONLINE_ID)) {
             Vector allFiles = m_dbAccess.readFiles(deleteProject.getId(), false, true);
             Vector allFolders = m_dbAccess.readFolders(deleteProject.getId(), false, true);
             // first delete files or undo changes in files
@@ -4237,7 +4238,7 @@ public void setCmsObjectForStaticExport(CmsObject cms){
         Vector changedResources = null;
         // check the security
         if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) &&
-            (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
+            (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED) && (id != C_PROJECT_ONLINE_ID)) {
             // check, if we update class-files with this publishing
             ClassLoader loader = getClass().getClassLoader();
             boolean shouldReload = false;
