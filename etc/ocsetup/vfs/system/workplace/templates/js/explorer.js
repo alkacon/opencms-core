@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2001/12/03 08:18:12 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2001/12/04 08:04:53 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1021,7 +1021,7 @@ function enableNewButton(showit){
              "td.inactive{ color:#8c8c8c; } "+
              "/"+"/"+"--></style></head>";
     var returnplace=wo.location.href;
-    if(openfolderMethod == "openthisfolderflat"){
+    if(openfolderMethod == "openthisfolderflat" || projectView){
     	returnplace=returnplace.replace(/\?/g, "%3F");
     	returnplace=returnplace.replace(/\&/g, "%26");
     	returnplace=returnplace.replace(/\=/g, "%3D");
@@ -1067,11 +1067,11 @@ function enableNewButton(showit){
 
          wo.writeln("<td align=center>");
 
-         if(!(this.projectView) && showKon) {
+         if(showKon) {
             wo.writeln(brcfg.showKontext + i + "'," + i + brcfg.showKontextEnd);
          }
          wo.write("<img src='"+vi.resource[vi.liste[i].type].icon+"' border=0 width=16 height=16>");
-         if(!(this.projectView) && showKon) {
+         if(showKon) {
             wo.write("</a>");
          }
          wo.writeln("</td>");
@@ -1168,6 +1168,14 @@ function enableNewButton(showit){
          wo.writeln("<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor=#777777><tr><td>");
          wo.writeln("<table width=150 CELLPADDING=1 CELLSPACING=0 BORDER=0 class=fk>");
 
+         var resourceName = vr.actDirectory+vi.liste[i].name;
+         if(projectView){
+         	if(vi.liste[i].type == 0){
+         		resourceName = vi.liste[i].path.substring(0, vi.liste[i].path.lastIndexOf("/"));
+         	} else {
+         		resourceName = vi.liste[i].path+vi.liste[i].name;
+         	}
+         }
          for(a=0;a<vi.menus[vi.liste[i].type].items.length;a++){
 
              /* 0:unchanged",1:changed",2:new",3:deleted" */
@@ -1184,8 +1192,8 @@ function enableNewButton(showit){
                         if(vi.menus[vi.liste[i].type].items[a].name=="-"){
                             wo.writeln("<tr><td><hr size=1></td></tr>");
                         } else {
-                        if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                         else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                        if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                         else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                         }
                     }
                 }
@@ -1203,8 +1211,8 @@ function enableNewButton(showit){
                             if(vi.menus[vi.liste[i].type].items[a].name=="-"){
                                 wo.writeln("<tr><td><hr size=1></td></tr>");
                             } else {
-                            if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                             else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                            if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                             else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                             }
                         }
                     }
@@ -1242,8 +1250,8 @@ function enableNewButton(showit){
                             if(vi.menus[vi.liste[i].type].items[a].name=="-"){
                                 wo.writeln("<tr><td><hr size=1></td></tr>");
                             }else{
-                                if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/' >"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                                    else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                                if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"/' >"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                                    else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                             }
                         }
                     }
