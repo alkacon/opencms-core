@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/06 09:12:46 $
- * Version: $Revision: 1.138 $
+ * Date   : $Date: 2003/08/06 09:53:01 $
+ * Version: $Revision: 1.139 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.138 $ $Date: 2003/08/06 09:12:46 $
+ * @version $Revision: 1.139 $ $Date: 2003/08/06 09:53:01 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -6114,12 +6114,15 @@ public class CmsDriverManager extends Object {
      */
     public Vector readProjectView(CmsRequestContext context, int projectId, String filter) throws CmsException {
         Vector retValue = new Vector();
-        List resources = m_projectDriver.readProjectView(projectId, filter);
+        List resources = null;
         boolean onlyLocked = false;
         
         // check if only locked resources should be displayed
         if ("locked".equalsIgnoreCase(filter)) {
             onlyLocked = true;
+            resources = readLockedResourcesInProject(context, projectId);
+        } else {
+            resources = m_projectDriver.readProjectView(projectId, filter);
         }
 
         // check the security
@@ -6139,8 +6142,78 @@ public class CmsDriverManager extends Object {
                 }
             }
         }
+        
+        resources.clear();
+        resources = null;
 
         return retValue;
+    }
+    
+    /**
+     * Reads all resources that are currently locked for a specified project.<p>
+     * 
+     * @param context the current request context
+     * @param projectId the ID of the project for which the locked resources are read
+     * @return a List with all locked resources in the specified project
+     * @throws CmsException if somethong goes wrong
+     */
+    public List readLockedResourcesInProject(CmsRequestContext context, int projectId) throws CmsException {
+        List projectResources = m_vfsDriver.readProjectResources(readProject(projectId));
+        List result = (List) new ArrayList();
+        String currentProjectResource = null;
+
+        for (int i = 0; i < projectResources.size(); i++) {
+            currentProjectResource = (String) projectResources.get(i);
+            result.addAll(getAllSubResourcesInDfs(context, currentProjectResource));
+        }
+
+        return result;
+    }
+
+    /**
+     * Collects all sub-resources (including deleted resources) of a specified resource name 
+     * by traversing the sub-tree in a depth first search.<p>
+     * 
+     * @param context the current request context
+     * @param resourcename the resource name
+     * @return a list with all sub-resources, or the just the specified resource itself if this resource is not a folder
+     * @throws CmsException if something goes wrong
+     */
+    public List getAllSubResourcesInDfs(CmsRequestContext context, String resourcename) throws CmsException {
+        List result = (List) new ArrayList();
+        Vector unvisited = new Vector();
+        CmsResource currentFolder = null;
+        Enumeration unvisitedFolders = null;
+
+        CmsResource resource = readFileHeader(context, resourcename);
+        if (resource.isFile()) {
+            // return a list just with the resource itself in case the 
+            // specified resource name represents a file and not a folder
+            result.add(resource);
+            return result;
+        }
+
+        unvisited.add(resource);
+
+        while (unvisited.size() > 0) {
+            // visit all unvisited folders
+            unvisitedFolders = unvisited.elements();
+            while (unvisitedFolders.hasMoreElements()) {
+                currentFolder = (CmsResource) unvisitedFolders.nextElement();
+
+                // remove the current folder from the list of unvisited folders
+                unvisited.remove(currentFolder);
+                // add the current folder to the result list
+                result.add(currentFolder);
+                // add all sub-files in the current folder to the result list
+                result.addAll(getSubFiles(context, currentFolder.getFullResourceName(), true));
+                // add all sub-folders in the current folder to the list of unvisited folders
+                // to visit them in the next iteration                        
+                unvisited.addAll(getSubFolders(context, currentFolder.getFullResourceName(), true));
+            }
+        }
+
+        return result;
     }
 
     /**
