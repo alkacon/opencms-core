@@ -70,6 +70,17 @@ public class CmsSetupDb {
     }
   }
 
+  public void dropTables(String resourceBroker) {
+      String file = getScript(resourceBroker+".droptables");
+      if (file != null) {
+        m_errorLogging = true;
+        parseScript(file,null);
+      }
+      else  {
+          m_errors.addElement("No drop tables script found: " + resourceBroker + ".droptables \n");
+      }        
+  }
+  
   private void parseScript(String file, Hashtable replacers)   {
 
       /* indicates if the setup script contains included files (oracle) */
