@@ -571,24 +571,35 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		if (A_OpenCms.isLogging()) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter method was not found!");
 		}
+		templateSelector = "error";
+		template.setData("filtername", filterMethodName);
+		template.setData("filtererror", nsm.getMessage());
+		session.removeValue("filterparameter");
 	} catch (Exception e) {
 		if (A_OpenCms.isLogging()) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter: Other Exception!");
 		}
 		templateSelector = "error";
 		template.setData("filtername", filterMethodName);
+		template.setData("filtererror", e.getMessage());
+		session.removeValue("filterparameter");
 	}
 	//get the number of rows
 	int rows = tableContent.size();
 
+	//
 	// get the field methods from the content definition
+	//
 	Vector fieldMethods = new Vector();
 	try {
 		fieldMethods = (Vector) cdClass.getMethod("getFieldMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
 	} catch (Exception exc) {
 		if (A_OpenCms.isLogging()) {
-			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getFieldMethods throwed an exception");
+			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentList: getFieldMethods throwed an exception");
 		}
+		templateSelector = "error";
+		template.setData("filtername", filterMethodName);
+		template.setData("filtererror", exc.getMessage());
 	}
 
 	// create output from the table data
@@ -607,16 +618,16 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			url = (String) cdClass.getMethod("getUrl", new Class[] {}).invoke(entryObject, new Object[] {});
 		} catch (InvocationTargetException ite) {
 			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUrl throwed an InvocationTargetException!");
+				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentList: getUrl throwed an InvocationTargetException!");
 			}
 			ite.getTargetException().printStackTrace();
 		} catch (NoSuchMethodException nsm) {
 			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUrl method was not found!");
+				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentList: getUrl method was not found!");
 			}
 		} catch (Exception e) {
 			if (A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUrl: Other exception!");
+				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentList: getUrl: Other exception!");
 			}
 		}
 		if (url == null)
@@ -630,7 +641,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 				getMethod = (Method) fieldMethods.elementAt(j);
 			} catch (Exception e) {
 				if (A_OpenCms.isLogging()) {
-					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method!");
+					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method - check for correct spelling!");
 				}
 			}							
 			try {
