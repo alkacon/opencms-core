@@ -720,6 +720,7 @@ PACKAGE BODY opencmsresource IS
           FETCH curNewResource INTO recNewResource;
           CLOSE curNewResource;
 	      -- copy the metainfos
+	      lockResource(pUserId, pProjectId, recNewResource.resource_name, 'TRUE');
 	      opencmsProperty.writeProperties(pUserId, pProjectId, recNewResource.resource_id, recNewResource.resource_type,
 	                                      opencmsProperty.readAllProperties(pUserId, pProjectId, recFile.resource_name));
         ELSE
