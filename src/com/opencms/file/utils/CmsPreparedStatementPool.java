@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/06/06 14:27:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/06 14:32:38 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -136,7 +136,7 @@ public class CmsPreparedStatementPool {
 	 * @param key - the hashtable key
 	 * @param sql - a SQL statement that may contain one or more '?' IN parameter placeholders
 	 */
-	public void initPreparedStatement(String key, String sql) throws CmsException {
+	public void initPreparedStatement(Integer key, String sql) throws CmsException {
 		Vector temp = new Vector(m_maxConn);
 		Connection conn = null;
 

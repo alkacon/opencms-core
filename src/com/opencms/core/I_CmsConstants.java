@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/06/06 12:35:27 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2000/06/06 14:32:38 $
+ * Version: $Revision: 1.82 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.81 $ $Date: 2000/06/06 12:35:27 $
+ * @version $Revision: 1.82 $ $Date: 2000/06/06 14:32:38 $
  */
 public interface I_CmsConstants
 {
@@ -56,14 +56,6 @@ public interface I_CmsConstants
 								   "Please see the GNU General Public Licence for",
 								   "further details.",
 								   ""};
-	
-    /** Number of DB connections for each module */   
-    static int C_CONNECTIONS=10;
-    
-	/**
-	 * The prefix for all database-tables.
-	 */
-	static String C_DATABASE_PREFIX = "CMS_";
 
 	/**
 	 * The minimum-size of a passwordstring.

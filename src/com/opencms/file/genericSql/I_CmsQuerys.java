@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/06 14:16:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/06 14:32:38 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1 $ $Date: 2000/06/06 14:16:24 $
+ * @version $Revision: 1.2 $ $Date: 2000/06/06 14:32:38 $
  */
 public interface I_CmsQuerys {
     
@@ -46,6 +46,11 @@ public interface I_CmsQuerys {
     
     public static final String C_GROUPS_READGROUP = "SELECT * FROM " + C_DATABASE_PREFIX 
                                                   + "GROUPS WHERE GROUP_NAME = ?";
+	
+	// Constants for Projects
+	
+    public static final Integer C_PROJECTS_MAXID_KEY = new Integer(400);
+	public static final String C_PROJECTS_MAXID = "SELECT MAX(PROJECT_ID) FROM " + C_DATABASE_PREFIX + "PROJECTS";	
 	
 }
 

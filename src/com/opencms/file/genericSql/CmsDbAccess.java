@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 14:27:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/06 14:32:38 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.7 $ $Date: 2000/06/06 14:27:55 $ * 
+ * @version $Revision: 1.8 $ $Date: 2000/06/06 14:32:38 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -269,7 +269,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 */
 	private void initStatements() 
 		throws CmsException {
-		// TODO: init the statements here...
+		
+		m_pool.initPreparedStatement(C_PROJECTS_MAXID_KEY, C_PROJECTS_MAXID);
+		
 	}
 	
 	/**
@@ -285,7 +287,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 */
 	private void initMaxIdValues() {
 		m_maxIds = new int[C_MAX_TABLES];
-		
 		// TODO: add correct values here
 	}
 	
