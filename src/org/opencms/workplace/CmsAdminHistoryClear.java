@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/12 10:55:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -253,12 +253,15 @@ public class CmsAdminHistoryClear extends CmsDialog {
      * @throws JspException if something goes wrong
      */
     public void actionEdit(HttpServletRequest request) throws JspException {
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
             performEditOperation(request);
             // set the request parameters before returning to the overview
             getCms().getRequestContext().getResponse().sendCmsRedirect(getAdministrationBackLink());              
         } catch (CmsException e) {
-            // error defining property, show error dialog
+            // error setting history values, show error dialog
+            setParamMessage(key("error.message.historyclear"));
             setParamErrorstack(e.getStackTraceAsString());
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
