@@ -151,6 +151,7 @@
 				<rmdefault>Leider konnten nicht alle Benutzerzugehörigkeiten geändert werden.</rmdefault>
 				<deleteproject>Leider konnte das Projekt nicht gelöscht werden.</deleteproject>
 				<syncfolder>Leider konnten die Ordner nicht synchronisiert werden.</syncfolder>
+				<syncproperties>Die Daten für die Synchronisierung konnten nicht gespeichert werden.</syncproperties>
 				<unlock>Leider konnte die Datei nicht wieder frei gegeben werden.</unlock>
 				<upload>Die Datei konnte nicht hochgeladen werden.</upload>
 			</message>
@@ -204,6 +205,8 @@
 				<rmdefault>Einer oder mehrere Benutzer, die aus der Gruppe gelöscht werden sollten, hatten diese als Default Gruppe eingestellt.</rmdefault>
 				<deleteproject>Sie haben nicht das Recht dieses Projekt zu löschen.</deleteproject>
 				<syncfolder>Eventuell existieren die zu synchronisierenden Ressourcen oder der Synchronisationspfad nicht.</syncfolder>
+				<syncproperties>Eventuell existieren die angegebenen Ressourcen nicht im gewählten Projekt.</syncproperties>
+				<syncdatamissing>Sie haben noch kein Projekt, keine zu synchronisierenden Ressourcen oder keinen Zielpfad gewählt.</syncdatamissing>
 				<unlock>Die Dateisperre wurde von einem anderen Benutzer übernommen.</unlock>
 				<upload>Der Dateiinhalt ist leer</upload>
 			</reason>
@@ -241,6 +244,7 @@
 				<rmdefault>Sie müssen die Default Gruppe dieser Benutzer zuerst ändern.</rmdefault>
 				<deleteproject>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</deleteproject>
 				<syncfolder>Bitte überprüfen Sie die Einträge für die Synchronisierung in der Registrierungsdatei oder kontaktieren Sie Ihren Systemadministrator.</syncfolder>
+				<syncproperties>Bitte überprüfen Sie, ob die angegebenen Ressourcen im Projekt existieren.</syncproperties>
 				<unlock>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</unlock>
 				<upload>Bitte überprüfen Sie den Dateinamen, oder kontaktieren Sie Ihren Systemadministrator.</upload>
 			</suggestion>
@@ -275,6 +279,7 @@
 				<publishproject>Projekt veröffentlichen</publishproject>
 				<deleteproject>Projekt löschen</deleteproject>
 				<syncfolder>Ordner synchronisieren</syncfolder>
+				<syncproperties>Einstellungen für die Synchronisation</syncproperties>
 				<unlock>Datei frei geben</unlock>
 			 <upload>Datei hochladen</upload>
 			</title>	
@@ -313,6 +318,7 @@
 			<project>Projekt- verwaltung</project>
 			<projecthistory>Projekt Historie</projecthistory>
 			<properties>Eigenschaftsverwaltung</properties>
+			<syncfolder>Synchronisations- verwaltung</syncfolder>
 			<user>Benutzer- verwaltung</user>
 			<users>Benutzer</users>
 		</icon>
@@ -529,6 +535,8 @@
 			<state>Status</state>
 			<suredeletingproject1>Sind Sie sicher, dass sie das Projekt</suredeletingproject1>
 			<suredeletingproject2>löschen wollen?</suredeletingproject2>
+			<syncdestinationpath>Zielpfad</syncdestinationpath>
+			<syncproperties>Einstellungen für die Synchronisation</syncproperties>
 			<title>Titel</title>
 			<upload>Hochladen von Datei</upload>
 			<uploaddate>Hochgeladen am</uploaddate>

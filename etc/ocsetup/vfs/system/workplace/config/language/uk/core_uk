@@ -150,6 +150,7 @@
 				<rmdefault>Sorry, not all users could be removed.</rmdefault>
 				<deleteproject>Sorry, the project could not be deleted.</deleteproject>
 				<syncfolder>Sorry, the folders could not be synchronized.</syncfolder>
+				<syncproperties>Sorry, the properties for synchronisation could not be saved.</syncproperties>
 				<unlock>Sorry, the file could not be locked.</unlock>
 				<upload>Sorry, the file could not be uploaded.</upload>
 			</message>
@@ -202,6 +203,8 @@
 				<rmdefault>At last one user that should be removed from this group had this group set as default.</rmdefault>
 				<deleteproject>You don't have the permissions to delete the project.</deleteproject>
 				<syncfolder>Maybe the resource to be synchronized or the synchronize path not exist.</syncfolder>
+				<syncproperties>Maybe a resource does not exist in the choosen project.</syncproperties>
+				<syncdatamissing>You did not choose a project, the resources to be synchronised or the destination path</syncdatamissing>
 				<unlock>The lock was stolen by another user.</unlock>
 				<upload>The file content is empty.</upload>
 			</reason>
@@ -240,6 +243,7 @@
 				<rmdefault>You must first change the default group of this user(s).</rmdefault>
 				<deleteproject>Please try again later, or contact your system administrator.</deleteproject>
 				<syncfolder>Please check the entries for synchronisation in the registry or contact your system administrator.</syncfolder>
+				<syncproperties>Please check if all resources exist in the choosen project.</syncproperties>
 				<unlock>Please try again later, or contact your system administrator.</unlock>
 				<upload>Please check the filename, or contact your system administrator.</upload>
 			</suggestion>
@@ -274,6 +278,7 @@
 				<publishproject>Publish Project</publishproject>
 				<deleteproject>Delete Project</deleteproject>
 				<syncfolder>Synchronize Folders</syncfolder>
+				<syncproperties>Properties for Synchronisation</syncproperties>
 				<unlock>Unlock File</unlock>
 				<upload>Upload File</upload>
 			</title>	
@@ -312,6 +317,7 @@
 			<project>Project- management</project>
 			<projecthistory>Project History</projecthistory>
 			<properties>Properties<![CDATA[<br>]]>management</properties>
+			<syncfolder>Synchronisation- management</syncfolder>
 			<user>User- management</user>
 			<users>Edit Users</users>
 		</icon>
@@ -527,6 +533,8 @@
 			<state>State</state>
 			<suredeletingproject1>Are you sure that you want to delete the project</suredeletingproject1>
 			<suredeletingproject2>?</suredeletingproject2>
+			<syncproperties>Properties for Synchronisation</syncproperties>
+			<syncdestinationpath>Destination path</syncdestinationpath>
 			<title>Title</title>
 			<upload>File upload</upload>
 			<uploaddate>Active since</uploaddate>
