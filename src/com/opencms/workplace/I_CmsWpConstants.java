@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/13 15:40:30 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2000/03/13 15:54:51 $
+ * Version: $Revision: 1.59 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.58 $ $Date: 2000/03/13 15:40:30 $
+ * @version $Revision: 1.59 $ $Date: 2000/03/13 15:54:51 $
  */
 public interface I_CmsWpConstants {
 
@@ -136,9 +136,11 @@ public interface I_CmsWpConstants {
     /** Parameter for a project*/
     public static final String C_PARA_PROJECT = "project";  
 
-    /** Parameter for a new type*/
+    /** Parameter for a panel*/
     public static final String C_PARA_PANEL = "panel";  
 
+    /** Parameter for the previous panel*/
+    public static final String C_PARA_OLDPANEL = "oldpanel";  
 
     // Filenames of workplace files
         
@@ -166,6 +168,8 @@ public interface I_CmsWpConstants {
   	/** The folder tree. */
     public static final String C_WP_FOLDER_TREE="folder_tree.html";
 
+    /** The workplace */
+    public static final String C_WP_RELOAD="workplace_reload.html";
     
     
     // Filenames of special templates

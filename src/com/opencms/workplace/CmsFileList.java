@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/03/08 14:54:54 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/03/13 15:54:50 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/03/08 14:54:54 $
+ * @version $Revision: 1.26 $ $Date: 2000/03/13 15:54:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -285,17 +285,12 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             CmsResource res;
             
             HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
-            preferences=(Hashtable)session.getValue(C_ADDITIONAL_INFO_PREFERENCES);            
-                    
-            if (preferences == null ) {
-                preferences=getDefaultPreferences();
-            }
-            
+                  
             // show the tablehead with all required columns.
             // Check which flags in the user preferences are NOT set and delete those columns in 
-            // the table generating the file list.           
-            int filelist=((Integer)preferences.get(C_USERPREF_FILELIST)).intValue();
-            
+            // the table generating the file list.                      
+            int filelist=getDefaultPreferences(cms);
+        
             template=checkDisplayedColumns(filelist,template,"");
             
             // add the list header to the output.
@@ -783,14 +778,16 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * Sets the default preferences for the current user if those values are not available.
      * @return Hashtable with default preferences.
      */
-    private Hashtable getDefaultPreferences() {
-        Hashtable pref=new Hashtable();
-        
-        // set the default columns in the filelist
-        int filelist=C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
-        // TODO: remove, for testing only
-        filelist=4095;
-        pref.put(C_USERPREF_FILELIST,new Integer(filelist));
-        return pref;
+    private int getDefaultPreferences(A_CmsObject cms) {
+        int filelist; 
+        String explorerSettings=(String)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS);
+          
+        if (explorerSettings!=null) {
+            filelist=new Integer(explorerSettings).intValue();
+        } else {
+            filelist=C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
+        }
+   
+        return filelist;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPanel.java,v $
- * Date   : $Date: 2000/03/09 16:46:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/13 15:54:50 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PANELBAR&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/03/09 16:46:17 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/13 15:54:50 $
  */
 public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -89,6 +89,10 @@ public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
         
         // Currently requested panel
         String selectedPanel = (String)parameters.get(C_PARA_PANEL);
+        
+        if (selectedPanel == null) {
+            selectedPanel="";
+        }
         
         // panel definition file
         CmsXmlWpTemplateFile paneldef = getPanelDefinitions(cms);
@@ -141,13 +145,13 @@ public class CmsPanel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
         // Panel background and text will be written separately        
         for(int i=0; i<panels.size(); i++) {
             panelName = (String)panels.elementAt(i);
-            paneldef.setXmlData(C_PANEL_LINK, url + panelName);
+            paneldef.setXmlData(C_PANEL_LINK, panelName);
             paneldef.setXmlData(C_PANEL_NAME, lang.getLanguageValue("panel." + panelName));
             if(i==currentPanelNo) {
-                resultBg.append(paneldef.getXmlDataValue(C_TAG_PANEL_BGACTIVE));
+                resultBg.append(paneldef.getProcessedXmlDataValue(C_TAG_PANEL_BGACTIVE,callingObject,null));
                 resultTxt.append(paneldef.getProcessedXmlDataValue(C_TAG_PANEL_TEXTACTIVE));
             } else {
-                resultBg.append(paneldef.getXmlDataValue(C_TAG_PANEL_BGINACTIVE));
+                resultBg.append(paneldef.getProcessedXmlDataValue(C_TAG_PANEL_BGINACTIVE,callingObject,null));
                 resultTxt.append(paneldef.getProcessedXmlDataValue(C_TAG_PANEL_TEXTINACTIVE));
             }
         }

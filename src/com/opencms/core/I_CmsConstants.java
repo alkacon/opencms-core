@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/03/10 11:16:30 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2000/03/13 15:54:50 $
+ * Version: $Revision: 1.53 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.52 $ $Date: 2000/03/10 11:16:30 $
+ * @version $Revision: 1.53 $ $Date: 2000/03/13 15:54:50 $
  */
 public interface I_CmsConstants
 {
@@ -248,6 +248,11 @@ public interface I_CmsConstants
 	 * Key for additional info flags.
 	 */
 	 final static String C_ADDITIONAL_INFO_PREFERENCES	= "USER_PREFERENCES";
+     
+     /**
+	 * Key for additional info explorer settings.
+	 */
+	 final static String C_ADDITIONAL_INFO_EXPLORERSETTINGS ="USER_EXPLORERSETTINGS";
      
      
 	/**

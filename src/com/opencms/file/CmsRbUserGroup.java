@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroup.java,v $
- * Date   : $Date: 2000/02/29 16:44:46 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/03/13 15:54:50 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/02/29 16:44:46 $
+ * @version $Revision: 1.21 $ $Date: 2000/03/13 15:54:50 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -223,10 +223,10 @@ import com.opencms.core.*;
 	 public boolean userInGroup(String username, String groupname)
          throws CmsException {
 		 Vector groups = getGroupsOfUser(username);
-		 A_CmsGroup group;
+     	 A_CmsGroup group;
 		 for(int z = 0; z < groups.size(); z++) {
-			 group = (A_CmsGroup) groups.elementAt(z);
-			 if(m_accessUserGroup.userInGroup(username, group.getName())) {
+        	 group = (A_CmsGroup) groups.elementAt(z);
+         	 if(groupname.equals(group.getName())) {
 				 return true;
 			 }
 		 }

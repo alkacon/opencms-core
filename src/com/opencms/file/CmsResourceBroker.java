@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/13 15:49:50 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2000/03/13 15:54:50 $
+ * Version: $Revision: 1.78 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.77 $ $Date: 2000/03/13 15:49:50 $
+ * @version $Revision: 1.78 $ $Date: 2000/03/13 15:54:50 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1248,7 +1248,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							   String username, String groupname)
 		throws CmsException {
 		// check the security
-		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+    	if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
 			return m_userRb.userInGroup(username, groupname);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
@@ -1342,6 +1342,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		// Check the security
 		if( isAdmin(currentUser, currentProject) || (currentUser.equals(user)) ) {
+
 			
 			// prevent the admin to be set disabled!
 			if( isAdmin(user, currentProject) ) {
