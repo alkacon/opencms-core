@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/25 13:09:23 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2003/02/25 16:09:32 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,15 +41,7 @@ import com.opencms.template.CmsXmlXercesParser;
 import com.opencms.util.LinkSubstitution;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -67,7 +59,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
-;
+
 
 /**
  * Holds the functionaility to import resources from the filesystem
@@ -76,7 +68,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.71 $ $Date: 2003/02/25 13:09:23 $
+ * @version $Revision: 1.72 $ $Date: 2003/02/25 16:09:32 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -548,7 +540,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
         // get the old webapp url from the OpenCms properties
         m_webappUrl = (String)A_OpenCms.getRuntimeProperty("compatibility.support.import.old.webappurl");
-        System.err.println("Webapp URL: " + m_webappUrl);
         if (m_webappUrl == null) {
             m_webappUrl = "http://localhost:8080/opencms/opencms";
         }
@@ -558,11 +549,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         }
 
         // get list of unwanted properties
-        // TODO: read in ArrayList from property, delete "add"-lines!!
-        // List deleteProperties = (List) A_OpenCms.getRuntimeProperty("compatibility.support.propertytags");
-        List deleteProperties = new ArrayList();
-        deleteProperties.add("module");  
-        deleteProperties.add("test");
+        List deleteProperties = (List) A_OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
         if (deleteProperties == null) deleteProperties = new ArrayList();
             
         try {
@@ -899,38 +886,74 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     }
     
 	/**
-	 * Converts the content of a file.<p>
+	 * Converts the content of a file from OpenCms 4.x versions.<p>
 	 * 
 	 * @param filename the name of the file to convert
 	 * @param byteContent the content of the file
      * @param type the type of the file
 	 * @return the converted filecontent
 	 */
-	private byte[] convertFile(String filename, byte[] byteContent, String type){
-    	byte[] returnValue = byteContent;
+    private byte[] convertFile(String filename, byte[] byteContent, String type) {
+        byte[] returnValue = byteContent;
         if (!filename.startsWith("/")) {
             filename = "/" + filename;
         }
-      	// get content of the file and store it in String
-        String fileContent = new String(byteContent);
 
-        // check the frametemplates
-        if (filename.indexOf("frametemplates")!=-1) {
-          	fileContent = scanFrameTemplate(fileContent);
+        String fileContent = new String(byteContent);
+        String encoding = getEncoding(fileContent);
+        if (!"".equals(encoding)) {
+            // encoding found, ensure that the String is correct
+            try {
+                // get content of the file and store it in String with the correct encoding
+                fileContent = new String(byteContent, encoding);
+            } catch (UnsupportedEncodingException e) {
+                // encoding not supported, we use the default and hope we are lucky
+            }
+        } else {
+            // encoding not found, set encoding of xml files to default
+            encoding = OpenCms.getDefaultEncoding();
+            fileContent = setEncoding(fileContent, encoding);
         }
-        // set encoding of xml files
-        fileContent = setEncoding(fileContent, OpenCms.getDefaultEncoding());
-        // translate OpenCms 4.x paths to new directory structure 
-        fileContent = setDirectories(fileContent,type);
+        // check the frametemplates
+        if (filename.indexOf("frametemplates") != -1) {
+            fileContent = scanFrameTemplate(fileContent);
+        }
+        // translate OpenCms 4.x paths to the new directory structure 
+        fileContent = setDirectories(fileContent, type);
         // scan content/bodys
-        if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1 || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
+        if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1
+            || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
             fileContent = convertPageBody(fileContent, filename);
         }
-        // create output file
-	    returnValue = fileContent.getBytes();
-	    return returnValue;
-
-	}	
+        // create output ByteArray
+        try {
+            returnValue = fileContent.getBytes(encoding);
+        } catch (UnsupportedEncodingException e) {
+            // encoding not supported, we use the default and hope we are lucky
+            returnValue = fileContent.getBytes();
+        }
+        return returnValue;
+    }
+    
+    /**
+     * Gets the encoding from the &lt;?XML ...&gt; tag if present.<p>
+     * 
+     * @param content the file content
+     * @return String the found encoding
+     */
+    private String getEncoding(String content) {
+        String encoding = content;
+        int index = encoding.toLowerCase().indexOf("encoding=\"") + 10;
+        // encoding attribute found, get the value
+        if (index != -1) {
+            encoding = encoding.substring(index);
+            index = encoding.indexOf("\"");
+            encoding = encoding.substring(0,index);
+            return encoding.toUpperCase();
+        }
+        // no encoding attribute found
+        return "";
+    }	
     
     /** 
      * Scans the given content of a frametemplate and returns the result.<p>
@@ -964,18 +987,18 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @return modified content
      */
     private String setEncoding(String content, String encoding) {
-        if (content.toLowerCase().indexOf("<?xml") == -1) {        
-            return content;        
+        if (content.toLowerCase().indexOf("<?xml") == -1) {
+            return content;
         }
         // XML information present, replace encoding
         else {
-        	// set the encoding only if it does not exist
-        	String xmlTag = content.substring(0,content.indexOf(">")+1);
-        	if(xmlTag.toLowerCase().indexOf("encoding") == -1){
-            	content = content.substring(content.indexOf(">")+1);
-            	content = "<?xml version=\"1.0\" encoding=\""+encoding+"\"?>" + content; 
-        	}
-        }    
+            // set the encoding only if it does not exist
+            String xmlTag = content.substring(0, content.indexOf(">") + 1);
+            if (xmlTag.toLowerCase().indexOf("encoding") == -1) {
+                content = content.substring(content.indexOf(">") + 1);
+                content = "<?XML version=\"1.0\" encoding=\"" + encoding + "\"?>" + content;
+            }
+        }
         return content;
     }
     
@@ -1010,7 +1033,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     
     /**
      * Searches for the webapps String and replaces it with a macro which is needed for the WYSIWYG editor.<p>
-     * Creates missing &lt;edittemplate&gt; tags from old OpenCms 4.x versions.<p>
+     * Creates missing &lt;edittemplate&gt; tags from older OpenCms 4.x versions.<p>
      * 
      * @param content the filecontent 
      * @return String the modified filecontent
