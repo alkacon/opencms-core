@@ -4,6 +4,7 @@
     // get workplace class from request attribute
     CmsReport wp = CmsReport.initCmsReport(pageContext, request, response);
 
+
 //////////////////// start of switch statement 
 switch (wp.getAction()) {
 
@@ -490,13 +491,24 @@ function initButtons() {
 	buttonsInitialized = true;
 }
 
+
+
+function submitActionRefresh(para1, para2, para3) {	
+ var refreshWorkplace = "<%= wp.getParamRefreshWorkplace() %>";
+ if (refreshWorkplace == "true") {
+     top.location.reload();
+ } else {
+	 return submitAction(para1, para2, para3);
+ }
+}
+
 //-->
 </script>
 
     <%= wp.bodyStart(null, "onLoad=\"start();\"") /*"dialog"*/%>
     <%= wp.dialogStart() %>
 
-<form name="main" action="<%= wp.getDialogRealUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogRealUri() %>" method="post" class="nomargin" onsubmit="return submitActionRefresh('<%= wp.DIALOG_OK %>', null, 'main');">
 
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 <%= wp.paramsAsHidden() %>

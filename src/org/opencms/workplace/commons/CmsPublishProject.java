@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/03/03 13:33:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/03 15:44:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.12
  */
@@ -94,6 +94,7 @@ public class CmsPublishProject extends CmsReport {
     private String m_paramModifieddate;
     private String m_paramModifieduser;
     private String m_paramPublishsiblings;
+
 
     /**
      * Public constructor.<p>
@@ -141,7 +142,7 @@ public class CmsPublishProject extends CmsReport {
     public String getParamResourcename() {
         return m_paramResourcename;
     }
-
+        
     /**
      * Sets the name of the resource which will be published.<p> 
      * 
@@ -256,6 +257,7 @@ public class CmsPublishProject extends CmsReport {
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);   
                 getJsp().include(C_FILE_REPORT_OUTPUT);  
+                
                 break;
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
@@ -273,6 +275,11 @@ public class CmsPublishProject extends CmsReport {
                             // resource is locked, so unlock it
                             getCms().unlockResource(getParamResource());
                         }  
+                    } else {
+                        if (getCms().getRequestContext().currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
+                            // set the flag that this is a temporary project
+                            setParamRefreshWorkplace("true");
+                        }
                     }
                     
                     if (showUnlockConfirmation()) {   
@@ -295,7 +302,7 @@ public class CmsPublishProject extends CmsReport {
                     CmsHtmlLinkValidatorThread thread = new CmsHtmlLinkValidatorThread(getCms(), publishResource, "true".equals(getParamPublishsiblings()), getSettings());
                     setParamAction(REPORT_BEGIN);
                     setParamThread(thread.getUUID().toString());
-                    
+  
                     // set the flag that another thread is following
                     setParamThreadHasNext("true");
                     // set the key name for the continue checkbox
@@ -343,6 +350,7 @@ public class CmsPublishProject extends CmsReport {
             if ("true".equals(getParamThreadHasNext())) {
                 // after the link check start the publish thread
                 startPublishThread();
+                
                 setParamAction(REPORT_UPDATE);
                 setAction(ACTION_REPORT_UPDATE);
             } else {

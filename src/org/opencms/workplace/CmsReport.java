@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/03/03 15:44:57 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1.10
  */
@@ -80,6 +80,10 @@ public class CmsReport extends CmsDialog {
     /** The next thread to display after this report. */
     private String m_paramThreadHasNext;
 
+    /** Flag for refreching workplace .*/
+    private String m_paramRefreshWorkplace;
+    
+    
     /**
      * Public constructor.<p>
      * 
@@ -167,6 +171,25 @@ public class CmsReport extends CmsDialog {
         return m_paramReportType;
     }
 
+    /**
+     * Returns if the workplace must be refreshed.<p>
+     * 
+     * @return "true" if the workplace must be refreshed.
+     */
+    public String getParamRefreshWorkplace() {
+        return m_paramRefreshWorkplace;
+    }
+
+    /**
+     * Sets  if the workplace must be refreshed.<p>
+     * 
+     * @param value "true" (String) if the workplace must be refreshed.
+     */
+    public void setParamRefreshWorkplace(String value) {
+        m_paramRefreshWorkplace = value;
+    }
+    
+    
     /**
      * Returns the Thread id to display in this report.<p>
      * 
