@@ -6,12 +6,17 @@ import java.util.*;
 
 class CmsTemplateCache implements I_CmsTemplateCache, I_CmsLogChannels {
 
-  	/** Hashtable to store the cached data */
+    /** Boolean for additional debug output control */
+    private static final boolean C_DEBUG = false;
+
+    /** Hashtable to store the cached data */
     private Hashtable templateCache = new Hashtable();
     
     /** Default constructor to create a template cache */
     public CmsTemplateCache() {
-        A_OpenCms.log(C_OPENCMS_INFO, "CmsTemplateCache initialized.");
+        if(C_DEBUG && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_INFO, "[CmsTemplateCache] Initialized successfully.");
+        }
     }
 
     /** Deletes all documents from the template cache. */

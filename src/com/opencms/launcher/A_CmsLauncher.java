@@ -31,7 +31,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/01/28 11:39:39 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/10 14:10:53 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
@@ -194,6 +194,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
             if(e instanceof CmsException) {
                 throw (CmsException)e;
             } else {
+                e.printStackTrace();
                 throw new CmsException(errorText, CmsException.C_LAUNCH_ERROR, e);
             }
         }
