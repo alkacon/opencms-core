@@ -5624,6 +5624,23 @@
             <properties/>
         </file>
         <file>
+            <destination>system/workplace/config/language/it</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/config/language/it/core_it</source>
+            <destination>system/workplace/config/language/it/core_it</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <destination>system/workplace/config/language/uk</destination>
             <type>folder</type>
             <user>Admin</user>
