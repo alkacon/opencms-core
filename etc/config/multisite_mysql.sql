@@ -1,23 +1,17 @@
 ####################################################################################
 # SQL script for adding multisite features to OpenCMS.
 #
-# The script should be run on top of a "clean" import of standard data. The script 
-# contains test data for to additional sites (next to the standard online site.
+# The script should be run on top of a "clean" import of standard data. 
+# The multisitedatasetup.txt file should be runned from the cmsshell.
 #
 # Author: Henrik Kjær Hansen
 # Date  : 2000-09-15 
-####################################################################################
-
-
-
-####################################################################################
-# Dumping data for table 'CMS_PROJECTS'
 #
-DELETE FROM CMS_PROJECTS where PROJECT_NAME = 'COM corporate';
-DELETE FROM CMS_PROJECTS where PROJECT_NAME = 'DK corporate';
-INSERT INTO CMS_PROJECTS (PROJECT_ID, USER_ID, GROUP_ID, MANAGERGROUP_ID, TASK_ID, PROJECT_NAME, PROJECT_DESCRIPTION, PROJECT_FLAGS, PROJECT_CREATEDATE, PROJECT_PUBLISHDATE, PROJECT_PUBLISHED_BY, PROJECT_TYPE) VALUES ( '4', '2', '1', '3', '1', 'COM corporate', 'International corporate site - online', '0', '2000-09-07 11:06:41', '2000-09-07 11:06:41', '0', '0');
-INSERT INTO CMS_PROJECTS (PROJECT_ID, USER_ID, GROUP_ID, MANAGERGROUP_ID, TASK_ID, PROJECT_NAME, PROJECT_DESCRIPTION, PROJECT_FLAGS, PROJECT_CREATEDATE, PROJECT_PUBLISHDATE, PROJECT_PUBLISHED_BY, PROJECT_TYPE) VALUES ( '5', '2', '1', '3', '1', 'DK corporate', 'Danish corporate site - online', '0', '2000-09-15 10:44:56', '2000-09-15 10:44:56', '0', '0');
-UPDATE CMS_SYSTEMID SET ID=ID+2 WHERE TABLE_KEY = 4;
+####################################################################################
+
+
+
+####################################################################################
 
 
 ####################################################################################
@@ -37,16 +31,6 @@ CREATE TABLE CMS_SITES (
    PRIMARY KEY (SITE_ID)
 );
 
-#
-# Dumping data for table 'CMS_SITES'
-#
-
-INSERT INTO CMS_SITES (SITE_ID, NAME, DESCRIPTION, CATEGORY_ID, LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID) VALUES ( '1', 'company.com', 'Corporate International', '1', '1', '0', '4');
-INSERT INTO CMS_SITES (SITE_ID, NAME, DESCRIPTION, CATEGORY_ID, LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID) VALUES ( '2', 'company.dk', 'Corporate Danish', '1', '2', '2', '5');
-INSERT INTO CMS_SITES (SITE_ID, NAME, DESCRIPTION, CATEGORY_ID, LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID) VALUES ( '0', 'Default', 'Default online project', '0', '1', '0', '1');
-UPDATE CMS_SYSTEMID SET ID=ID+3 WHERE TABLE_KEY = 13;
-
-
 
 ####################################################################################
 #
@@ -60,15 +44,6 @@ CREATE TABLE CMS_SITE_PROJECTS (
    PRIMARY KEY (SITE_ID, PROJECT_ID)
 );
 
-#
-# Dumping data for table 'CMS_SITE_PROJECTS'
-#
-
-INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '0', '1');
-INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '0', '2');
-INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '1', '4');
-INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '2', '5');
-UPDATE CMS_SYSTEMID SET ID=ID+4 WHERE TABLE_KEY = 14;
 
 
 
@@ -86,16 +61,6 @@ CREATE TABLE CMS_SITE_URLS (
    UNIQUE URL (URL)
 );
 
-#
-# Dumping data for table 'CMS_SITE_URLS'
-#
-
-INSERT INTO CMS_SITE_URLS (URL_ID, URL, SITE_ID, PRIMARYURL) VALUES ( '0', 'www.default.com', '0', '0');
-INSERT INTO CMS_SITE_URLS (URL_ID, URL, SITE_ID, PRIMARYURL) VALUES ( '1', 'www.company.com', '1', '1');
-INSERT INTO CMS_SITE_URLS (URL_ID, URL, SITE_ID, PRIMARYURL) VALUES ( '2', 'www.company.dk', '2', '2');
-UPDATE CMS_SYSTEMID SET ID=ID+3 WHERE TABLE_KEY = 15;
-
-
 
 ####################################################################################
 # Table structure for table 'CMS_CATEGORY'
@@ -111,15 +76,6 @@ CREATE TABLE CMS_CATEGORY (
    PRIMARY KEY (CATEGORY_ID)
 );
 
-#
-# Dumping data for table 'CMS_CATEGORY'
-#
-
-INSERT INTO CMS_CATEGORY (CATEGORY_ID, NAME, DESCRIPTION, SHORTNAME) VALUES ( '1', 'Corporate', 'Corporate site', 'COM');
-INSERT INTO CMS_CATEGORY (CATEGORY_ID, NAME, DESCRIPTION) VALUES ( '0', 'Default', 'Default Category');
-UPDATE CMS_SYSTEMID SET ID=ID+2 WHERE TABLE_KEY = 16;
-
-
 
 ####################################################################################
 # Table structure for table 'CMS_LANGUAGE'
@@ -133,15 +89,6 @@ CREATE TABLE CMS_LANGUAGE (
    PRIORITY int(11),
    PRIMARY KEY (LANGUAGE_ID)
 );
-
-#
-# Dumping data for table 'CMS_LANGUAGE'
-#
-
-INSERT INTO CMS_LANGUAGE (LANGUAGE_ID, NAME, SHORTNAME) VALUES ( '1', 'English (uk)', 'UK');
-INSERT INTO CMS_LANGUAGE (LANGUAGE_ID, NAME, SHORTNAME) VALUES ( '2', 'Danish', 'DK');
-UPDATE CMS_SYSTEMID SET ID=ID+2 WHERE TABLE_KEY = 17;
-
 
 
 ####################################################################################
@@ -157,11 +104,4 @@ CREATE TABLE CMS_COUNTRY (
    PRIMARY KEY (COUNTRY_ID)
 );
 
-#
-# Dumping data for table 'CMS_COUNTRY'
-#
-
-INSERT INTO CMS_COUNTRY (COUNTRY_ID, NAME) VALUES ( '0', 'International');
-INSERT INTO CMS_COUNTRY (COUNTRY_ID, NAME, SHORTNAME) VALUES ( '2', 'Denmark', 'DK');
-UPDATE CMS_SYSTEMID SET ID=ID+2 WHERE TABLE_KEY = 18;
 
