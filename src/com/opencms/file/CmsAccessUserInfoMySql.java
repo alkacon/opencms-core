@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.6 $ $Date: 1999/12/21 14:23:14 $
  */
  class CmsAccessUserInfoMySql extends A_CmsAccessUserInfo {
 
@@ -106,10 +106,12 @@ import com.opencms.core.*;
             oout.writeObject(object);
             oout.close();
             value=bout.toByteArray();
-            // write data to database             
-            m_statementUserinfoWrite.setInt(1,id);
-            m_statementUserinfoWrite.setBytes(2,value);
-            m_statementUserinfoWrite.executeUpdate();    
+            // write data to database     
+            synchronized(m_statementUserinfoWrite) {
+                m_statementUserinfoWrite.setInt(1,id);
+                m_statementUserinfoWrite.setBytes(2,value);
+                m_statementUserinfoWrite.executeUpdate();    
+            }
         
          }
         catch (SQLException e){
@@ -140,11 +142,14 @@ import com.opencms.core.*;
         
         Hashtable info=null;
         byte[] value;
+        ResultSet res = null;
        
         // get the additional user information data from the database
     	try {
-		    m_statementUserinfoRead.setInt(1,id);
-           	ResultSet res = m_statementUserinfoRead.executeQuery();
+            synchronized(m_statementUserinfoRead) {
+		        m_statementUserinfoRead.setInt(1,id);
+           	    res = m_statementUserinfoRead.executeQuery();
+            }
 	        if(res.next()) {
                 value = res.getBytes(C_USER_INFO);
                  // now deserialize the object
@@ -189,9 +194,12 @@ import com.opencms.core.*;
             oout.writeObject(infos);
             oout.close();
             value=bout.toByteArray();
-            m_statementUserinfoUpdate.setBytes(1,value);
-            m_statementUserinfoUpdate.setInt(2,id);
-      		m_statementUserinfoUpdate.executeUpdate();
+            
+            synchronized (m_statementUserinfoUpdate) {
+                m_statementUserinfoUpdate.setBytes(1,value);
+                m_statementUserinfoUpdate.setInt(2,id);
+      		    m_statementUserinfoUpdate.executeUpdate();
+            }
      
          }
         catch (SQLException e){
@@ -215,8 +223,10 @@ import com.opencms.core.*;
          throws CmsException {
                
 		try	{			
-            m_statementUserinfoDelete.setInt(1,id);
-          	m_statementUserinfoDelete.executeUpdate();
+            synchronized(m_statementUserinfoDelete) {
+                m_statementUserinfoDelete.setInt(1,id);
+          	    m_statementUserinfoDelete.executeUpdate();  
+            }
 		}catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}

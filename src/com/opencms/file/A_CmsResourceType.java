@@ -7,38 +7,38 @@ import java.util.*;
  * for a resource this resource-type is needed.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.2 $ $Date: 1999/12/21 14:23:14 $
  */
 abstract class A_CmsResourceType {	
 	
 	/**
-	 * Returns all ResourceTypes in a hashtable. The ResourceType-name is the
-	 * key into this hashtable.
+	 * Returns the type of this resource-type.
 	 * 
-	 * @return a hashtable with all possible ResourceTypes.
+	 * @return the type of this resource-type.
 	 */
-	abstract public Hashtable getResourceTypes();
-
-	/**
-	 * Returns the id for this resource-type.
+	abstract int getResourceType();
+    
+     /**
+	 * Returns the launcher type needed for this resource-type.
 	 * 
-	 * @return the id for this resource-type.
+	 * @return the launcher type for this resource-type.
 	 */
-	abstract long getId();
+	abstract int getLauncherType();
 	
 	/**
 	 * Returns the name for this resource-type.
 	 * 
 	 * @return the name for this resource-type.
 	 */
-	abstract public String getName();
-	
-	/**
-	 * Returns the launcher for this resource-type.<BR/>
-	 * The launcher will start the resource in its needed environment.
-	 * Possibly the resource will be processed bevore delivering.
+	abstract public String getResourceName();
+    
+     /**
+	 * Returns the name of the Java class loaded by the launcher.
+	 * This method returns <b>null</b> if the default class for this type is used.
 	 * 
-	 * @return the launcher for this resource-type.
+	 * @return the name of the Java class.
 	 */
-	abstract public Class getLauncher();
+	abstract public String getLauncherClass();
+
 }

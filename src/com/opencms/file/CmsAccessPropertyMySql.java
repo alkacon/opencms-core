@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/21 14:23:14 $
  */
 public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
 
@@ -110,9 +110,11 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
             value=bout.toByteArray();
             
             // create the object
-            m_statementPropertyWrite.setString(1,name);
-            m_statementPropertyWrite.setBytes(2,value);
-            m_statementPropertyWrite.executeUpdate();
+            synchronized (m_statementPropertyWrite) {
+                m_statementPropertyWrite.setString(1,name);
+                m_statementPropertyWrite.setBytes(2,value);
+                m_statementPropertyWrite.executeUpdate();
+            }
         } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch (IOException e){
@@ -136,11 +138,14 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
         
         Serializable property=null;
         byte[] value;
+        ResultSet res = null;
             
         // create get the property data from the database
     	try {
-            m_statementPropertyRead.setString(1,name);
-           	ResultSet res = m_statementPropertyRead.executeQuery();
+            synchronized (m_statementPropertyRead) {
+                m_statementPropertyRead.setString(1,name);
+           	    res = m_statementPropertyRead.executeQuery();
+            }
 			
             if(res.next()) {
 				value = res.getBytes(C_PROPERTY_VALUE);
@@ -186,10 +191,12 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
             oout.writeObject(object);
             oout.close();
             value=bout.toByteArray();   
-    
-            m_statementPropertyUpdate.setBytes(1,value);
-            m_statementPropertyUpdate.setString(2,name);
-		    m_statementPropertyUpdate.executeUpdate();
+            
+            synchronized (m_statementPropertyUpdate) {
+                m_statementPropertyUpdate.setBytes(1,value);
+                m_statementPropertyUpdate.setString(2,name);
+		        m_statementPropertyUpdate.executeUpdate();
+            }
 			
         }
         catch (SQLException e){
@@ -213,9 +220,10 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
         throws CmsException {
         
 		try	{
-             m_statementPropertyDelete.setString(1,name);
-             m_statementPropertyDelete.executeUpdate();
-		
+            synchronized (m_statementPropertyDelete) {
+                m_statementPropertyDelete.setString(1,name);
+                m_statementPropertyDelete.executeUpdate();
+            }           
 		}catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
@@ -229,10 +237,10 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
      private void initStatements()
        throws CmsException{
          try{
-          m_statementPropertyRead=m_Con.prepareStatement(C_PROPERTY_READ);
-          m_statementPropertyWrite=m_Con.prepareStatement(C_PROPERTY_WRITE);
-          m_statementPropertyUpdate=m_Con.prepareStatement(C_PROPERTY_UPDATE);
-          m_statementPropertyDelete=m_Con.prepareStatement(C_PROPERTY_DELETE);
+            m_statementPropertyRead=m_Con.prepareStatement(C_PROPERTY_READ);
+            m_statementPropertyWrite=m_Con.prepareStatement(C_PROPERTY_WRITE);
+            m_statementPropertyUpdate=m_Con.prepareStatement(C_PROPERTY_UPDATE);
+            m_statementPropertyDelete=m_Con.prepareStatement(C_PROPERTY_DELETE);
          } catch (SQLException e){
            
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			

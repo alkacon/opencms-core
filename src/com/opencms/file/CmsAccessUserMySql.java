@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.6 $ $Date: 1999/12/21 14:23:14 $
  */
  public class CmsAccessUserMySql extends A_CmsAccessUser implements I_CmsConstants  {
      
@@ -91,8 +91,7 @@ import com.opencms.core.*;
     * Prepared SQL Statement for reading a user.
     */
     private PreparedStatement m_statementUserReadId;
-    
-    
+        
     /**
     * Prepared SQL Statement for writing a user.
     */
@@ -148,11 +147,14 @@ import com.opencms.core.*;
          throws CmsException {
       
          A_CmsUser user=null;
+         ResultSet res = null;
    
          try{
              // read the user from the database
-             m_statementUserRead.setString(1,username);
-             ResultSet res = m_statementUserRead.executeQuery();
+             synchronized (m_statementUserRead) {
+                m_statementUserRead.setString(1,username);
+                res = m_statementUserRead.executeQuery();
+             }
              // create new Cms user object
 			 if(res.next()) {
                 user=new CmsUser(res.getInt(C_USER_ID),
@@ -178,11 +180,14 @@ import com.opencms.core.*;
          throws CmsException {
       
          A_CmsUser user=null;
+         ResultSet res = null;
          
          try{
              // read the user from the database
-             m_statementUserReadId.setInt(1,userid);
-             ResultSet res = m_statementUserReadId.executeQuery();
+             synchronized(m_statementUserReadId) {
+                m_statementUserReadId.setInt(1,userid);
+                res = m_statementUserReadId.executeQuery();
+             }
              // create new Cms user object
 			 if(res.next()) {
                 user=new CmsUser(res.getInt(C_USER_ID),
@@ -210,12 +215,15 @@ import com.opencms.core.*;
          throws CmsException {
          
          A_CmsUser user=null;
+         ResultSet res=null;
    
          try{
              // read the user from the database
-             m_statementUserReadPwd.setString(1,username);
-             m_statementUserReadPwd.setString(2,password);
-             ResultSet res = m_statementUserReadPwd.executeQuery();
+             synchronized (m_statementUserReadPwd) {
+                m_statementUserReadPwd.setString(1,username);
+                m_statementUserReadPwd.setString(2,password);
+                res = m_statementUserReadPwd.executeQuery();
+             }
              // create new Cms user object
 			 if(res.next()) {
                 user=new CmsUser(res.getInt(C_USER_ID),
@@ -246,23 +254,22 @@ import com.opencms.core.*;
 					   String description) 				
         throws CmsException {
 
-         A_CmsUser user=null;
-                 
+                        
          try {     
             // write new user to the database
-            m_statementUserWrite.setInt(1,0);
-            m_statementUserWrite.setString(2,name);
-            m_statementUserWrite.setString(3,password);
-            m_statementUserWrite.setString(4,description);
-            m_statementUserWrite.executeUpdate();
-            
-            // read the new user object
-            user=readUser(name);
+             synchronized (m_statementUserWrite) {
+                m_statementUserWrite.setInt(1,0);
+                m_statementUserWrite.setString(2,name);
+                m_statementUserWrite.setString(3,password);
+                m_statementUserWrite.setString(4,description);
+                m_statementUserWrite.executeUpdate();
+             }
+          
             
          } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
-         return user;
+         return readUser(name);
      }
 
 	/** 
@@ -277,8 +284,10 @@ import com.opencms.core.*;
 	 void deleteUser(String username)
          throws CmsException {
           try {
-            m_statementUserDelete.setString(1,username);
-            m_statementUserDelete.executeUpdate();
+              synchronized(m_statementUserDelete) {
+                m_statementUserDelete.setString(1,username);
+                m_statementUserDelete.executeUpdate();
+              }
          } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
@@ -313,10 +322,13 @@ import com.opencms.core.*;
      throws CmsException {
          Vector users=new Vector();
          A_CmsUser user=null;
+         ResultSet res =null;
          
          try {
             //  get all users
-            ResultSet res = m_statementUserGetAll.executeQuery();
+            synchronized(m_statementUserGetAll) {
+                res = m_statementUserGetAll.executeQuery();
+            }
             // create new Cms group objects
 		    while ( res.next() ) {
                     user=new CmsUser(res.getInt(C_USER_ID),
@@ -346,10 +358,12 @@ import com.opencms.core.*;
 	 void setPassword(String username, String newPassword)
          throws CmsException {
           try {     
-            // write new password
-            m_statementSetPwd.setString(1,newPassword);    
-            m_statementSetPwd.setString(2,username);
-            m_statementSetPwd.executeUpdate();
+              synchronized(m_statementSetPwd) {
+                // write new password
+                m_statementSetPwd.setString(1,newPassword);    
+                m_statementSetPwd.setString(2,username);
+                m_statementSetPwd.executeUpdate();
+              }
             
          } catch (SQLException e){
              throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			

@@ -1,20 +1,180 @@
 package com.opencms.file;
 
 import java.util.*;
+import java.sql.*;
 
 import com.opencms.core.*;
 
 /**
- * This abstract class describes the access to files and folders in the Cms.<BR/>
+ * This class describes the access to files and folders in the Cms.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
- * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/21 14:23:14 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/21 14:23:14 $
  */
-abstract class A_CmsAccessFile {
+ class CmsAccessFileMySql extends A_CmsAccessFile implements I_CmsConstants  {
 
+    /**
+    * This is the connection object to the database
+    */
+    private Connection m_Con  = null;
+    
+     /**
+     * SQL Command for writing a new resource. 
+     * A resource includes all data of the fileheader.
+     */   
+    private static final String C_RESOURCE_WRITE = "INSERT INTO RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    
+     /**
+     * SQL Command for writing a new file.
+     */   
+    private static final String C_FILE_WRITE = "INSERT INTO FILES VALUES(?,?,?)";
+     
+     /**
+     * SQL Command for reading a resource. 
+     * A resource includes all data of the fileheader.
+     */   
+    private static final String C_RESOURCE_READ = "SELECT * FROM RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+  
+     /**
+     * SQL Command for reading a new file.
+     */   
+    private static final String C_FILE_READ = "SELECT * FROM FILES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+      
+    /**
+     * SQL Command for updating a resource. 
+     * A resource includes all data of the fileheader.
+     */   
+    private static final String C_FIELE_UPDATE ="UPDATE RESOURCES SET "
+                                               +"RESOURCE_TYPE = ?"
+                                               +"RESOURCE_FLAGS = ?"
+                                               +"USER_ID = ?"
+                                               +"GROUP_ID = ?"
+                                               +"ACCESS_FLAGS = ?"
+                                               +"STATE = ?"
+                                               +"LOCKED_BY = ?"
+                                               +"LAUNCHER_TYPE = ?"
+                                               +"LAUNCHER_CLASSNAME = ?"
+                                               +"DATE_LASTMODIFIED = ?"
+                                               +"SIZE = ?";
+                                          
+                                          
+    
+        
+            
+  
+     /**
+     * Name of the column RESOURCE_NAME in the SQL tables RESOURCE and FILES.
+     */
+    private static final String C_RESOURCE_NAME="RESOURCE_NAME";
+    
+     /**
+     * Name of the column RESOURCE_TYPE in the SQL table RESOURCE.
+     */
+    private static final String C_RESOURCE_TYPE="RESOURCE_TYPE";
+    
+     /**
+     * Name of the column RESOURCE_FLAGS in the SQL table RESOURCE.
+     */
+    private static final String C_RESOURCE_FLAGS="RESOURCE_FLAGS";
+    
+     /**
+     * Name of the column USER_ID in the SQL table RESOURCE.
+     */
+    private static final String C_USER_ID="USER_ID";
+    
+      /**
+     * Name of the column GROUP_ID in the SQL table RESOURCE.
+     */
+    private static final String C_GROUP_ID="GROUP_ID";
+    
+      /**
+     * Name of the column PROJECT_ID in the SQL tables RESOURCE and FILES.
+     */
+    private static final String C_PROJECT_ID="PROJECT_ID";
+    
+    /**
+     * Name of the column ACCESS_FLAGS in the SQL table RESOURCE.
+     */
+    private static final String C_ACCESS_FLAGS="ACCESS_FLAGS";
+    
+     /**
+     * Name of the column STATE in the SQL table RESOURCE.
+     */
+    private static final String C_STATE="STATE";
+    
+     /**
+     * Name of the column LOCKED_BY in the SQL table RESOURCE.
+     */
+    private static final String C_LOCKED_BY="LOCKED_BY";
+    
+     /**
+     * Name of the column LAUNCHER_TYPE in the SQL table RESOURCE.
+     */
+    private static final String C_LAUNCHER_TYPE="LAUNCHER_TYPE";
+    
+     /**
+     * Name of the column LAUNCHER_CLASSNAME in the SQL table RESOURCE.
+     */
+    private static final String C_LAUNCHER_CLASSNAME="LAUNCHER_CLASSNAME";    
+   
+     /**
+     * Name of the column DATE_CREATED in the SQL table RESOURCE.
+     */
+    private static final String C_DATE_CREATED="DATE_CREATED";    
+      
+     /**
+     * Name of the column DATE_LASTMODIFIED in the SQL table RESOURCE.
+     */
+    private static final String C_DATE_LASTMODIFIED="DATE_LASTMODIFIED";    
+      
+     /**
+     * Name of the column SIZE in the SQL table RESOURCE.
+     */
+    private static final String C_SIZE="SIZE";
+   
+     /**
+     * Name of the column FILE_CONTENT in the SQL table FILE.
+     */
+    private static final String C_FILE_CONTENT="FILE_CONTENT";
+    
+    /**
+    * Prepared SQL Statement for writing a resource.
+    */
+    private PreparedStatement m_statementResourceWrite;
+
+    /**
+    * Prepared SQL Statement for writing a resource.
+    */
+    private PreparedStatement m_statementFileWrite;
+    
+    /**
+    * Prepared SQL Statement for reading a resource.
+    */
+    private PreparedStatement m_statementResourceRead;
+
+    /**
+    * Prepared SQL Statement for reading a file.
+    */
+    private PreparedStatement m_statementFileRead;
+    
+    /**
+     * Constructor, creartes a new CmsAccessFileMySql object and connects it to the
+     * user information database.
+     *
+     * @param driver Name of the mySQL JDBC driver.
+     * @param conUrl The connection string to the database.
+     * 
+     * @exception CmsException Throws CmsException if connection fails.
+     * 
+     */
+    public CmsAccessFileMySql(String driver,String conUrl)	
+        throws CmsException, ClassNotFoundException {
+        Class.forName(driver);
+        initConnections(conUrl);
+        initStatements();
+    }
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
      *
@@ -23,49 +183,179 @@ abstract class A_CmsAccessFile {
 	 * @param user The user who wants to create the file.
 	 * @param project The project in which the resource will be used.
 	 * @param filename The complete name of the new file (including pathinformation).
-	 * @param flags The flags of this resource.
 	 * @param contents The contents of the new file.
-	 * @param resourceType The resourceType of the new file.
+	 * @param type The resourcetype of the new file.
 	 * The keys for this Hashtable are the names for metadefinitions, the values are
 	 * the values for the metainfos.
 	 * 
 	 * @return file The created file.
 	 * 
-     * @exception CmsException Throws CmsException if operation was not succesful
-     */
-    
-	abstract CmsFile createFile(A_CmsUser user, A_CmsProject project,
-                                String filename, int flags,
-								byte[] contents, A_CmsResourceType resourceType)
-        throws CmsException;
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 CmsFile createFile(A_CmsUser user, A_CmsProject project, 
+                        String filename,int flags,
+                        byte[] contents, A_CmsResourceType resourceType) 
+							
+         throws CmsException {
+                 
+         CmsFile file=null;
+         
+           try {   
+               synchronized ( m_statementResourceWrite) {
+                // write new resource to the database
+                //RESOURCE_NAME
+                m_statementResourceWrite.setString(1,filename);
+                //RESOURCE_TYPE
+                m_statementResourceWrite.setInt(2,resourceType.getResourceType());
+                //RESOURCE_FLAGS
+                m_statementResourceWrite.setInt(3,flags);
+                //USER_ID
+                m_statementResourceWrite.setInt(4,user.getId());
+                //GROUP_ID
+                m_statementResourceWrite.setInt(5,user.getDefaultGroupId());
+                //PROJECT_ID
+                m_statementResourceWrite.setInt(6,project.getId());
+                //ACCESS_FLAGS
+                m_statementResourceWrite.setInt(7,C_ACCESS_DEFAULT_FLAGS);
+                //STATE
+                m_statementResourceWrite.setInt(8,C_STATE_NEW);
+                //LOCKED_BY
+                m_statementResourceWrite.setInt(9,C_UNKNOWN_ID);
+                //LAUNCHER_TYPE
+                m_statementResourceWrite.setInt(10,resourceType.getLauncherType());
+                //LAUNCHER_CLASSNAME
+                m_statementResourceWrite.setString(11,resourceType.getLauncherClass());
+                //DATE_CREATED
+                m_statementResourceWrite.setLong(12,System.currentTimeMillis());
+                //DATE_LASTMODIFIED
+                m_statementResourceWrite.setLong(13,System.currentTimeMillis());
+                //SIZE
+                m_statementResourceWrite.setInt(14,contents.length);
+                m_statementResourceWrite.executeUpdate();
+               }
+               synchronized (m_statementFileWrite) {
+                //RESOURCE_NAME
+                m_statementFileWrite.setString(1,filename);
+                //PROJECT_ID
+                m_statementFileWrite.setInt(2,project.getId());
+                //FILE_CONTENT
+                m_statementFileWrite.setBytes(3,contents);
+                m_statementFileWrite.executeUpdate();
+                   
+               }
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
+         return readFile(project,filename);
+     }
 	
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param filename The complete name of the new file (including pathinformation).
-	 * 
-	 * @return file The read file.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	abstract CmsFile readFile(A_CmsProject project, String filename)
-		throws CmsException;
-	
-	/**
-	 * Reads a file header from the Cms.<BR/>
-	 * The reading excludes the filecontent.
-	 * 
+	 *  
 	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
 	 * @return file The read file.
 	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	 CmsFile readFile(A_CmsProject project, String filename)
+         throws CmsException {
+              
+         CmsFile file=null;
+         ResultSet res =null;
+         ResultSet resfile =null;
+         
+         try {  
+              synchronized ( m_statementResourceRead) {
+                   // read resource data from database
+                   m_statementResourceRead.setString(1,filename);
+                   m_statementResourceRead.setInt(2,project.getId());
+                   res = m_statementResourceRead.executeQuery();
+               }
+               if(res.next()) {
+                   // read the file content form the database
+                   synchronized (m_statementFileRead) {
+                     m_statementFileRead.setString(1,filename);
+                     m_statementFileRead.setInt(2,project.getId());
+                     resfile = m_statementFileRead.executeQuery();  
+                   }
+                   // create new resource
+                   if (resfile.next()) {
+                        file = new CmsFile(res.getString(C_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCE_FLAGS),
+                                           res.getInt(C_USER_ID),
+                                           res.getInt(C_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID),
+                                           res.getInt(C_ACCESS_FLAGS),
+                                           res.getInt(C_STATE),
+                                           res.getInt(C_LOCKED_BY),
+                                           res.getInt(C_LAUNCHER_TYPE),
+                                           res.getString(C_LAUNCHER_CLASSNAME),
+                                           res.getLong(C_DATE_CREATED),
+                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           resfile.getBytes(C_FILE_CONTENT));
+                   }
+               } 
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
+         
+         return file;
+     }
+	
+	/**
+	 * Reads a file header from the Cms.<BR/>
+	 * The reading excludes the filecontent.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param filename The complete name of the new file (including pathinformation).
+	 * 
+	 * @return file The read file.
+	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract A_CmsResource readFileHeader(A_CmsProject project, String filename)
-		throws CmsException;
+	 A_CmsResource readFileHeader(A_CmsProject project, String filename)
+         throws CmsException {
+                 
+         CmsFile file=null;
+         ResultSet res =null;
+         ResultSet resfile =null;
+         
+         try {  
+              synchronized ( m_statementResourceRead) {
+                   // read resource data from database
+                   m_statementResourceRead.setString(1,filename);
+                   m_statementResourceRead.setInt(2,project.getId());
+                   res = m_statementResourceRead.executeQuery();
+               }
+               // create new resource
+               if(res.next()) {
+                        file = new CmsFile(res.getString(C_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCE_FLAGS),
+                                           res.getInt(C_USER_ID),
+                                           res.getInt(C_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID),
+                                           res.getInt(C_ACCESS_FLAGS),
+                                           res.getInt(C_STATE),
+                                           res.getInt(C_LOCKED_BY),
+                                           res.getInt(C_LAUNCHER_TYPE),
+                                           res.getString(C_LAUNCHER_CLASSNAME),
+                                           res.getLong(C_DATE_CREATED),
+                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           new byte[0]);
+                   }
+ 
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
+         
+         return file;
+       }
 	
 	/**
 	 * Writes a file to the Cms.<BR/>
@@ -75,8 +365,9 @@ abstract class A_CmsAccessFile {
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract void writeFile(A_CmsProject project, CmsFile file)
-		throws CmsException;
+	 void writeFile(A_CmsProject project, CmsFile file)
+        throws CmsException {
+      }
 	
 	/**
 	 * Writes the fileheader to the Cms.
@@ -95,9 +386,10 @@ abstract class A_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract void writeFileHeader(String project, 
+	 void writeFileHeader(String project, 
 						 A_CmsResource resource, Hashtable metainfos)
-		throws CmsException;
+         throws CmsException {
+     }
 
 	/**
 	 * Renames the file to the new name.
@@ -111,9 +403,10 @@ abstract class A_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */		
-	abstract void renameFile(String project, 
+	 void renameFile(String project, 
 					String oldname, String newname)
-		throws CmsException;
+         throws CmsException {
+     }
 	
 	/**
 	 * Deletes the file.
@@ -126,8 +419,9 @@ abstract class A_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract void deleteFile(String project, String filename)
-		throws CmsException;
+	 void deleteFile(String project, String filename)
+         throws CmsException {
+     }
 	
 	/**
 	 * Copies the file.
@@ -143,8 +437,9 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	abstract void copyFile(String project, String source, String destination)
-		throws CmsException, CmsDuplicateKeyException;
+	 void copyFile(String project, String source, String destination)
+         throws CmsException, CmsDuplicateKeyException {
+     }
 	
 	/**
 	 * Moves the file.
@@ -160,9 +455,10 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	abstract void moveFile(String project, String source, 
+	 void moveFile(String project, String source, 
 				  String destination)
-		throws CmsException, CmsDuplicateKeyException;
+         throws CmsException, CmsDuplicateKeyException {
+     }
 	
 	/**
 	 * Sets the resource-type of this resource.
@@ -177,9 +473,10 @@ abstract class A_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract void setResourceType(String project, String resource, 
+	 void setResourceType(String project, String resource, 
 								A_CmsResourceType newType, Hashtable metainfos)
-		throws CmsException;
+         throws CmsException {
+     }
 	
 	/**
 	 * Creates a new folder with the overgiven resourcetype and metainfos.
@@ -207,9 +504,11 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract CmsFolder createFolder(String project, String folder, 
+	 CmsFolder createFolder(String project, String folder, 
 								  String newFolderName, Hashtable metainfos)
-		throws CmsException, CmsDuplicateKeyException;
+         throws CmsException, CmsDuplicateKeyException {
+                 return null;
+     }
 
 	/**
 	 * Reads a folder from the Cms.<BR/>
@@ -226,8 +525,10 @@ abstract class A_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract CmsFolder readFolder(String project, String folder, String folderName)
-		throws CmsException;
+	 CmsFolder readFolder(String project, String folder, String folderName)
+         throws CmsException {
+                 return null;
+     }
 	
 	/**
 	 * Renames the folder to the new name.
@@ -246,9 +547,10 @@ abstract class A_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */		
-	abstract void renameFolder(String project, String oldname, 
+	 void renameFolder(String project, String oldname, 
 							 String newname, boolean force)
-		throws CmsException;
+         throws CmsException {
+     }
 	
 	/**
 	 * Deletes the folder.
@@ -266,8 +568,9 @@ abstract class A_CmsAccessFile {
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract void deleteFolder(String project, String foldername, boolean force)
-		throws CmsException;
+	 void deleteFolder(String project, String foldername, boolean force)
+         throws CmsException {
+     }
 	
 	/**
 	 * Copies a folder.
@@ -288,9 +591,11 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination foldername.
 	 */	
-	abstract void copyFolder(String project, String source, String destination, 
+	 void copyFolder(String project, String source, String destination, 
 						    boolean force)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException, CmsDuplicateKeyException 
+     {
+     }
 	
 	/**
 	 * Moves a folder.
@@ -311,9 +616,10 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	abstract void moveFolder(String project, String source, 
+	 void moveFolder(String project, String source, 
 						   String destination, boolean force)
-		throws CmsException, CmsDuplicateKeyException;
+         throws CmsException, CmsDuplicateKeyException {
+     }
 
 	/**
 	 * Returns a abstract Vector with all subfolders.<BR/>
@@ -327,8 +633,10 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract Vector getSubFolders(String project, String foldername)
-		throws CmsException;
+	 Vector getSubFolders(String project, String foldername)
+         throws CmsException {
+                 return null;
+     }
 	
 	/**
 	 * Returns a abstract Vector with all subfiles.<BR/>
@@ -342,8 +650,10 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract Vector getFilesInFolder(String project, String foldername)
-		throws CmsException;
+	 Vector getFilesInFolder(String project, String foldername)
+         throws CmsException {
+                 return null;
+     }
 	
 	/**
 	 * Changes the flags for this resource<BR/>
@@ -358,9 +668,10 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	abstract void chmod(String project, String filename, int flags)
-		throws CmsException;
-	
+	 void chmod(String project, String filename, int flags)
+         throws CmsException {
+     }
+     
 	/**
 	 * Changes the owner for this resource<BR/>
 	 * 
@@ -374,8 +685,9 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if the newOwner doesn't exists.
 	 */
-	abstract void chown(String project, String filename, String newOwner)
-		throws CmsException;
+	 void chown(String project, String filename, String newOwner)
+         throws CmsException {
+     }
 
 	/**
 	 * Changes the group for this resource<BR/>
@@ -390,8 +702,9 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if the newGroup doesn't exists.
 	 */
-	abstract void chgrp(String project, String filename, String newGroup)
-		throws CmsException;
+	 void chgrp(String project, String filename, String newGroup)
+         throws CmsException {
+     }
 
 	/**
 	 * Locks a resource<BR/>
@@ -408,8 +721,9 @@ abstract class A_CmsAccessFile {
 	 * for this resource. It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	abstract void lockFile(String project, String resource, boolean force)
-		throws CmsException;
+	 void lockFile(String project, String resource, boolean force)
+         throws CmsException {
+     }
 	
 	/**
 	 * Tests, if a resource was locked<BR/>
@@ -426,8 +740,10 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	abstract boolean isLocked(String project, String resource)
-		throws CmsException;
+	 boolean isLocked(String project, String resource)
+         throws CmsException {
+         return true;
+     }
 	
 	/**
 	 * Returns the user, who had locked the resource.<BR/>
@@ -444,8 +760,10 @@ abstract class A_CmsAccessFile {
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	abstract A_CmsUser lockedBy(String project, String resource)
-		throws CmsException;
+	 A_CmsUser lockedBy(String project, String resource)
+         throws CmsException {
+                 return null;
+     }
 
 	/**
 	 * Returns a MetaInformation of a file or folder.
@@ -459,8 +777,10 @@ abstract class A_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract String readMetaInformation(String project, String name, String meta)
-		throws CmsException;	
+	 String readMetaInformation(String project, String name, String meta)
+         throws CmsException {
+                 return null;
+     }
 
 	/**
 	 * Writes a couple of MetaInformation for a file or folder.
@@ -472,9 +792,10 @@ abstract class A_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void writeMetaInformations(String project, String name, 
+	 void writeMetaInformations(String project, String name, 
 									  Hashtable metainfos)
-		throws CmsException;
+         throws CmsException {
+     }
 
 	/**
 	 * Returns a list of all MetaInformations of a file or folder.
@@ -487,8 +808,10 @@ abstract class A_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract Vector readAllMetaInformations(String project, String name)
-		throws CmsException;
+	 Vector readAllMetaInformations(String project, String name)
+         throws CmsException {
+                 return null;
+     }
 	
 	/**
 	 * Deletes all MetaInformation for a file or folder.
@@ -499,8 +822,9 @@ abstract class A_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void deleteAllMetaInformations(String project, String resourcename)
-		throws CmsException;
+	 void deleteAllMetaInformations(String project, String resourcename)
+         throws CmsException {
+     }
 
 	/**
 	 * Deletes a MetaInformation for a file or folder.
@@ -512,9 +836,10 @@ abstract class A_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void deleteMetaInformation(String project, String resourcename, 
+	 void deleteMetaInformation(String project, String resourcename, 
 									  String meta)
-		throws CmsException;
+         throws CmsException {
+     }
 
 	/**
 	 * Declines a resource. The resource can be copied to the onlineproject.
@@ -525,8 +850,9 @@ abstract class A_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void declineResource(String project, String resource)
-		throws CmsException;
+	 void declineResource(String project, String resource)
+         throws CmsException {
+     }
 
 	/**
 	 * Rejects a resource. The resource will be copied to the following project,
@@ -538,6 +864,42 @@ abstract class A_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void rejectResource(String project, String resource)
-		throws CmsException;
+	 void rejectResource(String project, String resource)
+         throws CmsException {
+     }
+     
+     /**
+     * This method creates all preparted SQL statements required in this class.
+     * 
+     * @exception CmsException Throws CmsException if something goes wrong.
+     */
+     private void initStatements()
+       throws CmsException{
+         try{
+            m_statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
+            m_statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
+            m_statementResourceRead=m_Con.prepareStatement(C_RESOURCE_READ);
+            m_statementFileRead=m_Con.prepareStatement(C_FILE_READ);
+         } catch (SQLException e){
+           
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+     }
+    
+     /**
+     * Connects to the property database.
+     * 
+     * @param conUrl The connection string to the database.
+     * 
+     * @exception CmsException Throws CmsException if connection fails.
+     */
+    private void initConnections(String conUrl)	
+      throws CmsException {
+      
+        try {
+        	m_Con = DriverManager.getConnection(conUrl);
+       	} catch (SQLException e)	{
+         	throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
+    }
 }
