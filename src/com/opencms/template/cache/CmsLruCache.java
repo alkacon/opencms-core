@@ -1,8 +1,8 @@
 package com.opencms.template.cache;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
- * Date   : $Date: 2001/05/28 15:01:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2001/05/29 08:17:30 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -279,6 +279,19 @@ public class CmsLruCache {
             if(className.equals(((CmsElementDescriptor)item.key).getClassName())){
                 removeItem(item);
             }
+            item = item.next;
+        }
+    }
+
+    /**
+     * Deletes elements after publish. All elements that depend on the
+     * uri and all element that say so have to be removed.
+     * use only if this cache is for elements.
+     */
+    public void deleteElementsAfterPublish(){
+        CacheItem item = head;
+        while (item != null){
+
             item = item.next;
         }
     }

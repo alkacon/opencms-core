@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/05/18 10:11:07 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/05/29 08:17:30 $
+* Version: $Revision: 1.8 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.util.*;
  * used keys.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2001/05/18 10:11:07 $
+ * @version $Revision: 1.8 $ $Date: 2001/05/29 08:17:30 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
@@ -64,6 +64,9 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
 
     // if one of these parameters occures the element is dynamic
     private Vector m_dynamicParameter = null;
+
+    // indicates if this element should removed from cache after publish even if the template is unchanged.
+    private boolean renewAfterEveryPublish = false;
 
     // the timeout object
     private CmsTimeout m_timeout;
@@ -214,6 +217,22 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
     public void setTimeout(CmsTimeout timeout) {
         m_timecheck = true;
         m_timeout = timeout;
+    }
+
+    /**
+     * sets the renewAfterEveryPublish value to true. This means that this element
+     * is removed from cache every time a project is published even if its template or class
+     * was not changed in the project.
+     */
+    public void renewAfterEveryPublish(){
+        renewAfterEveryPublish = true;
+    }
+
+    /**
+     * @returns the renewAfterEveryPublish value.
+     */
+    public boolean shouldRenew(){
+        return renewAfterEveryPublish;
     }
 
     /**
