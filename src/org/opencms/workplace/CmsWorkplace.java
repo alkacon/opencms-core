@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/11 08:38:17 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/02/12 10:17:45 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 5.1
  */
@@ -387,7 +387,17 @@ public abstract class CmsWorkplace {
      * @return the path to the currently selected skin
      */
     public String getSkinUri() {
-        return m_cms.getRequestContext().getRequest().getWebAppUrl() + "/skins/modern/";        
+        return getSkinUri(m_cms);        
+    }
+    
+    /**
+     * Returns the path to the currently selected skin.<p>
+     * 
+     * @param cms the current CmsObject
+     * @return the path to the currently selected skin
+     */
+    public static String getSkinUri(CmsObject cms) {
+        return cms.getRequestContext().getRequest().getWebAppUrl() + "/skins/modern/";
     }
     
     /**

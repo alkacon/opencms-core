@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/11 16:12:04 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2004/02/12 10:17:45 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import org.opencms.cron.CmsCronTable;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.flex.CmsFlexCache;
+import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
@@ -56,7 +58,9 @@ import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.CmsWorkplaceMessages;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsRequestHttpServlet;
@@ -100,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -377,19 +381,56 @@ public final class OpenCmsCore {
      * the complete HTML code must be added here!<p>
      * 
      * @param t the caught Exception
-     * @param title the title to display
+     * @param request the servlet request
+     * @param cms the CmsObject
      * @return String containing the HTML code of the error message.
      */
-    private String createErrorBox(Throwable t, String title) {
-        StringBuffer output = new StringBuffer();
-        output.append(this.getErrormsg("C_ERRORPART_1"));
-        output.append(title);
-        output.append(this.getErrormsg("C_ERRORPART_2"));
-        output.append("\n\n");
-        output.append(CmsException.getStackTraceAsString(t));
-        output.append("\n\n");
-        output.append(this.getErrormsg("C_ERRORPART_3"));
-        return output.toString();
+    private String createErrorBox(Throwable t, HttpServletRequest request, CmsObject cms) {
+        StringBuffer result = new StringBuffer(8192);
+        // determine language of the browser to display localized messages
+        CmsAcceptLanguageHeaderParser headerParser = new CmsAcceptLanguageHeaderParser(request);
+        List locales = headerParser.getAcceptedLocales();
+        Locale locale;
+        if (locales != null && locales.size() > 0) {
+            // get first locale of accepted locales list
+            locale = (Locale)locales.get(0);
+        } else {
+            // no accepted locales found, use english locale for messages
+            locale = Locale.ENGLISH;
+        }
+        // get localized message bundle
+        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.C_BUNDLE_NAME, locale);
+        
+        // create the html for the output
+        result.append(this.getErrormsg("C_ERRORPART_1"));
+        // the document title
+        result.append(messages.key("error.system.message"));
+        result.append(this.getErrormsg("C_ERRORPART_2"));
+        // the dialog header
+        result.append(messages.key("error.system.message"));
+        result.append(this.getErrormsg("C_ERRORPART_3"));
+        // the error image
+        result.append(CmsWorkplace.getSkinUri(cms) + "explorer/report_error.gif");
+        result.append(this.getErrormsg("C_ERRORPART_4"));
+        // show error message, if present
+        if (t.getLocalizedMessage() != null) {
+            result.append("<b>" + CmsStringSubstitution.substitute(t.getLocalizedMessage(), "\n", "\n<br>") + "</b>");
+        }
+        // show system infos
+        result.append(messages.key("error.system.resource") + ":<b> " + cms.getRequestContext().getRequest().getRequestedResource() + "</b><br>");
+        result.append(messages.key("error.system.version") + ":<b> " + this.getSystemInfo().getVersionName() + "</b><br>");
+        result.append(messages.key("error.system.context") + ":<b> " + this.getSystemInfo().getOpenCmsContext() + "</b>");      
+        result.append(this.getErrormsg("C_ERRORPART_5"));
+        // detail button label
+        result.append(messages.key("button.detail"));
+        result.append(this.getErrormsg("C_ERRORPART_6"));
+        // exception details
+        result.append(CmsStringSubstitution.substitute(CmsException.getStackTraceAsString(t), "\n", "\n<br>"));
+        result.append(this.getErrormsg("C_ERRORPART_7"));
+        // close button label
+        result.append(messages.key("button.close"));
+        result.append(this.getErrormsg("C_ERRORPART_8"));
+        return result.toString();
     }
 
     /**
@@ -523,7 +564,7 @@ public final class OpenCmsCore {
             res.setHeader("Pragma", "no-cache");                
             if (isNotGuest && cms != null) {
                 try {
-                    res.getWriter().print(createErrorBox(t, cms.getRequestContext().getRequest().getWebAppUrl()));
+                    res.getWriter().print(createErrorBox(t, req, cms));
                 } catch (IOException e) {
                     // can be ignored
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/02/11 16:12:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/12 10:17:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -143,8 +143,6 @@ public class CmsSystemInfo {
     /**
      * Initializes the version for this OpenCms, will be called by 
      * CmsHttpServlet or CmsShell upon system startup.<p>
-     * 
-     * @param o instance of calling object
      */
     private void initVersion() {
         // init version information with static defaults
