@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/07 11:43:25 $
-* Version: $Revision: 1.376 $
+* Date   : $Date: 2003/05/07 15:32:08 $
+* Version: $Revision: 1.377 $
 
 *
 * This library is part of OpenCms -
@@ -36,6 +36,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.*;
 import com.opencms.flex.util.CmsLruHashMap;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
@@ -68,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.376 $ $Date: 2003/05/07 11:43:25 $
+ * @version $Revision: 1.377 $ $Date: 2003/05/07 15:32:08 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -6458,7 +6459,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
             }
             return user;
         } catch (CmsException ex) {
-            return new CmsUser(C_UNKNOWN_ID, id + "", "deleted user");
+            return new CmsUser(C_UNKNOWN_ID, CmsUUID.getNullUUID(), id + "", "deleted user");
         }
     }
     /**

@@ -5,6 +5,7 @@ create table CMS_SYSTEMPROPERTIES       (SYSTEMPROPERTY_ID int not null,
                                          unique(SYSTEMPROPERTY_NAME));
 
 create table CMS_USERS                  (USER_ID int not null,
+										 USER_UUID VARCHAR(36) NOT NULL,
                                          USER_NAME VARCHAR(64) not null,
                                          USER_PASSWORD VARCHAR(32) not null,
                                          USER_RECOVERY_PASSWORD VARCHAR(32) not null,
@@ -20,7 +21,8 @@ create table CMS_USERS                  (USER_ID int not null,
                                          USER_ADDRESS VARCHAR(100) not null,
                                          USER_SECTION VARCHAR(50) not null,
                                          USER_TYPE int not null,
-                                         primary key(USER_ID), unique(USER_NAME));
+                                         primary key(USER_ID), 
+                                         UNIQUE (USER_NAME, USER_UUID));
 
 create table CMS_GROUPS                 (GROUP_ID int not null auto_increment,
                                          PARENT_GROUP_ID int not null,

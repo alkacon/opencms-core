@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/07 11:43:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/07 15:32:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceBroker;
 import com.opencms.file.genericSql.I_CmsUserAccess;
+import com.opencms.flex.util.CmsUUID;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * MySQL implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/07 11:43:25 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/07 15:32:08 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -92,29 +93,13 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
      * @return the created user.
      * @throws thorws CmsException if something goes wrong.
      */
-    public CmsUser addUser(
-        String name,
-        String password,
-        String description,
-        String firstname,
-        String lastname,
-        String email,
-        long lastlogin,
-        long lastused,
-        int flags,
-        Hashtable additionalInfos,
-        CmsGroup defaultGroup,
-        String address,
-        String section,
-        int type)
-        throws CmsException {
+    public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         int id = m_SqlQueries.nextPkId("C_TABLE_USERS");
         byte[] value = null;
         PreparedStatement statement = null;
         Connection con = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
             // serialize the hashtable
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             ObjectOutputStream oout = new ObjectOutputStream(bout);
@@ -122,26 +107,32 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
             oout.close();
             value = bout.toByteArray();
 
-            // write data to database
+            // user data is project independent- use a "dummy" project ID to receive
+            // a JDBC connection from the offline connection pool
+            con = m_SqlQueries.getConnection();
             statement = con.prepareStatement(m_SqlQueries.get("C_USERS_ADD"));
 
             statement.setInt(1, id);
-            statement.setString(2, name);
+            statement.setString(2, (new CmsUUID()).toString());
+            statement.setString(3, name);
+
             // crypt the password with MD5
-            statement.setString(3, digest(password));
-            statement.setString(4, digest(""));
-            statement.setString(5, description);
-            statement.setString(6, firstname);
-            statement.setString(7, lastname);
-            statement.setString(8, email);
-            statement.setTimestamp(9, new Timestamp(lastlogin));
-            statement.setTimestamp(10, new Timestamp(lastused));
-            statement.setInt(11, flags);
-            statement.setBytes(12, value);
-            statement.setInt(13, defaultGroup.getId());
-            statement.setString(14, address);
-            statement.setString(15, section);
-            statement.setInt(16, type);
+            statement.setString(4, digest(password));
+
+            statement.setString(5, digest(""));
+            statement.setString(6, description);
+            statement.setString(7, firstname);
+            statement.setString(8, lastname);
+            statement.setString(9, email);
+            statement.setTimestamp(10, new Timestamp(lastlogin));
+            statement.setTimestamp(11, new Timestamp(lastused));
+            statement.setInt(12, flags);
+            statement.setBytes(13, value);
+            statement.setInt(14, defaultGroup.getId());
+            statement.setString(15, address);
+            statement.setString(16, section);
+            statement.setInt(17, type);
+
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);

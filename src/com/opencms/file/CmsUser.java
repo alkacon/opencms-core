@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/05/07 15:32:08 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,18 @@
 
 package com.opencms.file;
 
-import java.util.*;
-import com.opencms.core.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
+
+import java.util.Hashtable;
 
 
  /**
  * Describes the Cms user object and the methods to access it.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.34 $ $Date: 2003/05/07 15:32:08 $
  */
 
 public class CmsUser implements I_CmsConstants, Cloneable {
@@ -130,20 +133,13 @@ public class CmsUser implements I_CmsConstants, Cloneable {
      * C_USER_TYPE_WEBUSER for webuser.
      */
     private int m_type = C_UNKNOWN_INT;
-
-
-     /**
-     * Constructor, creates a new Cms user object.
-     *
-     * @param id The id of the new user.
-     * @param name The name of the new user.
-     * @param description The description of the new user.
+    
+    /**
+     * The user's UUID.
      */
-    public CmsUser(int id, String name,String description) {
-        m_id=id;
-        m_name=name;
-        m_description= description;
-    }
+    private CmsUUID m_UUID;
+
+
     /**
      * Constructor, creates a new Cms user object.
      *
@@ -151,38 +147,62 @@ public class CmsUser implements I_CmsConstants, Cloneable {
      * @param name The name of the new user.
      * @param description The description of the new user.
      */
-    public CmsUser (int id, String name, String password, String recoveryPassword, String description, String firstname,
-                    String lastname, String email, long lastlogin, long lastused, int flags,
-                    Hashtable additionalInfo, CmsGroup defaultGroup, String address,
-                    String section, int typ) {
+    public CmsUser(int id, CmsUUID uuid, String name, String description) {
+        this(id, uuid, name, null, null, description, null, null, null, 0, 0, 0, null, null, null, null, 0);
+    }
 
-        m_id=id;
-        m_name=name;
+    /**
+     * Constructor, creates a new Cms user object.
+     *
+     * @param id The id of the new user.
+     * @param name The name of the new user.
+     * @param description The description of the new user.
+     */
+    public CmsUser(int id, CmsUUID uuid, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfo, CmsGroup defaultGroup, String address, String section, int typ) {
+
+        m_id = id;
+        m_UUID = uuid;
+        m_name = name;
         m_password = password;
         m_recoveryPassword = recoveryPassword;
-        m_description= description;
+        m_description = description;
         m_firstname = firstname;
         m_lastname = lastname;
         m_email = email;
         m_lastlogin = lastlogin;
         m_lastused = lastused;
-        m_flags  = flags;
+        m_flags = flags;
         this.setDefaultGroup(defaultGroup);
-        m_additionalInfo=additionalInfo;
+        m_additionalInfo = additionalInfo;
         m_address = address;
         m_section = section;
         m_type = typ;
     }
+    
     /**
     * Clones the CmsResource by creating a new CmsUser Object.
+    * 
     * @return Cloned CmsUser.
     */
     public Object clone() {
-        CmsUser user= new CmsUser(m_id,new String(m_name),new String(m_password),new String(m_recoveryPassword),
-                                  new String (m_description),new String(m_firstname),
-                                  new String(m_lastname),new String(m_email),m_lastlogin,
-                                  m_lastused, m_flags, getAdditionalInfo(),
-                                  m_defaultGroup, new String(m_address), new String(m_section),m_type);
+        CmsUser user = new CmsUser(
+            m_id, 
+            new CmsUUID(m_UUID.toByteArray()),
+            new String(m_name), 
+            new String(m_password), 
+            new String(m_recoveryPassword), 
+            new String(m_description), 
+            new String(m_firstname), 
+            new String(m_lastname), 
+            new String(m_email), 
+            m_lastlogin, 
+            m_lastused, 
+            m_flags, 
+            getAdditionalInfo(), 
+            m_defaultGroup, 
+            new String(m_address), 
+            new String(m_section), 
+            m_type);
         return user;
     }
     
@@ -511,6 +531,16 @@ public class CmsUser implements I_CmsConstants, Cloneable {
      void setType(int value) {
          m_type = value;
      }
+     
+     /**
+      * Returns the user's UUID.
+      * 
+      * @return CmsUUID
+      */
+     public CmsUUID getUUID() {
+         return m_UUID;
+     }
+     
     /**
      * Returns a string-representation for this object.
      * This can be used for debugging.
@@ -518,17 +548,12 @@ public class CmsUser implements I_CmsConstants, Cloneable {
      * @return string-representation for this object.
      */
     public String toString() {
-        StringBuffer output=new StringBuffer();
-        output.append("[User]:");
-        output.append(m_name);
-        output.append(" , Id=");
-        output.append(m_id);
-        output.append(" , flags=");
-        output.append(getFlags());
-        output.append(" , type=");
-        output.append(getType());
-        output.append(" :");
-        output.append(m_description);
-        return output.toString();
+        String str = "[" + this.getClass().getName() + ":\n";
+        
+        str += "name: " + this.getName() + "\n";
+        str += "UUID: " + this.getUUID().toString() + "\n";
+        str += "]\n";
+
+        return str;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2003/05/07 11:43:26 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/05/07 15:32:08 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,12 +38,15 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsProject;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Hashtable;
 import java.util.Properties;
 
 import source.org.apache.java.util.Configurations;
@@ -55,10 +58,18 @@ import source.org.apache.java.util.Configurations;
  * 
  * <p>
  * 
+ * Things to know:
+ * <ul>
+ * <li>"name" parameters (e.g. "attributeName") identify an attribute in a table</li>
+ * <li>"key" parameters (e.g. "queryKey") identify a key in query.properties to receive a SQL or attribute name</li>
+ * </ul>
+ * 
+ * <p>
+ * 
  * TODO: multiple instances of this class should not load the same property hashes multiple times.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.46 $ $Date: 2003/05/07 11:43:26 $
+ * @version $Revision: 1.47 $ $Date: 2003/05/07 15:32:08 $
  */
 public class CmsQueries extends Object {
 
@@ -233,9 +244,24 @@ public class CmsQueries extends Object {
     public Connection getConnection(CmsProject project) throws SQLException {
         return getConnection(project.getId());
     }
+    
+    /**
+     * Receives a JDBC connection from the (offline) pool. Use this method with caution! 
+     * Using this method to makes only sense to read/write project independent data such 
+     * as user data!
+     * 
+     * @return a JDBC connection from the (offline) pool 
+     * @throws SQLException if a database access error occurs
+     */
+    public Connection getConnection() throws SQLException {
+        // To receive a JDBC connection from the offline pool, a non-existent
+        // dummy project-ID is used.
+        return getConnection(Integer.MIN_VALUE);
+    }
 
     /**
-     * Receives a JDBC connection from the backup pool.
+     * Receives a JDBC connection from the backup pool. Use this method with caution! 
+     * Using this method to makes only sense to read/write data to backup data. 
      * 
      * @return a JDBC connection from the backup pool 
      * @throws SQLException if a database access error occurs
@@ -394,12 +420,12 @@ public class CmsQueries extends Object {
      * if another database server requires a different handling of byte attributes in tables.
      * 
      * @param res the result set
-     * @param columnName the name of the table attribute
+     * @param attributeName the name of the table attribute
      * @return byte[]
      * @throws SQLException
      */
-    public byte[] getBytes(ResultSet res, String columnName) throws SQLException {       
-        return res.getBytes(columnName);
+    public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {       
+        return res.getBytes(attributeName);
     }
-
+    
 }
