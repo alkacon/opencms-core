@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/01/26 13:52:40 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/28 11:41:46 $
  */
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent 
         implements I_CmsLogChannels, I_CmsWpConstants {
@@ -72,12 +72,12 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
      * @return Processed button.
      * @exception CmsException
      */
-    public String getButton(String name, String action, String alt, String href) throws CmsException {
+    public String getButton(String name, String action, String alt, String href, Object callingObject) throws CmsException {
         setData("name", name);
         setData("action", action);
         setData("alt", alt);
         setData("href", href);
-        return getProcessedDataValue("defaultbutton");                
+        return getProcessedDataValue("defaultbutton", callingObject);                
     }        
     
     /**
@@ -85,8 +85,8 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
      * @return Processed button separator.
      * @exception CmsException
      */
-    public String getButtonSeparator() throws CmsException {
-        return getProcessedDataValue("buttonseparator");
+    public String getButtonSeparator(Object callingObject) throws CmsException {
+        return getProcessedDataValue("buttonseparator", callingObject);
     }    
     
      /**

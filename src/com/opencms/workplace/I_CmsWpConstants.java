@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/27 15:01:43 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/28 11:42:01 $
  */
 public interface I_CmsWpConstants {
 
@@ -62,10 +62,20 @@ public interface I_CmsWpConstants {
    public static final String C_TAG_ERRORBOX="errorbox";
 
    /**
-    * Name of the select tag in the input definiton template
+    * Name of the select start tag in the input definiton template
     */
-   public static final String C_TAG_SELECTBOX_HEADER="selectbox.start";
+   public static final String C_TAG_SELECTBOX_START="selectbox.start";
 
+   /**
+    * Name of the select end tag in the input definiton template
+    */
+   public static final String C_TAG_SELECTBOX_END="selectbox.end";
+   
+   /**
+    * Name of the selectbox "class" option tag in the input definiton template
+    */
+   public static final String C_TAG_SELECTBOX_CLASS="selectbox.class";
+   
    /**
     * Name of the (select) option tag in the input definiton template
     */
@@ -152,8 +162,26 @@ public interface I_CmsWpConstants {
     /** Name of the select box */
     public static final String C_SELECTBOX_NAME = "name";
     
-    /** Value of the select box */
-    public static final String C_SELECTBOX_VALUE = "value";
+    /** Stylesheet class string of the select box */
+    public static final String C_SELECTBOX_CLASS = "class";
+
+    /** Stylesheet class name of the select box */
+    public static final String C_SELECTBOX_CLASSNAME = "classname";
+    
+    /** Width of the select box */
+    public static final String C_SELECTBOX_WIDTH = "width";
+
+    /** Onchange of the select box */
+    public static final String C_SELECTBOX_ONCHANGE = "onchange";
+    
+    /** Method of the select box */
+    public static final String C_SELECTBOX_METHOD = "method";
+    
+    /** option name of the select box */
+    public static final String C_SELECTBOX_OPTIONNAME = "name";
+    
+    /** option value of the select box */
+    public static final String C_SELECTBOX_OPTIONVALUE = "value";
         
     /** Static text in the error box */
     public static final String C_ERROR_MSG_REASON = "msgreason";    

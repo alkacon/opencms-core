@@ -14,7 +14,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTONSEPARATOR&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/01/27 15:01:43 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/28 11:41:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsButtonSeparator extends A_CmsWpElement implements I_CmsWpElement {    
@@ -39,7 +39,7 @@ public class CmsButtonSeparator extends A_CmsWpElement implements I_CmsWpElement
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 
         CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
-        String result = buttondef.getButtonSeparator();
+        String result = buttondef.getButtonSeparator(callingObject);
         return result; 
     }                      
 }
