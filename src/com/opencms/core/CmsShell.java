@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/10/09 15:53:32 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2000/10/09 20:40:10 $
+ * Version: $Revision: 1.51 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.50 $ $Date: 2000/10/09 15:53:32 $
+ * @version $Revision: 1.51 $ $Date: 2000/10/09 20:40:10 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -53,6 +53,9 @@ public class CmsShell implements I_CmsConstants {
 	 * The open-cms.
 	 */
 	private A_OpenCms m_openCms;
+
+	/** Comment Char. */
+	public static final String COMMENT_CHAR = "#";
 
 	private CmsShellCommands shellCommands;
 	
@@ -71,6 +74,8 @@ private void call(Vector command)
 	String toCall;
 	command.copyInto(splittet);
 	toCall = splittet[0];
+	if (toCall.startsWith(COMMENT_CHAR))
+		return;
 	Class paramClasses[] = new Class[splittet.length - 1];
 	String params[] = new String[splittet.length - 1];
 	for (int z = 0; z < splittet.length - 1; z++)
