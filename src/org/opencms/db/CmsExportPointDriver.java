@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2003/11/14 10:09:12 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/03/07 19:22:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,27 +36,38 @@ import org.opencms.main.OpenCms;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Provides methods to write export points to the "real" file system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsExportPointDriver {
 
     /** The configured exportpoints */
-    private Hashtable m_exportpointStorage = null;
+    private Set m_exportpoints;
+    
+    /** The exportpoints resolved to a lookup map */
+    private HashMap m_exportpointLookupMap;
 
     /**
      * Constructor for a CmsExportPointDriver.<p>
      *
-     * @param exportpoints the vfs directories to export
+     * @param exportpoints the list of export points
      */
-    public CmsExportPointDriver(Hashtable exportpoints) {
-        m_exportpointStorage = exportpoints;
+    public CmsExportPointDriver(Set exportpoints) {
+        m_exportpoints = exportpoints;
+        m_exportpointLookupMap = new HashMap();
+        Iterator i = m_exportpoints.iterator();
+        while (i.hasNext()) {
+            CmsExportPoint point = (CmsExportPoint)i.next();
+            m_exportpointLookupMap.put(point.getUri(), point.getDestination());
+        }
     }
     
     /**
@@ -67,8 +78,10 @@ public class CmsExportPointDriver {
      * @return the absolute path of an export point in the real file system
      */
     private String absoluteName(String filename, String exportpoint) {
-        String exportpath = (String)m_exportpointStorage.get(exportpoint);
-        return exportpath + filename.substring(exportpoint.length());
+        StringBuffer exportpath = new StringBuffer(128);        
+        exportpath.append((String)m_exportpointLookupMap.get(exportpoint));
+        exportpath.append(filename.substring(exportpoint.length()));
+        return exportpath.toString();
     }
     
     /**
@@ -114,8 +127,37 @@ public class CmsExportPointDriver {
             s.write(content);
             s.close();
         } catch (Exception e) {
-            // do nothing        
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Couldn't write to export point file " + discFile.getAbsolutePath(), e);
+            }   
         }
-        content = null;
     }
+    
+    /**
+     * Returns the set of all VFS paths that are exported as an export point.<p>
+     * 
+     * @return the set of all VFS paths that are exported as an export point
+     */
+    public Set getExportPointPaths() {
+        return m_exportpointLookupMap.keySet();
+    }
+        
+    /**
+     * Returns the export point path of the given resource,
+     * or <code>null</code> if the resource is not contained in 
+     * any export point.<p>
+     *
+     * @param filename the uri of a resource in the OpenCms VFS
+     * @return the matching export points path or <code>null</code> if no export point matches
+     */
+    public String getExportPoint(String filename) {
+        Iterator i = getExportPointPaths().iterator();
+        while (i.hasNext()) {
+            String point = (String)i.next();
+            if (filename.startsWith(point)) {
+                return point;
+            }
+        }
+        return null;
+    }      
 }
