@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/27 17:28:12 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/09/28 08:50:48 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.13 $ $Date: 2000/09/27 17:28:12 $
+ * @version $Revision: 1.14 $ $Date: 2000/09/28 08:50:48 $
  */
 public class CmsQueries
 {
@@ -299,7 +299,12 @@ public class CmsQueries
 	public String C_COUNTRY_GETALLCOUNTRIES = "SELECT COUNTRY_ID, NAME, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "COUNTRY";
 	public Integer C_SITEURLS_GETALLSITEURLS_KEY = new Integer(462);
 	public String C_SITEURLS_GETALLSITEURLS = "SELECT URL_ID, URL, SITE_ID, PRIMARYURL FROM " + C_DATABASE_PREFIX + "SITE_URLS";
-	
+	public Integer C_SITE_DELETESITE_KEY = new Integer(463);
+	public String C_SITE_DELETESITE = "UPDATE " + C_DATABASE_PREFIX + "SITES SET DELETED=1 WHERE SITE_ID = ?";
+	public Integer C_SITE_UPDATESITE_KEY = new Integer(464);
+	public String C_SITE_UPDATESITE = "UPDATE " + C_DATABASE_PREFIX + "SITES SET NAME = ?, DESCRIPTION = ?, CATEGORY_ID = ?, LANGUAGE_ID = ?, COUNTRY_ID = ? WHERE SITE_ID = ?";
+	public Integer C_SITEURLS_UPDATESITEURLS_KEY = new Integer(465);
+	public String C_SITEURLS_UPDATESITEURLS = "UPDATE " + C_DATABASE_PREFIX + "SITE_URLS SET URL = ? WHERE SITE_ID = ?";
 	
 	//statements needen for newSite
 	public Integer C_SITES_MAXID_KEY = new Integer(452);
