@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/08/08 14:08:22 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/08/11 12:58:57 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/08/08 14:08:22 $
+ * @version $Revision: 1.14 $ $Date: 2000/08/11 12:58:57 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -88,14 +88,13 @@ public class CmsImport implements I_CmsConstants {
 		m_importFile = importFile;
 		m_importPath = importPath;
 		m_cms = cms;
-
  
 		// open the import resource
 		getImportResource();
 
 		// read the xml-config file
-		getXmlConfigFile();
-
+		getXmlConfigFile(); 
+		
 		// import the resources
 		importResources();
 	}
@@ -246,7 +245,7 @@ public class CmsImport implements I_CmsConstants {
 		try {			
 			String path = m_importPath + destination.substring(0,destination.lastIndexOf("/")+1);
 			String name = destination.substring((destination.lastIndexOf("/")+1),destination.length());
-			String fullname=null;;
+			String fullname=null;
 	        int state=C_STATE_NEW;
 			
 			if(source == null) {
@@ -256,7 +255,7 @@ public class CmsImport implements I_CmsConstants {
 				   fullname = cmsfolder.getAbsolutePath();                             
 				   state=C_STATE_NEW;
 				} catch (CmsException e) {
-					// an exception is thrown if the folder already exists
+					// an exception is thrown if the folder already exists 
 				   state=C_STATE_CHANGED;
 				}
 
@@ -311,7 +310,7 @@ public class CmsImport implements I_CmsConstants {
 			for(int i = 0; i < fileNodes.getLength(); i++) {
 				currentElement = (Element) fileNodes.item(i);
 				
-				// get all informations for a file-import
+				// get all information for a file-import
 				source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
 				destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
 				type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
@@ -344,7 +343,7 @@ public class CmsImport implements I_CmsConstants {
 		} catch(Exception exc) {
 			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}		
-		// all is done, unlock the resource
-		m_cms.unlockResource(m_importPath);
+		// all is done, unlock the resource 
+		m_cms.unlockResource(m_importPath); 
 	}
 }

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/08/08 14:08:22 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2000/08/11 12:58:57 $
+ * Version: $Revision: 1.103 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.102 $ $Date: 2000/08/08 14:08:22 $ 
+ * @version $Revision: 1.103 $ $Date: 2000/08/11 12:58:57 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -813,10 +813,10 @@ public class CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void exportResources(String exportFile, String exportPath)
+	public void exportResources(String exportFile, String[] exportPaths)
 		throws CmsException {
 		// export the resources
-		m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, this);
+		m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this);
 	}
 	/**
 	 * Exports cms-resources to zip.
@@ -827,10 +827,10 @@ public class CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void exportResources(String exportFile, String exportPath, boolean includeSystem)
+	public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem)
 		throws CmsException {
 		// export the resources
-		m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, this, includeSystem);
+		m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem);
 	}
 	 /**
 	  * Forwards a task to a new user.
@@ -1313,7 +1313,7 @@ public class CmsObject implements I_CmsConstants {
 		throws CmsException {
 		m_rb.moveFolder(m_context.currentUser(), m_context.currentProject(), 
 					    source, destination );
-	 } 
+	 }
 	/**
 	 * Returns the onlineproject. This is the default project. All anonymous 
 	 * (or guest) user will see the rersources of this project.
@@ -2017,7 +2017,7 @@ public class CmsObject implements I_CmsConstants {
 		 throws CmsException {
 		 m_rb.renameFolder(m_context.currentUser(), m_context.currentProject(), 
 					       oldname, newname);
-	 } 
+	 }
 	/**
 	 * Returns the root-folder object.
 	 * 

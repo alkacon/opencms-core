@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/08/08 14:08:22 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/08/11 12:58:57 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/08/08 14:08:22 $
+ * @version $Revision: 1.7 $ $Date: 2000/08/11 12:58:57 $
  */
 public class CmsExport implements I_CmsConstants {
 	
@@ -89,35 +89,59 @@ public class CmsExport implements I_CmsConstants {
 	 * @param cms the cms-object to work with.
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
-	public CmsExport(String exportFile, String exportPath, CmsObject cms) 
+	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms) 
 		throws CmsException {
-		this(exportFile, exportPath, cms, false);
+		this(exportFile, exportPaths, cms, false);
 	}
 	/**
 	 * This constructs a new CmsImport-object which imports the resources.
 	 * 
 	 * @param importFile the file or folder to import from.
-	 * @param importPath the path to the cms to import into.
+	 * @param exportPaths the paths of folders and files to write into the exportFile
 	 * @param cms the cms-object to work with.
-	 * @param includeSystem desides, if to include the system-stuff.
+	 * @param includeSystem decides, if to include the system-stuff.
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
-	public CmsExport(String exportFile, String exportPath, CmsObject cms, boolean includeSystem) 
+	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem) 
 		throws CmsException {
-
-		m_exportFile = exportFile;
-		m_exportPath = exportPath;
+		
+		m_exportFile = exportFile; 
 		m_cms = cms;
 		m_includeSystem = includeSystem;
 
+		Vector folderNames = new Vector();
+		Vector fileNames = new Vector();
+		for (int i=0; i<exportPaths.length; i++) { 
+			if (exportPaths[i].endsWith(C_ROOT)) {
+				folderNames.addElement(exportPaths[i]);
+			} else {
+				fileNames.addElement(exportPaths[i]);
+			}
+		}
+		// excplicitly include system if chosen
+		if (includeSystem) {
+			folderNames.addElement("/system/");
+		}
+		
 		// open the import resource
 		getExportResource();
 		
 		// create the xml-config file
 		getXmlConfigFile();
 		
-		// import the resources
-		exportResources(m_exportPath);
+		// remove the possible redundancies in the list of paths
+		checkRedundancies(folderNames, fileNames);
+		
+		// export the folders
+		for (int i=0; i<folderNames.size(); i++) {
+			String path = (String) folderNames.elementAt(i);
+			// first add superfolders to the xml-config file
+			addSuperFolders(path);
+			exportResources(path);
+		}
+
+		// export the single files
+		addSingleFiles(fileNames);
 		
 		// write the document to the zip-file
 		writeXmlConfigFile( );
@@ -152,6 +176,86 @@ public class CmsExport implements I_CmsConstants {
 		Text text = m_docXml.createTextNode(value);
 		newElement.appendChild(text);
 	}
+/**
+ * adds all files with names in fileNames to the xml-config file
+ * Creation date: (10.08.00 17:12:05)
+ * @param fileNames java.util.Vector of Strings, e.g. /folder/index.html
+ */
+public void addSingleFiles(Vector fileNames) throws CmsException {
+	if (fileNames != null) {
+		for (int i = 0; i < fileNames.size(); i++) {
+			CmsFile file = m_cms.readFile((String) fileNames.elementAt(i));
+			exportFile(file);
+		}
+	}
+}
+/**
+ * Adds the superfolders of path to the config file, starting at the top, excluding the root folder
+ * Creation date: (10.08.00 11:07:58)
+ * @param path java.lang.String the path of the folder in the filesystem
+ */
+public void addSuperFolders(String path) throws CmsException {
+	Vector superFolders = new Vector();
+	while (path.length() > C_ROOT.length()) {
+		superFolders.addElement(path);
+		path = path.substring(0, path.length() - 1);
+		path = path.substring(0, path.lastIndexOf(C_ROOT)+1);
+	}
+	for (int i = superFolders.size()-1; i >= 0; i--) { 
+		CmsFolder folder = m_cms.readFolder((String) superFolders.elementAt(i));
+		writeXmlEntrys(folder);
+	}
+}
+/** Check whether some of the resources are redundant because a superfolder has also
+  *  been selected or a file is included in a folder and change the parameter Vectors
+  *  
+  * @param folderNames contains the full pathnames of all folders
+  * @param fileNames contains the full pathnames of all files 
+  */
+
+private void checkRedundancies(Vector folderNames, Vector fileNames) {
+	int i, j;
+	if (folderNames == null) {
+		return;
+	}
+	Vector redundant = new Vector();
+	int n = folderNames.size(); 
+	if (n > 1) {
+		// otherwise no check needed, because there is only one resource
+
+		for (i = 0; i < n; i++) {
+			redundant.addElement(new Boolean(false));
+		}
+		for (i = 0; i < n - 1; i++) {
+			for (j = i + 1; j < n; j++) {
+				if (((String) folderNames.elementAt(i)).length() < ((String) folderNames.elementAt(j)).length()) {
+					if (((String) folderNames.elementAt(j)).startsWith((String) folderNames.elementAt(i))) {
+						redundant.setElementAt(new Boolean(true), j);
+					}
+				} else {
+					if (((String) folderNames.elementAt(i)).startsWith((String) folderNames.elementAt(j))) {
+						redundant.setElementAt(new Boolean(true), i);
+					}
+				}
+			}
+		}
+		for (i = n - 1; i >= 0; i--) {
+			if (((Boolean) redundant.elementAt(i)).booleanValue()) {
+				folderNames.removeElementAt(i);
+			}
+		}
+	}
+	// now remove the files who are included automatically in a folder
+	// otherwise there would be a zip exception
+ 
+	for (i = fileNames.size() - 1; i >= 0; i--) {
+		for (j = 0; j < folderNames.size(); j++) {
+			if (((String) fileNames.elementAt(i)).startsWith((String) folderNames.elementAt(j))) {
+				fileNames.removeElementAt(i);
+			}
+		}
+	}
+}
 	/**
 	 * Exports one single file with all its data and content.
 	 * 
@@ -187,7 +291,7 @@ public class CmsExport implements I_CmsConstants {
 	 * @exception throws CmsException if something goes wrong.
 	 */
 	private void exportResources(String path) 
-		throws CmsException {
+		throws CmsException { 
 		// get all subFolders
 		Vector subFolders = m_cms.getSubFolders(path);
 		// get all files in folder
@@ -244,7 +348,11 @@ public class CmsExport implements I_CmsConstants {
 	 * @return The shrinked path.
 	 */
 	private String getSourceFilename(String absoluteName) {
-		String path = absoluteName.substring(m_exportPath.length());
+		// String path = absoluteName.substring(m_exportPath.length());
+		String path = absoluteName; // keep absolute name to distinguish resources
+		if (path.startsWith("/")) {
+			path = path.substring(1);	
+		}
 		if(path.endsWith("/")) {
 			path = path.substring(0, path.length() - 1);
 		}
