@@ -78,6 +78,12 @@
         	<pathelement path="${tomcat.home}/server/lib/catalina-ant.jar"/>
     	</classpath>
 	</taskdef>
+	
+	<taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
+		<classpath>
+			<pathelement path="${tomcat.home}/server/lib/catalina-ant.jar"/>
+		</classpath>
+	</taskdef>
 		
     <target name="init" 
     	description="Checks if all required libraries are available">
@@ -596,6 +602,15 @@ ${opencms.inputlib.pdfbox}
 		</junit>
 	</target>
 
+	<target name="tomcat.undeploy" 
+		description="Removes the OpenCms web application">
+		<echo message="Undeploying /${app.name}"/>
+		<echo message="using ${tomcat.manager.username}@${tomcat.manager.url}"/>
+		<undeploy url="${tomcat.manager.url}"
+			username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+		    path="/${app.name}"/>
+	</target>
+		
 	<target name="tomcat.deploy" depends="war"
 		description="Deploys the OpenCms web application">
 		<echo message="Deploying ${opencms.output}build/${app.name}.war to /${app.name}"/>

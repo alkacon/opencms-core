@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2004/08/12 11:02:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.opencms.util.CmsUUID;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class OpenCmsTestResourceStorageEntry {
 
@@ -94,9 +94,6 @@ public class OpenCmsTestResourceStorageEntry {
     
     /** The name of this resource. */
     private String m_name;
-    
-    /** The ID of the parent's strcuture database record. */
-    private CmsUUID m_parentId;
 
     /** The project id where this resource has been last modified in. */
     private int m_projectLastModified;
@@ -151,7 +148,6 @@ public class OpenCmsTestResourceStorageEntry {
         m_length = res.getLength();
         m_siblingCount = res.getSiblingCount();
         m_name = res.getName();
-        m_parentId = res.getParentStructureId();
         m_projectLastModified = res.getProjectLastModified();
         m_resourceId = res.getResourceId();
         m_state = res.getState();
@@ -298,15 +294,6 @@ public class OpenCmsTestResourceStorageEntry {
      */
     public String getName() {
         return m_name;
-    }
-
-    /**
-     * Returns the structure record id of the parent of this resource.<p>
-     *
-     * @return the structure record id of the parent of this resource
-     */
-    public CmsUUID getParentStructureId() {
-        return m_parentId;
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsBackupResource extends CmsFile implements Cloneable, Serializable, Comparable {
 
@@ -75,29 +75,27 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
 
     /**
     * Constructor, creates a new CmsBackupResource object.
-    *
-    * @param backupId the backup id of this backup resource     
-    * @param tagId the tag id of this backup resource    
-    * @param versionId the version id of this backup resource   
-    * @param structureId the id of this resources structure record
-    * @param resourceId the id of this resources resource record
-    * @param parentId the id of this resources parent folder
-    * @param contentId the id of this resources content record
-    * @param name the filename of this resouce
-    * @param type the type of this resource
-    * @param flags the flags of this resource
-    * @param projectId the project id this resource was last modified in
-    * @param state the state of this resource
-    * @param dateCreated the creation date of this resource
-    * @param userCreated the id of the user who created this resource
-    * @param userCreatedName the name of the user who created this resource 
-    * @param dateLastModified the date of the last modification of this resource
-    * @param userLastModified the id of the user who did the last modification of this resource
-    * @param userLastModifiedName the name of the user who did the last modification of this resource
-    * @param dateReleased the release date of this resource
-    * @param dateExpired the expiration date of this resource
-    * @param size the size of the file content of this resource
-    * @param content the binary content data of this file
+     * @param backupId the backup id of this backup resource     
+     * @param tagId the tag id of this backup resource    
+     * @param versionId the version id of this backup resource   
+     * @param structureId the id of this resources structure record
+     * @param resourceId the id of this resources resource record
+     * @param contentId the id of this resources content record
+     * @param name the filename of this resouce
+     * @param type the type of this resource
+     * @param flags the flags of this resource
+     * @param projectId the project id this resource was last modified in
+     * @param state the state of this resource
+     * @param dateCreated the creation date of this resource
+     * @param userCreated the id of the user who created this resource
+     * @param userCreatedName the name of the user who created this resource 
+     * @param dateLastModified the date of the last modification of this resource
+     * @param userLastModified the id of the user who did the last modification of this resource
+     * @param userLastModifiedName the name of the user who did the last modification of this resource
+     * @param dateReleased the release date of this resource
+     * @param dateExpired the expiration date of this resource
+     * @param size the size of the file content of this resource
+     * @param content the binary content data of this file
     */
     public CmsBackupResource(
         CmsUUID backupId,
@@ -105,20 +103,19 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
         int versionId, 
         CmsUUID structureId, 
         CmsUUID resourceId, 
-        CmsUUID parentId,
-        CmsUUID contentId, 
+        CmsUUID contentId,
         String name, 
-        int type,
-        int flags, 
+        int type, 
+        int flags,
         int projectId, 
-        int state,
+        int state, 
         long dateCreated,
-        CmsUUID userCreated, 
+        CmsUUID userCreated,
         String userCreatedName, 
-        long dateLastModified,
-        CmsUUID userLastModified, 
+        long dateLastModified, 
+        CmsUUID userLastModified,
         String userLastModifiedName, 
-        long dateReleased,
+        long dateReleased, 
         long dateExpired,
         int size,
         byte[] content
@@ -127,7 +124,6 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
         super(
             structureId, 
             resourceId, 
-            parentId,
             contentId,
             name,
             type,
@@ -136,11 +132,11 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
             state,
             dateCreated,
             userCreated,
-            dateLastModified, 
+            dateLastModified,
             userLastModified, 
-            dateReleased,
+            dateReleased, 
             dateExpired,
-            0, 
+            0,
             size, 
             content
         );
@@ -175,22 +171,21 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
            getVersionId(), 
            getStructureId(), 
            getResourceId(),
-           getParentStructureId(), 
-           getContentId(),
-           getName(), 
+           getContentId(), 
+           getName(),
            getTypeId(), 
-           getFlags(),
-           getProjectLastModified(), 
-           getState(),
+           getFlags(), 
+           getProjectLastModified(),
+           getState(), 
            getDateCreated(),
-           getUserCreated(), 
+           getUserCreated(),
            getCreatedByName(), 
            getDateLastModified(), 
            getUserLastModified(), 
-           getLastModifiedByName(),
+           getLastModifiedByName(), 
            getDateReleased(),
            getDateExpired(),
-           getLength(), 
+           getLength(),
            newContent);
    }
 

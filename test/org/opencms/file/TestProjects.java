@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestProjects extends OpenCmsTestCase {
   
@@ -69,6 +69,7 @@ public class TestProjects extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestProjects.class.getName());
                 
+        suite.addTest(new TestProjects("testCreateDeleteProject"));
         suite.addTest(new TestProjects("testCopyResourceToProject"));
         
         TestSetup wrapper = new TestSetup(suite) {
@@ -84,6 +85,68 @@ public class TestProjects extends OpenCmsTestCase {
         
         return wrapper;
     }     
+    
+    /**
+     * Test the "createProject" and "deleteProject" methods.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateDeleteProject() throws Throwable {
+        
+        CmsObject cms = getCmsObject(); 
+        
+        echo("Testing creating a project");
+        
+        String projectName = "UnitTest2";
+        
+        CmsProject project = cms.createProject(
+            projectName, 
+            "Unit test project 1", 
+            OpenCms.getDefaultUsers().getGroupUsers(), 
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
+            I_CmsConstants.C_PROJECT_TYPE_NORMAL
+        );
+        
+        // some basic project tests
+        assertEquals(projectName, project.getName());
+        assertFalse(project.isOnlineProject());
+        
+        // ensure the project is now accessible
+        List projects = cms.getAllAccessibleProjects();
+        int i;
+        for (i = 0; i < projects.size(); i++) {
+            if (((CmsProject)projects.get(i)).getId() == project.getId()) {
+                break;
+            }
+        }
+        if (i >= projects.size()) {
+            fail ("Project " + project.getName() + "not accessible");
+        }
+        
+        // ensure the project is manageable
+        projects = cms.getAllManageableProjects();
+        for (i = 0; i < projects.size(); i++) {
+            if (((CmsProject)projects.get(i)).getId() == project.getId()) {
+                break;
+            }
+        }
+        if (i >= projects.size()) {
+            fail ("Project " + project.getName() + "not manageable");
+        }        
+        
+        echo("Testing deleting a project");
+        
+        // try to delete the project
+        cms.deleteProject(project.getId());
+        
+        // ensure the project is not accessible anymore
+        projects = cms.getAllAccessibleProjects();
+        for (i = 0; i < projects.size(); i++) {
+            if (((CmsProject)projects.get(i)).getId() == project.getId()) {
+                fail ("Project " + project.getName() + "not deleted");
+            }
+        }
+    }
     
     /**
      * Test the "copy resource to project" function.<p>

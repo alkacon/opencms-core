@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2004/08/18 11:46:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -53,12 +53,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
 
     /** The address of this user. */
     private String m_address;
-
-    /** The default group of this user. */
-    private CmsGroup m_defaultGroup;
-
-    /** The default group id of this user. */
-    private CmsUUID m_defaultGroupId;
 
     /** The description of the user. */
     private String m_description;
@@ -86,12 +80,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
 
     /** The password of this user. */
     private String m_password;
-
-    /** The recovery password of the user. */
-    private String m_recoveryPassword;
-
-    /** The section of the user. */
-    private String m_section;
     
     /** Boolean flag whether the last-login timestamp of this user was modified. */
     private boolean m_isTouched;    
@@ -117,27 +105,21 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         m_description = description;        
         m_additionalInfo = null;
         m_address = "";
-        m_defaultGroup = null;
-        m_defaultGroupId = CmsUUID.getNullUUID();
         m_email = "";
         m_firstname = "";
         m_flags = I_CmsConstants.C_FLAG_ENABLED;
         m_lastlogin = I_CmsConstants.C_UNKNOWN_LONG;            
         m_lastname = "";
         m_password = "";
-        m_recoveryPassword = "";
-        m_section = null;
         m_type = I_CmsConstants.C_UNKNOWN_INT;    
         m_isTouched = false;             
     }
 
     /**
      * Creates a new CmsUser object.<p>
-     *
      * @param id the id of the new user
      * @param name the name of the new user
      * @param password the password of the user
-     * @param recoveryPassword the recovery password
      * @param description the description of the new user
      * @param firstname the first name
      * @param lastname the last name
@@ -145,16 +127,13 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * @param lastlogin time stamp 
      * @param flags flags
      * @param additionalInfo user related information
-     * @param defaultGroup default group of the user
      * @param address the address
-     * @param section (deprecated)
      * @param type the type of this user
      */
     public CmsUser(
         CmsUUID id, 
         String name, 
         String password, 
-        String recoveryPassword, 
         String description, 
         String firstname, 
         String lastname, 
@@ -162,26 +141,20 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         long lastlogin, 
         int flags, 
         Hashtable additionalInfo, 
-        CmsGroup defaultGroup, 
         String address, 
-        String section, 
         int type
     ) {
         m_id = id;
         m_name = name;
         m_password = password;
-        m_recoveryPassword = recoveryPassword;
         m_description = description;
         m_firstname = firstname;
         m_lastname = lastname;
         m_email = email;
         m_lastlogin = lastlogin;
         m_flags = flags;
-        m_defaultGroup = defaultGroup;
-        m_defaultGroupId = (defaultGroup != null) ? defaultGroup.getId() : CmsUUID.getNullUUID();
         m_additionalInfo = additionalInfo;
         m_address = address;
-        m_section = section;
         m_type = type;
     }
     
@@ -211,7 +184,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * @return a clone of this instance
      */
     public Object clone() {
-        CmsUser user = new CmsUser(m_id, new String(m_name), new String(m_password), new String(m_recoveryPassword), new String(m_description), new String(m_firstname), new String(m_lastname), new String(m_email), m_lastlogin, m_flags, getAdditionalInfo(), m_defaultGroup, new String(m_address), new String(m_section), m_type);
+        CmsUser user = new CmsUser(m_id, new String(m_name), new String(m_password), new String(m_description), new String(m_firstname), new String(m_lastname), new String(m_email), m_lastlogin, m_flags, getAdditionalInfo(), new String(m_address), m_type);
         return user;
     }
 
@@ -280,24 +253,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public String getAddress() {
         return m_address;
-    }
-
-    /**
-     * Returns the default group object of this user.<p>
-     *
-     * @return Default Group of the user
-     */
-    public CmsGroup getDefaultGroup() {
-        return m_defaultGroup;
-    }
-
-    /**
-     * Gets the default group id.<p>
-     *
-     * @return the default group id, or null.
-     */
-    public CmsUUID getDefaultGroupId() {
-        return m_defaultGroupId;
     }
 
     /**
@@ -395,24 +350,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns the encrypted user recovery password.<p>
-     *
-     * @return the encrypted user recovery password
-     */
-    public String getRecoveryPassword() {
-        return m_recoveryPassword;
-    }
-
-    /**
-     * Gets the section of the user - DEPRECATED, don't use..<p>
-     *
-     * @return the USER_SECTION, or null.
-     */
-    public String getSection() {
-        return m_section;
-    }
-
-    /**
      * Gets the type of the user (webuser or a systemuser).
      * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
      * C_USER_TYPE_WEBUSER for webuser.<p>
@@ -498,16 +435,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the default group object of this user.<p>
-     *
-     * @param defaultGroup The default group of this user.
-     */
-    public void setDefaultGroup(CmsGroup defaultGroup) {
-        m_defaultGroup = defaultGroup;
-        m_defaultGroupId = defaultGroup.getId();
-    }
-
-    /**
      * Sets the description of this user.<p>
      *
      * @param value the description of this user.
@@ -583,15 +510,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setPassword(String value) {
         m_password = value;
-    }
-
-    /**
-     * Sets the section of the user - DEPRECATED, don't use..<p>
-     *
-     * @param value The new user section.
-     */
-    public void setSection(String value) {
-        m_section = value;
     }
 
     /**

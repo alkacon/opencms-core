@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 5.3.5
  */
@@ -151,6 +151,9 @@ public class OpenCmsTestCase extends TestCase {
     /** The path to the additional test data files. */
     private static String m_testDataPath;
 
+    /** The name of the test class. */
+    private static String m_testClassName;
+    
     /** The current resource storage. */
     public OpenCmsTestResourceStorage m_currentResourceStrorage;
 
@@ -165,6 +168,7 @@ public class OpenCmsTestCase extends TestCase {
         if (m_resourceStorages == null) {
             m_resourceStorages = new HashMap();
         }
+        m_testClassName = this.getClass().getName();
         
         // initialize configuration
         initConfiguration();
@@ -185,7 +189,7 @@ public class OpenCmsTestCase extends TestCase {
 
         // output a message
         m_shell.printPrompt(); 
-        System.out.println("----- Test cases finished -----");        
+        System.out.println("----- " + m_testClassName + ": Test cases finished -----");        
 
         // exit the shell
         m_shell.exit();
@@ -213,24 +217,39 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
     
-        return setupOpenCms(importFolder, targetFolder, getTestDataPath() + "WEB-INF/config." + m_dbProduct + "/");
+        return setupOpenCms(importFolder, targetFolder, getTestDataPath() + "WEB-INF/config." + m_dbProduct + "/", true);
     }
+    
+    /**
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
+     * creating the usual projects, and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @param publish flag to signalize if the publish script should be called
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     */
+    public static CmsObject setupOpenCms(String importFolder, String targetFolder, boolean publish) {
+    
+        return setupOpenCms(importFolder, targetFolder, getTestDataPath() + "WEB-INF/config." + m_dbProduct + "/", publish);
+    }    
     
     /**
      * Sets up a complete OpenCms instance, creating the usual projects,
      * and importing a default database.<p>
-     * 
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param configFolder the folder to copy the configuration files
+     * @param publish TODO:
+     * 
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
-    public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder) {
+    public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder, boolean publish) {
         
         // turn off exceptions after error logging during setup (won't work otherwise)
         OpenCmsTestLogAppender.setBreakOnError(false);
         // output a message 
-        System.out.println("\n\n\n----- Starting test case: Importing OpenCms VFS data -----");
+        System.out.println("\n\n\n----- " + m_testClassName + ": Starting test case: Importing OpenCms VFS data -----");
                 
         // kill any old shell that might have remained from a previous test 
         if (m_shell != null) {
@@ -275,13 +294,13 @@ public class OpenCmsTestCase extends TestCase {
             if (importFolder != null) {
                 // import the "simpletest" files
                 importResources(cms, importFolder, targetFolder);
-                
+            }
+            if (publish) {
                 // publish the current project by script
                 script = new File(getTestDataPath() + "scripts/script_publish.txt");
                 stream = new FileInputStream(script);        
                 m_shell.start(stream);
             } else {
-                // unlock project resources if not published
                 cms.unlockProject(cms.readProject("_setupProject").getId());
             }
             
@@ -295,7 +314,7 @@ public class OpenCmsTestCase extends TestCase {
             cms.getRequestContext().setSiteRoot("/sites/default/");               
             
             // output a message 
-            System.out.println("----- Starting test cases -----");
+            System.out.println("----- " + m_testClassName + ": Starting test cases -----");
         } catch (Throwable t) {
             fail("Unable to setup OpenCms\n" + CmsException.getStackTraceAsString(t));
         }

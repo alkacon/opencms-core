@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReadResources.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "readResources" method of the CmsObject to test reading resource lists within a subtree.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestReadResources extends OpenCmsTestCase {
   
@@ -70,7 +70,7 @@ public class TestReadResources extends OpenCmsTestCase {
         suite.setName(TestReadResources.class.getName());
         
         suite.addTest(new TestReadResources("testReadSubtree"));
-        // suite.addTest(new TestReadResources("testReadChildren"));
+        suite.addTest(new TestReadResources("testReadChildren"));
         suite.addTest(new TestReadResources("testReadFolders"));
         suite.addTest(new TestReadResources("testReadFiles"));
         suite.addTest(new TestReadResources("testReadModifiedResources"));
@@ -126,38 +126,38 @@ public class TestReadResources extends OpenCmsTestCase {
         assertEquals(this.m_currentResourceStrorage.size(), i);
     }
 
-//    /**
-//     * Test readResources for reading immediate child resources below a given path.<p>
-//     * 
-//     * @throws Throwable if something goes wrong
-//     */
-//    public void testReadChildren () throws Throwable {
-//        
-//        CmsObject cms = getCmsObject();
-//        echo("Testing readResources: reading child resources");
-//        
-//        cms.getRequestContext().setSiteRoot("/");
-//        
-//        String path = "/sites/default/folder1/subfolder12";
-//        
-//        // store all resources of the expected result
-//        storeResources(cms, path + "/subsubfolder121", false);
-//        storeResources(cms, path + "/index.html", false);
-//        storeResources(cms, path + "/page1.html", false);
-//        storeResources(cms, path + "/page2.html", false);
-//        
-//        // read each resource below folder1/subfolder12
-//        List result = cms.readResources(path, CmsResourceFilter.ALL.addRequireImmediateChilds()); 
-//        
-//        // check each resource in the result
-//        int i;
-//        for (i = 0; i < result.size(); i++) {
-//            assertFilter(cms, (CmsResource)result.get(i), OpenCmsTestResourceFilter.FILTER_EQUAL);
-//        }
-//        
-//        // check the number of resources
-//        assertEquals(this.m_currentResourceStrorage.size(), i);
-//    }
+    /**
+     * Test readResources for reading immediate child resources below a given path.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testReadChildren () throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing readResources: reading child resources");
+        
+        cms.getRequestContext().setSiteRoot("/");
+        
+        String path = "/sites/default/folder1/subfolder12";
+        
+        // store all resources of the expected result
+        storeResources(cms, path + "/subsubfolder121", false);
+        storeResources(cms, path + "/index.html", false);
+        storeResources(cms, path + "/page1.html", false);
+        storeResources(cms, path + "/page2.html", false);
+        
+        // read each resource below folder1/subfolder12
+        List result = cms.readResources(path, CmsResourceFilter.ALL, false); 
+        
+        // check each resource in the result
+        int i;
+        for (i = 0; i < result.size(); i++) {
+            assertFilter(cms, (CmsResource)result.get(i), OpenCmsTestResourceFilter.FILTER_EQUAL);
+        }
+        
+        // check the number of resources
+        assertEquals(this.m_currentResourceStrorage.size(), i);
+    }
     
     /**
      * Test readResources for reading folder resources.<p>
@@ -316,7 +316,7 @@ public class TestReadResources extends OpenCmsTestCase {
         String resourcename;
         
         // ensure no resource was modified before timestamp1
-        result = cms.readResources("/", CmsResourceFilter.ALL.addRequireModifiedBefore(timestamp1));
+        result = cms.readResources("/", CmsResourceFilter.ALL.addRequireLastModifiedBefore(timestamp1));
 
         if (result.size() > 0) {
             fail ("Unexpected modification dates in resources found");
@@ -331,7 +331,7 @@ public class TestReadResources extends OpenCmsTestCase {
         storeResources(cms, resourcename, false);
         
         // ensure this resource was modified before timestamp1
-        result = cms.readResources("/", CmsResourceFilter.ALL.addRequireModifiedBefore(timestamp1));
+        result = cms.readResources("/", CmsResourceFilter.ALL.addRequireLastModifiedBefore(timestamp1));
 
         // check each resource in the result
         int i;
@@ -343,7 +343,7 @@ public class TestReadResources extends OpenCmsTestCase {
         assertEquals(this.m_currentResourceStrorage.size(), i);
         
         // ensure no resource was modified after timestamp2
-        result = cms.readResources("/", CmsResourceFilter.ALL.addRequireModifiedAfter(timestamp2));
+        result = cms.readResources("/", CmsResourceFilter.ALL.addRequireLastModifiedAfter(timestamp2));
 
         if (result.size() > 0) {
             fail ("Unexpected modification dates in resources found");
@@ -357,7 +357,7 @@ public class TestReadResources extends OpenCmsTestCase {
         storeResources(cms, resourcename, false);
         
         // ensure this resource was modified after timestamp2
-        result = cms.readResources("/", CmsResourceFilter.ALL.addRequireModifiedAfter(timestamp2));
+        result = cms.readResources("/", CmsResourceFilter.ALL.addRequireLastModifiedAfter(timestamp2));
 
         // check each resource in the result
         for (i = 0; i < result.size(); i++) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/08/18 11:54:19 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.db.generic;
 
-import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsUserDriver;
@@ -60,7 +59,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -70,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.61 $ $Date: 2004/08/18 11:54:19 $
+ * @version $Revision: 1.62 $ $Date: 2004/08/25 07:47:21 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -171,9 +169,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
         CmsUUID id = new CmsUUID();
 
         Connection conn = null;
@@ -187,21 +185,16 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
-            // crypt the password with MD5
             stmt.setString(3, encryptPassword(password));
-            stmt.setString(4, encryptPassword(""));
-            stmt.setString(5, m_sqlManager.validateEmpty(description));
-            stmt.setString(6, m_sqlManager.validateEmpty(firstname));
-            stmt.setString(7, m_sqlManager.validateEmpty(lastname));
-            stmt.setString(8, m_sqlManager.validateEmpty(email));
-            stmt.setTimestamp(9, new Timestamp(lastlogin));
-            stmt.setTimestamp(10, new Timestamp(0));
-            stmt.setInt(11, flags);
-            m_sqlManager.setBytes(stmt, 12, internalSerializeAdditionalUserInfo(additionalInfos));
-            stmt.setString(13, defaultGroup.getId().toString());
-            stmt.setString(14, m_sqlManager.validateEmpty(address));
-            stmt.setString(15, m_sqlManager.validateEmpty(section));
-            stmt.setInt(16, type);
+            stmt.setString(4, m_sqlManager.validateEmpty(description));
+            stmt.setString(5, m_sqlManager.validateEmpty(firstname));
+            stmt.setString(6, m_sqlManager.validateEmpty(lastname));
+            stmt.setString(7, m_sqlManager.validateEmpty(email));
+            stmt.setLong(8, lastlogin);
+            stmt.setInt(9, flags);
+            m_sqlManager.setBytes(stmt, 10, internalSerializeAdditionalUserInfo(additionalInfos));
+            stmt.setString(11, m_sqlManager.validateEmpty(address));
+            stmt.setInt(12, type);
             stmt.executeUpdate();            
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -392,9 +385,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long, int, java.util.Hashtable, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, java.lang.Object)
+     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int, java.lang.Object)
      */
-    public CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type, Object reservedParam) throws CmsException {
+    public CmsUser importUser(CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type, Object reservedParam) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -412,19 +405,15 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
             stmt.setString(3, m_sqlManager.validateEmpty(password));
-            stmt.setString(4, m_sqlManager.validateEmpty(recoveryPassword));
-            stmt.setString(5, m_sqlManager.validateEmpty(description));
-            stmt.setString(6, m_sqlManager.validateEmpty(firstname));
-            stmt.setString(7, m_sqlManager.validateEmpty(lastname));
-            stmt.setString(8, m_sqlManager.validateEmpty(email));
-            stmt.setTimestamp(9, new Timestamp(lastlogin));
-            stmt.setTimestamp(10, new Timestamp(lastused));
-            stmt.setInt(11, flags);
-            m_sqlManager.setBytes(stmt, 12, internalSerializeAdditionalUserInfo(additionalInfos));
-            stmt.setString(13, defaultGroup.getId().toString());
-            stmt.setString(14, m_sqlManager.validateEmpty(address));
-            stmt.setString(15, m_sqlManager.validateEmpty(section));
-            stmt.setInt(16, type);
+            stmt.setString(4, m_sqlManager.validateEmpty(description));
+            stmt.setString(5, m_sqlManager.validateEmpty(firstname));
+            stmt.setString(6, m_sqlManager.validateEmpty(lastname));
+            stmt.setString(7, m_sqlManager.validateEmpty(email));
+            stmt.setLong(8, lastlogin);
+            stmt.setInt(9, flags);
+            m_sqlManager.setBytes(stmt, 10, internalSerializeAdditionalUserInfo(additionalInfos));
+            stmt.setString(11, m_sqlManager.validateEmpty(address));
+            stmt.setInt(12, type);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "[CmsUser]: " + name + ", Id=" + id.toString(), CmsException.C_SQL_ERROR, e, true);
@@ -519,35 +508,31 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
     /**
      * Semi-constructor to create a CmsGroup instance from a JDBC result set.
-     * 
      * @param res the JDBC ResultSet
-     * @param hasGroupIdInResultSet true if the SQL select query includes the GROUP_ID table attribute
+     * 
      * @return CmsGroup the new CmsGroup object
      * @throws SQLException in case the result set does not include a requested table attribute
      */
-    protected CmsGroup internalCreateGroup(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException {
-        CmsUUID groupId = null;
+    protected CmsGroup internalCreateGroup(ResultSet res) throws SQLException {
 
-        if (hasGroupIdInResultSet) {
-            groupId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID")));
-        } else {
-            groupId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_DEFAULT_GROUP_ID")));
-        }
-
-        return new CmsGroup(groupId, new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.readQuery("C_GROUPS_GROUP_FLAGS")));
+        return new CmsGroup(
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_ID"))),
+            new CmsUUID(res.getString(m_sqlManager.readQuery("C_GROUPS_PARENT_GROUP_ID"))),
+            res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_NAME")),
+            res.getString(m_sqlManager.readQuery("C_GROUPS_GROUP_DESCRIPTION")),
+            res.getInt(m_sqlManager.readQuery("C_GROUPS_GROUP_FLAGS")));
     }
 
     /**
      * Semi-constructor to create a CmsUser instance from a JDBC result set.
-     * 
      * @param res the JDBC ResultSet
-     * @param hasGroupIdInResultSet true, if a default group id is available
+     * 
      * @return CmsUser the new CmsUser object
      * @throws SQLException in case the result set does not include a requested table attribute
      * @throws IOException if there is an error in deserializing the user info
      * @throws ClassNotFoundException if there is an error in deserializing the user info
      */
-    protected CmsUser internalCreateUser(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException, IOException, ClassNotFoundException {
+    protected CmsUser internalCreateUser(ResultSet res) throws SQLException, IOException, ClassNotFoundException {
 
         // deserialize the additional userinfo hash
         ByteArrayInputStream bin = new ByteArrayInputStream(m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_USERS_USER_INFO")));
@@ -558,17 +543,14 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID"))),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_NAME")),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_PASSWORD")),
-            res.getString(m_sqlManager.readQuery("C_USERS_USER_RECOVERY_PASSWORD")),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_DESCRIPTION")),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_FIRSTNAME")),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_LASTNAME")),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_EMAIL")),
-            CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_USERS_USER_LASTLOGIN")).getTime(),
+            res.getLong(m_sqlManager.readQuery("C_USERS_USER_LASTLOGIN")),
             res.getInt(m_sqlManager.readQuery("C_USERS_USER_FLAGS")),
             info,
-            internalCreateGroup(res, hasGroupIdInResultSet),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_ADDRESS")),
-            res.getString(m_sqlManager.readQuery("C_USERS_USER_SECTION")),
             res.getInt(m_sqlManager.readQuery("C_USERS_USER_TYPE")));
     }
 
@@ -766,7 +748,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             res = stmt.executeQuery();
             // create new Cms group object
             if (res.next()) {
-                group = internalCreateGroup(res, true);
+                group = internalCreateGroup(res);
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] " + groupId, CmsException.C_NO_GROUP);
             }
@@ -800,7 +782,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             // create new Cms group object
             if (res.next()) {
-                group = internalCreateGroup(res, true);
+                group = internalCreateGroup(res);
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] " + groupName, CmsException.C_NO_GROUP);
             }
@@ -831,7 +813,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             // create new Cms group objects
             while (res.next()) {
-                groups.addElement(internalCreateGroup(res, true));
+                groups.addElement(internalCreateGroup(res));
             }
 
         } catch (SQLException e) {
@@ -863,7 +845,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             res = stmt.executeQuery();
 
             while (res.next()) {
-                groups.addElement(internalCreateGroup(res, true));
+                groups.addElement(internalCreateGroup(res));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -891,7 +873,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             // create new Cms user object
             if (res.next()) {
-                user = internalCreateUser(res, true);
+                user = internalCreateUser(res);
             } else {
                 res.close();
                 res = null;
@@ -928,7 +910,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             res = stmt.executeQuery();
 
             if (res.next()) {
-                user = internalCreateUser(res, true);
+                user = internalCreateUser(res);
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] '" + name + "'", CmsException.C_NO_USER);
             }
@@ -963,7 +945,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             // create new Cms user object
             if (res.next()) {
-                user = internalCreateUser(res, true);
+                user = internalCreateUser(res);
             } else {
                 res.close();
                 res = null;
@@ -1006,7 +988,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             res = stmt.executeQuery();
             // create new Cms user objects
             while (res.next()) {
-                users.addElement(internalCreateUser(res, true));
+                users.addElement(internalCreateUser(res));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1034,54 +1016,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             // create new Cms user objects
             while (res.next()) {
-                users.addElement(internalCreateUser(res, true));
-            }
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return users;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#readUsers(java.lang.String, int, int, int, int)
-     */
-    public Vector readUsers(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException {
-        Vector users = new Vector();
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        int i = 0;
-        // "" =  return (nearly) all users
-        if (lastname == null) {
-            lastname = "";
-        }
-
-        try {
-            conn = m_sqlManager.getConnection();
-
-            if (wasLoggedIn == I_CmsConstants.C_AT_LEAST_ONCE) {
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_ONCE");
-            } else if (wasLoggedIn == I_CmsConstants.C_NEVER) {
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_NEVER");
-            } else { 
-                // C_WHATEVER or whatever else
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_WHATEVER");
-            }
-
-            stmt.setString(1, lastname + "%");
-            stmt.setInt(2, userType);
-            stmt.setInt(3, userStatus);
-
-            res = stmt.executeQuery();
-            // create new Cms user objects
-            while (res.next() && (i++ < nMax)) {
-                users.addElement(internalCreateUser(res, true));
+                users.addElement(internalCreateUser(res));
             }
 
         } catch (SQLException e) {
@@ -1114,7 +1049,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             res = stmt.executeQuery();
 
             while (res.next()) {
-                users.addElement(internalCreateUser(res, false));
+                users.addElement(internalCreateUser(res));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1329,62 +1264,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writePassword(java.lang.String, java.lang.String, java.lang.String)
-     */
-    public void writePassword(String userName, String recoveryPassword, String password) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        int result;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_RECOVERPW");
-
-            stmt.setString(1, encryptPassword(password));
-            stmt.setString(2, userName);
-            stmt.setString(3, encryptPassword(recoveryPassword));
-            result = stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        if (result != 1) {
-            // the update wasn't succesfull -> throw exception
-            throw new CmsException("[" + this.getClass().getName() + "] the password couldn't be recovered.");
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#writeRecoveryPassword(java.lang.String, java.lang.String)
-     */
-    public void writeRecoveryPassword(String userName, String password) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        int result;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SETRECPW");
-
-            stmt.setString(1, encryptPassword(password));
-            stmt.setString(2, userName);
-            result = stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-
-        if (result != 1) {
-            // the update wasn't succesfull -> throw exception
-            throw new CmsException("[" + this.getClass().getName() + "] new password couldn't be set.");
-        }
-    }
-
-    /**
      * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.file.CmsUser)
      */
     public void writeUser(CmsUser user) throws CmsException {
@@ -1399,15 +1278,12 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setString(2, m_sqlManager.validateEmpty(user.getFirstname()));
             stmt.setString(3, m_sqlManager.validateEmpty(user.getLastname()));
             stmt.setString(4, m_sqlManager.validateEmpty(user.getEmail()));
-            stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
-            stmt.setTimestamp(6, new Timestamp(0));
-            stmt.setInt(7, user.getFlags());
-            m_sqlManager.setBytes(stmt, 8, internalSerializeAdditionalUserInfo(user.getAdditionalInfo()));
-            stmt.setString(9, user.getDefaultGroupId().toString());
-            stmt.setString(10, m_sqlManager.validateEmpty(user.getAddress()));
-            stmt.setString(11, m_sqlManager.validateEmpty(user.getSection()));
-            stmt.setInt(12, user.getType());
-            stmt.setString(13, user.getId().toString());
+            stmt.setLong(5, user.getLastlogin());
+            stmt.setInt(6, user.getFlags());
+            m_sqlManager.setBytes(stmt, 7, internalSerializeAdditionalUserInfo(user.getAdditionalInfo()));
+            stmt.setString(8, m_sqlManager.validateEmpty(user.getAddress()));
+            stmt.setInt(9, user.getType());
+            stmt.setString(10, user.getId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);

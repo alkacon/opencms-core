@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2004/08/19 12:26:35 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,8 @@
 package org.opencms.db.oracle;
 
 import org.opencms.util.CmsUUID;
-
-import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Blob;
@@ -44,15 +41,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Hashtable;
-
 import org.apache.commons.dbcp.DelegatingResultSet;
 
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.28 $ $Date: 2004/08/19 12:26:35 $
+ * @version $Revision: 1.29 $ $Date: 2004/08/25 07:47:21 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -60,9 +55,9 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
 
         CmsUUID id = new CmsUUID();
         PreparedStatement stmt = null;
@@ -76,21 +71,15 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_ADD");
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
-
-            // crypt the password with MD5
             stmt.setString(3, encryptPassword(password));
-            stmt.setString(4, encryptPassword(""));
-            stmt.setString(5, m_sqlManager.validateEmpty(description));
-            stmt.setString(6, m_sqlManager.validateEmpty(firstname));
-            stmt.setString(7, m_sqlManager.validateEmpty(lastname));
-            stmt.setString(8, m_sqlManager.validateEmpty(email));
-            stmt.setTimestamp(9, new Timestamp(lastlogin));
-            stmt.setTimestamp(10, new Timestamp(0));
-            stmt.setInt(11, flags);
-            stmt.setString(12, defaultGroup.getId().toString());
-            stmt.setString(13, m_sqlManager.validateEmpty(address));
-            stmt.setString(14, m_sqlManager.validateEmpty(section));
-            stmt.setInt(15, type);
+            stmt.setString(4, m_sqlManager.validateEmpty(description));
+            stmt.setString(5, m_sqlManager.validateEmpty(firstname));
+            stmt.setString(6, m_sqlManager.validateEmpty(lastname));
+            stmt.setString(7, m_sqlManager.validateEmpty(email));
+            stmt.setLong(8, lastlogin);
+            stmt.setInt(9, flags);
+            stmt.setString(10, m_sqlManager.validateEmpty(address));
+            stmt.setInt(11, type);
             stmt.executeUpdate();
             stmt.close();
             stmt = null;
@@ -107,9 +96,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long, int, java.util.Hashtable, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, java.lang.Object)
+     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int, java.lang.Object)
      */
-    public CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type, Object reservedParam) throws CmsException {
+    public CmsUser importUser(CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type, Object reservedParam) throws CmsException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -128,25 +117,19 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_ADD");
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
-
-            // don't encrypt passwords since imported passwords are already encrypted
-            stmt.setString(3, m_sqlManager.validateEmpty(password));
-            stmt.setString(4, m_sqlManager.validateEmpty(recoveryPassword));
-            stmt.setString(5, m_sqlManager.validateEmpty(description));
-            stmt.setString(6, m_sqlManager.validateEmpty(firstname));
-            stmt.setString(7, m_sqlManager.validateEmpty(lastname));
-            stmt.setString(8, m_sqlManager.validateEmpty(email));
-            stmt.setTimestamp(9, new Timestamp(lastlogin));
-            stmt.setTimestamp(10, new Timestamp(lastused));
-            stmt.setInt(11, flags);
-            stmt.setString(12, defaultGroup.getId().toString());
-            stmt.setString(13, m_sqlManager.validateEmpty(address));
-            stmt.setString(14, m_sqlManager.validateEmpty(section));
-            stmt.setInt(15, type);
+            stmt.setString(3, m_sqlManager.validateEmpty(password)); // imported passwords are already encrypted
+            stmt.setString(4, m_sqlManager.validateEmpty(description));
+            stmt.setString(5, m_sqlManager.validateEmpty(firstname));
+            stmt.setString(6, m_sqlManager.validateEmpty(lastname));
+            stmt.setString(7, m_sqlManager.validateEmpty(email));
+            stmt.setLong(8, lastlogin);
+            stmt.setInt(9, flags);
+            stmt.setString(10, m_sqlManager.validateEmpty(address));
+            stmt.setInt(11, type);
             stmt.executeUpdate();
             stmt.close();
             stmt = null;
-
+            
             internalWriteUserInfo(id, additionalInfos, reservedParam);
                         
         } catch (SQLException e) {
@@ -184,14 +167,11 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(2, m_sqlManager.validateEmpty(user.getFirstname()));
             stmt.setString(3, m_sqlManager.validateEmpty(user.getLastname()));
             stmt.setString(4, m_sqlManager.validateEmpty(user.getEmail()));
-            stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
-            stmt.setTimestamp(6, new Timestamp(0));
-            stmt.setInt(7, user.getFlags());
-            stmt.setString(8, user.getDefaultGroupId().toString());
-            stmt.setString(9, m_sqlManager.validateEmpty(user.getAddress()));
-            stmt.setString(10, m_sqlManager.validateEmpty(user.getSection()));
-            stmt.setInt(11, user.getType());
-            stmt.setString(12, user.getId().toString());
+            stmt.setLong(5, user.getLastlogin());
+            stmt.setInt(6, user.getFlags());
+            stmt.setString(7, m_sqlManager.validateEmpty(user.getAddress()));
+            stmt.setInt(8, user.getType());
+            stmt.setString(9, user.getId().toString());
             stmt.executeUpdate();
             stmt.close();
             stmt = null;

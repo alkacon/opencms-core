@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2004/08/17 07:08:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 
+
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -58,7 +59,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         this(
             resource.getStructureId(),
             resource.getResourceId(),
-            resource.getParentStructureId(),
             resource.getRootPath(),
             resource.getTypeId(),
             resource.getFlags(),
@@ -77,7 +77,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
      * Constructor, creates a new CmsFolder object.<p>
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
-     * @param parentId the id of this resources parent folder
      * @param path the filename of this resouce
      * @param type the type of this resource
      * @param flags the flags of this resource
@@ -94,7 +93,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
     public CmsFolder(
         CmsUUID structureId,
         CmsUUID resourceId,
-        CmsUUID parentId,
         String path,
         int type,
         int flags,
@@ -111,7 +109,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         super(
             structureId,
             resourceId,
-            parentId,
             path,
             type,
             flags,
@@ -137,7 +134,6 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         CmsResource clone = new CmsFolder(
             getStructureId(),
             getResourceId(),
-            getParentStructureId(),
             getRootPath(),
             getTypeId(),
             getFlags(),

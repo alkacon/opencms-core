@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.main.I_CmsConstants;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkaconc.om)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.3.5
  */
 public final class CmsResourceFilter {
@@ -71,16 +71,19 @@ public final class CmsResourceFilter {
     /** Indicates if the resource valid timerage is used (true) or ignored (false). */    
     private boolean m_filterTimerange;
     
+    /** Indicates if the date of the last modification is used (true) or igrnored (false). */ 
+    private boolean m_filterLastModified;
+    
     /** The required/excluded type for filtering resources. */
     private int m_type;
     
     /** The required/excluded state for filtering resources. */
     private int m_state;
 
-    /** The required start date for the timerange. */
+    /** The required start date for the timerange of the last modification date. */
     private long m_modifiedAfter;
     
-    /** The required end data for the timerange. */
+    /** The required end data for the timerange of the last modification date. */
     private long m_modifiedBefore;
     
     
@@ -111,7 +114,7 @@ public final class CmsResourceFilter {
      * <li>Includes: Resources marked as 'invisible' using permissions.</li>
      * </ul> 
      */
-    public static final CmsResourceFilter DEFAULT = ALL.addExcludeState(I_CmsConstants.C_STATE_DELETED).addRequireValid();
+    public static final CmsResourceFilter DEFAULT = ALL.addExcludeState(I_CmsConstants.C_STATE_DELETED).addRequireTimerange();
     
     /**
      * Default filter to display folders for the online project.<p>
@@ -188,8 +191,8 @@ public final class CmsResourceFilter {
             default:
                 // ignored
         }        
-        if (m_filterTimerange) {            
-            result.append(" Time");
+        if (m_filterLastModified) {            
+            result.append(" Lt");
             result.append(m_modifiedAfter);
             result.append("-");
             result.append(m_modifiedBefore);
@@ -211,8 +214,9 @@ public final class CmsResourceFilter {
         m_filterVisible = false;
         
         m_filterTimerange = false;
-        m_modifiedAfter = CmsResource.DATE_RELEASED_DEFAULT;
-        m_modifiedBefore = CmsResource.DATE_EXPIRED_DEFAULT;
+        m_filterLastModified = false;
+        m_modifiedAfter = 0L;
+        m_modifiedBefore = 0L;
         
         updateCacheId();
     }
@@ -224,9 +228,10 @@ public final class CmsResourceFilter {
         CmsResourceFilter filter = new CmsResourceFilter();
         
         filter.m_filterState = m_filterState;
-        filter.m_filterTimerange = m_filterTimerange;
         filter.m_filterType = m_filterType;
         filter.m_filterVisible = m_filterVisible;
+        filter.m_filterTimerange = m_filterTimerange;
+        filter.m_filterLastModified = m_filterLastModified;
         
         filter.m_type = m_type;
         filter.m_state = m_state;
@@ -330,7 +335,7 @@ public final class CmsResourceFilter {
      * 
      * @return a filter excluding invalid resources
      */
-    public CmsResourceFilter addRequireValid() {
+    public CmsResourceFilter addRequireTimerange() {
         CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
         
         extendedFilter.m_filterTimerange = true;
@@ -345,10 +350,10 @@ public final class CmsResourceFilter {
      * @param time the required time
      * @return a filter to restrict the results to resources modified in the given timerange
      */
-    public CmsResourceFilter addRequireModifiedAfter(long time) {
+    public CmsResourceFilter addRequireLastModifiedAfter(long time) {
         CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
         
-        extendedFilter.m_filterTimerange = true;
+        extendedFilter.m_filterLastModified = true;
         extendedFilter.m_modifiedAfter = time;
         extendedFilter.updateCacheId();      
 
@@ -361,10 +366,10 @@ public final class CmsResourceFilter {
      * @param time the required time 
      * @return a filter to restrict the results to resources modified in the given timerange
      */
-    public CmsResourceFilter addRequireModifiedBefore(long time) {
+    public CmsResourceFilter addRequireLastModifiedBefore(long time) {
         CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
         
-        extendedFilter.m_filterTimerange = true;
+        extendedFilter.m_filterLastModified = true;
         extendedFilter.m_modifiedBefore = time;
         extendedFilter.updateCacheId();        
 
@@ -434,7 +439,7 @@ public final class CmsResourceFilter {
     }
     
     /**
-     * Check if the visible permission should be required for resources.<p>
+     * Returns if the visible permission should be required for resources.<p>
      * 
      * @return true if the visible permission is required, false if the visible permission is ignored
      */
@@ -442,7 +447,57 @@ public final class CmsResourceFilter {
         
         return m_filterVisible;
     }
- 
+
+    /**
+     * Returns if the release timerange of the resource should be required.<p>
+     * 
+     * @return true if the release timerange of the resource should be required
+     */
+    public boolean requireTimerange() {
+    
+        return m_filterTimerange;
+    }
+    
+    /**
+     * Returns if the stored type is required while filtering resources.<p>
+     * 
+     * @return true if the type is required
+     */
+    public boolean requireType() {
+        
+        return m_filterType == REQUIRED;
+    }
+    
+    /**
+     * Returns if the stored state is required while filtering resources.<p>
+     * 
+     * @return if the state is required
+     */
+    public boolean requireState() {
+        
+        return m_filterState == REQUIRED;
+    }
+    
+    /**
+     * Returns if the stored type should be excluded while filtering resources.<p>
+     * 
+     * @return if the type should be excluded
+     */
+    public boolean excludeType() {
+        
+        return m_filterType == EXCLUDED;
+    }
+    
+    /**
+     * return if the stored state should be excluded while filtering resources.<p>
+     * 
+     * @return if the state should be excluded
+     */
+    public boolean excludeState() {
+        
+        return m_filterState == EXCLUDED;
+    }
+    
     /**
      * Validates if a CmsResource fits to all filer settings.<p>
      * 
@@ -465,12 +520,12 @@ public final class CmsResourceFilter {
         // check for required resource state
         switch (m_filterState) {
             case EXCLUDED:
-                if (resource.getState() >= m_state) {
+                if (resource.getState() == m_state) {
                     return false;
                 }                
                 break;
             case REQUIRED:
-                if (resource.getState() < m_state) {
+                if (resource.getState() != m_state) {
                     return false;
                 }                                
                 break;
@@ -494,7 +549,17 @@ public final class CmsResourceFilter {
                 // ignored
         }
         
-        // check if the resource is within the valid time frame
+        // check if the resource was last modified within the given time range
+        if (m_filterLastModified) {
+            if (m_modifiedAfter > 0L && resource.getDateLastModified() < m_modifiedAfter) {
+                return false;
+            }
+            if (m_modifiedBefore > 0L && resource.getDateLastModified() > m_modifiedBefore) {
+                return false;
+            }
+        }       
+            
+        // check if the resource is currently released and not expired
         if (m_filterTimerange
             && ((resource.getDateReleased() > context.getRequestTime()) || (resource.getDateExpired() < context.getRequestTime()))) {
             return false;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.ServletRequest;
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -169,10 +169,8 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
                 break;
             case 8 : // group
             case 9 : // currentgroup
-                result = "";
-                break;
             case 10 : // defaultgroup
-                result = user.getDefaultGroup().getName();
+                result = "";
                 break;
             case 11 : // otherstuff
                 java.util.Enumeration e = user.getAdditionalInfo().keys();
@@ -181,7 +179,6 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
                     Object o = e.nextElement();
                     result += " " + o + "=" + user.getAdditionalInfo((String)o);
                 }
-                result += " Section=" + user.getSection();
                 break;
             default :
                 result = "+++ Invalid user property selected: " + property + " +++";

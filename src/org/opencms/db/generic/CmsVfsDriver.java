@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.202 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.203 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.202 $ $Date: 2004/08/23 15:37:02 $
+ * @version $Revision: 1.203 $ $Date: 2004/08/25 07:47:21 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -96,7 +96,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     public CmsFile createFile(ResultSet res, int projectId) throws SQLException {
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
         CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
-        CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_PARENT_ID")));
         int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
         String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
@@ -111,7 +110,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
         CmsUUID contentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_CONTENT_ID")));
         byte[] content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
-        int linkCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LINK_COUNT"));
+        int siblingCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIBLING_COUNT"));
 
         // calculate the overall state
         int newState = (structureState > resourceState) ? structureState : resourceState;
@@ -121,7 +120,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             resourcePath = addTrailingSeparator(resourcePath);
         }
         
-        return new CmsFile(structureId, resourceId, parentId, contentId, resourcePath, resourceType, resourceFlags, projectId, newState, dateCreated, userCreated, dateLastModified, userLastModified, dateReleased, dateExpired, linkCount, resourceSize, content);
+        return new CmsFile(structureId, resourceId, contentId, resourcePath, resourceType, resourceFlags, projectId, newState, dateCreated, userCreated, dateLastModified, userLastModified, dateReleased, dateExpired, siblingCount, resourceSize, content);
     }
 
     /**
@@ -134,7 +133,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
         CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
-        CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_PARENT_ID")));
         String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
         int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS")); 
@@ -148,7 +146,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
         int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-        int linkCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LINK_COUNT"));
+        int siblingCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIBLING_COUNT"));
 
         // in case of folder type ensure, that the root path has a trailing slash
         if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
@@ -171,7 +169,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         return new CmsFile(
             structureId, 
             resourceId,
-            parentId, 
             contentId, 
             resourcePath, 
             resourceType, 
@@ -184,7 +181,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             userLastModified, 
             dateReleased, 
             dateExpired, 
-            linkCount, 
+            siblingCount, 
             resourceSize, 
             content);
     }    
@@ -234,7 +231,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
         CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
-        CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_PARENT_ID")));
         String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
         int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
@@ -247,7 +243,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
         int resProjectId = res.getInt("LOCKED_IN_PROJECT");
-        int linkCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LINK_COUNT"));
+        int siblingCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIBLING_COUNT"));
 
         // in case of folder type ensure, that the root path has a trailing slash
         if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
@@ -256,7 +252,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
-        return new CmsFolder(structureId, resourceId, parentId, resourcePath, resourceType, resourceFlags, resProjectId, newState, dateCreated, userCreated, dateLastModified, userLastModified, linkCount, dateReleased, dateExpired);
+        return new CmsFolder(structureId, resourceId, resourcePath, resourceType, resourceFlags, resProjectId, newState, dateCreated, userCreated, dateLastModified, userLastModified, siblingCount, dateReleased, dateExpired);
     }
 
     /**
@@ -291,11 +287,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
         CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
-        CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_PARENT_ID")));
         String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
         int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
-        int resourceProjectId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_ID"));
+        int resourceProjectLastModified = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED"));
         int resourceState = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
         int structureState = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_STATE"));
         long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
@@ -314,11 +309,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
-        int linkCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LINK_COUNT"));
+        int siblingCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIBLING_COUNT"));
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
-        CmsResource newResource = new CmsResource(structureId, resourceId, parentId, resourcePath, resourceType, resourceFlags, resourceProjectId, newState, dateCreated, userCreated, dateLastModified, userLastModified, dateReleased, dateExpired, linkCount, resourceSize);
+        CmsResource newResource = new CmsResource(structureId, resourceId, resourcePath, resourceType, resourceFlags, resourceProjectLastModified, newState, dateCreated, userCreated, dateLastModified, userLastModified, dateReleased, dateExpired, siblingCount, resourceSize);
 
         return newResource;
     }
@@ -380,18 +375,17 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             // write the structure
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
             stmt.setString(1, newStructureId.toString());
-            stmt.setString(2, resource.getParentStructureId().toString());
-            stmt.setString(3, resource.getResourceId().toString());
-            stmt.setString(4, resource.getRootPath());
-            stmt.setInt(5, newState);
-            stmt.setLong(6, resource.getDateReleased());
-            stmt.setLong(7, resource.getDateExpired());
+            stmt.setString(2, resource.getResourceId().toString());
+            stmt.setString(3, resource.getRootPath());
+            stmt.setInt(4, newState);
+            stmt.setLong(5, resource.getDateReleased());
+            stmt.setLong(6, resource.getDateExpired());
             stmt.executeUpdate();
 
             m_sqlManager.closeAll(null, stmt, null);
 
             // update the link Count
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_LINK_COUNT");
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_SIBLING_COUNT");
             stmt.setInt(1, this.internalCountSiblings(project.getId(), resource.getResourceId()));
             stmt.setString(2, resource.getResourceId().toString());
             stmt.executeUpdate();
@@ -719,7 +713,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
              
             query = m_sqlManager.readQuery(currentProject, "C_RESOURCES_GET_SUBRESOURCES") + " " + resourceTypeClause + " " + orderClause;
             stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
-            stmt.setString(1, resource.getStructureId().toString());
+            stmt.setString(1, resource.getRootPath()+"_%");
+            stmt.setString(2, resource.getRootPath()+"_%/_%");
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -788,7 +783,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readFileHeader(int, org.opencms.util.CmsUUID, boolean)
      */
-    public CmsFile readFileHeader(int projectId, CmsUUID resourceId, boolean includeDeleted) throws CmsException {
+    public CmsFile readFileHeader(int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException {
 
         CmsFile file = null;
         ResultSet res = null;
@@ -797,7 +792,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READBYID");
-            stmt.setString(1, resourceId.toString());
+            stmt.setString(1, structureId.toString());
             
             res = stmt.executeQuery();
             // create new file
@@ -812,7 +807,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     throw new CmsException("[" + this.getClass().getName() + ".readFileHeader/2] " + file.getName(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {                               
-                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFileHeader/2] " + resourceId);
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFileHeader/2] " + structureId);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1207,7 +1202,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         if ((mode & I_CmsConstants.C_READMODE_INCLUDE_PROJECT) > 0) {    
             // C_READMODE_INCLUDE_PROJECT: add condition to match the PROJECT_ID
             conditions.append(C_BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PROJECT_ID"));
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PROJECT_LASTMODIFIED"));
             conditions.append(C_END_CONDITION);
             params.add(String.valueOf(projectId));
         }
@@ -1306,7 +1301,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @param params list to append the selection params
      */
     private void prepareTimeRangeCondition(int projectId, long startTime, long endTime, StringBuffer conditions, List params) {
-        if (startTime != I_CmsConstants.C_READ_IGNORE_TIME) {
+        if (startTime > 0L) {
             // C_READ_IGNORE_TIME: if NOT set, add condition to match lastmodified date against startTime
             conditions.append(C_BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_AFTER"));
@@ -1314,7 +1309,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             params.add(String.valueOf(startTime));
         }   
         
-        if (endTime != I_CmsConstants.C_READ_IGNORE_TIME) {
+        if (endTime > 0L) {
             // C_READ_IGNORE_TIME: if NOT set, add condition to match lastmodified date against endTime
             conditions.append(C_BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_BEFORE"));
@@ -1490,7 +1485,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             if (linkCount > 0) {
 
                 // update the link Count
-                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_LINK_COUNT");
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_SIBLING_COUNT");
                 stmt.setInt(1, this.internalCountSiblings(currentProject.getId(), resource.getResourceId()));
                 stmt.setString(2, resource.getResourceId().toString());
                 stmt.executeUpdate();
@@ -1763,13 +1758,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             // update the structure
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_STRUCTURE");
-            stmt.setString(1, resource.getParentStructureId().toString());
-            stmt.setString(2, resource.getResourceId().toString());
-            stmt.setString(3, resourcePath);
-            stmt.setInt(4, structureState);
-            stmt.setLong(5, resource.getDateReleased());
-            stmt.setLong(6, resource.getDateExpired());
-            stmt.setString(7, resource.getStructureId().toString());
+            stmt.setString(1, resource.getResourceId().toString());
+            stmt.setString(2, resourcePath);
+            stmt.setInt(3, structureState);
+            stmt.setLong(4, resource.getDateReleased());
+            stmt.setLong(5, resource.getDateExpired());
+            stmt.setString(6, resource.getStructureId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1787,7 +1781,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection(project);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_PROJECT_ID");
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_PROJECT_LASTMODIFIED");
             stmt.setInt(1, projectId);
             stmt.setString(2, resource.getResourceId().toString());
             stmt.executeUpdate();
@@ -1838,13 +1832,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 // update the online structure record
                 stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_RESOURCES_UPDATE_STRUCTURE");
-                stmt.setString(1, offlineResource.getParentStructureId().toString());
-                stmt.setString(2, offlineResource.getResourceId().toString());
-                stmt.setString(3, resourcePath);
-                stmt.setInt(4, I_CmsConstants.C_STATE_UNCHANGED);
-                stmt.setLong(5, offlineResource.getDateReleased());
-                stmt.setLong(6, offlineResource.getDateExpired());
-                stmt.setString(7, offlineResource.getStructureId().toString());
+                stmt.setString(1, offlineResource.getResourceId().toString());
+                stmt.setString(2, resourcePath);
+                stmt.setInt(3, I_CmsConstants.C_STATE_UNCHANGED);
+                stmt.setLong(4, offlineResource.getDateReleased());
+                stmt.setLong(5, offlineResource.getDateExpired());
+                stmt.setString(6, offlineResource.getStructureId().toString());
                 stmt.executeUpdate();
             } else {
 
@@ -1876,13 +1869,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // create the structure record online
                 stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_STRUCTURE_WRITE");
                 stmt.setString(1, offlineResource.getStructureId().toString());
-                stmt.setString(2, offlineResource.getParentStructureId().toString());
-                stmt.setString(3, offlineResource.getResourceId().toString());
-                stmt.setString(4, resourcePath);
-                stmt.setString(5, offlineResource.getName());
-                stmt.setInt(6, I_CmsConstants.C_STATE_UNCHANGED);
-                stmt.setLong(7, offlineResource.getDateReleased());
-                stmt.setLong(8, offlineResource.getDateExpired());
+                stmt.setString(2, offlineResource.getResourceId().toString());
+                stmt.setString(3, resourcePath);
+                stmt.setInt(4, I_CmsConstants.C_STATE_UNCHANGED);
+                stmt.setLong(5, offlineResource.getDateReleased());
+                stmt.setLong(6, offlineResource.getDateExpired());
                 stmt.executeUpdate();
 
             }
@@ -2315,12 +2306,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             // write the structure record
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
             stmt.setString(1, newStructureId.toString());
-            stmt.setString(2, resource.getParentStructureId().toString());
-            stmt.setString(3, resource.getResourceId().toString());
-            stmt.setString(4, resourcePath);
-            stmt.setInt(5, newState);
-            stmt.setLong(6, resource.getDateReleased());
-            stmt.setLong(7, resource.getDateExpired());
+            stmt.setString(2, resource.getResourceId().toString());
+            stmt.setString(3, resourcePath);
+            stmt.setInt(4, newState);
+            stmt.setLong(5, resource.getDateReleased());
+            stmt.setLong(6, resource.getDateExpired());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
 
@@ -2373,7 +2363,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     } else if (resource.getState() == I_CmsConstants.C_STATE_KEEP) {
 
                         // special case sibling creation - update the link Count
-                        stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_LINK_COUNT");
+                        stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_SIBLING_COUNT");
                         stmt.setInt(1, this.internalCountSiblings(project.getId(), resource.getResourceId()));
                         stmt.setString(2, resource.getResourceId().toString());
                         stmt.executeUpdate();

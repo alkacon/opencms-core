@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/05/31 08:11:56 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.32 $ $Date: 2004/05/31 08:11:56 $
+ * @version $Revision: 1.33 $ $Date: 2004/08/25 07:47:21 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -82,7 +82,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
 
     /**
      * Adds a user to the database.<p>
-     *
      * @param name username
      * @param password user-password
      * @param description user-description
@@ -92,14 +91,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param lastlogin user-lastlogin
      * @param flags user-flags
      * @param additionalInfos user-additional-infos
-     * @param defaultGroup user-defaultGroup
      * @param address user-defauladdress
-     * @param section user-section
      * @param type user-type
+     *
      * @return the created user.
      * @throws CmsException if something goes wrong.
      */
-    CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
+    CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException;
 
     /**
      * Adds a user to a group.<p>
@@ -179,28 +177,23 @@ public interface I_CmsUserDriver extends I_CmsDriver {
 
     /**
      * Adds a user to the database.<p>
-     *
      * @param id user id
      * @param name username
      * @param password user-password
-     * @param recoveryPassword user-recoveryPassword
      * @param description user-description
      * @param firstname user-firstname
      * @param lastname user-lastname
      * @param email user-email
      * @param lastlogin user-lastlogin
-     * @param lastused user-lastused
      * @param flags user-flags
      * @param additionalInfos user-additional-infos
-     * @param defaultGroup user-defaultGroup
      * @param address user-defauladdress
-     * @param section user-section
      * @param type user-type
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * @return the created user.
      * @throws CmsException if something goes wrong
      */
-    CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type, Object reservedParam) throws CmsException;
+    CmsUser importUser(CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type, Object reservedParam) throws CmsException;
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -359,19 +352,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     Vector readUsers(int type, String namefilter) throws CmsException;
 
     /**
-     * Gets all users with a certain Lastname.<p>
-     *
-     * @param lastname      the start of the users lastname
-     * @param userType      webuser or systemuser
-     * @param userStatus    enabled, disabled
-     * @param wasLoggedIn   was the user ever locked in?
-     * @param nMax          max number of results
-     * @return the users
-     * @throws CmsException if operation was not successful
-     */
-    Vector readUsers(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException;
-
-    /**
      * Returns a list of users of a group.<p>
      *
      * @param name the name of the group
@@ -447,25 +427,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if something goes wrong
      */
     void writePassword(String userName, String password) throws CmsException;
-
-    /**
-     * Sets the password, only if the user knows the recovery-password.<p>
-     *
-     * @param userName the user to set the password for
-     * @param recoveryPassword the recoveryPassword the user has to know to set the password
-     * @param password the password to set
-     * @throws CmsException if something goes wrong
-     */
-    void writePassword(String userName, String recoveryPassword, String password) throws CmsException;
-
-    /**
-     * Sets a new password for a user.<p>
-     *
-     * @param userName the user to set the password for.
-     * @param password the recoveryPassword to set
-     * @throws CmsException if something goes wrong
-     */
-    void writeRecoveryPassword(String userName, String password) throws CmsException;
 
     /**
      * Writes a user to the database.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/17 16:09:25 $
- * Version: $Revision: 1.183 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.184 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.183 $ $Date: 2004/08/17 16:09:25 $
+ * @version $Revision: 1.184 $ $Date: 2004/08/25 07:47:21 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -292,7 +292,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_PUBLISHED_RESOURCES");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_PUBLISHED_LINKS");
             stmt.setString(1, resourceName);
             stmt.setInt(2, linkType);
             stmt.setString(3, linkParameter);
@@ -313,7 +313,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_ALL_PUBLISHED_RESOURCES");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_ALL_PUBLISHED_LINKS");
             stmt.setInt(1, linkType);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -364,16 +364,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         // add the users
         String guestUser = OpenCms.getDefaultUsers().getUserGuest();
-        CmsUser guest = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(guestUser), guestUser, m_driverManager.getUserDriver().encryptPassword(""), m_driverManager.getUserDriver().encryptPassword(""), "The guest user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+        CmsUser guest = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(guestUser), guestUser, m_driverManager.getUserDriver().encryptPassword(""), "The guest user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
         String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
-        CmsUser admin = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(adminUser), adminUser, m_driverManager.getUserDriver().encryptPassword("admin"), m_driverManager.getUserDriver().encryptPassword(""), "The admin user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+        CmsUser admin = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(adminUser), adminUser, m_driverManager.getUserDriver().encryptPassword("admin"), "The admin user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
         m_driverManager.getUserDriver().createUserInGroup(guest.getId(), guests.getId(), null);
         m_driverManager.getUserDriver().createUserInGroup(admin.getId(), administrators.getId(), null);
         // add the export user (if it is not set to guest or admin)
         if (!OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserAdmin()) 
                 && !OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserGuest())) {
             String exportUser = OpenCms.getDefaultUsers().getUserExport();
-            CmsUser export = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(exportUser), exportUser, m_driverManager.getUserDriver().encryptPassword((new CmsUUID()).toString()), m_driverManager.getUserDriver().encryptPassword(""), "The static export user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+            CmsUser export = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(exportUser), exportUser, m_driverManager.getUserDriver().encryptPassword((new CmsUUID()).toString()), "The static export user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
             m_driverManager.getUserDriver().createUserInGroup(export.getId(), guests.getId(), null);
         }
         m_driverManager.getWorkflowDriver().writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
@@ -399,17 +399,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         CmsFolder onlineRootFolder = new CmsFolder(
             new CmsUUID(),
             new CmsUUID(),
-            CmsUUID.getNullUUID(),
             "/",
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
             0,
             online.getId(),
             I_CmsConstants.C_STATE_NEW,
             0,
-            admin.getId(), 
+            admin.getId(),
             0, 
             admin.getId(), 
-            1,
+            1, 
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT            
         );
@@ -1803,7 +1802,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_ALL_PUBLISHED_RESOURCES");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_ALL_PUBLISHED_LINKS");
             stmt.setInt(1, parameterResources);
             stmt.setLong(2, timestamp);
             res = stmt.executeQuery();
@@ -1833,7 +1832,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_PUBLISHED_RESOURCES_PARAMETERS");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_PUBLISHED_LINK_PARAMETERS");
             stmt.setString(1, rfsName);
             res = stmt.executeQuery();
             // add all resourcenames to the list of return values
@@ -1859,7 +1858,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         PreparedStatement stmt = null;
         try {
             conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_UNMARK");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_UNMARK");
             // create the statement
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
@@ -1957,7 +1956,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         if (returnValue == 0) {                      
             try {
                 conn = m_sqlManager.getConnection(currentProject);
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_WRITE_PUBLISHED_RESOURCES");
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_WRITE_PUBLISHED_LINKS");
                 stmt.setString(1, new CmsUUID().toString());
                 stmt.setString(2, resourceName);
                 stmt.setInt(3, linkType);

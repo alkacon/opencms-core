@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.staticexport;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -80,7 +81,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -817,11 +818,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         try {
             // check if the resource folder (or a parent folder) has the "exportname" property set
-            String exportname = cms.readPropertyObject(
+            CmsProperty exportProperty = cms.readPropertyObject(
                 CmsResource.getFolderPath(vfsName),
                 I_CmsConstants.C_PROPERTY_EXPORTNAME,
-                true).getValue();
-            if (exportname != null) {
+                true);
+            
+            if (exportProperty != null && !exportProperty.isNullProperty()) {
+                String exportname = exportProperty.getValue();
                 // "exportname" property set
                 if (!exportname.endsWith("/")) {
                     exportname = exportname + "/";
@@ -1353,7 +1356,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         Iterator i = publishedResources.iterator();
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Starting export of non-template resources with " + publishedResources.size() + " possible canditates in list");
+            OpenCms.getLog(this).debug("Starting export of non-template resources with " + publishedResources.size() + " possible candidates in list");
         }
 
         while (i.hasNext()) {

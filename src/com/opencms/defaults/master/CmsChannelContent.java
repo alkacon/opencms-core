@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/08/23 15:37:02 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2004/08/25 07:47:21 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,8 +58,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.81 $
- * $Date: 2004/08/23 15:37:02 $
+ * $Revision: 1.82 $
+ * $Date: 2004/08/25 07:47:21 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -191,12 +191,12 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_accessflags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         // create the resource object for the channel:
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
-                                     CmsUUID.getNullUUID(), "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, 0,
-                                     m_cms.getRequestContext().currentProject().getId(),
-                                     1, System.currentTimeMillis(),
-                                     m_cms.getRequestContext().currentUser().getId(), System.currentTimeMillis(),
-                                     m_cms.getRequestContext().currentUser().getId(), CmsResource.DATE_RELEASED_DEFAULT,
-                                     CmsResource.DATE_EXPIRED_DEFAULT, 1, 0);
+                                     "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, 0, m_cms.getRequestContext().currentProject().getId(),
+                                     1,
+                                     System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
+                                     System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
+                                     CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT,
+                                     1, 0);
         m_properties = new Hashtable();
     }
 

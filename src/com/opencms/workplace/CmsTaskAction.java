@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2004/08/06 16:17:42 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2004/08/25 07:47:21 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.55 $ $Date: 2004/08/06 16:17:42 $
+ * @version $Revision: 1.56 $ $Date: 2004/08/25 07:47:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -152,9 +152,10 @@ public class CmsTaskAction implements I_CmsWpConstants {
             String taskcomment, String timeoutString, String priorityString, String paraAcceptation,
             String paraAll, String paraCompletion, String paraDelivery) throws CmsException {
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-        if(roleName.equals(C_ALL_ROLES)) {
-            roleName = cms.readUser(agentName).getDefaultGroup().getName();
-        }
+        // TODO: CW: check effects of this
+        // if(roleName.equals(C_ALL_ROLES)) {
+        //     roleName = cms.readUser(agentName).getDefaultGroup().getName();
+        //}
 
         // try to create the task
         int priority = Integer.parseInt(priorityString);
@@ -428,9 +429,10 @@ public class CmsTaskAction implements I_CmsWpConstants {
     public static void forward(CmsObject cms, int taskid, String newEditorName, String newRoleName) throws CmsException {
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsUser newEditor = cms.readUser(newEditorName);
-        if(newRoleName.equals(C_ALL_ROLES)) {
-            newRoleName = cms.readUser(newEditorName).getDefaultGroup().getName();
-        }
+        // TODO: CW: check effects of this
+        // if(newRoleName.equals(C_ALL_ROLES)) {
+        //    newRoleName = cms.readUser(newEditorName).getDefaultGroup().getName();
+        // }
         CmsGroup oldRole = cms.readGroup(newRoleName);
         cms.forwardTask(taskid, oldRole.getName(), newEditor.getName());
         String comment = lang.getLanguageValue("task.dialog.forward.logmessage");
@@ -725,9 +727,10 @@ public class CmsTaskAction implements I_CmsWpConstants {
             String paraAcceptation, String paraAll, String paraCompletion, String paraDelivery) throws CmsException {
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTask task = cms.readTask(taskid);
-        if(roleName.equals(C_ALL_ROLES)) {
-            roleName = cms.readUser(agentName).getDefaultGroup().getName();
-        }
+        // TODO: CW: check effects of this
+        //if(roleName.equals(C_ALL_ROLES)) {
+        //    roleName = cms.readUser(agentName).getDefaultGroup().getName();
+        //}
         cms.setName(taskid, taskName);
 
         // try to reaktivate the task

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestResourceOperations.java,v $
- * Date   : $Date: 2004/08/17 16:46:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestResourceOperations extends OpenCmsTestCase {
   
@@ -87,7 +87,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         TestSetup wrapper = new TestSetup(suite) {
             
             protected void setUp() {
-                setupOpenCms(null, null);
+                setupOpenCms(null, null, false);
             }
             
             protected void tearDown() {

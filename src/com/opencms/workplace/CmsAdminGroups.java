@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
-* Date   : $Date: 2004/07/08 15:21:12 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2004/08/25 07:47:21 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.37 $ $Date: 2004/07/08 15:21:12 $
+ * @version $Revision: 1.38 $ $Date: 2004/08/25 07:47:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -358,17 +358,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
                                     Vector falseUsers = new Vector();
                                     for(int z = 0;z < allUsers.size();z++) {
                                         String theUserName = ((CmsUser)allUsers.elementAt(z)).getName();
-                                        String theDefaultGroupName = ((CmsUser)allUsers.elementAt(z)).getDefaultGroup().getName();
                                         if(!selectedUsers.contains(theUserName)) {
-
-                                            // the user should be deleted
-                                            if(theDefaultGroupName.equals(groupname)) {
-                                                defaultProblem = true;
-                                                falseUsers.addElement(theUserName);
-                                            }
-                                            else {
-                                                cms.removeUserFromGroup(theUserName, groupname);
-                                            }
+                                            cms.removeUserFromGroup(theUserName, groupname);
                                         }
                                     }
                                     for(int z = 0;z < selectedUsers.size();z++) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2004/08/19 12:59:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -65,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -249,14 +248,6 @@ public class CmsExplorer extends CmsWorkplace {
             }            
         }
         
-        // get the currentFolder Id
-        CmsUUID currentFolderId;
-        if (currentResource.isFile()) {
-            currentFolderId = currentResource.getParentStructureId();                    
-        } else {                
-            currentFolderId = currentResource.getStructureId();
-        }
-        
         // start creating content
         StringBuffer content = new StringBuffer(2048);
         content.append("function initialize() {\n");
@@ -304,7 +295,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(");\n");
         // the folder
         content.append("top.setDirectory(\"");
-        content.append(currentFolderId.hashCode());
+        content.append(CmsResource.getFolderPath(currentResource.getRootPath()));
         content.append("\",\"");
         if (showVfsLinks) {
             content.append("vfslink:");

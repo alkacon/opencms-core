@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/08/17 07:08:50 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -74,9 +74,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** Boolean flag whether the timestamp of this resource was modified by a touch command. */
     private boolean m_isTouched;
-
-    /** The id of the parent's strcuture database record. */
-    private CmsUUID m_parentId;
 
     /** The project id where this resource has been last modified in. */
     private int m_projectLastModified;
@@ -109,7 +106,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * Constructor, creates a new CmsRecource object.<p>
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
-     * @param parentId the id of this resources parent folder
      * @param rootPath the root path to the resource
      * @param type the type of this resource
      * @param flags the flags of this resource
@@ -127,7 +123,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public CmsResource(
         CmsUUID structureId,
         CmsUUID resourceId,
-        CmsUUID parentId,
         String rootPath,
         int type,
         int flags,
@@ -144,7 +139,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
         m_structureId = structureId;
         m_resourceId = resourceId;
-        m_parentId = parentId;
         m_rootPath = rootPath;
         m_typeId = type;
         m_flags = flags;
@@ -309,7 +303,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         CmsResource clone = new CmsResource(
             m_structureId,
             m_resourceId,
-            m_parentId,
             m_rootPath,
             m_typeId,
             m_flags,
@@ -431,16 +424,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         } else {
             return name;
         }
-    }
-
-    /**
-     * Returns the structure record id of the parent of this resource.<p>
-     *
-     * @return the structure record id of the parent of this resource
-     */
-    public CmsUUID getParentStructureId() {
-
-        return m_parentId;
     }
 
     /**
@@ -675,16 +658,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Sets the parent of this resource.<p>
-     *
-     * @param parent the id of the parent resource
-     */
-    public void setParentId(CmsUUID parent) {
-
-        m_parentId = parent;
-    }
-
-    /**
      * Sets the state of this resource.<p>
      *
      * @param state the state to set
@@ -729,8 +702,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(m_structureId);
         result.append(", resource id: ");
         result.append(m_resourceId);
-        result.append(", parent id: ");
-        result.append(m_parentId);
         result.append(", type id: ");
         result.append(m_typeId);
         result.append(", flags: ");

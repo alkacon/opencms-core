@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1110,7 +1110,7 @@ public class CmsObject {
         return m_driverManager.readResource(m_context, 
             addSiteRoot(resourcename), filter);
     }
-    
+
     /**
      * Reads all resources below the given path matching the filter criteria.<p>
      * 
@@ -1121,10 +1121,25 @@ public class CmsObject {
      */
     public List readResources(String resourcename, CmsResourceFilter filter) throws CmsException {
         
+        return readResources(resourcename, filter, true);
+    }
+    
+    /**
+     * Reads all resources below the given path matching the filter criteria.<p>
+     * 
+     * @param resourcename the parent path to read the resources from
+     * @param filter the filter
+     * @param readTree true to read all subresources
+     * @return a list of CmsResource objects matching the filter criteria
+     * @throws CmsException if something goes wrong
+     */
+    public List readResources(String resourcename, CmsResourceFilter filter, boolean readTree) throws CmsException {
+        
         return m_driverManager.readResources(
             m_context,
             readResource(resourcename, CmsResourceFilter.ALL),
-            filter);
+            filter,
+            readTree);
     }
 
     /**
@@ -2228,11 +2243,9 @@ public class CmsObject {
      * <p>
      * <b>Security:</b>
      * Only members of the group administrators are allowed to add a user.
-     *
      * @param id the id of the user
      * @param name the new name for the user.
      * @param password the new password for the user.
-     * @param recoveryPassword the new password for the user.
      * @param description the description for the user.
      * @param firstname the firstname of the user.
      * @param lastname the lastname of the user.
@@ -2240,17 +2253,15 @@ public class CmsObject {
      * @param flags the flags for a user (e.g. C_FLAG_ENABLED).
      * @param additionalInfos a Hashtable with additional infos for the user. These
      * Infos may be stored into the Usertables (depending on the implementation).
-     * @param defaultGroup the default groupname for the user.
      * @param address the address of the user.
-     * @param section the section of the user.
      * @param type the type of the user.
      *
      * @return a <code>CmsUser</code> object representing the added user.
      *
      * @throws CmsException if operation was not successful.
      */
-    public CmsUser addImportUser(String id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, int flags, Hashtable additionalInfos, String defaultGroup, String address, String section, int type) throws CmsException {
-        return m_driverManager.addImportUser(m_context, id, name, password, recoveryPassword, description, firstname, lastname, email, flags, additionalInfos, defaultGroup, address, section, type);
+    public CmsUser addImportUser(String id, String name, String password, String description, String firstname, String lastname, String email, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
+        return m_driverManager.addImportUser(m_context, id, name, password, description, firstname, lastname, email, flags, additionalInfos, address, type);
     }
     
     /**
@@ -2584,19 +2595,6 @@ public class CmsObject {
      */
     public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
         m_driverManager.resetPassword(username, oldPassword, newPassword);
-    } 
-    
-
-    /**
-     * Sets the recovery password for a user.<p>
-     *
-     * @param username the name of the user
-     * @param oldPassword the old (current) password
-     * @param newPassword the new recovery password
-     * @throws CmsException if something goes wrong
-     */
-    public void setRecoveryPassword(String username, String oldPassword, String newPassword) throws CmsException {
-        m_driverManager.setRecoveryPassword(username, oldPassword, newPassword);
     }
 
     /**
@@ -2710,19 +2708,6 @@ public class CmsObject {
      */
     public CmsGroup readManagerGroup(CmsProject project) {
         return m_driverManager.readManagerGroup(project);
-    }
-    
-    /**
-     * Sets a new password if the user knows his recovery-password.
-     *
-     * @param username the name of the user.
-     * @param recoveryPassword the recovery password.
-     * @param newPassword the new password.
-     *
-     * @throws CmsException if operation was not successfull.
-     */
-    public void recoverPassword(String username, String recoveryPassword, String newPassword) throws CmsException {
-        m_driverManager.recoverPassword(username, recoveryPassword, newPassword);
     }
 
     /**

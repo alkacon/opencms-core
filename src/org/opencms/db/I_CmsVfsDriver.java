@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/20 11:43:58 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.89 $ $Date: 2004/08/20 11:43:58 $
+ * @version $Revision: 1.90 $ $Date: 2004/08/25 07:47:21 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -216,12 +216,12 @@ public interface I_CmsVfsDriver {
      * Reads a file header specified by it's structure ID.<p>
      *
      * @param projectId the Id of the project
-     * @param resourceId the Id of the resource.
+     * @param structureId the Id of the resource.
      * @param includeDeleted true if already deleted files are included
      * @return file the read file.
      * @throws CmsException if operation was not succesful
      */
-    CmsFile readFileHeader(int projectId, CmsUUID resourceId, boolean includeDeleted) throws CmsException;
+    CmsFile readFileHeader(int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException;
 
     /**
      * Reads a file header specified by it's resource name.<p>

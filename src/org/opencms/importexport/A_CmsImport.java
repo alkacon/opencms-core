@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/08/18 11:45:27 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -254,19 +254,18 @@ public abstract class A_CmsImport implements I_CmsImport {
                     CmsResource resource = new CmsResource(
                         new CmsUUID(), // structure ID is always a new UUID
                         target.getResourceId(), 
-                        CmsUUID.getNullUUID(),
                         key,
-                        target.getTypeId(), 
+                        target.getTypeId(),
                         0, 
-                        m_cms.getRequestContext().currentProject().getId(), // TODO: pass flags from import 
-                        I_CmsConstants.C_STATE_NEW, 
-                        target.getDateCreated(),
-                        target.getUserCreated(), 
+                        m_cms.getRequestContext().currentProject().getId(), 
+                        I_CmsConstants.C_STATE_NEW, // TODO: pass flags from import 
+                        target.getDateCreated(), 
+                        target.getUserCreated(),
                         target.getDateLastModified(), 
                         target.getUserLastModified(), 
                         CmsResource.DATE_RELEASED_DEFAULT, 
                         CmsResource.DATE_EXPIRED_DEFAULT, 
-                        1,
+                        1, 
                         0
                     );
                     
@@ -529,25 +528,21 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Imports a single user.<p>
-     * 
      * @param name user name
      * @param description user description
      * @param flags user flags
      * @param password user password 
-     * @param recoveryPassword user recovery password
      * @param firstname firstname of the user
      * @param lastname lastname of the user
      * @param email user email
      * @param address user address 
-     * @param section user section
-     * @param defaultGroup user default group
      * @param type user type
      * @param userInfo user info
      * @param userGroups user groups
      * 
      * @throws CmsException in case something goes wrong
      */
-    protected void importUser(String name, String description, String flags, String password, String recoveryPassword, String firstname, String lastname, String email, String address, String section, String defaultGroup, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
+    protected void importUser(String name, String description, String flags, String password, String firstname, String lastname, String email, String address, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
 
         // create a new user id
         String id = new CmsUUID().toString();
@@ -556,7 +551,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 m_report.print(m_report.key("report.importing_user"), I_CmsReport.C_FORMAT_NOTE);
                 m_report.print(name);
                 m_report.print(m_report.key("report.dots"));
-                m_cms.addImportUser(id, name, password, recoveryPassword, description, firstname, lastname, email, Integer.parseInt(flags), userInfo, defaultGroup, address, section, Integer.parseInt(type));
+                m_cms.addImportUser(id, name, password, description, firstname, lastname, email, Integer.parseInt(flags), userInfo, address, Integer.parseInt(type));
                 // add user to all groups vector
                 for (int i = 0; i < userGroups.size(); i++) {
                     try {
@@ -633,7 +628,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         Element currentElement, currentGroup;
         Vector userGroups;
         Hashtable userInfo = new Hashtable();
-        String  name, description, flags, password, recoveryPassword, firstname, lastname, email, address, section, defaultGroup, type, pwd, infoNode;
+        String  name, description, flags, password, firstname, lastname, email, address, type, pwd, infoNode;
         // try to get the import resource
         //getImportResource();
         try {
@@ -647,17 +642,12 @@ public abstract class A_CmsImport implements I_CmsImport {
                 // decode passwords using base 64 decoder
                 pwd = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PASSWORD);
                 password = new String(Base64.decodeBase64(pwd.trim().getBytes()));
-                pwd = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_RECOVERYPASSWORD);
-                recoveryPassword = new String(Base64.decodeBase64(pwd.trim().getBytes()));
-
                 description = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
                 flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
                 firstname = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FIRSTNAME);
                 lastname = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_LASTNAME);
                 email = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_EMAIL);
                 address = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_ADDRESS);
-                section = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SECTION);
-                defaultGroup = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DEFAULTGROUP);
                 type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                 // get the userinfo and put it into the hashtable
                 infoNode = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERINFO);
@@ -682,7 +672,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userGroups.addElement(userInGroup);
                 }
                 // import this user
-                importUser(name, description, flags, password, recoveryPassword, firstname, lastname, email, address, section, defaultGroup, type, userInfo, userGroups);
+                importUser(name, description, flags, password, firstname, lastname, email, address, type, userInfo, userGroups);
             }
         } catch (Exception exc) {
             m_report.println(exc);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/08/19 12:26:35 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.48 $ $Date: 2004/08/19 12:26:35 $
+ * @version $Revision: 1.49 $ $Date: 2004/08/25 07:47:21 $
  */
 public class CmsExport implements Serializable {
 
@@ -931,16 +931,12 @@ public class CmsExport implements Serializable {
         // encode the password, using a base 64 decoder
         String passwd = new String(Base64.encodeBase64(user.getPassword().getBytes()));
         e.addElement(I_CmsConstants.C_EXPORT_TAG_PASSWORD).addCDATA(passwd);
-        String recPasswd = new String(Base64.encodeBase64(user.getRecoveryPassword().getBytes()));
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_RECOVERYPASSWORD).addCDATA(recPasswd);
         e.addElement(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION).addCDATA(user.getDescription());
         e.addElement(I_CmsConstants.C_EXPORT_TAG_FIRSTNAME).addText(user.getFirstname());
         e.addElement(I_CmsConstants.C_EXPORT_TAG_LASTNAME).addText(user.getLastname());
         e.addElement(I_CmsConstants.C_EXPORT_TAG_EMAIL).addText(user.getEmail());
         e.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(user.getFlags()));
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_DEFAULTGROUP).addText(user.getDefaultGroup().getName());
         e.addElement(I_CmsConstants.C_EXPORT_TAG_ADDRESS).addCDATA(user.getAddress());
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_SECTION).addText(user.getSection());
         e.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(Integer.toString(user.getType()));
         // serialize the hashtable and write the info into a file
         try {

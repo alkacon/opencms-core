@@ -1797,15 +1797,12 @@
 			<name>Admin</name>
 			<password><![CDATA[YTFhM2FmYTlmYWQ3MjUyN2MzMDljYThlY2EwMDlmNDM=
 ]]></password>
-			<recoverypassword><![CDATA[549d0c590f803284690089186c78c2fe]]></recoverypassword>
 			<description><![CDATA[The admin user]]></description>
 			<firstname/>
 			<lastname/>
 			<email/>
 			<flags>0</flags>
-			<defaultgroup>Administrators</defaultgroup>
 			<address/>
-			<section/>
 			<type>0</type>
 			<userinfo>/~userinfo/Admin.dat</userinfo>
 			<usergroups>
@@ -1818,15 +1815,12 @@
 			<name>Export</name>
 			<password><![CDATA[MjhiZDZiZjgyYTJiNTM2YWJkMDcyMzMxMzlkZmIzNjU=
 ]]></password>
-			<recoverypassword><![CDATA[549d0c590f803284690089186c78c2fe]]></recoverypassword>
 			<description><![CDATA[The static export user]]></description>
 			<firstname/>
 			<lastname/>
 			<email/>
 			<flags>0</flags>
-			<defaultgroup>Guests</defaultgroup>
 			<address/>
-			<section/>
 			<type>0</type>
 			<userinfo>/~userinfo/Export.dat</userinfo>
 			<usergroups>
@@ -1839,15 +1833,12 @@
 			<name>Guest</name>
 			<password><![CDATA[NTQ5ZDBjNTkwZjgwMzI4NDY5MDA4OTE4NmM3OGMyZmU=
 ]]></password>
-			<recoverypassword><![CDATA[549d0c590f803284690089186c78c2fe]]></recoverypassword>
 			<description><![CDATA[The guest user]]></description>
 			<firstname/>
 			<lastname/>
 			<email/>
 			<flags>0</flags>
-			<defaultgroup>Guests</defaultgroup>
 			<address/>
-			<section/>
 			<type>0</type>
 			<userinfo>/~userinfo/Guest.dat</userinfo>
 			<usergroups>
@@ -1860,15 +1851,12 @@
 			<name>test1</name>
 			<password><![CDATA[ZGE5MGRlMGIxZGMwNjFiMjE3MDA1NmFlMjJhNmRkMGE=
 ]]></password>
-			<recoverypassword><![CDATA[549d0c590f803284690089186c78c2fe]]></recoverypassword>
 			<description><![CDATA[test1]]></description>
 			<firstname>test1</firstname>
 			<lastname>test1</lastname>
 			<email>test1</email>
 			<flags>0</flags>
-			<defaultgroup>Users</defaultgroup>
 			<address><![CDATA[test1]]></address>
-			<section/>
 			<type>0</type>
 			<userinfo>/~userinfo/test1.dat</userinfo>
 			<usergroups>
@@ -1884,15 +1872,12 @@
 			<name>test2</name>
 			<password><![CDATA[MmQ4MmI0MDIxMjg1Mzk4M2IxMTYzYTAxMGZmYTA3YWI=
 ]]></password>
-			<recoverypassword><![CDATA[549d0c590f803284690089186c78c2fe]]></recoverypassword>
 			<description><![CDATA[test2]]></description>
 			<firstname>test2</firstname>
 			<lastname>test2</lastname>
 			<email>test2</email>
 			<flags>0</flags>
-			<defaultgroup>Users</defaultgroup>
 			<address><![CDATA[test2]]></address>
-			<section/>
 			<type>0</type>
 			<userinfo>/~userinfo/test2.dat</userinfo>
 			<usergroups>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/18 11:54:19 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.101 $ $Date: 2004/08/18 11:54:19 $
+ * @version $Revision: 1.102 $ $Date: 2004/08/25 07:47:21 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -96,11 +96,10 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         int tagId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_TAG_ID"));
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
         CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
-        CmsUUID parentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_PARENT_ID")));
         String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
         int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
-        int projectID = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_ID")); 
+        int projectLastModified = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED")); 
         int state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
         long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
         long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
@@ -126,22 +125,21 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             versionId, 
             structureId, 
             resourceId, 
-            parentId, 
             contentId, 
             resourcePath, 
-            resourceType,
-            resourceFlags, 
-            projectID, 
-            state,
-            dateCreated, 
+            resourceType, 
+            resourceFlags,
+            projectLastModified, 
+            state, 
+            dateCreated,
             userCreated, 
             userCreatedName, 
             dateLastModified, 
             userLastModified, 
             userLastModifiedName, 
-            dateReleased,
+            dateReleased, 
             dateExpired,
-            resourceSize, 
+            resourceSize,
             content);
     }
     
@@ -1125,15 +1123,14 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             // write the structure
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_WRITE_BACKUP");
             stmt.setString(1, resource.getStructureId().toString());
-            stmt.setString(2, resource.getParentStructureId().toString());
-            stmt.setString(3, resource.getResourceId().toString());
-            stmt.setString(4, resource.getRootPath());
-            stmt.setInt(5, resource.getState());
-            stmt.setLong(6, resource.getDateReleased());
-            stmt.setLong(7, resource.getDateExpired());
-            stmt.setInt(8, tagId);
-            stmt.setInt(9, versionId);
-            stmt.setString(10, backupPkId.toString());
+            stmt.setString(2, resource.getResourceId().toString());
+            stmt.setString(3, resource.getRootPath());
+            stmt.setInt(4, resource.getState());
+            stmt.setLong(5, resource.getDateReleased());
+            stmt.setLong(6, resource.getDateExpired());
+            stmt.setInt(7, tagId);
+            stmt.setInt(8, versionId);
+            stmt.setString(9, backupPkId.toString());
             stmt.executeUpdate();
 
             writeBackupProperties(publishProject, resource, properties, backupPkId, tagId, versionId);

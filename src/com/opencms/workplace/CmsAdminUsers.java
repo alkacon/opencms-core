@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2004/08/25 07:47:21 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.45 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.46 $ $Date: 2004/08/25 07:47:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -63,29 +63,21 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
      * the amount of database access is kept small with this funcion
      * @param cms CmsObject Object for accessing system resources.
      * @param theUser the user whose data will be changed
-     * @param defaultGroupName String which holds the name of the default group theUser should get
      * @param newGroups Vector of Strings with the names of the new groups of theUser
      * @throws CmsException
      */
 
-    private void changeGroups(CmsObject cms, CmsUser theUser, String defaultGroupName,
-            Vector newGroups) throws CmsException {
+    private void changeGroups(CmsObject cms, CmsUser theUser, Vector newGroups) throws CmsException {
         String username = theUser.getName();
         Vector oldGroups = cms.getGroupsOfUser(username);
         Vector oldGroupnames = new Vector();
-        if(defaultGroupName == null) {
-            throw new CmsException("method 'changeGroups': default group set to null",
-                    CmsException.C_NO_DEFAULT_GROUP);
-        }
-        theUser.setDefaultGroup(cms.readGroup(defaultGroupName));
+
         cms.writeUser(theUser); // update in the database
         theUser = cms.readUser(username);
         if(oldGroups != null) {
             for(int z = 0;z < oldGroups.size();z++) {
                 oldGroupnames.addElement(((CmsGroup)oldGroups.elementAt(z)).getName());
             }
-            String oldDefaultGroup = theUser.getDefaultGroup().getName();
-            oldGroupnames.removeElement(oldDefaultGroup);
 
             // delete the user from the groups which are not in newGroups
             for(int z = 0;z < oldGroupnames.size();z++) {
@@ -391,7 +383,6 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     disabled = theUser.getDisabled();
                     zipcode = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE);
                     town = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_TOWN);
-                    defaultGroup = theUser.getDefaultGroup().getName();
                     Vector groups = cms.getDirectGroupsOfUser(user);
                     if(groups != null) {
                         selectedGroups = new Vector();
@@ -481,7 +472,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                     }else {
                                         theUser.setEnabled();
                                     }
-                                    changeGroups(cms, theUser, defaultGroup, selectedGroups);
+                                    changeGroups(cms, theUser, selectedGroups);
                                     session.removeValue("selectedGroups");
                                     session.removeValue("notSelectedGroups");
                                     session.removeValue("DEFAULTGROUP");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/06/21 09:54:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2004/06/21 09:54:49 $
+ * @version $Revision: 1.9 $ $Date: 2004/08/25 07:47:21 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)
  */
@@ -74,9 +74,6 @@ public class CmsPublishList extends Object {
 
     /** Flag indicating if this is a publish list for a direct published file.<p> */
     private boolean m_isDirectPublishFile;
-
-    /** The parent structure ID of a direct published resource.<p> */
-    private CmsUUID m_parentStructureId;
 
     /** The publish history ID.<p> */
     private CmsUUID m_publishHistoryId;
@@ -106,12 +103,10 @@ public class CmsPublishList extends Object {
         m_isDirectPublish = directPublishResource != null;
 
         if (m_isDirectPublish) {
-            m_parentStructureId = directPublishResource.getParentStructureId();
             m_resourceName = directPublishResource.getRootPath();
             m_isDirectPublishFile = isDirectPublishFile;
             m_isDirectPublish = true;
         } else {
-            m_parentStructureId = CmsUUID.getNullUUID();
             m_resourceName = null;
             m_isDirectPublishFile = false;
             m_isDirectPublish = false;
@@ -269,15 +264,6 @@ public class CmsPublishList extends Object {
     protected List getDeletedFolderListInstance() {
         // it is essential that this method is only visible within the db package!
         return m_deletedFolderList;
-    }
-
-    /**
-     * Returns the parent structure Id if a resource gets published directly, or the null Cms UUID.<p>
-     * 
-     * @return the parent structure Id if a resource gets published directly, or the null Cms UUID
-     */
-    public CmsUUID getDirectPublishParentStructureId() {
-        return m_parentStructureId;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2004/08/17 07:08:50 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -67,7 +67,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         this(
             resource.getStructureId(),
             resource.getResourceId(),
-            resource.getParentStructureId(),
             CmsUUID.getNullUUID(),
             resource.getName(),
             resource.getTypeId(),
@@ -97,10 +96,8 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
 
     /**
      * Constructor, creates a new CmsFile object.<p>
-     *
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
-     * @param parentId the id of this resources parent folder
      * @param contentId the id of this resources content record
      * @param path the filename of this resouce
      * @param type the type of this resource
@@ -120,7 +117,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     public CmsFile(
         CmsUUID structureId,
         CmsUUID resourceId,
-        CmsUUID parentId,
         CmsUUID contentId,
         String path,
         int type,
@@ -141,7 +137,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         super(
             structureId,
             resourceId,
-            parentId,
             path,
             type,
             flags,
@@ -174,7 +169,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         CmsFile clone = new CmsFile(
             getStructureId(),
             getResourceId(),
-            getParentStructureId(),
             getContentId(),
             getRootPath(),
             getTypeId(),

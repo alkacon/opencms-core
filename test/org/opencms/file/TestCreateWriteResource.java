@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2004/08/17 07:09:56 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -324,7 +324,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsResource resource = new CmsResource (
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),
             resourcename,
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
             0,
@@ -332,10 +331,10 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp, 
-            cms.getRequestContext().currentUser().getId(),
-            CmsResource.DATE_RELEASED_DEFAULT, 
-            CmsResource.DATE_EXPIRED_DEFAULT,
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT, 
             1,
             -1
         );
@@ -381,7 +380,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsResource resource = new CmsResource (
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),
             resourcename,
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
             0,
@@ -389,10 +387,10 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp, 
-            cms.getRequestContext().currentUser().getId(),
-            CmsResource.DATE_RELEASED_DEFAULT, 
-            CmsResource.DATE_EXPIRED_DEFAULT,
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT, 
             1,
             -1
         );
@@ -439,7 +437,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsResource resource = new CmsResource (
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),
             resourcename,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
@@ -447,10 +444,10 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp, 
-            cms.getRequestContext().currentUser().getId(),
-            CmsResource.DATE_RELEASED_DEFAULT, 
-            CmsResource.DATE_EXPIRED_DEFAULT,
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT, 
             1,
             content.length
         );
@@ -501,7 +498,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsResource resource = new CmsResource (
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),
             resourcename,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
@@ -509,10 +505,10 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp, 
-            cms.getRequestContext().currentUser().getId(),
-            CmsResource.DATE_RELEASED_DEFAULT, 
-            CmsResource.DATE_EXPIRED_DEFAULT,
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT, 
             1,
             content.length
         );
@@ -584,7 +580,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         resource= new CmsResource (
             file.getStructureId(),
             file.getResourceId(),
-            CmsUUID.getNullUUID(),
             resourcename2,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
@@ -592,10 +587,10 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp, 
-            cms.getRequestContext().currentUser().getId(),
-            CmsResource.DATE_RELEASED_DEFAULT, 
-            CmsResource.DATE_EXPIRED_DEFAULT,
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT, 
             1,
             content.length
         );
@@ -637,7 +632,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         resource= new CmsResource (
             file.getStructureId(),
             file.getResourceId(),
-            CmsUUID.getNullUUID(),
             resourcename1,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
@@ -645,10 +639,10 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp, 
-            cms.getRequestContext().currentUser().getId(),
-            CmsResource.DATE_RELEASED_DEFAULT, 
-            CmsResource.DATE_EXPIRED_DEFAULT,
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT, 
             1,
             content.length
         );

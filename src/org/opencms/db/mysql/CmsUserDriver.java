@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,22 +32,18 @@
 package org.opencms.db.mysql;
 
 import org.opencms.util.CmsUUID;
-
-import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Hashtable;
 
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.16 $ $Date: 2004/02/13 13:41:46 $
+ * @version $Revision: 1.17 $ $Date: 2004/08/25 07:47:21 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -56,9 +52,9 @@ import java.util.Hashtable;
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, org.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
         //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
         PreparedStatement stmt = null;
@@ -72,23 +68,16 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
-
-            // crypt the password with MD5
             stmt.setString(3, encryptPassword(password));
-
-            stmt.setString(4, encryptPassword(""));
-            stmt.setString(5, description);
-            stmt.setString(6, firstname);
-            stmt.setString(7, lastname);
-            stmt.setString(8, email);
-            stmt.setTimestamp(9, new Timestamp(lastlogin));
-            stmt.setTimestamp(10, new Timestamp(0));
-            stmt.setInt(11, flags);
-            stmt.setBytes(12, internalSerializeAdditionalUserInfo(additionalInfos));
-            stmt.setString(13, defaultGroup.getId().toString());
-            stmt.setString(14, address);
-            stmt.setString(15, section);
-            stmt.setInt(16, type);
+            stmt.setString(4, description);
+            stmt.setString(5, firstname);
+            stmt.setString(6, lastname);
+            stmt.setString(7, email);
+            stmt.setLong(8, lastlogin);
+            stmt.setInt(9, flags);
+            stmt.setBytes(10, internalSerializeAdditionalUserInfo(additionalInfos));
+            stmt.setString(11, address);
+            stmt.setInt(12, type);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -124,15 +113,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(2, user.getFirstname());
             stmt.setString(3, user.getLastname());
             stmt.setString(4, user.getEmail());
-            stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
-            stmt.setTimestamp(6, new Timestamp(0));
-            stmt.setInt(7, user.getFlags());
-            stmt.setBytes(8, internalSerializeAdditionalUserInfo(user.getAdditionalInfo()));
-            stmt.setString(9, (user.getDefaultGroupId() != null) ? user.getDefaultGroupId().toString() : "");
-            stmt.setString(10, user.getAddress());
-            stmt.setString(11, user.getSection());
-            stmt.setInt(12, user.getType());
-            stmt.setString(13, user.getId().toString());
+            stmt.setLong(5, user.getLastlogin());
+            stmt.setInt(6, user.getFlags());
+            stmt.setBytes(7, internalSerializeAdditionalUserInfo(user.getAdditionalInfo()));
+            stmt.setString(8, user.getAddress());
+            stmt.setInt(9, user.getType());
+            stmt.setString(10, user.getId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);

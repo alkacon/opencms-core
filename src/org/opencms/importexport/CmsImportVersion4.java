@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/08/18 11:45:27 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2004/08/25 07:47:21 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -506,18 +506,17 @@ public class CmsImportVersion4 extends A_CmsImport {
             CmsResource resource = new CmsResource(
                 new CmsUUID(), // structure ID is always a new UUID
                 newUuidresource, 
-                CmsUUID.getNullUUID(),
                 destination,
                 resType,
-                new Integer(flags).intValue(), 
+                new Integer(flags).intValue(),
                 m_cms.getRequestContext().currentProject().getId(), 
                 I_CmsConstants.C_STATE_NEW, 
-                datecreated,
-                newUsercreated, 
+                datecreated, 
+                newUsercreated,
                 datelastmodified, 
                 newUserlastmodified, 
                 datereleased, 
-                dateexpired,
+                dateexpired, 
                 1,
                 size
             );
