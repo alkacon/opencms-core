@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/06 18:48:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -125,6 +125,7 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
         manager.loadXmlConfiguration(inputUrl);
         
         System.out.println("Vfs configuration instance: " + manager.getConfiguration(CmsVfsConfiguration.class));
+        System.out.println("Import/export configuration instance: " + manager.getConfiguration(CmsImportExportConfiguration.class));
         
         // gernerate XML document for the configuration
         Document doc = manager.generateXml();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/06 18:47:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,6 +91,9 @@ public class CmsConfigurationManager {
      * @param configuration the configuration to add
      */
     public void addConfiguration(I_CmsXmlConfiguration configuration) {
+        if (OpenCms.getLog(this).isInfoEnabled()) {
+            OpenCms.getLog(this).info("Adding configuration: " + configuration);
+        }        
         m_configurations.add(configuration);
     }
     
@@ -221,9 +224,8 @@ public class CmsConfigurationManager {
         public InputSource resolveEntity(String publicId, String systemId) {
             if (systemId.equals(C_CONFIGURATION_DTD)) {
                 // return our special input source
-                URL url = ClassLoader.getSystemResource("org/opencms/configuration/opencms-configuration.dtd");
                 try {
-                    return new InputSource(url.openStream());
+                    return new InputSource(getClass().getClassLoader().getResourceAsStream("org/opencms/configuration/opencms-configuration.dtd"));
                 } catch (Throwable t) {
                     OpenCms.getLog(this).error("Could not open opencms-configuration.dtd mapping", t);
                     return null;

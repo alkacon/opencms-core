@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/03/04 11:33:54 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/03/06 18:50:12 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.ServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -66,8 +66,6 @@ public class CmsLoaderManager {
 
     /**
      * Creates a new instance for the loader manager, will be called by the vfs configuration manager.<p>
-     * 
-     * @see org.opencms.configuration.CmsVfsConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
      */
     public CmsLoaderManager() {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -75,63 +73,6 @@ public class CmsLoaderManager {
         }
         m_loaders = new I_CmsResourceLoader[16];
     }
-    
-//    /**
-//     * Adds a resource loader from the XML configuration.<p>
-//     * 
-//     * @param clazz the class name of the resource loader to add
-//     */
-//    public void addLoader(I_CmsResourceLoader loader) {
-//        try {
-//            I_CmsResourceLoader loaderInstance = (I_CmsResourceLoader)Class.forName(clazz).newInstance();
-//            // HACK: I need this for loader init as long as loaders still need properties
-//            //  loaderInstance.init(OpenCmsCore.getInstance().getConfiguration());                
-//            addLoader(loaderInstance);
-//            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-//                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader loaded: " + clazz + " with id " + loaderInstance.getLoaderId());
-//            }                
-//        } catch (Throwable e) {
-//            // loader class not found, ignore class
-//            if (OpenCms.getLog(this).isErrorEnabled()) {
-//                String errorMessage = "Error while initializing loader \"" + clazz + "\". Ignoring.";
-//                OpenCms.getLog(this).error(errorMessage, e);
-//            }
-//        }        
-//    }
-
-//    /**
-//     * Collects all available resource loaders from the registry at startup.<p>
-//     * 
-//     * @param configuration the OpenCms configuration 
-//     */
-//    public CmsLoaderManager(ExtendedProperties configuration) {
-//        List loaders = OpenCms.getRegistry().getResourceLoaders();
-//
-//        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-//            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader init  : " + this.getClass().getPackage());
-//        }
-//
-//        m_loaders = new I_CmsResourceLoader[16];
-//        String loaderName = null;
-//        Iterator i = loaders.iterator();
-//        while (i.hasNext()) {
-//            try {
-//                loaderName = (String)i.next();
-//                I_CmsResourceLoader loaderInstance = (I_CmsResourceLoader)Class.forName(loaderName).newInstance();
-//                loaderInstance.init(configuration);                
-//                addLoader(loaderInstance);
-//                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-//                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". ResourceLoader loaded: " + loaderName + " with id " + loaderInstance.getLoaderId());
-//                }                
-//            } catch (Throwable e) {
-//                // loader class not found, ignore class
-//                if (OpenCms.getLog(this).isErrorEnabled()) {
-//                    String errorMessage = "Error while initializing loader \"" + loaderName + "\". Ignoring.";
-//                    OpenCms.getLog(this).error(errorMessage, e);
-//                }
-//            }
-//        }
-//    }
 
     /**
      * Returns the loader class instance for the given loader id.<p>

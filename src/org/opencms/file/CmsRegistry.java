@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/03/02 21:51:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/03/06 18:48:25 $
+ * Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -850,15 +850,6 @@ public class CmsRegistry extends A_CmsXmlContent {
             }
         }
         return m_exportpoints;
-    }
-
-    /**
-     * Returns a list of all configured import classes.<p>
-     *
-     * @return a list of all configured import classes
-     */
-    public List getImportClasses() {
-        return getSystemSubNodesClasses("vfsdataimport");
     }
 
     /**

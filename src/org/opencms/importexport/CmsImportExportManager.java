@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/03/01 12:21:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/03/06 18:53:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.importexport;
 
+import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -49,20 +49,20 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.dom4j.Document;
-import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 /**
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2004/03/01 12:21:47 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/06 18:53:15 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -77,348 +77,39 @@ public class CmsImportExportManager extends Object {
     /** List of immutable resources that should remain unchanged when resources are imported.<p> */
     private List m_immutableResources;
 
+    /** The initialized import/export handlers.<p> */
+    private List m_importExportHandlers;    
+    
+    /** Import princial group translations */
+    private Map m_importGroupTranslations;
+    
+    /** Import princial user translations */
+    private Map m_importUserTranslations;    
+    
+    /** The configured import versions class names */
+    private List m_importVersionClasses;     
+
     /** Boolean flag whether colliding resources should be overwritten during the import.<p> */
     private boolean m_overwriteCollidingResources;
 
     /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps.<p> */
     private String m_webAppUrl;
-
-    /** The class names of the import/export handlers.<p> */
-    private List m_importExportHandlerClassNames;
-
+    
     /**
-     * Creates a new import/export manager.<p>
-     * 
-     * @param immutableResources a list of immutable resources that should remain unchanged when resources are imported
-     * @param convertToXmlPage true, if imported pages should be converted into XML pages
-     * @param overwriteCollidingResources true, if collding resources should be overwritten during an import
-     * @param webAppUrl the URL of a 4.x OpenCms app. to import content of 4.x OpenCms apps. correct into 5.x OpenCms apps.
-     * @param ignoredProperties a list of property keys that should be removed from imported resources
-     * @param importExportHandlerClassNames a list with the class names of the import/export handlers
+     * Creates a new instance for the import/export manager, will be called by the import/export configuration manager.<p>
      */
-    public CmsImportExportManager(List immutableResources, boolean convertToXmlPage, boolean overwriteCollidingResources, String webAppUrl, List ignoredProperties, List importExportHandlerClassNames) {
-        m_immutableResources = (immutableResources != null && immutableResources.size() > 0) ? immutableResources : Collections.EMPTY_LIST;
-        m_ignoredProperties = (ignoredProperties != null && ignoredProperties.size() > 0) ? ignoredProperties : Collections.EMPTY_LIST;
-        m_importExportHandlerClassNames = (importExportHandlerClassNames != null && importExportHandlerClassNames.size() > 0) ? importExportHandlerClassNames : Collections.EMPTY_LIST;
-
-        m_convertToXmlPage = convertToXmlPage;
-        m_overwriteCollidingResources = overwriteCollidingResources;
-        m_webAppUrl = webAppUrl;
-    }
-
-    /**
-     * Initializes the import/export manager with the OpenCms system configuration.<p>
-     * 
-     * @param cms the current OpenCms context object
-     * @param configuration the OpenCms configuration
-     * @return the initialized import/export manager
-     */
-    public static CmsImportExportManager initialize(ExtendedProperties configuration, CmsObject cms) {
-        // read the immutable import resources
-        String[] immuResources = configuration.getStringArray("import.immutable.resources");
-        if (immuResources == null) {
-            immuResources = new String[0];
-        }
-
-        List immutableResourcesOri = java.util.Arrays.asList(immuResources);
-        ArrayList immutableResources = new ArrayList();
-        for (int i = 0; i < immutableResourcesOri.size(); i++) {
-            // remove possible white space
-            String path = ((String) immutableResourcesOri.get(i)).trim();
-            if (path != null && !"".equals(path)) {
-                immutableResources.add(path);
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Immutable resource   : " + (i + 1) + " - " + path);
-                }
-            }
-        }
+    public CmsImportExportManager() {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Immutable resources  : " + ((immutableResources.size() > 0) ? "enabled" : "disabled"));
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Import manager init  : starting");
         }
-
-        // read the conversion setting
-        String convertToXmlPageValue = configuration.getString("import.convert.xmlpage");        
-        boolean convertToXmlPage = (convertToXmlPageValue != null) ? "true".equalsIgnoreCase(convertToXmlPageValue.trim()) : true;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Convert to XML page  : " + (convertToXmlPage ? "enabled" : "disabled"));
-        }
-
-        // convert import files from 4.x versions old webapp URL
-        String webappUrl = configuration.getString("compatibility.support.import.old.webappurl", null);
-        webappUrl = (webappUrl != null) ? webappUrl.trim() : null;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Old webapp URL       : " + ((webappUrl == null) ? "not set!" : webappUrl));
-        }
-
-        // unwanted resource properties which are deleted during import
-        String[] propNames = configuration.getStringArray("compatibility.support.import.remove.propertytags");
-        if (propNames == null) {
-            propNames = new String[0];
-        }
-        List propertyNamesOri = java.util.Arrays.asList(propNames);
-        ArrayList propertyNames = new ArrayList();
-        for (int i = 0; i < propertyNamesOri.size(); i++) {
-            // remove possible white space
-            String name = ((String) propertyNamesOri.get(i)).trim();
-            if (name != null && !"".equals(name)) {
-                propertyNames.add(name);
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Clear import property: " + (i + 1) + " - " + name);
-                }
-            }
-        }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Remove properties    : " + ((propertyNames.size() > 0) ? "enabled" : "disabled"));
-        }
-
-        // should colliding resources be overwritten or moved to lost+found?
-        String overwriteCollidingResourcesValue = configuration.getString("import.overwrite.colliding.resources");
-        boolean overwriteCollidingResources = (overwriteCollidingResourcesValue != null) ? "true".equalsIgnoreCase(overwriteCollidingResourcesValue.trim()) : false;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Overwrite collisions : " + (overwriteCollidingResources ? "enabled" : "disabled"));
-        }
-
-        // read the import handlers from registry.xml
-        List importExportHandlerClassNames = (List) new ArrayList();
-        CmsRegistry registry = cms.getRegistry();
-        Element systemElement = registry.getDom4jSystemElement();
-        Element handlerElement = null;
-        List handlerClasses = systemElement.selectNodes("./importexport/handler");
-        for (int i = 0; i < handlerClasses.size(); i++) {
-            handlerElement = (Element) handlerClasses.get(i);
-            importExportHandlerClassNames.add(handlerElement.getTextTrim());
-        }
-
-        // create and return the import/export manager 
-        return new CmsImportExportManager(immutableResources, convertToXmlPage, overwriteCollidingResources, webappUrl, propertyNames, importExportHandlerClassNames);
-    }
-
-    /**
-     * Checks if imported pages should be converted into XML pages.<p>
-     * 
-     * @return true, if imported pages should be converted into XML pages
-     */
-    public boolean convertToXmlPage() {
-        return m_convertToXmlPage;
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-        try {
-            if (m_immutableResources != null) {
-                m_immutableResources.clear();
-            }
-            m_immutableResources = null;
-
-            if (m_ignoredProperties != null) {
-                m_ignoredProperties.clear();
-            }
-            m_ignoredProperties = null;
-        } catch (Exception e) {
-            // noop
-        } finally {
-            super.finalize();
-        }
-    }
-
-    /**
-     * Returns the list of property keys that should be removed from imported resources.<p>
-     * 
-     * @return the list of property keys that should be removed from imported resources, or Collections.EMPTY_LIST
-     */
-    public List getIgnoredProperties() {
-        return m_ignoredProperties;
-    }
-
-    /**
-     * Returns the list of immutable resources that should remain unchanged when resources are 
-     * imported.<p>
-     * 
-     * Certain system resources should not be changed during import. This is the case for the main 
-     * folders in the /system/ folder. Changes to these folders usually should not be imported to 
-     * another system.<p>
-     * 
-     * @return the list of immutable resources, or Collections.EMPTY_LIST
-     */
-    public List getImmutableResources() {
-        return m_immutableResources;
-    }
-
-    /**
-     * Returns the URL of a 4.x OpenCms app. (e.g. http://localhost:8080/opencms/opencms/)
-     * from which content was exported.<p>
-     * 
-     * This setting is required to import content of 4.x OpenCms apps. correct into 5.x OpenCms apps.<p>
-     * 
-     * @return the webAppUrl.
-     */
-    public String getWebAppUrl() {
-        return m_webAppUrl;
-    }
-
-    /**
-     * Checks if colliding resources should be overwritten during the import.<p>
-     * 
-     * @return true, if colliding resources should be overwritten during the import
-     * @see #setOverwriteCollidingResources(boolean)
-     */
-    public boolean overwriteCollidingResources() {
-        return m_overwriteCollidingResources;
-    }
-
-    /**
-     * Sets if imported pages should be converted into XML pages.<p>
-     * 
-     * @param convertToXmlPage true, if imported pages should be converted into XML pages.
-     */
-    void setConvertToXmlPage(boolean convertToXmlPage) {
-        m_convertToXmlPage = convertToXmlPage;
-    }
-
-    /**
-     * Sets if imported pages should be converted into XML pages.<p>
-     * 
-     * @param convertToXmlPage "true", if imported pages should be converted into XML pages.
-     */
-    void setConvertToXmlPage(String convertToXmlPage) {
-        m_convertToXmlPage = "true".equalsIgnoreCase(convertToXmlPage);
-    }
-
-    /**
-     * Sets the list of property keys that should be removed from imported resources.<p>
-     * 
-     * @param ignoredProperties a list of property keys that should be removed from imported resources
-     */
-    void setIgnoredProperties(List ignoredProperties) {
-        m_ignoredProperties = (ignoredProperties != null && ignoredProperties.size() > 0) ? ignoredProperties : Collections.EMPTY_LIST;
-    }
-
-    /**
-     * Sets the list of immutable resources that should remain unchanged when resources are 
-     * imported.<p>
-     * 
-     * @param immutableResources a list of immutable resources
-     */
-    void setImmutableResources(List immutableResources) {
-        m_immutableResources = (immutableResources != null && immutableResources.size() > 0) ? immutableResources : Collections.EMPTY_LIST;
-    }
-
-    /**
-     * Sets whether colliding resources should be overwritten during the import for a
-     * specified import implementation.<p>
-     * 
-     * v1 and v2 imports (without resource UUIDs in the manifest) *MUST* overwrite colliding 
-     * resources. Don't forget to set this flag back to it's original value in v1 and v2
-     * import implementations!<p>
-     * 
-     * This flag must be set to false to force imports > v2 to move colliding resources to 
-     * /system/lost-found/.<p>
-     * 
-     * The import implementation has to take care to set this flag correct!<p>
-     * 
-     * @param overwriteCollidingResources true if colliding resources should be overwritten during the import
-     */
-    void setOverwriteCollidingResources(boolean overwriteCollidingResources) {
-        m_overwriteCollidingResources = overwriteCollidingResources;
-    }
-
-    /**
-     * Sets the URL of a 4.x OpenCms app. (e.g. http://localhost:8080/opencms/opencms/)
-     * from which content was exported.<p>
-     * 
-     * This setting is required to import content of 4.x OpenCms apps. correct into 5.x OpenCms apps.<p>
-     * 
-     * @param webAppUrl a URL of the a OpenCms app. (e.g. http://localhost:8080/opencms/opencms/)
-     */
-    void setWebAppUrl(String webAppUrl) {
-        m_webAppUrl = webAppUrl;
-    }
-
-    /**
-     * Checks if the current user has permissions to export Cms data of a specified export handler,
-     * and if so, triggers the handler to write the export.<p>
-     * 
-     * @param cms the current OpenCms context object
-     * @param handler handler containing the export data
-     * @param report a Cms report to print log messages
-     * @throws CmsSecurityException if the current user is not a member of the administrators group
-     * @throws CmsException if operation was not successful
-     * @see I_CmsImportExportHandler
-     */
-    public void exportData(CmsObject cms, I_CmsImportExportHandler handler, I_CmsReport report) throws CmsException, CmsSecurityException {
-        if (cms.isAdmin()) {
-            handler.exportData(cms, report);
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "]", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
-     * Checks if the current user has permissions to import COS/VFS/module data into the Cms,
-     * and if so, creates a new import handler instance that imports the data.<p>
-     * 
-     * @param cms the current OpenCms context object
-     * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
-     * @param importPath the name (absolute path) of the destination folder in the Cms in case of a COS/VFS import, or null
-     * @param report a Cms report to print log messages
-     * @throws CmsSecurityException if the current user is not a member of the administrators group
-     * @throws CmsException if operation was not successful
-     * @see I_CmsImportExportHandler
-     */
-    public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException, CmsSecurityException {
-        I_CmsImportExportHandler handler = null;
-
-        try {
-            if (cms.isAdmin()) {
-                //report.println(report.key("report.clearcache"), I_CmsReport.C_FORMAT_NOTE);
-                //OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
-
-                handler = getImportExportHandler(importFile);
-                handler.importData(cms, importFile, importPath, report);
-            } else {
-                throw new CmsSecurityException("[" + this.getClass().getName() + "]", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-            }
-        } finally {
-            if (cms.isAdmin()) {
-                OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
-            }
-        }
-    }
-
-    /**
-     * Returns an instance of an import/export handler implementation that is able to import
-     * a specified resource.<p>
-     * 
-     * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
-     * @return an instance of an import/export handler implementation
-     * @throws CmsException if somethong goes wrong
-     */
-    I_CmsImportExportHandler getImportExportHandler(String importFile) throws CmsException {
-        String classname = null;
-        Document manifest = null;
-        I_CmsImportExportHandler handler = null;
-
-        try {
-            manifest = getManifest(new File(importFile));
-            for (int i = 0; i < m_importExportHandlerClassNames.size(); i++) {
-                classname = (String) m_importExportHandlerClassNames.get(i);
-                handler = (I_CmsImportExportHandler) Class.forName(classname).newInstance();
-
-                if (handler.matches(manifest)) {
-                    return handler;
-                }
-            }
-        } catch (Exception e) {
-            throw new CmsException("Error creating instance of import/export handler " + classname, e);
-        }
-
-        if (handler == null) {
-            throw new CmsException("Cannot find matching import/export handler for import of " + importFile);
-        }
-
-        return null;
+        m_importExportHandlers = new ArrayList();
+        m_immutableResources = new ArrayList();
+        m_ignoredProperties = new ArrayList();
+        m_convertToXmlPage = true;
+        m_importGroupTranslations = new HashMap();
+        m_importUserTranslations = new HashMap();
+        m_overwriteCollidingResources = true;
+        m_importVersionClasses = new ArrayList();
     }
 
     /**
@@ -461,9 +152,7 @@ public class CmsImportExportManager extends Object {
             saxReader = new SAXReader();
             manifest = saxReader.read(reader);
         } catch (Exception e) {
-            System.err.println("Error reading manifest.xml from resource: " + resource);
-            System.err.println(e.getMessage());
-            //e.printStackTrace(System.err);
+            OpenCms.getLog(CmsImportExportManager.class.getName()).error("Error reading manifest.xml from resource: " + resource, e);
             manifest = null;
         } finally {
             try {
@@ -476,6 +165,378 @@ public class CmsImportExportManager extends Object {
         }
 
         return manifest;
+    }
+    
+    /**
+     * Adds a property name to the list of properties that should be removed from imported resources.<p>
+     * 
+     * @param propertyName a property name
+     */
+    public void addIgnoredProperty(String propertyName) {
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Added property to ignore: " + propertyName);
+        }            
+        m_ignoredProperties.add(propertyName);
+    }
+
+    /**
+     * Adds a resource to the list of immutable resources that should remain 
+     * unchanged when resources are imported.<p>
+     * 
+     * @param immutableResource a resources uri in the OpenCms VFS
+     */
+    public void addImmutableResource(String immutableResource) {
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Added immutable resource: " + immutableResource);
+        }           
+        m_immutableResources.add(immutableResource);
+    }
+    
+    /**
+     * Adds an import/export handler to the list of configured handlers.<p>
+     * 
+     * @param handler the import/export handler to add
+     */
+    public void addImportExportHandler(I_CmsImportExportHandler handler) {
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Added import/export handler " + handler);
+        }
+        m_importExportHandlers.add(handler);
+    }    
+
+    /**
+     * Adds an import princial translation to the configuration.<p>
+     * 
+     * @param type the princial type ("USER" or "GROUP")
+     * @param from the "from" translation source
+     * @param to the "to" translation target
+     */
+    public void addImportPrincipalTranslation(String type, String from, String to) {
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Added princial translation type:" + type + " from: " + from + " to:" + to);
+        }           
+        if (type.equalsIgnoreCase(CmsImportExportConfiguration.C_PRINCIPAL_GROUP)) {
+            m_importGroupTranslations.put(from, to);  
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Name translation     : group " + from + " to " + to);
+            }                
+        } else if (type.equalsIgnoreCase(CmsImportExportConfiguration.C_PRINCIPAL_USER)) {
+            m_importUserTranslations.put(from, to);      
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Name translation     : user " + from + " to " + to);
+            }                             
+        }
+    }    
+    
+    
+    /**
+     * Adds a import version class name to the configuration.<p>
+     * 
+     * @param importVersionClass the import version class name to add
+     */
+    public void addImportVersionClass(I_CmsImport importVersionClass) {
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Added import version: " + importVersionClass);
+        }           
+        m_importVersionClasses.add(importVersionClass);
+    }    
+
+    /**
+     * Checks if imported pages should be converted into XML pages.<p>
+     * 
+     * @return true, if imported pages should be converted into XML pages
+     */
+    public boolean convertToXmlPage() {
+        return m_convertToXmlPage;
+    }
+
+    /**
+     * Checks if the current user has permissions to export Cms data of a specified export handler,
+     * and if so, triggers the handler to write the export.<p>
+     * 
+     * @param cms the current OpenCms context object
+     * @param handler handler containing the export data
+     * @param report a Cms report to print log messages
+     * @throws CmsSecurityException if the current user is not a member of the administrators group
+     * @throws CmsException if operation was not successful
+     * @see I_CmsImportExportHandler
+     */
+    public void exportData(CmsObject cms, I_CmsImportExportHandler handler, I_CmsReport report) throws CmsException, CmsSecurityException {
+        if (cms.isAdmin()) {
+            handler.exportData(cms, report);
+        } else {
+            throw new CmsSecurityException("[" + this.getClass().getName() + "]", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+        }
+    }
+
+    /**
+     * Returns the list of property keys that should be removed from imported resources.<p>
+     * 
+     * @return the list of property keys that should be removed from imported resources, or Collections.EMPTY_LIST
+     */
+    public List getIgnoredProperties() {
+        return m_ignoredProperties;
+    }
+
+    /**
+     * Returns the list of immutable resources that should remain unchanged when resources are 
+     * imported.<p>
+     * 
+     * Certain system resources should not be changed during import. This is the case for the main 
+     * folders in the /system/ folder. Changes to these folders usually should not be imported to 
+     * another system.<p>
+     * 
+     * @return the list of immutable resources, or Collections.EMPTY_LIST
+     */
+    public List getImmutableResources() {
+        return m_immutableResources;
+    }
+
+    /**
+     * Returns an instance of an import/export handler implementation that is able to import
+     * a specified resource.<p>
+     * 
+     * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
+     * @return an instance of an import/export handler implementation
+     * @throws CmsException if somethong goes wrong
+     */
+    public I_CmsImportExportHandler getImportExportHandler(String importFile) throws CmsException {
+        String classname = null;
+        Document manifest = null;
+        I_CmsImportExportHandler handler = null;
+
+        try {
+            manifest = getManifest(new File(importFile));
+            for (int i = 0; i < m_importExportHandlers.size(); i++) {
+                handler = (I_CmsImportExportHandler)m_importExportHandlers.get(i);               
+                if (handler.matches(manifest)) {
+                    return handler;
+                }
+            }
+        } catch (Exception e) {
+            throw new CmsException("Error creating instance of import/export handler " + classname, e);
+        }
+
+        if (handler == null) {
+            throw new CmsException("Cannot find matching import/export handler for import of " + importFile);
+        }
+
+        return null;
+    }
+    
+    /**
+     * Returns the list of configured import/export handlers.<p>
+     * 
+     * @return the list of configured import/export handlers
+     */
+    public List getImportExportHandlers() {
+        return m_importExportHandlers;
+    }
+    
+    /**
+     * Returns the configured principal group translations.<p>
+     * 
+     * @return the configured principal group translations
+     */
+    public Map getImportGroupTranslations() {
+        return m_importGroupTranslations;
+    }
+    
+    /**
+     * Returns the configured principal user translations.<p>
+     * 
+     * @return the configured principal user translations
+     */
+    public Map getImportUserTranslations() {
+        return m_importUserTranslations;
+    }
+    
+    /**
+     * Returns the configured import version class names.<p>
+     * 
+     * @return the configured import version class names
+     */
+    public List getImportVersionClasses() {
+        return m_importVersionClasses;
+    }
+
+    /**
+     * Returns the URL of a 4.x OpenCms app. (e.g. http://localhost:8080/opencms/opencms/)
+     * from which content was exported.<p>
+     * 
+     * This setting is required to import content of 4.x OpenCms apps. correct into 5.x OpenCms apps.<p>
+     * 
+     * @return the webAppUrl.
+     */
+    public String getOldWebAppUrl() {
+        return m_webAppUrl;
+    }
+
+    /**
+     * Checks if the current user has permissions to import COS/VFS/module data into the Cms,
+     * and if so, creates a new import handler instance that imports the data.<p>
+     * 
+     * @param cms the current OpenCms context object
+     * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
+     * @param importPath the name (absolute path) of the destination folder in the Cms in case of a COS/VFS import, or null
+     * @param report a Cms report to print log messages
+     * @throws CmsSecurityException if the current user is not a member of the administrators group
+     * @throws CmsException if operation was not successful
+     * @see I_CmsImportExportHandler
+     */
+    public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException, CmsSecurityException {
+        I_CmsImportExportHandler handler = null;
+
+        try {
+            if (cms.isAdmin()) {
+                handler = getImportExportHandler(importFile);
+                handler.importData(cms, importFile, importPath, report);
+            } else {
+                throw new CmsSecurityException("[" + this.getClass().getName() + "]", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+            }
+        } finally {
+            if (cms.isAdmin()) {
+                OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
+            }
+        }
+    }
+
+    /**
+     * Checks if colliding resources should be overwritten during the import.<p>
+     * 
+     * @return true, if colliding resources should be overwritten during the import
+     * @see #setOverwriteCollidingResources(boolean)
+     */
+    public boolean overwriteCollidingResources() {
+        return m_overwriteCollidingResources;
+    }
+
+    /**
+     * Sets if imported pages should be converted into XML pages.<p>
+     * 
+     * @param convertToXmlPage true, if imported pages should be converted into XML pages.
+     */
+    public void setConvertToXmlPage(boolean convertToXmlPage) {
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Import convert parameter: " + convertToXmlPage);
+        }             
+        m_convertToXmlPage = convertToXmlPage;
+    }
+
+    /**
+     * Sets if imported pages should be converted into XML pages.<p>
+     * 
+     * @param convertToXmlPage "true", if imported pages should be converted into XML pages.
+     */
+    public void setConvertToXmlPage(String convertToXmlPage) {
+        setConvertToXmlPage(Boolean.valueOf(convertToXmlPage).booleanValue());
+    }
+
+    /**
+     * Sets the URL of a 4.x OpenCms app. (e.g. http://localhost:8080/opencms/opencms/)
+     * from which content was exported.<p>
+     * 
+     * This setting is required to import content of 4.x OpenCms apps. correct into 5.x OpenCms apps.<p>
+     * 
+     * @param webAppUrl a URL of the a OpenCms app. (e.g. http://localhost:8080/opencms/opencms/)
+     */
+    public void setOldWebAppUrl(String webAppUrl) {
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Import old webapp URL: " + webAppUrl);
+        }         
+        m_webAppUrl = webAppUrl;
+    }
+
+    /**
+     * Sets whether colliding resources should be overwritten during the import for a
+     * specified import implementation.<p>
+     * 
+     * v1 and v2 imports (without resource UUIDs in the manifest) *MUST* overwrite colliding 
+     * resources. Don't forget to set this flag back to it's original value in v1 and v2
+     * import implementations!<p>
+     * 
+     * This flag must be set to false to force imports > v2 to move colliding resources to 
+     * /system/lost-found/.<p>
+     * 
+     * The import implementation has to take care to set this flag correct!<p>
+     * 
+     * @param overwriteCollidingResources true if colliding resources should be overwritten during the import
+     */
+    public void setOverwriteCollidingResources(boolean overwriteCollidingResources) {
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Import overwrite parameter: " + overwriteCollidingResources);
+        }        
+        m_overwriteCollidingResources = overwriteCollidingResources;
+    }
+    
+    /**
+     * @see CmsImportExportManager#setOverwriteCollidingResources(boolean)
+     * 
+     * @param overwriteCollidingResources "true" if colliding resources should be overwritten during the import
+     */
+    public void setOverwriteCollidingResources(String overwriteCollidingResources) {
+        setOverwriteCollidingResources(Boolean.valueOf(overwriteCollidingResources).booleanValue());
+    }
+    
+    /**
+     * Returns the translated name for the given group name.<p>
+     * 
+     * If no matching name is found, the given group name is returned.<p>
+     * 
+     * @param name the group name to translate
+     * @return the translated name for the given group name
+     */
+    public String translateGroup(String name) {
+        if (m_importGroupTranslations == null) {
+            return name;
+        }
+        String match = (String)m_importGroupTranslations.get(name);
+        if (match != null) {
+            return match;
+        } else {
+            return name;
+        }
+    }    
+    
+    /**
+     * Returns the translated name for the given user name.<p>
+     * 
+     * If no matching name is found, the given user name is returned.<p>
+     * 
+     * @param name the user name to translate
+     * @return the translated name for the given user name
+     */
+    public String translateUser(String name) {
+        if (m_importUserTranslations == null) {
+            return name;
+        }
+        String match = (String)m_importUserTranslations.get(name);
+        if (match != null) {
+            return match;
+        } else {
+            return name;
+        }
+    }
+
+    /**
+     * @see java.lang.Object#finalize()
+     */
+    protected void finalize() throws Throwable {
+        try {
+            if (m_immutableResources != null) {
+                m_immutableResources.clear();
+            }
+            m_immutableResources = null;
+
+            if (m_ignoredProperties != null) {
+                m_ignoredProperties.clear();
+            }
+            m_ignoredProperties = null;
+        } catch (Throwable t) {
+            // noop
+        } finally {
+            super.finalize();
+        }
     }
 
 }

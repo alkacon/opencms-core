@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/06 18:46:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,18 @@ import org.xml.sax.Attributes;
  * @since 5.3
  */
 public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+
+    /** The "uri" attribute */
+    protected static final String A_URI = "uri";
+    
+    /** The "type" attribute */
+    protected static final String A_TYPE = "type";
+
+    /** The "from" attribute */
+    protected static final String A_FROM = "from";
+
+    /** The "to" attribute */
+    protected static final String A_TO = "to";    
     
     /** The "class" attribute */
     protected static final String A_CLASS = "class";

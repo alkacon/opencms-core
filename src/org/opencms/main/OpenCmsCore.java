@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/04 11:34:18 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2004/03/06 18:48:54 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.cron.CmsCronEntry;
 import org.opencms.cron.CmsCronScheduleJob;
@@ -103,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.98 $
+ * @version $Revision: 1.99 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1110,6 +1111,10 @@ public final class OpenCmsCore {
         m_loaderManager = vfsConfiguation.getLoaderManager();        
         List resourceTypes = vfsConfiguation.getResourceTypes();
         
+        // get the import/export configuration
+        CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)configurationManager.getConfiguration(CmsImportExportConfiguration.class);
+        m_importExportManager = importExportConfiguration.getImportExportManager();
+        
         try {
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
@@ -1302,8 +1307,6 @@ public final class OpenCmsCore {
         m_siteManager = CmsSiteManager.initialize(configuration, adminCms);
         // initialize the search manager
         m_searchManager = CmsSearchManager.initialize(configuration, adminCms);
-        // initialize the import/export manager
-        m_importExportManager = CmsImportExportManager.initialize(configuration, adminCms);
 
         // initializes the cron manager
         // TODO enable the cron manager
