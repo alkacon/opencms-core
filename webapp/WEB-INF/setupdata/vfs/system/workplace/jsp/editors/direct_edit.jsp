@@ -43,7 +43,7 @@ if (editElement != null) {
 <span class="directedit_button" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
 <table border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td><a href="#" onclick="javascript:document.forms['form_<%= editId %>'].submit();" class="button"><span unselectable="on" class="over" onmouseover="className='over'" onmouseout="className='over'" onmousedown="className='push'" onmouseup="className='over'"><%
+	<td class="directedit"><a href="#" onclick="javascript:document.forms['form_<%= editId %>'].submit();" class="button"><span unselectable="on" class="over" onmouseover="className='over'" onmouseout="className='over'" onmousedown="className='push'" onmouseup="className='over'"><%
    if (editButtonStyle == 1) { 
 	%><span id="bt_<%= editId %>" unselectable="on" class="combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif');">&nbsp;<%= wp.key("editor.frontend.button.edit") %></span><%
    } else if (editButtonStyle == 2) { 
@@ -158,6 +158,9 @@ span.directedit_button {
 	position: absolute;
 	z-index: 250;
 	background-color: ButtonFace;
+}
+td.directedit {
+	line-height: 12px;
 }
 form.nomargin {
 	display: none;
