@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2002/09/16 12:41:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2002/09/18 10:39:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -204,7 +204,7 @@ public class CmsFlexLruCache extends java.lang.Object {
         }
         
         if (theCacheObject.getNextLruObject()==null && theCacheObject.getPreviousLruObject()==null) {
-            if (this.m_ObjectCount==1 && this.m_ListHead.equals(theCacheObject) && this.m_ListTail.equals(theCacheObject)) {
+            if (this.m_ObjectCount==1 && this.m_ListHead!=null && this.m_ListTail!=null && this.m_ListHead.equals(theCacheObject) && this.m_ListTail.equals(theCacheObject)) {
                 // the object is the one and only object in the cache
                 return true;
             }
