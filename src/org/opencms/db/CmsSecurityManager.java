@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/03/30 12:28:32 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -494,9 +494,19 @@ public final class CmsSecurityManager {
         }
         
         List changedResources = new ArrayList(resources.size());
+        // create permission set and filter to check each resource
+        CmsPermissionSet perm = CmsPermissionSet.ACCESS_WRITE;
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
         for (int i=0; i<resources.size(); i++) {
             // loop through found resources and check property values
             CmsResource res = (CmsResource)resources.get(i);
+            // check resource state and permissions
+            try {
+                checkPermissions(context, res, perm, true, filter);
+            } catch (Exception e) {
+                // resource is deleted or not writable for current user
+                continue;
+            }
             CmsProperty property = readPropertyObject(context, res, propertyDefinition, false);
             String structureValue = property.getStructureValue();
             String resourceValue = property.getResourceValue();
