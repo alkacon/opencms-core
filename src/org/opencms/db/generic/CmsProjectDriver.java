@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/26 10:01:42 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2003/08/26 16:00:43 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,8 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.*;
+import com.opencms.flex.CmsEvent;
+import com.opencms.flex.I_CmsEventListener;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.report.I_CmsReport;
@@ -74,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.66 $ $Date: 2003/08/26 10:01:42 $
+ * @version $Revision: 1.67 $ $Date: 2003/08/26 16:00:43 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1262,6 +1264,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
 
                     m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFolder);
+                    
+                    OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFolder)));
 
                     properties = null;
                     currentFolder = null;
@@ -1556,6 +1560,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
 
                     m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFile);
+                    
+                    OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFile)));
 
                     properties = null;
                     currentFile = null;
@@ -1630,6 +1636,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 // delete both online and offline access control entries applied to this folder
                 m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, delOnlineFolder.getResourceAceId());
                 m_driverManager.getUserDriver().removeAllAccessControlEntries(context.currentProject(), currentFolder.getResourceAceId());
+                
+                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFolder)));
                 
                 currentFolder = null;
                 delOnlineFolder = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/26 16:00:43 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package com.opencms.flex;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -136,11 +136,27 @@ public interface I_CmsEventListener {
      */
     int EVENT_FLEX_CACHE_CLEAR = 9;
     
-    /** Event "static export has just happened"
+    /** 
+     * Event "static export has just happened".
      *
      * @see com.opencms.file.CmsObject#publishProject(int, I_CmsReport)
      */
     int EVENT_STATIC_EXPORT = 10;
+    
+    /** Event "a single resource has been modified". */
+    int EVENT_RESOURCE_MODIFIED = 11;
+    
+    /** Event "a bunch of resources has been modified". */
+    int EVENT_RESOURCES_MODIFIED = 12;
+    
+    /** Event "the list of sub-resources of a folder has been modified", (e.g. a new resource has been created). */
+    int EVENT_RESOURCE_LIST_MODIFIED = 13;
+    
+    /** Event "a single property has been modified". */
+    int EVENT_PROPERTY_MODIFIED = 14;
+    
+    /** Event "all properties of a resource have been modified". */
+    int EVENT_PROPERTY_MAP_MODIFIED = 15;
    
     /**
      * Acknowledge the occurrence of the specified event, implement this 

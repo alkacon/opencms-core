@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/26 10:01:42 $
-* Version: $Revision: 1.386 $
+* Date   : $Date: 2003/08/26 16:00:43 $
+* Version: $Revision: 1.387 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.386 $
+ * @version $Revision: 1.387 $
  */
 public class CmsObject {
 
@@ -2805,7 +2805,8 @@ public class CmsObject {
         } else {
             throw new CmsSecurityException("[CmsObject] cannot publish resource in online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
-        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_RESOURCE, res);
+        //this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_RESOURCE, res);
+        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", res));
         return retValue;
     }
 
@@ -4322,5 +4323,5 @@ public class CmsObject {
     public CmsResource recoverResource(String resourcename) throws CmsException {
         return m_driverManager.recoverResource(m_context, m_context.addSiteRoot(resourcename));        
     }
-
+    
 }
