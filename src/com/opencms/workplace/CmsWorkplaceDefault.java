@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/02/19 10:16:50 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/02/21 22:45:22 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/02/19 10:16:50 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/21 22:45:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -78,10 +78,18 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
         Vector v = new Vector();
         A_CmsRequestContext reqContext = cms.getRequestContext();
         
-        v.addElement(templateFile);
-        v.addElement(parameters);
-        v.addElement(templateSelector);
-        return v;
+        //v.addElement(templateFile);
+        //v.addElement(parameters);
+        //v.addElement(templateSelector);
+        //return v;
+        String result = templateFile;
+        Enumeration keys = parameters.keys();
+        while(keys.hasMoreElements()) {
+            String key = (String)keys.nextElement();
+            result = result + key + parameters.get(key);            
+        }
+        result = result + templateSelector;
+        return result;        
     }    
     
     /**

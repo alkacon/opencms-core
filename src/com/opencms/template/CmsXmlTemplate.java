@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/02/21 22:23:55 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/02/21 22:45:22 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2000/02/21 22:23:55 $
+ * @version $Revision: 1.16 $ $Date: 2000/02/21 22:45:22 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -103,12 +103,20 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         Vector v = new Vector();
         A_CmsRequestContext reqContext = cms.getRequestContext();
         
-        v.addElement(reqContext.currentProject().getName());
-        v.addElement(reqContext.getUri());
-        v.addElement(templateFile);
-        v.addElement(parameters);
-        v.addElement(templateSelector);
-        return v;
+        //v.addElement(reqContext.currentProject().getName());
+        //v.addElement(reqContext.getUri());
+        //v.addElement(templateFile);
+        //v.addElement(parameters);
+        //v.addElement(templateSelector);
+        //return v;
+        String result = reqContext.currentProject().getName() + reqContext.getUri() + templateFile;
+        Enumeration keys = parameters.keys();
+        while(keys.hasMoreElements()) {
+            String key = (String)keys.nextElement();
+            result = result + key + parameters.get(key);            
+        }
+        result = result + templateSelector;
+        return result;
     }
         
     /**
