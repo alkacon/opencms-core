@@ -48,7 +48,7 @@ function updateCal() {  //sets calender field to selected date
 }
 
 </SCRIPT>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>]]><LABEL value="calendar.title" /><![CDATA[</title>
 </head>
 
