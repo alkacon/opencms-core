@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/04/15 12:07:16 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/05/06 09:05:27 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.16 $
- * $Date: 2002/04/15 12:07:16 $
+ * $Revision: 1.17 $
+ * $Date: 2002/05/06 09:05:27 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -849,9 +849,10 @@ public abstract class CmsMasterContent
         Vector allChannels = new Vector();
         try {
             cms.setContextToCos();
-            Vector subChannels = cms.getSubFolders(channel);
+            //Vector subChannels = cms.getSubFolders(channel);
+            Vector subChannels = cms.getResourcesInFolder(channel);
             for (int i=0; i < subChannels.size(); i++) {
-                String folder = ((CmsFolder)subChannels.elementAt(i)).getAbsolutePath();
+                String folder = ((CmsResource)subChannels.elementAt(i)).getAbsolutePath();
                 Vector v = getAllSubChannelsOf(cms, folder);
                 if (v.size() == 0) {
                     allChannels.addElement(folder);
@@ -880,10 +881,11 @@ public abstract class CmsMasterContent
         try {
             cms.setContextToCos();
             String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();
-            Vector subChannels = cms.getSubFolders(rootChannel);
+            //Vector subChannels = cms.getSubFolders(rootChannel);
+            Vector subChannels = cms.getResourcesInFolder(rootChannel);
             int offset = rootChannel.length()-1;
             for (int i=0; i < subChannels.size(); i++) {
-                String folder = ((CmsFolder)subChannels.elementAt(i)).getAbsolutePath();
+                String folder = ((CmsResource)subChannels.elementAt(i)).getAbsolutePath();
                 Vector v = getAllSubChannelsOf(cms, folder);
                 if (v.size() == 0) {
                     allChannels.addElement(folder.substring(offset));
