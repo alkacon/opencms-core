@@ -67,7 +67,7 @@
 					<% if(understood)	{ %>
 					<p><b>OpenCms setup finished.</b><br>					
 					The wizard is now locked. To use the wizard again reset the flag in the "opencms.properties".</p>
-					<p>To start OpenCms click <a target="_blank" href="<%= request.getContextPath() %>/opencms/index.jsp">here</a>.</p>
+					<p>To start OpenCms click <a target="_blank" href="<%= request.getContextPath() %>/opencms/">here</a>.</p>
 					<% } else { %>
 						<b>Please confirm ActiveX configuration</b>
 					<% } %>
