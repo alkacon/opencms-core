@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleNavigation.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/03/23 15:57:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/24 09:39:14 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -37,7 +37,7 @@ import java.io.*;
 /**
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/03/23 15:57:40 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/03/24 09:39:14 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsExampleNavigation extends CmsXmlTemplate implements I_CmsConstants {
@@ -88,10 +88,7 @@ public class CmsExampleNavigation extends CmsXmlTemplate implements I_CmsConstan
         CmsExampleNavigationFile xmlTemplateDocument = (CmsExampleNavigationFile)doc;     
 				
 		String type=((Hashtable)userObject).get("type").toString();
-		if (type==null) {
-			throw new CmsException("Not defined parameter in template.");
-		}
-	
+			
 		String[] linkFile = {"Neuigkeit1.html",
 							 "Neuigkeit2.html",
 							 "welcome.html"
@@ -102,15 +99,28 @@ public class CmsExampleNavigation extends CmsXmlTemplate implements I_CmsConstan
 							};
 		
         StringBuffer result = new StringBuffer();
-		if (type.equals("frame")) {		
-			for (int i=0;i<3;i++) {
-				result.append(xmlTemplateDocument.getFrameLink(linkFile[i], linkText[i]));
-			}
-		} else {
-			for (int i=0;i<3;i++) {
-				result.append(xmlTemplateDocument.getPlainLink(linkFile[i]+"?type="+type, linkText[i]));
-			}
-		}
+		for (int i=0;i<3;i++) {
+			result.append(xmlTemplateDocument.getLink(type,linkFile[i], linkText[i]));
+		}		
+		return result.toString().getBytes();
+	}
+	
+	/** 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getTarget(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+		// Reference to our own document.
+        CmsExampleNavigationFile xmlTemplateDocument = (CmsExampleNavigationFile)doc;     
+				
+		String type=((Hashtable)userObject).get("type").toString();
+		StringBuffer result = new StringBuffer();
+		result.append(xmlTemplateDocument.getTarget(type));
 		return result.toString().getBytes();
 	}
 		

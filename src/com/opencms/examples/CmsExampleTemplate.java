@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleTemplate.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/03/23 15:57:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/24 09:39:14 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -39,7 +39,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/03/23 15:57:40 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/03/24 09:39:14 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsExampleTemplate extends CmsXmlTemplate {
@@ -81,14 +81,12 @@ public class CmsExampleTemplate extends CmsXmlTemplate {
 		// CententDefinition		
 		CmsXmlTemplateFile datablock=(CmsXmlTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		if (parameters.get("type")!=null) {
-			if (parameters.get("type").equals("frame")) {
+			if (parameters.get("type").equals("plain")) {
+				return startProcessing(cms, datablock, elementName, parameters, parameters.get("type").toString());	
+			} else {
 				if (parameters.get("name")!=null) {
 					return startProcessing(cms, datablock, elementName, parameters, parameters.get("name").toString());
 				}
-			} else {
-				System.err.println("ntype:"+parameters.get("ntype")+" elementName: "+elementName);
-				return startProcessing(cms, datablock, elementName, parameters, parameters.get("type").toString());
-				
 			}
 		}
 		return startProcessing(cms, datablock, elementName, parameters, null);

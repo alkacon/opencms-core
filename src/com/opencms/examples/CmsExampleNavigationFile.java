@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleNavigationFile.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/03/23 15:57:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/24 09:39:14 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -36,7 +36,7 @@ import com.opencms.template.*;
  * of the navigation.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/03/23 15:57:40 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/03/24 09:39:14 $
  * @see com.opencms.template.CmsXmlTemplateFile
  */
  public class CmsExampleNavigationFile extends CmsXmlTemplateFile {
@@ -76,7 +76,7 @@ import com.opencms.template.*;
         super();            
         init(cms, filename);
     }
-	
+		
 	
 	/**
      * Gets a navigation entry.
@@ -90,24 +90,26 @@ import com.opencms.template.*;
      * @param title Title for this link
      * @exception CmsException
      */
-    public String getFrameLink(String link, String title) throws CmsException {
-        return getDataValue("framelink.startseq") + link + getDataValue("framelink.middleseq") + title + getDataValue("framelink.endseq") + "\n";
+    public String getLink(String type, String link, String title) throws CmsException {
+		if (type!=null) {
+			if (type.equals("plain")) {
+				return getDataValue("plainlink.startseq") + link + getDataValue("plainlink.middleseq") + title + getDataValue("plainlink.endseq") + "\n";
+			}
+		}
+		return getDataValue("framelink.startseq") + link + getDataValue("framelink.middleseq") + title + getDataValue("framelink.endseq") + "\n";
     }
 	
-	
 	/**
-     * Gets a navigation entry.
-     * The given link and title will be used to display the entry.
-     * This method makes use of the special XML tags
-     * <code>&lt;STARTSEQ&gt;</code>, <code>&lt;MIDDLESEQ&gt;</code> and <code>&lt;ENDSEQ&gt;</code> tag
-     * inside the <code>&lt;LINK&gt;</code> tag of the template file to 
-     * determine the start, middle and end HTML sequence of each section entry.
-     * 
-     * @param link URL that should be ued for the link.
-     * @param title Title for this link
+     * Gets the target of navigation.
+     *
      * @exception CmsException
      */
-    public String getPlainLink(String link, String title) throws CmsException {
-        return getDataValue("plainlink.startseq") + link + getDataValue("plainlink.middleseq") + title + getDataValue("plainlink.endseq") + "\n";
+    public String getTarget(String type) throws CmsException {
+		if (type!=null) {
+			if (type.equals("plain")) {
+				return getDataValue("target.parameter") + "\n";
+			}
+		} 
+        return getDataValue("target.frame") + "\n";
     }
  }
