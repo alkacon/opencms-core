@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/10/30 10:20:13 $
-* Version: $Revision: 1.340 $
+* Date   : $Date: 2002/11/14 10:08:14 $
+* Version: $Revision: 1.341 $
 
 *
 * This library is part of OpenCms -
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.340 $ $Date: 2002/10/30 10:20:13 $
+ * @version $Revision: 1.341 $ $Date: 2002/11/14 10:08:14 $
 
  *
  */
@@ -1327,9 +1327,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         }
         
         // check the access rights
-        if (((resource.getOwnerId()==currentUser.getId()) || isAdmin(currentUser,currentProject)) && (resource.isLockedBy()==currentUser.getId() && resource.getLockedInProject()==currentProject.getId())) {  
-            resource.setDateLastModified( timestamp );
-            
+        if (accessWrite(currentUser, currentProject, resource)) {
             if (isFolder) {
                 if (resource.getState()==C_STATE_UNCHANGED) {
                     resource.setState(C_STATE_CHANGED);
@@ -1348,7 +1346,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             }
                  
             m_accessCache.clear();
-            fileSystemChanged( false );
+            fileSystemChanged( isFolder );
         } 
         else {
             throw new CmsException("[" + this.getClass().getName() + "] " + resourceName, CmsException.C_NO_ACCESS);
