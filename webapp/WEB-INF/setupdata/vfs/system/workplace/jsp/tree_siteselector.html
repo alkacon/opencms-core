@@ -3,12 +3,12 @@
 	com.opencms.flex.jsp.*"
 	buffer="none"
 %><%
+
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
-	CmsTree wp = new CmsTree(cms);;
+	CmsTree wp = new CmsTree(cms);
 	
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
-
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 <link rel="stylesheet" type="text/css" href="<%= wp.getSkinUri() %>files/css_workplace.css">
@@ -16,11 +16,9 @@
 
 <script type="text/javascript">
 <!--
-
 function changeSite() {
 	document.forms.siteselect.submit();
 }
-
 //-->
 </script>
 

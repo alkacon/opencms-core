@@ -278,7 +278,7 @@ function checkContext(linkUrl, add) {
 		var treeDoc = null;
         
         function openTreeWin(formName, fieldName, curDoc) {
-			var paramString = "?type=htmllink&includefiles=true";
+			var paramString = "?type=pagelink&includefiles=true";
 
 			treewin = openWin(vr.contextPath + vr.workplacePath + "tree_fs.html" + paramString, "opencms", 300, 450);
 			treeForm = formName;
@@ -308,7 +308,6 @@ function checkContext(linkUrl, add) {
 		}
 		
 		function setFormValue(filename) {
-
 			var curForm;
 			var curDoc;
 			if (treeDoc != null) {
@@ -323,10 +322,6 @@ function checkContext(linkUrl, add) {
 			}
 			if (curForm.elements[treeField]) {
 				curForm.elements[treeField].value = filename;	
-			} else if (curForm.folder) {
-				curForm.folder.value = filename;
-			} else if (curForm.target) {
-				curForm.target.value = filename;
 			}
 		}
 		
@@ -340,8 +335,6 @@ function checkContext(linkUrl, add) {
 <%= wp.dialogContentStart(wp.key("title.newlink")) %>
 
 <form name="NEU" class="nomargin" onsubmit="pasteLink();">
-
-<!-- ############################################################################## -->
 
 <table border="0" cellspacing="0" cellpadding="4" width="100%">
                 <tr>
@@ -374,10 +367,8 @@ function checkContext(linkUrl, add) {
                       </select>
                       &nbsp;&nbsp;<span id="targetinput" class="maxwidth" style="visibility:hidden; text-align:right;"><input type="text" name="targetname" style="width:120px;" onchange="setNameTarget(true);" /></span></td>
                     <td>&nbsp;</td>
-                </tr>                
+                </tr>              
             </table>
-
-<!-- ############################################################################## -->
 
 <%= wp.dialogContentEnd() %>
 

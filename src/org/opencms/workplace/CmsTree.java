@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/01/28 11:01:22 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,16 +40,17 @@ import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsUUID;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
-import org.opencms.util.CmsUUID;
 
 /**
  * Generates the tree view for the OpenCms Workplace.<p> 
@@ -61,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -86,7 +87,10 @@ public class CmsTree extends CmsWorkplace {
     private static final String C_TYPE_VFSLINK = "vfslink"; 
     
     /** type name for showing the tree when copying resources */
-    private static final String C_TYPE_COPY = "copy"; 
+    private static final String C_TYPE_COPY = "copy";
+    
+    /** type name for showing the tree when creating page links in the editor */
+    private static final String C_TYPE_PAGELINK = "pagelink";
 
     /**
      * Public constructor.<p>
@@ -217,15 +221,26 @@ public class CmsTree extends CmsWorkplace {
             // set the tree site to avoid discrepancies between selector and tree
             getSettings().setTreeSite(getTreeType(), preSelection);
         }  
-
-        List sites = CmsSiteManager.getAvailableSites(getCms(), true);
+        
+        boolean includeRootSite = true;
+        boolean showSiteUrls = false;
+        if (C_TYPE_PAGELINK.equals(getTreeType())) {
+            // in wysiwyg editor link dialog, don't show root site, but show site URL
+            includeRootSite = false;
+            showSiteUrls = true;
+        }
+        List sites = CmsSiteManager.getAvailableSites(getCms(), includeRootSite);
 
         Iterator i = sites.iterator();
         int pos = 0;
         while (i.hasNext()) {
             CmsSite site = (CmsSite)i.next();
             values.add(site.getSiteRoot());
-            options.add(site.getTitle());
+            String curOption = site.getTitle();
+            if (showSiteUrls) {
+                curOption = site.getUrl() + " (" + curOption + ")";
+            }
+            options.add(curOption);
             if (site.getSiteRoot().equals(preSelection)) { 
                 // this is the user's current site
                 selectedIndex = pos;
@@ -264,6 +279,7 @@ public class CmsTree extends CmsWorkplace {
         String startFolder = getStartFolder();
         
         boolean restoreSiteRoot = false;
+        String oldSiteRoot = getCms().getRequestContext().getSiteRoot();
         if ("channelselector".equals(getTreeType())) {
             // change the site root for channel tree window
             restoreSiteRoot = true;
@@ -373,10 +389,11 @@ public class CmsTree extends CmsWorkplace {
                 result.append("parent.setTreeType(\"");
                 result.append(getTreeType());
                 result.append("\");\n");
-                if (getSettings().getTreeSite(getTreeType()) != null) {
-                    // store the current site if present
-                    result.append("parent.setTreeSite(\"");
-                    result.append(getSettings().getTreeSite(getTreeType()));
+                String curSite = getSettings().getTreeSite(getTreeType());
+                if (curSite != null) {
+                    // add the current site as prefix if present
+                    result.append("parent.setSitePrefix(\"");
+                    result.append(getSitePrefix(curSite, oldSiteRoot));
                     result.append("\");\n");
                 }         
             }
@@ -486,6 +503,39 @@ public class CmsTree extends CmsWorkplace {
         setTargetFolder(resource);
         setStartFolder(lastknown);
     }
+    
+    /**
+     * Calculates the prefix that has to be added when selecting a resource in a popup tree window.<p>
+     * 
+     * This is needed for the link dialog in editors 
+     * as well as the copy, move and link popup dialogs for resources in the VFS.<p>
+     * 
+     * @param prefix the current prefix of the resource
+     * @param storedSiteRoot the site root in which the workplace (not the tree!) is
+     * @return the prefix which is added to the resource name
+     */
+    private String getSitePrefix(String prefix, String storedSiteRoot) {
+        if (C_TYPE_PAGELINK.equals(getTreeType())) {
+            // in editor link dialog, create a special prefix for internal links
+            if (!storedSiteRoot.equals(prefix)) {
+                // stored site is not selected site, create complete URL as prefix
+                CmsSite site = CmsSiteManager.getSite(prefix);
+                prefix = getCms().getRequestContext().removeSiteRoot(prefix);
+                prefix = site.getUrl() + OpenCms.getOpenCmsContext() + prefix;
+            } else {
+                // stored site is selected site, don't show prefix at all
+                prefix = "";
+            }
+           
+        } else if (C_TYPE_COPY.equals(getTreeType()) || C_TYPE_VFSLINK.equals(getTreeType())) {
+            // in vfs copy|move|link dialog, don't add the prefix for the current workplace site
+            if (storedSiteRoot.equals(prefix)) {
+                prefix = "";
+            }
+        }
+        
+        return prefix;
+    }
 
     /**
      * Returns true if a complete new tree must be loaded, false if an existing 
@@ -564,7 +614,7 @@ public class CmsTree extends CmsWorkplace {
      * @return true if site selector should be shown, otherwise false
      */
     public boolean showSiteSelector() {
-        boolean show = (C_TYPE_VFSLINK.equals(getTreeType()) || C_TYPE_COPY.equals(getTreeType()));
+        boolean show = (C_TYPE_VFSLINK.equals(getTreeType()) || C_TYPE_COPY.equals(getTreeType()) || C_TYPE_PAGELINK.equals(getTreeType()));
         if (show) {
             int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
             if (siteCount < 2) {

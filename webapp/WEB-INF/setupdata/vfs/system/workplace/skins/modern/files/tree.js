@@ -464,15 +464,16 @@ function setTreeType(value) {
 	m_treeType = value;
 }
 
-var m_treeSite = null;
 
-function getTreeSite() {
-	return m_treeSite;
+var m_sitePrefix = null;
+
+function getSitePrefix() {
+	return m_sitePrefix;
 }
 
 
-function setTreeSite(value) {
-	m_treeSite = value;
+function setSitePrefix(value) {
+	m_sitePrefix = value;
 }
 
 
@@ -515,11 +516,11 @@ function doActionFolderOpen(doc, nodeId) {
 }
 
 function doActionInsertSelected(doc, nodeId) {
-	var sitePrefix = "";
-	if (getTreeSite() != null) {
-		sitePrefix = getTreeSite();
+	var filePrefix = "";
+	if (getSitePrefix() != null) {
+		filePrefix = getSitePrefix();
 	}
-	window.opener.setFormValue(sitePrefix + getNodeNameById(nodeId));
+	window.opener.setFormValue(filePrefix + getNodeNameById(nodeId));
 }
 
 
