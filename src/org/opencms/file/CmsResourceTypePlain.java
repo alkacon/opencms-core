@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,34 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     public static final String C_RESOURCE_TYPE_NAME = "plain";
     
     /**
+     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     */
+    public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
+        CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
+        contents = null;
+        // TODO: Move locking of resource to CmsObject or CmsDriverManager
+        cms.doLockResource(cms.readAbsolutePath(res), CmsLock.C_MODE_COMMON);
+        return res;
+    }    
+    
+    /**
+     * A plain resource might appear as a sub-element in a JSP,
+     * therefore it needs cache properties.<p>
+     * 
+     * @see org.opencms.file.I_CmsResourceType#getCachePropertyDefault()
+     */
+    public String getCachePropertyDefault() {
+        return "always;";
+    }
+
+    /**
+     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
+     */
+    public int getLoaderId() {
+        return CmsDumpLoader.C_RESOURCE_LOADER_ID;
+    }     
+    
+    /**
      * @see org.opencms.file.I_CmsResourceType#getResourceType()
      */
     public int getResourceType() {
@@ -64,23 +92,4 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     public String getResourceTypeName() {
         return C_RESOURCE_TYPE_NAME;
     }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#getLoaderId()
-     */
-    public int getLoaderId() {
-        return CmsDumpLoader.C_RESOURCE_LOADER_ID;
-    }     
-    
-    /**
-     * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
-     */
-    public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
-        CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
-        contents = null;
-        // TODO: Move locking of resource to CmsObject or CmsDriverManager
-        cms.doLockResource(cms.readAbsolutePath(res), CmsLock.C_MODE_COMMON);
-        return res;
-    }    
-    
 }

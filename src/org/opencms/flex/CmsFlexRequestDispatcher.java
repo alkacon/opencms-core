@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/03/22 16:34:06 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -208,9 +208,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         CmsFlexRequest w_req = new CmsFlexRequest((HttpServletRequest)req, controller, m_vfsTarget);
         CmsFlexResponse w_res = new CmsFlexResponse((HttpServletResponse)res, controller); 
         
-        // push req/res to controller queue
-        controller.pushRequest(w_req);
-        controller.pushResponse(w_res);             
+        // push req/res to controller stack
+        controller.push(w_req, w_res);
         
         // now that the req/res are on the stack, we need to make sure that they are removed later
         // that's why we have this try { ... } finaly { ... } clause here
@@ -319,13 +318,20 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 entry = w_res.processCacheEntry(); 
                 if ((entry != null) && (variation != null) && w_req.isCacheable()) {   
                     // the result can be cached
-                    entry.updateDateLastModified(w_res.getDateLastModified());
+                    if (w_res.getCmsCacheKey().m_timeout > 0) {
+                        // cache entry has a timeout, set last modified to time of entry creation
+                        entry.setDateLastModified(System.currentTimeMillis());
+                        controller.updateDateLastModified(entry.getDateLastModified());
+                    } else {
+                        // no timeout, use last modified date from files in VFS
+                        entry.setDateLastModified(controller.getDateLastModified());
+                    }
                     cache.put(w_res.getCmsCacheKey(), entry, variation);                        
                 } else {
                     // result can not be cached, do not use "last modified" optimization
                     controller.updateDateLastModified(-1);
                 }
-            }          
+            }
             
             if (f_res.hasIncludeList()) {
                 // Special case: This indicates that the output was not yet displayed
@@ -343,9 +349,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             f_res.setCmsIncludeMode(false);
             f_req.removeIncludeCall(m_vfsTarget);      
               
-            // pop req/res from controller queue
-            controller.popRequest();
-            controller.popResponse();                
+            // pop req/res from controller stack
+            controller.pop();               
         } 
     }
 }

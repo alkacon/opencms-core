@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/19 17:45:02 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.107 $
+ * @version $Revision: 1.108 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -843,7 +843,7 @@ public final class OpenCmsCore {
         // get remote IP address
         String remoteAddr;
         if (req != null) {
-            remoteAddr = req.getHeader(I_CmsConstants.C_REQUEST_FORWARDED_FOR);
+            remoteAddr = req.getHeader(I_CmsConstants.C_HEADER_X_FORWARDED_FOR);
             if (remoteAddr == null) {
                 remoteAddr = req.getRemoteAddr();
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2004/03/22 16:34:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -191,9 +191,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     
     /** The CmsFlexController for this response */
     private CmsFlexController m_controller;
-    
-    /** The "last modified" date for this Flex response */
-    private long m_dateLastModified;
     
     /** The encoding to use for the response */
     private String m_encoding;
@@ -369,20 +366,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_includeListParameters.add(parameterMap);
         m_includeList.add(target);
     }
-    
-    /**
-     * Returns the "last modified" date for this Flex response.<p>
-     * 
-     * @return the "last modified" date for this Flex response
-     */
-    public long getDateLastModified() {
-        if (m_dateLastModified < 0) {
-            return -1;
-        } else {
-            return m_dateLastModified;
-        }
-    }     
-    
+
     /**
      * Returns the value of the encoding used for this response.<p>
      * 
@@ -609,22 +593,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (m_writeOnlyToBuffer) {
             setCmsCachingRequired(true);
         }      
-    }
-    
-    /**
-     * Updates "last modified" date for this Flex response with the given value.<p>
-     * 
-     * The currently stored value is only updated with the new value if
-     * the new value is either larger (i.e. newer) then the stored value,
-     * or if the new value is less then zero, which indicates that the "last modified"
-     * optimization can not be used because the element is dynamic.<p>
-     * 
-     * @param dateLastModified the value to update the "last modified" date with
-     */
-    public void updateDateLastModified(long dateLastModified) {
-        if ((m_dateLastModified > -1) && ((dateLastModified > m_dateLastModified) || (dateLastModified < 0))) {
-            m_dateLastModified = dateLastModified;
-        }         
     }
         
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/03/22 16:40:40 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -225,8 +225,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
             CmsFlexRequest f_req = new CmsFlexRequest(req, controller);
             CmsFlexResponse f_res = new CmsFlexResponse(res, controller, false, false);
-            controller.pushRequest(f_req);
-            controller.pushResponse(f_res);
+            controller.push(f_req, f_res);
     
             // now include the target
             try {
@@ -284,8 +283,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
             f_req = new CmsFlexRequest(req, controller);
             f_res = new CmsFlexResponse(res, controller, false, true);
-            controller.pushRequest(f_req);
-            controller.pushResponse(f_res);
+            controller.push(f_req, f_res);
         }
         
         byte[] result = null;
@@ -416,8 +414,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
             f_req = new CmsFlexRequest(req, controller);
             f_res = new CmsFlexResponse(res, controller, streaming, true);
-            controller.pushRequest(f_req);
-            controller.pushResponse(f_res);
+            controller.push(f_req, f_res);
         }
 
         if (bypass) {
@@ -444,15 +441,11 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 try {
                     if (!res.isCommitted() || m_errorPagesAreNotCommited) {
                         
-                        // check if the request contains a last modified header
-                        long lastModifiedHeader = req.getDateHeader(C_HEADER_IF_MODIFIED_SINCE);                
-                        if (lastModifiedHeader > -1) {
-                            // last modified header is set, compare it to the requested resource                           
-                            if (controller.getDateLastModified() == lastModifiedHeader) {
-                                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                                return;
-                            }            
-                        }                        
+                        // check if the content was modified since the last request
+                        if (CmsFlexController.isNotModifiedSince(f_req, controller.getDateLastModified())) {
+                            res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                            return;
+                        }                   
                         
                         // If a JSP errorpage was triggered the response will be already committed here
                         byte[] result = f_res.getWriterBytes();
@@ -467,13 +460,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         // Process headers and write output                                          
                         res.setContentLength(result.length);
                         
-                        if (controller.getDateLastModified() > -1) {
-                            // set date last modified header (precision is only second, not millisecond
-                            res.setDateHeader(C_HEADER_LAST_MODIFIED, controller.getDateLastModified());
-                        } else {
-                            // this resource can not be optimized for "last modified", use current time as header
-                            res.setDateHeader(C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
-                        }
+                        // set date last modified header
+                        CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());
                         
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/03/22 16:34:06 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -540,7 +540,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 if (DEBUG > 1) {
                     System.err.println("FlexCache: Checking timeout for resource " + key.m_resource);
                 }
-                if (e.getTimeout() < key.m_timeout) {
+                if (e.getDateExpires() < key.m_timeout) {
                     if (DEBUG > 1) {
                         System.err.println("FlexCache: Resource has reached timeout, removing from cache!");
                     }
@@ -1006,7 +1006,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     private void put(CmsFlexCacheKey key, CmsFlexCacheEntry theCacheEntry) {
         Object o = m_keyCache.get(key.m_resource);
         if (key.m_timeout > 0) {
-            theCacheEntry.setTimeout(key.m_timeout * 60000);
+            theCacheEntry.setDateExpires(key.m_timeout * 60000);
         }
         if (o != null) {
             // We already have a variation map for this resource

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.7 $ $Date: 2004/03/12 16:00:48 $
+ * @version $Revision: 1.8 $ $Date: 2004/03/25 11:45:05 $
  */
 public interface I_CmsConstants {
 
@@ -1215,19 +1215,28 @@ public interface I_CmsConstants {
 
     /** the resource is linked inside a site folder specified in the OpenCms properties  */
     int C_RESOURCEFLAG_LABELLINK = 2;
-
-    /** identifier for x-forwarded-for (i.e. proxied) request headers */
-    String C_REQUEST_FORWARDED_FOR = "x-forwarded-for";
     
     /** localhost ip used in fallback cases */
     String C_IP_LOCALHOST = "127.0.0.1";
     
-    /** mode for reading project resources vorm the db */
+    /** mode for reading project resources from the db */
     int C_READMODE_IGNORESTATE = 0;
     
-    /** mode for reading project resources vorm the db */
+    /** mode for reading project resources from the db */
     int C_READMODE_MATCHSTATE = 1;
     
-    /** mode for reading project resources vorm the db */
+    /** mode for reading project resources from the db */
     int C_READMODE_UNMATCHSTATE = 2;
+
+    /** identifier for x-forwarded-for (i.e. proxied) request headers */
+    String C_HEADER_X_FORWARDED_FOR = "x-forwarded-for";
+    
+    /** The response http header for the "expires" value */
+    String C_HEADER_EXPIRES = "Expires";
+
+    /** The response http header for the "last modified" value */
+    String C_HEADER_LAST_MODIFIED = "Last-Modified";
+
+    /** The request http header for "last modified" requests */
+    String C_HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
 }

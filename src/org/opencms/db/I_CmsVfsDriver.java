@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.68 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.69 $ $Date: 2004/03/25 11:45:05 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -435,7 +435,7 @@ public interface I_CmsVfsDriver {
     List readFiles(int projectId) throws CmsException;
 
     /**
-     * Reads all files that are either new, changed or deleted.<p>
+     * Reads all files of a given resource type that are either new, changed or deleted.<p>
      * 
      * @param projectId a project id for reading online or offline resources
      * @param resourcetype the resourcetype of the files

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/03/22 16:40:40 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -186,7 +186,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     throws IOException, CmsException {
         
         // check if the request contains a last modified header
-        long lastModifiedHeader = req.getDateHeader(C_HEADER_IF_MODIFIED_SINCE);                
+        long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);                
         if (lastModifiedHeader > -1) {
             // last modified header is set, compare it to the requested resource
             if ((resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) && (resource.getDateLastModified() == lastModifiedHeader)) {
@@ -202,7 +202,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         // set content length header
         res.setContentLength(file.getContents().length);
         // set date last modified header
-        res.setDateHeader(C_HEADER_LAST_MODIFIED, file.getDateLastModified());
+        res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, file.getDateLastModified());
         // set expire and chache headers        
         int expireTime;
         if (cms.getRequestContext().currentProject().isOnlineProject()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/03/19 17:45:01 $
- * Version: $Revision: 1.339 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.340 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.file.*;
+import org.opencms.flex.CmsFlexRequestContextInfo;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockManager;
@@ -72,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.339 $ $Date: 2004/03/19 17:45:01 $
+ * @version $Revision: 1.340 $ $Date: 2004/03/25 11:45:05 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1045,7 +1046,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public void chstate(CmsRequestContext context, String filename, int state) throws CmsException {
         CmsResource resource = null;
         // read the resource to check the access
-        if (filename.endsWith("/")) {
+        if (CmsResource.isFolder(filename)) {
             resource = readFolder(context, filename);
         } else {
             resource = (CmsFile)readFileHeader(context, filename);
@@ -1057,7 +1058,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // set the state of the resource
         resource.setState(state);
         // write-acces  was granted - write the file.
-        if (filename.endsWith("/")) {
+        if (CmsResource.isFolder(filename)) {
             m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder)resource, C_UPDATE_ALL, context.currentUser().getId());
             // update the cache
             //clearResourceCache(filename, context.currentProject(), context.currentUser());
@@ -1241,7 +1242,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsResource newResource = null;
         Map properties = null;
 
-        if (destination.endsWith("/")) {
+        if (CmsResource.isFolder(destination)) {
             copyFolder(context, source, destination, lockCopy, false);
             return;
         }
@@ -1369,7 +1370,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         destinationFoldername = destination.substring(0, destination.substring(0, destination.length() - 1).lastIndexOf("/") + 1);
         destinationResourceName = destination.substring(destinationFoldername.length());
 
-        if (destinationResourceName.endsWith("/")) {
+        if (CmsResource.isFolder(destinationResourceName)) {
             destinationResourceName = destinationResourceName.substring(0, destinationResourceName.length() - 1);
         }
 
@@ -1471,7 +1472,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             // create the projectresource only if the resource is not in the current project
             if ((offlineRes == null) || (offlineRes.getProjectLastModified() != context.currentProject().getId())) {
                 // check if there are already any subfolders of this resource
-                if (resource.endsWith("/")) {
+                if (CmsResource.isFolder(resource)) {
                     List projectResources = m_projectDriver.readProjectResources(context.currentProject());
                     for (int i = 0; i < projectResources.size(); i++) {
                         String resname = (String)projectResources.get(i);
@@ -1517,7 +1518,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         try {
             while (des.indexOf("/") == 0) {
                 des = des.substring(0, des.lastIndexOf("/"));
-                storage.push(des + "/");
+                storage.push(des.concat("/"));
             }
             // ...now create them....
             while (storage.size() != 0) {
@@ -2375,7 +2376,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsResource onlineFolder;
 
         // TODO: "/" is currently used inconsistent !!! 
-        if (!foldername.endsWith("/")) {
+        if (!CmsResource.isFolder(foldername)) {
             foldername = foldername.concat("/");
         }
 
@@ -2799,6 +2800,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                         // this is a valid resouce, add it to the result list
                         res.setFullResourceName(readPath(context, res, false));
                         result.add(res);
+                        updateContextDates(context, res);
                     }
                 }
             }
@@ -3563,12 +3565,13 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 while (i.hasNext()) {
                     CmsResource res = (CmsResource)i.next();
                     if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
-                        if (res.isFolder() && !res.getName().endsWith("/")) {
-                            res.setFullResourceName(folderRes.getRootPath() + res.getName() + "/");
+                        if (res.isFolder() && !CmsResource.isFolder(res.getName())) {
+                            res.setFullResourceName(folderRes.getRootPath() + res.getName().concat("/"));
                         } else {
                             res.setFullResourceName(folderRes.getRootPath() + res.getName());
                         }
                         retValue.addElement(res);
+                        updateContextDates(context, res);
                     }
                 }
 
@@ -3789,7 +3792,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         try {
             // validate the parent folder name
-            if (!parentFolderName.endsWith("/")) {
+            if (! CmsResource.isFolder(parentFolderName)) {
                 parentFolderName += "/";
             }
 
@@ -3820,11 +3823,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             } else if (!hasPermissions(context, currentResource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, false)) {
                 subResources.remove(i--);
             } else {
-                if (currentResource.isFolder() && !currentResource.getName().endsWith("/")) {
-                    currentResource.setFullResourceName(parentFolderName + currentResource.getName() + "/");
+                if (currentResource.isFolder() && !CmsResource.isFolder(currentResource.getName())) {
+                    currentResource.setFullResourceName(parentFolderName + currentResource.getName().concat("/"));
                 } else {
                     currentResource.setFullResourceName(parentFolderName + currentResource.getName());
                 }
+                updateContextDates(context, currentResource);
             }
         }
 
@@ -5349,6 +5353,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         } catch (CmsException exc) {
             throw exc;
         }
+        updateContextDates(context, backupResource);
         return backupResource;
     }
 
@@ -5374,7 +5379,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         } catch (CmsException exc) {
             throw exc;
         }
-
+        updateContextDates(context, resource);
         return resource;
     }
 
@@ -5511,27 +5516,30 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful
      */
     public CmsFile readFile(CmsRequestContext context, String filename, boolean includeDeleted) throws CmsException {
-        CmsFile cmsFile = null;
+        CmsFile file = null;
 
         try {
             List path = readPath(context, filename, false);
             CmsResource resource = (CmsResource)path.get(path.size() - 1);
 
-            cmsFile = m_vfsDriver.readFile(context.currentProject().getId(), includeDeleted, resource.getStructureId());
-            if (cmsFile.isFolder() && (filename.charAt(filename.length() - 1) != '/')) {
+            file = m_vfsDriver.readFile(context.currentProject().getId(), includeDeleted, resource.getStructureId());
+            if (file.isFolder() && (filename.charAt(filename.length() - 1) != '/')) {
                 filename += "/";
             }
-            cmsFile.setFullResourceName(filename);
+            file.setFullResourceName(filename);
         } catch (CmsException exc) {
             // the resource was not readable
             throw exc;
         }
 
         // check if the user has read access to the file
-        checkPermissions(context, cmsFile, I_CmsConstants.C_READ_ACCESS);
+        checkPermissions(context, file, I_CmsConstants.C_READ_ACCESS);
 
+        // update date info in context
+        updateContextDates(context, file);
+        
         // access to all subfolders was granted - return the file.
-        return cmsFile;
+        return file;
     }
 
     /**
@@ -5586,7 +5594,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public CmsResource readFileHeader(CmsRequestContext context, String filename, boolean includeDeleted) throws CmsException {
         // check if this method is misused to read a folder
-        if (filename.endsWith("/")) {
+        if (CmsResource.isFolder(filename)) {
             return readFolder(context, filename, includeDeleted);
         }
 
@@ -5602,6 +5610,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         } else {
             resource.setFullResourceName(filename);
         }
+        
+        // update date info in context
+        updateContextDates(context, resource);
 
         // access was granted - return the file-header.
         return resource;
@@ -5629,7 +5640,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             return null;
         }
 
-        if (filename.endsWith("/")) {
+        if (CmsResource.isFolder(filename)) {
             return readFolderInProject(projectId, filename);
         }
 
@@ -5700,6 +5711,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                 res.setFullResourceName(readPath(context, res, true));
                 retValue.addElement(res);
+                updateContextDates(context, res);
             }
         }
         return retValue;
@@ -5721,23 +5733,26 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if the folder couldn't be read. The CmsException will also be thrown, if the user has not the rights for this resource.
      */
     public CmsFolder readFolder(CmsRequestContext context, CmsUUID folderId, boolean includeDeleted) throws CmsException {
-        CmsFolder cmsFolder = null;
+        CmsFolder folder = null;
 
         try {
-            cmsFolder = m_vfsDriver.readFolder(context.currentProject().getId(), folderId);
-            cmsFolder.setFullResourceName(readPath(context, cmsFolder, includeDeleted));
+            folder = m_vfsDriver.readFolder(context.currentProject().getId(), folderId);
+            folder.setFullResourceName(readPath(context, folder, includeDeleted));
         } catch (CmsException exc) {
             throw exc;
         }
 
         // check if the user has write access to the folder
-        checkPermissions(context, cmsFolder, I_CmsConstants.C_READ_ACCESS);
+        checkPermissions(context, folder, I_CmsConstants.C_READ_ACCESS);
+        
+        // update date info in context
+        updateContextDates(context, folder);        
 
         // access was granted - return the folder.
-        if ((cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
-            throw new CmsException("[" + getClass().getName() + "]" + context.removeSiteRoot(readPath(context, cmsFolder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
+        if ((folder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
+            throw new CmsException("[" + getClass().getName() + "]" + context.removeSiteRoot(readPath(context, folder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
         } else {
-            return cmsFolder;
+            return folder;
         }
     }
 
@@ -5778,25 +5793,28 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             return null;
         }
 
-        if (!foldername.endsWith("/")) {
+        if (!CmsResource.isFolder(foldername)) {
             foldername += "/";
         }
 
         List path = readPath(context, foldername, includeDeleted);
-        CmsFolder cmsFolder = (CmsFolder)path.get(path.size() - 1);
+        CmsFolder folder = (CmsFolder)path.get(path.size() - 1);
 
         // check if the user has read access to the folder
-        checkPermissions(context, cmsFolder, I_CmsConstants.C_READ_ACCESS);
+        checkPermissions(context, folder, I_CmsConstants.C_READ_ACCESS);
 
         // acces to all subfolders was granted - return the folder.
-        if ((cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + context.removeSiteRoot(readPath(context, cmsFolder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
+        if ((folder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
+            throw new CmsException("[" + this.getClass().getName() + "]" + context.removeSiteRoot(readPath(context, folder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
         }
 
         // now set the full resource name
-        cmsFolder.setFullResourceName(foldername);
+        folder.setFullResourceName(foldername);
+        
+        // update date info in context
+        updateContextDates(context, folder);          
 
-        return cmsFolder;
+        return folder;
     }
 
     /**
@@ -5818,19 +5836,19 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             return null;
         }
 
-        if (!foldername.endsWith("/")) {
+        if (!CmsResource.isFolder(foldername)) {
             foldername += "/";
         }
 
         List path = readPathInProject(projectId, foldername, false);
-        CmsFolder cmsFolder = (CmsFolder)path.get(path.size() - 1);
+        CmsFolder folder = (CmsFolder)path.get(path.size() - 1);
         List projectResources = readProjectResources(readProject(projectId));
 
         // now set the full resource name
-        cmsFolder.setFullResourceName(foldername);
+        folder.setFullResourceName(foldername);
 
-        if (CmsProject.isInsideProject(projectResources, cmsFolder)) {
-            return cmsFolder;
+        if (CmsProject.isInsideProject(projectResources, folder)) {
+            return folder;
         }
 
         throw new CmsResourceNotFoundException("Folder " + foldername + " is not inside project with ID " + projectId);
@@ -7201,6 +7219,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             if (!res.hasFullResourceName()) {
                 res.setFullResourceName(readPath(context, res, true));
             }
+            updateContextDates(context, res);
         }
 
         return resourceList;
@@ -8846,4 +8865,16 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         return getHtmlLinkValidator().validateResources(cms, publishList.getFileList(), report);                        
     }
 
+    /**
+     * Updates the date information in the request context.<p>
+     * 
+     * @param context the context to update
+     * @param resource the resource to get the date information from
+     */
+    private void updateContextDates(CmsRequestContext context, CmsResource resource) {
+        CmsFlexRequestContextInfo info = (CmsFlexRequestContextInfo)context.getAttribute(I_CmsConstants.C_HEADER_LAST_MODIFIED);
+        if (info != null) {
+            info.updateDateLastModified(resource.getDateLastModified());
+        }
+    }
 }

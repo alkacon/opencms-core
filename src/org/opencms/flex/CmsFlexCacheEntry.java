@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2004/03/22 16:34:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,13 +62,13 @@ import javax.servlet.ServletException;
  * The headers are saved in a HashMap.
  * In case of a redirect, the redircet target is cached in a String.<p>
  *
- * The CmsFlexCacheEntry can also have a timeout value, which indicates the time 
+ * The CmsFlexCacheEntry can also have an expire date value, which indicates the time 
  * that his entry will become invalid and should thus be cleared from the cache.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
     
@@ -84,8 +84,11 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     /** Indicates if this cache entry is completed */
     private boolean m_completed;      
     
+    /** The "expires" date for this Flex cache entry */
+    private long m_dateExpires;
+    
     /** The "last modified" date for this Flex cache entry */
-    private long m_dateLastModified;
+    private long m_dateLastModified;   
   
     /** The list of items for this resource */
     private List m_elements;
@@ -102,9 +105,6 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     /** A redirection target (if redirection is set) */
     private String m_redirectTarget;
     
-    /** Age for timeout */
-    private long m_timeout;
-    
     /** The key under which this cache entry is stored in the variation map. */
     private String m_variationKey;
     
@@ -119,7 +119,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      */
     public CmsFlexCacheEntry() {
         m_elements = new ArrayList(C_INITIAL_CAPACITY_LISTS);
-        m_timeout = -1;
+        m_dateExpires = -1;
+        m_dateLastModified = -1;
         // base memory footprint of this object with all referenced objects
         m_byteSize = 1024;
         
@@ -228,17 +229,26 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         return m_elements;
     }
     
+    /** 
+     * Returns the expiration date of this cache entry,
+     * this is set to the time when the entry becomes invalid.<p>
+     * 
+     * If this is <code>-1</code> then there is no expiration date
+     * set for this flex cache entry.<p>
+     *
+     * @return the expiration date value for this resource
+     */ 
+    public long getDateExpires() {
+        return m_dateExpires;
+    }
+    
     /**
      * Returns the "last modified" date for this Flex cache entry.<p>
      * 
      * @return the "last modified" date for this Flex cache entry
      */
     public long getDateLastModified() {
-        if (m_dateLastModified < 0) {
-            return -1;
-        } else {
-            return m_dateLastModified;
-        }
+        return m_dateLastModified;
     }    
     
     /**
@@ -268,16 +278,6 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     public I_CmsLruCacheObject getPreviousLruObject() {
         return m_previous;
     }  
-    
-    /** 
-     * Returns the timeout - value of this cache entry,
-     * this is set to the time when the entry becomes invalid.
-     *
-     * @return the timeout value for this resource
-     */ 
-    public long getTimeout() {
-        return m_timeout;
-    }
 
     /**
      * @see org.opencms.cache.I_CmsLruCacheObject#getValue()
@@ -361,6 +361,40 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     }
     
     /**
+     * Sets an expiration date for this cache entry,
+     * which indicates the time this entry becomes invalid.<p>
+     *
+     * The timeout parameter represents the minute - intervall in which the cache entry
+     * is to be cleared. 
+     * The intervall always starts at 0.00h. 
+     * A value of 60 would indicate that this entry will reach it's expiration date at the beginning of the next 
+     * full hour, a timeout of 20 would indicate that the entry is invalidated at x.00, x.20 and x.40 of every hour etc.<p>
+     *
+     * @param timeout the timeout value to be set
+     */
+    public synchronized void setDateExpires(long timeout) {
+        if (timeout < 0 || ! m_completed) {
+            return;
+        }
+        
+        long now = System.currentTimeMillis();
+        long daytime = now % 86400000;
+        m_dateExpires = now - (daytime % timeout) + timeout;
+        if (DEBUG > 2) {
+            System.err.println("FlexCacheEntry: New entry expiration=" + m_dateExpires + " now=" + now + " remaining=" + (m_dateExpires - now));
+        }
+    } 
+    
+    /**
+     * Sets the "last modified" date for this Flex cache entry with the given value.<p>
+     * 
+     * @param dateLastModified the value to set for the "last modified" date
+     */
+    public void setDateLastModified(long dateLastModified) {
+        m_dateLastModified = dateLastModified;
+    }
+    
+    /**
      * @see org.opencms.cache.I_CmsLruCacheObject#setNextLruObject(org.opencms.cache.I_CmsLruCacheObject)
      */
     public void setNextLruObject(I_CmsLruCacheObject theNextEntry) {
@@ -395,33 +429,6 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         m_elements = null;
         m_headers = null;
     }
-    
-    /**
-     * Sets a timeout value to this cache entry,
-     * which indicates the time this entry becomes invalid.<p>
-     *
-     * The timeout parameter represents the minute - intervall in which the cache entry
-     * is to be cleared. 
-     * The intervall always starts at 0.00h. 
-     * A value of 60 would indicate that this entry will reach it's timeout at the beginning of the next 
-     * full hour, a timeout of 20 would indicate that the entry is invalidated at x.00, x.20 and x.40 of every hour etc.<p>
-     *
-     * @param timeout the timeout value to be set
-     */
-    public synchronized void setTimeout(long timeout) {
-        if (timeout < 0 || ! m_completed) {
-            return;
-        }
-        
-        long now = System.currentTimeMillis();
-        long daytime = now % 86400000;
-        m_timeout = now - (daytime % timeout) + timeout;
-        // if the cache entry has a timeout we don't support the "last modified" header
-        updateDateLastModified(-1);
-        if (DEBUG > 2) {
-            System.err.println("FlexCacheEntry: New entry timeout=" + m_timeout + " now=" + now + " remaining=" + (m_timeout - now));
-        }
-    } 
     
     /**
      * Stores a backward reference to the map and key where this cache entry is stored.
@@ -461,22 +468,6 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
         }
         return str;
     }   
-    
-    /**
-     * Updates "last modified" date for this Flex cache entry with the given value.<p>
-     * 
-     * The currently stored value is only updated with the new value if
-     * the new value is either larger (i.e. newer) then the stored value,
-     * or if the new value is less then zero, which indicates that the "last modified"
-     * optimization can not be used because the element is dynamic.<p>
-     * 
-     * @param dateLastModified the value to update the "last modified" date with
-     */
-    public void updateDateLastModified(long dateLastModified) {
-        if ((m_dateLastModified > -1) && ((dateLastModified > m_dateLastModified) || (dateLastModified < 0))) {
-            m_dateLastModified = dateLastModified;
-        }         
-    }
     
     /**
      * Finalize this instance.<p>

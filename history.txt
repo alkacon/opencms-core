@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/03/22 16:35:37 $
- * Version: $Revision: 1.536 $
+ * Date   : $Date: 2004/03/25 11:45:05 $
+ * Version: $Revision: 1.537 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ OpenCms 5.3.4 Ix - March xx, 2004
 ! Added commons-fileupload package for multipart request handling
   in the JSP workplace
 ! Added loader implementations for improved handling of "304 - Not Modified" 
-  response for "If-Modified-Since" requests on JSP pages
+  response for "If-Modified-Since" requests (this item was on the TODO list for 2 years!)
 ! XmlPages are now correctly cached in the Flex cache
 
 OpenCms 5.3.3 Ix - March 01, 2004
