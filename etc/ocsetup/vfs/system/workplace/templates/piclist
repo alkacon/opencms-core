@@ -6,7 +6,7 @@
   <TD colspan="5">
     <TABLE CELLPADDING=0 CELLSPACING=0 border=1>
     <tr>
-      <td background="]]><METHOD name="picsUrl">bg_grauekachel.gif</METHOD><![CDATA["><img src="]]><PROCESS>picsource</PROCESS><![CDATA[" alt="]]><PROCESS>title</PROCESS><![CDATA["></td>
+      <td background="]]><METHOD name="picsUrl">bg_grauekachel.gif</METHOD><![CDATA["><img src="]]><PROCESS>picsource</PROCESS><![CDATA[" alt="]]><PROCESS>title</PROCESS><![CDATA[" onclick="javascript:top.sendLink(']]><PROCESS>filepath</PROCESS><![CDATA[')"></td>
     </tr>
     </table>
   </td>

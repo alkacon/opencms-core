@@ -53,7 +53,14 @@ function checkIt(whichone){
 	}
 }
 
-
+function checkInTheBox(){
+	//if(ie) thedoc=document.LINK;
+	//else thedoc=document.NEWLINK.document.LINK;
+	
+	//thedoc.SETLINK.checked=false;
+	saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');
+	switchlyr('NEWWITHOUTLINK','NEWLINK');
+}
 //-->
 </script>
 
@@ -67,7 +74,7 @@ function checkIt(whichone){
 
 </HEAD>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 onload="]]><PROCESS>doOnload</PROCESS><![CDATA[">
 
 <!-- Beginn neue Datei Anlegen -->
 <div id="NEWWITHOUTLINK" style="FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8pt; position: absolute; LEFT: 0px; TOP: 0px; width:100%; height:100%; VISIBILITY: hidden; Z-INDEX: 1;">
@@ -81,12 +88,11 @@ function checkIt(whichone){
 	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
 	<tr>
 		<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-    	<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100" /><![CDATA[</td>
-
+    	<td class=dialogtxt> <input class="textfeld2" value="]]><PROCESS>name</PROCESS><![CDATA[" size=40 maxlength=100 name="NEUNAME" id="NEUNAME" > </td>
 	</tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>
+		<td class=dialogtxt> <input class="textfeld2" value="]]><PROCESS>title</PROCESS><![CDATA[" size=40 maxlength=100 name="NEUTITEL" id="NEUTITEL" ></td>
 	</tr>
 	<tr>
 		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData('NEU','LINK','NEWWITHOUTLINK','NEWLINK');this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
@@ -128,12 +134,12 @@ function checkIt(whichone){
 	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
 	<tr>
 		<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-		<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100" /><![CDATA[</td>
+		<td class=dialogtxt> <input class="textfeld2" value="]]><PROCESS>name</PROCESS><![CDATA[" size=40 maxlength=100 name="NEUNAME" id="NEUNAME" ></td>
 	
 	</tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>
+		<td class=dialogtxt> <input class="textfeld2" value="]]><PROCESS>title</PROCESS><![CDATA[" size=40 maxlength=100 name="NEUTITEL" id="NEUTITEL" ></td>
 	</tr>
 	<tr>
 		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
@@ -141,7 +147,7 @@ function checkIt(whichone){
 	<tr><td colspan=2 class=leerzeile><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=10px</td></tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.navtitle" /><![CDATA[:</td>
-		<td class=dialogtxt>]]><INPUTFIELD name="LINKNAME" class="textfeld2" size="40" length="100" /><![CDATA[</td>
+		<td class=dialogtxt><input class="textfeld2" value="]]><PROCESS>navtext</PROCESS><![CDATA[" size=40 maxlength=100 name="LINKNAME" id="LINKNAME" ><![CDATA[</td>
 	</tr>
 	<tr>
 		<td class=formular>]]><LABEL value="input.insert" /><![CDATA[</td>
@@ -171,6 +177,275 @@ function checkIt(whichone){
 </HTML>
 ]]>
 </TEMPLATE>
+
+<TEMPLATE name="extendedNav">
+<![CDATA[
+<HTML>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<script language=JavaScript>
+<!--
+var SelColorWindow = null;
+function goColorSet(para){
+	ColorSelected=-1;
+	SelColor=-1;
+	colorFor = para;
+	CheckColor= window.setInterval("setColor(SelColor)",500);
+	SelColorWindow = window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
+	SelColorWindow.opener = self;
+	SelColorWindow.focus();
+}
+function setColor(arr){
+  if (arr != -1) {
+	  colorFor.value=arr;
+	  window.clearInterval(CheckColor);
+      SelColor=-1; 
+  	}
+}
+
+var picBrowserWindow = null;
+function goPictureSet(theTextbox){
+	pictureIsFor = theTextbox;
+	picBrowserWindow = window.open('picturebrowser.html?initial=true', 'PicBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');
+	picBrowserWindow.opener = self;
+	picBrowserWindow.focus();
+}
+function recivePicture(picurePath){
+	pictureIsFor.value=picurePath;
+}
+
+var treeWindow = null;
+function goLinkSet(theTextbox){
+	treeWindow = window.open('folder_tree.html?foldertree=%2F&formname=NAVPROP&variable='+theTextbox+'&viewfile=yes&onlineselect=yes', 'explorer_viewer', 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=150,left=460,width=150,height=300');
+	if(treeWindow != null){
+	      if (treeWindow.opener == null){
+	         treeWindow.opener = self;
+	      }
+   		}
+	treeWindow.focus();
+}
+
+function closeAllWindows(){
+	if (SelColorWindow != null){
+		SelColorWindow.close();
+	}
+	if (picBrowserWindow != null){
+		picBrowserWindow.close();
+	}
+	if (treeWindow != null){
+		treeWindow.close();
+	}
+}
+//-->
+</script>
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 onunload="javascript:closeAllWindows();">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td align="center" valign="middle">
+			<table border="2" cellpadding="0" cellspacing="0" width="500px">
+				<tr>
+					<td class="formular" align="center" valign="middle">						
+						<table border="0" cellpadding="5" cellspacing="0" width="500px">
+							<tr>
+								<td class="head" colspan="6"> 
+									]]><LABEL value="title.newfolder" /><![CDATA[
+								</td>
+							</tr>
+							<tr>
+								<td class="leerzeile" colspan="6">&nbsp;</td>					
+							</tr>
+							<form name="NAVPROP" id="NAVPROP" action="explorer_files_new_folder.html?step=2" method="post">
+							<tr>
+								<td class="formular">
+									<table width="100%" border="0" cellpadding="0" cellspacing="0">
+										<tr>
+											<td height="40" class="formular" width="140" valign="middle">
+					Verzeichnislogo
+											</td>
+											<td align="right" class="dialogtxt" width="30" valign="middle">
+												<a href="javascript:goPictureSet(document.NAVPROP.flogopic);"><img src="]]><METHOD name="picsUrl">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
+											</td>
+											<td align="right" class="dialogtxt" width="135" valign="middle">												
+												<input type="text" class="textfeld" size="15" style="width:150px" name="flogopic" id="flogopic" value ="]]><PROCESS>flogopic</PROCESS><![CDATA[">
+											</td>
+											<td width="30">&nbsp;</td>
+											<td class="dialogtxt" width="135" valign="middle">
+												<input type="text" class="textfeld" size="15" style="width:150px" name="flogolink" id="flogolink" value ="]]><PROCESS>flogolink</PROCESS><![CDATA[">											
+											</td>
+											<td class="dialogtxt" width="30" valign="middle">
+												<a href="javascript:goLinkSet('flogolink');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
+											</td>
+										</tr>
+										<tr>
+											<td height="40" class="formular" width="140" valign="middle">
+					Hauptlogo
+											</td>
+											<td align="right" class="dialogtxt" width="30" valign="middle">
+												<a href="javascript:goPictureSet(document.NAVPROP.mlogopic);"><img src="]]><METHOD name="picsUrl">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
+											</td>
+											<td align="right" class="dialogtxt" width="135" valign="middle">												
+												<input type="text" class="textfeld" size="15" style="width:150px" name="mlogopic" id="mlogopic" value ="]]><PROCESS>mlogopic</PROCESS><![CDATA[">
+											</td>
+											<td width="30">&nbsp;</td>
+											<td class="dialogtxt" width="135" valign="middle">
+												<input type="text" class="textfeld" size="15" style="width:150px" name="mlogolink" id="mlogolink" value ="]]><PROCESS>mlogolink</PROCESS><![CDATA[">											
+											</td>
+											<td class="dialogtxt" width="30" valign="middle">
+												<a href="javascript:goLinkSet('mlogolink');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
+											</td>
+										</tr>
+										]]><PROCESS>displaySektLogo</PROCESS><![CDATA[
+										<tr>
+											<td height="50" colspan="1" class="formular" width="140" valign="middle">
+						Link in stat. Navigation
+											</td>
+											<td width="30">&nbsp;</td>
+											<td align="left" class="dialogtxt" width="135" valign="middle">
+												<input type="text" class="textfeld" size="10" style="width:100px" maxlength="8" name="statnav" id="statnav" value ="]]><PROCESS>statnav</PROCESS><![CDATA[">
+											</td>
+											<td width="30">&nbsp;</td>
+											<td class="dialogtxt" width="135" valign="middle">
+												<input type="text" class="textfeld" size="15" style="width:150px" name="statlink" id="statlink" value ="]]><PROCESS>statlink</PROCESS><![CDATA[">											
+											</td>
+											<td class="dialogtxt" width="30" valign="middle">
+												<a href="javascript:goLinkSet('statlink');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
+											</td>
+										</tr>		
+										<tr>
+											<td colspan="6">&nbsp;</td>
+										</tr>
+										<tr>
+											<td class="dialogtxt" width="140" height="30">
+							Dynamische Navigation
+											</td>
+											<td align="right" class="dialogtxt" width="30" valign="middle">
+													<a href="javascript:goColorSet(document.NAVPROP.bcoldyn);"><img src="]]><METHOD name="picsUrl">bt_color_off_small.gif</METHOD><![CDATA["  border="0"></a>
+											</td>
+											<td align="left" class="dialogtxt" width="135" valign="middle">												
+												<input type="text" class="textfeld" size="10" style="width:100px" name="bcoldyn" id="bcoldyn" maxlength="6" value ="]]><PROCESS>bcoldyn</PROCESS><![CDATA[">
+											</td>
+											<td width="30">
+												<a href="javascript:goColorSet(document.NAVPROP.tcoldyn);"><img src="]]><METHOD name="picsUrl">bt_fontcolor_off_small.gif</METHOD><![CDATA[" border="0"></a>
+											</td>
+											<td align="left" class="dialogtxt" width="135" valign="middle">
+												<input type="text" class="textfeld" size="10" style="width:100px" name="tcoldyn" id="tcoldyn" maxlength="6" value ="]]><PROCESS>tcoldyn</PROCESS><![CDATA[">											
+											</td>
+											<td class="dialogtxt" width="30" valign="middle">&nbsp;</td>
+										</tr>
+										<tr>
+											<td class="dialogtxt" width="140" height="30">
+							Link in stat. Navigation
+											</td>
+											<td align="right" class="dialogtxt" width="30" valign="middle">
+													<a href="javascript:goColorSet(document.NAVPROP.bcollink);"><img src="]]><METHOD name="picsUrl">bt_color_off_small.gif</METHOD><![CDATA[" border="0"></a>
+											</td>
+											<td align="left" class="dialogtxt" width="135" valign="middle">												
+												<input type="text" class="textfeld" size="10" style="width:100px" name="bcollink" id="bcollink" maxlength="6" value ="]]><PROCESS>bcollink</PROCESS><![CDATA[">
+											</td>
+											<td width="30">
+												<a href="javascript:goColorSet(document.NAVPROP.tcollink);"><img src="]]><METHOD name="picsUrl">bt_fontcolor_off_small.gif</METHOD><![CDATA[" border="0"></a>
+											</td>
+											<td class="dialogtxt" width="135" valign="middle">
+												<input type="text" class="textfeld" size="10" style="width:100px" name="tcollink" id="tcollink" maxlength="6" value ="]]><PROCESS>tcollink</PROCESS><![CDATA[">											
+											</td>
+											<td class="dialogtxt" width="30" valign="middle">&nbsp;</td>
+										</tr>	
+										<tr>
+											<td class="dialogtxt" width="140" height="30">
+							Email
+											</td>
+											<td align="right" class="dialogtxt" width="30" valign="middle">
+												<a href="javascript:goColorSet(document.NAVPROP.bcolemail);"><img src="]]><METHOD name="picsUrl">bt_color_off_small.gif</METHOD><![CDATA[" border="0"></a>
+											</td>
+											<td align="left" class="dialogtxt" width="135" valign="middle">												
+												<input type="text" class="textfeld" size="10" style="width:100px" name="bcolemail" id="bcolemail" maxlength="6" value ="]]><PROCESS>bcolemail</PROCESS><![CDATA[">
+											</td>
+											<td width="30">
+												<a href="javascript:goColorSet(document.NAVPROP.tcolemail);"><img src="]]><METHOD name="picsUrl">bt_fontcolor_off_small.gif</METHOD><![CDATA[" border="0"></a>
+											</td>
+											<td class="dialogtxt" width="135" valign="middle">
+												<input type="text" class="textfeld" size="10" style="width:100px" name="tcolemail" id="tcolemail" maxlength="6" value ="]]><PROCESS>tcolemail</PROCESS><![CDATA[">											
+											</td>
+											<td class="dialogtxt" width="30" valign="middle">&nbsp;</td>
+										</tr>	
+										<tr>
+											<td class="dialogtxt" width="140" height="30">
+							Suche
+											</td>
+											<td align="right" class="dialogtxt" width="30" valign="middle">
+													<a href="javascript:goColorSet(document.NAVPROP.bcolsearch);"><img src="]]><METHOD name="picsUrl">bt_color_off_small.gif</METHOD><![CDATA[" border="0"></a>
+											</td>
+											<td align="left" class="dialogtxt" width="135" valign="middle">												
+												<input type="text" class="textfeld" size="10" style="width:100px" name="bcolsearch" id="bcolsearch" maxlength="6" value ="]]><PROCESS>bcolsearch</PROCESS><![CDATA[">
+											</td>
+											<td width="30">
+												<a href="javascript:goColorSet(document.NAVPROP.tcolsearch);"><img src="]]><METHOD name="picsUrl">bt_fontcolor_off_small.gif</METHOD><![CDATA[" border="0"></a>
+											</td>
+											<td class="dialogtxt" width="135" valign="middle">
+												<input type="text" class="textfeld" size="10" style="width:100px" name="tcolsearch" id="tcolsearch" maxlength="6" value ="]]><PROCESS>tcolsearch</PROCESS><![CDATA[">											
+											</td>
+											<td class="dialogtxt" width="30" valign="middle">&nbsp;</td>
+										</tr>											
+									</table>
+								</td>
+							</tr>	
+							<tr>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td class="formular" colspan="6">
+									<table width="100%" border="0" cellpadding="5" cellspacing="0">
+										<tr>
+											<td class="dialogtxt" width="200">
+												&nbsp;
+											</td>
+											<td class="dialogtxt" width="100"><input type="submit" class="button" name="back" id="BACK" value="]]><LABEL value="button.previousscreen" /><![CDATA[" width="100" onClick=""></td>
+											<td class="dialogtxt" width="100"><input type="submit" class="button" name="OK" id="OK" value="]]><LABEL value="button.endwizard" /><![CDATA[" width="100" onClick=""></td>
+											<td class="dialogtxt" width="100"><input type="button" class="button" name="CANCEL" id="CANCEL" value="]]><LABEL value="button.cancel" /><![CDATA[" width="100" onClick="location='explorer_files.html';"></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							</form>
+						</table>						
+					</td>
+				</tr>				
+			</table>
+		</td>
+	</tr>
+</table>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<SektLogo><![CDATA[
+		<tr>
+			<td height="40" class="formular" width="140" valign="middle">
+	Sektionsbild für die Navigation
+			</td>
+			<td align="right" class="dialogtxt" width="30" valign="middle">
+				<a href="javascript:goPictureSet(document.NAVPROP.slogopic);"><img src="]]><METHOD name="picsUrl">bt_imagelist_off_small.gif</METHOD><![CDATA[" border="0" ></a>
+			</td>
+			<td align="right" class="dialogtxt" width="135" valign="middle">												
+				<input type="text" class="textfeld" size="15" style="width:150px" name="slogopic" id="slogopic" value ="]]><PROCESS>slogopic</PROCESS><![CDATA[">
+			</td>
+			<td width="30">&nbsp;</td>
+			<td class="dialogtxt" width="135" valign="middle">
+				<input type="text" class="textfeld" size="15" style="width:150px" name="slogolink" id="slogolink" value ="]]><PROCESS>slogolink</PROCESS><![CDATA[">											
+			</td>
+			<td class="dialogtxt" width="30" valign="middle">
+				<a href="javascript:goLinkSet('slogolink');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" height="16" width="16"></a>
+			</td>
+		</tr>]]>
+</SektLogo>
 
 <TEMPLATE name="update">
 <![CDATA[

@@ -7,6 +7,12 @@
 <title>]]><LABEL value="label.imagelist" /><![CDATA[ </title>
 <SCRIPT LANGUAGE="JavaScript">
 	var selectedGallery=0;
+	
+	function sendLink(theLink){
+		if(opener.recivePicture){
+			opener.recivePicture(theLink);
+		}
+	}
 </SCRIPT>
 </head>
 
