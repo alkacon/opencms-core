@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 13:56:36 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/06/07 14:00:56 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.20 $ $Date: 2000/06/07 13:56:36 $ * 
+ * @version $Revision: 1.21 $ $Date: 2000/06/07 14:00:56 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -295,15 +295,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             statement.setString(4,description);
             statement.setInt(5,flags);
             statement.executeUpdate();
-            m_pool.putPreparedStatement(C_GROUPS_CREATEGROUP_KEY,statement);
+          
             // create the user group by reading it from the database.
             // this is nescessary to get the group id which is generated in the
             // database.
             group=readGroup(name);
          } catch (SQLException e){
-             m_pool.putPreparedStatement(C_GROUPS_CREATEGROUP_KEY,statement);
-             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-  		}
+              throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+  		} finally {
+	        if( statement != null) {
+		         m_pool.putPreparedStatement(C_GROUPS_CREATEGROUP_KEY,statement);
+	        }
+         }
          return group;
      }
     
@@ -326,7 +329,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
              statement=m_pool.getPreparedStatement(C_GROUPS_READGROUP_KEY);
              statement.setString(1,groupname);
              res = statement.executeQuery();
-             m_pool.putPreparedStatement(C_GROUPS_READGROUP_KEY,statement);
+            
              // create new Cms group object
 			 if(res.next()) {     
                group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
@@ -341,9 +344,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             
        
          } catch (SQLException e){
-            m_pool.putPreparedStatement(C_GROUPS_READGROUP_KEY,statement);
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} finally {
+	        if( statement != null) {
+		         m_pool.putPreparedStatement(C_GROUPS_READGROUP_KEY,statement);
+	        }
+         }
          return group;
      }
     
@@ -364,8 +370,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
              // read the group from the database
              statement=m_pool.getPreparedStatement(C_GROUPS_READGROUP2_KEY);
              statement.setInt(1,id);
-             res = statement.executeQuery();
-             m_pool.putPreparedStatement(C_GROUPS_READGROUP2_KEY,statement);
+             res = statement.executeQuery();           
              // create new Cms group object
 			 if(res.next()) {     
                group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
@@ -379,9 +384,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
              }            
        
          } catch (SQLException e){
-            m_pool.putPreparedStatement(C_GROUPS_READGROUP2_KEY,statement);
+           
          throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
+		} finally {
+	        if( statement != null) {
+		         m_pool.putPreparedStatement(C_GROUPS_READGROUP2_KEY,statement);
+	        }
+         }
          return group;
      } 
    
@@ -405,14 +414,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 				statement.setInt(3,group.getParentId());
 				statement.setInt(4,group.getId());
 				statement.executeUpdate();  
-                m_pool.putPreparedStatement(C_GROUPS_WRITEGROUP_KEY,statement);
+                
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] ",CmsException.C_NO_GROUP);	
             }
          } catch (SQLException e){
-            m_pool.putPreparedStatement(C_GROUPS_WRITEGROUP_KEY,statement);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
+		 } finally {
+	        if( statement != null) {
+		         m_pool.putPreparedStatement(C_GROUPS_WRITEGROUP_KEY,statement);
+	        }
+         }
      }
      
      /**
@@ -430,14 +442,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
          try {
 			 // create statement
              statement=m_pool.getPreparedStatement(C_GROUPS_DELETEGROUP_KEY);
-			 
              statement.setString(1,delgroup);
 			 statement.executeUpdate();
-             m_pool.putPreparedStatement(C_GROUPS_DELETEGROUP_KEY,statement);
-         } catch (SQLException e){
-            m_pool.putPreparedStatement(C_GROUPS_DELETEGROUP_KEY,statement);
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
+        } catch (SQLException e){
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} finally {
+	        if( statement != null) {
+		          m_pool.putPreparedStatement(C_GROUPS_DELETEGROUP_KEY,statement);
+	        }
+         }
      }
      
      /**
@@ -457,7 +470,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             statement=m_pool.getPreparedStatement(C_GROUPS_GETGROUPS_KEY);
 			
            	res = statement.executeQuery();			
-            m_pool.putPreparedStatement(C_GROUPS_GETGROUPS_KEY,statement);
+           
             // create new Cms group objects
 		    while ( res.next() ) {
                     group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
@@ -470,8 +483,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
              res.close();
        
          } catch (SQLException e){
-            m_pool.putPreparedStatement(C_GROUPS_GETGROUPS_KEY,statement);
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
+        } finally {
+	        if( statement != null) {
+		         m_pool.putPreparedStatement(C_GROUPS_GETGROUPS_KEY,statement);
+	        }
          }
       return groups;
      }
@@ -502,7 +518,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 						
 				statement.setInt(1,parent.getId());
 				res = statement.executeQuery();
-                m_pool.putPreparedStatement(C_GROUPS_GETCHILD_KEY,statement);
                 // create new Cms group objects
 		    	while ( res.next() ) {
                      group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
@@ -516,9 +531,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
              }
        
          } catch (SQLException e){
-            m_pool.putPreparedStatement(C_GROUPS_GETCHILD_KEY,statement);
+          
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
+		 } finally {
+	        if( statement != null) {
+		         m_pool.putPreparedStatement(C_GROUPS_GETCHILD_KEY,statement);
+	        }
+         }
          //check if the child vector has no elements, set it to null.
          if (childs.size() == 0) {
              childs=null;
