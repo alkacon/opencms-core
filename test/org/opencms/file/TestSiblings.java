@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2004/11/11 16:39:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/17 08:48:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.util.CmsResourceTranslator;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -212,34 +213,65 @@ public class TestSiblings extends OpenCmsTestCase {
      */
     public void testSiblingIssueAfterImport() throws Exception {       
         
-        echo("Testing sibling issue after import");
-        CmsObject cms = getCmsObject();        
+        echo("Testing sibling issue after import");        
+        
+        CmsResourceTranslator oldFolderTranslator = OpenCms.getResourceManager().getFolderTranslator();
+        
+        CmsResourceTranslator folderTranslator = new CmsResourceTranslator(
+            new String[] {
+                "s#^/sites/default/content/bodys(.*)#/system/bodies$1#",
+                "s#^/sites/default/pics/system(.*)#/system/workplace/resources$1#",
+                "s#^/sites/default/pics(.*)#/system/galleries/pics$1#",                
+                "s#^/sites/default/download(.*)#/system/galleries/download$1#",
+                "s#^/sites/default/externallinks(.*)#/system/galleries/externallinks$1#",
+                "s#^/sites/default/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
+                "s#^/sites/default/content(.*)#/system$1#"
+                }, 
+            false);   
+        
+        // set modified folder translator
+        OpenCms.getResourceManager().setTranslators(
+            folderTranslator, 
+            OpenCms.getResourceManager().getFileTranslator());
 
-        cms.getRequestContext().setSiteRoot("/");
-
-        // need to create the "galleries" folder manually
-        cms.createResource("/system/galleries", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-        cms.unlockResource("/system/galleries");
-        
-        cms.getRequestContext().setSiteRoot("/sites/default");
-        
-        // import the files
-        String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
-        OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport());                                    
-        
-        // clean up for the next test
-        cms.getRequestContext().setSiteRoot("/");        
-        cms.lockResource("/sites/default");
-        cms.lockResource("/system");       
-        
-        // using the option "C_DELETE_OPTION_DELETE_SIBLINGS" causes an error here!
-        cms.deleteResource("/sites/default/importtest", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
-        cms.deleteResource("/system/bodies", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
-        cms.deleteResource("/system/galleries/pics", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
-        
-        cms.unlockResource("/sites/default");
-        cms.unlockResource("/system");               
-        cms.publishProject();
+        try {
+            
+            CmsObject cms = getCmsObject();
+            
+            cms.getRequestContext().setSiteRoot("/");
+    
+            // need to create the "galleries" folder manually
+            cms.createResource("/system/galleries", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+            cms.unlockResource("/system/galleries");
+            
+            cms.getRequestContext().setSiteRoot("/sites/default");
+            
+            // import the files
+            String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
+            OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport());                                    
+            
+            // clean up for the next test
+            cms.getRequestContext().setSiteRoot("/");        
+            cms.lockResource("/sites/default");
+            cms.lockResource("/system");       
+            
+            // using the option "C_DELETE_OPTION_DELETE_SIBLINGS" caused an error here!
+            cms.deleteResource("/sites/default/importtest", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+            cms.deleteResource("/system/bodies", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+            cms.deleteResource("/system/galleries/pics", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+            
+            cms.unlockResource("/sites/default");
+            cms.unlockResource("/system");               
+            cms.publishProject();
+            
+        } finally {
+            
+            // reset the translation rules
+            OpenCms.getResourceManager().setTranslators(
+                oldFolderTranslator, 
+                OpenCms.getResourceManager().getFileTranslator()); 
+            
+        }
     }    
     
     /**
