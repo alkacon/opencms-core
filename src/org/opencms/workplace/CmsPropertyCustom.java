@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/03/29 10:39:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/31 14:06:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -364,9 +364,10 @@ public class CmsPropertyCustom extends CmsProperty {
         boolean isPopup = Boolean.valueOf(getParamIsPopup()).booleanValue();
         // set the action for the JSP switch 
         if (DIALOG_SHOW_DEFAULT.equals(getParamAction())) {
-            // redirect to the default OpenCms dialog
+            // save changed properties and redirect to the default OpenCms dialog
             setAction(ACTION_DEFAULT);
             try {
+                actionEdit(request);
                 sendCmsRedirect(CmsProperty.URI_PROPERTY_DIALOG + "?" + paramsAsRequest());
             } catch (Exception e) {
                 // ignore this exception

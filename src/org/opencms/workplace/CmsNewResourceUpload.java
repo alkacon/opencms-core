@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/03/19 14:15:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/31 14:06:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,13 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.io.File;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -63,27 +65,20 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourceUpload extends CmsNewResource {
     
-    
+    /** The value for the resource upload applet action */
+    public static final int ACTION_APPLET = 140;       
     /** The value for the resource name form action */
     public static final int ACTION_NEWFORM2 = 120;
+    /** The value for the resource upload applet action: error occured */
+    public static final int ACTION_SHOWERROR = 150;
     /** The value for the resource name form submission action */
     public static final int ACTION_SUBMITFORM2 = 130;  
-    
-    /** The name for the resource form submission action */
-    public static final String DIALOG_SUBMITFORM2 = "submitform2";
-    
-    /** Request parameter name for the upload file unzip flag */
-    public static final String PARAM_UNZIPFILE = "unzipfile";
-    /** Request parameter name for the upload file name */
-    public static final String PARAM_UPLOADFILE = "uploadfile";
-    /** Request parameter name for the new resource file name */
-    public static final String PARAM_NEWRESOURCENAME = "newresourcename";
     
     /** All allowed resource types for upload, used in form "suggested file type" */
     private static String[] ALLOWED_RESOURCETYPES = new String[] {
@@ -92,10 +87,28 @@ public class CmsNewResourceUpload extends CmsNewResource {
             CmsResourceTypeImage.C_RESOURCE_TYPE_NAME, 
             CmsResourceTypeJsp.C_RESOURCE_TYPE_NAME
     };
-   
-    private String m_paramUploadFile;
-    private String m_paramUnzipFile;
+    
+    /** The name for the resource form submission action */
+    public static final String DIALOG_SHOWERROR = "showerror";   
+    /** The name for the resource form submission action */
+    public static final String DIALOG_SUBMITFORM2 = "submitform2";  
+    
+    /** Request parameter name for the new resource file name */
+    public static final String PARAM_NEWRESOURCENAME = "newresourcename";
+    /** Request parameter name for the upload file unzip flag */
+    public static final String PARAM_UNZIPFILE = "unzipfile";
+    /** Request parameter name for the upload file name */
+    public static final String PARAM_UPLOADERROR = "uploaderror";
+    /** Request parameter name for the upload file name */
+    public static final String PARAM_UPLOADFILE = "uploadfile";
+    /** Request parameter name for the upload folder name */
+    public static final String PARAM_UPLOADFOLDER = "uploadfolder";
+    
     private String m_paramNewResourceName;
+    private String m_paramUnzipFile;
+    private String m_paramUploadError;
+    private String m_paramUploadFile;
+    private String m_paramUploadFolder;
     
     /**
      * Public constructor with JSP action element.<p>
@@ -116,30 +129,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public CmsNewResourceUpload(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
     }    
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_OK.equals(getParamAction())) {
-            setAction(ACTION_OK);                            
-        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
-            setAction(ACTION_SUBMITFORM);
-        } else if (DIALOG_SUBMITFORM2.equals(getParamAction())) {
-            setAction(ACTION_SUBMITFORM2);  
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);
-        } else {                        
-            setAction(ACTION_DEFAULT);
-            // build title for new resource dialog     
-            setParamTitle(key("title.upload"));
-        }   
-    }
     
     /**
      * Used to close the current JSP dialog.<p>
@@ -163,6 +152,38 @@ public class CmsNewResourceUpload extends CmsNewResource {
             } 
         }
         super.actionCloseDialog();
+    }
+    
+    /**
+     * Updates the file type and renames the file if desired
+     * 
+     * @throws JspException if inclusion of error dialog fails
+     */
+    public void actionUpdateFile() throws JspException {
+        try {
+            CmsResource res = getCms().readFileHeader(getParamResource());
+            I_CmsResourceType oldType = getCms().getResourceType(res.getType());
+            if (!oldType.getResourceTypeName().equals(getParamNewResourceType())) {
+                // change the type of the uploaded resource
+                int newType = getCms().getResourceTypeId(getParamNewResourceType());
+                getCms().chtype(getParamResource(), newType);
+            }
+            if (getParamNewResourceName() != null && !getParamResource().endsWith(getParamNewResourceName())) {
+                // rename the resource
+                getCms().renameResource(getParamResource(), getParamNewResourceName());
+                // determine new full resource name
+                String newResName = getParamResource().substring(0, getParamResource().lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
+                newResName += getParamNewResourceName();
+                setParamResource(newResName);
+            }
+        } catch (CmsException e) {
+            // error updating file, show error dialog
+            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+            setParamErrorstack(e.getStackTraceAsString());
+            setParamMessage(key("error.message.upload"));
+            setParamReasonSuggestion(key("error.reason.upload") + "<br>\n" + key("error.suggestion.upload") + "\n");
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        }
     }
     
     /**
@@ -202,18 +223,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 
                 if (unzipFile) {
                     // zip file upload
-                    String currentFolder = getSettings().getExplorerResource();
-                    if (currentFolder == null) {
-                        // set current folder to root folder
-                        try {
-                            currentFolder = getCms().readAbsolutePath(getCms().rootFolder());
-                        } catch (CmsException e) {
-                            currentFolder = I_CmsConstants.C_ROOT;
-                        }
-                    }           
-                    if (!currentFolder.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                        // add folder separator to currentFolder
-                        currentFolder += I_CmsConstants.C_FOLDER_SEPARATOR;
+                    String currentFolder = getParamUploadFolder();
+                    if (currentFolder == null || !currentFolder.startsWith("/")) {
+                        currentFolder = computeCurrentFolder();
                     }
                     // import the zip contents
                     new CmsImportFolder(content, currentFolder, getCms(), false);             
@@ -248,55 +260,20 @@ public class CmsNewResourceUpload extends CmsNewResource {
     }
     
     /**
-     * Returns the resource type id of the given file.<p>
-     * 
-     * @param fileName the name of the file (needed for JSP recognition)
-     * @param contentType the mime type String of the file
-     * @return the resource type id of the given file
+     * Includes the error dialog if the upload applet has an error.<p>
      */
-    protected int computeFileType(String fileName, String contentType) {
-        fileName = fileName.toLowerCase();
-        contentType = contentType.toLowerCase();
-        if (fileName.endsWith(".jsp")) {
-            return CmsResourceTypeJsp.C_RESOURCE_TYPE_ID;
-        } else if (contentType.indexOf("image") != -1) {
-            return CmsResourceTypeImage.C_RESOURCE_TYPE_ID;
-        } else if (contentType.indexOf("text") != -1) {
-            return CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
-        } else {
-            return CmsResourceTypeBinary.C_RESOURCE_TYPE_ID;
-        }
-    }
-    
-    /**
-     * Updates the file type and renames the file if desired
-     * 
-     * @throws JspException if inclusion of error dialog fails
-     */
-    public void actionUpdateFile() throws JspException {
+    private void actionUploadError() {
+        // error uploading file, show error dialog
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        setParamErrorstack(getParamUploadError());
+        setParamMessage(key("error.message.upload"));
+        setParamReasonSuggestion(key("error.reason.upload") + "<br>\n" + key("error.suggestion.upload") + "\n");
         try {
-            CmsResource res = getCms().readFileHeader(getParamResource());
-            I_CmsResourceType oldType = getCms().getResourceType(res.getType());
-            if (!oldType.getResourceTypeName().equals(getParamNewResourceType())) {
-                // change the type of the uploaded resource
-                int newType = getCms().getResourceTypeId(getParamNewResourceType());
-                getCms().chtype(getParamResource(), newType);
-            }
-            if (getParamNewResourceName() != null && !getParamResource().endsWith(getParamNewResourceName())) {
-                // rename the resource
-                getCms().renameResource(getParamResource(), getParamNewResourceName());
-                // determine new full resource name
-                String newResName = getParamResource().substring(0, getParamResource().lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
-                newResName += getParamNewResourceName();
-                setParamResource(newResName);
-            }
-        } catch (CmsException e) {
-            // error updating file, show error dialog
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(e.getStackTraceAsString());
-            setParamMessage(key("error.message.upload"));
-            setParamReasonSuggestion(key("error.reason.upload") + "<br>\n" + key("error.suggestion.upload") + "\n");
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        } catch (JspException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error including error dialog " + C_FILE_DIALOG_SCREEN_ERROR);
+            }
         }
     }
     
@@ -339,48 +316,160 @@ public class CmsNewResourceUpload extends CmsNewResource {
     }
     
     /**
-     * Returns the upload file name.<p>
+     * Returns the resource type id of the given file.<p>
      * 
-     * @return the upload file name
+     * @param fileName the name of the file (needed for JSP recognition)
+     * @param contentType the mime type String of the file
+     * @return the resource type id of the given file
      */
-    public String getParamUploadFile() {
-        return m_paramUploadFile;
-    }
-
-    /**
-     * Sets the upload file name.<p>
-     * 
-     * @param uploadFile the upload file name
-     */
-    public void setParamUploadFile(String uploadFile) {
-        m_paramUploadFile = uploadFile;
-    }
-
-    /**
-     * Returns true if the upload file should be unzipped, otherwise false.<p>
-     * 
-     * @return true if the upload file should be unzipped, otherwise false
-     */
-    public String getParamUnzipFile() {
-        return m_paramUnzipFile;
-    }
-
-    /**
-     * Sets if the upload file should be unzipped.<p>
-     * 
-     * @param unzipFile true if the upload file should be unzipped
-     */
-    public void setParamUnzipFile(String unzipFile) {
-        m_paramUnzipFile = unzipFile;
+    protected int computeFileType(String fileName, String contentType) {
+        fileName = fileName.toLowerCase();
+        contentType = contentType.toLowerCase();
+        if (fileName.endsWith(".jsp")) {
+            return CmsResourceTypeJsp.C_RESOURCE_TYPE_ID;
+        } else if (contentType.indexOf("image") != -1) {
+            return CmsResourceTypeImage.C_RESOURCE_TYPE_ID;
+        } else if (contentType.indexOf("text") != -1) {
+            return CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
+        } else {
+            return CmsResourceTypeBinary.C_RESOURCE_TYPE_ID;
+        }
     }
     
     /**
-     * Returns if the upload file should be unzipped.<p>
+     * Creates the HTML code of the file upload applet with all required parameters.<p>
      * 
-     * @return true if the upload file should be unzipped, otherwise false
+     * @return string containing the applet HTML code
+     * @throws CmsException if reading file extensions goes wrong
      */
-    public boolean unzipUpload() {
-        return Boolean.valueOf(getParamUnzipFile()).booleanValue();
+    public String createAppletCode() throws CmsException {
+        
+        StringBuffer applet = new StringBuffer(2048);
+        
+        // collect some required server data first
+        String scheme = getJsp().getRequest().getScheme();
+        String host = getJsp().getRequest().getServerName();
+        String path = OpenCms.getSystemInfo().getContextPath() + OpenCms.getSystemInfo().getServletPath();
+        int port = getJsp().getRequest().getServerPort();
+        String webapp = scheme + "://" + host + ":" + port + OpenCms.getSystemInfo().getContextPath();
+        
+        // get all file extensions
+        String fileExtensions = new String("");
+        Hashtable extensions = getCms().readFileExtensions();
+        Enumeration keys = extensions.keys();
+        while (keys.hasMoreElements()) {
+            String key = (String)keys.nextElement();
+            String value = (String)extensions.get(key);
+            fileExtensions += key + "=" + value + ",";           
+        }
+        fileExtensions=fileExtensions.substring(0, fileExtensions.length()-1);
+        
+        // get the file size upload limitation value (value is in kB)
+        int maxFileSize = OpenCms.getWorkplaceManager().getFileMaxUploadSize(); 
+        
+        // get the current folder
+        String currentFolder = computeCurrentFolder();
+        
+        // get the current session id
+        HttpSession session = getJsp().getRequest().getSession(false);
+        String sessionId = session.getId();
+        
+        
+        // define the required colors.
+        // currently this is hard coded here       
+        String colors="bgColor=#C0C0C0,outerBorderRightBottom=#333333,outerBorderLeftTop=#C0C0C0";
+        colors += ",innerBorderRightBottom=#777777,innerBorderLeftTop=#F0F0F0";  
+        colors += ",bgHeadline=#000066,colorHeadline=#FFFFFF";
+        colors += ",colorText=#000000,progessBar=#E10050";
+        
+        // create the upload applet html code
+        applet.append("<applet code=\"org.opencms.applet.upload.FileUploadApplet.class\" archive=\"");
+        applet.append(webapp);
+        applet.append("/skins/components/upload/applet/upload.jar\" width=\"500\" height=\"100\">\n");                
+        applet.append("<param name=\"opencms\" value=\"");
+        applet.append(scheme);
+        applet.append("://");
+        applet.append(host);
+        applet.append(":");
+        applet.append(port);
+        applet.append(getSkinUri());
+        applet.append("filetypes/\">\n");
+        applet.append("<param name=\"target\" value=\"");
+        applet.append(scheme);
+        applet.append("://");
+        applet.append(host);
+        applet.append(":");
+        applet.append(port);
+        applet.append(path);
+        applet.append("/system/workplace/jsp/dialogs/newresource_upload.html\">\n");
+        applet.append("<param name=\"redirect\" value=\"");
+        applet.append(scheme);
+        applet.append("://");
+        applet.append(host);
+        applet.append(":");
+        applet.append(port);
+        applet.append(path);
+        applet.append("/system/workplace/jsp/explorer_files.html\">\n");
+        applet.append("<param name=error value=\"");
+        applet.append(scheme);
+        applet.append("://");
+        applet.append(host);
+        applet.append(":");
+        applet.append(port);
+        applet.append(path);
+        applet.append("/system/workplace/action/explorer_files_new_upload.html\">\n");
+        applet.append("<param name=\"browserCookie\" value=\"JSESSIONID=");
+        applet.append(sessionId);
+        applet.append("\">\n");
+        applet.append("<param name=\"filelist\" value=\"");
+        applet.append(currentFolder);
+        applet.append("\">\n");
+        applet.append("<param name=\"colors\" value=\"");
+        applet.append(colors);
+        applet.append("\">\n");                
+        applet.append("<param name=\"fileExtensions\" value=\"");
+        applet.append(fileExtensions);
+        applet.append("\">\n\n");
+        applet.append("<param name=\"maxsize\" value=\"");
+        applet.append(maxFileSize);
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOutputSelect\" value=\"");
+        applet.append(key("uploadapplet.action.select"));
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOutputCount\"value=\"");
+        applet.append(key("uploadapplet.action.count"));
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOutputCreate\" value=\"");
+        applet.append(key("uploadapplet.action.create"));
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOutputUpload\" value=\"");
+        applet.append(key("uploadapplet.action.upload"));
+        applet.append("\">\n");
+        applet.append("<param name=\"messageOutputUpload\" value=\"");
+        applet.append(key("uploadapplet.message.upload"));
+        applet.append("\">\n");
+        applet.append("<param name=\"messageOutputErrorZip\" value=\"");
+        applet.append(key("uploadapplet.message.error.zip"));
+        applet.append("\">\n");
+        applet.append("<param name=\"messageOutputErrorSize\" value=\"");
+        applet.append(key("uploadapplet.message.error.size"));
+        applet.append("\">\n");
+        applet.append("<param name=\"messageNoPreview\" value=\"");
+        applet.append(key("uploadapplet.message.nopreview"));
+        applet.append("\">\n");
+        applet.append("<param name=\"messageOutputAdding\" value=\"");
+        applet.append(key("uploadapplet.message.adding"));
+        applet.append(" \">\n");
+        applet.append("<param name=\"errorTitle\" value=\"");
+        applet.append(key("uploadapplet.error.title"));
+        applet.append(" \">\n");
+        applet.append("<param name=\"errorLine1\" value=\"");
+        applet.append(key("uploadapplet.error.line1"));
+        applet.append(" \">\n");
+        applet.append("</applet>\n");
+
+        return applet.toString();
+        
     }
 
     /**
@@ -393,12 +482,124 @@ public class CmsNewResourceUpload extends CmsNewResource {
     }
 
     /**
+     * Returns true if the upload file should be unzipped, otherwise false.<p>
+     * 
+     * @return true if the upload file should be unzipped, otherwise false
+     */
+    public String getParamUnzipFile() {
+        return m_paramUnzipFile;
+    }
+
+    /**
+     * Returns the upload error message for the error dialog.<p>
+     * 
+     * @return the upload error message for the error dialog
+     */
+    public String getParamUploadError() {
+        return m_paramUploadError;
+    }
+    
+    /**
+     * Returns the upload file name.<p>
+     * 
+     * @return the upload file name
+     */
+    public String getParamUploadFile() {
+        return m_paramUploadFile;
+    }
+
+    /**
+     * Returns the upload folder name.<p>
+     * 
+     * @return the upload folder name
+     */
+    public String getParamUploadFolder() {
+        return m_paramUploadFolder;
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_OK.equals(getParamAction())) {
+            setAction(ACTION_OK);                            
+        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
+            setAction(ACTION_SUBMITFORM);
+        } else if (DIALOG_SUBMITFORM2.equals(getParamAction())) {
+            setAction(ACTION_SUBMITFORM2);  
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL);
+        } else if (DIALOG_SHOWERROR.equals(getParamAction())) {
+            setAction(ACTION_SHOWERROR);
+            actionUploadError();
+        } else {
+            if (getSettings().getUserSettings().useUploadApplet()) {
+                setAction(ACTION_APPLET);
+            } else {
+                setAction(ACTION_DEFAULT);
+            }
+            // build title for new resource dialog     
+            setParamTitle(key("title.upload"));
+        }   
+    }
+
+    /**
      * Sets the new resource name of the uploaded file.<p>
      * 
      * @param newResourceName the new resource name of the uploaded file
      */
     public void setParamNewResourceName(String newResourceName) {
         m_paramNewResourceName = newResourceName;
+    }
+
+    /**
+     * Sets if the upload file should be unzipped.<p>
+     * 
+     * @param unzipFile true if the upload file should be unzipped
+     */
+    public void setParamUnzipFile(String unzipFile) {
+        m_paramUnzipFile = unzipFile;
+    }
+
+    /**
+     * Sets the upload error message for the error dialog.<p>
+     * 
+     * @param uploadError the upload error message for the error dialog
+     */
+    public void setParamUploadError(String uploadError) {
+        m_paramUploadError = uploadError;
+    }
+
+    /**
+     * Sets the upload file name.<p>
+     * 
+     * @param uploadFile the upload file name
+     */
+    public void setParamUploadFile(String uploadFile) {
+        m_paramUploadFile = uploadFile;
+    }
+
+    /**
+     * Sets the upload folder name.<p>
+     * 
+     * @param uploadFolder the upload folder name
+     */
+    public void setParamUploadFolder(String uploadFolder) {
+        m_paramUploadFolder = uploadFolder;
+    }
+    
+    /**
+     * Returns if the upload file should be unzipped.<p>
+     * 
+     * @return true if the upload file should be unzipped, otherwise false
+     */
+    public boolean unzipUpload() {
+        return Boolean.valueOf(getParamUnzipFile()).booleanValue();
     }
 
 }

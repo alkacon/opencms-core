@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2004/03/19 16:36:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/03/31 14:06:50 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.3
  */
@@ -260,6 +260,17 @@ public class CmsNewResource extends CmsDialog {
      * @return the full path of the new resource
      */
     protected String computeFullResourceName() {
+       
+        // return the full resource name
+        return computeCurrentFolder() + getParamResource();
+    }
+    
+    /**
+     * Returns the full path of the current workplace folder.<p>
+     * 
+     * @return the full path of the current workplace folder
+     */
+    protected String computeCurrentFolder() {
         String currentFolder = getSettings().getExplorerResource();
         if (currentFolder == null) {
             // set current folder to root folder
@@ -273,8 +284,7 @@ public class CmsNewResource extends CmsDialog {
             // add folder separator to currentFolder
             currentFolder += I_CmsConstants.C_FOLDER_SEPARATOR;
         }
-        // return the full resource name
-        return currentFolder + getParamResource();
+        return currentFolder;
     }
     
     /**

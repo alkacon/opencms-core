@@ -77,7 +77,7 @@ function checkName() {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onSubmit="return submitAction('<%= wp.DIALOG_OK %>', 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onSubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
