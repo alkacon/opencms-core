@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
- * Date   : $Date: 2000/03/22 14:20:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/03/22 14:20:40 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/04 10:28:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsLogChannels {
@@ -83,16 +83,18 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsC
 		CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)
 													getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
-		A_CmsProject project = cms.readProject((String)parameters.get("projectname"));
+		int projectId =  Integer.parseInt((String)parameters.get("projectid"));
+		
+		A_CmsProject project = cms.readProject(projectId);
 		
 		if(parameters.get("ok") != null) {
 			// delete the project
 			try {
 				// change to the online-project, if needed.
 				if(project.equals(cms.getRequestContext().currentProject())) {
-					cms.getRequestContext().setCurrentProject(cms.onlineProject().getName());
+					cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
 				}
-				cms.deleteProject(project.getName());
+				cms.deleteProject(project.getId());
 				templateSelector = "done";
 			} catch (CmsException exc) {
 				// display error-message

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsRequestContext.java,v $
- * Date   : $Date: 2000/03/27 12:42:00 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/03/27 12:42:00 $ 
+ * @version $Revision: 1.13 $ $Date: 2000/04/04 10:28:47 $ 
  * 
  */
 public abstract class A_CmsRequestContext
@@ -54,11 +54,11 @@ public abstract class A_CmsRequestContext
 	 * @param resp the CmsResponse.
 	 * @param user The current user for this request.
 	 * @param currentGroup The current group for this request.
-	 * @param currentProject The current project for this request.
+	 * @param currentProjectId The current projectId for this request.
 	 */
 	abstract void init(I_CmsResourceBroker rb, I_CmsRequest req, 
 					   I_CmsResponse resp, String user, String currentGroup, 
-					   String currentProject) 
+					   int currentProjectId) 
 		throws CmsException;
 	
 	/**
@@ -139,10 +139,10 @@ public abstract class A_CmsRequestContext
 	/**
 	 * Sets the current project for the user.
 	 * 
-	 * @param projectname The name of the project to be set as current.
+	 * @param projectId The id of the project to be set as current.
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public A_CmsProject setCurrentProject(String projectname)
+	abstract public A_CmsProject setCurrentProject(int projectId)
 		throws CmsException;
 
 	/**

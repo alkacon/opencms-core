@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/04/03 10:48:29 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.59 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.58 $ $Date: 2000/04/03 10:48:29 $ 
+ * @version $Revision: 1.59 $ $Date: 2000/04/04 10:28:47 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -68,10 +68,10 @@ public abstract class A_CmsObject {
 	 * @param resp the CmsResponse.
 	 * @param user The current user for this request.
 	 * @param currentGroup The current group for this request.
-	 * @param currentProject The current project for this request.
+	 * @param currentProjectId The current projectId for this request.
 	 */
 	abstract public void init(I_CmsRequest req, I_CmsResponse resp, 
-							  String user, String currentGroup, String currentProject )
+							  String user, String currentGroup, int currentProjectId )
 		throws CmsException;
 	
 	/**
@@ -164,21 +164,21 @@ public abstract class A_CmsObject {
 	/**
 	 * Tests if the user can access the project.
 	 * 
-	 * @param projectname the name of the project.
+	 * @param id the id of the project.
 	 * 
 	 * @return true, if the user has access, else returns false.
 	 */
-	abstract public boolean accessProject(String projectname) 
+	abstract public boolean accessProject(int id) 
 		throws CmsException;
 
 	/**
 	 * Reads a project from the Cms.
 	 * 
-	 * @param name The name of the project to read.
+	 * @param id The id of the project to read.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public A_CmsProject readProject(String name)
+	abstract public A_CmsProject readProject(int id)
 		throws CmsException;
 	
      /**
@@ -205,15 +205,31 @@ public abstract class A_CmsObject {
 												String groupname, String managergroup)
 		 throws CmsException;
 	
-	/**
+
+	 /**
+	 * Creates a project.
+	 * 
+	 * @param id The id of the new project, it must be unique.
+	 * @param name The name of the project to read.
+	 * @param description The description for the new project.
+	 * @param groupname the name of the group to be set.
+	 * @param managergroupname the name of the managergroup to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 abstract public A_CmsProject createProject(int id, String name, String description, 
+												String groupname, String managergroup)
+		 throws CmsException;
+
+	 /**
 	 * Publishes a project.
 	 * 
-	 * @param name The name of the project to be published.
+	 * @param id The id of the project to be published.
 	 * @return A Vector of resources, that were changed.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public Vector publishProject(String name)
+	abstract public Vector publishProject(int id)
 		throws CmsException;
 	
 	/**
@@ -223,7 +239,7 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public void deleteProject(String name)
+	abstract public void deleteProject(int id)
 		throws CmsException;
 	
 	/**
@@ -1477,56 +1493,56 @@ public abstract class A_CmsObject {
 	 /**
 	  * Reads all tasks for a user in a project.
 	  * 
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param role The user who has to process the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 abstract public Vector readTasksForUser(String projectName, String userName, int tasktype, 
+	 abstract public Vector readTasksForUser(int projectId, String userName, int tasktype, 
 											 String orderBy, String sort) 
 		 throws CmsException;
 
 	 /**
 	  * Reads all tasks for a project.
 	  * 
-	  * @param project The Project in which the tasks are defined. Can be null for all tasks
+	  * @param projectId The id of the Project in which the tasks are defined. Can be null for all tasks
 	  * @tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
 	  * @param orderBy Chooses, how to order the tasks. 
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 abstract public Vector readTasksForProject(String projectName, int tasktype, 
+	 abstract public Vector readTasksForProject(int projectId, int tasktype, 
 												String orderBy, String sort)
 		 throws CmsException;
 	 
 	 /**
 	  * Reads all tasks for a role in a project.
 	  * 
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param user The user who has to process the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 abstract public Vector readTasksForRole(String projectName, String roleName, int tasktype, 
+	 abstract public Vector readTasksForRole(int projectId, String roleName, int tasktype, 
 											 String orderBy, String sort) 
 		 throws CmsException;
 	 
 	 /**
 	  * Reads all given tasks from a user for a project.
 	  * 
-	  * @param project The Project in which the tasks are defined.
+	  * @param project The id of the Project in which the tasks are defined.
 	  * @param owner Owner of the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 abstract public Vector readGivenTasks(String projectName, String ownerName, int taskType, 
+	 abstract public Vector readGivenTasks(int projectId, String ownerName, int taskType, 
 										   String orderBy, String sort) 
 		 throws CmsException;
 
@@ -1621,11 +1637,11 @@ public abstract class A_CmsObject {
 	 /**
 	  * Reads log entries for a project.
 	  * 
-	  * @param project The projec for tasklog to read.
+	  * @param projectId The id of the projec for tasklog to read.
 	  * @return A Vector of new TaskLog objects 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 abstract public Vector readProjectLogs(String projectName)
+	 abstract public Vector readProjectLogs(int projectId)
 		 throws CmsException;
 
  	 /**

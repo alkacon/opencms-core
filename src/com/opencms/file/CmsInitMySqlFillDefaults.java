@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySqlFillDefaults.java,v $
- * Date   : $Date: 2000/04/03 10:48:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/04/03 10:48:29 $
+ * @version $Revision: 1.19 $ $Date: 2000/04/04 10:28:47 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -89,7 +89,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 											  new java.sql.Timestamp(new Date().getTime()), 
 											  C_TASK_PRIORITY_NORMAL);
 
-		A_CmsProject project = projectRb.createProject(C_PROJECT_ONLINE, "the online-project", task,
+		A_CmsProject project = projectRb.createProject(C_PROJECT_ONLINE_ID, C_PROJECT_ONLINE, "the online-project", task,
 													   userRb.readUser(C_USER_ADMIN), 
 													   userRb.readGroup(C_GROUP_GUEST), 
 													   userRb.readGroup(C_GROUP_PROJECTLEADER),

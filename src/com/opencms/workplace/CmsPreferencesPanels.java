@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/03/20 13:21:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/03/20 13:21:33 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/04 10:28:48 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -611,7 +611,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             startSettings=new Hashtable();
                  
             startSettings.put(C_START_LANGUAGE,C_DEFAULT_LANGUAGE);
-            startSettings.put(C_START_PROJECT,reqCont.currentProject().getName()); 
+            startSettings.put(C_START_PROJECT,new Integer(reqCont.currentProject().getId())); 
             String currentView = (String)session.getValue(C_PARA_VIEW);
             if (currentView == null) {
                 currentView="explorer.html";
@@ -688,10 +688,10 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
            Hashtable startSettings=new Hashtable();
        
            startSettings.put(C_START_LANGUAGE,(String)parameters.get("LANGUAGE"));
-           startSettings.put(C_START_PROJECT,(String)parameters.get("project")); 
+           startSettings.put(C_START_PROJECT, new Integer(Integer.parseInt((String)parameters.get("project")))); 
            startSettings.put(C_START_VIEW,(String)parameters.get("view"));
            startSettings.put(C_START_DEFAULTGROUP,(String)parameters.get("dgroup"));
-           cms.getRequestContext().setCurrentProject((String)parameters.get("project"));
+           cms.getRequestContext().setCurrentProject( Integer.parseInt( (String)parameters.get("project") ) );
            // get all access flags from the request
            String ur=(String)parameters.get("ur");
            String uw=(String)parameters.get("uw");
@@ -1136,7 +1136,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         A_CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
 
-        String currentProject=null;
+        Integer currentProject=null;
         Vector allProjects = cms.getAllAccessibleProjects();
        
         Hashtable startSettings=null;
@@ -1148,12 +1148,12 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         }
         
         if (startSettings != null) {
-          currentProject = (String)startSettings.get(C_START_PROJECT);
+          currentProject = (Integer)startSettings.get(C_START_PROJECT);
         }
         
         // no project available in the user info, check out the current session
         if (currentProject == null) {
-             currentProject = reqCont.currentProject().getName();
+             currentProject = new Integer( reqCont.currentProject().getId() );
         }  
               
         // Now loop through all projects and fill the result vectors
@@ -1162,9 +1162,10 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         for(int i=0; i<numProjects; i++) {
             A_CmsProject loopProject = (A_CmsProject)allProjects.elementAt(i);
             String loopProjectName = loopProject.getName();
-            values.addElement(loopProjectName);
+            String loopProjectNameId = loopProject.getId() + "";
+            values.addElement(loopProjectNameId);
             names.addElement(loopProjectName);
-            if(loopProjectName.equals(currentProject)) {
+            if(loopProjectNameId.equals(currentProject + "")) {
                 // Fine. The project of this loop is the user's current project. Save it!
                 currentProjectNum = i;
             }

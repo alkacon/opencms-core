@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/03/22 10:39:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/03/22 10:39:21 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/04 10:28:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -99,7 +99,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         // Check if the user requested a project change
         if(newProject != null && !("".equals(newProject))) {
             if(!(newProject.equals(reqCont.currentProject().getName()))) {
-                reqCont.setCurrentProject(newProject);
+                reqCont.setCurrentProject(Integer.parseInt(newProject));
             }
         }                            
         
@@ -210,7 +210,8 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         for(int i=0; i<numProjects; i++) {
             A_CmsProject loopProject = (A_CmsProject)allProjects.elementAt(i);
             String loopProjectName = loopProject.getName();
-            values.addElement(loopProjectName);
+			String loopProjectId = loopProject.getId() + "";
+            values.addElement(loopProjectId);
             names.addElement(loopProjectName);
             if(loopProjectName.equals(currentProject)) {
                 // Fine. The project of this loop is the user's current project. Save it!

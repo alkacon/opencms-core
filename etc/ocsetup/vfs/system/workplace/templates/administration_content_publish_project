@@ -28,7 +28,7 @@ function show_help()
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
 <form id=UEBERNEHMEN name=UEBERNEHMEN>
-<input type="hidden" name="projectname" value="]]><PROCESS>projectname</PROCESS>"><![CDATA[</input>
+<input type="hidden" name="projectid" value="]]><PROCESS>projectid</PROCESS>"><![CDATA[</input>
 <table cellspacing=0 cellpadding=0 border=2 width=300>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>

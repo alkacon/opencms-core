@@ -26,7 +26,7 @@ function show_help()
 <tr><td align=middle valign=center>
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id=PDELETE name=PDELETE action="administration_content_delete_project.html?projectname=]]><PROCESS>name_escaped</PROCESS><![CDATA[" method="post">
+<form id=PDELETE name=PDELETE action="administration_content_delete_project.html?projectid=]]><PROCESS>id</PROCESS><![CDATA[" method="post">
 <table cellspacing=0 cellpadding=0 border=2 width=300>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/04 10:28:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsLogChannels {
@@ -83,14 +83,18 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
 		CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)
 													getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
-		xmlTemplateDocument.setXmlData("projectname", 
-									   (String)parameters.get("projectname"));
+		int projectId = Integer.parseInt((String)parameters.get("projectid"));
+		
+		A_CmsProject project = cms.readProject(projectId);
+		
+		xmlTemplateDocument.setXmlData("projectid", projectId + "");
+		xmlTemplateDocument.setXmlData("projectname", project.getName());
 		
 		if(parameters.get("ok") != null) {
 			// publish the project
 			try {
-				cms.getRequestContext().setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE);
-				cms.publishProject((String)parameters.get("projectname"));
+				cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
+				cms.publishProject(projectId);
 				// publish process was successfull
 				// redirect to the project overview...
 				templateSelector = "done";

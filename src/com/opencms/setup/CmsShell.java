@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/04/03 10:48:30 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2000/04/03 10:48:30 $
+ * @version $Revision: 1.36 $ $Date: 2000/04/04 10:28:48 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -89,7 +89,7 @@ public class CmsShell implements I_CmsConstants {
 		throws Exception {
 		m_cms = new CmsObject();
 		m_cms.init(((A_CmsInit) Class.forName(args[0]).newInstance() ).init(args[1], args[2]));
-		m_cms.init(null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE);
+		m_cms.init(null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
 	}	
 	
 	/**
@@ -708,13 +708,31 @@ public class CmsShell implements I_CmsConstants {
 	}
 
 	/**
+	 * Creates a project.
+	 * 
+	 * @param id The id of the new project, it must be unique.
+	 * @param name The name of the project to read.
+	 * @param description The description for the new project.
+	 * @param groupname the name of the group to be set.
+	 */
+	public void createProject(String id, String name, String description, 
+							  String groupname, String managergroupname) {
+		try {
+			m_cms.createProject(Integer.parseInt(id), name, description, groupname, managergroupname);
+		} catch( Exception exc ) {
+			printException(exc);
+		}		
+	}
+	
+	/**
 	 * Reads a project from the Cms.
 	 * 
-	 * @param name The name of the project to read.
+	 * @param name The id of the project to read.
 	 */
-	public void readProject(String name) {
+	public void readProject(String id) {
 		try {
-			System.out.println( m_cms.readProject(name) );
+			int projectId = Integer.parseInt(id);
+			System.out.println( m_cms.readProject(projectId) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
@@ -734,11 +752,12 @@ public class CmsShell implements I_CmsConstants {
 	/**
 	 * Tests if the user can access the project.
 	 * 
-	 * @param projectname the name of the project.
+	 * @param id the id of the project.
 	 */
-	public void accessProject(String projectname) {
+	public void accessProject(String id) {
 		try {
-			System.out.println( m_cms.accessProject(projectname) );
+			int projectId = Integer.parseInt(id);
+			System.out.println( m_cms.accessProject(projectId) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
@@ -1078,11 +1097,12 @@ public class CmsShell implements I_CmsConstants {
 	/**
 	 * Sets the current project for the user.
 	 * 
-	 * @param projectname The name of the project to be set as current.
+	 * @param id The id of the project to be set as current.
 	 */
-	public void setCurrentProject(String projectname) {
+	public void setCurrentProject(String id) {
 		try {
-			System.out.println( m_cms.getRequestContext().setCurrentProject(projectname) );
+			int projectId = Integer.parseInt(id);
+			System.out.println( m_cms.getRequestContext().setCurrentProject(projectId) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
@@ -1214,11 +1234,12 @@ public class CmsShell implements I_CmsConstants {
 	/**
 	 * Publishes a project.
 	 * 
-	 * @param name The name of the project to be published.
+	 * @param id The id of the project to be published.
 	 */
-	public void publishProject(String name) {
+	public void publishProject(String id) {
 		try {
-			Vector resources = m_cms.publishProject(name);
+			int projectId = Integer.parseInt(id);
+			Vector resources = m_cms.publishProject(projectId);
 			for( int i = 0; i < resources.size(); i++ ) {
 				System.out.println( (String)resources.elementAt(i) );
 			}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProjectCache.java,v $
- * Date   : $Date: 2000/02/19 17:05:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/19 17:05:41 $
+ * @version $Revision: 1.4 $ $Date: 2000/04/04 10:28:47 $
  */
 class CmsRbProjectCache extends CmsRbProject {
 	
@@ -63,17 +63,17 @@ class CmsRbProjectCache extends CmsRbProject {
 	/**
 	 * Reads a project from the Cms.
 	 * 
-	 * @param name The name of the project to read.
+	 * @param id The id of the project to read.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(String name)
+	 public A_CmsProject readProject(int id)
 		 throws CmsException {
          A_CmsProject project=null;
-         project=(A_CmsProject)m_projectcache.get(name);
+         project=(A_CmsProject)m_projectcache.get(new Integer(id));
          if (project== null) {
-             project=m_accessProject.readProject(name);
-             m_projectcache.put(name,project);
+             project=m_accessProject.readProject(id);
+             m_projectcache.put(new Integer(id),project);
          }
 		 return project;
 	 }
@@ -87,7 +87,7 @@ class CmsRbProjectCache extends CmsRbProject {
 	 */
 	 public A_CmsProject writeProject(A_CmsProject project)
 		 throws CmsException {
-         m_projectcache.put(project.getName(),project);
+         m_projectcache.put(new Integer(project.getId()),project);
 		 return( m_accessProject.writeProject(project) );
 	 }
     

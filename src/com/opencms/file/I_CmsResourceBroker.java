@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/03 10:48:30 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2000/04/03 10:48:30 $
+ * @version $Revision: 1.54 $ $Date: 2000/04/04 10:28:48 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -73,12 +73,12 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param projectname the name of the project.
+	 * @param projectId the id of the project.
 	 * 
 	 * @return true, if the user has access, else returns false.
 	 */
 	public boolean accessProject(A_CmsUser currentUser, A_CmsProject currentProject,
-								 String projectname) 
+								 int projectId) 
 		throws CmsException;
 
 	/**
@@ -89,12 +89,12 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param name The name of the project to read.
+	 * @param id The id of the project to read.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
-									 String name)
+									 int id)
 		 throws CmsException ;
      
      /**
@@ -133,6 +133,27 @@ interface I_CmsResourceBroker {
 									   String managergroupname)
 		 throws CmsException;
 	
+	/**
+	 * Creates a project.
+	 * 
+	 * <B>Security</B>
+	 * Only the users which are in the admin or projectleader-group are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the new project, it must be unique.
+	 * @param name The name of the project to read.
+	 * @param description The description for the new project.
+	 * @param group the group to be set.
+	 * @param managergroup the managergroup to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject createProject(A_CmsUser currentUser, A_CmsProject currentProject, 
+									   int id, String name, String description, String group,
+									   String managergroupname)
+		 throws CmsException;
+	 
 	/**
 	 * Returns all projects, which are owned by the user or which are accessible
 	 * for the group of the user.
@@ -173,13 +194,13 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param name The name of the project to be published.
+	 * @param id The id of the project to be published.
 	 * @return a vector of changed resources.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public Vector publishProject(A_CmsUser currentUser, A_CmsProject currentProject,
-								 String name)
+								 int id)
 		throws CmsException;
 
 	/**
@@ -190,12 +211,12 @@ interface I_CmsResourceBroker {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param name The name of the project to be published.
+	 * @param id The id of the project to be published.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public void deleteProject(A_CmsUser currentUser, A_CmsProject currentProject,
-							  String name)
+							  int id)
 		throws CmsException;
 	
 	// Properties, Propertydefinition
@@ -2059,7 +2080,7 @@ interface I_CmsResourceBroker {
 	  * 
 	  * @param currentUser The user who requested this method.
 	  * @param currentProject The current project of the user.
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param role The user who has to process the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
@@ -2067,7 +2088,7 @@ interface I_CmsResourceBroker {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public Vector readTasksForUser(A_CmsUser currentUser, A_CmsProject currentProject,
-									String projectName, String userName, int tasktype, 
+									int projectId, String userName, int tasktype, 
 									String orderBy, String sort) 
 		 throws CmsException;
 
@@ -2079,7 +2100,7 @@ interface I_CmsResourceBroker {
 	  * 
 	  * @param currentUser The user who requested this method.
 	  * @param currentProject The current project of the user.
-	  * @param project The Project in which the tasks are defined. Can be null for all tasks
+	  * @param projectId The id of the Project in which the tasks are defined. Can be null for all tasks
 	  * @tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
 	  * @param orderBy Chooses, how to order the tasks. 
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
@@ -2087,7 +2108,7 @@ interface I_CmsResourceBroker {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public Vector readTasksForProject(A_CmsUser currentUser, A_CmsProject currentProject,
-									   String projectName, int tasktype, 
+									   int projectId, int tasktype, 
 									   String orderBy, String sort)
 		 throws CmsException;
 	 
@@ -2099,7 +2120,7 @@ interface I_CmsResourceBroker {
 	  * 
 	  * @param currentUser The user who requested this method.
 	  * @param currentProject The current project of the user.
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param user The user who has to process the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
@@ -2107,7 +2128,7 @@ interface I_CmsResourceBroker {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public Vector readTasksForRole(A_CmsUser currentUser, A_CmsProject currentProject,
-									String projectName, String roleName, int tasktype, 
+									int projectId, String roleName, int tasktype, 
 									String orderBy, String sort) 
 		 throws CmsException;
 	 
@@ -2119,7 +2140,7 @@ interface I_CmsResourceBroker {
 	  * 
 	  * @param currentUser The user who requested this method.
 	  * @param currentProject The current project of the user.
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param owner Owner of the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
@@ -2127,7 +2148,7 @@ interface I_CmsResourceBroker {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public Vector readGivenTasks(A_CmsUser currentUser, A_CmsProject currentProject,
-								  String projectName, String ownerName, int taskType, 
+								  int projectId, String ownerName, int taskType, 
 								  String orderBy, String sort) 
 		 throws CmsException;
 	 
@@ -2249,12 +2270,12 @@ interface I_CmsResourceBroker {
 	 /**
 	  * Reads log entries for a project.
 	  * 
-	  * @param project The projec for tasklog to read.
+	  * @param projectId The id of the projec for tasklog to read.
 	  * @return A Vector of new TaskLog objects 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public Vector readProjectLogs(A_CmsUser currentUser, A_CmsProject currentProject,
-								   String projectName)
+								   int projectId)
 		 throws CmsException;
 
  	 /**

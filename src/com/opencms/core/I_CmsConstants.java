@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/04/04 09:57:11 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.68 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.67 $ $Date: 2000/04/04 09:57:11 $
+ * @version $Revision: 1.68 $ $Date: 2000/04/04 10:28:47 $
  */
 public interface I_CmsConstants
 {
@@ -261,6 +261,12 @@ public interface I_CmsConstants
 	 */
 	 static final String C_PROJECT_ONLINE	= "Online";
 	
+	/**
+	 * This constant defines the onlineproject. This is the project which
+	 * is used to show the resources for guestusers
+	 */
+	 static final int C_PROJECT_ONLINE_ID	= 1;
+	 
 	/**
 	 * This constant defines a unlocked project. 
 	 * Resources may be changed in this project.

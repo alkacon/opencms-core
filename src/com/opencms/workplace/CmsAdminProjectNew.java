@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/03/31 08:28:31 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/03/31 08:28:31 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/04 10:28:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -114,7 +114,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             }
         }
         
-        reqCont.setCurrentProject(cms.onlineProject().getName());
+        reqCont.setCurrentProject(cms.onlineProject().getId());
         
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 
@@ -143,9 +143,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			try {
                 //test if the given folder is existing
                 cms.readFolder(newFolder);
-         		cms.createProject(newName, newDescription, newGroup, newManagerGroup);
+         		A_CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
 				// change the current project
-            	reqCont.setCurrentProject(newName);
+            	reqCont.setCurrentProject(project.getId());
 				// copy the resource the the project
               	cms.copyResourceToProject(newFolder);
 				// try to copy the content resources to the project

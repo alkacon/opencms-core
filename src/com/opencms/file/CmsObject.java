@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/03 10:48:29 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.60 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.59 $ $Date: 2000/04/03 10:48:29 $ 
+ * @version $Revision: 1.60 $ $Date: 2000/04/04 10:28:47 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -81,13 +81,13 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @param resp the CmsResponse.
 	 * @param user The current user for this request.
 	 * @param currentGroup The current group for this request.
-	 * @param currentProject The current project for this request.
+	 * @param currentProjectId The current projectId for this request.
 	 */
 	public void init(I_CmsRequest req, I_CmsResponse resp, 
-					 String user, String currentGroup, String currentProject ) 
+					 String user, String currentGroup, int currentProjectId ) 
 		throws CmsException {
 		m_context = new CmsRequestContext();
-		m_context.init(c_rb, req, resp, user, currentGroup, currentProject);
+		m_context.init(c_rb, req, resp, user, currentGroup, currentProjectId);
 	}
 	
 	/**
@@ -202,27 +202,27 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	/**
 	 * Tests if the user can access the project.
 	 * 
-	 * @param projectname the name of the project.
+	 * @param projectId the id of the project.
 	 * 
 	 * @return true, if the user has access, else returns false.
 	 */
-	public boolean accessProject(String projectname) 
+	public boolean accessProject(int projectId) 
 		throws CmsException {
 		return( c_rb.accessProject(m_context.currentUser(), 
-								   m_context.currentProject(), projectname) );
+								   m_context.currentProject(), projectId) );
 	}
 
 	/**
 	 * Reads a project from the Cms.
 	 * 
-	 * @param name The name of the project to read.
+	 * @param id The id of the project to read.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject readProject(String name)
+	public A_CmsProject readProject(int id)
 		throws CmsException { 
 		return( c_rb.readProject(m_context.currentUser(), 
-								 m_context.currentProject(), name) );
+								 m_context.currentProject(), id) );
 	}
     
      /**
@@ -237,10 +237,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		return( c_rb.readProject(m_context.currentUser(), 
 								 m_context.currentProject(), res) );
 	}
-	
-    
-    
-	
+		
 	/**
 	 * Creates a project.
 	 * 
@@ -260,29 +257,48 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 }
 	
 	/**
+	 * Creates a project.
+	 * 
+	 * @param id The id of the new project, it must be unique.
+	 * @param name The name of the project to read.
+	 * @param description The description for the new project.
+	 * @param groupname the name of the group to be set.
+	 * @param managergroupname the name of the managergroup to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject createProject(int id, String name, String description, 
+									   String groupname, String managergroupname)
+		 throws CmsException {
+		 return( c_rb.createProject(m_context.currentUser(), 
+									m_context.currentProject(), id, name, description, 
+									groupname, managergroupname) );
+	 }
+	 
+	/**
 	 * Publishes a project.
 	 * 
-	 * @param name The name of the project to be published.
+	 * @param id The id of the project to be published.
 	 * @return A Vector of resources, that were changed.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public Vector publishProject(String name)
+	public Vector publishProject(int id)
 		throws CmsException { 
 		 return( c_rb.publishProject(m_context.currentUser(), 
-									 m_context.currentProject(), name) );
+									 m_context.currentProject(), id) );
 	}
 	
 	/**
 	 * Deletes a project.
 	 * 
-	 * @param name The name of the project to be published.
+	 * @param id The id of the project to be published.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deleteProject(String name)
+	public void deleteProject(int id)
 		throws CmsException {
-		c_rb.deleteProject(m_context.currentUser(), m_context.currentProject(), name);
+		c_rb.deleteProject(m_context.currentUser(), m_context.currentProject(), id);
 	}
 	
 	/**
@@ -1216,7 +1232,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 										   username, password);
 		// init the new user
 		init(m_context.getRequest(), m_context.getResponse(), newUser.getName(), 
-			 newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE);
+			 newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID);
 		// return the user-name
 		return(newUser.getName());
 	}
@@ -1856,70 +1872,70 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 /**
 	  * Reads all tasks for a user in a project.
 	  * 
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param role The user who has to process the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasksForUser(String projectName, String userName, int tasktype, 
+	 public Vector readTasksForUser(int projectId, String userName, int tasktype, 
 									String orderBy, String sort) 
 		 throws CmsException {
 		 return( c_rb.readTasksForUser(m_context.currentUser(), m_context.currentProject(), 
-									   projectName, userName, tasktype, orderBy, sort) );
+									   projectId, userName, tasktype, orderBy, sort) );
 	 }
 
 	 /**
 	  * Reads all tasks for a project.
 	  * 
-	  * @param project The Project in which the tasks are defined. Can be null for all tasks
+	  * @param projectId The id of the Project in which the tasks are defined. Can be null for all tasks
 	  * @tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
 	  * @param orderBy Chooses, how to order the tasks. 
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasksForProject(String projectName, int tasktype, 
+	 public Vector readTasksForProject(int projectId, int tasktype, 
 									   String orderBy, String sort) 
 		 throws CmsException {
 		 return(c_rb.readTasksForProject(m_context.currentUser(), 
-										 m_context.currentProject(), projectName, 
+										 m_context.currentProject(), projectId, 
 										 tasktype, orderBy, sort) );
 	 }
 	 
 	 /**
 	  * Reads all tasks for a role in a project.
 	  * 
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param user The user who has to process the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readTasksForRole(String projectName, String roleName, int tasktype, 
+	 public Vector readTasksForRole(int projectId, String roleName, int tasktype, 
 									String orderBy, String sort) 
 		 throws CmsException {
 		 return( c_rb.readTasksForRole(m_context.currentUser(), m_context.currentProject(), 
-									   projectName, roleName, tasktype, orderBy, sort) );
+									   projectId, roleName, tasktype, orderBy, sort) );
 	 }
 	 
 	 /**
 	  * Reads all given tasks from a user for a project.
 	  * 
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param owner Owner of the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
 	  * 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readGivenTasks(String projectName, String ownerName, int taskType, 
+	 public Vector readGivenTasks(int projectId, String ownerName, int taskType, 
 								  String orderBy, String sort) 
 		 throws CmsException {
 		 return( c_rb.readGivenTasks(m_context.currentUser(), m_context.currentProject(), 
-									 projectName, ownerName, taskType, orderBy, sort) );
+									 projectId, ownerName, taskType, orderBy, sort) );
 	 }
 
 	 /**
@@ -2033,13 +2049,13 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 /**
 	  * Reads log entries for a project.
 	  * 
-	  * @param project The projec for tasklog to read.
+	  * @param projectId The id of the projec for tasklog to read.
 	  * @return A Vector of new TaskLog objects 
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
-	 public Vector readProjectLogs(String projectName)
+	 public Vector readProjectLogs(int projectId)
 		 throws CmsException {
-		 return c_rb.readProjectLogs(m_context.currentUser(), m_context.currentProject(), projectName);
+		 return c_rb.readProjectLogs(m_context.currentUser(), m_context.currentProject(), projectId);
 	 }
 
  	 /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsProject.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,7 +33,7 @@ package com.opencms.file;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/04 10:28:47 $
  */
 abstract public class A_CmsProject
 {
@@ -81,7 +81,7 @@ abstract public class A_CmsProject
 	 * 
 	 * @return the id of this project.
 	 */	
-    abstract int getId();
+    abstract public int getId();
 	
 	/**
 	 * Returns the userid of the project owner.

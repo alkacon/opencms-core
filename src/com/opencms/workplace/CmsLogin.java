@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/04/04 10:03:17 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/04/04 10:03:17 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/04 10:28:48 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -113,16 +113,16 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 // now get the users preferences
                 user=cms.readUser(username);
                 
-                String currentProject;
+                Integer currentProject;
                 Hashtable startSettings=null;
         
                 // check out the user information if a default project is stored there.
-                startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+                startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
                 if (startSettings != null) {
-                    currentProject = (String)startSettings.get(C_START_PROJECT);
+                    currentProject = (Integer)startSettings.get(C_START_PROJECT);
                     try {
-                        if (cms.accessProject(currentProject)) {
-                            cms.getRequestContext().setCurrentProject(currentProject);
+                        if (cms.accessProject(currentProject.intValue())) {
+                            cms.getRequestContext().setCurrentProject(currentProject.intValue());
                         }
                     } catch (Exception e) {
                     }

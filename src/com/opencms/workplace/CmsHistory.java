@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
- * Date   : $Date: 2000/04/03 10:48:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/04/03 10:48:32 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/04 10:28:48 $
  */
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -96,9 +96,11 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         filename=(String)session.getValue(C_PARA_FILE);
         
         // get the project
-        String projectname=(String)parameters.get(C_PARA_PROJECT);
-        if (projectname != null) {
-            session.putValue(C_PARA_PROJECT,projectname);        
+        String projectId=(String)parameters.get(C_PARA_PROJECT);
+		Integer id = null;
+        if (projectId != null) {
+			id = new Integer( Integer.parseInt(projectId) );
+            session.putValue(C_PARA_PROJECT,id);
         }
             
         CmsFile file=(CmsFile)cms.readFileHeader(filename);
@@ -106,9 +108,9 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
               
         // test if the prohject paremeter was included, display the detail dialog.
-        if (projectname != null) {
+        if (id != null) {
             template="detail";
-            A_CmsProject project=cms.readProject(projectname);
+            A_CmsProject project=cms.readProject(id.intValue());
             xmlTemplateDocument.setXmlData("PROJECT",project.getName());
             String title=cms.readProperty(filename,C_PROPERTY_TITLE);
             if (title== null) {
@@ -163,15 +165,18 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			    CmsFile file = ((CmsFile)allFiles.elementAt(i));
                 A_CmsProject project=cms.readProject(file);
                 String projectName="unknown Project";
+				String projectId = "-1"; 
+				
                 if (project != null) {
                     projectName=project.getName();
+					projectId=project.getId()+"";
                 }
                 
                 long updated = file.getDateLastModified();                                                   
                 String output=Utils.getNiceDate(updated)+": "+projectName;
                 
 			   	names.addElement(output);
-    			values.addElement(projectName);       
+    			values.addElement(projectId);       
 	    	}
         }
 	

@@ -299,12 +299,12 @@ function doPAction(action) // which action on layer Project is clicked
 		}
 		case 3:
 		{
-			location.href='administration_content_publish_project.html?projectname=' + kontextparam;
+			location.href='administration_content_publish_project.html?projectid=' + kontextparam;
 			break;
 		}
 		case 4:
 		{
-			location.href='administration_content_delete_project.html?projectname=' + kontextparam;
+			location.href='administration_content_delete_project.html?projectid=' + kontextparam;
 			break;
 		}
 		case 10:

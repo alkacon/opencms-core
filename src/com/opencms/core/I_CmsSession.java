@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsSession.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * ToDo: Removal of unused sessions!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/15 17:53:48 $  
+ * @version $Revision: 1.6 $ $Date: 2000/04/04 10:28:47 $  
  */
 
 public interface I_CmsSession
@@ -109,7 +109,7 @@ public interface I_CmsSession
      * Gets the current project of a user from the session storage.
      * 
      * @param sessionID The actual session Id.
-     * @return The name of the project of the user or the default project;
+     * @return The id of the project of the user or the default project;
      */
-    public String getCurrentProject(String sessionId) ;
+    public Integer getCurrentProject(String sessionId) ;
 }

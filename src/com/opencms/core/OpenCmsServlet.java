@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/03/28 09:10:40 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.30 $ $Date: 2000/03/28 09:10:40 $  
+* @version $Revision: 1.31 $ $Date: 2000/04/04 10:28:47 $  
 * 
 */
 
@@ -151,7 +151,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         // build the database scheduler for keeping connections alive
         CmsObject cms=new CmsObject();
         try {
-            cms.init(null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_PROJECT_ONLINE);
+            cms.init(null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_PROJECT_ONLINE_ID);
     	} catch (CmsException e) {
     		throw new ServletException("Could not initialize cms object for DB scheduler. " + e);
     	}
@@ -276,7 +276,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         HttpSession session;
         String user=null;
         String group=null;
-        String project=null;
+        Integer project=null;
         String loginParameter;
         
         // get the original ServletRequest and response
@@ -287,7 +287,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         
         //set up the default Cms object
         try {
-            cms.init(cmsReq,cmsRes,C_USER_GUEST,C_GROUP_GUEST, C_PROJECT_ONLINE);
+            cms.init(cmsReq,cmsRes,C_USER_GUEST,C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
      
             // check if a parameter "opencms=login" was included in the request.
             // this is used to force the HTTP-Authentification to appear.
@@ -316,7 +316,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
                
                     group=m_sessionStorage.getCurrentGroup(session.getId());
                     project=m_sessionStorage.getCurrentProject(session.getId());
-                    cms.init(cmsReq,cmsRes,user,group,project);
+                    cms.init(cmsReq,cmsRes,user,group,project.intValue());
                 }
               } else {
                   
@@ -400,7 +400,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
              m_sessionStorage.putUser(session.getId(),
                                       cms.getRequestContext().currentUser().getName(),
                                       cms.getRequestContext().currentGroup().getName(),
-                                      cms.getRequestContext().currentProject().getName());
+									  new Integer(cms.getRequestContext().currentProject().getId()));
              
              // check if the session notify is set, it is nescessary to remove the
              // session from the internal storage on its destruction.             

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/03 10:48:30 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.93 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.92 $ $Date: 2000/04/03 10:48:30 $
+ * @version $Revision: 1.93 $ $Date: 2000/04/04 10:28:47 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -137,7 +137,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// is the online project in cache already?
 		if( m_onlineProject == null ) {
 			// no - get it
-			m_onlineProject = readProject(currentUser, currentProject, C_PROJECT_ONLINE);
+			m_onlineProject = readProject(currentUser, currentProject, C_PROJECT_ONLINE_ID);
 		}
 		return( m_onlineProject );
 	}
@@ -150,15 +150,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param projectname the name of the project.
+	 * @param projectId the id of the project.
 	 * 
 	 * @return true, if the user has access, else returns false.
 	 */
 	public boolean accessProject(A_CmsUser currentUser, A_CmsProject currentProject,
-								 String projectname) 
+								 int projectId) 
 		throws CmsException {
 		
-		A_CmsProject testProject = readProject(currentUser, currentProject, projectname);
+		A_CmsProject testProject = readProject(currentUser, currentProject, projectId);
 		
 		// is the project unlocked?
 		if( testProject.getFlags() != C_PROJECT_STATE_UNLOCKED ) {
@@ -192,14 +192,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param name The name of the project to read.
+	 * @param id The id of the project to read.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
-									 String name)
+									 int id)
 		 throws CmsException {
-		 return( m_projectRb.readProject(name) );
+		 return( m_projectRb.readProject(id) );
 	 }
      
      /**
@@ -313,6 +313,49 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 }
 	
 	/**
+	 * Creates a project.
+	 * 
+	 * <B>Security</B>
+	 * Only the users which are in the admin or projectleader-group are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the new project, it must be unique.
+	 * @param name The name of the project to read.
+	 * @param description The description for the new project.
+	 * @param groupname the name of the group to be set.
+	 * @param managergroupname the name of the managergroup to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject createProject(A_CmsUser currentUser, A_CmsProject currentProject, 
+									   int id, String name, String description, String groupname, 
+									   String managergroupname)
+		 throws CmsException {
+         
+		 if( isAdmin(currentUser, currentProject) || 
+			 isProjectManager(currentUser, currentProject)) {
+			 
+			 // read the needed groups from the cms
+			 A_CmsGroup group = readGroup(currentUser, currentProject, groupname);
+			 A_CmsGroup managergroup = readGroup(currentUser, currentProject, 
+												 managergroupname);
+			 
+			 // create a new task for the project
+			 A_CmsTask task = m_taskRb.createProject(currentUser, name, group,
+													 new java.sql.Timestamp(System.currentTimeMillis()),
+													 C_TASK_PRIORITY_NORMAL);
+			 
+			 return( m_projectRb.createProject(id, name, description, task, currentUser, 
+											   group, managergroup, 
+											   C_PROJECT_STATE_UNLOCKED ) );
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + name,
+				 CmsException.C_NO_ACCESS);
+		}
+	 }
+	 
+	/**
 	 * Returns all projects, which are owned by the user or which are accessible
 	 * for the group of the user.
 	 * 
@@ -404,17 +447,17 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param name The name of the project to be published.
+	 * @param id The id of the project to be published.
 	 * @return A Vector of files, that were changed in the onlineproject.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public Vector publishProject(A_CmsUser currentUser,
 								 A_CmsProject currentProject,
-								 String name)
+								 int id)
 		throws CmsException {
 		// read the project that should be published.
-		A_CmsProject publishProject = m_projectRb.readProject(name);
+		A_CmsProject publishProject = m_projectRb.readProject(id);
 		
 		if( isAdmin(currentUser, currentProject) || 
 			isManagerOfProject(currentUser, publishProject) || 
@@ -457,7 +500,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 // return the changed resources.
 			 return(resources);
 		} else {
-			 throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+			 throw new CmsException("[" + this.getClass().getName() + "] " + id, 
 				CmsException.C_NO_ACCESS);
 		}
 	}
@@ -470,16 +513,16 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param name The name of the project to be published.
+	 * @param name The id of the project to be deleted.
 	 * @return A Vector of files, that were changed in the onlineproject.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public void deleteProject(A_CmsUser currentUser, A_CmsProject currentProject,
-							  String name)
+							  int id)
 		throws CmsException {
 		// read the project that should be deleted.
-		A_CmsProject deleteProject = m_projectRb.readProject(name);
+		A_CmsProject deleteProject = m_projectRb.readProject(id);
 		
 		if( isAdmin(currentUser, currentProject) || 
 			isManagerOfProject(currentUser, deleteProject) || 
@@ -491,7 +534,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 deleteProject.setFlags(C_PROJECT_STATE_DELETED);
 			 m_projectRb.writeProject(deleteProject);
 		} else {
-			 throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+			 throw new CmsException("[" + this.getClass().getName() + "] " + id, 
 				CmsException.C_NO_ACCESS);
 		}
 	}
@@ -3664,7 +3707,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		throws CmsException	{
 		
 		// check the access to the project
-		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
+		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
 			// no access to the project!
 			return(false);
 		}
@@ -3717,7 +3760,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		}
 		
 		// check the access to the project
-		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
+		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
 			// no access to the project!
 			return(false);
 		}
@@ -3768,7 +3811,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		}
 		
   		// check the access to the project
-		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
+		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
 			// no access to the project!
 			return(false);
 		}
@@ -3834,7 +3877,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		}
 		
 		// check the access to the project
-		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
+		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
 			// no access to the project!
 			return(false);
 		}
@@ -4050,7 +4093,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	  * Creates a new project for task handling.
 	  * 
 	  * @param owner User who creates the project
-	  * @param projectname Name of the project
+	  * @param projectname the name of the project
 	  * @param projectType Type of the Project
 	  * @param role Usergroup for the project
 	  * @param timeout Time when the Project must finished
@@ -4221,7 +4264,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	  * 
 	  * @param currentUser The user who requested this method.
 	  * @param currentProject The current project of the user.
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param role The user who has to process the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
@@ -4229,7 +4272,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public Vector readTasksForUser(A_CmsUser currentUser, A_CmsProject currentProject,
-									String projectName, String userName, int tasktype, 
+									int projectId, String userName, int tasktype, 
 									String orderBy, String sort) 
 		 throws CmsException{
 		 A_CmsProject project = null;
@@ -4240,8 +4283,8 @@ System.err.println(">>> readFile(2) error for\n" +
 			 user = readUser(currentUser, currentProject, userName);
 		 }
 		 
-		 if(projectName != null) {
-			 project = readProject(currentUser, currentProject, projectName);
+		 if(projectId != C_UNKNOWN_ID) {
+			 project = readProject(currentUser, currentProject, projectId);
 		 }
 		 
 		 return m_taskRb.readTasks(project, user, tasktype, orderBy, sort);
@@ -4255,7 +4298,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	  * 
 	  * @param currentUser The user who requested this method.
 	  * @param currentProject The current project of the user.
-	  * @param project The Project in which the tasks are defined. Can be null for all tasks
+	  * @param projectId The id of the Project in which the tasks are defined. Can be null for all tasks
 	  * @tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
 	  * @param orderBy Chooses, how to order the tasks. 
 	  * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
@@ -4263,13 +4306,13 @@ System.err.println(">>> readFile(2) error for\n" +
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public Vector readTasksForProject(A_CmsUser currentUser, A_CmsProject currentProject,
-									   String projectName, int tasktype, 
+									   int projectId, int tasktype, 
 									   String orderBy, String sort)
 		 throws CmsException{
 		 A_CmsProject project = null;
 		 
-		 if(projectName != null) {
-			 project = readProject(currentUser, currentProject, projectName);
+		 if(projectId != C_UNKNOWN_ID) {
+			 project = readProject(currentUser, currentProject, projectId);
 		 }
 		 
 		 return m_taskRb.readTasks(project, tasktype, orderBy, sort);
@@ -4283,7 +4326,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	  * 
 	  * @param currentUser The user who requested this method.
 	  * @param currentProject The current project of the user.
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param user The user who has to process the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
@@ -4291,7 +4334,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public Vector readTasksForRole(A_CmsUser currentUser, A_CmsProject currentProject,
-									String projectName, String roleName, int tasktype, 
+									int projectId, String roleName, int tasktype, 
 									String orderBy, String sort) 
 		 throws CmsException{
 		 A_CmsProject project = null;
@@ -4302,8 +4345,8 @@ System.err.println(">>> readFile(2) error for\n" +
 			 role = readGroup(currentUser, currentProject, roleName);
 		 }
 		 
-		 if(projectName != null) {
-			 project = readProject(currentUser, currentProject, projectName);
+		 if(projectId != C_UNKNOWN_ID) {
+			 project = readProject(currentUser, currentProject, projectId);
 		 }
 		 
 		 return m_taskRb.readTasks(project, role, tasktype, orderBy, sort);
@@ -4317,7 +4360,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	  * 
 	  * @param currentUser The user who requested this method.
 	  * @param currentProject The current project of the user.
-	  * @param project The Project in which the tasks are defined.
+	  * @param projectId The id of the Project in which the tasks are defined.
 	  * @param owner Owner of the task.
 	  * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
 	  * @param orderBy Chooses, how to order the tasks.
@@ -4325,7 +4368,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public Vector readGivenTasks(A_CmsUser currentUser, A_CmsProject currentProject,
-								  String projectName, String ownerName, int taskType, 
+								  int projectId, String ownerName, int taskType, 
 								  String orderBy, String sort) 
 		 throws CmsException{
 		 A_CmsProject project = null;
@@ -4336,8 +4379,8 @@ System.err.println(">>> readFile(2) error for\n" +
 			 owner = readUser(currentUser, currentProject, ownerName);
 		 }
 		 
-		 if(projectName != null) {
-			 project = readProject(currentUser, currentProject, projectName);
+		 if(projectId != C_UNKNOWN_ID) {
+			 project = readProject(currentUser, currentProject, projectId);
 		 }
 		 
 		 return m_taskRb.readGivenTasks(project, owner, taskType, orderBy, sort);
@@ -4487,9 +4530,9 @@ System.err.println(">>> readFile(2) error for\n" +
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public Vector readProjectLogs(A_CmsUser currentUser, A_CmsProject currentProject,
-								   String projectName)
+								   int projectId)
 		 throws CmsException {
-		 A_CmsProject project = readProject(currentUser, currentProject, projectName);
+		 A_CmsProject project = readProject(currentUser, currentProject, projectId);
 		 return m_taskRb.readProjectLogs(project);
 	 }
 	 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/03/27 12:42:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/03/27 12:42:00 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/04 10:28:47 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -84,10 +84,10 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * @param resp the CmsResponse.
 	 * @param user The current user for this request.
 	 * @param currentGroup The current group for this request.
-	 * @param currentProject The current project for this request.
+	 * @param currentProjectId The id of the current project for this request.
 	 */
 	void init(I_CmsResourceBroker rb, I_CmsRequest req, I_CmsResponse resp, 
-			  String user, String currentGroup, String currentProject) 
+			  String user, String currentGroup, int currentProjectId) 
 		throws CmsException {
 		m_rb = rb;
 		m_req = req;
@@ -100,7 +100,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 		}
 		
 		// set current project and group for this request
-		setCurrentProject(currentProject);
+		setCurrentProject(currentProjectId);
 		m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
 	}
 	
@@ -219,11 +219,11 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * @param projectname The name of the project to be set as current.
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsProject setCurrentProject(String projectname)
+	public A_CmsProject setCurrentProject(int projectId)
 		throws CmsException  {
 		A_CmsProject newProject = m_rb.readProject(m_user, 
 												   m_currentProject, 
-												   projectname);
+												   projectId);
 		if( newProject != null ) {
 			m_currentProject = newProject;
 		}

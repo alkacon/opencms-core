@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * ToDo: Removal of unused sessions!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/15 17:53:48 $  
+ * @version $Revision: 1.7 $ $Date: 2000/04/04 10:28:47 $  
  */
 
 public class CmsSession implements I_CmsConstants,I_CmsSession    
@@ -103,10 +103,10 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
      * @param session  The actual user session Id.
      * @param username The name of the user to be stored.
      * @param group The name of the actual group.
-     * @param project The name of the actual project.
+     * @param project The id of the actual project.
      */
     public void putUser(String sessionId,String username,
-                        String group, String project){
+                        String group, Integer project){
         Hashtable userinfo=new Hashtable();
         userinfo.put(C_SESSION_USERNAME,username);
         userinfo.put(C_SESSION_CURRENTGROUP,group);
@@ -181,16 +181,16 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
      * @param sessionID The actual session Id.
      * @return The name of the project of the user or the default project;
      */
-    public String getCurrentProject(String sessionId) {
+    public Integer getCurrentProject(String sessionId) {
         Hashtable userinfo=null;
-        String currentProject=C_PROJECT_ONLINE;
+        Integer currentProject=new Integer(C_PROJECT_ONLINE_ID);
         
         userinfo=getUser(sessionId);
         // this user does exist, so get his current Project.
         if (userinfo != null) {
-            currentProject=(String)userinfo.get(C_SESSION_PROJECT);
+            currentProject=(Integer)userinfo.get(C_SESSION_PROJECT);
             if (currentProject==null) {
-                currentProject=C_PROJECT_ONLINE;
+                currentProject=new Integer(C_PROJECT_ONLINE_ID);
             }
         }
         return currentProject;

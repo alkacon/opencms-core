@@ -44,7 +44,7 @@ create table CMS_PROJECTS               (PROJECT_ID int not null auto_increment,
                                          PROJECT_NAME VARCHAR(16) not null,
                                          PROJECT_DESCRIPTION VARCHAR(255) not null,
                                          PROJECT_FLAGS int not null,
-										 PROJECT_CREATEDATE datetime,
+										 PROJECT_CREATEDATE datetime not null,
 										 PROJECT_PUBLISHDATE datetime,
                                          primary key(PROJECT_ID), unique(PROJECT_NAME, PROJECT_CREATEDATE));
 

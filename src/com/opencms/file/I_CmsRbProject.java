@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbProject.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,19 +38,38 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/04 10:28:48 $
  */
 interface I_CmsRbProject {
 	
 	/**
 	 * Reads a project from the Cms.
 	 * 
-	 * @param name The name of the project to read.
+	 * @param id The id of the project to read.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(String name)
+	 public A_CmsProject readProject(int id)
 		 throws CmsException ;
+	
+	/**
+	 * Creates a project.
+	 * 
+	 * @param id The new id of the project. (normaly = C_UNKNOWN_ID)
+	 * @param name The name of the project to read.
+	 * @param description The description for the new project.
+	 * @param task The task.
+	 * @param owner The owner to be set.
+	 * @param group the group to be set.
+	 * @param managergroup the managergroup to be set.
+	 * @param flags The flags to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject createProject(int id, String name, String description, A_CmsTask task, 
+										 A_CmsUser owner, A_CmsGroup group, 
+										 A_CmsGroup managergroup, int flags)
+		 throws CmsException;
 	
 	/**
 	 * Creates a project.
@@ -69,7 +88,7 @@ interface I_CmsRbProject {
 										 A_CmsUser owner, A_CmsGroup group, 
 										 A_CmsGroup managergroup, int flags)
 		 throws CmsException;
-	
+	 
 	/**
 	 * Updates a project.
 	 * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
- * Date   : $Date: 2000/03/13 15:40:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/04 10:28:48 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/03/13 15:40:30 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/04 10:28:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -98,13 +98,13 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 		String groupBy = "";
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
 		Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
-		String project = cms.getRequestContext().currentProject().getName();
+		int project = cms.getRequestContext().currentProject().getId();
 		String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
 		Vector retValue;
 
 		// was the allprojects checkbox checked?
 		if((allProjects != null) && (((Boolean)allProjects).booleanValue())) {
-			project = null;
+			project = C_UNKNOWN_ID;
 		}
 		
 		if(filter == null) {
@@ -175,7 +175,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
 	 * @return a vector of tasks.
 	 * @exception Throws a exception, if something goes wrong.
 	 */
-	private Vector readTasksForRole(A_CmsObject cms, String project, int taskType, String orderBy, String groupBy)
+	private Vector readTasksForRole(A_CmsObject cms, int project, int taskType, String orderBy, String groupBy)
 		throws CmsException {
 		String name = cms.getRequestContext().currentUser().getName();
 		Vector groups = cms.getGroupsOfUser(name);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProject.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/04 10:28:47 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/04 10:28:47 $
  */
 class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	
@@ -61,13 +61,13 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	/**
 	 * Reads a project from the Cms.
 	 * 
-	 * @param name The name of the project to read.
+	 * @param id The id of the project to read.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public A_CmsProject readProject(String name)
+	 public A_CmsProject readProject(int id)
 		 throws CmsException {
-		 return( m_accessProject.readProject(name) );
+		 return( m_accessProject.readProject(id) );
 	 }
 	
 	/**
@@ -87,11 +87,34 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 								A_CmsUser owner, A_CmsGroup group, 
 								A_CmsGroup managergroup, int flags)
 		 throws CmsException {
-		 return( m_accessProject.createProject(name, description, task, 
+		 return( m_accessProject.createProject(C_UNKNOWN_ID, name, description, task, 
 											   owner, group, managergroup,
 											   flags) );
 	 }
 	
+	/**
+	 * Creates a project.
+	 * 
+	 * @param id the new id for the project.
+	 * @param name The name of the project to read.
+	 * @param description The description for the new project.
+	 * @param task The task.
+	 * @param owner The owner to be set.
+	 * @param group the group to be set.
+	 * @param managergroup the managergroup to be set.
+	 * @param flags The flags to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject createProject(int id, String name, String description, A_CmsTask task, 
+								A_CmsUser owner, A_CmsGroup group, 
+								A_CmsGroup managergroup, int flags)
+		 throws CmsException {
+		 return( m_accessProject.createProject(id, name, description, task, 
+											   owner, group, managergroup,
+											   flags) );
+	 }
+	 
 	/**
 	 * Updates a project.
 	 * 
