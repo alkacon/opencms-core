@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/09/05 09:27:53 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/09/05 10:13:22 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2001/09/05 09:27:53 $
+ * @version $Revision: 1.16 $ $Date: 2001/09/05 10:13:22 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -122,9 +122,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * Checks if the requested resource must be redirected to the server docroot and
      * excecutes the redirect if nescessary.
      * @param cms The CmsObject
+     * @returns true, if the ressource was redirected
      * @exeption Throws CmsException if something goes wrong.
      */
-    private void checkRelocation(CmsObject cms) throws CmsException {
+    private boolean checkRelocation(CmsObject cms) throws CmsException {
         CmsRequestContext context = cms.getRequestContext();
 
         // check the if the current project is the online project. Only in this project,
@@ -148,9 +149,16 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                     catch(Exception e) {
                         throw new CmsException("Redirect fails :" + doRedirect, CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
+                    // the ressource was redirected, return true
+                    return true;
+                } else {
+                    // the ressource was not redirected, return false
+                    return false;
                 }
             }
         }
+        // not in online-project, or no redirect information found - so no redirect needed
+        return false;
     }
 
     /**
@@ -457,15 +465,17 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res, m_clusterurl);
         try {
             cms = initUser(cmsReq, cmsRes);
-            checkRelocation(cms);
-            CmsFile file = m_opencms.initResource(cms);
-            if(file != null) {
+            if( !checkRelocation(cms) ) {
+                // no redirect was done - deliver the ressource normally
+                CmsFile file = m_opencms.initResource(cms);
+                if(file != null) {
 
-                // If the CmsFile object is null, the resource could not be found.
-                // Stop processing in this case to avoid NullPointerExceptions
-                m_opencms.setResponse(cms, file);
-                m_opencms.showResource(cms, file);
-                updateUser(cms, cmsReq, cmsRes);
+                    // If the CmsFile object is null, the resource could not be found.
+                    // Stop processing in this case to avoid NullPointerExceptions
+                    m_opencms.setResponse(cms, file);
+                    m_opencms.showResource(cms, file);
+                    updateUser(cms, cmsReq, cmsRes);
+                }
             }
         }
         catch(CmsException e) {
@@ -513,15 +523,17 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         CmsResponseHttpServlet cmsRes = new CmsResponseHttpServlet(req, res, m_clusterurl);
         try {
             cms = initUser(cmsReq, cmsRes);
-            checkRelocation(cms);
-            CmsFile file = m_opencms.initResource(cms);
-            if(file != null) {
+            if( !checkRelocation(cms) ) {
+                // no redirect was done - deliver the ressource normally
+                CmsFile file = m_opencms.initResource(cms);
+                if(file != null) {
 
-                // If the CmsFile object is null, the resource could not be found.
-                // Stop processing in this case to avoid NullPointerExceptions
-                m_opencms.setResponse(cms, file);
-                m_opencms.showResource(cms, file);
-                updateUser(cms, cmsReq, cmsRes);
+                    // If the CmsFile object is null, the resource could not be found.
+                    // Stop processing in this case to avoid NullPointerExceptions
+                    m_opencms.setResponse(cms, file);
+                    m_opencms.showResource(cms, file);
+                    updateUser(cms, cmsReq, cmsRes);
+                }
             }
         }
         catch(CmsException e) {
