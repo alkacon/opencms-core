@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2001/10/29 15:02:58 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2001/11/15 15:43:57 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.43 $ $Date: 2001/10/29 15:02:58 $
+ * @version $Revision: 1.44 $ $Date: 2001/11/15 15:43:57 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -86,6 +86,12 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     private boolean m_streaming = true;
 
+    /**
+     * In export mode the links in pages will be stored in this vector
+     * for further processing.
+     */
+    private Vector m_links;
+
     /** Starting point for element cache */
     private CmsElementCache m_elementCache = null;
 
@@ -104,6 +110,21 @@ public class CmsRequestContext implements I_CmsConstants {
     public CmsRequestContext() {
         super();
     }
+
+    /**
+     * adds a link for the static export.
+     */
+    public void addLink(String link){
+        m_links.add(link);
+    }
+
+    /**
+     * returns all links that the templatemechanism has registered.
+     */
+    public Vector getLinkVector(){
+        return m_links;
+    }
+
     /**
      * Returns the current folder object.
      *
@@ -220,6 +241,7 @@ public class CmsRequestContext implements I_CmsConstants {
         m_rb = rb;
         m_req = req;
         m_resp = resp;
+        m_links = new Vector();
 
         try {
             m_user = m_rb.readUser(null, null, user);
@@ -243,7 +265,11 @@ public class CmsRequestContext implements I_CmsConstants {
 
         // Analyze the user's preferred languages coming with the request
         if(req != null) {
-            String accLangs = ((HttpServletRequest)req.getOriginalRequest()).getHeader("Accept-Language");
+            HttpServletRequest httpReq = (HttpServletRequest)req.getOriginalRequest();
+            String accLangs = null;
+            if(httpReq != null){
+                accLangs = httpReq.getHeader("Accept-Language");
+            }
             if(accLangs != null) {
                 StringTokenizer toks = new StringTokenizer(accLangs, ",");
                 while(toks.hasMoreTokens()) {

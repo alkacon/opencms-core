@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/10/25 10:23:03 $
-* Version: $Revision: 1.186 $
+* Date   : $Date: 2001/11/15 15:43:57 $
+* Version: $Revision: 1.187 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.186 $ $Date: 2001/10/25 10:23:03 $
+ * @version $Revision: 1.187 $ $Date: 2001/11/15 15:43:57 $
  */
 public interface I_CmsConstants {
 
@@ -466,6 +466,16 @@ public interface I_CmsConstants {
      * A string in the configuration-file.
      */
     static final String C_EXPORTPOINT_PATH = "exportpoint.path.";
+
+    /**
+     * A string in the configuration-file.
+     */
+    static final String C_STATICEXPORT_PATH = "staticexport.path";
+
+    /**
+     * A string in the configuration-file.
+     */
+    static final String C_STATICEXPORT_START = "staticexport.start";
 
     /**
      * The folder - seberator in this system
@@ -1148,6 +1158,17 @@ public interface I_CmsConstants {
      * The root name of the COS
      */
     static final String C_ROOTNAME_COS = "/cos";
+
+    /**
+     * The modus the cmsObject runs in. There are three diffrent: online, offline
+     * and export. It is used by the link replacement mechanism. (the extern mode is
+     * used for the names in the filesystem for the exported files.)
+     */
+    static final int C_MODUS_AUTO = -1;
+    static final int C_MODUS_ONLINE = 0;
+    static final int C_MODUS_OFFLINE = 1;
+    static final int C_MODUS_EXPORT = 2;
+    static final int C_MODUS_EXTERN = 3;
 }
 
 

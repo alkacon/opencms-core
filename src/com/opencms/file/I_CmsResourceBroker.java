@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/11/14 10:12:00 $
-* Version: $Revision: 1.162 $
+* Date   : $Date: 2001/11/15 15:43:57 $
+* Version: $Revision: 1.163 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.162 $ $Date: 2001/11/14 10:12:00 $
+ * @version $Revision: 1.163 $ $Date: 2001/11/15 15:43:57 $
  *
  */
 
@@ -1006,26 +1006,14 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
     /**
      * Creates a static export of a Cmsresource in the filesystem
      *
-     * @param exportTo The Directory to where the files should be exported.
-     * @param exportFile .
+     * @param currentUser user who requestd themethod
+     * @param currentProject current project of the user
+     * @param cms the cms-object to use for the export.
+     * @param startpoints the startpoints for the export.
      *
      * @exception CmsException if operation was not successful.
      */
-    public void exportStaticResources(String exportTo, CmsFile file) throws CmsException ;
-
-    /**
-     * Creates a static export to the filesystem
-     *
-     * @param exportTo The Directory to where the files should be exported.
-     * @param res The compleate path of the folder or the resource to be exported.
-     * @param projectId The id of the current project.
-     * @param onlineId The id of the online project.
-     *
-     * @exception CmsException if operation was not successful.
-     */
-    public void exportStaticResources(String exportTo, String res, int projectId, int onlineId) throws CmsException ;
-
-    public void setCmsObjectForStaticExport(CmsObject cms);
+    public void exportStaticResources(CmsUser currentUser, CmsProject currentProject, CmsObject cms, Vector startpoints) throws CmsException ;
 
      /**
       * Forwards a task to a new user.

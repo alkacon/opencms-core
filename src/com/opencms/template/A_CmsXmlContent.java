@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/10/12 07:46:09 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2001/11/15 15:43:58 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2001/10/12 07:46:09 $
+ * @version $Revision: 1.50 $ $Date: 2001/11/15 15:43:58 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -835,6 +835,18 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     }
 
     /**
+     * Handling of "LINK" tags.
+     * @param n XML element containing the <code>&lt;LINK&gt;</code> tag.
+     * @param callingObject Reference to the object requesting the node processing.
+     * @param userObj Customizable user object that will be passed through to handling and user methods.
+     */
+    private Object handleLinkTag(Element n, Object callingObject, Object userObj) throws CmsException {
+        // get the string and call the getLinkSubstitution method
+        String link = getTagValue(n);
+        return m_cms.getLinkSubstitution(link);
+    }
+
+    /**
      * Handling of the "METHOD name=..." tags.
      * Name attribute and value of the element are read and the user method
      * 'name' is invoked with the element value as parameter.
@@ -1397,7 +1409,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                         if(!m_knownTags.contains(childName)) {
 
                             // name was not found
-
                             // and even name is not known as tag
                             callMethod = defaultMethod;
                         }
@@ -1420,7 +1431,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                                 Throwable thrown = ((InvocationTargetException)e).getTargetException();
 
                                 // if the method has thrown a cms exception then
-
                                 // throw it again
                                 if(thrown instanceof CmsException) {
                                     throw (CmsException)thrown;
@@ -1476,9 +1486,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                         }
 
                         // the list of nodes to be inserted could be printed out here.
-
                         // uncomment the following to activate this feature.
-
                         // printNodeList(newnodes);
                         if(newnodes != null) {
                             // the called method returned a valid result.
@@ -1616,6 +1624,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         // register tags for preparing HTML output
         registerTag("METHOD", A_CmsXmlContent.class, "handleMethodTag", C_REGISTER_MAIN_RUN);
         registerTag("PROCESS", A_CmsXmlContent.class, "handleProcessTag", C_REGISTER_MAIN_RUN);
+        registerTag("LINK", A_CmsXmlContent.class, "handleLinkTag", C_REGISTER_MAIN_RUN);
         registerTag("INCLUDE", A_CmsXmlContent.class, "replaceTagByComment", C_REGISTER_MAIN_RUN);
         registerTag("DATA", A_CmsXmlContent.class, "replaceTagByComment", C_REGISTER_MAIN_RUN);
         registerTag(getXmlDocumentTagName());

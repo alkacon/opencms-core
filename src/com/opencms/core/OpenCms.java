@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/10/26 14:06:09 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2001/11/15 15:43:57 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.65 $ $Date: 2001/10/26 14:06:09 $
+ * @version $Revision: 1.66 $ $Date: 2001/11/15 15:43:57 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -76,7 +76,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     private static I_CmsResourceBroker c_rb;
 
     /**
-     * Reference to the OpenCms launcer manager
+     * Reference to the OpenCms launcher manager
      */
     private CmsLauncherManager m_launcherManager;
 
@@ -113,6 +113,31 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * like "ElementClass|ElementTemplate|VariantCacheKey"
      */
     private static Hashtable c_variantDeps = null;
+
+    /**
+     * the vectors to store the three different rulesets needed for the link replacement.
+     * Each vector contains a ruleset. The elements are regular expressions (Strings) the
+     * way perl5 uses them.
+     */
+    private static String[] c_linkRulesExport = null;
+    private static String[] c_linkRulesOnline = null;
+    private static String[] c_linkRulesOffline = null;
+    private static String[] c_linkRulesExtern = null;
+
+    /**
+     * the start rule for the extern and the export rules
+     */
+    private static String c_linkRuleStart = null;
+
+    /**
+     * The startpoints for the static export.
+     */
+    private static Vector c_staticExportStart = null;
+
+    /**
+     * The path to where the export will go
+     */
+    private static String m_staticExportPath = null;
 
     /**
      * Constructor, creates a new OpenCms object.
@@ -187,14 +212,53 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 c_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000),
                                                     conf.getInteger("elementcache.elements", 50000),
                                                     conf.getInteger("elementcache.variants", 100));
-            }
-            catch(Exception e) {
+            }catch(Exception e) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
                 }
             }
             c_variantDeps = new Hashtable();
             c_elementCache.getElementLocator().setExternDependencies(c_variantDeps);
+        }
+        // now for the link replacement rules there are up to three rulesets for export online and offline
+        try{
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing link replace rules.");
+            }
+            String export = conf.getString("linkrules.export");
+            if(export != null && !"".equals(export)){
+                c_linkRulesExport = conf.getStringArray("ruleset."+export);
+            }
+            String online = conf.getString("linkrules.online");
+            if(online != null && !"".equals(online)){
+                c_linkRulesOnline = conf.getStringArray("ruleset."+online);
+            }
+            String offline = conf.getString("linkrules.offline");
+            if(offline != null && !"".equals(offline)){
+                c_linkRulesOffline = conf.getStringArray("ruleset."+offline);
+            }
+            String extern = conf.getString("linkrules.extern");
+            if(extern != null && !"".equals(extern)){
+                c_linkRulesExtern = conf.getStringArray("ruleset."+extern);
+            }
+            c_linkRuleStart = conf.getString("exportfirstrule");
+
+            // now the startpoints for the static export
+            String[] buffer = conf.getStringArray(C_STATICEXPORT_START);
+            if(buffer != null){
+                c_staticExportStart = new Vector();
+                for(int i=0; i<buffer.length; i++){
+                    c_staticExportStart.add(buffer[i]);
+                }
+            }
+            // at last the target for the export
+            m_staticExportPath = com.opencms.boot.CmsBase.getAbsoluteWebPath(conf.getString(C_STATICEXPORT_PATH));
+
+
+        }catch(Exception e){
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
+            }
         }
     }
 
@@ -224,6 +288,48 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public static CmsElementCache getOnlineElementCache(){
         return c_elementCache;
+    }
+
+    /**
+     * Returns the ruleset for link replacement.
+     * @param state. defines which set is needed.
+     * @return String[] the ruleset.
+     */
+    public static String[] getLinkRules(int state){
+
+        if(state == C_MODUS_ONLINE){
+            return c_linkRulesOnline;
+        }else if(state == C_MODUS_OFFLINE){
+            return c_linkRulesOffline;
+        }else if(state == C_MODUS_EXPORT){
+            return c_linkRulesExport;
+        }else if(state == C_MODUS_EXTERN){
+            return c_linkRulesExtern;
+        }
+        return null;
+    }
+    /**
+     * return the start rule used for export and extern mode.
+     */
+    public static String getLinkRuleStart(){
+        return c_linkRuleStart;
+    }
+
+    /**
+     * Returns a Vector (of Strings) with the names of the vfs resources (files
+     * and folders) where the export should start.
+     *
+     * @return Vector with resources for the export.
+     */
+    public static Vector getStaticExportStartPoints(){
+        return c_staticExportStart;
+    }
+
+    /**
+     * Returns the exportpath for the static export.
+     */
+    public static String getStaticExportPath(){
+        return m_staticExportPath;
     }
 
     /**

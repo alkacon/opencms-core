@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExportThread.java,v $
-* Date   : $Date: 2001/09/06 06:53:33 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/11/15 15:43:58 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,17 +46,11 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
 
     private CmsObject m_cms;
 
-    private String m_exportTo;
-
-    private String[] m_exportPaths;
-
     private I_CmsSession m_session;
 
-    public CmsAdminStaticExportThread(CmsObject cms, String exportTo, String[] exportPaths, I_CmsSession session) {
+    public CmsAdminStaticExportThread(CmsObject cms, I_CmsSession session) {
         m_cms = cms;
         m_session = session;
-        m_exportPaths = exportPaths;
-        m_exportTo = exportTo;
 
     }
 
@@ -66,34 +60,15 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
          // !I_CmsSession session = m_cms.getRequestContext().getSession(true);
         boolean everythingOk  = true;
         String errormessage = "Error exporting resources:\n";
-        Vector folderNames = new Vector();
-        Vector fileNames = new Vector();
-        for (int i=0; i < m_exportPaths.length; i++) {
-            if (m_exportPaths[i].endsWith("/")) {
-                folderNames.addElement(m_exportPaths[i]);
-            } else {
-                fileNames.addElement(m_exportPaths[i]);
-            }
-        }
-        // remove the possible redundancies in the list of paths
-        checkRedundancies(folderNames, fileNames);
-        // TODO: change the methode checkRedundancies so it handles all in one vector
-        for (int i=0; i<fileNames.size(); i++){
-            folderNames.addElement(fileNames.elementAt(i));
-        }
-        for (int i=0; i<folderNames.size(); i++){
-            try {
-                // export it
-                m_cms.exportStaticResources(m_exportTo, (String)folderNames.elementAt(i));
+        try {
+            // start the export
+            m_cms.exportStaticResources(m_cms.getStaticExportStartPoints());
 
-            }catch(CmsException e){
-                everythingOk = false;
-                errormessage += (String)folderNames.elementAt(i) +" : "+e.getTypeText() +" "
-                                    +e.getMessage() +"\n";
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,"error exporting "+
-                                    folderNames.elementAt(i)+" : " + e.getMessage());
-                }
+        }catch(CmsException e){
+            everythingOk = false;
+            errormessage += " "+e.getTypeText() +" "+e.getMessage() +"\n";
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,"error in static export "+e.getMessage());
             }
         }
         if(!everythingOk){

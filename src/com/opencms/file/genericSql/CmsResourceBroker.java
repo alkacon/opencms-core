@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/11/14 10:10:54 $
-* Version: $Revision: 1.290 $
+* Date   : $Date: 2001/11/15 15:43:58 $
+* Version: $Revision: 1.291 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.290 $ $Date: 2001/11/14 10:10:54 $
+ * @version $Revision: 1.291 $ $Date: 2001/11/15 15:43:58 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4346,37 +4346,22 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
 /**
  * Creates a static export of a Cmsresource in the filesystem
  *
- * @param exportTo The Directory to where the files should be exported.
- * @param exportFile .
+ * @param currentUser user who requestd themethod
+ * @param currentProject current project of the user
+ * @param cms the cms-object to use for the export.
+ * @param startpoints the startpoints for the export.
  *
  * @exception CmsException if operation was not successful.
  */
-public void exportStaticResources(String exportTo, CmsFile file) throws CmsException {
+public void exportStaticResources(CmsUser currentUser, CmsProject currentProject, CmsObject cms, Vector startpoints) throws CmsException {
 
-    m_dbAccess.exportStaticResources(exportTo, file);
-}
-/**
- * Creates a static export to the filesystem
- *
- * @param exportTo The Directory to where the files should be exported.
- * @param res The compleate path of the folder or the resource to be exported ..
- * @param projectId The id of the current project.
- * @param onlineId The id of the online project.
- *
- * @exception CmsException if operation was not successful.
- */
-public void exportStaticResources(String exportTo, String res, int projectId, int onlineId) throws CmsException {
+    if(isAdmin(currentUser, currentProject)) {
+        new CmsStaticExport(cms, startpoints);
+    } else {
+         throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+             CmsException.C_NO_ACCESS);
+    }
 
-    m_dbAccess.exportStaticResources(exportTo, res, projectId, onlineId);
-}
-
-/**
- * Sets a special CmsObject for the static export in the dbAccess.
- *
- * @param cms The CmsObject created for the export.
- */
-public void setCmsObjectForStaticExport(CmsObject cms){
-    m_dbAccess.setCmsObjectForStaticExport(cms);
 }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2001/09/06 06:15:36 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/11/15 15:43:58 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,13 +36,14 @@ import com.opencms.template.*;
 import java.util.*;
 import java.io.*;
 import javax.servlet.http.*;
+import org.apache.oro.text.perl.*;
 
 /**
  * Template class for displaying OpenCms workplace admin static export.
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -65,23 +66,50 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         if(com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element "
-                            + ((elementName == null) ? "<root>" : elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: "
-                            + ((templateSelector == null) ? "<default>" : templateSelector));
+            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"getting content of element "+((elementName == null) ? "<root>" : elementName));
+            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"template file is: " + templateFile);
+            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"selected template section is: "+((templateSelector == null) ? "<default>" : templateSelector));
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         I_CmsSession session = cms.getRequestContext().getSession(true);
 
         // get the parameters
-        String exportTo = (String)parameters.get("filename");
         String action = (String)parameters.get("action");
-        String allResources = (String)parameters.get("ALLRES");
         if(action == null) {
             // This is an initial request of the static export page
-            xmlTemplateDocument.setData("path", com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()));
+            Vector exportStartPoints = cms.getStaticExportStartPoints();
+            String allStartPoints = "";
+            if(exportStartPoints != null){
+                for(int i=0; i<exportStartPoints.size(); i++){
+                    xmlTemplateDocument.setData("entry", (String)exportStartPoints.elementAt(i));
+                    allStartPoints += xmlTemplateDocument.getProcessedDataValue("exportpoint");
+                }
+            }
+            xmlTemplateDocument.setData("exportpoints", allStartPoints);
+            xmlTemplateDocument.setData("path", cms.getStaticExportPath());
+        }
+
+        // special feature to test the regular expressions
+        if((action != null) && ("regTest".equals(action))) {
+            String sub = (String)parameters.get("sub");
+            String link = "";
+            String regExpr = "";
+            String result = "";
+            if(sub != null && "true".equals(sub)){
+                link = (String)parameters.get("link");
+                regExpr = (String)parameters.get("regExpr");
+                try{
+                    Perl5Util subClass = new Perl5Util();
+                    result = subClass.substitute(regExpr, link);
+                }catch(Exception e){
+                    result = "error: "+ e.getMessage();
+                }
+            }
+            xmlTemplateDocument.setData("link", Encoder.escape(link));
+            xmlTemplateDocument.setData("regExpr", Encoder.escape(regExpr));
+            xmlTemplateDocument.setData("result", Encoder.escape(result));
+            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "regTest");
         }
 
         // first we look if the thread is allready running
@@ -108,36 +136,18 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
                 }
             }
         }
-        try {
-            if("export".equals(action)) {
+        if("export".equals(action)) {
 
-                // export the files
-                Vector resourceNames = parseResources(allResources);
-                String[] exportPaths = new String[resourceNames.size()];
-                CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
-                for(int i = 0;i < resourceNames.size();i++) {
-                    // modify the foldername if nescessary (the root folder is always given
-                    // as a nice name)
-                    if(lang.getLanguageValue("title.rootfolder").equals(resourceNames.elementAt(i))) {
-                        resourceNames.setElementAt("/", i);
-                    }
-                    exportPaths[i] = (String)resourceNames.elementAt(i);
-                }
-
-                // start the thread for export
-                // first clear the session entry if necessary
-                if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-                    session.removeValue(C_SESSION_THREAD_ERROR);
-                }
-                Thread doExport = new CmsAdminStaticExportThread(cms, exportTo, exportPaths, session);
-                doExport.start();
-                session.putValue(C_STATICEXPORT_THREAD , doExport);
-                xmlTemplateDocument.setData("time", "10");
-                templateSelector = "wait";
+            // start the thread for export
+            // first clear the session entry if necessary
+            if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
+                session.removeValue(C_SESSION_THREAD_ERROR);
             }
-        }catch(CmsException exc) {
-            xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
-            templateSelector = "error";
+            Thread doExport = new CmsAdminStaticExportThread(cms, session);
+            doExport.start();
+            session.putValue(C_STATICEXPORT_THREAD , doExport);
+            xmlTemplateDocument.setData("time", "10");
+            templateSelector = "wait";
         }
 
         // Now load the template file and start the processing

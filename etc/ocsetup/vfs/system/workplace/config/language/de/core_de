@@ -67,6 +67,7 @@
             <showdetails>Details anzeigen</showdetails>
             <syncfolder>Ordner synchronisieren</syncfolder>
             <table>Tabelle</table>
+            <test>Testen</test>
             <ul>Aufzählung</ul>
             <underline>Unterstrichen</underline>
             <undo>Rückgängig</undo>
@@ -117,6 +118,10 @@
             <label>
                 <titleexport>Statischer Export</titleexport>
                 <filename>Exportieren nach</filename>
+                <testtitle>Hier können die Regulären Ausdrücke getestet werden</testtitle>
+                <testlink>Link:</testlink>
+                <testregexp>Ausdruck:</testregexp>
+                <testresult>Ergebnis:</testresult>
             </label>
         </staticexport>
         <elementcache>
@@ -347,7 +352,7 @@
         
         <icon>
             <currentprojects>Aktuelle Projekte</currentprojects>
-			<channels>Channels</channels>
+            <channels>Channels</channels>
             <database>Datenbankverwaltung</database>
             <datatypes>Dateityp- verwaltung</datatypes>
             <downloadgallery>Downloadgalerien<![CDATA[<br>]]>verwalten</downloadgallery>
@@ -455,7 +460,7 @@
             <editpropertyinfo>Wert ändern in</editpropertyinfo>
             <editor>Editor</editor>
             <email>EMail</email>
-            <exportadd>hinzufügen</exportadd>
+            <exportadd>Wollen Sie den Export mit diesen in den opencms.properties konfigurierten Daten starten?</exportadd>
             <exportresources>zu exportierende Ressourcen</exportresources>
             <exportfilename>Name der Exportdatei</exportfilename>
             <filter>Filter</filter>
@@ -1063,40 +1068,40 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <upload>Datei hochladen</upload>
             <uploadimage>Neue Bilddatei hochladen</uploadimage>
         </title>
-		<com_opencms_defaults_master_CmsChannelBackoffice>
-			<label>
-				<filter>Filter</filter>
-				<headline>Schlagzeile</headline>
-				<channelid>ChannelId</channelid>
-				<channelpath>Channel</channelpath>
-				<channelname>Channelname</channelname>
-				<parentname>Parentchannel</parentname>
-				<ownername>Channelbesitzer</ownername>
-				<group>Channelgruppe</group>
-				<accessflagsasstring>Channelrechte</accessflagsasstring>
-			</label>
-			<messagebox>
-				<title>
-					<editentry>Channel editieren</editentry>
-					<deletechannel>Channel löschen</deletechannel>
-					<newchannel>Neuen Channel erstellen </newchannel>
-				</title>
-				<dialog>
-					<delete>Channel wirklich löschen?</delete>
-				</dialog>
-				<button>
-					<edit>Channel editieren</edit>
-					<delete>Channel löschen</delete>
-				</button>
-				<radiobutton>
-					<active>aktiv</active>
-					<inactive>inaktiv</inactive>
-				</radiobutton>
-			</messagebox>
-			<error>
-				<message1>Der Channel konnte nicht gelöscht werden!</message1>
-				<message2>Sie müssen einen gültigen Channelnamen angeben!</message2>
-				<message3>Fehler beim Speichern des Channel:</message3>
-			</error>
-		</com_opencms_defaults_master_CmsChannelBackoffice>
+        <com_opencms_defaults_master_CmsChannelBackoffice>
+            <label>
+                <filter>Filter</filter>
+                <headline>Schlagzeile</headline>
+                <channelid>ChannelId</channelid>
+                <channelpath>Channel</channelpath>
+                <channelname>Channelname</channelname>
+                <parentname>Parentchannel</parentname>
+                <ownername>Channelbesitzer</ownername>
+                <group>Channelgruppe</group>
+                <accessflagsasstring>Channelrechte</accessflagsasstring>
+            </label>
+            <messagebox>
+                <title>
+                    <editentry>Channel editieren</editentry>
+                    <deletechannel>Channel löschen</deletechannel>
+                    <newchannel>Neuen Channel erstellen </newchannel>
+                </title>
+                <dialog>
+                    <delete>Channel wirklich löschen?</delete>
+                </dialog>
+                <button>
+                    <edit>Channel editieren</edit>
+                    <delete>Channel löschen</delete>
+                </button>
+                <radiobutton>
+                    <active>aktiv</active>
+                    <inactive>inaktiv</inactive>
+                </radiobutton>
+            </messagebox>
+            <error>
+                <message1>Der Channel konnte nicht gelöscht werden!</message1>
+                <message2>Sie müssen einen gültigen Channelnamen angeben!</message2>
+                <message3>Fehler beim Speichern des Channel:</message3>
+            </error>
+        </com_opencms_defaults_master_CmsChannelBackoffice>
 </LANGUAGE>

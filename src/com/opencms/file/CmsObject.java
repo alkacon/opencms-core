@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/11/14 10:12:00 $
-* Version: $Revision: 1.203 $
+* Date   : $Date: 2001/11/15 15:43:57 $
+* Version: $Revision: 1.204 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import javax.servlet.http.*;
 import source.org.apache.java.util.*;
 
 import com.opencms.core.*;
+import com.opencms.util.*;
 import com.opencms.launcher.*;
 import com.opencms.template.cache.*;
 
@@ -50,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.203 $ $Date: 2001/11/14 10:12:00 $
+ * @version $Revision: 1.204 $ $Date: 2001/11/15 15:43:57 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -80,6 +81,16 @@ public class CmsObject implements I_CmsConstants {
      * Is needed to clear the template caches.
      */
     private CmsLauncherManager m_launcherManager = null;
+
+    /**
+     * The class for processing links.
+     */
+    private LinkSubstitution m_linkSubstitution = null;
+
+    /**
+     * the modus the cmsObject runs in (used i.e. for static export)
+     */
+    private int m_mode = C_MODUS_AUTO;
 
     /**
      * The default constructor.
@@ -1355,50 +1366,30 @@ public CmsFile exportResource(CmsFile file) throws CmsException {
 }
 
 /**
- * Creates a static export of a Cmsresource in the filesystem
+ * Creates a static export in the filesystem
  *
- * @param exportTo The Directory to where the files should be exported.
- * @param exportFile .
+ * @param startpoints the startpoints for the export.
  *
  * @exception CmsException if operation was not successful.
  */
-public void exportStaticResources(String exportTo, CmsFile file) throws CmsException {
+public void exportStaticResources(Vector startpoints) throws CmsException {
 
-    setCmsObjectForStaticExport(getRequestContext().currentProject().getId());
-    m_rb.exportStaticResources(exportTo, file);
+    m_rb.exportStaticResources(m_context.currentUser(), m_context.currentProject() , this, startpoints);
 }
 
 /**
- * Creates a static export to the filesystem
+ * Creates a special CmsObject for the static export.
  *
- * @param exportTo The Directory to where the files should be exported.
- * @param res The compleate path of the folder or the resource to be exported.
- *
+ * @param .
  * @exception CmsException if operation was not successful.
  */
-public void exportStaticResources(String exportTo, String res) throws CmsException {
-
-    setCmsObjectForStaticExport(getRequestContext().currentProject().getId());
-    m_rb.exportStaticResources(exportTo, getSiteRoot(res), getRequestContext().currentProject().getId(),
-                                onlineProject().getId());
-}
-
-/**
- * Creates a special CmsObject for the static export and set it in the RB.
- *
- * @param projectId The current project id.
- * @exception CmsException if operation was not successful.
- */
-private void setCmsObjectForStaticExport(int projectId) throws CmsException{
+public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportResponse dRes) throws CmsException{
 
     CmsObject cmsForStaticExport = new CmsObject();
-    CmsDummyRequest dReq = new CmsDummyRequest((HttpServletRequest)m_context.getRequest().getOriginalRequest());
-    CmsDummyResponse dRes = new CmsDummyResponse();
-
     cmsForStaticExport.init(m_rb, dReq, dRes, C_USER_GUEST,
-                             C_GROUP_GUEST, projectId, false, null, null);
+                             C_GROUP_GUEST, C_PROJECT_ONLINE_ID, false, getOnlineElementCache(), null);
     cmsForStaticExport.setLauncherManager(getLauncherManager());
-    m_rb.setCmsObjectForStaticExport(cmsForStaticExport);
+    return cmsForStaticExport;
 }
 
 /**
@@ -1631,6 +1622,71 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
      */
     public CmsElementCache getOnlineElementCache(){
         return OpenCms.getOnlineElementCache();
+    }
+
+    /**
+     * Returns the ruleset for link replacement.
+     * @param state. defines which set is needed.
+     * @return String[] the ruleset.
+     */
+    public String[] getLinkRules(int state){
+        return OpenCms.getLinkRules(state);
+    }
+
+    /**
+     * Replaces the link according to the rules and registers it to the
+     * requestcontex if we are in export modus.
+     * @param link. The link to process.
+     * @return String The substituded link.
+     */
+    public String getLinkSubstitution(String link){
+        return m_linkSubstitution.getLinkSubstitution(this, link);
+    }
+
+    /**
+     * Returns a Vector (of Strings) with the names of the vfs resources (files
+     * and folders) where the export should start.
+     *
+     * @return Vector with resources for the export.
+     */
+    public Vector getStaticExportStartPoints(){
+        return OpenCms.getStaticExportStartPoints();
+    }
+
+    /**
+     * Returns the exportpath for the static export.
+     */
+    public String getStaticExportPath(){
+        return OpenCms.getStaticExportPath() ;
+    }
+
+    /**
+     * Returns the mode this cmsObject is runnig in. AUTO mode (-1) means
+     * it is no special case and returns online ore offline depending on the
+     * current project.
+     *
+     * @return int The modus of this cmsObject.
+     */
+    public int getMode(){
+        if(m_mode == C_MODUS_AUTO){
+            try{
+                if(getRequestContext().currentProject().getId() == onlineProject().getId()){
+                    return C_MODUS_ONLINE;
+                }else{
+                    return C_MODUS_OFFLINE;
+                }
+            }catch(CmsException e){
+            }
+        }
+        return m_mode;
+    }
+
+    /**
+     * Sets the mode this CmsObject runs in. Used for static export.
+     * @parame mode.
+     */
+    public void setMode(int mode){
+        m_mode =mode;
     }
 
     /**
@@ -1947,6 +2003,7 @@ public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse res
     m_rb = broker;
     m_context = new CmsRequestContext();
     m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming, elementCache);
+    m_linkSubstitution = new LinkSubstitution();
 }
 /**
  * Checks, if the users current group is the admin-group.

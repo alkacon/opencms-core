@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/11/15 15:43:57 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -35,7 +35,7 @@ package com.opencms.boot;
  *
  * @author Alexander Lucas
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2001/07/31 15:50:12 $
+ * @version $Revision: 1.7 $ $Date: 2001/11/15 15:43:57 $
  */
 public interface I_CmsLogChannels {
 
@@ -78,6 +78,8 @@ public interface I_CmsLogChannels {
     /** Messages of the new OpenCms element cache */
     public static final String C_OPENCMS_ELEMENTCACHE = "opencms_elementcache";
 
+    /** Messages of the static export */
+    public static final String C_OPENCMS_STATICEXPORT = "opencms_staticexport";
 
     /** Debugging messages */
     public static final String C_MODULE_DEBUG = "module_debug";

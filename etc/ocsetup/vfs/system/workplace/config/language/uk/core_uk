@@ -67,6 +67,7 @@
             <showdetails>Show details</showdetails>
             <syncfolder>Synchronize folder</syncfolder>
             <table>Table</table>
+            <test>Test</test>
             <ul>Bullet List</ul>
             <underline>Underline</underline>
             <undo>Undo</undo>
@@ -117,6 +118,10 @@
             <label>
                 <titleexport>Static Export</titleexport>
                 <filename>Export to</filename>
+                <testtitle>This is just for testing the regular expressions</testtitle>
+                <testlink>Link:</testlink>
+                <testregexp>Expression:</testregexp>
+                <testresult>Result:</testresult>
             </label>
         </staticexport>
         <elementcache>
@@ -348,7 +353,7 @@
         
         <icon>
             <currentprojects>Current Projects</currentprojects>
-			<channels>Channels</channels>
+            <channels>Channels</channels>
             <database>Database- management</database>
             <datatypes>Resource type- management</datatypes>
             <downloadgallery>Download galleries<![CDATA[<br>]]>management</downloadgallery>
@@ -456,7 +461,7 @@
             <editpropertyinfo>Change value to</editpropertyinfo>
             <editor>Editor</editor>
             <email>Email</email>
-            <exportadd>add</exportadd>
+            <exportadd>This will start the static export with these configuration made in the opencms.properties.</exportadd>
             <exportresources>resources to export</exportresources> 
             <filter>Filter</filter>
             <firstelement>at the first position</firstelement>
@@ -1062,40 +1067,40 @@ A new task was reactivated for you or your role.</content>
             <upload>Upload File</upload>
             <uploadimage>Upload new Image</uploadimage>
         </title>
-		<com_opencms_defaults_master_CmsChannelBackoffice>
-			<label>
-				<filter>Filter</filter>
-				<headline>Headline</headline>
-				<channelid>ChannelId</channelid>
-				<channelpath>Channel</channelpath>
-				<channelname>Channelname</channelname>
-				<parentname>Parentchannel</parentname>
-				<ownername>Channelowner</ownername>
-				<group>Channelgroup</group>
-				<accessflagsasstring>Channelrights</accessflagsasstring>
-			</label>
-			<messagebox>
-				<title>
-					<editentry>Edit Channel</editentry>
-					<deletechannel>Delete Channel</deletechannel>
-					<newchannel>Create new Channel</newchannel>
-				</title>
-				<dialog>
-					<delete>Do you really want to delete this channel?</delete>
-				</dialog>
-				<button>
-					<edit>Edit Channel</edit>
-					<delete>Delete Channel</delete>
-				</button>
-				<radiobutton>
-					<active>aktiv</active>
-					<inactive>inaktiv</inactive>
-				</radiobutton>
-			</messagebox>
-			<error>
-				<message1>The channel could not be deleted!</message1>
-				<message2>Please insert a valid channelname!</message2>
-				<message3>Error when writing the channel:</message3>
-			</error>
-		</com_opencms_defaults_master_CmsChannelBackoffice>
+        <com_opencms_defaults_master_CmsChannelBackoffice>
+            <label>
+                <filter>Filter</filter>
+                <headline>Headline</headline>
+                <channelid>ChannelId</channelid>
+                <channelpath>Channel</channelpath>
+                <channelname>Channelname</channelname>
+                <parentname>Parentchannel</parentname>
+                <ownername>Channelowner</ownername>
+                <group>Channelgroup</group>
+                <accessflagsasstring>Channelrights</accessflagsasstring>
+            </label>
+            <messagebox>
+                <title>
+                    <editentry>Edit Channel</editentry>
+                    <deletechannel>Delete Channel</deletechannel>
+                    <newchannel>Create new Channel</newchannel>
+                </title>
+                <dialog>
+                    <delete>Do you really want to delete this channel?</delete>
+                </dialog>
+                <button>
+                    <edit>Edit Channel</edit>
+                    <delete>Delete Channel</delete>
+                </button>
+                <radiobutton>
+                    <active>aktiv</active>
+                    <inactive>inaktiv</inactive>
+                </radiobutton>
+            </messagebox>
+            <error>
+                <message1>The channel could not be deleted!</message1>
+                <message2>Please insert a valid channelname!</message2>
+                <message3>Error when writing the channel:</message3>
+            </error>
+        </com_opencms_defaults_master_CmsChannelBackoffice>
 </LANGUAGE>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/11/15 15:43:58 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.6 $ $Date: 2001/11/15 15:43:58 $
  */
 public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_CmsLogChannels {
 
@@ -163,7 +163,11 @@ public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_
      * @return <EM>true</EM> if exportable, <EM>false</EM> otherwise.
      */
     public boolean isExportable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        String queryString = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
+        HttpServletRequest httpReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+        String queryString = "";
+        if(httpReq != null){
+            queryString = httpReq.getQueryString();
+        }
         boolean result = isProxyPrivateCacheable(cms, templateFile, elementName, parameters, templateSelector)
             && (queryString == null || "".equals(queryString));
         try {
