@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/03/02 18:43:53 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/03/04 17:24:55 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.65 $ $Date: 2003/03/02 18:43:53 $
+ * @version $Revision: 1.66 $ $Date: 2003/03/04 17:24:55 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -2259,7 +2259,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void readProperties(String resource) {
         try {
-            Map properties = m_cms.readPropertiesMap(resource);
+            Map properties = m_cms.readProperties(resource);
             Iterator i = properties.keySet().iterator();
             Object key;
             while(i.hasNext()) {

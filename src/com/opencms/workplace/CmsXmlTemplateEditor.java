@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.88 $
+* Date   : $Date: 2003/03/04 17:26:34 $
+* Version: $Revision: 1.89 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.88 $ $Date: 2003/03/02 18:43:54 $
+ * @version $Revision: 1.89 $ $Date: 2003/03/04 17:26:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -75,7 +75,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // set current project to tempfileproject
         cms.getRequestContext().setCurrentProject(tempProject);
         CmsFile tempFile = cms.readFile(temporaryFilename);
-        Map minfos = cms.readPropertiesMap(temporaryFilename);
+        Map minfos = cms.readProperties(temporaryFilename);
         // set current project
         cms.getRequestContext().setCurrentProject(curProject);
         CmsFile orgFile = cms.readFile(originalFilename);

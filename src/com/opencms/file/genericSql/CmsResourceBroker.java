@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/04 17:19:28 $
-* Version: $Revision: 1.361 $
+* Date   : $Date: 2003/03/04 17:25:55 $
+* Version: $Revision: 1.362 $
 
 *
 * This library is part of OpenCms -
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.361 $ $Date: 2003/03/04 17:19:28 $
+ * @version $Revision: 1.362 $ $Date: 2003/03/04 17:25:55 $
 
  *
  */
@@ -456,66 +456,73 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
         }
         return( false );
     }
-/**
- * Checks, if the user may read this resource.
- * NOTE: If the ressource is in the project you never have to fallback.
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- *
- * @return weather the user has access, or not.
- */
-public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException
-{
-    String cacheKey = getCacheKey(null, currentUser, new CmsProject(currentProject.getId(), -1), resource.getResourceName());
-    Boolean access = (Boolean)m_accessCache.get(cacheKey);
-    if (access != null) {
+    
+    /**
+     * Checks if the user may read this resource.
+     * NOTE: If the ressource is in the project you never have to fallback.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resource The resource to check.
+     *
+     * @return weather the user has access, or not.
+     */
+    public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
+        String cacheKey = getCacheKey(null, currentUser, new CmsProject(currentProject.getId(), -1), resource.getResourceName());
+        Boolean access = (Boolean)m_accessCache.get(cacheKey);
+        if (access != null) {
             return access.booleanValue();
-    } else {
-    if ((resource == null) || !accessProject(currentUser, currentProject, resource.getProjectId()) ||
-            (!accessOther(resource, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ))) {
-        m_accessCache.put(cacheKey, new Boolean(false));
-        return false;
-    }
+        } else {
+            if ( (resource == null) 
+                 || !accessProject(currentUser, currentProject, resource.getProjectId()) 
+                 || ( !accessOther(resource, C_ACCESS_PUBLIC_READ) 
+                      && !accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) 
+                      && !accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ))) {
 
-    // check the rights for all
-    CmsResource res = resource; // save the original resource name to be used if an error occurs.
-    while (res.getParent() != null)
-    {
-        // readFolder without checking access
-        res = m_dbAccess.readFolder(currentProject.getId(), res.getRootName() + res.getParent());
-        if (res == null)
-        {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
+                m_accessCache.put(cacheKey, new Boolean(false));
+                return false;
             }
-            throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
-        }
-        if (!accessOther(res, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ)) {
-            m_accessCache.put(cacheKey, new Boolean(false));
-            return false;
-        }
 
+            // check the rights for all
+            CmsResource res = resource; // save the original resource name to be used if an error occurs.
+            while (res.getParent() != null) {
+                // readFolder without checking access
+                res = m_dbAccess.readFolder(currentProject.getId(), res.getRootName() + res.getParent());
+                if (res == null) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
+                    }
+                    throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
+                }
+                if ( !accessOther(res, C_ACCESS_PUBLIC_READ) 
+                     && !accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ) 
+                     && !accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ)) {
+                    
+                    m_accessCache.put(cacheKey, new Boolean(false));
+                    return false;
+                }
+
+            }
+            m_accessCache.put(cacheKey, new Boolean(true));
+            return true;
+        }
     }
-    m_accessCache.put(cacheKey, new Boolean(true));
-    return true;
+    
+    /**
+     * Checks if the user may read this resource.
+     * NOTE: If the ressource is in the project you never have to fallback.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resource The resource to check.
+     *
+     * @return weather the user has access, or not.
+     */
+    public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String resourceName) throws CmsException {
+        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName);
+        return accessRead(currentUser, currentProject, resource);
     }
-}
-/**
- * Checks, if the user may read this resource.
- * NOTE: If the ressource is in the project you never have to fallback.
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The resource to check.
- *
- * @return weather the user has access, or not.
- */
-public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String resourceName) throws CmsException {
-    CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName);
-    return accessRead(currentUser, currentProject, resource);
-}
+
     /**
      * Checks, if the user may unlock this resource.
      *

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/03/04 17:26:28 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -776,7 +776,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         	changed = false;
             //the resource exists, check if properties has to be updated
             importedResource = cms.readFolder(destination);
-            Map oldProperties = cms.readPropertiesMap(importedResource.getAbsolutePath());
+            Map oldProperties = cms.readProperties(importedResource.getAbsolutePath());
             if(oldProperties == null){
                 oldProperties = new HashMap();
             }

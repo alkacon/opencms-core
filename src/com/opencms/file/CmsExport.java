@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/03/02 18:43:53 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2003/03/04 17:26:28 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.49 $ $Date: 2003/03/02 18:43:53 $
+ * @version $Revision: 1.50 $ $Date: 2003/03/04 17:26:28 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -704,7 +704,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         file.appendChild(properties);
 
         // read the properties
-        Map fileProperties = m_cms.readPropertiesMap(resource.getAbsolutePath());
+        Map fileProperties = m_cms.readProperties(resource.getAbsolutePath());
         Iterator i = fileProperties.keySet().iterator();
 
         // create xml-elements for the properties

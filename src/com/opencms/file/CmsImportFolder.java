@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2003/03/02 18:43:53 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/03/04 17:26:28 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.zip.ZipInputStream;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2003/03/02 18:43:53 $
+ * @version $Revision: 1.19 $ $Date: 2003/03/04 17:26:28 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -351,7 +351,7 @@ public class CmsImportFolder implements I_CmsConstants {
                     m_cms.lockResource(filename, true);
                     
                     // save the properties of the old file
-                    oldProperties = m_cms.readPropertiesMap(filename);
+                    oldProperties = m_cms.readProperties(filename);
                     
                     // trash the old file
                     m_cms.deleteResource( filename );

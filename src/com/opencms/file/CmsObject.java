@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/03/04 17:19:29 $
-* Version: $Revision: 1.262 $
+* Date   : $Date: 2003/03/04 17:26:28 $
+* Version: $Revision: 1.263 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.262 $
+ * @version $Revision: 1.263 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -3333,7 +3333,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @return Map of Strings representing all properties of the resource
      * @throws CmsException in case there where problems reading the properties
      */    
-    public Map readPropertiesMap(String resource) throws CmsException {
+    public Map readProperties(String resource) throws CmsException {
         return m_rb.readProperties(m_context.currentUser(), m_context.currentProject(), m_context.getSiteRoot(resource), m_context.getSiteRoot(), false);    
     }    
         

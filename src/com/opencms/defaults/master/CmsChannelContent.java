@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/03/02 18:43:58 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/03/04 17:25:10 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.16 $
- * $Date: 2003/03/02 18:43:58 $
+ * $Revision: 1.17 $
+ * $Date: 2003/03/04 17:25:10 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -158,7 +158,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
             m_groupid = m_channel.getGroupId();
             m_userid = m_channel.getOwnerId();
             m_accessflags = m_channel.getAccessFlags();
-            m_properties = m_cms.readPropertiesMap(m_channel.getAbsolutePath());
+            m_properties = m_cms.readProperties(m_channel.getAbsolutePath());
             m_channelId = (String)m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
         } catch (CmsException exc){
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
@@ -184,7 +184,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_userid = resource.getOwnerId();
         m_accessflags = resource.getAccessFlags();
         try{
-            m_properties = cms.readPropertiesMap(resource.getAbsolutePath());
+            m_properties = cms.readProperties(resource.getAbsolutePath());
             channelId = (String)m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
         } catch (CmsException exc){
             m_properties = new Hashtable();

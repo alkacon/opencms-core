@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/03/02 18:43:53 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/03/04 17:26:28 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.12 $ $Date: 2003/03/02 18:43:53 $
+ * @version $Revision: 1.13 $ $Date: 2003/03/04 17:26:28 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -477,7 +477,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         Map fileProperties = new HashMap();
         try{
             m_cms.setContextToCos();
-            fileProperties = m_cms.readPropertiesMap(resource.getAbsolutePath());
+            fileProperties = m_cms.readProperties(resource.getAbsolutePath());
         } catch (CmsException e){
             throw e;
         } finally {

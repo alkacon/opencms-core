@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/03/04 17:26:34 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2003/03/02 18:43:54 $
+ * @version $Revision: 1.35 $ $Date: 2003/03/04 17:26:34 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -303,7 +303,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String filename = (String)session.getValue(C_PARA_FILE);
         if(filename != null) {
-            Map properties = cms.readPropertiesMap(filename);
+            Map properties = cms.readProperties(filename);
             Iterator i = properties.keySet().iterator();
             while(i.hasNext()) {
                 String key = (String)i.next();
@@ -342,7 +342,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
             I_CmsResourceType type = cms.getResourceType(file.getType());
 
             // get all existing properties of this file
-            Map properties = cms.readPropertiesMap(filename);
+            Map properties = cms.readProperties(filename);
 
             // get all propertydefinitions for this type
             Vector propertydef = cms.readAllPropertydefinitions(type.getResourceTypeName());

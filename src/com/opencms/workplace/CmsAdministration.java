@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/03/04 14:11:14 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/03/04 17:26:34 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.28 $ $Date: 2003/03/04 14:11:14 $
+ * @version $Name:  $ $Revision: 1.29 $ $Date: 2003/03/04 17:26:34 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -278,7 +278,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             for(int i = 0;i < numFolders;i++) {
                 CmsResource aktIcon = (CmsResource)iconVector.elementAt(i);
                 try {
-                    Map propertyinfos = cms.readPropertiesMap(aktIcon.getAbsolutePath());
+                    Map propertyinfos = cms.readProperties(aktIcon.getAbsolutePath());
                     iconNames[i] = aktIcon.getAbsolutePath();
                     index[i] = i;
                     folderLangKeys[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_NAVTEXT));
