@@ -120,7 +120,7 @@ Other Preference input forms will be added here
 	<tr>
 		<td class=dialogtxt>
 			<input type=checkbox name="lockdialog" ]]><PROCESS>checklockdialog</PROCESS><![CDATA[>
-			]]><LABEL value="input.showlockdialog" /><![CDATA[:
+			]]><LABEL value="input.showlockdialog" /><![CDATA[
 		</td>
 	</tr>
 	<tr>
