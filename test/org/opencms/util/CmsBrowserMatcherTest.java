@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/CmsBrowserMatcherTest.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/25 16:37:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -106,7 +106,7 @@ public class CmsBrowserMatcherTest extends TestCase {
             for (int j = 0; j < pattern.size(); j++) {
                 boolean matches = ((Pattern)pattern.get(j)).matcher(sampleagent[i]).matches();
                 if (matches) {
-                    System.err.println(browser[j] + "\t matches " + sampleagent[i]);
+                    System.out.println(browser[j] + "\t matches " + sampleagent[i]);
                     break;
                 }
             }
@@ -123,7 +123,7 @@ public class CmsBrowserMatcherTest extends TestCase {
         String replace  = "/system/workplace/jsp/";
         
         String result = source.replaceAll(regex, replace);
-        System.err.println(result);
+        System.out.println(result);
         assertEquals(result, target);
     }
 

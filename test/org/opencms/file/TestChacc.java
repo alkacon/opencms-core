@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2004/06/06 10:47:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/25 16:36:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -103,8 +103,10 @@ public class TestChacc extends OpenCmsTestCase {
        
         tc.storeResources(cms, resource1);
                 
+        cms.lockResource(resource1);
         cms.chacc(resource1, I_CmsPrincipal.C_PRINCIPAL_GROUP, group.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
-
+        cms.unlockResource(resource1);
+        
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_CHACC);
         // test the ace of the new permission
@@ -140,9 +142,9 @@ public class TestChacc extends OpenCmsTestCase {
        
         tc.storeResources(cms, resource1);
                 
+        cms.lockResource(resource1);
         cms.chacc(resource1, I_CmsPrincipal.C_PRINCIPAL_GROUP, group.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
-
-        //cms.chacc(resource1, "group", "Guests", I_CmsConstants.C_ACCESS_READ, I_CmsConstants.C_ACCESS_WRITE, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.unlockResource(resource1);
 
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_CHACC);
@@ -166,6 +168,7 @@ public class TestChacc extends OpenCmsTestCase {
         // now check all the subresources in the folder, access must be modified as well
         List subresources = tc.getSubtree(cms, resource1);
         Iterator j = subresources.iterator();
+        
         while (j.hasNext()) {
             CmsResource subRes = (CmsResource)j.next();
             String subResName = cms.readAbsolutePath(subRes);
@@ -200,9 +203,9 @@ public class TestChacc extends OpenCmsTestCase {
        
         tc.storeResources(cms, resource1);
                 
+        cms.lockResource(resource1);
         cms.chacc(resource1, I_CmsPrincipal.C_PRINCIPAL_USER, user.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
-
-        //cms.chacc(resource1, "group", "Guests", I_CmsConstants.C_ACCESS_READ, I_CmsConstants.C_ACCESS_WRITE, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.unlockResource(resource1);
 
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_CHACC);
@@ -242,6 +245,7 @@ public class TestChacc extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public void testChaccFileUser() throws Throwable {
+
         CmsObject cms = getCmsObject();     
         echo("Testing chacc on a file and a user");
         chaccFileUser(this, cms, "/folder1/index.html", cms.readUser("Guest"), new CmsPermissionSet(I_CmsConstants.C_ACCESS_WRITE, I_CmsConstants.C_ACCESS_READ), 0);   

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/Attic/CmsImportTest.java,v $
- * Date   : $Date: 2003/08/07 09:04:33 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/25 16:37:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -111,7 +111,7 @@ public class CmsImportTest extends TestCase {
         
         content = CmsImportVersion2.setDirectories(content, rules);      
         
-        System.err.println(content);  
+        System.out.println(content);  
         assertEquals(content, result);           
     }
 

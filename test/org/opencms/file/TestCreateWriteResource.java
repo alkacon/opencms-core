@@ -1,0 +1,657 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
+ * Date   : $Date: 2004/06/25 16:36:37 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+ 
+package org.opencms.file;
+
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
+import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.util.CmsUUID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+/**
+ * Unit tests for the create and import methods.<p>
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.1 $
+ */
+public class TestCreateWriteResource extends OpenCmsTestCase {
+  
+    /**
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
+     */    
+    public TestCreateWriteResource(String arg0) {
+        super(arg0);
+    }
+    
+    /**
+     * Test suite for this test class.<p>
+     * 
+     * @return the test suite
+     */
+    public static Test suite() {
+        
+        TestSuite suite = new TestSuite();
+        
+        suite.addTest(new TestCreateWriteResource("testImportResource"));
+        suite.addTest(new TestCreateWriteResource("testImportResourceAgain"));
+        suite.addTest(new TestCreateWriteResource("testImportSibling"));        
+        suite.addTest(new TestCreateWriteResource("testImportFolder"));
+        suite.addTest(new TestCreateWriteResource("testImportFolderAgain"));
+        suite.addTest(new TestCreateWriteResource("testCreateResource"));
+        suite.addTest(new TestCreateWriteResource("testCreateResourceAgain"));
+        suite.addTest(new TestCreateWriteResource("testCreateFolder"));
+        suite.addTest(new TestCreateWriteResource("testCreateFolderAgain"));        
+        
+        TestSetup wrapper = new TestSetup(suite) {
+            
+            protected void setUp() {
+                setupOpenCms("simpletest", "/sites/default/");
+            }
+            
+            protected void tearDown() {
+                // removeOpenCms();
+            }
+        };
+        
+        return wrapper;
+   }
+   
+   /**
+    * Test the create resource method for a folder.<p>
+    * 
+    * @throws Throwable if something goes wrong
+    */
+   public void testCreateFolder() throws Throwable {
+
+       CmsObject cms = getCmsObject();     
+       echo("Testing creating a folder");
+       
+       String resourcename = "/folder1/test2/";   
+       long timestamp = System.currentTimeMillis()-1; 
+       
+       cms.createResource(resourcename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, null);
+       
+       // check the created folder
+       CmsFolder folder = cms.readFolder(resourcename);
+       
+       assertEquals(folder.getState(), I_CmsConstants.C_STATE_NEW);
+       assertTrue(folder.getDateLastModified() > timestamp);
+       assertTrue(folder.getDateCreated() > timestamp);
+       
+       // ensure created resource is a folder
+       assertIsFolder(cms, resourcename);  
+       // project must be current project
+       assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+       // state must be "new"
+       assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+       // date last modified 
+       assertDateLastModifiedAfter(cms, resourcename, timestamp);
+       // date created
+       assertDateCreatedAfter(cms, resourcename, timestamp);
+       // the user last modified must be the current user
+       assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());       
+       
+       // publish the project
+       cms.unlockProject(cms.getRequestContext().currentProject().getId());
+       cms.publishProject();    
+       
+       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
+   }
+   
+   /**
+    * Test the create a folder again.<p>
+    * 
+    * @throws Throwable if something goes wrong
+    */
+   public void testCreateFolderAgain() throws Throwable {
+
+       CmsObject cms = getCmsObject();     
+       echo("Testing to create an existing folder again");
+
+       String resourcename = "/folder1/test2/";
+       storeResources(cms, resourcename);
+       long timestamp = System.currentTimeMillis();
+       
+       cms.lockResource(resourcename);       
+       cms.createResource(resourcename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, null);
+       
+       // ensure created resource is a folder
+       assertIsFolder(cms, resourcename);     
+       // project must be current project
+       assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+       // state must be "changed"
+       assertState(cms, resourcename, I_CmsConstants.C_STATE_CHANGED);
+       // date last modified 
+       assertDateLastModifiedAfter(cms, resourcename, timestamp);
+       // the user last modified must be the current user
+       assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+       // now evaluate the result
+       assertFilter(cms, resourcename, OpenCmsTestResourceFilter.FILTER_CREATE_RESOURCE);       
+       
+       // publish the project
+       cms.unlockProject(cms.getRequestContext().currentProject().getId());
+       cms.publishProject();    
+       
+       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
+   }   
+    
+   /**
+    * Test the create resource method.<p>
+    * 
+    * @throws Throwable if something goes wrong
+    */
+   public void testCreateResource() throws Throwable {
+
+       CmsObject cms = getCmsObject();     
+       echo("Testing create resource");
+       
+       String resourcename = "/folder1/test2.html";
+       long timestamp = System.currentTimeMillis()-1;        
+              
+       String contentStr = "Hello this is my other content";
+       byte[] content = contentStr.getBytes();      
+       
+       cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content, null);
+       
+       // ensure created resource type
+       assertResourceType(cms, resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);  
+       // project must be current project
+       assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+       // state must be "new"
+       assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+       // date last modified 
+       assertDateLastModifiedAfter(cms, resourcename, timestamp);
+       // date created
+       assertDateCreatedAfter(cms, resourcename, timestamp);
+       // the user last modified must be the current user
+       assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser()); 
+       // check the content
+       assertContent(cms, resourcename, content);
+              
+       // publish the project
+       cms.unlockProject(cms.getRequestContext().currentProject().getId());
+       cms.publishProject();    
+       
+       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
+   }
+   
+   /**
+    * Test the create resource method for an already existing resource.<p>
+    * 
+    * @throws Throwable if something goes wrong
+    */
+   public void testCreateResourceAgain() throws Throwable {
+
+       CmsObject cms = getCmsObject();     
+       echo("Testing to create an existing resource again");
+
+       String resourcename = "/folder1/test2.html";
+       storeResources(cms, resourcename);
+       long timestamp = System.currentTimeMillis();
+       
+       String contentStr = "Hello this is my NEW AND ALSO CHANGED other content";
+       byte[] content = contentStr.getBytes();      
+       
+       cms.lockResource(resourcename);
+       cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content, null);
+       
+       // project must be current project
+       assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+       // state must be "changed"
+       assertState(cms, resourcename, I_CmsConstants.C_STATE_CHANGED);
+       // date last modified 
+       assertDateLastModifiedAfter(cms, resourcename, timestamp);
+       // the user last modified must be the current user
+       assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+       // check the content
+       assertContent(cms, resourcename, content);     
+       // now check the filter
+       assertFilter(cms, resourcename, OpenCmsTestResourceFilter.FILTER_CREATE_RESOURCE);       
+       
+       // publish the project
+       cms.unlockProject(cms.getRequestContext().currentProject().getId());
+       cms.publishProject();    
+       
+       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
+   }
+
+    /**
+     * Test the import resource method with a folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testImportFolder() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing import resource for a folder");
+        
+        String resourcename = "/folder1/test1/";
+        
+        long timestamp = System.currentTimeMillis() - 87654321;        
+        
+        // create a new resource
+        CmsResource resource = new CmsResource (
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),            
+            "test1",
+            CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+            0,
+            cms.getRequestContext().currentProject().getId(),
+            I_CmsConstants.C_STATE_NEW,
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.C_RESOURCE_TYPE_ID).getLoaderId(),
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1,
+            -1
+        );
+        
+        cms.importResource(resourcename, resource, null, null);
+        
+        // ensure created resource is a folder
+        assertIsFolder(cms, resourcename);  
+        // project must be current project
+        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+        // date last modified 
+        assertDateLastModified(cms, resourcename, timestamp);
+        // date created
+        assertDateCreated(cms, resourcename, timestamp);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser()); 
+        
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();   
+        
+        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);
+    }  
+    
+    /**
+     * Test the import resource method for an existing folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testImportFolderAgain() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing to import an existing folder again");
+        
+        String resourcename = "/folder1/test1/";
+        
+        storeResources(cms, resourcename);
+        long timestamp = System.currentTimeMillis() - 12345678;       
+
+        // create a new folder
+        CmsResource resource = new CmsResource (
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),            
+            "test1",
+            CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+            0,
+            cms.getRequestContext().currentProject().getId(),
+            I_CmsConstants.C_STATE_NEW,
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.C_RESOURCE_TYPE_ID).getLoaderId(),
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1,
+            -1
+        );
+        
+        cms.importResource(resourcename, resource, null, null);
+        
+        // ensure created resource is a folder
+        assertIsFolder(cms, resourcename);  
+        // project must be current project
+        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, resourcename, I_CmsConstants.C_STATE_CHANGED);
+        // date last modified 
+        assertDateLastModified(cms, resourcename, timestamp);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());         
+        // now evaluate the filter
+        assertFilter(cms, resourcename, OpenCmsTestResourceFilter.FILTER_CREATE_RESOURCE);       
+        
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();     
+        
+        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);        
+    }      
+    
+    /**
+     * Test the import resource method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testImportResource() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing import resource");
+        
+        String resourcename = "/folder1/test1.html";
+        
+        String contentStr = "Hello this is my content";
+        byte[] content = contentStr.getBytes();
+        long timestamp = System.currentTimeMillis() - 87654321;        
+        
+        // create a new resource
+        CmsResource resource = new CmsResource (
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),            
+            "test1.html",
+            CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            0,
+            cms.getRequestContext().currentProject().getId(),
+            I_CmsConstants.C_STATE_NEW,
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID).getLoaderId(),
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1,
+            content.length
+        );
+        
+        cms.importResource(resourcename, resource, content, null);
+        
+        // ensure created resource type
+        assertResourceType(cms, resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);  
+        // project must be current project
+        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+        // date last modified 
+        assertDateLastModified(cms, resourcename, timestamp);
+        // date created
+        assertDateCreated(cms, resourcename, timestamp);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser()); 
+        // the content 
+        assertContent(cms, resourcename, content);
+        
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();   
+        
+        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);
+    }  
+    
+    /**
+     * Test the import resource method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testImportResourceAgain() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing to import an existing resource again");
+        
+        String resourcename = "/folder1/test1.html";
+        
+        storeResources(cms, resourcename);
+        long timestamp = System.currentTimeMillis() - 12345678;
+        
+        String contentStr = "Hello this is my NEW AND CHANGED content";
+        byte[] content = contentStr.getBytes();
+
+        // create a new resource
+        CmsResource resource = new CmsResource (
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            "test1.html",
+            CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            0,
+            cms.getRequestContext().currentProject().getId(),
+            I_CmsConstants.C_STATE_NEW,
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID).getLoaderId(),
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1,
+            content.length
+        );
+        
+        cms.importResource(resourcename, resource, content, null);
+        
+        // ensure created resource type
+        assertResourceType(cms, resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID); 
+        // project must be current project
+        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, resourcename, I_CmsConstants.C_STATE_CHANGED);
+        // date last modified 
+        assertDateLastModified(cms, resourcename, timestamp);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());         
+        // now evaluate the filter
+        assertFilter(cms, resourcename, OpenCmsTestResourceFilter.FILTER_CREATE_RESOURCE);        
+                
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();     
+        
+        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);        
+    }  
+        
+    /**
+     * Test the import of a sibling.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testImportSibling() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing to import an existing resource as sibling");
+
+        CmsProperty prop1 = new CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, "The title", null);
+        CmsProperty prop2 = new CmsProperty(I_CmsConstants.C_PROPERTY_DESCRIPTION, "The description", null);
+        CmsProperty prop3 = new CmsProperty(I_CmsConstants.C_PROPERTY_KEYWORDS, "The keywords", null);
+        
+        List properties = new ArrayList();
+        properties.add(prop1);
+        
+        String siblingname = "/folder1/test1.html";
+        
+        // make sure some non-shared properties are attached to the sibling
+        cms.lockResource(siblingname);
+        cms.writePropertyObjects(siblingname, properties);
+        cms.unlockResource(siblingname);
+        
+        long timestamp = System.currentTimeMillis() - 12345678;
+        
+        String resourcename1 = "/folder2/test1_sib1.html";
+        String resourcename2 = "/folder1/subfolder11/test1_sib2.html";
+        
+        // read the existing resource to create siblings for
+        CmsFile file = cms.readFile(siblingname);
+        byte[] content = file.getContents(); 
+        
+        assertTrue(file.getLength() > 0);
+        assertTrue(content.length > 0);
+        
+        storeResources(cms, siblingname);
+
+        // create a new resource
+        CmsResource resource;
+
+        resource= new CmsResource (
+            file.getStructureId(),
+            file.getResourceId(),
+            CmsUUID.getNullUUID(),
+            file.getContentId(),
+            CmsResource.getName(resourcename2),
+            CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            0,
+            cms.getRequestContext().currentProject().getId(),
+            I_CmsConstants.C_STATE_NEW,
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID).getLoaderId(),
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1,
+            0
+        );
+        
+        properties.add(prop2);         
+        // using null as content must create sibling of existing content
+        cms.importResource(resourcename2, resource, null, properties);
+        
+        // project must be current project
+        assertProject(cms, resourcename2, cms.getRequestContext().currentProject());
+        // resource type
+        assertResourceType(cms, resourcename2, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        assertResourceType(cms, siblingname, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        // state
+        assertState(cms, resourcename2, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, siblingname, I_CmsConstants.C_STATE_CHANGED);
+        // date last modified
+        assertDateLastModified(cms, resourcename2, file.getDateLastModified());      
+        assertDateLastModified(cms, siblingname, file.getDateLastModified());      
+        // the user last modified
+        assertUserLastModified(cms, resourcename2, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, siblingname, cms.getRequestContext().currentUser());
+        // content must be identical to stored content of new resource
+        assertContent(cms, resourcename2, content);
+        assertContent(cms, siblingname, content);       
+        // check the sibling count
+        assertSiblingCountIncremented(cms, siblingname, 1);       
+
+        // now evaluate the filter
+        OpenCmsTestResourceConfigurableFilter filter =
+            new OpenCmsTestResourceConfigurableFilter(OpenCmsTestResourceFilter.FILTER_CREATE_RESOURCE);
+
+        filter.disableSiblingCountTest();
+        assertFilter(cms, siblingname, filter);   
+        
+        String contentStr = "Hello this is my NEW AND CHANGED sibling content";
+        content = contentStr.getBytes();        
+        
+        resource= new CmsResource (
+            file.getStructureId(),
+            file.getResourceId(),
+            CmsUUID.getNullUUID(),
+            file.getContentId(),
+            CmsResource.getName(resourcename1),
+            CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            0,
+            cms.getRequestContext().currentProject().getId(),
+            I_CmsConstants.C_STATE_NEW,
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID).getLoaderId(),
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            timestamp,
+            cms.getRequestContext().currentUser().getId(), 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1,
+            content.length
+        );
+        
+        properties.add(prop3);
+        // using new content must replace existing content
+        cms.importResource(resourcename1, resource, content, properties);
+                
+        // project must be current project
+        assertProject(cms, resourcename1, cms.getRequestContext().currentProject());
+        assertProject(cms, resourcename2, cms.getRequestContext().currentProject());
+        // resource type
+        assertResourceType(cms, resourcename1, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        assertResourceType(cms, resourcename2, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        assertResourceType(cms, siblingname, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        // state
+        assertState(cms, resourcename1, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, resourcename2, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, siblingname, I_CmsConstants.C_STATE_CHANGED);
+        // date last modified
+        assertDateLastModified(cms, resourcename1, timestamp);      
+        assertDateLastModified(cms, resourcename2, timestamp);      
+        assertDateLastModified(cms, siblingname, timestamp);      
+        // the user last modified
+        assertUserLastModified(cms, resourcename1, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, resourcename2, cms.getRequestContext().currentUser());
+        assertUserLastModified(cms, siblingname, cms.getRequestContext().currentUser());
+        // content must be identical to stored content of new resource
+        assertContent(cms, resourcename1, content);
+        assertContent(cms, resourcename2, content);
+        assertContent(cms, siblingname, content);       
+        // check the sibling count
+        assertSiblingCountIncremented(cms, siblingname, 2);       
+
+        // now evaluate the filter
+        assertFilter(cms, siblingname, filter);   
+        
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();     
+        
+        assertState(cms, resourcename1, I_CmsConstants.C_STATE_UNCHANGED);  
+        assertState(cms, resourcename2, I_CmsConstants.C_STATE_UNCHANGED);  
+    }  
+}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReadFileheader.java,v $
- * Date   : $Date: 2004/06/13 23:43:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/25 16:36:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.test.OpenCmsTestCase;
  * Unit test for the "readFileHeader" method of the CmsObject to test the release and expiration date.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestReadFileheader extends OpenCmsTestCase {
   
@@ -63,7 +63,6 @@ public class TestReadFileheader extends OpenCmsTestCase {
     public static Test suite() {
         
         TestSuite suite = new TestSuite();
-       
         
         suite.addTest(new TestReadFileheader("testReadBeforeReleaseDate"));
         suite.addTest(new TestReadFileheader("testReadInValidTimeRange"));
@@ -99,10 +98,13 @@ public class TestReadFileheader extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
       
         // preperation, modify the release date
-        CmsFile preperationRes = (CmsFile)cms.readFileHeader(resource1, CmsResourceFilter.ALL);
+        CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
         // set the release date to one hour in the future
         preperationRes .setDateReleased(System.currentTimeMillis() + (60 * 60 *1000));
-        cms.writeFileHeader(preperationRes);
+        
+        cms.lockResource(resource1);        
+        cms.writeFile(preperationRes);
+        cms.unlockResource(resource1);
         
         // now try to access the resource
         try {
@@ -132,10 +134,13 @@ public class TestReadFileheader extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
       
         // preperation, modify the expiration date
-        CmsFile preperationRes = (CmsFile)cms.readFileHeader(resource1, CmsResourceFilter.ALL);
+        CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
         // set the expiration date to one hour in the past
-        preperationRes .setDateExpired(System.currentTimeMillis() - (60 * 60 *1000));
-        cms.writeFileHeader(preperationRes);
+        preperationRes.setDateExpired(System.currentTimeMillis() - (60 * 60 *1000));
+
+        cms.lockResource(resource1);          
+        cms.writeFile(preperationRes);
+        cms.unlockResource(resource1);          
         
         // now try to access the resource
         try {
@@ -165,12 +170,15 @@ public class TestReadFileheader extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
       
         // preperation, modify the expiration date
-        CmsFile preperationRes = (CmsFile)cms.readFileHeader(resource1, CmsResourceFilter.ALL);
+        CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
         // set the release date to one hour in the future
-        preperationRes .setDateReleased(System.currentTimeMillis()- (60 * 60 *1000));
+        preperationRes.setDateReleased(System.currentTimeMillis()- (60 * 60 *1000));
         // set the expiration date to one hour in the past
-        preperationRes .setDateExpired(System.currentTimeMillis() + (60 * 60 *1000));
-        cms.writeFileHeader(preperationRes);
+        preperationRes.setDateExpired(System.currentTimeMillis() + (60 * 60 *1000));
+        
+        cms.lockResource(resource1);                  
+        cms.writeFile(preperationRes);
+        cms.unlockResource(resource1);          
         
         // now try to access the resource
         try {

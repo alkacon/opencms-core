@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2004/06/06 10:47:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/25 16:36:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,10 +42,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Unit test for the "touch" method of the CmsObject.<p>
+ * Unit tests for VFS permissions.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.2 $
  */
 public class TestPermissions extends OpenCmsTestCase {
   
@@ -84,7 +85,7 @@ public class TestPermissions extends OpenCmsTestCase {
     }     
     
     /**
-     * Test the touch method on a file.<p>
+     * Test the visible permisssions.<p>
      * 
      * @throws Throwable if something goes wrong
      */
@@ -96,6 +97,7 @@ public class TestPermissions extends OpenCmsTestCase {
         String resource = "index.html";
         CmsResource res = cms.readFileHeader(resource);
         
+        cms.lockResource(resource);
         // modify the resource permissions for the tests
         // remove all "Users" group permissions 
         cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
@@ -103,22 +105,23 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_USER, "test1", I_CmsConstants.C_PERMISSION_READ, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
         // allow read and visible for user "test2"
         cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_USER, "test2", I_CmsConstants.C_PERMISSION_READ + I_CmsConstants.C_PERMISSION_VIEW, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.unlockResource(resource);
         
         cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        if (! cms.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_VIEW, 0), CmsResourceFilter.ALL)) {
+        if (! cms.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_VIEW, 0), true, CmsResourceFilter.ALL)) {
             fail("Visible permission checked but should have been ignored");
         }
-        if (cms.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_VIEW, 0), CmsResourceFilter.ONLY_VISIBLE)) {
+        if (cms.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_VIEW, 0), true, CmsResourceFilter.ONLY_VISIBLE)) {
             fail("Visible permission not checked");
         }            
         
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        if (! cms.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_VIEW, 0), CmsResourceFilter.ALL)) {
+        if (! cms.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_VIEW, 0), true, CmsResourceFilter.ALL)) {
             fail("Visible permission checked but should be ignored");
         }
-        if (! cms.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_VIEW, 0), CmsResourceFilter.ONLY_VISIBLE)) {
+        if (! cms.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_VIEW, 0), true, CmsResourceFilter.ONLY_VISIBLE)) {
             fail("Visible permission not detected");
         }        
     }  

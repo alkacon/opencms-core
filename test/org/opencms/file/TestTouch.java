@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/25 16:36:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestTouch extends OpenCmsTestCase {
   
@@ -98,7 +98,9 @@ public class TestTouch extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
 
         long timestamp = System.currentTimeMillis();
+        cms.lockResource(resource1);
         cms.touch(resource1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        cms.unlockResource(resource1);
 
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);
@@ -124,7 +126,9 @@ public class TestTouch extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
          
         long timestamp = System.currentTimeMillis();
+        cms.lockResource(resource1);
         cms.touch(resource1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        cms.unlockResource(resource1);
 
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);
@@ -162,7 +166,9 @@ public class TestTouch extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
         
         long timestamp = System.currentTimeMillis();
+        cms.lockResource(resource1);
         cms.touch(resource1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, true);
+        cms.unlockResource(resource1);
 
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);

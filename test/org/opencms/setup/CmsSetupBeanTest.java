@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/Attic/CmsSetupBeanTest.java,v $
- * Date   : $Date: 2004/05/25 10:12:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/25 16:37:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.apache.commons.collections.ExtendedProperties;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -110,10 +110,10 @@ public class CmsSetupBeanTest extends OpenCmsTestCase {
                 oldValue = (String)obj;
                 newValue = (String)newProperties.get(key);
             }
-            System.err.println(key);
-            System.err.println(oldValue);
-            System.err.println(newValue);
-            System.err.println("---");
+            System.out.println(key);
+            System.out.println(oldValue);
+            System.out.println(newValue);
+            System.out.println("---");
             assertEquals(oldValue, newValue);   
         }        
         

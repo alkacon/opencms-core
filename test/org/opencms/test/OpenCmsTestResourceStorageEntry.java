@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2004/06/21 10:01:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/25 16:37:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,13 +49,14 @@ import org.opencms.util.CmsUUID;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class OpenCmsTestResourceStorageEntry {
 
     /** The size of the content. */
     protected int m_length;
     
+    /** The ccess control list entries. */
     private Vector m_accessControlEntries;
     
     /** The access control list. */
@@ -140,7 +141,7 @@ public class OpenCmsTestResourceStorageEntry {
      * @throws CmsException if something goes wrong 
      */
     public OpenCmsTestResourceStorageEntry(CmsObject cms, String resourceName, CmsResource res) throws CmsException {
-        m_contentId = res.getFileId();
+        m_contentId = res.getContentId();
         m_dateCreated = res.getDateCreated();
         m_dateLastModified = res.getDateLastModified();
         m_dateReleased = res.getDateReleased();

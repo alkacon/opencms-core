@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/CmsStringSubstitutionTest.java,v $
- * Date   : $Date: 2004/06/13 23:43:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/25 16:37:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * Test cases for the class "CmsStringSubstitution".<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.0
  */
@@ -65,7 +65,7 @@ public class CmsStringSubstitutionTest extends TestCase {
         String replace = "\\${path}";
 
         test = CmsStringSubstitution.substitute(content, search, replace);
-        System.err.println(test);
+        System.out.println(test);
         assertEquals(test, "<a href=\"\\${path}test.jpg\">");
 
         test = CmsStringSubstitution.substitute(test, replace, search);

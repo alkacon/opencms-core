@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2004/06/21 10:01:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/25 16:36:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -111,7 +111,7 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the last-modified-in-project field is the current project
         tc.assertProject(cms, source, cms.getRequestContext().currentProject());
         // validate if the sibling count field has been incremented
-        tc.assertSiblingCountIncremented(cms, source);
+        tc.assertSiblingCountIncremented(cms, source, 1);
         // validate if the sibling does not have a red flag
         tc.assertModifiedInCurrentProject(cms, source, false);
         // validate if the lock is an exclusive shared lock for the current user
@@ -145,7 +145,7 @@ public class TestSiblings extends OpenCmsTestCase {
         
         // create a new sibling from the source
         List properties = cms.readPropertyObjects(source, false);
-        cms.createSibling(target, source, properties);
+        cms.createSibling(source, target, properties);
 
         // validate the source sibling
         
@@ -154,7 +154,7 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the last-modified-in-project field is the current project
         tc.assertProject(cms, source, cms.getRequestContext().currentProject());
         // validate if the sibling count field has been incremented
-        tc.assertSiblingCountIncremented(cms, source);
+        tc.assertSiblingCountIncremented(cms, source, 1);
         // validate if the sibling does not have a red flag
         tc.assertModifiedInCurrentProject(cms, source, false);
         // validate if the lock is an exclusive shared lock for the current user

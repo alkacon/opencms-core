@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2004/06/04 09:06:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/25 16:36:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
   
@@ -109,7 +109,9 @@ public class TestUndoChanges extends OpenCmsTestCase {
         TestProperty.writeProperty(tc, cms, resource1, property1);
                       
         // now undo everything
+        cms.lockResource(resource1);        
         cms.undoChanges(resource1, false);
+        cms.unlockResource(resource1);        
         
         tc.switchStorage("undoChanges");
         
@@ -150,7 +152,9 @@ public class TestUndoChanges extends OpenCmsTestCase {
         }
         
         // now undo everything
+        cms.lockResource(resource1);        
         cms.undoChanges(resource1, false);
+        cms.unlockResource(resource1);
         
         tc.switchStorage("undoChanges");
         
@@ -207,7 +211,9 @@ public class TestUndoChanges extends OpenCmsTestCase {
         }
         
         // now undo everything
+        cms.lockResource(resource1);        
         cms.undoChanges(resource1, true);
+        cms.unlockResource(resource1);
         
         tc.switchStorage(OpenCmsTestResourceStorage.GLOBAL_STORAGE);
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/06/21 10:01:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/25 16:37:26 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,92 +39,120 @@ import java.util.List;
 
 
 /**
- * Filter class for OpenCms CmsObject method tests. This object defines the attributes
- * of a CmsResource object which must not be changed after a method call in the CmsObject.
- * The defualt setting for all flags in the filter is "true", i.e. if an attribute should
- * be tested to a new, specified value, the equal test must be disabled in the filter.<p>
+ * Base filter class for OpenCms VFS access method tests.<p>
  * 
- *  @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.10 $
+ * A filter defines the attributes of a CmsResource which 
+ * must not be changed after a method call in the CmsObject.<p>
+ * 
+ * To use a filter, either use the static filters provided by this class,
+ * or create an instance of {@link org.opencms.test.OpenCmsTestResourceConfigurableFilter}.<p>
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * 
+ * @version $Revision: 1.11 $
  */
-public class OpenCmsTestResourceFilter {
+public abstract class OpenCmsTestResourceFilter {
 
-
-    /** Defintition of a filter used for the chacc method. */
-    public static OpenCmsTestResourceFilter FILTER_CHACC = getFilterChacc();
+    /** Definition of a filter used for the chacc method. */
+    public static final OpenCmsTestResourceFilter FILTER_CHACC = getFilterChacc();
     
-    /** Defintition of a equal filter. */
-    public static OpenCmsTestResourceFilter FILTER_EQUAL = new OpenCmsTestResourceFilter();
+    /** Definition of a filter used for the create resource method. */
+    public static final OpenCmsTestResourceFilter FILTER_CREATE_RESOURCE = getFilterCreateResource();    
     
-    /** Defintition of a filter used to validate the existing and the new sibling after a copy opreation. */
-    public static OpenCmsTestResourceFilter FILTER_EXISTING_AND_NEW_SIBLING = getFilterExistingAndNewSibling();     
+    /** Definition of a equal filter. */
+    public static final OpenCmsTestResourceFilter FILTER_EQUAL = new OpenCmsTestResourceConfigurableFilter();
     
-    /** Defintition of a filter used to validate an existing sibling after a copy operation. */
-    public static OpenCmsTestResourceFilter FILTER_EXISTING_SIBLING = getFilterExistingSibling();
+    /** Definition of a filter used to validate the existing and the new sibling after a copy opreation. */
+    public static final OpenCmsTestResourceFilter FILTER_EXISTING_AND_NEW_SIBLING = getFilterExistingAndNewSibling();     
     
-    /** Defintition of a filter used for the touch method. */
-    public static OpenCmsTestResourceFilter FILTER_TOUCH = getFilterTouch();
+    /** Definition of a filter used to validate an existing sibling after a copy operation. */
+    public static final OpenCmsTestResourceFilter FILTER_EXISTING_SIBLING = getFilterExistingSibling();
     
-    /** Defintition of a filter used for the undoChanges method. */
-    public static OpenCmsTestResourceFilter FILTER_UNDOCHANGES = getFilterUndoChanges();
+    /** Definition of a filter used for the touch method. */
+    public static final OpenCmsTestResourceFilter FILTER_TOUCH = getFilterTouch();
     
-    /** Defintition of a filter used for the writeProperty method. */   
-    public static OpenCmsTestResourceFilter FILTER_WRITEPROPERTY = getFilterWriteProperty();
+    /** Definition of a filter used for the copy method. */
+    public static final OpenCmsTestResourceFilter FILTER_COPY = getFilterCopy();    
+    
+    /** Definition of a filter used for the undoChanges method. */
+    public static final OpenCmsTestResourceFilter FILTER_UNDOCHANGES = getFilterUndoChanges();
+    
+    /** Definition of a filter used for the writeProperty method. */   
+    public static final OpenCmsTestResourceFilter FILTER_WRITEPROPERTY = getFilterWriteProperty();
    
-    /** Flags for validating the attributes of two CmsResources. */
-    private boolean m_access;
-    private boolean m_contentId;
-    private boolean m_contents;
-    private boolean m_dateCreated;
-    private boolean m_dateExpired;    
-    private boolean m_dateLastModified;
-    private boolean m_dateReleased;
-    private boolean m_flags;
-    private boolean m_isTouched;
-    private boolean m_length;
-    private boolean m_loaderId;
-    private boolean m_lockstate; 
-    private boolean m_name;
-    private boolean m_parentId;
-    private boolean m_projectLastModified;
-    private boolean m_properties;
-    private boolean m_resourceId;
-    private boolean m_siblingCount;
-    private boolean m_state;
-    private boolean m_structureId;
-    private boolean m_type;
-    private boolean m_userCreated;
-    private boolean m_userLastModified;
+    /** Flag to enable/disable access (ACL) tests. */
+    protected boolean m_acl;
+
+    /** Flag to enable/disable access (ACE) tests. */
+    protected boolean m_ace;
     
-    /**
-     * Creates a new OpenCmsTestResourceFilter.<p>
-     */
-    public OpenCmsTestResourceFilter() {
-        m_contentId = true;
-        m_dateCreated = true;
-        m_dateLastModified = true;
-        m_dateReleased = true;
-        m_dateExpired = true;   
-        m_flags = true;
-        m_isTouched = true;
-        m_length = true;
-        m_siblingCount = true;
-        m_loaderId = true;
-        m_name = true;
-        m_parentId = true;
-        m_projectLastModified = true;
-        m_resourceId = true;
-        m_state = true;
-        m_structureId = true;
-        m_type = true;
-        m_userCreated = true;
-        m_userLastModified = true;
-        m_lockstate = true;
-        m_contents = true;
-        m_properties = true;
-        m_access = true;
-    }
-    
+    /** Flag to enable/disable content id tests. */
+    protected boolean m_contentId;
+
+    /** Flag to enable/disable content comparison tests. */
+    protected boolean m_contents;
+
+    /** Flag to enable/disable date created tests. */
+    protected boolean m_dateCreated;
+
+    /** Flag to enable/disable date expired tests. */
+    protected boolean m_dateExpired;    
+
+    /** Flag to enable/disable date last modified tests. */
+    protected boolean m_dateLastModified;
+
+    /** Flag to enable/disable date released tests. */
+    protected boolean m_dateReleased;
+
+    /** Flag to enable/disable flags tests. */
+    protected boolean m_flags;
+
+    /** Flag to enable/disable "is touched" tests. */
+    protected boolean m_isTouched;
+
+    /** Flag to enable/disable length tests. */
+    protected boolean m_length;
+
+    /** Flag to enable/disable loader id tests. */
+    protected boolean m_loaderId;
+
+    /** Flag to enable/disable lock state tests. */
+    protected boolean m_lockstate; 
+
+    /** Flag to enable/disable name tests. */
+    protected boolean m_name;
+
+    /** Flag to enable/disable parent id tests. */
+    protected boolean m_parentId;
+
+    /** Flag to enable/disable project last modified tests. */
+    protected boolean m_projectLastModified;
+
+    /** Flag to enable/disable properties tests. */
+    protected boolean m_properties;
+
+    /** Flag to enable/disable resource id tests. */
+    protected boolean m_resourceId;
+
+    /** Flag to enable/disable sibling count tests. */
+    protected boolean m_siblingCount;
+
+    /** Flag to enable/disable state tests. */
+    protected boolean m_state;
+
+    /** Flag to enable/disable structure id tests. */
+    protected boolean m_structureId;
+
+    /** Flag to enable/disable resource type tests. */
+    protected boolean m_type;
+
+    /** Flag to enable/disable user created tests. */
+    protected boolean m_userCreated;
+
+    /** Flag to enable/disable use last modified tests. */
+    protected boolean m_userLastModified;
+   
     /**
      * Compares two lists of properties and returns those 
      * that are included only in the source but not in the targer list and not
@@ -175,29 +203,49 @@ public class OpenCmsTestResourceFilter {
     
     
     /**
-     * Creates a new filter used for the "chacc" method.
-     * different from the existing sibling(s) from which it was created.<p>
+     * Creates a new filter used for the "chacc" method.<p>
      * 
-     * @return OpenCmsTestResourceFilter filter
+     * @return the created filter
      */
     private static OpenCmsTestResourceFilter getFilterChacc() {
-        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
         filter.disableStateTest();
         filter.disableProjectLastModifiedTest();
-        filter.disableAccessTest();
+        filter.disableAclTest();
+        filter.disableAceTest();
 
         return filter;        
+    }
+    
+    /**
+     * Creates a new filter used for the "create resource" method.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceFilter getFilterCreateResource() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableProjectLastModifiedTest();
+        filter.disableStateTest();
+        filter.disableDateLastModifiedTest();
+        filter.disableUserLastModifiedTest();
+        filter.disableContentsTest();
+        filter.disableLengthTest();
+        filter.disableLockTest();
+        return filter; 
     }
     
     /**
      * Creates a new filter used to validate the fields of a new sibling
      * different from the existing sibling(s) from which it was created.<p>
      * 
-     * @return OpenCmsTestResourceFilter filter
+     * @return the created filter
      */
     private static OpenCmsTestResourceFilter getFilterExistingAndNewSibling() {
-        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+        
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
         filter.disableStateTest();
         filter.disableStructureIdTest();
@@ -211,10 +259,11 @@ public class OpenCmsTestResourceFilter {
      * Creates a new filter used to validate the modified fields of an
      * existing resource from which a new sibling was created.<p>
      * 
-     * @return OpenCmsTestResourceFilter filter
+     * @return the created filter
      */
     private static OpenCmsTestResourceFilter getFilterExistingSibling() {
-        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+       
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
         filter.disableProjectLastModifiedTest();
         filter.disableSiblingCountTest();
@@ -225,36 +274,68 @@ public class OpenCmsTestResourceFilter {
     
     /**
      * Creates a new filter used for the "touch" method.<p>
-     * @return OpenCmsTestResourceFilter object
+     * 
+     * @return the created filter
      */
     private static OpenCmsTestResourceFilter getFilterTouch() {
-        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
         filter.disableProjectLastModifiedTest();
         filter.disableStateTest();
         filter.disableDateLastModifiedTest();
         filter.disableUserLastModifiedTest();
         return filter; 
-
     }
     
     /**
+     * Creates a new filter used for the "copy" method.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceFilter getFilterCopy() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableProjectLastModifiedTest();
+        filter.disableStateTest();
+        filter.disableDateLastModifiedTest();
+        filter.disableUserLastModifiedTest();
+        filter.disableStructureIdTest();
+        filter.disableContentIdTest();
+        filter.disableResourceIdTest();
+        filter.disableUserCreatedTest();
+        filter.disableDateCreatedTest();
+        filter.disableLockTest();
+        filter.disableNameTest();
+        filter.disableParentIdTest();
+        filter.disableAceTest();
+        return filter; 
+    }    
+    
+    /**
      * Creates a new filter used for the "undoChanges" method.<p>
-     * @return OpenCmsTestResourceFilter object
+     * 
+     * @return the created filter
      */
     private static OpenCmsTestResourceFilter getFilterUndoChanges() {
-        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
         filter.disableProjectLastModifiedTest();
         return filter; 
-
     }
     
     
     /**
      * Creates a new filter used for the "touch" method.<p>
-     * @return OpenCmsTestResourceFilter object
+     * 
+     * @return the created filter
      */
     private static OpenCmsTestResourceFilter getFilterWriteProperty() {
-        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
         filter.disableProjectLastModifiedTest();
         filter.disableStateTest();
         filter.disableDateLastModifiedTest();
@@ -263,176 +344,22 @@ public class OpenCmsTestResourceFilter {
         return filter;
     }
     
-    
     /**
-     * Disables the access list test.<p>
-     */
-    public void disableAccessTest() {
-        m_access = false;
-    }
-    
-    
-    /**
-     * Disables the Content Id test.<p>
-     */
-    public void disableContentIdTest() {
-        m_contentId = false;
-    }
-    
-    /**
-     * Disables the Contenttest.<p>
-     */
-    public void disableContentsTest() {
-        m_contents = false;
-    }
-    
-    /**
-     * Disables the date created test.<p>
-     */
-    public void disableDateCreatedTest() {
-        m_dateCreated = false;
-    }
-    
-    /**
-     * Disables the date expired test.<p>
-     */
-    public void disableDateExpiredTest() {
-        m_dateExpired = false;
-    }
-    
-    /**
-     * Disables the date last modified test.<p>
-     */
-    public void disableDateLastModifiedTest() {
-        m_dateLastModified = false;
-    }
-    
-    /**
-     * Disables the date released test.<p>
-     */
-    public void disableDateReleasedTest() {
-        m_dateReleased = false;
-    }
-   
-    /**
-     * Disables the flags test.<p>
-     */
-    public void disableFlagsTest() {
-        this.m_flags = false;
-    }
-    
-    /**
-     * Disables the length test.<p>
-     */
-    public void disableLengthTest() {
-        this.m_length = false;
-    }
-    
-    /**
-     * Disables the loader Id test.<p>
-     */
-    public void disableLoaderIdTest() {
-        m_loaderId = false;
-    }
-    
-    /**
-     * Disables the lockstate test.<p>
-     */
-    public void disableLockTest() {
-        m_lockstate = false;
-    }
-    
-    /**
-     * Disables the name test.<p>
-     */
-    public void disableNameTest() {
-        m_name = false;
-    }
-    
-    /**
-     * Disables the parent Id test.<p>
-     */
-    public void disableParentIdTest() {
-        m_parentId = false;
-    }
-    
-    /**
-     * Disables the project last modified test.<p>
-     */
-    public void disableProjectLastModifiedTest() {
-        m_projectLastModified = false;
-    }
-    
-    /**
-     * Disables the properties test test.<p>
-     */
-    public void disablePropertiesTest() {
-        m_properties = false;
-    }
-    
-    /**
-     * Disables the resource Id test.<p>
-     */
-    public void disableResourceIdTest() {
-        m_resourceId = false;
-    }
-    
-    /**
-     * Disables the sibling count test.<p>
-     */
-    public void disableSiblingCountTest() {
-        m_siblingCount = false;
-    }
-    
-    /**
-     * Disables the state test.<p>
-     */
-    public void disableStateTest() {
-        this.m_state = false;
-    }
-    
-    /**
-     * Disables the structure Id test.<p>
-     */
-    public void disableStructureIdTest() {
-        m_structureId = false;
-    }
-    
-    /**
-     * Disables the touched test.<p>
-     */
-    public void disableTouchedTest() {
-        m_isTouched = false;
-    }
-    
-    /**
-     * Disables the type test.<p>
-     */
-    public void disableTypeTest() {
-        m_type = false;
-    }
-    
-    /**
-     * Disables the user created test.
-     */
-    public void disableUserCreatedTest() {
-        m_userCreated = false;
-    }
-    
-    /**
-     * Disables the user last modified test.<p>
-     */
-    public void disableUserLastModifiedTest() {
-        m_userLastModified = false;
-    }
-    
-    /**
-     * Returns true if the access list test is enabled.<p>
+     * Returns true if the acl test is enabled.<p>
      *
      * @return true or false
      */
-    public boolean testAccess() {
-        return m_access;
+    public boolean testAcl() {
+        return m_acl;
+    }
+    
+    /**
+     * Returns true if the ace test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testAce() {
+        return m_ace;
     }
         
     /**

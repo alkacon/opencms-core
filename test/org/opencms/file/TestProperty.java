@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2004/06/01 15:46:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/25 16:36:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -104,8 +104,10 @@ public class TestProperty extends OpenCmsTestCase {
 
          long timestamp = System.currentTimeMillis();
                    
+         cms.lockResource(resource1);         
          cms.writePropertyObjects(resource1, propertyList1);
-               
+         cms.unlockResource(resource1);
+         
          // now evaluate the result
          tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
          // project must be current project
@@ -134,8 +136,10 @@ public class TestProperty extends OpenCmsTestCase {
 
          long timestamp = System.currentTimeMillis();
 
+         cms.lockResource(resource1);         
          cms.writePropertyObject(resource1, property1);
-                  
+         cms.unlockResource(resource1);
+         
          // now evaluate the result
          tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
          // project must be current project
@@ -164,7 +168,9 @@ public class TestProperty extends OpenCmsTestCase {
 
         long timestamp = System.currentTimeMillis();
         
+        cms.lockResource(resource1);        
         cms.writePropertyObjects(resource1, propertyList1);        
+        cms.unlockResource(resource1);
         
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
@@ -194,7 +200,9 @@ public class TestProperty extends OpenCmsTestCase {
   
          long timestamp = System.currentTimeMillis();
          
+         cms.lockResource(resource1);         
          cms.writePropertyObject(resource1, property1);
+         cms.unlockResource(resource1);
          
          // now evaluate the result
          tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
@@ -220,11 +228,13 @@ public class TestProperty extends OpenCmsTestCase {
      */
     public static void writeProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1) throws Throwable {
 
-        tc.storeResources(cms, resource1);
+         tc.storeResources(cms, resource1);
   
-         long timestamp = System.currentTimeMillis();        
+         long timestamp = System.currentTimeMillis();
          
+         cms.lockResource(resource1);         
          cms.writePropertyObjects(resource1, propertyList1);
+         cms.unlockResource(resource1);
          
          // now evaluate the result
          tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
@@ -254,7 +264,9 @@ public class TestProperty extends OpenCmsTestCase {
   
          long timestamp = System.currentTimeMillis();
                   
+         cms.lockResource(resource1);
          cms.writePropertyObject(resource1, property1);
+         cms.unlockResource(resource1);
          
          // now evaluate the result
          tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);

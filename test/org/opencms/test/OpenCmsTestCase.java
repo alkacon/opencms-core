@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/06/21 10:01:50 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/25 16:37:26 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,21 +30,8 @@
  */
  
 package org.opencms.test;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.collections.ExtendedProperties;
 import org.opencms.db.CmsDbPool;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -66,6 +53,21 @@ import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsUUID;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import junit.framework.TestCase;
+
+import org.apache.commons.collections.ExtendedProperties;
+
 /** 
  * Extends the JUnit standard with methods to handle an OpenCms database
  * test instance.<p>
@@ -77,7 +79,7 @@ import org.opencms.util.CmsUUID;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.3.5
  */
@@ -220,7 +222,7 @@ public class OpenCmsTestCase extends TestCase {
             Vector errors = setupDb.getErrors();
             for (Iterator i = errors.iterator(); i.hasNext();) {
                 String error = (String)i.next();
-                System.err.println(error);
+                System.out.println(error);
             }
             fail((String)setupDb.getErrors().get(0));
         }                
@@ -587,7 +589,7 @@ public class OpenCmsTestCase extends TestCase {
                 excludeList.add(principal);
             }    
                  
-            //TODO: This is the code to recalculate the pemrission set if nescessary. Its not completed yet!
+            //TODO: This is the code to recalculate the pemrission set if necessary. Its not completed yet!
             
             Map parents = getParents(cms, resourceName);
             Vector aceList = cms.getAccessControlEntries(resourceName);
@@ -625,9 +627,7 @@ public class OpenCmsTestCase extends TestCase {
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
         }
-    }
-    
-    
+    }       
     
     /**
      * Compares the current date last modified of a resource with a given date.<p>
@@ -651,6 +651,56 @@ public class OpenCmsTestCase extends TestCase {
     }
     
     /**
+     * Compares the current date created of a resource with a given date.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param dateCreated the creation date
+     */
+    public void assertDateCreated(CmsObject cms, String resourceName, long dateCreated) {
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            
+            if (res.getDateCreated() != dateCreated) {
+                fail("[DateCreated " + dateCreated + " <-> " + res.getDateCreated() + "]");
+            }
+            
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }    
+    
+    /**
+     * Compares the current content of a (file) resource with a given content.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param content the content to compare
+     */
+    public void assertContent(CmsObject cms, String resourceName, byte[] content) {
+        try {
+            // get the actual resource from the vfs
+            CmsFile file = cms.readFile(resourceName, CmsResourceFilter.ALL);
+
+            byte[] fileContent = file.getContents();
+            if (fileContent.length != file.getLength()) {
+                fail("[Content length stored " + file.getContents().length + " <-> " + file.getLength() + "]");
+            }
+            if (fileContent.length != content.length) {
+                fail("[Content length compared " + file.getContents().length + " <-> " + content.length + "]");
+            }
+            for (int i=0; i<content.length; i++) {
+                if (fileContent[i] != content[i]) {
+                    fail("[Content compare failed at index " + i + "]");
+                }
+            }            
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }        
+    
+    /**
      * Tests if the the current date last modified of a resource is later then a given date.<p>
      * 
      * @param cms the CmsObject
@@ -670,6 +720,27 @@ public class OpenCmsTestCase extends TestCase {
             fail("cannot read resource " + resourceName+" " + CmsException.getStackTraceAsString(e));     
         }
     }
+    
+    /**
+     * Tests if the the creation date of a resource is later then a given date.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param dateCreated the creation date
+     */
+    public void assertDateCreatedAfter(CmsObject cms, String resourceName, long dateCreated) {
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            
+            if (res.getDateCreated() < dateCreated) {
+                fail("[DateCreated " + dateCreated + " > "+res.getDateCreated() + "]");
+            }
+            
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName+" " + CmsException.getStackTraceAsString(e));     
+        }
+    }    
     
     /**
      * Compares a stored Cms resource with another Cms resource instance using a specified filter.<p>
@@ -692,20 +763,20 @@ public class OpenCmsTestCase extends TestCase {
             noMatches = "";
             resourceName = cms.getRequestContext().removeSiteRoot(res.getRootPath());
 
-            // compare the content Id if nescessary
+            // compare the content id if necessary
             if (filter.testContentId()) {
-                if (!storedResource.getFileId().equals(res.getFileId())) {
+                if (!storedResource.getFileId().equals(res.getContentId())) {
                     noMatches += "[ContentId "
                         + storedResource.getFileId()
                         + " <-> "
-                        + res.getFileId()
+                        + res.getContentId()
                         + "]";
                 }
             }
-            // compare the contents if nescessary
+            // compare the contents if necessary
             if (filter.testContents()) {
                 byte[] contents;
-                // we only have to do this when compareing files
+                // we only have to do this when comparing files
                 if (res.isFile()) {
                     contents = cms.readFile(resourceName, CmsResourceFilter.ALL).getContents();
                     if (!new String(storedResource.getContents()).equals(new String(contents))) {
@@ -714,7 +785,7 @@ public class OpenCmsTestCase extends TestCase {
                     contents = null;
                 }
             }
-            // compare the date creted if nescessary
+            // compare the date created if necessary
             if (filter.testDateCreated()) {
                 if (storedResource.getDateCreated() != res.getDateCreated()) {
                     noMatches += "[DateCreated "
@@ -724,7 +795,7 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the date expired if nescessary
+            // compare the date expired if necessary
             if (filter.testDateExpired()) {
                 if (storedResource.getDateExpired() != res.getDateExpired()) {
                     noMatches += "[DateExpired "
@@ -734,7 +805,7 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the date last modified if nescessary
+            // compare the date last modified if necessary
             if (filter.testDateLastModified()) {
                 if (storedResource.getDateLastModified() != res.getDateLastModified()) {
                     noMatches += "[DateLastModified "
@@ -744,7 +815,7 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the date last released if nescessary
+            // compare the date last released if necessary
             if (filter.testDateReleased()) {
                 if (storedResource.getDateReleased() != res.getDateReleased()) {
                     noMatches += "[DateReleased "
@@ -754,19 +825,19 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the flags if nescessary
+            // compare the flags if necessary
             if (filter.testFlags()) {
                 if (storedResource.getFlags() != res.getFlags()) {
                     noMatches += "[Flags " + storedResource.getFlags() + " <-> " + res.getFlags() + "]";
                 }
             }
-            // compare the length if nescessary
+            // compare the length if necessary
             if (filter.testLength()) {
                 if (storedResource.getLength() != res.getLength()) {
                     noMatches += "[Length " + storedResource.getLength() + " <-> " + res.getLength() + "]";
                 }
             }
-            // compare the link count if nescessary
+            // compare the link count if necessary
             if (filter.testSiblingCount()) {
                 if (storedResource.getSiblingCount() != res.getSiblingCount()) {
                     noMatches += "[LinkCount "
@@ -776,7 +847,7 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the loader id if nescessary
+            // compare the loader id if necessary
             if (filter.testLoaderId()) {
                 if (storedResource.getLoaderId() != res.getLoaderId()) {
                     noMatches += "[LoaderId "
@@ -786,20 +857,20 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the lockstate if nescessary
+            // compare the lockstate if necessary
             if (filter.testLock()) {
                 CmsLock resLock = cms.getLock(res);
                 if (!storedResource.getLock().equals(resLock)) {
                     noMatches += "[Lockstate " + storedResource.getLock() + " <-> " + resLock + "]";
                 }
             }
-            // compare the name if nescessary
+            // compare the name if necessary
             if (filter.testName()) {
                 if (!storedResource.getName().equals(res.getName())) {
                     noMatches += "[Name " + storedResource.getName() + " <-> " + res.getName() + "]";
                 }
             }
-            // compare the parent id if nescessary
+            // compare the parent id if necessary
             if (filter.testParentId()) {
                 if (!storedResource.getParentStructureId().equals(res.getParentStructureId())) {
                     noMatches += "[ParentId "
@@ -809,7 +880,7 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the project last modified if nescessary
+            // compare the project last modified if necessary
             if (filter.testProjectLastModified()) {
                 if (storedResource.getProjectLastModified() != res.getProjectLastModified()) {
                     noMatches += "[ProjectLastModified "
@@ -819,18 +890,21 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the properties if nescessary
+            // compare the properties if necessary
             if (filter.testProperties()) {
                 noMatches += compareProperties(cms, resourceName, storedResource, null);
             }
-            // compare the access lists if nescessary
-            if (filter.testAccess()) {
-                // first compare the ACEs
-                noMatches += compareAccessEntries(cms, resourceName, storedResource, null);
-                // second compare the ACLs
+            // compare the acl if necessary
+            if (filter.testAcl()) {
+                // compare the ACLs
                 noMatches += compareAccessLists(cms, resourceName, storedResource, null);
             }
-            // compare the resource id if nescessary
+            // compare the ace if necessary
+            if (filter.testAce()) {
+                // compate the ACEs
+                noMatches += compareAccessEntries(cms, resourceName, storedResource, null);
+            }            
+            // compare the resource id if necessary
             if (filter.testResourceId()) {
                 if (!storedResource.getResourceId().equals(res.getResourceId())) {
                     noMatches += "[ResourceId "
@@ -840,13 +914,13 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the state if nescessary
+            // compare the state if necessary
             if (filter.testState()) {
                 if (storedResource.getState() != res.getState()) {
                     noMatches += "[State " + storedResource.getState() + " <-> " + res.getState() + "]";
                 }
             }
-            // compare the structure id if nescessary
+            // compare the structure id if necessary
             if (filter.testStructureId()) {
                 if (!storedResource.getStructureId().equals(res.getStructureId())) {
                     noMatches += "[StructureId "
@@ -856,19 +930,19 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the touched flag if nescessary
+            // compare the touched flag if necessary
             if (filter.testTouched()) {
                 if (storedResource.isTouched() != res.isTouched()) {
                     noMatches += "[Touched " + storedResource.isTouched() + " <-> " + res.isTouched() + "]";
                 }
             }
-            // compare the type if nescessary
+            // compare the type if necessary
             if (filter.testType()) {
                 if (storedResource.getType() != res.getTypeId()) {
                     noMatches += "[Type " + storedResource.getType() + " <-> " + res.getTypeId() + "]";
                 }
             }
-            // compare the user created if nescessary
+            // compare the user created if necessary
             if (filter.testUserCreated()) {
                 if (!storedResource.getUserCreated().equals(res.getUserCreated())) {
                     noMatches += "[UserCreated "
@@ -878,7 +952,7 @@ public class OpenCmsTestCase extends TestCase {
                         + "]";
                 }
             }
-            // compare the user created if nescessary
+            // compare the user created if necessary
             if (filter.testUserLastModified()) {
                 if (!storedResource.getUserLastModified().equals(res.getUserLastModified())) {
                     noMatches += "[UserLastModified "
@@ -966,6 +1040,26 @@ public class OpenCmsTestCase extends TestCase {
                 fail("[Lock " + resourceName + " must be unlocked]");
             } else if (lock.isNullLock() || lock.getType() != lockType || !lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
                 fail("[Lock " + resourceName + " requires a lock of type " + lockType + " for user " + cms.getRequestContext().currentUser().getId() + "]");
+            }
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }        
+    }
+    
+    /**
+     * Validates if a specified resource is somehow locked to the current user.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param resourceName the name of the resource to validate
+     */
+    public void assertLock(CmsObject cms, String resourceName) {
+        try {
+            // get the actual resource from the VFS
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsLock lock = cms.getLock(res);
+            
+            if (lock.isNullLock() || !lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
+                fail("[Lock " + resourceName + " requires must be locked to user " + cms.getRequestContext().currentUser().getId() + "]");
             }
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
@@ -1378,16 +1472,37 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @param cms the current user's Cms object
      * @param resourceName the name of the resource to compare
+     * @param increment the number of additional siblings compared to the original state 
      */
-    public void assertSiblingCountIncremented(CmsObject cms, String resourceName) {
+    public void assertSiblingCountIncremented(CmsObject cms, String resourceName, int increment) {
         try {
             // get the current resource from the VFS
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);            
             // get the previous resource from resource storage
             OpenCmsTestResourceStorageEntry entry = m_currentResourceStrorage.get(resourceName);
             
-            if (res.getSiblingCount() != (entry.getSiblingCount()+1)) {
-                fail("[SiblingCount " + res.getSiblingCount() + " <-> " + entry.getSiblingCount() + "+1]");
+            if (res.getSiblingCount() != (entry.getSiblingCount()+increment)) {
+                fail("[SiblingCount " + res.getSiblingCount() + " <-> " + entry.getSiblingCount() + "+" + increment + "]");
+            }
+            
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }        
+    }
+    
+    /**
+     * Validates if the current sibling count of a resource matches the given number.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param resourceName the name of the resource to compare
+     * @param count the number of additional siblings
+     */
+    public void assertSiblingCount(CmsObject cms, String resourceName, int count) {
+        try {
+            // get the current resource from the VFS
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            if (res.getSiblingCount() != count) {
+                fail("[SiblingCount " + res.getSiblingCount() + " <-> " + count + "]");
             }
             
         } catch (CmsException e) {
@@ -1436,6 +1551,70 @@ public class OpenCmsTestCase extends TestCase {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
     }
+    
+    /**
+     * Compares the user who created a resource with a given user.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param user the last modification user
+     */
+    public void assertUserCreated(CmsObject cms, String resourceName, CmsUser user) {
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            
+            if (!res.getUserCreated().equals(user.getId())) {
+                fail("[UserLastCreated (" + user.getName() + ") " + user.getId() + " <-> " + res.getUserCreated() + "]");
+            }
+            
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    }    
+    
+    /**
+     * Ensures that the given resource is a folder.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to check for a folder
+     */
+    public void assertIsFolder(CmsObject cms, String resourceName) {
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+
+            if (!res.isFolder()) {
+                fail("[Not a folder: " + resourceName +  "]");
+            }    
+            if (res.getLength() != -1) {
+                fail("[Folder length not -1: " + resourceName +  "]");
+            }                      
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    }    
+    
+    /**
+     * Ensures that the given resource is of a certain type.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to check
+     * @param resourceType the resource type to check for
+     */
+    public void assertResourceType(CmsObject cms, String resourceName, int resourceType) {
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+
+            if (res.getTypeId() != resourceType) {
+                fail("[ResourceType " + res.getTypeId() + " != " + resourceType +  "]");
+            }                  
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    }       
+    
     
     
     /**
@@ -1636,6 +1815,7 @@ public class OpenCmsTestCase extends TestCase {
     
     /**
      * Compares two vectors of access control entires.<p>
+     * 
      * @param source the source vector to compare
      * @param target  the destination vector to compare
      * @param exclude the exclude list
