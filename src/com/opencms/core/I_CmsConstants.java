@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/02/21 23:31:36 $
-* Version: $Revision: 1.215 $
+* Date   : $Date: 2003/02/26 10:02:17 $
+* Version: $Revision: 1.216 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.215 $ $Date: 2003/02/21 23:31:36 $
+ * @version $Revision: 1.216 $ $Date: 2003/02/26 10:02:17 $
  */
 public interface I_CmsConstants {
 
@@ -1144,6 +1144,11 @@ public interface I_CmsConstants {
      * A tag in the manifest-file.
      */
     public static String C_EXPORT_TAG_GROUPNAME = "groupname";
+    
+    /**
+     * The "lastmodified" tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_LASTMODIFIED = "lastmodified";
 
     /**
      * A string in the configuration-file.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/25 16:09:32 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2003/02/26 10:02:17 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,10 +68,15 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.72 $ $Date: 2003/02/25 16:09:32 $
+ * @version $Revision: 1.73 $ $Date: 2003/02/26 10:02:17 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
-
+    
+    /**
+     * Debug flag to show debug output
+     */
+    public static final int C_DEBUG = 0;
+    
     /**
      * The algorithm for the message digest
      */
@@ -451,6 +456,10 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
              
                 // convert content from pre 5.x must be activated
                 if ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type))) {
+                    if (C_DEBUG > 0){
+                        System.err.println("#########################");
+                        System.err.println("["+this.getClass().getName()+".importResource()]: starting conversion of \""+type+"\" resource "+source+".");
+                    }
                     // change the filecontent for encoding if necessary
                     content = convertFile(source, content, type);
                 }     
@@ -467,6 +476,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     
             CmsResource res = m_cms.importResource(source, destination, type, user, group, access,
                                         properties, launcherStartClass, content, m_importPath);
+               
             if(res != null){
                 fullname = res.getAbsolutePath();
                 if(C_TYPE_PAGE_NAME.equals(type)){
@@ -530,7 +540,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     String propertyName, String propertyValue) throws CmsException {
         NodeList fileNodes, propertyNodes;
         Element currentElement, currentProperty;
-        String source, destination, type, user, group, access, launcherStartClass;
+        String source, destination, type, user, group, access, launcherStartClass, lastModified;
         Hashtable properties;
         Vector types = new Vector(); // stores the file types for which the property already exists
         
@@ -571,6 +581,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
                 access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
                 launcherStartClass = getTextNodeValue(currentElement, C_EXPORT_TAG_LAUNCHER_START_CLASS);
+                lastModified = getTextNodeValue(currentElement, C_EXPORT_TAG_LASTMODIFIED);
                 // if the type is javascript set it to plain
                 if("script".equals(type)){
                     type = C_TYPE_PLAIN_NAME;
@@ -607,6 +618,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                             for (int k=0; k<deleteProperties.size(); k++) {
                                 if (name.equals((String) deleteProperties.get(k))) {
                                     found = true;
+                                    if (C_DEBUG > 0){
+                                        System.err.println("["+this.getClass().getName()+".importResources()]: found unwanted property "+name+", deleting it!");
+                                    }
                                     k = deleteProperties.size();                        
                                 }
                             }
@@ -618,8 +632,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                         }
                     }
     
-                    // import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
+                    // import the specified file and write maybe put it on the lists writtenFilenames, fileCodes
                     importResource(source, destination, type, user, group, access, properties, launcherStartClass, writtenFilenames, fileCodes);
+                    if (lastModified != null) {
+                        //m_cms.touch("/" + destination, Long.parseLong(lastModified), false);
+                    }
                 } else {
                     m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(destination);
@@ -908,9 +925,15 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 fileContent = new String(byteContent, encoding);
             } catch (UnsupportedEncodingException e) {
                 // encoding not supported, we use the default and hope we are lucky
+                if (C_DEBUG > 0){
+                    System.err.println("["+this.getClass().getName()+".convertFile()]: Encoding not supported, using default encoding.");
+                }
             }
         } else {
             // encoding not found, set encoding of xml files to default
+            if (C_DEBUG > 0){
+                System.err.println("["+this.getClass().getName()+".convertFile()]: Encoding not set, using default encoding and setting it in <?XML...?>.");
+            }
             encoding = OpenCms.getDefaultEncoding();
             fileContent = setEncoding(fileContent, encoding);
         }
@@ -923,6 +946,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         // scan content/bodys
         if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1
             || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
+            if (C_DEBUG > 0){
+                System.err.println("["+this.getClass().getName()+".convertFile()]: Starting scan of body page.");
+            }
             fileContent = convertPageBody(fileContent, filename);
         }
         // create output ByteArray
@@ -1064,6 +1090,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 NodeList editNodes = contentXml.getElementsByTagName("edittemplate");
                 // no <edittemplate> tags present, create them!
                 if (editNodes.getLength() < 1) {
+                    if (C_DEBUG > 0){
+                        System.err.println("["+this.getClass().getName()+".convertPageBody()]: No <edittemplate> found, creating it.");
+                    }
                     createTemplateTags = true;
                     NodeList templateNodes = contentXml.getElementsByTagName("TEMPLATE");
                     // create an <edittemplate> tag for each <template> tag
@@ -1076,7 +1105,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                             LinkSubstitution sub = new LinkSubstitution();
                             templateString = sub.substituteContentBody(m_cms, templateString, m_webappUrl, fileName);
                         } catch (CmsException e) {
-                            throw new CmsException("[" + this.getClass().getName() + "] can't parse the content: ", e);
+                            throw new CmsException("[" + this.getClass().getName() + ".convertPageBody()] can't parse the content: ", e);
                         }
                         // look for the "name" attribute of the <template> tag
                         NamedNodeMap attrs = templateNodes.item(i).getAttributes();

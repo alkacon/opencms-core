@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/02/21 23:33:24 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/02/26 10:02:17 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.47 $ $Date: 2003/02/21 23:33:24 $
+ * @version $Revision: 1.48 $ $Date: 2003/02/26 10:02:17 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -656,13 +656,13 @@ public class CmsExport implements I_CmsConstants, Serializable {
     }
     
     /**
-     * Writes the data for a resources (like acces-rights) to the <code>manifest.xml</code> file.<p>
+     * Writes the data for a resource (like access-rights) to the <code>manifest.xml</code> file.<p>
      * 
      * @param resource the resource to get the data from
      * @throws CmsException if something goes wrong
      */
     private void writeXmlEntrys(CmsResource resource) throws CmsException {
-        String source, type, user, group, access, launcherStartClass;
+        String source, type, user, group, access, launcherStartClass, lastModified;
 
         // get all needed informations from the resource
         source = getSourceFilename(resource.getAbsolutePath());
@@ -671,6 +671,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         group = m_cms.readGroup(resource).getName();
         access = resource.getAccessFlags() + "";
         launcherStartClass = resource.getLauncherClassname();
+        lastModified = String.valueOf(resource.getDateLastModified()); 
 
         // write these informations to the xml-manifest
         Element file = m_docXml.createElement(C_EXPORT_TAG_FILE);
@@ -691,6 +692,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         addElement(file, C_EXPORT_TAG_USER, user);
         addElement(file, C_EXPORT_TAG_GROUP, group);
         addElement(file, C_EXPORT_TAG_ACCESS, access);
+        addElement(file, C_EXPORT_TAG_LASTMODIFIED, lastModified);
         if (launcherStartClass != null
             && !"".equals(launcherStartClass)
             && !C_UNKNOWN_LAUNCHER.equals(launcherStartClass)) {
