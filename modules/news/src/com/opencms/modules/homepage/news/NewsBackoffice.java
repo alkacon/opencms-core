@@ -63,25 +63,20 @@ public class NewsBackoffice extends A_CmsBackoffice {
 		I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 		// get value of hidden input field action
 		String action = (String) parameters.get("action");
-
+    if(action == null) action = "";
 		//get value of id
 		String id = (String) parameters.get("id");
 		if (id == null) id = "";
-		String idsave = "";
-		if ((id == null) || (id == "")) {
-			idsave = (String) session.getValue("idsave");
-			if (idsave == null) idsave = "";
-		}
+
 		//System.err.println("getContentEdit:     id= "+id);
-		//System.err.println("getContentEdit: idsave= "+idsave);
 		// set existing data in the content definition object
 		//& go to the done section of the template
-		if ((idsave != "") && (id == "") && (idsave.compareTo("new") != 0) && (id.compareTo("new") != 0)) {
+    if( action.equals("save") ) {
 			//move to the done section in the template
 			templateSelector = "done";
 
 			//get data from the template
-			int idIntValue2 = Integer.valueOf(idsave).intValue();
+			int idIntValue2 = Integer.valueOf(id).intValue();
 			String headline = (String) parameters.get("headline");
 			String description = (String) parameters.get("description");
 			String text = (String) parameters.get("text");
@@ -132,8 +127,7 @@ public class NewsBackoffice extends A_CmsBackoffice {
             template.setData("dateHighlightEnd", template.getData("redEnd"));
 						template.setData("error", error);
 					}
-					session.putValue("idsave", ""+idIntValue2);  // This is somehow important!
-					template.setData("setaction", "default");   // still not first time shown
+					template.setData("setaction", "save");   // still not first time shown
 					return startProcessing(cms, template, elementName, parameters, templateSelector);
 			}
 			//change the cd object content
@@ -164,18 +158,14 @@ public class NewsBackoffice extends A_CmsBackoffice {
 				template.setData("a_info1", a_info1);
 				template.setData("a_info2", a_info2);
 				template.setData("a_info3", a_info3);
-				session.putValue("idsave", ""+idsave);
-				template.setData("setaction", "default");
+				template.setData("setaction", "save");
 				templateSelector = "default";
 				return startProcessing(cms, template, elementName, parameters, templateSelector);
 			}
-			// remove the marker
-			session.removeValue("idsave");
 		}
 		//START: first time here and got valid id parameter:
 		//		 Fill the template with data!
-		if (idsave == "") {
-			if (id != "") {
+    if(id != null && !id.equals("")) {
 				//get data from cd object
 				int idIntValue = Integer.valueOf(id).intValue();
 				NewsContentDefinition newsCD = new NewsContentDefinition(cms, new  Integer(idIntValue));
@@ -191,12 +181,10 @@ public class NewsBackoffice extends A_CmsBackoffice {
 				template.setData("a_info1", newsCD.getA_info1());
 				template.setData("a_info2", newsCD.getA_info2());
 				template.setData("a_info3", newsCD.getA_info3());
+        template.setData("setaction", "save");
 				// re-display data in selectbox
 				session.putValue("checkSelectChannel", newsCD.getChannel());
-				//marker for second access of this method
-				session.putValue("idsave", id);
 			return startProcessing(cms, template, elementName, parameters, templateSelector);
-		}
 	}
 	//finally start the processing
 	return startProcessing(cms, template, elementName, parameters, templateSelector);
@@ -215,21 +203,17 @@ public class NewsBackoffice extends A_CmsBackoffice {
 		I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 		// get value of hidden input field action
 		String action = (String) parameters.get("action");
+    if ( action == null) action = "";
 		GregorianCalendar actDate = new GregorianCalendar();  // the actual Date
 		boolean dateError = false;   // could the date-string be parsed?
 		boolean channelError = false;
 		int channelId = 0;
     String error = "";
 
-		//get value of id and the marker idsaveng) parameters.get("id");
+		//get value of id and the marker parameters.get("id");
 		String id = (String) parameters.get("id");
 
 		if (id == null) id = "";
-		String idsave = "";
-		if ((id == null) || (id == "")) {
-			idsave = (String) session.getValue("idsave");
-			if (idsave == null) idsave = "";
-		}
 
 		//no button pressed: go to the default section!
 		if (action == null || action.equals("")) {
@@ -238,14 +222,11 @@ public class NewsBackoffice extends A_CmsBackoffice {
 			template.setData("date", NewsContentDefinition.date2string(actDate)); // set actual Date
 			template.setData("link", "http://");
 			//store marker in the session
-			if (idsave == "")
-				session.putValue("idsave", "new");
 			//confirmation button pressed, process data!
 		} else {
 			//create new data, therefore create new content definition instance
 			//& go to the done section of the template
 			templateSelector = "done";
-			session.removeValue("idsave");
 
 			//read value of the inputfields
 			String headline = (String) parameters.get("headline");
@@ -308,14 +289,12 @@ public class NewsBackoffice extends A_CmsBackoffice {
             template.setData("channelHighlightEnd", template.getData("redEnd"));
 						template.setData("error", error);
 					}
-					session.putValue("idsave", "new");  // This is somehow important!
-					template.setData("setaction", "default");   // still not first time shown
+					template.setData("setaction", "save");   // still not first time shown
 					return startProcessing(cms, template, elementName, parameters, templateSelector);
 			}
 
 			//create new cd object with the fetched values of the inputfields
 			NewsContentDefinition newCD = new NewsContentDefinition(headline,description, text, author, link, linkText, date, channelId, a_info1, a_info2, a_info3);
-			//newCD.setLockstate("lock");
 			try {
 				newCD.write(cms);
 			} catch (Exception e) {
@@ -327,8 +306,7 @@ public class NewsBackoffice extends A_CmsBackoffice {
 				template.setData("a_info1", a_info1);
 				template.setData("a_info2", a_info2);
 				template.setData("a_info3", a_info3);
-				session.putValue("idsave", "new");
-				template.setData("setaction", "default");
+				template.setData("setaction", "save");
 				templateSelector = "default";
 			}
 		}

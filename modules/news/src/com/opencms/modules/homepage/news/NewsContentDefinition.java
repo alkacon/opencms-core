@@ -385,9 +385,9 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 		Vector channels = NewsChannelContentDefinition.getChannelList(); // get all actual channels
 		String showText = "";
 		Integer actChannelId = null;  // has to be Integer because of Reflection!
-	// add the always shown first filterMethod...
+	  // add the always shown first filterMethod...
 		try {
-			filterMethods.addElement(new CmsFilterMethod("Sort all by", NewsContentDefinition.class.getMethod("getSortedList", new Class[] {String.class}), new Object[] {}));
+			filterMethods.addElement(new CmsFilterMethod("Sort all by ...", NewsContentDefinition.class.getMethod("getSortedList", new Class[] {String.class}), new Object[] {}));
 		}catch(NoSuchMethodException e) {
 			System.err.println("Exception in NewsContentDefinition.getFilterMethods(CmsObject)!"+ e.getMessage());
 		}
@@ -402,11 +402,6 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			}catch(NoSuchMethodException e) {
 				System.err.println("Exception in NewsContentDefinition.getFilterMethods(CmsObject)!"+ e.getMessage());
 			}
-		}
-	try {
-			filterMethods.addElement(new CmsFilterMethod("Sort all by2", NewsContentDefinition.class.getMethod("getSortedList2", new Class[] {}), new Object[] {}));
-		}catch(NoSuchMethodException e) {
-			System.err.println("Exception in NewsContentDefinition.getFilterMethods(CmsObject)!"+ e.getMessage());
 		}
 
 		return filterMethods;

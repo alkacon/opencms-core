@@ -37,7 +37,7 @@ public class NewsTemplate extends CmsXmlTemplate {
 		String ret = "";                // the return value
 		Vector newsList = null;         // stores the list of CD'S
 		NewsChannelContentDefinition myChannel = null;
-                CmsXmlTemplateFile template = (CmsXmlTemplateFile)doc;
+    CmsXmlTemplateFile template = (CmsXmlTemplateFile)doc;
 		/*while(keys.hasMoreElements()) {
 			Object key = keys.nextElement();
 			System.err.println(key + " -> " + parameters.get(key));
@@ -45,37 +45,38 @@ public class NewsTemplate extends CmsXmlTemplate {
 		// get the parameter with is assigned to the element
 		String elementName = (String)parameters.get("_ELEMENT_");
 		String channelName = (String)parameters.get(elementName+".channelname");
-                String channelId = (String)parameters.get(elementName+".channelid");
-                // check what has been specified....
-                if(channelId != null && channelName == null) {
-                  select = ID;
-                }else if(channelId == null && channelName != null) {
-                  select = NAME;
-                }else if(channelId != null && channelName != null) {
-                  select = ID;
-                }else{ // no parameter selected!
-                  System.err.println("[NewsAdministration.getNews] No channel selcted!");
-                  return "";   // step out here, need valid channel!
-                }
-                if(select == ID) {
-                  // parse the id
-                  try{
-                    id = Integer.parseInt(channelId);
-                  }
-                  catch(NumberFormatException e) {
-                    System.err.println("[NewsAdministration.getNews] Exception! "+ e.getMessage());
-			return "";
-                  }
-                }
-                // now try to read the cd ...
-		try{
-                	// check if the channel exists and get the id...
+    String channelId = (String)parameters.get(elementName+".channelid");
+    // check what has been specified....
+     if(channelId != null && channelName == null) {
+        select = ID;
+     }else if(channelId == null && channelName != null) {
+        select = NAME;
+     }else if(channelId != null && channelName != null) {
+        select = ID;
+     }else{ // no parameter selected!
+        System.err.println("[NewsTemplate.getNewsList] No channel selcted!");
+      return "";   // step out here, need valid channel!
+     }
+     if(select == ID) {
+     // parse the id
+        try{
+          id = Integer.parseInt(channelId);
+        }
+        catch(NumberFormatException e) {
+          System.err.println("[NewsTemplate.getNewsList] NumberFormatException! "+ e.getMessage());
+          System.err.println("channelId: " + channelId);
+			    return "";
+        }
+      }
+      // now try to read the cd ...
+		  try{
+          // check if the channel exists and get the id...
 			if(select==NAME) myChannel = new NewsChannelContentDefinition(channelName);
-                        else {
-                          myChannel = new NewsChannelContentDefinition(null, new Integer(id));
-                        }
+      else {
+        myChannel = new NewsChannelContentDefinition(null, new Integer(id));
+      }
 		}catch(CmsException e) {
-			System.err.println("[NewsAdministration.getNews] Exception! "+ e.getMessage());
+			System.err.println("[NewsTemplate.getNewsList] CmsException! "+ e.getMessage());
 			return "";   // step out here, need valid channel!
 		}
 		if(tagcontent == null || tagcontent.equals("")) {
@@ -134,9 +135,9 @@ public class NewsTemplate extends CmsXmlTemplate {
 				//System.err.println("id: "+id);
 				myNewsCD = new NewsContentDefinition(null, new Integer(id));
 			}catch(NumberFormatException e) {
-				System.err.println("[NewsAdministration.getSingleNews()] NumberFormatException " + e.getMessage());
+				System.err.println("[NewsTemplate.getSingleNews()] NumberFormatException " + e.getMessage());
 			}catch(CmsException e) {
-				System.err.println("[NewsAdministration.getSingleNews()] CmsException " + e.getMessage());
+				System.err.println("[NewsTemplate.getSingleNews()] CmsException " + e.getMessage());
 			}
 		}
 		if(myNewsCD != null && (myNewsCD.getIntId() != -1)) {
@@ -193,9 +194,9 @@ public class NewsTemplate extends CmsXmlTemplate {
 				//System.err.println("id: "+id);
 				myNewsCD = new NewsContentDefinition(null, new Integer(id));
 			}catch(NumberFormatException e) {
-				System.err.println("[NewsAdministration.getValidURI()] NumberFormatException " + e.getMessage());
+				System.err.println("[NewsTemplate.getValidURI()] NumberFormatException " + e.getMessage());
 			}catch(CmsException e) {
-				System.err.println("[NewsAdministration.getValidURI()] CmsException " + e.getMessage());
+				System.err.println("[NewsTemplate.getValidURI()] CmsException " + e.getMessage());
 			}
 		}
 		if(myNewsCD != null && (myNewsCD.getIntId() != -1)) {

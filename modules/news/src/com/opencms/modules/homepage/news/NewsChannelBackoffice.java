@@ -53,40 +53,39 @@ public class NewsChannelBackoffice extends A_CmsBackoffice {
 		I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 		// get value of hidden input field action
 		String action = (String) parameters.get("action");
-
+    if (action == null) action = "";
 		//get value of id
 		String id = (String) parameters.get("id");
 		if (id == null) id = "";
-		String idsave = "";
-		if ((id == null) || (id == "")) {
-			idsave = (String) session.getValue("idsave");
-			if (idsave == null) idsave = "";
-		}
-
 		// set existing data in the content definition object
 		//& go to the done section of the template
-		if ((idsave != "") && (id == "") && (idsave.compareTo("new") != 0) && (id.compareTo("new") != 0)) {
+		if (action.equals("save")) {
 			//move to the done section in the template
 			templateSelector = "done";
 
 			//get data from the template
-			int idIntValue2 = Integer.valueOf(idsave).intValue();
-			String name =	  (String) parameters.get("name");
+			int idIntValue2 = Integer.valueOf(id).intValue();
+      //read value of the inputfields
+			String name = (String) parameters.get("name");
+      if(name == null) name = "";
 			String descript = (String) parameters.get("descript");
-
+      if(descript == null) descript = "";
+			//System.err.println("NewsEditBackoffice: id: " + id + " name: " +name +" descr: "+descript);
 			// ensure something was filled in!
-			if((name.equals(new String("")) ||
-			    name == null)||
-			   (descript.equals(new String("")) ||
-				descript == null) ) {
+			if( name.equals("") || descript.equals("") ) {
 					templateSelector = "default";
-					template.setData("name", "");               // in case right data was given somewhere
-					template.setData("descript", descript);
-					template.setData("error", template.getData("missing"));
-          template.setData("nameHighlightStart", template.getData("redStart"));
-          template.setData("nameHighlightEnd", template.getData("redEnd"));
-					session.putValue("idsave", ""+idsave);          // This is somehow important!
-					template.setData("setaction", "default");       // still not first time shown
+          template.setData("error", template.getData("missing"));
+					template.setData("setaction", "save");   // still not first time shown
+          template.setData("name", name);             // in case right data was given somewhere
+          template.setData("descript", descript);
+          if( name.equals("") )  {
+            template.setData("nameHighlightStart", template.getData("redStart"));
+            template.setData("nameHighlightEnd", template.getData("redEnd"));
+	        }
+          if( descript.equals("") ) {
+            template.setData("descriptHighlightStart", template.getData("redStart"));
+            template.setData("descriptHighlightEnd", template.getData("redEnd"));
+          }
 					return startProcessing(cms, template, elementName, parameters, templateSelector);
 			}
 			//change the cd object content
@@ -102,18 +101,14 @@ public class NewsChannelBackoffice extends A_CmsBackoffice {
 				template.setData("error", e.toString());
 				template.setData("name", "");
 				template.setData("descript", descript);
-				session.putValue("idsave", ""+idsave);
-				template.setData("setaction", "default");
+				template.setData("setaction", "save");
 				templateSelector = "default";
 				return startProcessing(cms, template, elementName, parameters, templateSelector);
 			}
-			// remove the marker
-			session.removeValue("idsave");
 		}
 		//START: first time here and got valid id parameter:
 		//		 Fill the template with data!
-		if (idsave == "") {
-			if (id != "") {
+   if(id != null && !id.equals("")) {
 				//get data from cd object
 				int idIntValue = Integer.valueOf(id).intValue();
 				NewsChannelContentDefinition newsCD = new NewsChannelContentDefinition(cms, new  Integer(idIntValue));
@@ -123,15 +118,14 @@ public class NewsChannelBackoffice extends A_CmsBackoffice {
 				//set the data in the template
 				template.setData("name", name);
 				template.setData("descript", descript);
+        template.setData("setaction", "save");
 
 				//marker for second access of this method
-				session.putValue("idsave", id);
 			return startProcessing(cms, template, elementName, parameters, templateSelector);
 		}
-	}
 	//finally start the processing
 	return startProcessing(cms, template, elementName, parameters, templateSelector);
-	}
+}
 
         /**
          *
@@ -147,48 +141,42 @@ public class NewsChannelBackoffice extends A_CmsBackoffice {
 		// get value of hidden input field action
 		String action = (String) parameters.get("action");
 
-		//get value of id and the marker idsaveng) parameters.get("id");
+		//get value of id and the marker parameters.get("id");
 		String id = (String) parameters.get("id");
 
 		if (id == null) id = "";
-		String idsave = "";
-		if ((id == null) || (id == "")) {
-			idsave = (String) session.getValue("idsave");
-			if (idsave == null) idsave = "";
-		}
 
 		//no button pressed: go to the default section!
 		if (action == null || action.equals("")) {
 			templateSelector = "default";
 			template.setData("setaction", "default");
-			//store marker in the session
-			if (idsave == "")
-				session.putValue("idsave", "new");
 			//confirmation button pressed, process data!
 		} else {
 			//create new data, therefore create new content definition instance
 			//& go to the done section of the template
 			templateSelector = "done";
-			session.removeValue("idsave");
 
 			//read value of the inputfields
 			String name = (String) parameters.get("name");
+      if(name == null) name = "";
 			String descript = (String) parameters.get("descript");
-			System.err.println("NewsEditBackoffice: name: " +name +" descr: "+descript);
-			name.trim();
+      if(descript == null) descript = "";
+			// System.err.println("NewsEditBackoffice: name: " +name +" descr: "+descript);
 			// ensure something was filled in!
-			if((name.equals("") ||
-			    name == null)||
-			   (descript.equals("") ||
-          descript == null) ) {
+			if( name.equals("") || descript.equals("") ) {
 					templateSelector = "default";
-					template.setData("name", "");               // in case right data was given somewhere
-					template.setData("descript", descript);
-					template.setData("error", template.getData("missing"));
-          template.setData("nameHighlightStart", template.getData("redStart"));
-          template.setData("nameHighlightEnd", template.getData("redEnd"));
-					session.putValue("idsave", "new");          // This is somehow important!
+          template.setData("error", template.getData("missing"));
 					template.setData("setaction", "default");   // still not first time shown
+          template.setData("name", name);             // in case right data was given somewhere
+          template.setData("descript", descript);
+          if( name.equals("") )  {
+            template.setData("nameHighlightStart", template.getData("redStart"));
+            template.setData("nameHighlightEnd", template.getData("redEnd"));
+	        }
+          if( descript.equals("") ) {
+            template.setData("descriptHighlightStart", template.getData("redStart"));
+            template.setData("descriptHighlightEnd", template.getData("redEnd"));
+          }
 					return startProcessing(cms, template, elementName, parameters, templateSelector);
 			}
 
@@ -203,7 +191,6 @@ public class NewsChannelBackoffice extends A_CmsBackoffice {
 				template.setData("error", e.toString());
 				template.setData("name", "");
 				template.setData("descript", descript);
-				session.putValue("idsave", "new");
 				template.setData("setaction", "default");
 				templateSelector = "default";
 			}
