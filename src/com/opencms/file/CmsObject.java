@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/09/22 09:44:42 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2000/09/22 10:10:18 $
+ * Version: $Revision: 1.117 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.116 $ $Date: 2000/09/22 09:44:42 $ 
+ * @version $Revision: 1.117 $ $Date: 2000/09/22 10:10:18 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -794,10 +794,10 @@ public Vector getAllAccessibleProjects() throws CmsException {
 	return (m_rb.getAllAccessibleProjects(m_context.currentUser(), m_context.currentProject()));
 }
 /**
- * Insert the method's description here.
- * Creation date: (22-09-2000 11:31:23)
- * @return java.util.Vector
- * @exception com.opencms.core.CmsException The exception description.
+ * Returns all categories.
+ * 
+ * @return all categories.
+ * @exception CmsException Throws CmsException if something goes wrong.
  */
 public Vector getAllCategories() throws com.opencms.core.CmsException
 {
@@ -853,10 +853,11 @@ public Hashtable getCacheInfo() {
 	return m_rb.getCacheInfo();
 }
 /**
- * Insert the method's description here.
- * Creation date: (21-09-2000 16:46:35)
- * @return com.opencms.file.CmsCategory
- * @param categoryId int
+ * Returns a CmsCategory object
+ *
+ * @param categoryId the category_id 
+ * @return a CmsCategory object according to the categoryId
+ * @exception CmsException Throws CmsException if something goes wrong.
  */
 public CmsCategory getCategory(int categoryId) throws CmsException
 {

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/22 09:44:42 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/09/22 10:10:18 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.34 $ $Date: 2000/09/22 09:44:42 $
+ * @version $Revision: 1.35 $ $Date: 2000/09/22 10:10:18 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -617,8 +617,7 @@ public class CmsShell implements I_CmsConstants {
 		}		
 	}
 /**
- * Insert the method's description here.
- * Creation date: (22-09-2000 11:34:54)
+ * Read all categories from cms
  */
 public void getAllCategories()
 {

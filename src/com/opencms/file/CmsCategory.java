@@ -1,9 +1,7 @@
 package com.opencms.file;
 
 /**
- * Insert the type's description here.
- * Creation date: (21-09-2000 16:16:09)
- * @author: Administrator
+ * This class is used to hold results from the CMS_CATEGORY table
  */
 public class CmsCategory
 {

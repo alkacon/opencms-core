@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/22 09:44:42 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2000/09/22 10:10:18 $
+ * Version: $Revision: 1.112 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.111 $ $Date: 2000/09/22 09:44:42 $
+ * @version $Revision: 1.112 $ $Date: 2000/09/22 10:10:18 $
  * 
  */
 
@@ -922,14 +922,17 @@ public interface I_CmsResourceBroker {
 											CmsProject currentProject)
 		 throws CmsException;
 /**
- * Insert the method's description here.
- * Creation date: (22-09-2000 11:30:10)
- * @return java.util.Vector
- * @param currentUser com.opencms.file.CmsUser
- * @param currentProject com.opencms.file.CmsProject
- * @exception com.opencms.core.CmsException The exception description.
+ * Returns all categories.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @return all categories.
+ * @exception CmsException Throws CmsException if something goes wrong.
  */
-Vector getAllCategories(CmsUser currentUser, CmsProject currentProject) throws com.opencms.core.CmsException;
+ public Vector getAllCategories(CmsUser currentUser, CmsProject currentProject) throws com.opencms.core.CmsException; 
 	/**
 	 * Returns all projects, which are owned by the user or which are manageable
 	 * for the group of the user.
@@ -975,15 +978,18 @@ Vector getAllCategories(CmsUser currentUser, CmsProject currentProject) throws c
 public Vector getAllSites(CmsUser currentUser, CmsProject currentProject) throws CmsException;
 		public Hashtable getCacheInfo();
 /**
- * Insert the method's description here.
- * Creation date: (21-09-2000 16:52:33)
- * @return com.opencms.file.CmsCategory
- * @param currentUser com.opencms.file.CmsUser
- * @param currentProject com.opencms.file.CmsProject
- * @param categoryId int
- * @exception com.opencms.core.CmsException The exception description.
+ * Returns a CmsCategory object
+ *
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param categoryId the category_id 
+ * @return a CmsCategory object according to the categoryId
+ * @exception CmsException Throws CmsException if something goes wrong.
  */
-CmsCategory getCategory(CmsUser currentUser, CmsProject currentProject, int categoryId) throws com.opencms.core.CmsException;
+public CmsCategory getCategory(CmsUser currentUser, CmsProject currentProject, int categoryId) throws com.opencms.core.CmsException;
 	/**
 	 * Returns all child groups of a group<P/>
 	 * 
