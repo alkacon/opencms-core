@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/08/01 15:42:18 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/08/01 19:30:29 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1
  */
@@ -218,7 +218,7 @@ public class CmsFrameset extends CmsWorkplace {
         List values = new ArrayList();    
         int selectedIndex = 0;                   
 
-        List sites = CmsSiteManager.getAvailableSites(getCms());
+        List sites = CmsSiteManager.getAvailableSites(getCms(), true);
 
         Iterator i = sites.iterator();
         int pos = 0;
