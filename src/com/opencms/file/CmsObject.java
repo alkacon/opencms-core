@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/08/18 15:19:55 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2000/08/25 13:40:05 $
+ * Version: $Revision: 1.106 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.105 $ $Date: 2000/08/18 15:19:55 $ 
+ * @version $Revision: 1.106 $ $Date: 2000/08/25 13:40:05 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -877,6 +877,9 @@ public class CmsObject implements I_CmsConstants {
 		throws CmsException { 
 		return( m_rb.getAllResourceTypes(m_context.currentUser(), 
 										 m_context.currentProject()) );
+	}
+	public Hashtable getCacheInfo() {
+		return m_rb.getCacheInfo();
 	}
 	/**
 	 * Returns all child groups of a group<P/>

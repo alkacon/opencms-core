@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/18 15:19:56 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2000/08/25 13:40:05 $
+ * Version: $Revision: 1.100 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.99 $ $Date: 2000/08/18 15:19:56 $
+ * @version $Revision: 1.100 $ $Date: 2000/08/25 13:40:05 $
  * 
  */
 
@@ -953,6 +953,7 @@ import com.opencms.core.*;
 	public Hashtable getAllResourceTypes(CmsUser currentUser, 
 										 CmsProject currentProject) 
 		throws CmsException;
+		public Hashtable getCacheInfo();
 	/**
 	 * Returns all child groups of a group<P/>
 	 * 

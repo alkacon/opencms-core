@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/24 15:31:14 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2000/08/25 13:40:05 $
+ * Version: $Revision: 1.109 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.template.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.108 $ $Date: 2000/08/24 15:31:14 $
+ * @version $Revision: 1.109 $ $Date: 2000/08/25 13:40:05 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -92,7 +92,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	private CmsCache m_propertyDefCache = null;
 	private CmsCache m_propertyDefVectorCache = null;
 	private String m_refresh = null;
-	 
+
 	/** 
 	 * Accept a task from the Cms.
 	 * 
@@ -2522,6 +2522,21 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// return the resource-types.
 		return(m_resourceTypes);
 	}
+		public Hashtable getCacheInfo() {
+		Hashtable info = new Hashtable();
+		info.put("UserCache",""+m_userCache.size());
+		info.put("GroupCache",""+m_groupCache.size());
+		info.put("UserGroupCache",""+m_usergroupsCache.size());
+		info.put("ResourceCache",""+m_resourceCache.size());
+		info.put("SubResourceCache",""+m_subresCache.size());
+		info.put("ProjectCache",""+m_projectCache.size());
+		info.put("PropertyCache",""+m_propertyCache.size());
+		info.put("PropertyDefinitionCache",""+m_propertyDefCache.size());
+		info.put("PropertyDefinitionVectorCache",""+m_propertyDefVectorCache.size());
+
+		return info;
+
+		}
 	/**
 	 * Returns all child groups of a group<P/>
 	 * 
