@@ -27,57 +27,59 @@ top.head.helpUrl='administration/index.html';
     background='<%=cms.link("/system/workplace/resources/bg_weiss.gif")%>'
     bgproperties=fixed
     onLoad="window.top.body.admin_head.location.href='<%=cms.link("/system/workplace/action/administration_head.html")%>';">
-<% 
-    if (request.getParameter("sync") != null) {
-        
-    }
-%>
-<h1>Search index overview</h1>
-<table border="1">
-<tr><th>Name</th><th>RebuildMode</th><th>Project</th><th>Site</th><th>Language</th></tr>
-<%
-    // Iterate through configured indexes
-    for (Iterator i = searchManager.getIndexNames().iterator(); i.hasNext(); ) {
-        CmsSearchIndex index = searchManager.getIndex((String)i.next());
-%>
-<tr>
-<td><%=index.getName()%></td>
-<td><%=index.getRebuildMode()%></td>
-<td><%=index.getProject()%></td>
-<td><%=index.getSite()%></td>
-<td><%=index.getLanguage()%></td>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td colspan="5">
-<%
-    // Iterate through vfs sources for index
-    for (Iterator s = index.getFolders().iterator(); s.hasNext(); ) {
-%>
-    <%= (String)s.next() %><%= (s.hasNext()) ? ", " : "" %>
-<%
-    }
-%>
-</td>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td colspan="5">
-<%
-    // Iterate through cos sources for index
-    for (Iterator s = index.getChannels().iterator(); s.hasNext(); ) {
-%>
-    <%= (String)s.next() %><%= (s.hasNext()) ? ", " : "" %>
-<%
-    }
-%>
-</td>
-</tr>
-<%
-    }
-%>
 
-</table>
-<form method="post" action='<%=cms.link("/system/workplace/administration/searchindex/updateindex/rebuild.html")%>'>
-    <input type="submit" value="Rebuild">
-</form>
+<p>
+	<h1>Search index overview</h1>
+	
+		
+	<table border="1">
+		<tr><th>Name</th><th>Rebuild Mode</th><th>Project</th><th>Locale</th></tr>
+<%
+
+	List indexNames = searchManager.getIndexNames();
+	for (int i = 0, n = indexNames.size(); i < n; i++) {
+		String indexName = (String)indexNames.get(i);
+		CmsSearchIndex index = searchManager.getIndex(indexName);
+
+%>
+		<tr>
+			<td><%=index.getName()%></td>
+			<td><%=index.getRebuildMode()%></td>
+			<td><%=index.getProject()%></td>
+			<td><%=index.getLocale()%></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td colspan="4">
+<%
+	
+		List sourceNames = index.getSourceNames();
+		for (int j = 0, m = sourceNames.size(); j < m; j++) {
+			String sourceName = (String)sourceNames.get(j);
+			CmsSearchIndexSource indexSource = searchManager.getIndexSource(sourceName);
+			
+			List resourceNames = indexSource.getResourcesNames();
+			for (int k = 0, l = resourceNames.size(); k < l; k++) {
+				String resourceName = (String)resourceNames.get(k);
+				out.println(resourceName);
+				
+				if (k < (l-1)) {
+					out.println("<br>");
+				}
+			}
+		}
+	}
+%>
+			</td>
+		</tr>
+	</table>				
+</p>
+
+<p>
+	<form method="post" action='<%=cms.link("/system/workplace/administration/searchindex/updateindex/rebuild.html")%>'>
+    	<input type="submit" value="Rebuild All">
+	</form>
+</p>
+
+</body>
+</html>

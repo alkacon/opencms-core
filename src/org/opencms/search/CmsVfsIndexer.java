@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/07/02 16:05:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,17 +35,22 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.search.documents.I_CmsDocumentFactory;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 
 /**
  * Implements the indexing of vfs data.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.9 $ $Date: 2004/07/02 16:05:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -65,47 +70,35 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     
     /** The thread manager. */
     private CmsIndexingThreadManager m_threadManager;
-    
-    /**
-     * Creates a new vfs indexer.<p>
-     */
-    public CmsVfsIndexer () {
-        //noop
-    }
 
     /**
-     * Initializes the indexer.<p>
-     * 
-     * @param cms the cms object
-     * @param className not used here
-     * @param writer writer to write the index
-     * @param index the index
-     * @param report the report
-     * @param threadManager the tread manager
+     * @see org.opencms.search.I_CmsIndexer#init(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex, org.opencms.search.CmsSearchIndexSource, org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager)
      */
-    public void init(CmsObject cms, String className, IndexWriter writer, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) {
+    public void init(CmsObject cms, I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) {
+        
         m_cms = cms;
         m_writer = writer;
         m_index = index;
         m_report = report;
-        m_threadManager = threadManager;        
+        m_threadManager = threadManager;          
     }
     
     /**
-     * Creates new index entries for all vfs resources below the given path.<p>
-     * 
-     * @param path the path to the root of the subtree to index
-     * @throws CmsIndexException if something goes wrong
+     * @see org.opencms.search.I_CmsIndexer#updateIndex(java.lang.String)
      */
     public void updateIndex(String path) throws CmsIndexException {
-        
+                
         boolean folderReported = false;
+        List resources = null;
+        CmsResource res = null;
         
         try {
-            List resources = m_cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
-            CmsResource res;
+            if (CmsResource.isFolder(path)) {            
+                resources = m_cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
+            } else {
+                resources = Collections.EMPTY_LIST;
+            }
             
-            // process resources
             for (int i = 0; i < resources.size(); i++) {
                 
                 res = (CmsResource)resources.get(i);
@@ -164,4 +157,27 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             throw new CmsIndexException("Indexing contents of " + path + " failed.", exc);
         }
     }
+    
+    /**
+     * @see org.opencms.search.I_CmsIndexer#getIndexResource(org.apache.lucene.document.Document)
+     */
+    public CmsIndexResource getIndexResource(Document doc) throws CmsException {
+
+        Field f = null;
+        String path = null;
+        CmsResource resource = null;
+        CmsIndexResource result = null;
+
+        if ((f = doc.getField(I_CmsDocumentFactory.DOC_PATH)) != null) {
+            path = f.stringValue();
+
+            resource = m_cms.readResource(path);
+            if (m_cms.hasPermissions(resource, I_CmsConstants.C_READ_ACCESS)) {
+                result = new CmsVfsIndexResource(resource);
+            }
+        }
+
+        return result;
+    }
+    
 }

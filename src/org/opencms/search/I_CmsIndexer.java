@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2004/02/20 14:22:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/02 16:05:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,16 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
 
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
 /**
  * Interface for the vfs and cos indexer.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 14:22:17 $
+ * @version $Revision: 1.2 $ $Date: 2004/07/02 16:05:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsIndexer {
@@ -47,14 +49,14 @@ public interface I_CmsIndexer {
      * Initializes the indexer.<p>
      * 
      * @param cms the cms object
-     * @param writer wariter to write the index
-     * @param className content class name
-     * @param index the index
      * @param report the report
+     * @param index the search index
+     * @param indexSource the search index source
+     * @param writer writer to write the search index in the physical file system
      * @param threadManager the tread manager
      * @throws CmsIndexException if something goes wrong
      */
-    void init(CmsObject cms, String className, IndexWriter writer, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) throws CmsIndexException;
+    void init(CmsObject cms, I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) throws CmsIndexException;
     
     /**
      * Creates new index entries for all resources below the given path.<p>
@@ -63,4 +65,16 @@ public interface I_CmsIndexer {
      * @throws CmsIndexException if something goes wrong
      */    
     void updateIndex(String path) throws CmsIndexException;
+    
+    /**
+     * Returns an index resource for specified Lucene search result document.<p>
+     * 
+     * Index resources are stored in a search result as result documents.<p>
+     * 
+     * @param doc the Lucene search result document
+     * @return a new index resource
+     * @throws CmsException if something goes wrong
+     */
+    CmsIndexResource getIndexResource(Document doc) throws CmsException;
+    
 }

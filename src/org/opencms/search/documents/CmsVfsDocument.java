@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2004/06/21 09:57:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/07/02 16:05:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a vfs resource 
  * of any type derived from <code>CmsResource</code>.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2004/06/21 09:57:50 $
+ * @version $Revision: 1.8 $ $Date: 2004/07/02 16:05:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
@@ -115,7 +115,7 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, 
             DateField.timeToString(res.getDateLastModified())));
     
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_PATH, path));
+        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath()));
 
         return document;
     }

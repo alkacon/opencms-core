@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/02 16:05:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.lucene.document.Field;
 /**
  * Provides the data of a single item in a search result.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.7 $ $Date: 2004/07/02 16:05:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -168,7 +168,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable {
             rawContent = f.stringValue();
         } else {
             try {
-                rawContent = m_index.getIndexManager().getDocumentFactory(m_resource).getRawContent(m_resource, m_index.getLanguage());
+                rawContent = m_index.getIndexManager().getDocumentFactory(m_resource).getRawContent(m_resource, m_index.getLocale());
             } catch (CmsException exc) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error("Could not generate raw content", exc);

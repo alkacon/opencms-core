@@ -1,4 +1,20 @@
-<%@ page buffer="none" import="org.opencms.main.*, org.opencms.search.*, org.opencms.file.*, org.opencms.jsp.*, java.util.*" %><%   
+<%@ page buffer="none" import="org.opencms.main.*,
+							org.opencms.search.*,
+							org.opencms.file.*,
+							org.opencms.jsp.*,
+							java.util.*,
+							java.io.*"
+%>
+<%!
+  
+	public static String getStackTrace(Exception e) {
+		Writer result = new StringWriter();
+    	PrintWriter printWriter = new PrintWriter(result);
+    	e.printStackTrace(printWriter);
+    	return result.toString();
+	}
+	
+%><%   
     
     // Create a JSP action element
     org.opencms.jsp.CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
@@ -32,8 +48,11 @@ top.head.helpUrl='administration/index.html';
 <%
     if (search.getLastException() != null) { 
 %>
-<h3>Error</h3>
+<h3>Error:</h3>
+<pre>
 <%= search.getLastException().toString() %> 
+<%= getStackTrace(search.getLastException()) %> 
+</pre>
 <%
     }
 %>

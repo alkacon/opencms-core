@@ -8,5 +8,6 @@
 		<config class="org.opencms.configuration.CmsVfsConfiguration"/>  
 		<config class="org.opencms.configuration.CmsWorkplaceConfiguration"/>
 		<config class="org.opencms.configuration.CmsImportExportConfiguration"/>		              
+		<config class="org.opencms.configuration.CmsSearchConfiguration"/>	
     </configuration>       
 </opencms>    

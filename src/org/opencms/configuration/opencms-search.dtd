@@ -1,0 +1,165 @@
+<!-- 
+# The root configuration node is called <opencms> for all OpenCms configurations.
+-->
+<!ELEMENT opencms (search)>
+
+<!--
+# In this node the global search options are configured.
+-->
+<!ELEMENT search (
+	cache,
+	directory,
+	timeout,
+	documenttypes,
+	analyzers,
+	indexes,
+	indexsources
+)>
+
+<!--
+# the size of the search result LFU map.
+-->
+<!ELEMENT cache (#PCDATA)>
+
+<!--
+# The directory below WEB-INF/ wheree Lucene index files are stored.
+-->
+<!ELEMENT directory (#PCDATA)>
+
+<!--
+# Timeout in milliseconds to abandon indexing threads.
+-->
+<!ELEMENT timeout (#PCDATA)>
+
+<!ELEMENT documenttypes (documenttype+)>
+
+<!--
+# Document types specify which factory class is used to pull the
+# content of an OpenCms document into a Lucene index document. The factory class 
+# gets triggered for OpenCms documents matching the configured resource type 
+# and/or mimetype combination in a document factory node.
+-->
+<!ELEMENT documenttype (
+	name,
+	class,
+	mimetypes,
+	resourcetypes
+)>
+
+<!--
+# Class/package names of the OpenCms document's resource types.
+-->
+<!ELEMENT resourcetypes (resourcetype+)>
+<!ELEMENT resourcetype (#PCDATA)>
+
+<!--
+# Name of the OpenCms document's mimetype.
+-->
+<!ELEMENT mimetypes (mimetype*)>
+<!ELEMENT mimetype (#PCDATA)>
+
+<!ELEMENT analyzers (analyzer+)>
+
+<!--
+# Analyzers specify a class to reduce the content to be indexed
+# with trimmed endings etc.
+-->
+<!ELEMENT analyzer (
+	class,
+	stemmer*,
+	locale
+)>
+
+<!--
+# Specifies the name of the stemmer algorithm of the Lucene snowball analyzer.
+-->
+<!ELEMENT stemmer (#PCDATA)>
+
+<!ELEMENT indexes (index+)>
+
+<!--
+# Configuration of a search index definition.
+-->
+<!ELEMENT index (
+	name,
+	rebuild,
+	project,
+	locale,
+	sources
+)>
+
+<!--
+# Rebuild mode of the search index.
+-->
+<!ELEMENT rebuild (#PCDATA)>
+
+<!--
+# The project used to index content.
+-->
+<!ELEMENT project (#PCDATA)>
+
+<!--
+# A list of index content sources in OpenCms of the search index.
+-->
+<!ELEMENT sources (source+)>
+<!ELEMENT source (#PCDATA)>
+
+<!ELEMENT indexsources (indexsource+)>
+
+<!--
+# Configuration of an search index content source in OpenCms
+-->
+<!ELEMENT indexsource (
+	name,
+	indexer,
+	resources,
+	documenttypes-indexed
+)>
+
+<!--
+# Optional parameter list of the search index source.
+-->
+<!ELEMENT indexer (param*)>
+
+<!--
+# The indexer class to index the content of this index source.
+-->
+<!ATTLIST indexer class CDATA #REQUIRED>
+
+<!--
+# A list of resources to be indexed.
+-->
+<!ELEMENT resources (resource+)>
+<!ELEMENT resource (#PCDATA)>
+
+<!--
+# A list of documenttypes to be indexed wihthin this index source.
+-->
+<!ELEMENT documenttypes-indexed (name+)>
+
+<!--
+# An optional parameter of the index source.
+-->
+<!ELEMENT param (#PCDATA)>
+<!ATTLIST param name CDATA #REQUIRED>
+
+<!--
+#
+# Elements used by more than several elements:
+#
+-->
+
+<!--
+# Element for the name of a language.
+-->
+<!ELEMENT locale (#PCDATA)>
+
+<!--
+# Element for a locigal name.
+-->
+<!ELEMENT name (#PCDATA)>
+
+<!--
+# Element for a package/class name of a Java class.
+-->
+<!ELEMENT class (#PCDATA)>

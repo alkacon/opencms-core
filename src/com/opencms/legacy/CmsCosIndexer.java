@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/06/28 07:44:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/02 16:05:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,11 @@
  */
 package com.opencms.legacy;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -38,6 +43,7 @@ import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsIndexResource;
 import org.opencms.search.CmsIndexingThreadManager;
 import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.I_CmsIndexer;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsUUID;
@@ -45,24 +51,25 @@ import org.opencms.util.CmsUUID;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-
 import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2004/06/28 07:44:02 $
+ * @version $Revision: 1.7 $ $Date: 2004/07/02 16:05:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
+    
+    public static final String C_PARAM_CLASSNAME = "classname";
+    public static final String C_PARAM_CHANNEL_DISPLAY_URI = "displayUri";
+    public static final String C_PARAM_CHANNEL_DISPLAY_PARAM = "displayPram";
     
     /** The cms object. */
     private CmsObject m_cms;
@@ -72,6 +79,9 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     
     /** The current index. */
     private CmsSearchIndex m_index;
+    
+    /** The search index source. */
+    private CmsSearchIndexSource m_indexSource;
     
     /** The report. */
     private I_CmsReport m_report;
@@ -93,16 +103,21 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#init(org.opencms.file.CmsObject, java.lang.String, org.apache.lucene.index.IndexWriter, org.opencms.search.CmsSearchIndex, org.opencms.report.I_CmsReport, org.opencms.search.CmsIndexingThreadManager)
+     * @see org.opencms.search.I_CmsIndexer#init(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex, CmsSearchIndexSource, org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager)
      */
-    public void init(CmsObject cms, String cdClassName, IndexWriter writer, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) throws CmsIndexException {
+    public void init(CmsObject cms, I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) throws CmsIndexException {
+        
+        String cdClassName = null;
+        
         try {
             m_cms = cms;
             m_writer = writer;
             m_index = index;
+            m_indexSource = indexSource;
             m_report = report;
             m_threadManager = threadManager;
             
+            cdClassName = m_indexSource.getParam(C_PARAM_CLASSNAME);
             m_contentDefinition = (CmsMasterContent)Class.forName(cdClassName).newInstance();
             m_subId = m_contentDefinition.getSubId();
 
@@ -140,8 +155,15 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     public void updateIndex(String channel, String root) throws CmsIndexException {
         
         boolean channelReported = false;
+        CmsProject currentProject = null;
+        CmsRequestContext context = m_cms.getRequestContext();         
         
         try {
+            // save the current project
+            currentProject = context.currentProject();
+            // switch to the configured project
+            context.setCurrentProject(m_cms.readProject(m_index.getProject()));
+            
             String channelId = getChannelId(channel).toString();
             Vector subChannels = CmsMasterContent.getAllSubChannelsOf(m_cms, channel);
             
@@ -172,9 +194,9 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
                     }
                     m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
                 }
-                
-                String path = m_index.getChannelDisplayUri(root)
-                    + "?" + m_index.getChannelDisplayparam(root)
+
+                String path = m_indexSource.getParam(C_PARAM_CHANNEL_DISPLAY_URI)
+                    + "?" + m_indexSource.getParam(C_PARAM_CHANNEL_DISPLAY_PARAM)
                     + "=" + ds.m_masterId;
                 
                 CmsIndexResource ires = new CmsCosIndexResource(ds, path, channel, m_contentDefinition.getClass().getName());
@@ -190,6 +212,10 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
             }
             
             throw new CmsIndexException("Indexing contents of " + channel + " failed.", exc);
+        } finally {
+            
+            // switch back to the original project
+            context.setCurrentProject(currentProject);             
         }
     }
     
@@ -249,4 +275,25 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
             throw new CmsException ("Instanciation of index resource failed", exc);
         }
     }
+    
+    /**
+     * @see org.opencms.search.I_CmsIndexer#getIndexResource(org.apache.lucene.document.Document)
+     */
+    public CmsIndexResource getIndexResource(Document doc) throws CmsException {
+
+        Field f = null;
+        String channel = null;
+        CmsIndexResource result = null;
+        
+        if ((f = doc.getField(I_CmsDocumentFactory.DOC_CHANNEL)) != null) {
+            channel = f.stringValue();
+            
+            if (channel != null) {
+                result = CmsCosIndexer.readResource(m_cms, doc);
+            }
+        }
+        
+        return result;
+    }    
+    
 }

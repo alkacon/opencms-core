@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/07/02 16:05:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,14 +38,11 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the management of indexing threads.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.9 $ $Date: 2004/07/02 16:05:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsIndexingThreadManager extends Thread {
-
-    /** The index manager. */
-    private CmsSearchManager m_manager;
     
     /** The report. */
     private I_CmsReport m_report;
@@ -64,17 +61,14 @@ public class CmsIndexingThreadManager extends Thread {
     
     /**
      * Creates and starts a thread manager for indexing threads.<p>
-     * 
-     * @param manager the index manager
      * @param report the report to write out progress information
      * @param timeout timeout after a thread is abandoned
      * @param indexName the name of the index
      */
-    public CmsIndexingThreadManager(CmsSearchManager manager, I_CmsReport report, long timeout, String indexName) {
+    public CmsIndexingThreadManager(I_CmsReport report, long timeout, String indexName) {
     
         super("OpenCms: Search thread watcher for index '" + indexName + "'");
         
-        m_manager = manager;
         m_report = report;
         m_timeout = timeout;
         m_fileCounter = 0;
@@ -98,7 +92,7 @@ public class CmsIndexingThreadManager extends Thread {
      */
     public void createIndexingThread(IndexWriter writer, CmsIndexResource res, CmsSearchIndex index) {
 
-        CmsIndexingThread thread = new CmsIndexingThread(m_manager, writer, res, index, m_report, this);
+        CmsIndexingThread thread = new CmsIndexingThread(writer, res, index, m_report, this);
 
         try {
             m_fileCounter++;

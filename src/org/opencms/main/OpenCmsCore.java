@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/06/28 16:26:14 $
- * Version: $Revision: 1.127 $
+ * Date   : $Date: 2004/07/02 16:05:08 $
+ * Version: $Revision: 1.128 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.main;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
+import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
@@ -104,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.127 $
+ * @version $Revision: 1.128 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1070,6 +1071,10 @@ public final class OpenCmsCore {
         CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)m_configurationManager.getConfiguration(CmsImportExportConfiguration.class);
         m_importExportManager = importExportConfiguration.getImportExportManager();
         
+        // get the search configuration
+        CmsSearchConfiguration searchConfiguration = (CmsSearchConfiguration)m_configurationManager.getConfiguration(CmsSearchConfiguration.class);
+        m_searchManager = searchConfiguration.getSearchManager();        
+        
         // get the workplace configuration
         CmsWorkplaceConfiguration workplaceConfiguration = (CmsWorkplaceConfiguration)m_configurationManager.getConfiguration(CmsWorkplaceConfiguration.class);
         m_workplaceManager = workplaceConfiguration.getWorkplaceManager();
@@ -1196,7 +1201,7 @@ public final class OpenCmsCore {
         // initialize the site manager
         m_siteManager = CmsSiteManager.initialize(configuration, adminCms);
         // initialize the search manager
-        m_searchManager = CmsSearchManager.initialize(configuration, adminCms);
+        m_searchManager.initialize(adminCms);
         
         // initializes the cron manager
         // TODO enable the cron manager

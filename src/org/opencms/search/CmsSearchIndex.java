@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/06/28 07:47:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/07/02 16:05:08 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,34 +30,24 @@
  */
 package org.opencms.search;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.search.documents.CmsHighlightExtractor;
 import org.opencms.search.documents.CmsHtmlHighlighter;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
-
-import com.opencms.legacy.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
@@ -108,26 +98,27 @@ import org.apache.lucene.search.Searcher;
  * 
  * <p>Certainly, you can specify more than one folder or channel to index.</p>
  *   
- * @version $Revision: 1.14 $ $Date: 2004/06/28 07:47:33 $
+ * @version $Revision: 1.15 $ $Date: 2004/07/02 16:05:08 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
 public class CmsSearchIndex {
   
     /** Manual rebuild as default value. */
-    private static String C_DEFAULT_REBUILD = "manual";
+    public static String C_DEFAULT_REBUILD = "manual";
+    
+    /** Automatic rebuild. */
+    public static String C_AUTO_REBUILD = "auto";    
 
     /** The cms object. */
     private CmsObject m_cms;
 
     /** The incremental mode for this index. */
     private boolean m_incremental;
-
-    /** The index manager. */
-    private CmsSearchManager m_indexManager;
     
     /** The language filter of this index. */
-    private String m_language;
+    private String m_locale;
     
     /** The name of this index. */
     private String m_name;
@@ -145,169 +136,30 @@ public class CmsSearchIndex {
     private Map m_documenttypes;
     
     /** The site of this index. */    
-    private String m_site;
+    //private String m_site;
       
     int warning = 0;
-
-    /** The list of vfs paths to index. */
-    private List m_vfsSources;
     
-    /** The list of cos channels to index. */
-    private List m_cosSources;
-    
-    /** Displayuri of channel content. */
-    private Map m_cosDisplayuri;
-    
-    /** Displayparam of channel content. */
-    private Map m_cosDisplayparam;
+    private List m_sourceNames;
     
     /**
-     * Constructor to create a new index instance.<p>
-     * 
-     * @param indexManager the index manager
-     * @param cms the cms object
-     * @param path the directory path in the server file system
-     * @param configuration the configuration for the index
-     * @throws CmsIndexException if mandatory configuration values missing
+     * Creates a new CmsSearchIndex.<p>
      */
-    protected CmsSearchIndex(CmsSearchManager indexManager, CmsObject cms, String path, Map configuration) throws CmsIndexException {
-       
-        m_cms = cms;
-        m_indexManager = indexManager;
-        m_vfsSources = new ArrayList();
-        m_cosSources = new ArrayList();
-        m_documenttypes = new HashMap();
-        m_cosDisplayuri = new HashMap();
-        m_cosDisplayparam = new HashMap();
-
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("[" + this.getClass().getName() + "] " + "Initializing");
-        }
-                                    
-        if ((m_name = (String)configuration.get("name")) == null) {
-            throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Name undefined");
-        }
+    public CmsSearchIndex() {
         
-        if ((m_project = (String)configuration.get("project")) == null) {
-            throw new CmsIndexException("[" + this.getClass().getName() +"] " + "Project undefined");
-        }
-
-        if ((m_site = (String)configuration.get("site")) == null) {
-            throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Site undefined");
-        }
-
-        List folders = null;
-        try {
-            folders = (List)configuration.get("folder");
-        } catch (ClassCastException exc) {
-            folders = Arrays.asList(new Map[] {(Map)configuration.get("folder")});
-        }
-        if (folders != null) {
-            readFolders(folders);
-        }
-        
-        int warning = 0;
-        
-        List channels = null;
-        try {
-            channels = (List)configuration.get("channel");
-        } catch (ClassCastException exc) {
-            channels = Arrays.asList(new Map[] {(Map)configuration.get("channel")});
-        }
-        if (channels != null) {
-            readChannels(channels);
-        }
-        
-        if ((m_rebuild = (String)configuration.get("rebuild")) == null) {
-            m_rebuild = C_DEFAULT_REBUILD;
-        }
-            
-        if ((m_language = (String)configuration.get("lang")) == null) {
-            m_language = null;
-        }
-
-        m_incremental = "true".equals(configuration.get("incremental"));
-
-        m_path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(path + "/" + m_name);
-    }   
-
-    /**
-     * Reads the folder configuration.<p>
-     * 
-     * @param folders the list of folder configurations
-     * @throws CmsIndexException if something goes wrong
-     */
-    private void readFolders(List folders) throws CmsIndexException {
-        
-        for (Iterator i = folders.iterator(); i.hasNext();) {
-            Map folder = (Map)i.next();
-            
-            String source;
-            if ((source = (String)folder.get("source")) == null) {
-                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Folder source undefined");
-            }
-            
-            Set documenttypes;
-            try {
-                documenttypes = new HashSet((List)folder.get("documenttype"));
-            } catch (ClassCastException exc) {
-                documenttypes = new HashSet(Arrays.asList(new String[] {(String)folder.get("documenttype") }));
-            }
-            
-            m_vfsSources.add(source);
-            m_documenttypes.put(source, documenttypes);
-            
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Configured folder: " + source);
-            }            
-        }
+        m_sourceNames = new ArrayList();
     }
-
+    
     /**
-     * Reads the channel configuration.<p>
+     * Initializes the search index.<p>
      * 
-     * @param channels the list of folder configurations
-     * @throws CmsIndexException if something goes wrong
+     * @param cms the Cms object
      */
-    private void readChannels(List channels) throws CmsIndexException {
+    public void initialize(CmsObject cms) {
         
-        int warning = 0;
+        m_cms = cms;
         
-        for (Iterator i = channels.iterator(); i.hasNext();) {
-            Map folder = (Map)i.next();
-            
-            String source;
-            if ((source = (String)folder.get("source")) == null) {
-                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Channel source undefined");
-            }
-            
-            String documenttype;
-            if ((documenttype = (String)folder.get("documenttype")) == null) {
-                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Channel documenttype undefined");
-            }            
-            
-            String displayuri;
-            if ((displayuri = (String)folder.get("displayuri")) == null) {
-                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Channel displayuri undefined");
-            }  
-            
-            String displayparam;
-            if ((displayparam = (String)folder.get("displayparam")) == null) {
-                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Channel displayparam undefined");
-            }              
-                        
-            HashSet dtSet = new HashSet();
-            dtSet.add(documenttype);
-            m_documenttypes.put(source, dtSet);
-
-            m_cosSources.add(source);
-            m_cosDisplayuri.put(source, displayuri);
-            m_cosDisplayparam.put(source, displayparam);
-            
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Configured channel: " + source);
-            }            
-        }
+        m_path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSearchManager().getDirectory() + "/" + m_name);
     }
     
     /**
@@ -328,7 +180,7 @@ public class CmsSearchIndex {
         String rawContent = null;
         
         try {
-            analyzer = m_indexManager.getAnalyzer(m_language);
+            analyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
             query = QueryParser.parse(result.getQuery(), I_CmsDocumentFactory.DOC_CONTENT, analyzer);
             highlighter= new CmsHighlightExtractor(new CmsHtmlHighlighter(), query, analyzer);
             
@@ -368,7 +220,7 @@ public class CmsSearchIndex {
      * @return the index manager
      */
     protected CmsSearchManager getIndexManager() {
-        return m_indexManager;
+        return OpenCms.getSearchManager();
     }
         
     /**
@@ -377,10 +229,10 @@ public class CmsSearchIndex {
      * @return a new instance of IndexWriter
      * @throws CmsIndexException if something goes wrong
      */
-    protected IndexWriter getIndexWriter() throws CmsIndexException {
+    public IndexWriter getIndexWriter() throws CmsIndexException {
         
         IndexWriter indexWriter;
-        Analyzer analyzer = m_indexManager.getAnalyzer(m_language);
+        Analyzer analyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
         
         try {
             
@@ -402,16 +254,15 @@ public class CmsSearchIndex {
         }
         
         return indexWriter;    
-    }
-       
+    }      
 
     /**
      * Gets the langauge of this index.<p>
      * 
      * @return the language of the index, i.e. de
      */
-    public String getLanguage() {
-        return m_language;    
+    public String getLocale() {
+        return m_locale;    
     }
 
     /**
@@ -442,26 +293,6 @@ public class CmsSearchIndex {
     }
     
     /**
-     * Gets the site of this index.<p>
-     * 
-     * @return the site of the index, i.e. "/sites/default"
-     */
-    public String getSite() {
-        return m_site;
-    }
-        
-    /**
-     * Gets the vfs path list of this index.<p>
-     * The list contains Strings with the startpoints for indexing. 
-     * 
-     * @return the vfs path list of the index
-     */
-    public List getFolders() {
-        int warning = 0;
-        return (m_vfsSources != null) ? m_vfsSources : new ArrayList();
-    }
-    
-    /**
      * Gets the set of documenttypes of a folder or channel.<p>
      * The set contains Strings with the names of the documenttypes.
      * 
@@ -474,42 +305,9 @@ public class CmsSearchIndex {
             documenttypes = (Set)m_documenttypes.get(path);
         }
         if (documenttypes == null) {
-            documenttypes = m_indexManager.getDocumenttypes();
+            documenttypes = OpenCms.getSearchManager().getDocumenttypes();
         }
         return documenttypes;
-    }
-
-    /**
-     * Gets the cos channel list of this index.<p>
-     * The list contains the cos channels for indexing.
-     * 
-     * @return the cos channel list of the index
-     */
-    public List getChannels() {
-        int warning = 0;
-        return (m_cosSources != null) ? m_cosSources : new ArrayList();
-    }
-    
-    /**
-     * Gets the display uri of contents assigned to the given channel.<p>
-     * 
-     * @param channel the channel name
-     * @return the display uri for contents
-     */
-    public String getChannelDisplayUri(String channel) {
-        int warning = 0;
-        return (String)m_cosDisplayuri.get(channel);
-    }
-    
-    /**
-     * Get the display param of contents assigned to the given channel.<p>
-     * 
-     * @param channel the channel name
-     * @return the display param for contents
-     */
-    public String getChannelDisplayparam(String channel) {
-        int warning = 0;
-        return (String)m_cosDisplayparam.get(channel);
     }
     
     /**
@@ -538,7 +336,7 @@ public class CmsSearchIndex {
 
         ArrayList result = null;
 
-        Map searchCache = m_indexManager.getResultCache();
+        Map searchCache = OpenCms.getSearchManager().getResultCache();
         String key = m_cms.getRequestContext().currentUser().getName() + "_" 
             + m_cms.getRequestContext().getRemoteAddress() + "_" + m_name + "_" + searchQuery + "_" + fields;
             
@@ -547,11 +345,9 @@ public class CmsSearchIndex {
             return result;
         }
         
-        // change site root and context        
+        // change the project     
         CmsRequestContext context = m_cms.getRequestContext();
         CmsProject currentProject = context.currentProject();
-        context.saveSiteRoot();
-        context.setSiteRoot(m_site);
         context.setCurrentProject(m_cms.readProject(m_project));
         
         Searcher searcher = null;
@@ -569,13 +365,13 @@ public class CmsSearchIndex {
                 BooleanQuery fieldsQuery = new BooleanQuery();
                 String fList[] = org.opencms.util.CmsStringSubstitution.split(fields, " ");
                 for (int i = 0; i < fList.length; i++) {
-                    fieldsQuery.add(QueryParser.parse(searchQuery, fList[i], m_indexManager.getAnalyzer(m_language)), false, false);
+                    fieldsQuery.add(QueryParser.parse(searchQuery, fList[i], OpenCms.getSearchManager().getAnalyzer(m_locale)), false, false);
                 }
                 
                 query = fieldsQuery;
                  
             } else {
-                query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, m_indexManager.getAnalyzer(m_language));
+                query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, OpenCms.getSearchManager().getAnalyzer(m_locale));
             }
             
             searcher = new IndexSearcher(m_path);   
@@ -583,32 +379,11 @@ public class CmsSearchIndex {
             double maxScore = -1.0;
 
             result = new ArrayList(hits.length());
-            for (int i = 0; i < hits.length(); i++) { 
+            for (int i = 0, n = hits.length(); i < n; i++) { 
                 try {
                 
-                    Document doc = hits.doc(i);
-                    CmsIndexResource resource = null;
-                    String channel = null;
-                    String path = null;
-                    Field f;
-                    
-                    if ((f = doc.getField(I_CmsDocumentFactory.DOC_CHANNEL)) != null) {
-                        channel = f.stringValue();
-                    }
-                    
-                    if ((f = doc.getField(I_CmsDocumentFactory.DOC_PATH)) != null) {
-                        path = f.stringValue();
-                    }
-                                        
-                    int warning = 0;
-                    if (channel != null) {
-                        resource = CmsCosIndexer.readResource(m_cms, doc); 
-                    } else {
-                        CmsResource res = m_cms.readResource(path);
-                        if (m_cms.hasPermissions(res, I_CmsConstants.C_READ_ACCESS)) {
-                            resource = new CmsVfsIndexResource(res);
-                        }
-                    }
+                    Document doc = hits.doc(i);                                       
+                    CmsIndexResource resource = getIndexResource(doc);
                     
                     if (resource != null) {
                         maxScore = (maxScore < hits.score(i)) ? hits.score(i) : maxScore;
@@ -632,20 +407,110 @@ public class CmsSearchIndex {
                 }
             }
             
-            context.restoreSiteRoot();
+            // switch back to the original project
             context.setCurrentProject(currentProject);
         }
         
         searchCache.put(key, result);
         return result;
     }
-
+    
     /**
-     * Set the rebuild mode for this index.<p>
+     * Returns a CmsIndexResource for a specified Lucene search result document.<p>
      * 
-     * @param rebuild the rebuild mode (auto/manual)
+     * All index sources of this search index are iterated. The indexer of an 
+     * index source then tries to convert the Lucene document into an index 
+     * resource.<p>
+     * 
+     * @param doc the Lucene search result document
+     * @return a CmsIndexResource, or null if no index source had an indexer configured that was able to convert the document
+     * @throws Exception if something goes wrong
+     * @see I_CmsIndexer#getIndexResource(Document)
      */
-    public void setRebuildMode(String rebuild) {
-        m_rebuild = rebuild;
+    protected CmsIndexResource getIndexResource(Document doc) throws Exception {
+
+        CmsSearchManager searchManager = OpenCms.getSearchManager();
+        String indexSourceName = null;
+        CmsSearchIndexSource indexSource = null;
+        I_CmsIndexer indexer = null;
+        CmsIndexResource result = null;
+        String className = null;
+
+        for (int i = 0, n = m_sourceNames.size(); i < n; i++) {
+            indexSourceName = (String)m_sourceNames.get(i);
+            indexSource = searchManager.getIndexSource(indexSourceName);
+
+            className = indexSource.getIndexerClassName();
+            indexer = (I_CmsIndexer)Class.forName(className).newInstance();
+            indexer.init(m_cms, null, null, null, null, null);
+            result = indexer.getIndexResource(doc);
+
+            if (result != null) {
+                break;
+            }
+        }
+
+        return result;
     }
+    
+    /**
+     * Adds a source name to this search index.<p>
+     * 
+     * @param sourceName a source name
+     */
+    public void addSourceName(String sourceName) {
+        
+        m_sourceNames.add(sourceName);
+    }
+    
+    /**
+     * Sets the logical key/name of this search index.<p>
+     * 
+     * @param name the logical key/name of this search index
+     */
+    public void setName(String name) {
+        
+        m_name = name;
+    }
+    
+    /**
+     * Sets the rebuild mode of this search index.<p>
+     * 
+     * @param rebuildMode the rebuild mode of this search index {auto|manual}
+     */
+    public void setRebuildMode(String rebuildMode) {
+        
+        m_rebuild = rebuildMode;
+    }
+    
+    /**
+     * Sets the name of the project used to index resources.<p>
+     * 
+     * @param projectName the name of the project used to index resources
+     */
+    public void setProjectName(String projectName) {
+        
+        m_project = projectName;
+    }
+    
+    /**
+     * Sets the locale to index resources.<p>
+     * 
+     * @param locale the locale to index resources
+     */
+    public void setLocale(String locale) {
+        
+        m_locale = locale;
+    }
+    
+    /**
+     * Returns all configured sources names of this search index.<p>
+     * 
+     * @return a list with all configured sources names of this search index
+     */
+    public List getSourceNames() {
+        
+        return m_sourceNames;
+    }
+        
 }
