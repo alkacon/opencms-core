@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/05/24 17:03:55 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/05/25 11:25:21 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -303,6 +303,28 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         exportManager.setExportHeaders(exportHeaders);
 
         return exportManager;
+    }
+
+    /**
+     * Deletes a directory in the file system and all subfolders of that directory.<p>
+     * 
+     * @param directory the directory to delete
+     */
+    public static void purgeDirectory(File directory) {
+
+        if (directory.canRead() && directory.isDirectory()) {
+            java.io.File[] files = directory.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                File f = files[i];
+                if (f.isDirectory()) {
+                    purgeDirectory(f);
+                }
+                if (f.canWrite()) {
+                    f.delete();
+                }
+            }
+            directory.delete();
+        }
     }
 
     /**
@@ -1438,27 +1460,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Deletes a directory in the file system and all subfolders of the directory.<p>
-     * 
-     * @param d the directory to delete
-     */
-    private void purgeDirectory(File d) {
-
-        if (d.canRead() && d.isDirectory()) {
-            java.io.File[] files = d.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                File f = files[i];
-                if (f.isDirectory()) {
-                    purgeDirectory(f);
-                }
-                if (f.canWrite()) {
-                    f.delete();
-                }
-            }
-        }
-    }
-
-    /**
      * Scrubs the "export" folder.<p>
      */
     private void scrubExportFolder() {
@@ -1553,7 +1554,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                                 // check if export file exists, if so delete it
                                 if (exportFolder.exists() && exportFolder.canWrite()) {
                                     purgeDirectory(exportFolder);
-                                    exportFolder.delete();
                                     // write log message
                                     if (OpenCms.getLog(this).isInfoEnabled()) {
                                         OpenCms.getLog(this).info("Static export deleted export folder '" + exportFolderName + "'");
