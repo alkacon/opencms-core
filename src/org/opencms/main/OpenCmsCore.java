@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/14 00:22:01 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2004/02/14 22:55:44 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.81 $
+ * @version $Revision: 1.82 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -723,15 +723,6 @@ public final class OpenCmsCore {
     protected CmsLockManager getLockManager() {
         return m_lockManager;
     }
-    
-    /**
-     * Returns the initialized logger (for changing the runlevel).<p>
-     * 
-     * @return the initialized logger
-     */
-    protected CmsLog getLog() {
-        return m_log;
-    }
         
     /**
      * Returns the log for the selected object.<p>
@@ -1132,7 +1123,7 @@ public final class OpenCmsCore {
      * @param configuration the configurations from the <code>opencms.properties</code> file
      * @throws Exception in case of problems initializing OpenCms, this is usually fatal 
      */
-    protected void initConfiguration(ExtendedProperties configuration) throws Exception {
+    protected synchronized void initConfiguration(ExtendedProperties configuration) throws Exception {
         // this will initialize the encoding with the default
         String defaultEncoding = m_systemInfo.getDefaultEncoding();
         // check the opencms.properties for a different setting
@@ -1475,7 +1466,10 @@ public final class OpenCmsCore {
             configuration.put("log.file", logfile);
         }
         m_systemInfo.setLogFileName(logfile);
-            
+        
+        // initialize the logging
+        m_log.init(configuration, getSystemInfo().getConfigurationFilePath());
+        
         // read the the OpenCms servlet mapping from the servlet context
         String servletMapping = context.getInitParameter("OpenCmsServlet");
         if (servletMapping == null) {
@@ -1491,10 +1485,7 @@ public final class OpenCmsCore {
         if (configuration.getBoolean("wizard.enabled", true)) {
             m_instance = null;
             throw new CmsInitException("OpenCms setup wizard is enabled, unable to start OpenCms context", CmsInitException.C_INIT_WIZARD_ENABLED);
-        }       
-
-        // initialize the logging
-        initLogging(configuration);
+        }
         
         // output startup message
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -1571,16 +1562,7 @@ public final class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).error(". Session manager     : NOT initialized");
         }
     }
-    
-    /**
-     * Initializes the logging mechanism of OpenCms.<p>
-     * 
-     * @param configuration The configurations read from <code>opencms.properties</code>
-     */
-    private void initLogging(ExtendedProperties configuration) {
-        m_log.init(configuration, getSystemInfo().getConfigurationFilePath());
-    }
-    
+
     /**
      * Initialize member variables.<p>
      */
