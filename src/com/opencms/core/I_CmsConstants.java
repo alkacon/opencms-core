@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/10/16 08:58:34 $
-* Version: $Revision: 1.185 $
+* Date   : $Date: 2001/10/25 10:23:03 $
+* Version: $Revision: 1.186 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.185 $ $Date: 2001/10/16 08:58:34 $
+ * @version $Revision: 1.186 $ $Date: 2001/10/25 10:23:03 $
  */
 public interface I_CmsConstants {
 
@@ -183,6 +183,10 @@ public interface I_CmsConstants {
      */
     static final String C_PROPERTY_DESCRIPTION = "Description";
 
+    /**
+     * Property for the description
+     */
+    static final String C_PROPERTY_CHANNELID = "ChannelId";
 
     /**
      * This is the group for guests.
