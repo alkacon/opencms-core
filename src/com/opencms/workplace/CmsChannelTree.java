@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2001/10/16 13:52:58 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/10/26 13:54:01 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2001/10/16 13:52:58 $
+ * @version $Revision: 1.2 $ $Date: 2001/10/26 13:54:01 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -495,12 +495,12 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
 
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(res.getAbsolutePath())) {
-                            template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
+                            template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
                                     + "=" + Encoder.escape(curfolder));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MEND, this);
                         }
                         else {
-                            template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
+                            template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
                                     + "=" + Encoder.escape(res.getAbsolutePath()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_PEND, this);
                         }
@@ -518,12 +518,12 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
 
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(res.getAbsolutePath())) {
-                            template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
+                            template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
                                     + "=" + Encoder.escape(curfolder));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MCROSS, this);
                         }
                         else {
-                            template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
+                            template.setData(C_TREELINK, C_WP_CHANNEL_TREE + "?" + C_PARA_FOLDERTREE
                                     + "=" + Encoder.escape(res.getAbsolutePath()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_PCROSS, this);
                         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2001/08/09 13:09:41 $
-* Version: $Revision: 1.108 $
+* Date   : $Date: 2001/10/26 13:54:01 $
+* Version: $Revision: 1.109 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.108 $ $Date: 2001/08/09 13:09:41 $
+ * @version $Revision: 1.109 $ $Date: 2001/10/26 13:54:01 $
  */
 
 public interface I_CmsWpConstants {
@@ -350,6 +350,8 @@ public interface I_CmsWpConstants {
     /** The folder tree. */
     public static final String C_WP_FOLDER_TREE = "folder_tree.html";
 
+    /** The channel tree. */
+    public static final String C_WP_CHANNEL_TREE = "channel_tree.html";
 
     /** The workplace */
     public static final String C_WP_RELOAD = "workplace_reload.html";
