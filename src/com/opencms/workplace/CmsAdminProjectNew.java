@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/04/07 15:22:18 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/13 22:44:34 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/04/07 15:22:18 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/13 22:44:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -195,12 +195,14 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
 		// fill the names and values
 		for(int z = 0; z < groups.size(); z++) {
-			String name = ((A_CmsGroup)groups.elementAt(z)).getName();
-			if(C_GROUP_USERS.equals(name)) {
-				retValue = z;
+			if(((A_CmsGroup)groups.elementAt(z)).getProjectCoWorker()) {
+				String name = ((A_CmsGroup)groups.elementAt(z)).getName();
+				if(C_GROUP_USERS.equals(name)) {
+					retValue = z;
+				}
+				names.addElement(name);
+				values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
 			}
-			names.addElement(name);
-			values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
 		}
 		
 		// no current group, set index to -1
@@ -230,12 +232,14 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
 		// fill the names and values
 		for(int z = 0; z < groups.size(); z++) {
-			String name = ((A_CmsGroup)groups.elementAt(z)).getName();
-			if(C_GROUP_PROJECTLEADER.equals(name)) {
-				retValue = z;
+			if(((A_CmsGroup)groups.elementAt(z)).getProjectmanager()) {
+				String name = ((A_CmsGroup)groups.elementAt(z)).getName();
+				if(C_GROUP_PROJECTLEADER.equals(name)) {
+					retValue = z;
+				}
+				names.addElement(name);
+				values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
 			}
-			names.addElement(name);
-			values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
 		}
 		
 		// no current group, set index to -1

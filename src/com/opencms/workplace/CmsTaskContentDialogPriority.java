@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
- * Date   : $Date: 2000/03/29 14:31:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/13 22:44:35 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/03/29 14:31:56 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/13 22:44:35 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -225,15 +225,20 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
+		A_CmsGroup group;
 		
 		names.addElement(lang.getLanguageValue("task.label.emptyrole"));
 		values.addElement(lang.getLanguageValue("task.label.emptyrole"));
 
 		// fill the names and values
 		for(int z = 0; z < groups.size(); z++) {
-			String name = ((A_CmsGroup)groups.elementAt(z)).getName();
-			names.addElement(name);
-			values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
+			group = (A_CmsGroup)groups.elementAt(z);
+			// is the group a role?
+			if( group.getRole() ) {
+				String name = group.getName();
+				names.addElement(name);
+				values.addElement(name);
+			}
 		}
 		
 		names.addElement(lang.getLanguageValue("task.label.allroles"));
@@ -264,22 +269,24 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 		Vector groups = cms.getGroups();
 		
 		for(int n = 0; n < groups.size(); n++) {
-			String groupname = ((A_CmsGroup)groups.elementAt(n)).getName();
-			// get users of this group
-			Vector users = cms.getUsersOfGroup(groupname);
+			if(((A_CmsGroup)groups.elementAt(n)).getRole()) {
+				String groupname = ((A_CmsGroup)groups.elementAt(n)).getName();
+				// get users of this group
+				Vector users = cms.getUsersOfGroup(groupname);
 
-			// create entry for role
-			retValue.append( C_ROLE_1 + groupname + C_ROLE_2 );
+				// create entry for role
+				retValue.append( C_ROLE_1 + groupname + C_ROLE_2 );
 			
-			retValue.append(C_USER_1 + groupname + C_USER_2 + 0 + C_USER_3 + 
-							chooseUser + C_USER_4 + C_USER_5);
+				retValue.append(C_USER_1 + groupname + C_USER_2 + 0 + C_USER_3 + 
+								chooseUser + C_USER_4 + C_USER_5);
 			
-			for(int m = 0; m < users.size(); m++) {
-				A_CmsUser user = (A_CmsUser)users.elementAt(m);
-				
-				// create entry for user
-				retValue.append(C_USER_1 + groupname + C_USER_2 + (m + 1) + C_USER_3 + 
-								user.getName() + C_USER_4 + user.getName() + C_USER_5);
+				for(int m = 0; m < users.size(); m++) {
+					A_CmsUser user = (A_CmsUser)users.elementAt(m);
+					
+					// create entry for user
+					retValue.append(C_USER_1 + groupname + C_USER_2 + (m + 1) + C_USER_3 + 
+									user.getName() + C_USER_4 + user.getName() + C_USER_5);
+				}
 			}			
 		}
 		
