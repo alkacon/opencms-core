@@ -12,6 +12,11 @@ OpenCms 4.7.3 Ecaz - 5 April 2002
 ! Corrected the base url for editing in ActiveX DHTML-Control. Now relative links to
   images and other resources are handled correct. The Editor will display relative linked
   images.
+! There is a new user type (2) for users who have access as systemuser and webuser.
+  The user type of an existing user can be changed by using the methods changeUserType.
+  Only administrators are allowed to change the usertype.
+* Fixed bug in Oracle-PL/SQL-procedure for publishing the project: the offline folder must be deleted
+  after deleting the online folder
 - Switched back the opencms pool so it dosn't test each connection before delivering.
 
 OpenCms 4.7.2 Ecaz - 25 March 2002
