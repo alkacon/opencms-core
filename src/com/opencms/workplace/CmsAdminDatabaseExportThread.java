@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/01 14:29:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/11/20 14:59:36 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,17 +48,19 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
 	private String m_fileName;
 	private String[] m_exportPaths;
 	private boolean m_excludeSystem;
+	private boolean m_excludeUnchanged;
 	
 /**
  * Insert the method's description here.
  * Creation date: (13.09.00 09:52:24)
  */
-public CmsAdminDatabaseExportThread(CmsObject cms, String fileName, String[] exportPaths, boolean excludeSystem) {
+public CmsAdminDatabaseExportThread(CmsObject cms, String fileName, String[] exportPaths, boolean excludeSystem, boolean excludeUnchanged) {
 	
 	m_cms = cms;
 	m_exportPaths = exportPaths;
 	m_fileName = fileName;
 	m_excludeSystem = excludeSystem;
+	m_excludeUnchanged = excludeUnchanged;
 		
 	}
 	public void run() {
@@ -67,7 +69,7 @@ System.err.println("mgm----databaseExport thread started----------------"+m_file
 		I_CmsSession session = m_cms.getRequestContext().getSession(true);
 		try{
 			// do the export   
-			m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem);
+			m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged);
 
 		}catch (CmsException e) {			
 			session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));

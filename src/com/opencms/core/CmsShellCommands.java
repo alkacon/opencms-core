@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/11/20 11:06:47 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/11/20 14:58:51 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.20 $ $Date: 2000/11/20 11:06:47 $
+ * @version $Revision: 1.21 $ $Date: 2000/11/20 14:58:51 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -745,7 +745,25 @@ public void endTask(String taskid) {
 		// export the resources
 		String [] exportPaths = {C_ROOT};
 		try {
-			m_cms.exportResources(exportFile, exportPaths , false);
+			m_cms.exportResources(exportFile, exportPaths , false, false);
+		} catch( Exception exc ) {
+			CmsShell.printException(exc);
+		}
+	}
+	/**
+	 * Exports cms-resources to zip. In the zip-file the system - path will be included.
+	 * Unchanged resources will be ignored.
+	 * 
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportAllResourcesOnlyChanged(String exportFile)
+		throws CmsException {
+		// export the resources
+		String [] exportPaths = {C_ROOT};
+		try {
+			m_cms.exportResources(exportFile, exportPaths , false, true);
 		} catch( Exception exc ) {
 			CmsShell.printException(exc);
 		}
@@ -792,7 +810,39 @@ public void exportModule(String modulename, String resource, String filename) {
 			excludeSystem = false;
 		}
 		try {
-			m_cms.exportResources(exportFile, exportPaths, excludeSystem);
+			m_cms.exportResources(exportFile, exportPaths, excludeSystem, false);
+		} catch( Exception exc ) {
+			CmsShell.printException(exc);
+		}
+	}
+	/**
+	 * Exports cms-resources to zip.
+	 * Unchanged resources will be ignored. 
+	 * 
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param pathList the names (absolute Path) of folders from which should be exported
+	 *			separated by semicolons
+	 * 
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportResourcesOnlyChanged(String exportFile, String pathList)
+		throws CmsException {
+		// export the resources
+		StringTokenizer tok = new StringTokenizer(pathList, ";");
+		Vector paths = new Vector();
+		while (tok.hasMoreTokens()) {
+			paths.addElement(tok.nextToken());
+		} 
+		String exportPaths[]= new String[paths.size()];
+		for (int i=0; i< paths.size(); i++) {
+			exportPaths[i] = (String) paths.elementAt(i);
+		} 
+		boolean excludeSystem = true; 
+		if (pathList.startsWith("/system/") || (pathList.indexOf(";/system/") > -1)) {
+			excludeSystem = false;
+		}
+		try {
+			m_cms.exportResources(exportFile, exportPaths, excludeSystem, true);
 		} catch( Exception exc ) {
 			CmsShell.printException(exc);
 		}

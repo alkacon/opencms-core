@@ -101,6 +101,7 @@
 		<database>
 			<label>
 				<nosystem>Ordner 'system' ausschließen</nosystem>
+				<nounchanged><![CDATA[Unver&auml;nderte Dateien im Projekt ausschließen]]></nounchanged>
 				<titleexport>Datenbank exportieren</titleexport>
 				<titleimport>Datenbank importieren</titleimport>
 				<filename>Exportdatei</filename>

@@ -1,5 +1,15 @@
 <?xml version="1.0"?>
 <WORKPLACE>
+<nounchanged></nounchanged>
+<nounchangedbox><![CDATA[
+							<tr> 
+								<td>&nbsp;</td>
+								<td class=formular>
+									<input type=checkbox name="nounchanged" value="nounchanged" checked>]]><LABEL value="database.label.nounchanged"/><![CDATA[
+								</td>
+							</tr>
+]]></nounchangedbox>
+
 <TEMPLATE>
 <![CDATA[
 
@@ -158,9 +168,11 @@ function selectAll(theList) {
 								<td>&nbsp;</td>
 								<td class=formular>
 									<input type=checkbox name="nosystem" value="nosystem" checked>]]><LABEL value="database.label.nosystem"/><![CDATA[
+									<input type="hidden" name="tempFolder" id="tempFolder"> 
+									<input type="hidden" name="ALLRES" id="ALLRES" value="">
 								</td>
-							<input type="hidden" name="tempFolder" id="tempFolder"> 
-							<input type="hidden" name="ALLRES" id="ALLRES" value="">
+							</tr>
+							]]><PROCESS>nounchanged</PROCESS><![CDATA[
 							<tr>
 								<td class=formular width=10%>]]><LABEL value="database.label.filename"/><![CDATA[:</td>
 								<td class=dialogtxt><input type="text" class="textfeld3" maxlength="30" name="filename" id="VNAME"></td> 

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/20 12:59:10 $
- * Version: $Revision: 1.197 $
+ * Date   : $Date: 2000/11/20 14:59:22 $
+ * Version: $Revision: 1.198 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.197 $ $Date: 2000/11/20 12:59:10 $
+ * @version $Revision: 1.198 $ $Date: 2000/11/20 14:59:22 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2241,14 +2241,15 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	 * @param exportFile the name (absolute Path) of the export resource (zip)
 	 * @param exportPath the name (absolute Path) of folder from which should be exported
 	 * @param excludeSystem, decides whether to exclude the system
+     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
 	 * @param cms the cms-object to use for the export.
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem)
+	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged)
 		throws CmsException {
 		if(isAdmin(currentUser, currentProject)) {
-			new CmsExport(exportFile, exportPaths, cms, excludeSystem);
+			new CmsExport(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged);
 		} else {
 			 throw new CmsException("[" + this.getClass().getName() + "] exportResources",
 				 CmsException.C_NO_ACCESS);

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/11/17 16:00:12 $
- * Version: $Revision: 1.142 $
+ * Date   : $Date: 2000/11/20 14:59:06 $
+ * Version: $Revision: 1.143 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.142 $ $Date: 2000/11/17 16:00:12 $ 
+ * @version $Revision: 1.143 $ $Date: 2000/11/20 14:59:06 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -773,12 +773,13 @@ public void exportResources(String exportFile, String[] exportPaths) throws CmsE
  * @param exportFile the name (absolute Path) of the export resource (zip-file).
  * @param exportPath the name (absolute Path) of folder from which should be exported.
  * @param includeSystem indicates if the system resources will be included in the export.
+ * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
  * 
  * @exception CmsException if operation was not successful.
  */
-public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem) throws CmsException {
+public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged) throws CmsException {
 	// export the resources
-	m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem);
+	m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged);
 }
 /**
  * Forwards a task to a new user.

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/17 16:00:13 $
- * Version: $Revision: 1.132 $
+ * Date   : $Date: 2000/11/20 14:59:06 $
+ * Version: $Revision: 1.133 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.132 $ $Date: 2000/11/17 16:00:13 $
+ * @version $Revision: 1.133 $ $Date: 2000/11/20 14:59:06 $
  * 
  */
 
@@ -890,11 +890,12 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	 * @param exportFile the name (absolute Path) of the export resource (zip)
 	 * @param exportPaths the name (absolute Path) of folders from which should be exported
 	 * @param includeSystem, desides if to include the system resources to the export.
+     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
 	 * @param cms the cms-object to use for the export.
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
 	 */
-	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem)
+	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem, boolean excludeUnchanged)
 		throws CmsException;
 	 /**
 	  * Forwards a task to a new user.

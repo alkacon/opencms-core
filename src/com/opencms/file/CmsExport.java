@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/11/02 16:04:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/11/20 14:59:06 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/11/02 16:04:58 $
+ * @version $Revision: 1.11 $ $Date: 2000/11/20 14:59:06 $
  */
 public class CmsExport implements I_CmsConstants {
 	
@@ -80,8 +80,23 @@ public class CmsExport implements I_CmsConstants {
 	 * Decides, if the system should be included to the export.
 	 */
 	private boolean m_excludeSystem;
-	
+
 	/**
+	 * Decides, if the unchanged resources should be included to the export.
+	 */
+	private boolean m_excludeUnchanged;
+
+	/**
+	 * Is the current project the online project?
+	 */
+	private boolean m_isOnlineProject;
+    
+	/**
+	 * Cache for previously added super folders
+	 */
+    private Vector m_superFolders;
+
+    /**
 	 * This constructs a new CmsImport-object which imports the resources.
 	 * 
 	 * @param importFile the file or folder to import from.
@@ -91,7 +106,7 @@ public class CmsExport implements I_CmsConstants {
 	 */
 	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms) 
 		throws CmsException {
-		this(exportFile, exportPaths, cms, false);
+		this(exportFile, exportPaths, cms, false, false);
 	}
 	/**
 	 * This constructs a new CmsImport-object which imports the resources.
@@ -104,7 +119,7 @@ public class CmsExport implements I_CmsConstants {
 	 */
 	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, Node moduleNode) 
 		throws CmsException {
-		this(exportFile, exportPaths, cms, false, moduleNode);
+		this(exportFile, exportPaths, cms, false, false, moduleNode);
 	}
 /**
  * This constructs a new CmsImport-object which imports the resources.
@@ -114,10 +129,11 @@ public class CmsExport implements I_CmsConstants {
  * @param cms the cms-object to work with.
  * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
  *        exportPaths are included
+ * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
  * @exception CmsException the CmsException is thrown if something goes wrong.
  */
-public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem) throws CmsException {
-	this(exportFile, exportPaths, cms, excludeSystem, null);
+public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged) throws CmsException {
+	this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null);
 }
 	/**
 	 * This constructs a new CmsImport-object which imports the resources.
@@ -127,15 +143,18 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
 	 * @param cms the cms-object to work with.
 	 * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
 	 *        exportPaths are included
+     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
 	 * @param Node moduleNode module informations in a Node for module-export.
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
-	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, Node moduleNode) 
+	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, Node moduleNode) 
 		throws CmsException {
 		
 		m_exportFile = exportFile; 
 		m_cms = cms;
 		m_excludeSystem = excludeSystem;
+        m_excludeUnchanged = excludeUnchanged;
+        m_isOnlineProject = cms.getRequestContext().currentProject().equals(cms.onlineProject());
 
 		Vector folderNames = new Vector();
 		Vector fileNames = new Vector();
@@ -208,8 +227,12 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
 public void addSingleFiles(Vector fileNames) throws CmsException {
 	if (fileNames != null) {
 		for (int i = 0; i < fileNames.size(); i++) {
-			CmsFile file = m_cms.readFile((String) fileNames.elementAt(i));
-			exportFile(file);
+            String fileName = (String) fileNames.elementAt(i);
+            CmsFile file = m_cms.readFile(fileName);
+            if(file.getState() != C_STATE_DELETED) {
+                addSuperFolders(fileName);
+                exportFile(file);
+            }
 		}
 	}
 }
@@ -219,15 +242,30 @@ public void addSingleFiles(Vector fileNames) throws CmsException {
  * @param path java.lang.String the path of the folder in the filesystem
  */
 public void addSuperFolders(String path) throws CmsException {
+    // Initialize the "previously added folder cache"
+    if(m_superFolders == null) {
+        m_superFolders = new Vector();
+    }
 	Vector superFolders = new Vector();
+    
+    // Check, if the path is really a folder
+    if(path.lastIndexOf(C_ROOT) != (path.length()-1)) {
+		path = path.substring(0, path.lastIndexOf(C_ROOT)+1);
+    }
 	while (path.length() > C_ROOT.length()) {
 		superFolders.addElement(path);
 		path = path.substring(0, path.length() - 1);
 		path = path.substring(0, path.lastIndexOf(C_ROOT)+1);
 	}
 	for (int i = superFolders.size()-1; i >= 0; i--) { 
-		CmsFolder folder = m_cms.readFolder((String) superFolders.elementAt(i));
-		writeXmlEntrys(folder);
+        String addFolder = (String)superFolders.elementAt(i);
+        if(!m_superFolders.contains(addFolder)) {
+            // This super folder was NOT added previously. Add it now!
+		    CmsFolder folder = m_cms.readFolder(addFolder);
+		    writeXmlEntrys(folder);
+            // Remember that this folder was added
+            m_superFolders.addElement(addFolder);
+        }
 	}
 }
 /** Check whether some of the resources are redundant because a superfolder has also
@@ -324,7 +362,10 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 		// walk through all files and export them
 		for(int i = 0; i < subFiles.size(); i++) {
 			CmsResource file = (CmsResource) subFiles.elementAt(i);
-			exportFile(m_cms.readFile(file.getAbsolutePath()));
+            int state = file.getState();
+            if(m_isOnlineProject || (!m_excludeUnchanged) || state == C_STATE_NEW || state == C_STATE_CHANGED) {
+                exportFile(m_cms.readFile(file.getAbsolutePath()));
+            }
 		}
 		
 		// walk through all subfolders and export them

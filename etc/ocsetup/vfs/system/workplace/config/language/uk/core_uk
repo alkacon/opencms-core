@@ -101,6 +101,7 @@
 		<database>
 			<label>
 				<nosystem>exclude system folder</nosystem>
+				<nounchanged>exclude files unchanged in the current project</nounchanged>
 				<filename>Name of Exportfile</filename>
 				<files>existing Files</files><titleexport>Export Database</titleexport>
 				<titleimport>Import Database</titleimport>

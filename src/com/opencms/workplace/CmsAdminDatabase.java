@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
- * Date   : $Date: 2000/11/01 14:26:29 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/11/20 14:59:36 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/11/01 14:26:29 $
+ * @version $Revision: 1.12 $ $Date: 2000/11/20 14:59:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -79,6 +79,14 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 		String existingFile = (String)parameters.get("existingfile");
 		String action = (String)parameters.get("action");
 		String allResources = (String) parameters.get("ALLRES"); 
+      
+        if(action == null)  {
+            // This is an initial request of the database administration page
+            // Generate datablocks for checkboxes in the HTML form
+            if(!cms.getRequestContext().currentProject().equals(cms.onlineProject())) {
+                xmlTemplateDocument.setData("nounchanged", xmlTemplateDocument.getProcessedDataValue("nounchangedbox", this, parameters));
+            }
+        }
 		 
 		// first we look if the thread is allready running
 		if ((action != null) && ("working".equals(action))){
@@ -126,12 +134,18 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 				if (parameters.get("nosystem") != null) {
 					excludeSystem=true;
 				}
-				// start the thread for: export   
+
+                boolean excludeUnchanged=false;
+                if (parameters.get("nounchanged") != null) {
+                    excludeUnchanged = true;
+                }
+                
+                // start the thread for: export   
 				// first clear the session entry if necessary
 				if(session.getValue(C_SESSION_THREAD_ERROR) != null){
 					session.removeValue(C_SESSION_THREAD_ERROR);
 				}
-				Thread doExport = new CmsAdminDatabaseExportThread(cms, cms.readExportPath() + fileName, exportPaths, excludeSystem);
+				Thread doExport = new CmsAdminDatabaseExportThread(cms, cms.readExportPath() + fileName, exportPaths, excludeSystem, excludeUnchanged);
 				doExport.start();
 				session.putValue(C_DATABASE_THREAD,doExport);
 				xmlTemplateDocument.setData("time", "10");
