@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/08/22 14:33:16 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -537,12 +537,12 @@ public class CmsSetup {
     }
   }
 
-  /** Sets the value for exportpoint 0 to the given value */
+  /** Sets the value for exportpoint nr to the given value */
   public void setExportPoint(String exportPoint, int nr)  {
     setProperties("exportpoint."+nr,exportPoint);
   }
 
-  /** Returns the value for exportpoint 0 */
+  /** Returns the value for exportpoint nr */
   public String getExportPoint(int nr)  {
     Object temp =  m_extProp.get("exportpoint."+nr);
     if(temp != null)  {
@@ -553,14 +553,47 @@ public class CmsSetup {
     }
   }
 
-  /** Sets the value for exportpoint path 0 to the given value */
+  /** Sets the value for exportpoint path nr to the given value */
   public void setExportPointPath(String exportPointPath, int nr)  {
     setProperties("exportpoint.path."+nr,exportPointPath);
   }
 
-  /** Returns the value for exportpoint path 0 */
+  /** Returns the value for exportpoint path nr */
   public String getExportPointPath(int nr)  {
     Object temp =  m_extProp.get("exportpoint.path."+nr);
+    if(temp != null)  {
+      return temp.toString();
+    }
+    else  {
+      return null;
+    }
+  }
+
+
+  /** Sets the value for redirect nr to the given value */
+  public void setRedirect(String redirect, int nr)  {
+    setProperties("redirect."+nr,redirect);
+  }
+
+  /** Returns the value for redirect nr */
+  public String getRedirect(int nr)  {
+    Object temp =  m_extProp.get("redirect."+nr);
+    if(temp != null)  {
+      return temp.toString();
+    }
+    else  {
+      return null;
+    }
+  }
+
+  /** Sets the value for redirect location nr to the given value */
+  public void setRedirectLocation(String redirectLocation, int nr)  {
+    setProperties("redirectlocation."+nr, redirectLocation);
+  }
+
+  /** Returns the value for redirect location nr */
+  public String getRedirectLocation(int nr)  {
+    Object temp =  m_extProp.get("redirectlocation."+nr);
     if(temp != null)  {
       return temp.toString();
     }

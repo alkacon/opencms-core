@@ -2,15 +2,24 @@
 <% /* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
 
-<% /* Set all given Properties */%>
-<jsp:setProperty name="Bean" property="*" />
+<% 
+	/* Set all given Properties */
+	int expPointNr = 0;	
+	while(request.getParameter("exportPoint"+expPointNr) != null)	{
+		Bean.setExportPoint(request.getParameter("exportPoint"+expPointNr),expPointNr);
+		if(request.getParameter("exportPointPath"+expPointNr) != null)	{
+			Bean.setExportPointPath(request.getParameter("exportPointPath"+expPointNr),expPointNr);
+		}
+		expPointNr++;
+	}
+%>
 
 <%	
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);
 
 	/* next page to be accessed */
-	String nextPage = "advanced_rdparams.ocjsp";
+	String nextPage = "advanced_3.ocjsp";
 %>
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
 
@@ -42,35 +51,35 @@
 					<table border="1">
 						<tr>
 							<td align="center" class="bold">
-								<p>Exportpoint parameters</p>
+								<p>Redirect parameters</p>
 								<table border="0">
 								<%
-									int expPointNr = 0;
-									while (Bean.getExportPoint(expPointNr)!=null)	{
+									int redirectNr = 0;
+									while (Bean.getRedirect(redirectNr)!=null)	{
 								%>
 									<tr>
 										<td width="150">
-											Exportpoint <%= ""+expPointNr %>
+											Redirect <%= ""+redirectNr %>
 										</td>
 										<td>
-											<input type="text" size="30" style="width:300px;" name="exportPoint<%= ""+expPointNr %>" value="<%= Bean.getExportPoint(expPointNr) %>">
+											<input type="text" size="30" style="width:300px;" name="redirect<%= ""+redirectNr %>" value="<%= Bean.getRedirect(redirectNr) %>">
 										</td>
 									</tr>
 								<%
-									if(Bean.getExportPointPath(expPointNr) != null)	{
+									if(Bean.getRedirectLocation(redirectNr) != null)	{
 								%>
 									<tr>
 										<td>
-											Exportpoint path <%= ""+expPointNr %>
+											Redirect Location <%= ""+redirectNr %>
 										</td>
 										<td>
-											<input type="text" size="30" style="width:300px;" name="exportPointPath<%= ""+expPointNr %>" value="<%= Bean.getExportPointPath(expPointNr) %>">
+											<input type="text" size="30" style="width:300px;" name="redirectLocation<%= ""+redirectNr %>" value="<%= Bean.getRedirectLocation(redirectNr) %>">
 										</td>
 									</tr>
 								<%
 									}
 									out.println("<tr><td colspan='2'><hr></td></tr>");
-									expPointNr++;
+									redirectNr++;
 									}
 								%>
 								</table>
