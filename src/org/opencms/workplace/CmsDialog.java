@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/01 16:05:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/02 13:40:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -67,8 +67,24 @@ public class CmsDialog extends CmsWorkplace {
      * @return a dialog window start / end segment
      */
     public String dialog(int segment) {
+        return dialog(segment, null);
+    }
+    
+    /**
+     * Builds the outer dialog window border.<p>
+     * 
+     * @param segment the HTML segment (START / END)
+     * @param attrs optional additional attributes for the opening dialog table
+     * @return a dialog window start / end segment
+     */
+    public String dialog(int segment, String attrs) {
+        if (attrs != null) {
+            attrs = " " + attrs;
+        } else {
+            attrs = "";
+        }
         if (segment == HTML_START) {
-            return "<table class=\"dialog\" cellpadding=\"0\" cellspacing=\"0\">\n"                 + "<tr><td>\n<table class=\"dialogbox\" cellpadding=\"0\" cellspacing=\"0\">\n"                 + "<tr><td>";
+            return "<table class=\"dialog\" cellpadding=\"0\" cellspacing=\"0\""+attrs+">\n"                 + "<tr><td>\n<table class=\"dialogbox\" cellpadding=\"0\" cellspacing=\"0\">\n"                 + "<tr><td>";
         } else {
             return "</td></tr></table>\n</td></tr></table>\n<p>&nbsp;</p>";
         }
@@ -81,7 +97,7 @@ public class CmsDialog extends CmsWorkplace {
      * @return a content area start / end segment
      */
     public String dialogContent(int segment) {
-        return dialogContent(segment, "&nbsp;");
+        return dialogContent(segment, null);
     }
     
     /**
@@ -94,13 +110,11 @@ public class CmsDialog extends CmsWorkplace {
     public String dialogContent(int segment, String title) {
         if (segment == HTML_START) {
             StringBuffer retValue = new StringBuffer(512);
-            retValue.append("<div class=\"dialoghead\" unselectable=\"on\">");
-            if (title == null || "".equals(title)) {
-                title = "&nbsp;";
+            if (title != null && !"".equals(title)) {
+                retValue.append("<div class=\"dialoghead\" unselectable=\"on\">");
+                retValue.append(title);
+                retValue.append("</div>");
             }
-            retValue.append(title);
-            retValue.append("</div>");
-            
             retValue.append("<div class=\"dialogcontent\" unselectable=\"on\">\n");
             retValue.append("<!-- dialogcontent start -->\n");
             return retValue.toString();
