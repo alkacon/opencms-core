@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/09 09:40:45 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2000/06/09 13:05:26 $
+ * Version: $Revision: 1.82 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.81 $ $Date: 2000/06/09 09:40:45 $ 
+ * @version $Revision: 1.82 $ $Date: 2000/06/09 13:05:26 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -502,6 +502,24 @@ public class CmsObject implements I_CmsConstants {
      	return( c_rb.readFileHeader(m_context.currentUser(), 
 									m_context.currentProject(), 
 									filename ) );
+	}
+	
+	/**
+	 * Reads all file headers for a project from the Cms.<BR/>
+	 * 
+	 * @param projectId The id of the project to read the resources for.
+	 * 
+	 * @return a Vector of resources.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public Vector readFileHeaders(int projectId)
+		throws CmsException { 
+     	return( c_rb.readFileHeaders(m_context.currentUser(), 
+									 m_context.currentProject(), 
+									 projectId ) );
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 12:31:45 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2000/06/09 13:05:26 $
+ * Version: $Revision: 1.39 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2000/06/09 12:31:45 $
+ * @version $Revision: 1.39 $ $Date: 2000/06/09 13:05:26 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2435,6 +2435,36 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		 }
 
      }
+	
+	/**
+	 * Reads all file headers for a project from the Cms.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param projectId The id of the project to read the resources for.
+	 * 
+	 * @return a Vector of resources.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public Vector readFileHeaders(CmsUser currentUser, CmsProject currentProject,
+								  int projectId)
+		throws CmsException {
+		CmsProject project = readProject(currentUser, currentProject, projectId);
+		Vector resources = m_dbAccess.readResources(project);
+		Vector retValue = new Vector();
+		
+		// check the security
+		for(int i = 0; i < resources.size(); i++) {
+			if( accessRead(currentUser, currentProject, (CmsResource) resources.elementAt(i)) ) {
+				retValue.addElement(resources.elementAt(i));
+			}
+		}
+		
+		return retValue;
+	}
 	
      /**
      * Copies a resource from the online project to a new, specified project.<br>

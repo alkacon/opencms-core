@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 09:40:45 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2000/06/09 13:05:26 $
+ * Version: $Revision: 1.80 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.79 $ $Date: 2000/06/09 09:40:45 $
+ * @version $Revision: 1.80 $ $Date: 2000/06/09 13:05:26 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -1404,6 +1404,23 @@ public interface I_CmsResourceBroker {
                                        String filename)
 		 throws CmsException;
      
+	/**
+	 * Reads all file headers for a project from the Cms.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param projectId The id of the project to read the resources for.
+	 * 
+	 * @return a Vector of resources.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public Vector readFileHeaders(CmsUser currentUser, CmsProject currentProject,
+								  int projectId)
+		throws CmsException;
+							
     /**
      * Copies a resource from the online project to a new, specified project.<br>
      * Copying a resource will copy the file header or folder into the specified 

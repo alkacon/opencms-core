@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
- * Date   : $Date: 2000/06/05 13:37:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/09 13:05:26 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/06/05 13:37:58 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/09 13:05:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -168,34 +168,20 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
 	 */
 	private void getFiles(CmsObject cms, String folderName, Vector resources, String filter) 
         throws CmsException {
-        Vector folders=new Vector();
-        Vector files=new Vector();
-		CmsFolder folder;
-		CmsFile file;
+		
+		CmsResource resource;
+        Vector resourcesToTest;
         
-        // get files and folders of this folder
-        folders=cms.getSubFolders(folderName);
-        files=cms.getFilesInFolder(folderName);
+        // get resources
+		resourcesToTest = cms.readFileHeaders(cms.getRequestContext().currentProject().getId());
         
         //copy the values into the resources, if they where changed
-        for (int i=0;i<folders.size();i++) {
-			folder = (CmsFolder)folders.elementAt(i);
-			
-			if( (! folder.inProject(cms.onlineProject())) && checkAccess(cms, folder) ){
-				if(folder.getState() != C_STATE_UNCHANGED) {
-					addResource(resources, filter, (CmsResource)folder);
-				}
-				getFiles(cms, folder.getAbsolutePath(), resources, filter );
+        for (int i=0;i<resourcesToTest.size();i++) {
+			resource = (CmsResource)resourcesToTest.elementAt(i);
+			if(resource.getState() != C_STATE_UNCHANGED) {
+				addResource(resources, filter, resource);
 			}
         }
-		
-        for (int i=0;i<files.size();i++) {
-			file = (CmsFile)files.elementAt(i);
-			if( ( !file.inProject(cms.onlineProject()) )&& 
-				(file.getState() != C_STATE_UNCHANGED) && checkAccess(cms, file) ) {
-				addResource(resources, filter, (CmsResource)file);
-			}
-        } 
 	}
 	
 	/**
