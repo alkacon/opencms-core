@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/10 07:20:04 $
- * Version: $Revision: 1.203 $
+ * Date   : $Date: 2003/09/10 11:16:43 $
+ * Version: $Revision: 1.204 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.203 $ $Date: 2003/09/10 07:20:04 $
+ * @version $Revision: 1.204 $ $Date: 2003/09/10 11:16:43 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7763,6 +7763,13 @@ public class CmsDriverManager extends Object {
             CmsFile onlineFile = readFileInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, resource.getId(), false);
             //(context, resourceName);
             readPath(context,onlineFile,true);
+            
+            // get flags of the deleted file
+            int flags = onlineFile.getFlags();
+            if (resource.isLabeled()) {
+               // set the flag for labeled links on the restored file
+               flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK; 
+            }
 
             CmsFile restoredFile =
                 new CmsFile(
@@ -7772,7 +7779,7 @@ public class CmsDriverManager extends Object {
                     resource.getFileId(),
                     resource.getResourceName(),
                     onlineFile.getType(),
-                    onlineFile.getFlags(),
+                    flags,
                     context.currentProject().getId(),
                     I_CmsConstants.C_STATE_UNCHANGED,
                     onlineFile.getLoaderId(),
