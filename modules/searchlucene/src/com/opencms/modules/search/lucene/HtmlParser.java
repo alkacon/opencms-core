@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: HtmlParser.java,v $
-    $Date: 2002/02/28 13:00:11 $
-    $Revision: 1.5 $
+    $Date: 2002/03/01 13:30:35 $
+    $Revision: 1.6 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ public class HtmlParser implements I_ContentParser {
             "   <string content=\"&amp;ouml;\" replace=\"oe\"/>        <string content=\"&amp;Uuml;\" replace=\"Ue\"/>" +
             "   <string content=\"&amp;Auml;\" replace=\"Ae\"/>        <string content=\"&amp;Ouml;\" replace=\"Oe\"/>" +
             "   <string content=\"&amp;lt;\" replace=\" \"/>		<string content=\"&amp;gt;\" replace=\" \"/>" +
-            "   <string content=\"&amp;szlig;\" replace=\"ss\"/>        <string content=\"&amp;nbsp;\" replace=\" \"/>" +
+            "   <string content=\"&amp;szlig;\" replace=\"ss\"/><string content=\"&amp;qout;\" replace=\" \"/>        <string content=\"&amp;nbsp;\" replace=\" \"/>" +
             "</replacestrings>";
 
     // the Config Strings to get the keywords from the meta-tag
@@ -183,12 +183,12 @@ public class HtmlParser implements I_ContentParser {
      *@return                Description of the Return Value
      */
     private String filterContent(String content, String configuration) {
-        if(debug) {
-            System.out.println("filterContent.html.content=" + content);
-        }
         //conv.setConverterConfFile(confFile);
         conv.setConverterConfString(configuration);
         content = conv.convertHTML(content);
+        if(debug) {
+            System.out.println("filterContent.html.content=" + content);
+        }
         return content;
     }
 

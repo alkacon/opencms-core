@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: IndexFiles.java,v $
-    $Date: 2002/02/28 13:00:11 $
-    $Revision: 1.5 $
+    $Date: 2002/03/01 13:30:35 $
+    $Revision: 1.6 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -24,6 +24,7 @@ package com.opencms.modules.search.lucene;
 import org.apache.lucene.index.*;
 import org.apache.lucene.document.*;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -49,6 +50,8 @@ public class IndexFiles extends Thread {
     private Vector m_files = null;
 
     private String m_configPath = "";
+
+    private int m_contentLenth=0;
 
     private PdfParser convPdf = null;
 
@@ -100,7 +103,9 @@ public class IndexFiles extends Thread {
         //
 
         try {
-            writer = new IndexWriter(m_indexPath, new GermanAnalyzer(), m_newIndex);
+            //GermanAnalyzer ga=new GermanAnalyzer();
+            StandardAnalyzer ga=new StandardAnalyzer();
+            writer = new IndexWriter(m_indexPath, ga, m_newIndex);
             String completeContent = "";
             String keywords = "";
             String description = "";
@@ -152,10 +157,12 @@ public class IndexFiles extends Thread {
                     published = parser.getPublished();
                 }
                 doc.add(Field.Keyword("path", (String) m_files.elementAt(i)));
+                doc.add(Field.Keyword("length", m_contentLenth+""));
                 doc.add(Field.Keyword("keywords", keywords));
                 doc.add(Field.Keyword("description", description));
                 doc.add(Field.Keyword("modified", published));
                 doc.add(Field.Keyword("title", title));
+                doc.add(Field.Keyword("content", parsedContent));
                 is = new ByteArrayInputStream(parsedContent.getBytes());
 
                 if(debug) {
@@ -278,6 +285,8 @@ public class IndexFiles extends Thread {
         try {
             urlCon = new URL(theUrl).openConnection();
             urlCon.connect();
+            m_contentLenth=urlCon.getContentLength();
+            System.out.println("m_contentLenth="+m_contentLenth);
             m_contentType = urlCon.getContentType();
             if(debug) {
                 System.out.println("connectUrl.theUrl=" + theUrl);

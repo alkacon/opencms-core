@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: SearchLucene.java,v $
-    $Date: 2002/02/28 13:00:11 $
-    $Revision: 1.5 $
+    $Date: 2002/03/01 13:30:35 $
+    $Revision: 1.6 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -23,9 +23,10 @@ package com.opencms.modules.search.lucene;
   */
 import org.apache.lucene.search.*;
 import org.apache.lucene.index.*;
+import org.apache.lucene.analysis.de.*;
+import org.apache.lucene.analysis.*;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.analysis.SimpleAnalyzer;
-import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import java.util.*;
 
@@ -40,6 +41,16 @@ public class SearchLucene {
     private final boolean debug = false;
 
     private String m_queryString = "";
+
+
+    /**
+     *  Description of the Method
+     *
+     *@return    Description of the Return Value
+     */
+    public Token next() {
+        return new Token("", 0, 0);
+    }
 
 
     // usage: Search <index-path> <query-string>
@@ -66,22 +77,76 @@ public class SearchLucene {
         Vector res = new Vector();
         Hashtable oneHit = null;
         buildQueryString();
+        Query query = null;
         Searcher searcher = new IndexSearcher(indexPath);
+
         //BooleanQuery query = (BooleanQuery) QueryParser.parse(m_queryString, "body", new SimpleAnalyzer());
-        BooleanQuery query = (BooleanQuery) QueryParser.parse(m_queryString, "body", new GermanAnalyzer());
+        //query = (BooleanQuery) QueryParser.parse(m_queryString, "body", new GermanAnalyzer());
+        query = (BooleanQuery) QueryParser.parse(m_queryString, "body", new StandardAnalyzer());
         Hits hits = searcher.search(query);
         int countHits = hits.length();
+        String excerpt = "";
         for(int i = 0; i < countHits; i++) {
+            excerpt = LuceneTools.highlightTerms(hits.doc(i).get("content"), new TermHighlighter(), query, new StandardAnalyzer());
+            excerpt = cutExcerpt(excerpt);
             oneHit = new Hashtable();
+            oneHit.put("excerpt", excerpt);
             oneHit.put("description", hits.doc(i).get("description"));
             oneHit.put("title", hits.doc(i).get("title"));
             oneHit.put("keywords", hits.doc(i).get("keywords"));
             oneHit.put("url", hits.doc(i).get("path"));
             oneHit.put("score", Math.round(hits.score(i) * 100) + " %");
             oneHit.put("modified", hits.doc(i).get("modified"));
+            oneHit.put("length", hits.doc(i).get("length"));
             res.add(oneHit);
         }
+
         return res;
+    }
+
+
+    /**
+     *  To cut the excerpt to the right length
+     *
+     *@param  excerpt  the complete content with included highlights
+     *@return          the substring with the first highlights
+     */
+    private String cutExcerpt(String excerpt) {
+        int firstHighlight = excerpt.indexOf("<b>");
+        int excerptLength = excerpt.length();
+        int before = 50;
+        int after = 150;
+        if(debug) {
+            System.out.println("firstHighlight=" + firstHighlight);
+            System.out.println("excerptLength=" + excerptLength);
+        }
+        if(firstHighlight != -1) {
+            if(firstHighlight >= before) {
+                if(excerptLength >= firstHighlight + after) {
+                    excerpt = excerpt.substring(firstHighlight - before, firstHighlight + after);
+                } else {
+                    excerpt = excerpt.substring(firstHighlight - before, excerptLength);
+                }
+            } else {
+                if(excerptLength >= firstHighlight + after) {
+                    excerpt = excerpt.substring(firstHighlight, firstHighlight + after);
+                } else {
+                    excerpt = excerpt.substring(firstHighlight, excerptLength);
+                }
+            }
+        }
+        excerpt=replaceAll(excerpt,"&nbsp;"," ");
+
+        //remove all \xxx
+        while (excerpt.indexOf("\\")!=-1){
+            excerpt=excerpt.substring(0,excerpt.indexOf("\\"))+
+                    excerpt.substring(excerpt.indexOf("\\")+4,excerpt.length());
+        }
+
+        if(debug) {
+            System.out.println("excerpt=" + excerpt);
+        }
+        return excerpt;
     }
 
 
@@ -103,13 +168,14 @@ public class SearchLucene {
             m_queryString = m_queryString.substring(1);
         }
 
-        replaceAll("Ü", "Ue");
-        replaceAll("Ä", "Ae");
-        replaceAll("Ö", "Oe");
-        replaceAll("ü", "ue");
-        replaceAll("ä", "ae");
-        replaceAll("ö", "oe");
-        replaceAll("&nbsp;", "");
+        m_queryString=replaceAll(m_queryString,"Ü", "Ue");
+        m_queryString=replaceAll(m_queryString,"Ä", "Ae");
+        m_queryString=replaceAll(m_queryString,"Ö", "Oe");
+        m_queryString=replaceAll(m_queryString,"ü", "ue");
+        m_queryString=replaceAll(m_queryString,"ä", "ae");
+        m_queryString=replaceAll(m_queryString,"ö", "oe");
+        m_queryString=replaceAll(m_queryString,"ß", "ss");
+        m_queryString=replaceAll(m_queryString,"&nbsp;", " ");
 
         if(debug) {
             System.out.println("m_queryString=" + m_queryString);
@@ -123,13 +189,14 @@ public class SearchLucene {
      *@param  replace      Description of the Parameter
      *@param  replaceWith  Description of the Parameter
      */
-    private void replaceAll(String replace, String replaceWith) {
-        StringBuffer sb = new StringBuffer(m_queryString);
+    private String replaceAll(String text,String replace, String replaceWith) {
+        StringBuffer sb = new StringBuffer(text);
         int stelle = 0;
-        while(m_queryString.indexOf(replace) != -1) {
-            stelle = m_queryString.indexOf(replace);
+        while(text.indexOf(replace) != -1) {
+            stelle = text.indexOf(replace);
             sb.replace(stelle, stelle + replace.length(), replaceWith);
-            m_queryString = sb.toString();
+            text = sb.toString();
         }
+        return text;
     }
 }

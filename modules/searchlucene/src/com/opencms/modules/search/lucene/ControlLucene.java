@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: ControlLucene.java,v $
-    $Date: 2002/02/28 13:00:11 $
-    $Revision: 1.6 $
+    $Date: 2002/03/01 13:30:35 $
+    $Revision: 1.7 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
     // the switch to create a completely ne indexdirectory
     private static boolean m_newIndex = false;
 
-    private static String m_searchword = "Möglichkeiten";
+    private static String m_searchword = "ist";
     private static String m_url = CmsBase.getAbsoluteWebPath("search/index");
     /**
      *  Description of the Field
@@ -75,7 +75,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
 
     private static String c_select_format;
 
-    private final static String C_PARAM_MODULE_NAME = "com.opencms.modules.search.lucene.ControlLucene";
+    private final static String C_PARAM_MODULE_NAME = "com.opencms.modules.search.lucene";
     /**
      *  Description of the Field
      */
@@ -381,11 +381,13 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         }
         for(int i = 0; i < matches; i++) {
             oneHit = (Hashtable) results.elementAt(i);
+            System.out.println("excerpt=" + oneHit.get("excerpt"));
             System.out.println("description=" + oneHit.get("description"));
             System.out.println("title=" + oneHit.get("title"));
             System.out.println("keywords=" + oneHit.get("keywords"));
             System.out.println("URL=" + oneHit.get("url"));
             System.out.println("score=" + oneHit.get("score"));
+            System.out.println("size="+ (Integer.valueOf((String)oneHit.get("length")).intValue())/1024);
         }
     }
 
@@ -437,6 +439,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         String title;
         String description;
         String modified;
+        String excerpt="";
         m_searchword = word;
 
         //start the search for m_searchword
@@ -480,10 +483,12 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                 url = (String) oneHit.get("url");
                 title = (String) oneHit.get("title");
                 description = (String) oneHit.get("description");
+                excerpt = (String) oneHit.get("excerpt");
                 modified = (String) oneHit.get("modified");
-                size = 77;
+                size = Integer.valueOf((String)oneHit.get("length")).intValue();
+                size = size/1024;
                 score = Integer.valueOf((((String) oneHit.get("score")).substring(0, ((String) oneHit.get("score")).length() - 2)).trim()).intValue();
-                cdh = new ControlLucene(url, title, description, size, score, modified);
+                cdh = new ControlLucene(url, title, excerpt, size, score, modified);
                 result.addElement(cdh);
             }
         }
@@ -503,7 +508,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         ControlLucene cl = new ControlLucene();
         C_INDEX_FILES = new Vector();
         //C_INDEX_FILES.add("http://localhost/lucineTest/Thinking_in_Java.pdf");
-        C_INDEX_FILES.add("http://localhost/lucineTest/Urlaubsantrag3_02.pdf");
+        //C_INDEX_FILES.add("http://localhost/lucineTest/Urlaubsantrag3_02.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/OpenCMS_de.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/test4.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/Java_ist_auch_eine_Insel_20010426.PDF");
@@ -515,14 +520,16 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         //C_INDEX_FILES.add("http://www.dkv.com/ernaehrung_naehrstoffe.phtml?typ=content");
         //C_INDEX_FILES.add("http://www.dkv.com/medizin_krankheitsbild.phtml?typ=content");
         //C_INDEX_FILES.add("http://localhost:8080/opencms2/export/testseiten/warmwasser.html");
-        //C_INDEX_FILES.add("http://intranet.ff.de/framfab/opencms/framfab/kantine/index.html");
+        C_INDEX_FILES.add("http://intranet.ff.de/framfab/opencms/framfab/kantine/index.html");
+        //C_INDEX_FILES.add("http://localhost/lucineTest/content.html");
 
         /*
             "http://intranet.ff.de/framfab/opencms/bla.html"
           */
-        cl.publishLinks(new CmsObject(), C_INDEX_FILES);
-        //cl.searchIndex();
+
         //cl.createIndexDirectory();
+        //cl.publishLinks(new CmsObject(), C_INDEX_FILES);
+        cl.searchIndex();
     }
 
 
