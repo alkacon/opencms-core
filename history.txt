@@ -13,6 +13,7 @@ OpenCms 4.0.29 Giedi Prime: Rabban - 02 June 2000
 ! Added picture gallerys and adminstration tool.
 ! Added download gallerys and adminstration tool.
 ! Page editor is now able add JavaScript to individual pages.
+! New input dialog for "create project". Multiple folders can be selected now.
 * Corrected an error in checking the access-rights.
 * Corrected some spellings in language-file.
 * Corrected the cache, so it clones the content.
@@ -20,6 +21,7 @@ OpenCms 4.0.29 Giedi Prime: Rabban - 02 June 2000
 * Corrected an error in "forward tasks".
 * Bugfix in Workplace functions "copy","move","rename" and "delete"
 * Bugfix in editor.
+* Performance increase in file list.
 - Changed the filter-rule for tasks. Filter: "Active-Tasks" don't shows new tasks any more.
 - Changed the link-mechanism so it directs to the resource directly.
 - Changed task-handling. A taken task is implicit accepted.
