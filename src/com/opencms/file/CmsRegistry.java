@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/10/11 15:12:07 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2002/10/16 10:42:57 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.workplace.*;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.51 $ $Date: 2002/10/11 15:12:07 $
+ * @version $Revision: 1.52 $ $Date: 2002/10/16 10:42:57 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -93,7 +93,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     private static final String C_DELETE_EVENT_METHOD_NAME = "moduleWasDeleted";
     
     public static final String C_MODULE_TYPE_TRADITIONAL = "traditional";
-    public static final String C_MODULE_TYPE_ADVANCED = "advanced";
+    public static final String C_MODULE_TYPE_SIMPLE = "simple";
 
     /**
      * Declaration of an empty module in the registry.
@@ -444,7 +444,7 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
         
         Vector files = null;
         
-        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_ADVANCED)) {
+        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
             // ADVANCED MODULE
             
             // check if additional resources outside the system/modules/{exportName} folder were 
@@ -452,10 +452,9 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
             // just delete these resources plus the "standard" module paths under system/modules
                     
             String additionalResources = this.getModuleParameterString( modulename, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
+            files = new Vector();
                                 
-            if (additionalResources!=null && !additionalResources.equals("")) {  
-                files = new Vector();
-                          
+            if (additionalResources!=null && !additionalResources.equals("")) {                            
                 // add each additonal folder plus its content folder under "content/bodys"
                 StringTokenizer additionalResourceTokens = null;
                 additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
@@ -1661,7 +1660,7 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
         String moduleType = newModule.getElementsByTagName("type").item(0).getFirstChild().getNodeValue();
         
         // only in case of a "traditional" module the "module" property is set on all imported files
-        if (moduleType==null || !moduleType.equals(CmsRegistry.C_MODULE_TYPE_ADVANCED)) {
+        if (moduleType==null || !moduleType.equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
             propertyName = "module";
             propertyValue = newModuleName + "_" + newModuleVersion;
         }
