@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/04/28 22:26:26 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/05/24 17:03:55 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -586,7 +586,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // delete all old exports if the purgeFirst flag is set
         if (purgeFirst) {
 
-            Map eventData = (Map)new HashMap();
+            Map eventData = new HashMap();
             eventData.put("report", report);
             CmsEvent clearCacheEvent = new CmsEvent(cms, I_CmsEventListener.EVENT_CLEAR_CACHES, eventData, false);
             OpenCms.fireCmsEvent(clearCacheEvent);

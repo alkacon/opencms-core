@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/05/21 15:16:44 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/05/24 17:07:19 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -799,7 +799,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 if ("PARAMETER".equals(node.getName())) {
                     Element paramElement = (Element) node;
                     if (bodyparams == null) {
-                        bodyparams = (Map) new HashMap();
+                        bodyparams = new HashMap();
                     }
                     bodyparams.put((paramElement.attribute("name")).getText(), paramElement.getTextTrim());
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/05/24 17:02:56 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2004/05/19 16:20:54 $
+ * @version $Revision: 1.15 $ $Date: 2004/05/24 17:02:56 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -123,7 +123,7 @@ public class CmsHtmlLinkValidator extends Object {
         Map offlineFilesLookup = null;
         List links = null;
         List validatableResources = null;
-        Map invalidResources = (Map) new HashMap();
+        Map invalidResources = new HashMap();
         String resourceName = null;
         int i = I_CmsConstants.C_UNKNOWN_ID, j = I_CmsConstants.C_UNKNOWN_ID;
         I_CmsResourceType resourceType = null;
@@ -134,8 +134,8 @@ public class CmsHtmlLinkValidator extends Object {
         // populate a lookup map with the offline resources that 
         // actually get published keyed by their resource names.
         // second, resources that don't get validated are ignored.
-        offlineFilesLookup = (Map) new HashMap();
-        validatableResources = (List) new ArrayList();
+        offlineFilesLookup = new HashMap();
+        validatableResources = new ArrayList();
         for (i = 0; i < offlineResources.size(); i++) {
             resource = (CmsResource) offlineResources.get(i);
             offlineFilesLookup.put(resource.getRootPath(), resource);
@@ -223,11 +223,11 @@ public class CmsHtmlLinkValidator extends Object {
      * @return a list with the broken links in the specified link list, or an empty list if no broken links were found
      */
     protected List validateLinks(List links, Map offlineFileLookup) {
-        List brokenLinks = (List) new ArrayList();
+        List brokenLinks = new ArrayList();
         String link = null;
         boolean isValidLink = true;
         CmsResource unpublishedResource = null;
-        List validatedLinks = (List) new ArrayList();
+        List validatedLinks = new ArrayList();
 
         Iterator i = links.iterator();
         while (i.hasNext()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2004/04/28 22:21:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/24 17:06:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.List;
  * {@link org.opencms.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  * 
@@ -552,7 +552,7 @@ public class CmsJspNavBuilder {
         }
 
         // Now read all subchannels of this channel    
-        List subChannels = (List) new ArrayList();
+        List subChannels = new ArrayList();
         cms.getRequestContext().saveSiteRoot();
         try {
             cms.setContextToCos();

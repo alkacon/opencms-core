@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/05/24 17:02:00 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -979,7 +979,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             return Collections.EMPTY_MAP;
         }
     
-        result = (Map)new HashMap();
+        result = new HashMap();
     
         // choose the fastest method to iterate the list
         if (list instanceof RandomAccess) {

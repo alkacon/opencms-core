@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsReInitWorkplace.java,v $
- * Date   : $Date: 2004/05/21 15:19:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/24 17:02:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for reinitializind of the CmsWorkplace<p> 
  *
  * @author  Michael Emmerich(m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.10
  */
@@ -85,7 +85,7 @@ public class CmsReInitWorkplace extends CmsReport {
         switch (getAction()) {
             case ACTION_CONFIRMED:
             default:
-                Map eventData = (Map) new HashMap();
+                Map eventData = new HashMap();
                 CmsEvent event=new CmsEvent(getJsp().getCmsObject(), I_CmsEventListener.EVENT_WORKPLACE_UPDATE, eventData);
                 OpenCms.fireCmsEvent(event);
                 CmsStaticExportThread thread = new CmsStaticExportThread(getCms());

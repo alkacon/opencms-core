@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/05/24 17:05:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * is called in each operation. This method acts as access guard and matches the required permissions for the operation
  * against the allowed and denied permissions defined for the user or groups of this user.</p>
  * 
- * @version $Revision: 1.10 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.11 $ $Date: 2004/05/24 17:05:14 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -160,7 +160,7 @@ public class CmsAccessControlList {
         if (groups != null) {
             pIterator = groups.listIterator();
         }
-        I_CmsPrincipal principal = (I_CmsPrincipal)user;
+        I_CmsPrincipal principal = user;
         do {
             CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(principal.getId());
             if (permissions != null) {

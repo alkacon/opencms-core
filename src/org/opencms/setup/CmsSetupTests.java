@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/05/24 17:04:59 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.xml.sax.InputSource;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2004/02/23 23:27:03 $
+ * @version $Revision: 1.7 $ $Date: 2004/05/24 17:04:59 $
  * @since 5.3
  */
 public class CmsSetupTests extends Object implements Serializable, Cloneable {
@@ -90,7 +90,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
         // reset everything back to an initial state
         m_pageContext = pageContext;
         m_setupBean = setupBean;
-        m_testResults = (List) new ArrayList();        
+        m_testResults = new ArrayList();        
         setGreen();
 
         try {

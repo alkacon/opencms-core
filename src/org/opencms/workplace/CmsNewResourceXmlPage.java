@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/05/19 16:20:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/05/24 17:01:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.3
  */
@@ -316,7 +316,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         // get all visible template elements in the module folders
         List modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES, CmsResourceFilter.DEFAULT);
         for (int i = 0; i < modules.size(); i++) {
-            List moduleTemplateFiles = (List) new ArrayList();
+            List moduleTemplateFiles = new ArrayList();
             String folder = cms.readAbsolutePath((CmsFolder)modules.get(i));
             moduleTemplateFiles = cms.getFilesInFolder(folder + elementFolder);
             for (int j = 0; j < moduleTemplateFiles.size(); j++) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/04/09 15:59:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/05/24 17:04:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -242,8 +242,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         Map module = null;
 
         try {
-            m_availableModules = (Map)new HashMap();
-            m_moduleDependencies = (Map)new HashMap();
+            m_availableModules = new HashMap();
+            m_moduleDependencies = new HashMap();
 
             // open the folder "/WEB-INF/packages/modules/"
             packagesFolder = new File(m_webAppRfsPath + "WEB-INF" + File.separator + "packages" + File.separator + "modules");
@@ -284,7 +284,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
                                 if (moduleDependencies == null) {
                                     // build a new list if "b" has no dependend modules yet
-                                    moduleDependencies = (List)new ArrayList();
+                                    moduleDependencies = new ArrayList();
                                     m_moduleDependencies.put(moduleDependencyName, moduleDependencies);
                                 }
 
@@ -293,7 +293,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                             }
 
                             // create a map holding the collected module information
-                            module = (Map)new HashMap();
+                            module = new HashMap();
                             module.put("name", moduleName);
                             module.put("niceName", moduleNiceName);
                             module.put("version", moduleVersion);
@@ -394,7 +394,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         }
 
         try {
-            m_databaseKeys = (List) new ArrayList();
+            m_databaseKeys = new ArrayList();
             databaseSetupFolder = new File(m_webAppRfsPath + File.separator + "setup" + File.separator + "database");
 
             if (databaseSetupFolder.exists()) {
@@ -1143,7 +1143,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         StringTokenizer tokenizer = new StringTokenizer(value, "|");
         
         if (tokenizer.countTokens() > 0) {
-            m_installModules = (List) new ArrayList();            
+            m_installModules = new ArrayList();            
 
             while (tokenizer.hasMoreTokens()) {
                 m_installModules.add(tokenizer.nextToken());
@@ -1252,8 +1252,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         File setupFile = null;
         boolean hasMissingSetupFiles = false;
 
-        m_databaseKeys = (List) new ArrayList();
-        m_databaseProperties = (Map) new HashMap();
+        m_databaseKeys = new ArrayList();
+        m_databaseProperties = new HashMap();
 
         try {
             databaseSetupFolder = new File(m_webAppRfsPath + File.separator + "setup" + File.separator + "database");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/05/24 17:06:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.4
  * 
@@ -308,7 +308,7 @@ public final class CmsLockManager extends Object {
      */
     private CmsLock getParentFolderLock(String resourcename) {
         String lockedPath = null;
-        List keys = (List)new ArrayList(m_exclusiveLocks.keySet());
+        List keys = new ArrayList(m_exclusiveLocks.keySet());
 
         for (int i = 0; i < keys.size(); i++) {
             lockedPath = (String)keys.get(i);
@@ -523,7 +523,7 @@ public final class CmsLockManager extends Object {
      */
     public String toString() {
         // bring the list of locked resources into a human readable order first
-        List lockedResources = (List)new ArrayList(m_exclusiveLocks.keySet());
+        List lockedResources = new ArrayList(m_exclusiveLocks.keySet());
         Collections.sort(lockedResources);
 
         Iterator i = lockedResources.iterator();
