@@ -40,6 +40,9 @@
         <editoraction>
             <class>org.opencms.workplace.editor.CmsEditorActionDefault</class>
         </editoraction>
+        <localehandler>
+            <class>org.opencms.locale.CmsDefaultLocaleHandler</class>
+        </localehandler>        
         <resourceinit />
         <synchronizemodifications />
         <view>

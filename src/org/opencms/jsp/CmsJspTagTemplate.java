@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/01/20 17:09:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/22 10:39:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -182,14 +182,14 @@ public class CmsJspTagTemplate extends BodyTagSupport {
         
         if (page != null && elementlist != null) {
             String absolutePath = controller.getCmsObject().readAbsolutePath(page.getFile());
-            Locale l = OpenCms.getLocaleManager().getLocale(controller.getCmsObject(), absolutePath, page.getLanguages()); 
-            String localeProp = l.toString();
+            String localeName = OpenCms.getLocaleManager().getBestMatchingLocaleName(controller.getCmsObject().getRequestContext().getLocaleName(), OpenCms.getLocaleManager().getDefaultLocaleNames(controller.getCmsObject(), absolutePath), page.getLanguages());
+            
             // check the elements in the elementlist, if the check fails don't render the body
             String elements[] = Utils.split(elementlist, ",");
             boolean found = false;
             for (int i = 0; i < elements.length; i++) {
                 String el = elements[i].trim();
-                if (page.hasElement(el, localeProp) && page.isEnabled(el, localeProp)) {
+                if (page.hasElement(el, localeName) && page.isEnabled(el, localeName)) {
                     found = true;
                     if (!checkall) {
                         // found at least an element that is available

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/20 17:15:26 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/01/22 10:39:36 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1.12
  */
@@ -176,12 +176,12 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     protected void initBodyElementLanguage() {
         Set languages = m_page.getLanguages();
-        String defaultLanguage = OpenCms.getLocaleManager().getLocale(getCms(), getCms().readAbsolutePath(m_file)).toString();
-
+        String defaultLocaleName = OpenCms.getLocaleManager().getDefaultLocaleNames(getCms(), getCms().readAbsolutePath(m_file))[0];
+        
         if (languages.size() == 0) {
             // no body present, create default body
-            if (!m_page.hasElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage)) {
-                m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLanguage);
+            if (!m_page.hasElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLocaleName)) {
+                m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, defaultLocaleName);
             }
             try {
                 getCms().writeFile(m_page.write(m_file));
@@ -193,12 +193,12 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                     // ignore this exception
                 }
             }
-            setParamBodylanguage(defaultLanguage);
+            setParamBodylanguage(defaultLocaleName);
         } else {
             // body present, get the language
-            if (languages.contains(defaultLanguage)) {
+            if (languages.contains(defaultLocaleName)) {
                 // get the body for the default language
-                setParamBodylanguage(defaultLanguage);
+                setParamBodylanguage(defaultLocaleName);
             } else {
                 // get the first body that can be found
                 setParamBodylanguage((String)languages.toArray()[0]);
@@ -287,13 +287,13 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public String buildSelectBodyLanguage(String attributes) {
         
-        Locale locales[] = OpenCms.getLocaleManager().getAvailableLocales(getCms(), getCms().readAbsolutePath(m_file));
+        String localeNames[] = OpenCms.getLocaleManager().getAvailableLocaleNames(getCms(), getCms().readAbsolutePath(m_file));
 
-        List options = new ArrayList(locales.length);
-        List selectList = new ArrayList(locales.length);
+        List options = new ArrayList(localeNames.length);
+        List selectList = new ArrayList(localeNames.length);
         int currentIndex = -1;
-        for (int counter = 0; counter < locales.length; counter++) {
-            Locale curLocale = locales[counter];
+        for (int counter = 0; counter < localeNames.length; counter++) {
+            Locale curLocale = OpenCms.getLocaleManager().getLocale(localeNames[counter]);
             selectList.add(curLocale.toString());
             options.add(curLocale.getDisplayName(new Locale(getSettings().getLanguage())));
             if (curLocale.toString().equals(getParamBodylanguage())) {

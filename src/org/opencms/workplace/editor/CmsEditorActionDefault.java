@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/21 08:41:13 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/01/22 10:39:36 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,15 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
 
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Encoder;
+import com.opencms.workplace.I_CmsWpConstants;
+
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
 
@@ -55,7 +62,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.0
  */
@@ -180,9 +187,8 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
   
             // check if the desired element is available (in case of xml page)
             if (page != null && element != null) {
-                Locale l = OpenCms.getLocaleManager().getLocale(cmsObject, filename, page.getLanguages()); 
-                String localeProp = l.toString();
-                if (!page.hasElement(element, localeProp) || !page.isEnabled(element, localeProp)) {
+                String localeName = OpenCms.getLocaleManager().getBestMatchingLocaleName(null, OpenCms.getLocaleManager().getDefaultLocaleNames(cmsObject, filename), page.getLanguages());
+                if (!page.hasElement(element, localeName) || !page.isEnabled(element, localeName)) {
                     return C_EDITMODE_INACTIVE;
                 }
             }

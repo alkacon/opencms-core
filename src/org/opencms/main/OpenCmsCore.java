@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/01/19 17:14:14 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/01/22 10:39:35 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
+import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -61,6 +62,7 @@ import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.locale.CmsLocaleManager;
+import org.opencms.locale.I_CmsLocaleHandler;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.security.CmsSecurityException;
@@ -103,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1148,7 +1150,9 @@ public final class OpenCmsCore {
         CmsSessionInfoManager sessionStorage
     ) throws CmsException {
         CmsObject cms = new CmsObject();
-        cms.init(m_driverManager, cmsReq, cmsRes, user, project, currentSite, sessionStorage, m_directoryTranslator, m_fileTranslator);
+        CmsRequestContext context = new CmsRequestContext();
+        context.init(m_driverManager, cmsReq, cmsRes, user, project, currentSite, m_directoryTranslator, m_fileTranslator);        
+        cms.init(m_driverManager, context, cmsReq, cmsRes, user, project, currentSite, sessionStorage, m_directoryTranslator, m_fileTranslator);
         return cms;
     }
     
@@ -1376,15 +1380,46 @@ public final class OpenCmsCore {
         
         // initialize the locale manager
         try {
+            String localeHandlerClass = OpenCms.getRegistry().getLocaleHandler();
+            I_CmsLocaleHandler handler = (I_CmsLocaleHandler)Class.forName(localeHandlerClass).newInstance();
+            setRuntimeProperty(CmsLocaleManager.C_LOCALE_HANDLER, handler);
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Locale handler class : " + localeHandlerClass + " instanciated");
+            }
+        } catch (Exception e) {
+            if (getLog(this).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Locale handler class : non-critical error initializing locale handler");
+            }
+        }
+        
+        try {    
             m_localeManager = new CmsLocaleManager(configuration);
             if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Available locales    : " + m_localeManager.getAvailableLocaleNames());
-                getLog(CmsLog.CHANNEL_INIT).info(". Default locale       : " + m_localeManager.getDefaultLocaleNames());
-            }
+                String names[] = m_localeManager.getAvailableLocaleNames();
+                StringBuffer buf = new StringBuffer();
+                for (int i = 0; i < names.length; i++) {
+                    if (i > 0) {
+                        buf.append(", ");
+                    }
+                    buf.append(names[i]);
+                }
+                getLog(CmsLog.CHANNEL_INIT).info(". Available locales    : " + buf.toString());
+                
+                names = m_localeManager.getDefaultLocaleNames();
+                buf = new StringBuffer();
+                for (int i = 0; i < names.length; i++) {
+                    if (i > 0) {
+                        buf.append(", ");
+                    }
+                    buf.append(names[i]);
+                }                
+                getLog(CmsLog.CHANNEL_INIT).info(". Default locales      : " + buf.toString());
+            } 
         } catch (Exception e) {
             if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                 getLog(CmsLog.CHANNEL_INIT).warn(". LocaleManager init   : non-critical error " + e.toString());
             }
+            System.err.println(e.toString());
         }
         
         // initialize the Thread store

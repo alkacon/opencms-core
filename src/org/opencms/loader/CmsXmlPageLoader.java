@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/01/20 17:09:43 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/01/22 10:39:36 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import com.opencms.file.CmsResource;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -58,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -152,10 +151,12 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             CmsXmlPage page = CmsXmlPage.read(cms, file);
             
             // check the current locales
-            String localeProp = OpenCms.getUserDefaultLanguage();
+            // String localeProp = OpenCms.getUserDefaultLanguage();
+            String absolutePath = cms.readAbsolutePath(file);
+            String localeName = OpenCms.getLocaleManager().getBestMatchingLocaleName(cms.getRequestContext().getLocaleName(), OpenCms.getLocaleManager().getDefaultLocaleNames(cms, absolutePath), page.getLanguages());
             
             // get the appropriate content and convert it to bytes
-            result = page.getContent(cms, elementName, localeProp).getBytes(); 
+            result = page.getContent(cms, elementName, localeName).getBytes(); 
             
         } catch (Exception exc) {
             throw new CmsException("Error in CmsXmlPageLoader", exc);
@@ -185,11 +186,11 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             
             // check the current locales
             // String localeProp = OpenCms.getUserDefaultLanguage();
-            Locale l = OpenCms.getLocaleManager().getLocale(cms, absolutePath, page.getLanguages()); 
-            String localeProp = l.toString();
+            String localeName = OpenCms.getLocaleManager().getBestMatchingLocaleName(cms.getRequestContext().getLocaleName(), OpenCms.getLocaleManager().getDefaultLocaleNames(cms, absolutePath), page.getLanguages());
+            // String localeName = OpenCms.getLocaleManager().getLocaleName(cms, absolutePath, cms.getRequestContext().getLocaleName(), page.getLanguages());
             
             // get the appropriate content and convert it to bytes
-            byte[] result = page.getContent(cms, elementName, localeProp).getBytes(); 
+            byte[] result = page.getContent(cms, elementName, localeName).getBytes(); 
             
             // append the result to the output stream
             if (result != null) {

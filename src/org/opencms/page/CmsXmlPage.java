@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/01/20 17:09:43 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/01/22 10:39:35 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@
  */
 package org.opencms.page;
 
-import org.opencms.locale.CmsLocaleManager;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
@@ -75,7 +74,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsXmlPage {
     
@@ -157,14 +156,7 @@ public class CmsXmlPage {
      * @return the bookemarked element
      */
     protected Element getBookmark (String name, String language) {        
-
-        Element element = null;
-        String localeNames[] = CmsLocaleManager.getLocaleNames(language);
-        for (int i = 0; i < localeNames.length && element == null; i++) {
-            element = (Element) m_bookmarks.get(localeNames[i] + "_" + name);
-        }
-    
-        return element;
+        return (Element) m_bookmarks.get(language + "_" + name);
     }
     
     /**

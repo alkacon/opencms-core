@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2004/01/22 10:39:35 $
+ * Version: $Revision: 1.107 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -58,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.106 $
+ * @version $Revision: 1.107 $
  */
 public class CmsRequestContext {
 
@@ -119,6 +120,12 @@ public class CmsRequestContext {
 
     /** The current user */
     private CmsUser m_user;
+
+    /** The name of the locale for this request */
+    private String m_localeName;
+    
+    /** The locale for this request */
+    private Locale m_locale;
     
     /**
      * The default constructor.
@@ -288,7 +295,7 @@ public class CmsRequestContext {
     public String getEncoding() {
         return m_encoding;
     }
-    
+        
     /**
      * @return The file name translator this context was initialized with
      */
@@ -323,6 +330,24 @@ public class CmsRequestContext {
      */
     public Vector getLinkVector() {
         return m_links;
+    }
+    
+    /**
+     * Returns the requested locale with this context.<p>
+     * 
+     * @return the locale
+     */
+    public Locale getLocale() {
+        return m_locale;
+    }
+    
+    /**
+     * Returns the name of the requested locale within this context.<p>
+     * 
+     * @return the name of the locale
+     */
+    public String getLocaleName() {
+        return m_localeName;
     }
     
     /**
@@ -431,7 +456,7 @@ public class CmsRequestContext {
      * @param fileTranslator Translator for new file names (without path)
      * @throws CmsException if operation was not successful.
      */
-    void init (
+    public void init (
         CmsDriverManager driverManager, 
         I_CmsRequest req, 
         I_CmsResponse resp, 
@@ -507,6 +532,9 @@ public class CmsRequestContext {
                 // noop
             }
 
+            // Initialize locale
+            initLocale();
+            
             // Initialize encoding 
             initEncoding();
         }
@@ -543,6 +571,32 @@ public class CmsRequestContext {
             }                  
             m_encoding = OpenCms.getDefaultEncoding();
         }
+    }
+    
+    /**
+     * Initializes the locale name and the locale for this request context.<p>
+     *
+     */
+    public void initLocale() {
+        
+        try {
+            String available = m_driverManager.readProperty(this, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, true);
+            String defaults = m_driverManager.readProperty(this, addSiteRoot(m_req.getRequestedResource()), getAdjustedSiteRoot(m_req.getRequestedResource()), I_CmsConstants.C_PROPERTY_LOCALE, true);
+
+            m_localeName = OpenCms.getLocaleManager().getLocaleHandler().getLocaleName(this, null, OpenCms.getLocaleManager().getLocaleNames(available), OpenCms.getLocaleManager().getLocaleNames(defaults));
+            
+        } catch (CmsException exc) {
+            m_localeName = null;
+        }
+        
+        if (m_localeName == null || "".equals(m_localeName)) {
+            m_localeName = OpenCms.getLocaleManager().getDefaultLocaleName();
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("No locale name found - using default: " + m_localeName);
+            }
+        }
+        
+        m_locale = OpenCms.getLocaleManager().getLocale(m_localeName);
     }
 
     /**

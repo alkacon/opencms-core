@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/21 10:32:36 $
-* Version: $Revision: 1.441 $
+* Date   : $Date: 2004/01/22 10:39:36 $
+* Version: $Revision: 1.442 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.441 $
+ * @version $Revision: 1.442 $
  */
 public class CmsObject {
 
@@ -148,6 +148,7 @@ public class CmsObject {
      */
     public void init(
         CmsDriverManager driverManager,
+        CmsRequestContext context,
         I_CmsRequest req, 
         I_CmsResponse resp, 
         String user, 
@@ -159,8 +160,7 @@ public class CmsObject {
     ) throws CmsException {
         m_sessionStorage = sessionStorage;
         m_driverManager = driverManager;
-        m_context = new CmsRequestContext();
-        m_context.init(m_driverManager, req, resp, user, projectId, site, directoryTranslator, fileTranslator);
+        m_context = context;
         try {
             m_linkChecker = new LinkChecker();
         } catch (java.lang.NoClassDefFoundError error) {
@@ -1902,7 +1902,9 @@ public class CmsObject {
     public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportResponse dRes) throws CmsException {
 
         CmsObject cmsForStaticExport = new CmsObject();
-        cmsForStaticExport.init(m_driverManager, dReq, dRes, OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        CmsRequestContext context = new CmsRequestContext();
+        context.init(m_driverManager, dReq, dRes, OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), m_context.getDirectoryTranslator(), m_context.getFileTranslator());        
+        cmsForStaticExport.init(m_driverManager, context, dReq, dRes, OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         return cmsForStaticExport;
     }
 
@@ -2704,7 +2706,9 @@ public class CmsObject {
         // login the user
         CmsUser newUser = m_driverManager.loginUser(username, password, remoteAddress);
         // init the new user
-        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        CmsRequestContext context = new CmsRequestContext();
+        context.init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        init(m_driverManager, context, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         // fire a login event
         this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
         // return the user-name
@@ -2724,7 +2728,9 @@ public class CmsObject {
         // login the user
         CmsUser newUser = m_driverManager.loginWebUser(username, password, m_context.getRemoteAddress());
         // init the new user
-        init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        CmsRequestContext context = new CmsRequestContext();
+        context.init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        init(m_driverManager, context, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_sessionStorage, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         // return the user-name
         return (newUser.getName());
     }
