@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/10/28 14:45:13 $
- * Version: $Revision: 1.581 $
+ * Date   : $Date: 2004/10/29 13:58:00 $
+ * Version: $Revision: 1.582 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 5.x.x Caladan - xxx, 2004
 * Fixed issue with search engine not correctly indexing pages based on non-ISO encoding
 ! Source code for the 'templateone' default module is now available in the src-modules CVS subfolder
 * Fixed issue with password change being broken in the user administration 
+* VFS resource types and Workplace context menus can now be added by a module
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
 ! Added 'templateone' default module as an extended template demo
