@@ -342,24 +342,25 @@ function doEditHTML(para)
 	}	
 }
 
+	
 <!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
 function setText()
 {
 	document.EDITOR.EDIT_HTML.DocumentHTML = unescape(text);
-    GeneralContextMenu[0] = new ContextMenuItem("cut", DECMD_CUT);
-    GeneralContextMenu[1] = new ContextMenuItem("copy", DECMD_COPY);
-    GeneralContextMenu[2] = new ContextMenuItem("paste", DECMD_PASTE);
+    GeneralContextMenu[0] = new ContextMenuItem(LANG_CUT, DECMD_CUT);
+    GeneralContextMenu[1] = new ContextMenuItem(LANG_COPY, DECMD_COPY);
+    GeneralContextMenu[2] = new ContextMenuItem(LANG_PASTE, DECMD_PASTE);
     TableContextMenu[0] = new ContextMenuItem(MENU_SEPARATOR, 0);
-    TableContextMenu[1] = new ContextMenuItem("insertrow", DECMD_INSERTROW);
-    TableContextMenu[2] = new ContextMenuItem("deleterow", DECMD_DELETEROWS);
+    TableContextMenu[1] = new ContextMenuItem(LANG_INSERTROW, DECMD_INSERTROW);
+    TableContextMenu[2] = new ContextMenuItem(LANG_DELETEROW, DECMD_DELETEROWS);
     TableContextMenu[3] = new ContextMenuItem(MENU_SEPARATOR, 0);
-    TableContextMenu[4] = new ContextMenuItem("insertcol", DECMD_INSERTCOL);
-    TableContextMenu[5] = new ContextMenuItem("deletecol", DECMD_DELETECOLS);
+    TableContextMenu[4] = new ContextMenuItem(LANG_INSERTCOL, DECMD_INSERTCOL);
+    TableContextMenu[5] = new ContextMenuItem(LANG_DELETECOL, DECMD_DELETECOLS);
     TableContextMenu[6] = new ContextMenuItem(MENU_SEPARATOR, 0);
-    TableContextMenu[7] = new ContextMenuItem("insertcell", DECMD_INSERTCELL);
-    TableContextMenu[8] = new ContextMenuItem("deletecell", DECMD_DELETECELLS);
-    TableContextMenu[9] = new ContextMenuItem("mergecell", DECMD_MERGECELLS);
-    TableContextMenu[10] = new ContextMenuItem("splitcell", DECMD_SPLITCELL);
+    TableContextMenu[7] = new ContextMenuItem(LANG_INSERTCELL, DECMD_INSERTCELL);
+    TableContextMenu[8] = new ContextMenuItem(LANG_DELETECELL, DECMD_DELETECELLS);
+    TableContextMenu[9] = new ContextMenuItem(LANG_MERGECELL, DECMD_MERGECELLS);
+    TableContextMenu[10] = new ContextMenuItem(LANG_SPLITCELL, DECMD_SPLITCELL);
 	EDITOR.EDIT_HTML.focus();
 }
 
@@ -507,7 +508,6 @@ function DECMD_OUTDENT_onclick()
   {
   if (arr != -1) 
     {
-     alert("Settig fg color");
 	 if (document.all.EDIT_HTML.QueryStatus( DECMD_GETFORECOLOR )   != DECMDF_DISABLED)
      {
 	  document.all.EDIT_HTML.ExecCommand(DECMD_SETFORECOLOR, OLECMDEXECOPT_DODEFAULT, arr);
@@ -523,7 +523,6 @@ function DECMD_OUTDENT_onclick()
   {
   if (arr != -1) 
     {
-     alert("setting bg color");
 	 if (document.all.EDIT_HTML.QueryStatus( DECMD_SETBACKCOLOR )  != DECMDF_DISABLED )
      {
      document.all.EDIT_HTML.ExecCommand(DECMD_SETBACKCOLOR, OLECMDEXECOPT_DODEFAULT, arr);

@@ -3,7 +3,7 @@
 <TEMPLATE>
 <![CDATA[
 <html>
-<head><META HTTP-EQUIV="Content-Type" CONTENT="texthtml; charset=iso-8859-1">
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>opencms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
@@ -15,6 +15,27 @@
 
 	<!-- URL for help file -->
 	var help="]]><METHOD name="helpUrl"/><![CDATA[";
+
+	<!-- Filename -->
+	var filename="]]><PROCESS>file</PROCESS><![CDATA[";
+	
+	var NS = null;
+	var IE = null;
+	
+	NS = (document.layers)? true:false;
+	IE = (document.all)? true:false;
+	
+	var LANG_CUT = "]]><LABEL value="editor.context.cut"/><![CDATA[";
+	var LANG_COPY = "]]><LABEL value="editor.context.copy"/><![CDATA[";
+	var LANG_PASTE = "]]><LABEL value="editor.context.paste"/><![CDATA[";
+	var LANG_INSERTROW = "]]><LABEL value="editor.context.insertrow"/><![CDATA[";
+	var LANG_DELETEROW = "]]><LABEL value="editor.context.deleterow"/><![CDATA[";
+	var LANG_INSERTCOL = "]]><LABEL value="editor.context.insertcol"/><![CDATA[";
+	var LANG_DELETECOL = "]]><LABEL value="editor.context.deletecol"/><![CDATA[";
+	var LANG_INSERTCELL = "]]><LABEL value="editor.context.insertcell"/><![CDATA[";
+	var LANG_DELETECELL = "]]><LABEL value="editor.context.deletecell"/><![CDATA[";
+	var LANG_MERGECELL = "]]><LABEL value="editor.context.mergecell"/><![CDATA[";
+	var LANG_SPLITCELL = "]]><LABEL value="editor.context.splitcell"/><![CDATA[";
 </SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/]]><PROCESS>jsfile</PROCESS><![CDATA["></SCRIPT>
@@ -22,21 +43,31 @@
 <!-- Update the Font display on change -->
 <SCRIPT LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="DisplayChanged">
 <!--
-return DisplayChanged()
-//-->
+	function displayChangedHandle()
+	{
+	if (IE==true) return DisplayChanged();
+	}
+	displayChangedHandle();
+	//-->
 </script>
-
 <!-- Show a context menu if the right mousebutton is clicked -->
 <script LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="ShowContextMenu">
 <!--
-return ShowContextMenu()
+	function showContextMenuHandle()
+	{
+	if (IE==true) return ShowContextMenu();
+	}
+	showContextMenuHandle();
 //-->
 </script>
-
 <!-- Invoke a context menu action -->
 <script LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="ContextMenuAction(itemIndex)">
 <!--
-return ContextMenuAction(itemIndex)
+	function contextMenuActionHandle()
+	{
+	if (IE==true) return ContextMenuAction(itemIndex);
+	}
+	contextMenuActionHandle();
 //-->
 </script>
 
