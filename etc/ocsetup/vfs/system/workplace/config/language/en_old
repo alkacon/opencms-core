@@ -241,6 +241,7 @@
 				<binary>Binary</binary>
 				<folder>Folder</folder>
 				<image>Image</image>
+				<link>Link</link>
 				<newspage>News-Article</newspage>
 				<othertype>Other Type</othertype>
 				<page>Page</page>
@@ -297,6 +298,7 @@
 				<copy>Copy</copy>
 				<delete>Delete</delete>
 				<edit>Edit Code</edit>
+				<editlink>Edit Link</editlink>
 				<editcontrolfile>Edit Controlcode</editcontrolfile>
 				<history>History</history>
 				<htmledit>Edit Html</htmledit>
@@ -358,6 +360,7 @@
 			<lastelement>at the last position</lastelement>
 			<lastname>Name</lastname>
 			<left>Left</left>
+			<link>Link</link>
 			<lockedby>Locked by</lockedby>
 			<lockuser>Disable User</lockuser>
 			<messageaccept>Message when accepted</messageaccept>
@@ -438,6 +441,7 @@
 			<headline>Headline</headline>
 		    <imagelist>Imagelist</imagelist>
 			<inactive>inactive</inactive>
+			<link>Link</link>
 			<loading>Loading...</loading>
 			<propertydef>Property</propertydef>
 			<path>Folder</path>
@@ -788,6 +792,7 @@ A new task was reactivated for you or your role.</content>
 			<new>New</new>	
 			<newfileother>Create a new File of other type</newfileother>
 			<newfolder>Create a new Folder</newfolder>
+			<newlink>Create a new Link</newlink>
 			<newpropertyinfo>Define new Property for</newpropertyinfo>
 			<newpropertydef>Create new Property</newpropertydef>
 			<newpropdeffor>New property definition for the resource type</newpropdeffor>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/05/02 16:13:19 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2000/05/10 16:46:29 $
+ * Version: $Revision: 1.92 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.91 $ $Date: 2000/05/02 16:13:19 $
+ * @version $Revision: 1.92 $ $Date: 2000/05/10 16:46:29 $
  */
 public interface I_CmsWpConstants {
 
@@ -100,6 +100,9 @@ public interface I_CmsWpConstants {
     /** Parameter for a filename */
     public static final String C_PARA_FILE = "file";  
 
+   /** Parameter for a link */
+    public static final String C_PARA_LINK = "link";  
+    
     /** Parameter for a filecontent */
     public static final String C_PARA_FILECONTENT = "filecontent";  
     
