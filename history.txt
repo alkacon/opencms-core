@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/06/01 15:31:05 $
- * Version: $Revision: 1.546 $
+ * Date   : $Date: 2004/06/02 09:42:20 $
+ * Version: $Revision: 1.547 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ OpenCms 5.3.5 Ix - xx, 2004
 ! Added a couple of initial Junit test cases for the CmsObject
 ! Added target "unittests" to build.xml to execute all OpenCms Junit tests
 - Now using dom4j 1.5 (beta2) because version 1.4 apparently has issues in CDATA handling 
+- Added jaxen as separate jar (jaxen-1.1-beta-2.jar) since it is not longer included in dom4j.jar
 - Now using the latest htmlparser version 1.41
 * Fixed issue with links that contain escaped characters like '%20'
 
