@@ -289,9 +289,9 @@ PACKAGE BODY opencmsAccess IS
            where resource_id = pResourceID;
 -- the following check is disabled because there are problems
     -- not locked by user => false
---    IF vLockedBy != pUserId THEN
---      RETURN 0;
---    END IF;
+    IF vLockedBy != pUserId THEN
+      RETURN 0;
+    END IF;
     -- resource.projectID != project_id => false
     IF vResProjectID != pProjectId THEN
       RETURN 0;
