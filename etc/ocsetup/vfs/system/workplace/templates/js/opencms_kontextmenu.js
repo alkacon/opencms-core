@@ -66,6 +66,9 @@ var letztelyr='null';
 var x=0;
 var y=0;
 
+// parameter for the kontextmenu
+var kontextparam;
+
 // which operation is clicked
 var DO_LOCK=1;
 var DO_LOCKUSER=2;
@@ -102,6 +105,16 @@ var DO_DELETEF=33;
 
 var DO_HIST=40;
 var DO_HISTVIEW=41;
+//=======================================
+var DO_PUNLOCK=1;
+var DO_PONLINELOCK=2;
+var DO_PONLINE=3;
+
+var DO_PTASK=10;
+var DO_TASK=99;
+
+var DO_PREACT=20;
+
 
 // mousekoordinates on click
 function mouseGeklickt(e)
@@ -115,11 +128,15 @@ function mouseGeklickt(e)
 // function to display the filecontextmenu
 // parameters:
 // welche: layer name
+// parameter: parameter for menu
 // id: each link for layer must have a unic id number
 // m.schleich 03.12.1999
 //----------------------------------------
-function showkontext(welche, id)
+function showkontext(welche, parameter, id)
 {
+	// set the kontextparameter
+	kontextparam = parameter;
+	
 	if (!shown || id!=altid)
 	{
 		if(y >= (screen.availHeight/2))
@@ -323,6 +340,45 @@ function doAction(action) // which action on layer is clicked
 		case 41:
 		{
 			location.href='explorer_files_historyshow.html';
+			break;
+		}
+	}
+}
+
+function doPAction(action) // which action on layer Project is clicked
+{
+	hidemenu(letztelyr);
+	
+	switch(action)
+	{
+		case 1:
+		{
+			location.href='administration_content_lockchange.html';
+			break;
+		}
+		case 2:
+		{
+			confirm('Sind Sie sicher, dass das Projekt veröffentlicht werden soll? \nEs sind noch Dateien in Bearbeitung.');
+			break;
+		}
+		case 3:
+		{
+			location.href='administration_content_publish_project.html?' + kontextparam;
+			break;
+		}
+		case 10:
+		{
+			location.href='tasks_content_new_forproject.html';
+			break;
+		}
+		case 20:
+		{
+			location.href='administration_content_projecthistory_react.html';
+			break;
+		}
+		case 99:
+		{
+			location.href='tasks_content_new_forfile.html';
 			break;
 		}
 	}
