@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsLruHashMap.java,v $
- * Date   : $Date: 2003/07/22 00:29:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/08/26 15:59:53 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Map;
  * and a "last-recently-used" cache policy of the mapped key/values.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @see CmsFlexLruCache
  * @see I_CmsFlexLruCacheObject
  */
@@ -113,9 +113,7 @@ public class CmsLruHashMap extends HashMap {
     }
     
     /**
-     * Clears any allocated resources during finalization.<p>
-     * 
-     * @throws Throwable if something goes wring
+     * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
         this.clear();
@@ -221,6 +219,13 @@ public class CmsLruHashMap extends HashMap {
     public CmsFlexLruCache getLruCache() {
         return this.m_lruCache;
     }
+    
+    /**
+     * @see com.opencms.flex.util.CmsFlexLruCache#toString()
+     */
+    public String toString() {
+        return this.m_lruCache.toString();
+    }    
     
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2003/08/18 15:11:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/08/26 15:59:53 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.boot.I_CmsLogChannels;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -141,7 +141,7 @@ public class CmsFlexLruCache extends java.lang.Object {
      * @return a string representing the current state of the cache
      */
     public String toString() {
-        String objectInfo = "\n";
+        String objectInfo = "";
         
         objectInfo += "max. cache costs of all cached objects: " + this.m_maxCacheCosts + "\n";
         objectInfo += "avg. cache costs of all cached objects: " + this.m_avgCacheCosts + "\n";
