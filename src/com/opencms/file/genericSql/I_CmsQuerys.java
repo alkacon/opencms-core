@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/09 17:05:19 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/06/13 08:15:40 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.37 $ $Date: 2000/06/09 17:05:19 $
+ * @version $Revision: 1.38 $ $Date: 2000/06/13 08:15:40 $
  */
 public interface I_CmsQuerys {
     
@@ -165,6 +165,9 @@ public interface I_CmsQuerys {
 	public static final String C_RESOURCES_REMOVE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
                                                    +"STATE = ?, LOCKED_BY = ?"
                                                    +"WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+
+    public static final Integer C_RESOURCES_READ_ALL_KEY = new Integer(132);
+	public static final String C_RESOURCES_READ_ALL = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ?";
 
     public static final Integer C_RESOURCES_RENAMERESOURCE_KEY = new Integer(140);
 	public static final String C_RESOURCES_RENAMERESOURCE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "

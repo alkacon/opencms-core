@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 17:05:19 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2000/06/13 08:15:40 $
+ * Version: $Revision: 1.59 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.58 $ $Date: 2000/06/09 17:05:19 $ * 
+ * @version $Revision: 1.59 $ $Date: 2000/06/13 08:15:40 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2853,6 +2853,66 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
          return file;
      }	
 
+     /**
+	 * Reads all file headers of a file in the OpenCms.<BR>
+	 * The reading excludes the filecontent.
+	 * 
+     * @param filename The name of the file to be read.
+	 * 
+	 * @return Vector of file headers read from the Cms.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public Vector readAllFileHeaders(String filename)
+         throws CmsException {
+         
+         CmsFile file=null;
+         ResultSet res =null;
+         Vector allHeaders = new Vector();
+         PreparedStatement statement = null;
+         try {  
+               statement = m_pool.getPreparedStatement(C_RESOURCES_READ_ALL_KEY);
+               // read file header data from database
+               statement.setString(1, filename);
+               res = statement.executeQuery();
+               // create new file headers
+               while(res.next()) {
+                        file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
+										   res.getInt(C_RESOURCES_PARENT_ID),
+										   res.getInt(C_RESOURCES_FILE_ID),
+										   res.getString(C_RESOURCES_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                           res.getInt(C_RESOURCES_USER_ID),
+                                           res.getInt(C_RESOURCES_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
+                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                           res.getInt(C_RESOURCES_STATE),
+                                           res.getInt(C_RESOURCES_LOCKED_BY),
+                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
+                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
+                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
+                                           new byte[0],
+                                           res.getInt(C_RESOURCES_SIZE)
+                                           );
+                       
+                        allHeaders.addElement(file);
+               }
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} catch( Exception exc ) {
+         	throw new CmsException("readAllFileHeaders "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_READ_ALL_KEY, statement);
+			}
+		  }
+        return allHeaders;
+     }
+
+
 	/**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.
@@ -3999,6 +4059,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
         m_pool.initPreparedStatement(C_RESOURCES_PUBLISH_MARKED_KEY,C_RESOURCES_PUBLISH_MARKED);
         m_pool.initPreparedStatement(C_RESOURCES_DELETEBYID_KEY,C_RESOURCES_DELETEBYID);
         m_pool.initPreparedStatement(C_RESOURCES_RENAMERESOURCE_KEY,C_RESOURCES_RENAMERESOURCE);
+		m_pool.initPreparedStatement(C_RESOURCES_READ_ALL_KEY,C_RESOURCES_READ_ALL);
 
         // init statements for groups
 		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);
