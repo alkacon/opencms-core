@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/21 13:33:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -63,8 +63,8 @@ public class CmsSystemInfo {
     /** Static version number to use if version.properties can not be read */
     private static final String C_DEFAULT_VERSION_NUMBER = "5.3.x";
     
-    /** The abolute path to the "opencms.properties" configuration file in the "real" file system */
-    private String m_configurationFilePath;
+    /** The abolute path to the "opencms.properties" configuration file (in the "real" file system) */
+    private String m_configurationFileRfsPath;
     
     /** The web application context path */
     private String m_contextPath;
@@ -75,8 +75,8 @@ public class CmsSystemInfo {
     /** The default web application (usually "ROOT") */
     private String m_defaultWebApplicationName;
 
-    /** The filename of the log file */
-    private String m_logFileName;
+    /** The  abolute path to the OpenCms log file (in the "real" file system) */
+    private String m_logFileRfsPath;
     
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code> */
     private String m_openCmsContext;
@@ -99,11 +99,11 @@ public class CmsSystemInfo {
     /** The web application name */
     private String m_webApplicationName;
     
-    /** The OpenCms web application folder in the servlet container */
-    private String m_webApplicationPath;
+    /** The OpenCms web application servlet container folder path (in the "real" file system) */
+    private String m_webApplicationRfsPath;
     
-    /** The OpenCms web application "WEB-INF" directory path */
-    private String m_webInfPath;    
+    /** The OpenCms web application "WEB-INF" path (in the "real" file system) */
+    private String m_webInfRfsPath;    
     
     /**
      * Creates a new system info container.<p>
@@ -158,7 +158,7 @@ public class CmsSystemInfo {
             // apparently this is an absolute path already
             return f.getAbsolutePath();
         }
-        return CmsLinkManager.normalizeRfsPath(m_webInfPath + path);
+        return CmsLinkManager.normalizeRfsPath(m_webInfRfsPath + path);
     }
     
     /**
@@ -167,10 +167,10 @@ public class CmsSystemInfo {
      * @return the abolute path to the "opencms.properties" configuration file
      */
     public String getConfigurationFileRfsPath() {
-        if (m_configurationFilePath == null) {
-            m_configurationFilePath = getAbsoluteRfsPathRelativeToWebInf(I_CmsConstants.C_CONFIGURATION_PROPERTIES_FILE);
+        if (m_configurationFileRfsPath == null) {
+            m_configurationFileRfsPath = getAbsoluteRfsPathRelativeToWebInf(I_CmsConstants.C_CONFIGURATION_PROPERTIES_FILE);
         }
-        return m_configurationFilePath;
+        return m_configurationFileRfsPath;
     }
 
     /**
@@ -222,8 +222,8 @@ public class CmsSystemInfo {
      * 
      * @return the filename of the logfile (in the "real" file system)
      */ 
-    public String getLogFileRfsName() {
-        return m_logFileName;
+    public String getLogFileRfsPath() {
+        return m_logFileRfsPath;
     }    
     
     /**
@@ -323,7 +323,7 @@ public class CmsSystemInfo {
      * @return the OpenCms web application folder in the servlet container
      */
     public String getWebApplicationRfsPath() {
-        return m_webApplicationPath;        
+        return m_webApplicationRfsPath;        
     }
     
     /** 
@@ -332,7 +332,7 @@ public class CmsSystemInfo {
      * @return the OpenCms web application "WEB-INF" directory path
      */
     public String getWebInfRfsPath() {
-        return m_webInfPath;
+        return m_webInfRfsPath;
     }    
     
     /**
@@ -348,30 +348,14 @@ public class CmsSystemInfo {
     }
     
     /**
-     * Sets the default web application name (usually "ROOT").<p>
-     * 
-     * @param defaultWebApplicationName the default web application name to set
-     */
-    protected void setDefaultWebApplicationName(String defaultWebApplicationName) {
-        // cut off all leading / trailing slashes 
-        if (defaultWebApplicationName.endsWith("/")) {
-            defaultWebApplicationName = defaultWebApplicationName.substring(0, defaultWebApplicationName.length()-1);
-        }        
-        if (defaultWebApplicationName.startsWith("/")) {
-            defaultWebApplicationName = defaultWebApplicationName.substring(1);
-        }             
-        m_defaultWebApplicationName = defaultWebApplicationName;
-    }
-    
-    /**
-     * Sets the filename of the logfile (in the "real" file system).<p>
+     * Sets the absolute path to the OpenCms logfile (in the "real" file system).<p>
      *  
-     * @param logFileName filename of the logfile to set
+     * @param logFileRfsPath the absolute path to the OpenCms logfile
      */
-    protected void setLogFileName(String logFileName) {
-        m_logFileName = logFileName;
+    protected void setLogFileRfsPath(String logFileRfsPath) {
+        m_logFileRfsPath = logFileRfsPath;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Log file is          : " + m_logFileName);
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Log file is          : " + m_logFileRfsPath);
         }        
     }
     
@@ -392,35 +376,42 @@ public class CmsSystemInfo {
         }        
     }    
     
-    /**
-     * Sets the OpenCms servlet mapping.<p>
-     * 
-     * @param servletMapping the servlet mapping to set
-     */
-    protected void setServletMapping(String servletMapping) {
-        // usually a mapping must be in the form "/opencms/*", cut off all slashes
-        if (servletMapping.endsWith("/*")) {
-            servletMapping = servletMapping.substring(0, servletMapping.length()-2);
-        }        
-        // set the servlet path
-        m_servletPath = servletMapping;
-    }
-    
     /** 
      * Sets the OpenCms web application "WEB-INF" directory path (in the "real" file system).<p>
      *
      * @param webInfRfsPath the OpenCms web application "WEB-INF" path in the "real" file system) to set
+     * @param servletMapping the OpenCms servlet mapping  (e.g. "/opencms/*")
+     * @param defaultWebApplication the default web application name (usually "ROOT")
      */
-    protected void setWebInfPath(String webInfRfsPath) {
+    protected void init(String webInfRfsPath, String servletMapping, String defaultWebApplication) {
         // init base path
         webInfRfsPath = webInfRfsPath.replace('\\', '/');
         if (!webInfRfsPath.endsWith("/")) {
             webInfRfsPath = webInfRfsPath + "/";
         }
-        m_webInfPath = CmsLinkManager.normalizeRfsPath(webInfRfsPath);
+        m_webInfRfsPath = CmsLinkManager.normalizeRfsPath(webInfRfsPath);
  
+        // set the servlet paths
+        if (servletMapping.endsWith("/*")) {
+            // usually a mapping must be in the form "/opencms/*", cut off all slashes
+            servletMapping = servletMapping.substring(0, servletMapping.length()-2);
+        } 
+        if (! servletMapping.startsWith("/")) {
+            servletMapping = "/" + servletMapping;
+        }
+        m_servletPath = servletMapping;  
+        
+        // set the default web application name
+        if (defaultWebApplication.endsWith("/")) {
+            defaultWebApplication = defaultWebApplication.substring(0, defaultWebApplication.length()-1);
+        }        
+        if (defaultWebApplication.startsWith("/")) {
+            defaultWebApplication = defaultWebApplication.substring(1);
+        }             
+        m_defaultWebApplicationName = defaultWebApplication;
+        
         // set the web application name
-        File path = new File(m_webInfPath);
+        File path = new File(m_webInfRfsPath);
         m_webApplicationName = path.getParentFile().getName();
         
         // set the context path
@@ -434,10 +425,10 @@ public class CmsSystemInfo {
         m_openCmsContext = m_contextPath + m_servletPath;
         
         // set the web application path
-        m_webApplicationPath = path.getParentFile().getAbsolutePath();
-        if (! m_webApplicationPath.endsWith(File.separator)) {
-            m_webApplicationPath += File.separator;
-        }       
+        m_webApplicationRfsPath = path.getParentFile().getAbsolutePath();
+        if (! m_webApplicationRfsPath.endsWith(File.separator)) {
+            m_webApplicationRfsPath += File.separator;
+        }      
     }
     
     /**

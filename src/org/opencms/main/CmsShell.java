@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/02/21 13:33:20 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -432,8 +432,8 @@ public class CmsShell {
                 }
             }
             System.out.println("OpenCms WEB-INF path:  " + webInfPath);            
-            // set the path to the WEB-INF folder
-            m_opencms.getSystemInfo().setWebInfPath(webInfPath);
+            // set the path to the WEB-INF folder (the 2nd and 3rd parameters are just reasonable dummies)
+            m_opencms.getSystemInfo().init(webInfPath, "/opencms/*", "ROOT");
             
             // now read the configuration properties
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2004/02/21 13:33:20 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.88 $
+ * @version $Revision: 1.89 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1255,23 +1255,14 @@ public final class OpenCmsCore {
      */
     protected synchronized void initContext(ServletContext context) throws CmsInitException {
 
-        // read the the default context name from the servlet context parameters
-        String defaultWebApplication = context.getInitParameter("DefaultWebApplication");
-        if (defaultWebApplication == null) {
-            // not set in web.xml, so we use "ROOT" which should usually work since it is the (de-facto) standard 
-            defaultWebApplication = "ROOT";
-        }
-        getSystemInfo().setDefaultWebApplicationName(defaultWebApplication);
-        
         // read the the OpenCms servlet mapping from the servlet context parameters
         String servletMapping = context.getInitParameter("OpenCmsServlet");
         if (servletMapping == null) {
             m_instance = null;
             throw new CmsInitException("OpenCms servlet mapping not configured in 'web.xml', please set the 'OpenCmsServlet' parameter.");
         }
-        getSystemInfo().setServletMapping(servletMapping);      
-        
-        // Check for OpenCms home (base) directory path
+
+        // check for OpenCms home (base) directory path
         String base = context.getInitParameter("opencms.home");
         if (base == null || "".equals(base)) {
             base = searchWebInfFolder(context.getRealPath("/"));
@@ -1279,7 +1270,16 @@ public final class OpenCmsCore {
                 throwInitException(new CmsInitException(C_ERRORMSG + "OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.\n\n"));
             }
         }
-        getSystemInfo().setWebInfPath(base);
+        
+        // read the the default context name from the servlet context parameters
+        String defaultWebApplication = context.getInitParameter("DefaultWebApplication");
+        if (defaultWebApplication == null) {
+            // not set in web.xml, so we use "ROOT" which should usually work since it is the (de-facto) standard 
+            defaultWebApplication = "ROOT";
+        }
+        
+        // now initialize the system info with the path and mapping information
+        getSystemInfo().init(base, servletMapping, defaultWebApplication);
 
         // Collect the configurations 
         ExtendedProperties configuration = null;
@@ -1301,7 +1301,7 @@ public final class OpenCmsCore {
             logfile = getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(logfile);
             configuration.put("log.file", logfile);
         }
-        getSystemInfo().setLogFileName(logfile);
+        getSystemInfo().setLogFileRfsPath(logfile);
 
         // initialize the logging
         m_log.init(configuration, getSystemInfo().getConfigurationFileRfsPath());
@@ -1330,9 +1330,9 @@ public final class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms webapp name  : " + getSystemInfo().getWebApplicationName());
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms servlet path : " + getSystemInfo().getServletPath());
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms context      : " + getSystemInfo().getOpenCmsContext());
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms base path    : " + getSystemInfo().getWebInfRfsPath());
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms WEB-INF path : " + getSystemInfo().getWebInfRfsPath());
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms property file: " + getSystemInfo().getConfigurationFileRfsPath());
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms logfile      : " + getSystemInfo().getLogFileRfsName());
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms log file     : " + getSystemInfo().getLogFileRfsPath());
         }
 
         try {
