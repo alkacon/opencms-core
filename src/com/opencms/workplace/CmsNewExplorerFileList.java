@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
- * Date   : $Date: 2001/01/03 09:04:13 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2001/01/04 09:57:06 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2001/01/03 09:04:13 $
+ * @version $Revision: 1.11 $ $Date: 2001/01/04 09:57:06 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate, I_CmsLogChannels, I_CmsConstants, I_CmsWpConstants {
 	
@@ -149,8 +149,10 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
 	// start creating content
 	StringBuffer content = new StringBuffer();
-	content.append("<html> \n<head> \n<script language=JavaScript> \n<!-- \nfunction show_help() \n{ return '2_1_2_2.html'; } \n//--> \n</script>\n\n<script language=JavaScript>\n");
+	content.append("<html> \n<head> \n<script language=JavaScript>\n");
 	content.append("function initialize() {\n");
+	// the help_url
+	content.append(" top.help_url='2_1_2_2.html';\n");
 	// the project
 	content.append(" top.setProject(" + cms.getRequestContext().currentProject().getId() + ");\n");
 	// the onlineProject
@@ -290,6 +292,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	content.append(" top.dU(document); \n");
 	content.append("}\n");
 	content.append("</script>\n</head> \n<BODY onLoad=\"initialize()\"></BODY> \n</html>\n");
+//  System.err.println("\n\n THE FILELIST:\n\n"+content.toString());	
 	return (content.toString()).getBytes();
 }
 	/**

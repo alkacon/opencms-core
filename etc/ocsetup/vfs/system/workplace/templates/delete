@@ -11,6 +11,7 @@
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
+top.help_url='2_2_2_2_4_4.html';
 function show_help()
 {
 	return '2_2_2_2_4_4.html';

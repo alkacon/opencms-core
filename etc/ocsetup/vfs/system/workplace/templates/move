@@ -10,6 +10,7 @@
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
+top.help_url='2_2_2_2_4_3.html';
 function show_help()
 {
 	return '2_2_2_2_4_3.html';

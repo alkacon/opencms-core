@@ -10,9 +10,12 @@
 </SCRIPT>
 <script language="JavaScript">
 function updateContent() {
-	
-	window.help_content.location.href=window.opener.top.body.show_help();
-	
+
+	if (window.opener.top.body.show_help){
+		window.help_content.location.href=window.opener.top.body.show_help();
+	}else{
+		window.help_content.location.href=window.opener.top.show_help();
+	}	
 }
 
 

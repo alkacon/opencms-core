@@ -8,6 +8,7 @@
 
 <script language=JavaScript>
 <!--
+top.help_url='2_2_2_2_4_2.html';
 function show_help()
 {
 	return '2_2_2_2_4_2.html';

@@ -6,6 +6,7 @@
 
 <script language=JavaScript>
 <!--
+top.help_url='1_2_4_1.html';
 function show_help()
 {
 	return '1_2_4_1.html';

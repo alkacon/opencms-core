@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/01/03 10:43:08 $
-  * Version: $Revision: 1.10 $
+  * Date   : $Date: 2001/01/04 09:58:14 $
+  * Version: $Revision: 1.11 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -26,6 +26,19 @@
   * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
+ /**
+  *  contains information about the actual help page.
+  *  instead of the function show_help every template displayed in the explorer view
+  *  must set this variable with top.help_url="..."
+  */
+ var help_url="2_2_2_2.html";
+
+ /**
+  *  returns the actual help page
+  */
+ function show_help(){
+	return help_url;
+ }
 
  /**
   *  contains information about a menuItem
