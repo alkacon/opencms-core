@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/11/16 16:07:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/08 14:49:36 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsResourceTypeFolder extends A_CmsResourceType {
 
@@ -359,7 +359,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
             List resources = securityManager.readChildResources(
                 cms.getRequestContext(),            
                 resource,
-                CmsResourceFilter.ALL, 
+                CmsResourceFilter.IGNORE_EXPIRATION, 
                 true, 
                 true); 
             
