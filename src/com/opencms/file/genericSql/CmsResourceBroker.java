@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/05 16:43:42 $
-* Version: $Revision: 1.270 $
+* Date   : $Date: 2001/09/06 13:10:10 $
+* Version: $Revision: 1.271 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.270 $ $Date: 2001/09/05 16:43:42 $
+ * @version $Revision: 1.271 $ $Date: 2001/09/06 13:10:10 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -400,7 +400,8 @@ protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, Cm
         }
 
         // is the project unlocked?
-        if( testProject.getFlags() != C_PROJECT_STATE_UNLOCKED ) {
+        if( testProject.getFlags() != C_PROJECT_STATE_UNLOCKED &&
+            testProject.getFlags() != C_PROJECT_STATE_INVISIBLE) {
             return(false);
         }
 
@@ -1800,6 +1801,41 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
         // create a new task for the project
         CmsTask task = createProject(currentUser, name, 1, group.getName(), System.currentTimeMillis(), C_TASK_PRIORITY_NORMAL);
         return m_dbAccess.createProject(currentUser, group, managergroup, task, name, description, C_PROJECT_STATE_UNLOCKED, projecttype);
+    }
+    else
+    {
+        throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+    }
+}
+
+/**
+ * Creates a project for the temporary files.
+ *
+ * <B>Security</B>
+ * Only the users which are in the admin or projectleader-group are granted.
+ *
+ * Changed: added the project type
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @exception CmsException Throws CmsException if something goes wrong.
+ * @author Edna Falkenhan
+ */
+public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsProject currentProject) throws CmsException
+{
+    String name = "tempFileProject";
+    String description = "Project for temporary files";
+    if (isAdmin(currentUser, currentProject))
+    {
+        // read the needed groups from the cms
+        CmsGroup group = readGroup(currentUser, currentProject, "Users");
+        CmsGroup managergroup = readGroup(currentUser, currentProject, "Administrators");
+
+        // create a new task for the project
+        CmsTask task = createProject(currentUser, name, 1, group.getName(), System.currentTimeMillis(), C_TASK_PRIORITY_NORMAL);
+        CmsProject tempProject = m_dbAccess.createProject(currentUser, group, managergroup, task, name, description, C_PROJECT_STATE_INVISIBLE, C_PROJECT_STATE_INVISIBLE);
+        m_dbAccess.createProjectResource(tempProject.getId(), "/");
+        cms.getRegistry().setSystemValue("tempfileproject",""+tempProject.getId());
+        return tempProject;
     }
     else
     {
