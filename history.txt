@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.29 Bela Tegeuse - XX July 2001
+* fixed bug when reading all files or all subfolders in an offline folder
+
 OpenCms 4.3.28 Bela Tegeuse - 19 July 2001
 ! new feature on the workplace: a resource can be copied to an existing project
 * when publishing a folder the subresources will be unlocked
