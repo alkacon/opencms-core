@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/01/03 17:37:23 $ 
+ * @version $Revision: 1.4 $ $Date: 2000/01/03 18:51:36 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -984,9 +984,28 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void updateUser(String username, Hashtable additionalInfos, int flag)
+	public void writeUser(String username, Hashtable additionalInfos, int flag)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		
+		// get the user, which has to be written
+		A_CmsUser user = c_rb.readUser(m_context.currentUser(), 
+									   m_context.getCurrentProject(),
+									   username);
+		
+		// merge the additional infos
+		Hashtable originalInfos = user.getAdditionalInfo();
+		Enumeration keys = additionalInfos.keys();
+		Object key;
+		while(keys.hasMoreElements()) {
+			key = keys.nextElement();
+			originalInfos.put(key, additionalInfos.get(key));
+		}
+		
+		// put the new infos into the user-object
+		user.setAdditionalInfo(originalInfos);
+		user.setFlags(flag);
+		// write it back
+		c_rb.writeUser(m_context.currentUser(), m_context.getCurrentProject(), user);
 	}
 	
 	/**
@@ -1027,7 +1046,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public boolean userInGroup(String username, String groupname)
 		throws CmsException { 
-		return false; // TODO: implement this! 
+		return( c_rb.userInGroup(m_context.currentUser(), m_context.getCurrentProject(), 
+						 username, groupname));
 	}
 
 	/**
@@ -1057,9 +1077,10 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
 	 * same group already exists.
 	 */	
-	public A_CmsGroup addGroup(String name, String description, int flags)
-		throws CmsException, CmsDuplicateKeyException { 
-		return null; // TODO: implement this! 
+	public A_CmsGroup addGroup(String name, String description, int flags, String parent)
+		throws CmsException { 
+		return( c_rb.addGroup(m_context.currentUser(), m_context.getCurrentProject(),
+							  name, description, flags, parent) );
 	}
 	
 	/**

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/01/03 17:37:23 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/03 18:51:36 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -456,7 +456,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */	
 	public boolean isAdmin(A_CmsUser currentUser, A_CmsProject currentProject)
 		throws CmsException {
-		return( m_userRb.userInGroup(currentUser.getName(), C_USER_ADMIN) );
+		return( m_userRb.userInGroup(currentUser.getName(), C_GROUP_ADMIN) );
 	}
     
    	/**
@@ -702,8 +702,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     public void writeUser(A_CmsUser currentUser, A_CmsProject currentProject, 
 						  A_CmsUser user)			
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		// Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			m_userRb.writeUser(user);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
 	/**
@@ -728,8 +733,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public A_CmsGroup addGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 							   String name, String description, int flags, String parent)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		if( isAdmin(currentUser, currentProject) ) {
+			return( m_userRb.addGroup(name, description, flags, parent) );
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
     

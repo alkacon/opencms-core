@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/01/03 17:37:23 $ 
+ * @version $Revision: 1.10 $ $Date: 2000/01/03 18:51:36 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -848,7 +848,7 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void updateUser(String username, Hashtable additionalInfos, int flag)
+	abstract public void writeUser(String username, Hashtable additionalInfos, int flag)
 		throws CmsException;
 	
 	/**
@@ -902,7 +902,8 @@ public abstract class A_CmsObject {
 	 * 
 	 * @param name The name of the new group.
 	 * @param description The description for the new group.
-	 * @int flags The flags for the new group.
+	 * @param flags The flags for the new group.
+	 * @param parent The parent of this group.
 	 *
 	 * @return Group
 	 * 
@@ -910,8 +911,9 @@ public abstract class A_CmsObject {
 	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
 	 * same group already exists.
 	 */	
-	abstract public A_CmsGroup addGroup(String name, String description, int flags)
-		throws CmsException, CmsDuplicateKeyException;
+	abstract public A_CmsGroup addGroup(String name, String description, int flags, 
+										String parent)
+		throws CmsException;
 	
 	/**
 	 * Delete a group from the Cms.<BR/>

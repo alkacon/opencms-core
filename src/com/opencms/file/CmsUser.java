@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/03 18:51:36 $
  */
 
 public class CmsUser extends A_CmsUser implements I_CmsConstants {
@@ -144,6 +144,8 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         output.append(m_name);
         output.append(" , Id=");
         output.append(m_id);
+        output.append(" , flags=");
+        output.append(getFlags());
         output.append(" :");
         output.append(m_description);
         return output.toString();
