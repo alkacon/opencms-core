@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/17 16:05:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/11/17 16:16:31 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -573,7 +573,7 @@ function displayHeadPics(doc){
     bt_folder.src = vi.iconPath+'ic_file_folder.gif';
     
     bt_new = new Image(32,32);
-    if(vr.actProject!=vr.onlineProject) bt_new.src = vi.iconPath+'bt_new_in.gif';
+    if(vr.actProject==vr.onlineProject) bt_new.src = vi.iconPath+'bt_new_in.gif';
     else bt_new.src = vi.iconPath+'bt_new_off.gif';
     
     bt_up = new Image(32,32);
@@ -617,7 +617,7 @@ function displayHead(doc){
     doc.open();
     doc.writeln(headHead);
 
-    if(vr.actProject==vr.onlineProject){
+    if(vr.actProject!=vr.onlineProject){
         doc.writeln("<td class=menu nowrap width=32px>"+
             //"<a href=\"javascript: top.updateFrame('body.explorer_content.explorer_files','explorer_files_new.html');\""+
             "<a href='explorer_files_new.html' "+
