@@ -99,6 +99,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 			session.putValue("SITE_CATEGORY", parameters.get("CATEGORY"));
 			session.putValue("SITE_LANGUAGE", parameters.get("LANGUAGE"));
 			session.putValue("SITE_DOMAIN", parameters.get("DOMAIN"));
+			session.putValue("SITE_FALLBACK", parameters.get("FALLBACKSITE"));
 			session.putValue("SITE_MANAGERGROUP", parameters.get("MANAGERGROUP"));
 			session.putValue("SITE_GROUP", parameters.get("GROUP"));
 			templateSelector = "wait";
@@ -110,7 +111,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		{
 			if (cms.isSiteLegal(-1, name, domainname, Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN"))))
 			{
-				cms.newSite(name, description, Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN")), domainname, (String) session.getValue("SITE_MANAGERGROUP"), (String) session.getValue("SITE_GROUP"));
+				int parentId = cms.getSiteBySiteId(Integer.parseInt((String) session.getValue("SITE_FALLBACK"))).getOnlineProjectId();
+				cms.newSite(name, description, Integer.parseInt((String) session.getValue("SITE_CATEGORY")), Integer.parseInt((String) session.getValue("SITE_LANGUAGE")), Integer.parseInt((String) session.getValue("SITE_DOMAIN")), domainname, (String) session.getValue("SITE_MANAGERGROUP"), (String) session.getValue("SITE_GROUP"), parentId);
 				templateSelector = "done";
 				session.removeValue("SITE_NAME");
 				session.removeValue("SITE_DOMAINNAME");
@@ -118,6 +120,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 				session.removeValue("SITE_CATEGORY");
 				session.removeValue("SITE_LANGUAGE");
 				session.removeValue("SITE_DOMAIN");
+				session.removeValue("SITE_FALLBACK");
 				session.removeValue("SITE_MANAGERGROUP");
 				session.removeValue("SITE_GROUP");
 			}

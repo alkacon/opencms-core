@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/10 08:18:37 $
- * Version: $Revision: 1.158 $
+ * Date   : $Date: 2000/10/10 08:50:59 $
+ * Version: $Revision: 1.159 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.158 $ $Date: 2000/10/10 08:18:37 $
+ * @version $Revision: 1.159 $ $Date: 2000/10/10 08:50:59 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4162,6 +4162,47 @@ public CmsSite newSite(String name, String description, int category, int langua
 	if (isAdmin(currentUser, currentProject))
 	{
 		CmsProject newOnlineProject = createProject(currentUser, currentProject, name, description + " project", user, group);
+		CmsSite newSite = m_dbAccess.newSiteRecord(name, description, category, language, country, newOnlineProject.getId());
+		int newSiteId = newSite.getId();
+		m_dbAccess.newSiteProjectsRecord(newSiteId, newOnlineProject.getId());
+		m_dbAccess.newSiteUrlRecord(url, newSiteId, url);
+		//
+		CmsFolder rootFolder = m_dbAccess.createFolder(currentUser, newOnlineProject, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
+		//rootFolder.setGroupId(users.getId());
+		//m_dbAccess.writeFolder(online, rootFolder, false);
+		//
+		return newSite;
+	}
+	else
+	{
+		throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+	}
+}
+/**
+ * Creates a new Site in the OpenCms system based on the parameters given. <br>
+ * This includes:<br>
+ * 1) Creating a new online-project for the site.<br>
+ * 2) Creating a single site_url record connecting the given url to the new site.<br>
+ * 3) Creating a site_project record linking the new site to the new onlineproject.
+ *
+ * Creation date: (09/20/00 %r)
+ *
+ * @return com.opencms.file.CmsSite
+ * @param Name java.lang.String
+ * @param Description java.lang.String
+ * @param Category int
+ * @param Language int
+ * @param Country int
+ * @param url java.lang.String
+ * @param user java.lang.String
+ * @param group java.lang.String
+ * @param parentId 
+ */
+public CmsSite newSite(String name, String description, int category, int language, int country, String url, String user, String group, CmsUser currentUser, CmsProject currentProject, int parentId) throws CmsException
+{
+	if (isAdmin(currentUser, currentProject))
+	{
+		CmsProject newOnlineProject = createProject(currentUser, currentProject, name, description + " project", user, group, parentId);
 		CmsSite newSite = m_dbAccess.newSiteRecord(name, description, category, language, country, newOnlineProject.getId());
 		int newSiteId = newSite.getId();
 		m_dbAccess.newSiteProjectsRecord(newSiteId, newOnlineProject.getId());

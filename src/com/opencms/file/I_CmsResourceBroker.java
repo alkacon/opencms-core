@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/10 08:18:37 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2000/10/10 08:50:59 $
+ * Version: $Revision: 1.127 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.126 $ $Date: 2000/10/10 08:18:37 $
+ * @version $Revision: 1.127 $ $Date: 2000/10/10 08:50:59 $
  * 
  */
 
@@ -1829,6 +1829,27 @@ public boolean isSiteLegal(CmsUser currentUser, CmsProject currentProject, int s
  * @param group java.lang.String
  */
 public CmsSite newSite(String Name, String Description, int Category, int Language, int Country, String url, String user, String group, CmsUser currentuser, CmsProject currentproject) throws CmsException;
+/**
+ * Creates a new Site in the OpenCms system based on the parameters given. <br>
+ * This includes:<br>
+ * 1) Creating a new online-project for the site.<br>
+ * 2) Creating a single site_url record connecting the given url to the new site.<br>
+ * 3) Creating a site_project record linking the new site to the new onlineproject.
+ *
+ * Creation date: (09/20/00 %r)
+ *
+ * @return com.opencms.file.CmsSite
+ * @param Name java.lang.String
+ * @param Description java.lang.String
+ * @param Category int
+ * @param Language int
+ * @param Country int
+ * @param url java.lang.String
+ * @param user java.lang.String
+ * @param group java.lang.String
+ * @author Martin Langelund
+ */
+public CmsSite newSite(String Name, String Description, int Category, int Language, int Country, String url, String user, String group, CmsUser currentuser, CmsProject currentproject, int parentId) throws CmsException;
 /**
  * Creates a new Cms_Site_Project record in the DB.
  *
