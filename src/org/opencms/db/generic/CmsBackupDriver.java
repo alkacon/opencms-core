@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/11/09 15:31:50 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2004/11/11 15:23:53 $
+ * Version: $Revision: 1.111 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.110 $ $Date: 2004/11/09 15:31:50 $
+ * @version $Revision: 1.111 $ $Date: 2004/11/11 15:23:53 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -1232,7 +1232,6 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_DELETE_BACKUP");
             stmt.setString(1, metadef.getId().toString());
             stmt.executeUpdate();
-            m_sqlManager.closeAll(null, conn, stmt, null);
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
@@ -1271,7 +1270,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(null, conn, stmt, res);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
         return returnValue;
     }    
