@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/12/22 16:36:45 $
- * Version: $Revision: 1.466 $
+ * Date   : $Date: 2005/01/03 13:52:25 $
+ * Version: $Revision: 1.467 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.466 $ $Date: 2004/12/22 16:36:45 $
+ * @version $Revision: 1.467 $ $Date: 2005/01/03 13:52:25 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7874,21 +7874,35 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         List result = new ArrayList();
 
-        if (folderList == null) {
-            folderList = result;
-        }
+        // local folder list for adding new publishing subfolders
+        // this solves the TestPublishIssues.testPublishScenarioD problem.
+        List newFolderList = folderList==null?new ArrayList():new ArrayList(folderList);
 
         for (int i = 0; i < resourceList.size(); i++) {
             CmsResource res = (CmsResource)resourceList.get(i);
             try {
-                if (!getLock(dbc, res).isNullLock()) {
+                CmsLock lock = getLock(dbc, res);
+                if (! lock.isNullLock()) {
+                    // checks if there is a shared lock and if the resource is deleted
+                    // this solves the TestPublishIssues.testPublishScenarioE problem.
+                    if (lock.getType()==CmsLock.C_TYPE_SHARED_INHERITED || lock.getType()==CmsLock.C_TYPE_SHARED_EXCLUSIVE) { 
+                        if (res.getState()!=I_CmsConstants.C_STATE_DELETED) {
+                            continue;
+                        }
+                    } else {
+                        // don't add locked resources
+                        continue;
+                    }
+                }
+
+                if (!I_CmsConstants.C_ROOT.equals(res.getRootPath()) && !checkParentResource(dbc, newFolderList, res)) {
                     continue;
                 }
 
-                if (!I_CmsConstants.C_ROOT.equals(res.getRootPath()) && !checkParentResource(dbc, folderList, res)) {
-                    continue;
+                if (res.isFolder()) {
+                    newFolderList.add(res);
                 }
-
+                
                 result.add(res);
 
             } catch (Exception e) {
@@ -7917,6 +7931,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         List resourceList) {
 
         List result = new ArrayList();
+        
+        // local folder list for adding new publishing subfolders
+        // this solves the TestPublishIssues.testPublishScenarioD problem.
+        List newFolderList = folderList==null?new ArrayList():new ArrayList(folderList);
 
         for (int i = 0; i < resourceList.size(); i++) {
             CmsResource res = (CmsResource)resourceList.get(i);
@@ -7928,16 +7946,29 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     continue;
                 }
 
-                if (!getLock(dbc, res).isNullLock()) {
-                    // don't add locked resources
-                    continue;
+                CmsLock lock = getLock(dbc, res);
+                if (! lock.isNullLock()) {
+                    // checks if there is a shared lock and if the resource is deleted
+                    // this solves the TestPublishIssues.testPublishScenarioE problem.
+                    if (lock.getType()==CmsLock.C_TYPE_SHARED_INHERITED || lock.getType()==CmsLock.C_TYPE_SHARED_EXCLUSIVE) { 
+                        if (res.getState()!=I_CmsConstants.C_STATE_DELETED) {
+                            continue;
+                        }
+                    } else {
+                        // don't add locked resources
+                        continue;
+                    }
                 }
 
-                if (!I_CmsConstants.C_ROOT.equals(res.getRootPath()) && !checkParentResource(dbc, folderList, res)) {
+                if (!I_CmsConstants.C_ROOT.equals(res.getRootPath()) && !checkParentResource(dbc, newFolderList, res)) {
                     // don't add resources that have no parent in the online project
                     continue;
                 }
 
+                if (res.isFolder()) {
+                    newFolderList.add(res);
+                }
+                                
                 result.add(res);
 
             } catch (Exception e) {
