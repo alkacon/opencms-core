@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/03/08 12:32:20 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/03/19 17:45:01 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -736,4 +736,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         copy.combine(m_configuration);
         return copy; 
     }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#getDateLastModified(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public long getDateLastModified(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) {
+        // TODO: implement last modified for this resource type
+        return Long.MIN_VALUE;
+    }    
 }

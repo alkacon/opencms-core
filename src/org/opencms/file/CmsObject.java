@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/03/19 13:54:17 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/03/19 17:45:02 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsObject {
 
@@ -2920,15 +2920,6 @@ public class CmsObject {
      */
     public CmsGroup readManagerGroup(CmsProject project) {
         return m_driverManager.readManagerGroup(project);
-    }
-
-    /**
-     * Returns all mime-types known by the system.<p>
-     *
-     * @return a Hashtable containing all mime-types.
-     */
-    public Hashtable readMimeTypes() {
-        return m_driverManager.readMimeTypes();
     }
 
     /**

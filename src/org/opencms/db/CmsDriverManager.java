@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/03/19 13:50:36 $
- * Version: $Revision: 1.338 $
+ * Date   : $Date: 2004/03/19 17:45:01 $
+ * Version: $Revision: 1.339 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.338 $ $Date: 2004/03/19 13:50:36 $
+ * @version $Revision: 1.339 $ $Date: 2004/03/19 17:45:01 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5971,29 +5971,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_groupCache.put(new CacheId(group), group);
         }
         return group;
-    }
-
-    /**
-     * Gets the MimeTypes. <p>
-     * 
-     * The Mime-Types will be returned.
-     *
-     * All users are garnted.
-     *
-     * @return the mime-types
-     */
-    public Hashtable readMimeTypes() {
-        // read the mimetype-properties as ressource from classloader and convert them
-        // to hashtable
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream("mimetypes.properties"));
-        } catch (Throwable t) {
-            if (OpenCms.getLog(this).isFatalEnabled()) {
-                OpenCms.getLog(this).fatal("Could not read mimetypes from properties", t);
-            }
-        }
-        return props;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterMedia.java,v $
-* Date   : $Date: 2004/02/13 13:41:45 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/03/19 17:45:01 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,14 +33,15 @@ import org.opencms.util.CmsUUID;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 
 /**
  * An instance of this module describes a modulemedia entry in the database.
  * It carries a set of data to read and write.
  *
  * @author A. Schouten $
- * $Revision: 1.8 $
- * $Date: 2004/02/13 13:41:45 $
+ * $Revision: 1.9 $
+ * $Date: 2004/03/19 17:45:01 $
  */
 public class CmsMasterMedia {
 
@@ -138,28 +139,6 @@ public class CmsMasterMedia {
              description, media);
         m_id = id;
         m_masterId = masterId;
-    }
-
-    /**
-     * Convenience method to compute the mimetype with the extension of the
-     * filename (e.g. mypic.gif -> image/gif)
-     * @param cms - the CmsObject to get access to cms ressources.
-     * @param filename - the filename to extract the extension from
-     * @return the computed mimetype.
-     */
-    public static String computeMimetype(CmsObject cms, String filename) {
-        String mimetype = null;
-        // get the extension of the filename to compute mimetype
-        int lastIndex = filename.lastIndexOf('.');
-        if(lastIndex > 0) {
-            String extension = filename.substring(lastIndex + 1);
-            mimetype = (String)(cms.readMimeTypes().get(extension));
-        }
-        if(mimetype == null) {
-            return C_DEFAULT_MIMETYPE;
-        } else {
-            return mimetype;
-        }
     }
 
     //// get and set methods ////

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/03/19 17:45:01 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -207,5 +207,30 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      * @see org.opencms.flex.CmsFlexRequestDispatcher
      */   
     void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) 
+    throws ServletException, IOException, CmsException;
+    
+    /**
+     * Returns the last modified timestamp for the resource, or <code>Long.MIN_VALUE<code> if this is unknown.<p>
+     * 
+     * This is used to send a <code>304 - Not modified</code> header if a requested resource has not 
+     * changed since the last call to the resource.<p>
+     * 
+     * Calculating this is really easy for "static" resources,
+     * e.g. binary files or images. In this case the last modified date of the file is used here.
+     * However, for dynamic pages (e.g. JSP) or template based pages this date must be calculated
+     * taking into consideration all included sub - elements, as well as possible dynamic timeouts.<p> 
+     * 
+     * @param cms used to access the OpenCms VFS
+     * @param resource the reqested resource in the VFS
+     * @param req the servlet request
+     * @param res the servlet response
+     * 
+     * @throws ServletException might be thrown by the servlet environment
+     * @throws IOException might be thrown by the servlet environment
+     * @throws CmsException in case of errors acessing OpenCms functions
+     *  
+     * @return the last modified timestamp for the resource, or <code>Long.MIN_VALUE<code> if this is unknown.<p>
+     */
+    long getDateLastModified(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException;
 }

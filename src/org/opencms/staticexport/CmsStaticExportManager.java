@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/03/07 19:22:55 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/03/19 17:45:02 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -340,7 +340,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (resource.isFile()) {
             file = cms.readFile(vfsName);
         } else {
-            file = OpenCmsCore.getInstance().initResource(cms, vfsName, req, res);
+            file = CmsFile.upgrade(OpenCmsCore.getInstance().initResource(cms, vfsName, req, res), cms);
             vfsName = vfsName + file.getName();
             rfsName += C_EXPORT_DEFAULT_FILE;
         }
@@ -372,7 +372,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         // ensure we have exactly the same setup as if called "the usual way"
-        String mimetype = OpenCms.getMimeType(file.getName(), cms.getRequestContext().getEncoding());
+        String mimetype = OpenCms.getLoaderManager().getMimeType(file.getName(), cms.getRequestContext().getEncoding());
         res.setContentType(mimetype);        
         String oldUri = cms.getRequestContext().getUri();
         cms.getRequestContext().setUri(vfsName);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/19 13:52:27 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2004/03/19 17:45:02 $
+ * Version: $Revision: 1.107 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,6 @@ import org.opencms.cron.CmsCronScheduler;
 import org.opencms.cron.CmsCronTable;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRegistry;
@@ -56,7 +54,6 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsLoaderManager;
-import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.search.CmsSearchManager;
@@ -104,13 +101,10 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.106 $
+ * @version $Revision: 1.107 $
  * @since 5.1
  */
 public final class OpenCmsCore {
-
-    /** The default mimetype */
-    private static final String C_DEFAULT_MIMETYPE = "text/html";
 
     /** Prefix for error messages for initialization errors */
     private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";
@@ -157,10 +151,6 @@ public final class OpenCmsCore {
     /** The set of configured export points */
     private Set m_exportPoints;
 
-    /** The cron manager */
-    // TODO enable the cron manager
-    //private CmsCronManager m_cronManager;
-    
     /** Filename translator, used only for the creation of new files */
     private CmsResourceTranslator m_fileTranslator;
 
@@ -184,9 +174,6 @@ public final class OpenCmsCore {
 
     /** The memory monitor for collection memory statistics */
     private CmsMemoryMonitor m_memoryMonitor;
-
-    /** The OpenCms map of configured mime types */
-    private Map m_mimeTypes;
 
     /** The name of the class used to validate a new password */
     private String m_passwordValidatingClass;
@@ -305,87 +292,64 @@ public final class OpenCmsCore {
      * 
      * @throws CmsException in case the file does not exist or the user has insufficient access permissions 
      */
-    public CmsFile initResource(CmsObject cms, String resourceName, HttpServletRequest req, HttpServletResponse res) throws CmsException {
+    public CmsResource initResource(CmsObject cms, String resourceName, HttpServletRequest req, HttpServletResponse res) throws CmsException {
 
-        CmsFile file = null;
+        CmsResource resource = null;
         CmsException tmpException = null;
 
         try {
-            // Try to read the requested file
-            file = cms.readFile(resourceName);
-        } catch (CmsException e) {
-            if (e.getType() == CmsException.C_NOT_FOUND) {
-                // The requested file was not found
-                // Check if a folder name was requested, and if so, try
-                // to read the default pages in that folder
-
-                try {
-                    // Try to read the requested resource name as a folder
-                    CmsFolder folder = cms.readFolder(resourceName);
-                    // If above call did not throw an exception the folder
-                    // was sucessfully read, so lets go on check for default 
-                    // pages in the folder now
-
-                    // Check if C_PROPERTY_DEFAULT_FILE is set on folder
-                    String defaultFileName = cms.readProperty(CmsResource.getFolderPath(cms.readAbsolutePath(folder)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
+            // try to read the requested resource
+            resource = cms.readFileHeader(resourceName);
+            // resource exists, lets check if we have a file or a folder
+            if (resource.isFolder()) {
+                // the resource is a folder, check if C_PROPERTY_DEFAULT_FILE is set on folder
+                try {                
+                    String defaultFileName = cms.readProperty(CmsResource.getFolderPath(cms.readAbsolutePath(resource)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
                     if (defaultFileName != null) {
-                        // Property was set, so look up this file first
-                        String tmpResourceName = CmsResource.getFolderPath(cms.readAbsolutePath(folder)) + defaultFileName;
-
-                        try {
-                            file = cms.readFile(tmpResourceName);
-                            // No exception? So we have found the default file                         
+                        // property was set, so look up this file first
+                        String tmpResourceName = CmsResource.getFolderPath(cms.readAbsolutePath(resource)) + defaultFileName;
+                        resource = cms.readFileHeader(tmpResourceName);
+                        // no exception? so we have found the default file                         
+                        cms.getRequestContext().setUri(tmpResourceName);
+                    } 
+                } catch (CmsSecurityException se) {
+                    // permissions deny access to the resource
+                    throw se;
+                } catch (CmsException e) {
+                    // ignore all other exceptions and continue the lookup process
+                }                
+                if (resource.isFolder()) {
+                    // resource is (still) a folder, check default files specified in configuration
+                    for (int i = 0; i < m_defaultFilenames.length; i++) {
+                        String tmpResourceName = CmsResource.getFolderPath(cms.readAbsolutePath(resource)) + m_defaultFilenames[i];
+                        try {      
+                            resource = cms.readFileHeader(tmpResourceName);
+                            // no exception? So we have found the default file                         
                             cms.getRequestContext().setUri(tmpResourceName);
+                            // stop looking for default files   
+                            break;
                         } catch (CmsSecurityException se) {
-                            // Maybe no access to default file?
+                            // permissions deny access to the resource
                             throw se;
-                        } catch (CmsException exc) {
-                            // Ignore all other exceptions
-                        }
-                    }
-                    if (file == null) {
-                        // No luck with the property, so check default files specified in opencms.properties (if required)         
-                        for (int i = 0; i < m_defaultFilenames.length; i++) {
-                            String tmpResourceName = CmsResource.getFolderPath(cms.readAbsolutePath(folder)) + m_defaultFilenames[i];
-                            try {
-                                file = cms.readFile(tmpResourceName);
-                                // No exception? So we have found the default file                         
-                                cms.getRequestContext().setUri(tmpResourceName);
-                                // Stop looking for default files   
-                                break;
-                            } catch (CmsSecurityException se) {
-                                // Maybe no access to default file?
-                                throw se;
-                            } catch (CmsException exc) {
-                                // Ignore all other exceptions
-                            }
-                        }
-                    }
-                    if (file == null) {
-                        // No default file was found, throw original exception
-                        throw e;
-                    }
-                } catch (CmsException ex) {
-                    // Exception trying to read the folder (or it's properties)
-                    if (ex.getType() == CmsException.C_NOT_FOUND) {
-                        // Folder with the name does not exist, store original exception
-                        tmpException = e;
-                        // throw e;
-                    } else {
-                        // If the folder was found there might have been a permission problem
-                        throw ex;
-                    }
+                        } catch (CmsException e) {
+                            // ignore all other exceptions and continue the lookup process
+                        }     
+                    }           
                 }
-
-            } else {
-                // Throw the CmsException (possible cause e.g. no access permissions)
-                throw e;
             }
+            if (resource.isFolder()) {
+                // we only want files as a result for further processing
+                resource = null;
+            }
+        } catch (CmsException e) {
+            // file or folder with given name does not exist, store exception
+            tmpException = e;
+            resource = null;
         }
-
-        if (file != null) {
+          
+        if (resource != null) {
             // test if this file is only available for internal access operations
-            if ((file.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
+            if ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
                 throw new CmsException(CmsException.C_ERROR_DESCRIPTION[CmsException.C_INTERNAL_FILE] + cms.getRequestContext().getUri(), CmsException.C_INTERNAL_FILE);
             }
         }
@@ -394,7 +358,7 @@ public final class OpenCmsCore {
         Iterator i = m_resourceInitHandlers.iterator();
         while (i.hasNext()) {
             try {
-                file = ((I_CmsResourceInit)i.next()).initResource(file, cms, req, res);
+                resource = ((I_CmsResourceInit)i.next()).initResource(resource, cms, req, res);
                 // the loop has to be interrupted when the exception is thrown!
             } catch (CmsResourceInitException e) {
                 break;
@@ -402,12 +366,12 @@ public final class OpenCmsCore {
         }
 
         // file is still null and not found exception was thrown, so throw original exception
-        if (file == null && tmpException != null) {
+        if (resource == null && tmpException != null) {
             throw tmpException;
         }
 
-        // Return the file read from the VFS
-        return file;
+        // return the resource read from the VFS
+        return resource;
     }
 
     /**
@@ -670,35 +634,6 @@ public final class OpenCmsCore {
      */
     protected CmsMemoryMonitor getMemoryMonitor() {
         return m_memoryMonitor;
-    }
-
-    /**
-     * Returns the mime type for a specified file.<p>
-     * 
-     * @param filename the file name to check the mime type for
-     * @param encoding default encoding in case of mime types is of type "text"
-     * @return the mime type for a specified file
-     */
-    protected String getMimeType(String filename, String encoding) {
-        String mimetype = null;
-        int lastDot = filename.lastIndexOf(".");
-        // check if there was a file extension
-        if ((lastDot > 0) && (lastDot < (filename.length() - 1))) {
-            String ext = filename.substring(lastDot + 1);
-            mimetype = (String)m_mimeTypes.get(ext);
-            // was there a mimetype fo this extension?
-            if (mimetype == null) {
-                mimetype = C_DEFAULT_MIMETYPE;
-            }
-        } else {
-            mimetype = C_DEFAULT_MIMETYPE;
-        }
-        mimetype = mimetype.toLowerCase();
-        if ((encoding != null) && mimetype.startsWith("text") && (mimetype.indexOf("charset") == -1)) {
-            mimetype += "; charset=" + encoding;
-        }
-
-        return mimetype;
     }
 
     /**
@@ -1171,13 +1106,6 @@ public final class OpenCmsCore {
         }
 
         try {
-            // initalize the Hashtable with all available mimetypes
-            Hashtable mimeTypes = m_driverManager.readMimeTypes();
-            setMimeTypes(mimeTypes);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Found mime types     : " + mimeTypes.size() + " entrys");
-            }
-
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if (!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
                 // now initialise the OpenCms scheduler to launch cronjobs
@@ -1556,38 +1484,16 @@ public final class OpenCmsCore {
         try {
             cms = initCmsObject(req, res);
             // user is initialized, now deliver the requested resource
-            CmsFile file = initResource(cms, cms.getRequestContext().getUri(), req, res);
-            if (file != null) {
+            CmsResource resource = initResource(cms, cms.getRequestContext().getUri(), req, res);
+            if (resource != null) {
                 // a file was read, go on process it
-                res.setContentType(getMimeType(file.getName(), cms.getRequestContext().getEncoding()));
-                showResource(req, res, cms, file);
+                m_loaderManager.loadResource(cms, resource, req, res);
                 updateUser(cms, req);
             }
 
         } catch (Throwable t) {
             errorHandling(cms, req, res, t);
         }
-    }
-
-    /**    
-     * Delivers (i.e. shows) the requested resource to the user.<p>
-     * 
-     * @param req the current http request
-     * @param res the current http response
-     * @param cms the curren cms context
-     * @param file the requested file
-     * @throws ServletException if something goes wrong
-     * @throws IOException if something goes wrong
-     * @throws CmsException if something goes wrong
-     */
-    protected void showResource(
-        HttpServletRequest req, 
-        HttpServletResponse res, 
-        CmsObject cms, 
-        CmsFile file
-    ) throws ServletException, IOException, CmsException {
-        I_CmsResourceLoader loader = getLoaderManager().getLoader(file.getLoaderId());
-        loader.load(cms, file, req, res);
     }
 
     /**
@@ -2020,16 +1926,6 @@ public final class OpenCmsCore {
             redirectURL = servletPath + m_authenticationFormURI + "?requestedResource=" + req.getPathInfo();
             res.sendRedirect(redirectURL);
         }
-    }
-
-    /**
-     * Initilizes the map of available mime types.<p>
-     * 
-     * @param types the map of available mime types
-     */
-    private void setMimeTypes(Hashtable types) {
-        m_mimeTypes = new HashMap(types.size());
-        m_mimeTypes.putAll(types);
     }
 
     /**       

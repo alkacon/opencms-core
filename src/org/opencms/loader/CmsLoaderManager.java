@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/03/10 11:22:43 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/03/19 17:45:01 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,13 +38,20 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Collects all available resource loaders at startup and provides
@@ -53,16 +60,22 @@ import javax.servlet.ServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.1
  */
 public class CmsLoaderManager {
+    
+    /** The default mimetype */
+    private static final String C_DEFAULT_MIMETYPE = "text/html";
     
     /** Contains all loader extensions to the include process */
     private List m_includeExtensions;
 
     /** All initialized resource loaders, mapped to their ID */
     private I_CmsResourceLoader[] m_loaders;
+    
+    /** The OpenCms map of configured mime types */
+    private Map m_mimeTypes;    
 
     /**
      * Creates a new instance for the loader manager, will be called by the vfs configuration manager.<p>
@@ -72,6 +85,59 @@ public class CmsLoaderManager {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : starting");
         }
         m_loaders = new I_CmsResourceLoader[16];
+        Properties mimeTypes = new Properties();
+        try {
+            // first try: read mime types from default package
+            mimeTypes.load(getClass().getClassLoader().getResourceAsStream("mimetypes.properties"));
+        } catch (Throwable t) {
+            try {
+                // second try: read mime types from loader package
+                mimeTypes.load(getClass().getClassLoader().getResourceAsStream("org/opencms/loader/mimetypes.properties"));
+            } catch (Throwable t2) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Could not read mimetypes from class path", t);
+                }
+            }
+        }
+        // initalize the Map with all available mimetypes
+        m_mimeTypes = new HashMap(mimeTypes.size());
+        Iterator i = mimeTypes.keySet().iterator();
+        while (i.hasNext()) {
+            // ensure all mime type entries are lower case
+            String key = (String)i.next();
+            String value = (String)mimeTypes.get(key);
+            value = value.toLowerCase(Locale.ENGLISH);
+            m_mimeTypes.put(key, value);            
+        }
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Found mime types     : " + m_mimeTypes.size() + " entrys");
+        }    
+    }
+    
+    /**
+     * Adds a new loader to the internal list of loaded loaders.<p>
+     *
+     * @param loader the loader to add
+     */
+    public void addLoader(I_CmsResourceLoader loader) {
+        // add the loader to the internal list of loaders
+        int pos = loader.getLoaderId();
+        if (pos > m_loaders.length) {
+            I_CmsResourceLoader[] buffer = new I_CmsResourceLoader[pos * 2];
+            System.arraycopy(m_loaders, 0, buffer, 0, m_loaders.length);
+            m_loaders = buffer;
+        }
+        m_loaders[pos] = loader;
+        if (loader instanceof I_CmsLoaderIncludeExtension) {
+            // this loader requires special processing during the include process
+            if (m_includeExtensions == null) {
+                m_includeExtensions = new ArrayList();
+            }
+            m_includeExtensions.add(loader);
+        }
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : Adding " + loader.getClass().getName() + " with id " + loader.getLoaderId());
+        }    
     }
 
     /**
@@ -95,6 +161,34 @@ public class CmsLoaderManager {
     }
     
     /**
+     * Returns the mime type for a specified file name.<p>
+     * 
+     * If an encoding parameter that is not <code>null</code> is provided,
+     * the returned mime type is extended with a <code>; charset={encoding}</code> setting.<p> 
+     * 
+     * @param filename the file name to check the mime type for
+     * @param encoding the default encoding (charset) in case of mime types is of type "text"
+     * @return the mime type for a specified file
+     */
+    public String getMimeType(String filename, String encoding) {
+        String mimetype = null;
+        int lastDot = filename.lastIndexOf('.');
+        // check the mime type for the file extension 
+        if ((lastDot > 0) && (lastDot < (filename.length() - 1))) {
+            mimetype = (String)m_mimeTypes.get(filename.substring(lastDot + 1));
+        }
+        if (mimetype == null) {
+            mimetype = C_DEFAULT_MIMETYPE;
+        }
+        StringBuffer result = new StringBuffer(mimetype);
+        if ((encoding != null) && mimetype.startsWith("text") && (mimetype.indexOf("charset") == -1)) {
+            result.append("; charset=");
+            result.append(encoding);
+        }
+        return result.toString();
+    }    
+    
+    /**
      * Returns a template loader facade for the given file.<p>
      * 
      * @param cms the current cms context
@@ -114,6 +208,40 @@ public class CmsLoaderManager {
         CmsResource template = cms.readFile(templateProp);
         return new CmsTemplateLoaderFacade(getLoader(template.getLoaderId()), resource, template);
     }
+    
+    /**    
+     * Loads the requested resource and writes the contents to the response stream.<p>
+     * 
+     * @param req the current http request
+     * @param res the current http response
+     * @param cms the curren cms context
+     * @param resource the requested resource
+     * @throws ServletException if something goes wrong
+     * @throws IOException if something goes wrong
+     * @throws CmsException if something goes wrong
+     */
+    public void loadResource(
+        CmsObject cms, 
+        CmsResource resource,
+        HttpServletRequest req, 
+        HttpServletResponse res        
+    ) throws ServletException, IOException, CmsException {
+        res.setContentType(getMimeType(resource.getName(), cms.getRequestContext().getEncoding()));
+        I_CmsResourceLoader loader = getLoader(resource.getLoaderId());
+
+        // check if the request contains a last modified header
+        long lastModifiedHeader = req.getDateHeader("If-Modified-Since");                
+        if (lastModifiedHeader > -1) {
+            // last modified header is set, compare it to the requested resource
+            long lastModified = loader.getDateLastModified(cms, resource, req, res);
+            if (lastModified == lastModifiedHeader) {
+                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                return;
+            }            
+        }
+        
+        loader.load(cms, resource, req, res);
+    }    
     
     /**
      * Extension method for handling special, loader depended actions during the include process.<p>
@@ -142,31 +270,5 @@ public class CmsLoaderManager {
             result = loader.includeExtension(target, element, editable, paramMap, req, res);
         }
         return result;
-    }
-    
-    /**
-     * Adds a new loader to the internal list of loaded loaders.<p>
-     *
-     * @param loader the loader to add
-     */
-    public void addLoader(I_CmsResourceLoader loader) {
-        // add the loader to the internal list of loaders
-        int pos = loader.getLoaderId();
-        if (pos > m_loaders.length) {
-            I_CmsResourceLoader[] buffer = new I_CmsResourceLoader[pos * 2];
-            System.arraycopy(m_loaders, 0, buffer, 0, m_loaders.length);
-            m_loaders = buffer;
-        }
-        m_loaders[pos] = loader;
-        if (loader instanceof I_CmsLoaderIncludeExtension) {
-            // this loader requires special processing during the include process
-            if (m_includeExtensions == null) {
-                m_includeExtensions = new ArrayList();
-            }
-            m_includeExtensions.add(loader);
-        }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : Adding " + loader.getClass().getName() + " with id " + loader.getLoaderId());
-        }    
     }
 }

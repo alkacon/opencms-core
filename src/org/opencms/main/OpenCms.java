@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/03/07 19:21:28 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/03/19 17:45:01 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public final class OpenCms {
     
@@ -211,17 +211,6 @@ public final class OpenCms {
      */
     public static CmsMemoryMonitor getMemoryMonitor() {
         return OpenCmsCore.getInstance().getMemoryMonitor();
-    }    
-    
-    /**
-     * Returns the mime type for a specified file.<p>
-     * 
-     * @param filename the file name to check the mime type for
-     * @param encoding default encoding in case of mime types is of type "text"
-     * @return the mime type for a specified file
-     */
-    public static String getMimeType(String filename, String encoding) {        
-        return OpenCmsCore.getInstance().getMimeType(filename, encoding);              
     }
 
     /**

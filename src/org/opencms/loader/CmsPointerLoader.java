@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/03/19 17:45:01 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
@@ -182,4 +182,12 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) {
         throw new RuntimeException("service() not a supported operation for resources of type " + this.getClass().getName());  
     }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#getDateLastModified(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public long getDateLastModified(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) {
+        // pointer resource type usually sends a redirect header, so last-modified check can not be used
+        return Long.MIN_VALUE;
+    }        
 }

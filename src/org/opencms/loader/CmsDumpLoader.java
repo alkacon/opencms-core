@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/03/19 17:45:01 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -184,17 +184,8 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws IOException, CmsException {
-
-        CmsFile file = CmsFile.upgrade(resource, cms);
         
-        // check if we can send a 304 "Not Modified" header
-        if (file.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-            // never use 304 when the file has somehow changed (can only be true in an offline project)      
-            if (req.getDateHeader("If-Modified-Since") == file.getDateLastModified()) {
-                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                return;
-            }
-        }
+        CmsFile file = CmsFile.upgrade(resource, cms);       
         
         // set response status to "200 - OK" (required for export since a 404 status might have been set before)
         res.setStatus(HttpServletResponse.SC_OK);           
@@ -229,5 +220,18 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     throws CmsException, IOException {
         
         res.getOutputStream().write(CmsFile.upgrade(resource, cms).getContents());
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#getDateLastModified(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public long getDateLastModified(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) {
+        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+            // resource has not changesd, use timestamp of the resource
+            return resource.getDateLastModified();
+        } else {
+            // if the resource has somehow changed (can only be true in an offline project) force reload
+            return Long.MIN_VALUE;
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/03/19 17:45:01 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 
@@ -57,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -67,6 +68,9 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
 
     /** Template part identifier (request parameter) */
     public static final String C_TEMPLATE_ELEMENT = "__element";
+    
+    /** Attribute name for storing the loader facade in the request attributes */
+    private static final String C_LOADER_FACADE_ATTR = "__loaderFacade";
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -113,7 +117,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
 
     /**
      * Will always return <code>null</code> since this loader does not 
-     * need to be cnofigured.<p>
+     * need to be configured.<p>
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
@@ -179,8 +183,11 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         // init the page object and attach it as attribute to the request
         CmsXmlPage page = CmsXmlPage.read(cms, file);
         req.setAttribute(CmsXmlPage.C_ATTRIBUTE_XMLPAGE_OBJECT, page);
-        
-        CmsTemplateLoaderFacade loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, file);        
+                
+        CmsTemplateLoaderFacade loaderFacade = (CmsTemplateLoaderFacade)req.getAttribute(C_LOADER_FACADE_ATTR);
+        if (loaderFacade == null) {
+            loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, file);
+        }                                
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
 
@@ -212,4 +219,27 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             res.getOutputStream().write(result);
         }        
     }
+    
+    /**
+     * Since this is a template based loader, the "last modified" date for the resource 
+     * is the lower date from the template and the xmlpage file itself.<p>
+     * 
+     * @see org.opencms.loader.I_CmsResourceLoader#getDateLastModified(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public long getDateLastModified(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException {
+        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+            // only if the resource has not changed we use the 304 optimization 
+            CmsTemplateLoaderFacade loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, resource);
+            // store the facade object in the request for later reuse
+            req.setAttribute(C_LOADER_FACADE_ATTR, loaderFacade);
+            // now get the last modified date for the template
+            long templateLastModified = loaderFacade.getLoader().getDateLastModified(cms, loaderFacade.getLoaderStartResource(), req, res);        
+            // use the earlier date
+            return templateLastModified < resource.getDateLastModified() ? templateLastModified : resource.getDateLastModified();
+        } else {
+            // if the resource has somehow changed (can only be true in an offline project) force reload
+            return Long.MIN_VALUE;
+        }
+    }    
 }
