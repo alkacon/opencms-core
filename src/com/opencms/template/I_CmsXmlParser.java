@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlParser.java,v $
-* Date   : $Date: 2003/01/23 10:44:10 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/01/31 17:03:10 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,13 +39,9 @@ import org.w3c.dom.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2003/01/23 10:44:10 $
+ * @version $Revision: 1.13 $ $Date: 2003/01/31 17:03:10 $
  */
 public interface I_CmsXmlParser {
-    
-    /** Encoding used for XML documents */
-    //[removed by Gridnine AB, 2002-06-13] public final static String C_XML_ENCODING = "ISO-8859-1";
-    public final static String C_XML_ENCODING = "UTF-8";
     
     /** Line width used for XML documents */
     public final static int C_XML_LINE_WIDTH = 80;
@@ -64,10 +60,17 @@ public interface I_CmsXmlParser {
      * @param encoding the character encoding to be used while serializing
      * document, if null - original or default encoding will be used
      */
-    //Gridnine AB Aug 9, 2002
-    // added encoding parameter
     public void getXmlText(Document doc, OutputStream out, String encoding);
-    
+
+    /**
+     * Calls a XML printer for converting a XML DOM document
+     * to a String.
+     * @param doc Document to be printed.
+     * @param out Writer to print to.
+     * @param encoding the character encoding to be used while serializing
+     */
+    public void getXmlText(Document doc, Writer out, String encoding);
+        
     /**
      * Calls a XML printer for converting a XML DOM document
      * to a String.
@@ -92,10 +95,8 @@ public interface I_CmsXmlParser {
      */
     public Document parse(Reader in) throws Exception;
 
-    //[added by Gridnine AB, 2002-06-13]
     public Document parse(InputStream in) throws Exception;
 
-    //[added by Gridnine AB, 2002-06-17]
     public String getOriginalEncoding(Document doc);
 
     /**
