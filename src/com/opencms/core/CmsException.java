@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/08/21 08:11:27 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/10/25 13:15:06 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -28,11 +28,15 @@ package com.opencms.core;
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+import java.io.*;
+import java.util.*;
+
+
 /**
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2000/08/21 08:11:27 $
+ * @version $Revision: 1.31 $ $Date: 2000/10/25 13:15:06 $
  */
 public class CmsException extends Exception {
 	
@@ -199,7 +203,7 @@ public class CmsException extends Exception {
 	public final static int C_CLASSLOADER_ERROR = 29;
 	
 	/**
-	 * Definition of error code for error "Password too short".
+	 * Definition of error code for error"Password too short".
 	 */
 	public final static int C_SHORT_PASSWORD = 30;
 	
@@ -225,117 +229,42 @@ public class CmsException extends Exception {
 	public final static int C_REGISTRY_ERROR = 34;
 	
 	public final static String C_EXTXT[] = {
-							"Unknown exception ",
-							"Access denied ",
-							"Not found ",
-							"Bad name ",
-							"Sql exception ",
-							"Folder not empty ",
-							"Admin access required ",
-							"Serialization/Deserialization failed ",
-							"Unknown User Group ",
-							"Group not empty ",
-							"Unknown User ",
-							"No removal from Default Group ",
+							"Unknown exception",
+							"Access denied",
+							"Not found",
+							"Bad name",
+							"Sql exception",
+							"Folder not empty",
+							"Admin access required",
+							"Serialization/Deserialization failed",
+							"Unknown User Group",
+							"Group not empty",
+							"Unknown User",
+							"No removal from Default Group",
 							"Resource already exists",
-							"Locked Resource ",
-							"Filesystem exception ",
-							"Internal use only ",
-							"File-property is mandatory ",
-							"Service unavailable ",
-							"Unknown XML datablock ",
-							"Corrupt internal structure ",
-							"Wrong XML content type ",
-							"XML parsing error ",
-							"Could not process OpenCms special XML tag ",
-							"Could not call user method ",
-							"Could not call process method ",
-							"XML tag missing ",
-							"Wrong XML template class ",
-							"No XML template class ",
-							"Error while launching template class ",
-							"OpenCms class loader error ",
-							"New password is too short ",
-							"Access denied to resource ",
-							"Resource deleted ",
+							"Locked Resource",
+							"Filesystem exception",
+							"Internal use only",
+							"File-property is mandatory",
+							"Service unavailable",
+							"Unknown XML datablock",
+							"Corrupt internal structure",
+							"Wrong XML content type",
+							"XML parsing error",
+							"Could not process OpenCms special XML tag",
+							"Could not call user method",
+							"Could not call process method",
+							"XML tag missing",
+							"Wrong XML template class",
+							"No XML template class",
+							"Error while launching template class",
+							"OpenCms class loader error",
+							"New password is too short",
+							"Access denied to resource",
+							"Resource deleted",
 							"Resourcebroker-init error",
 							"Registry error",
 };
-	
-	/** 
-	 * Constructs a simple CmsException
-	 */
-	public CmsException() {
-		super();
-	}
-	 /** 
-	 * Contructs a CmsException with reserved error code
-	 * <p>
-	 * 
-	 * @param i Exception code
-	 */
-	public CmsException(int i) {
-		super("CmsException ID: " + i);
-		m_Type = i;
-	}
-	 /** 
-	 * Creates a CmsException with reserved error code and a forwarded other exception
-	 * <p>
-	 * 
-	 * @param i Exception code
-	 * @param e Forawarded general exception
-	 */
-	public CmsException(int i, Exception e)	{
-		super("CmsException ID: " + i);
-		m_Type = i;
-		m_Exception = e;
-	}
-	 /** 
-	 * Constructs a CmsException with a specified description.
-	 * 
-	 * @param s Exception description 
-	 */
-	public CmsException(String s) {
-		super(s);
-		m_message=s;
-	}
-	 /** 
-	 * Constructs a  CmsException with reserved error code and additional information
-	 * <p>
-	 * 
-	 * @param s Exception description
-	 * @param i Exception code
-	 */
-	public CmsException(String s, int i) {
-		super(s);
-		m_Type = i;
-		m_message=s;
-	}
-	 /** 
-	 * Creates a CmsException with reserved error code, a forwarded other exception and a detail message
-	 * <p>
-	 * 
-	 * @param s Exception description 
-	 * @param i Exception code
-	 * @param e Forawarded general exception
-	 */
-	public CmsException(String s, int i, Exception e) {
-		super(s);
-		m_Type = i;
-		m_Exception = e;
-		m_message=s;
-	}
-	/** 
-	 * Construtcs a CmsException  with a detail message and a forwarded other exception
-	 * 
-	 * @param s Exception description 
-	 * @param e Forwaarded general exception
-	 */
-	public CmsException(String s, Exception e){
-		super(s);
-		m_Exception = e;
-		m_message=s;
-	}
 	/**
 	 * Get the exeption.
 	 * 
@@ -352,6 +281,35 @@ public class CmsException extends Exception {
 	public String getMessage()	{
 		return m_message;
 	}
+/**
+ * Return a string with the stacktrace. for this exception
+ * and for all encapsulated exceptions.
+ * Creation date: (10/23/00 %r)
+ * @return java.lang.String
+ */
+public String getStackTrace()
+{
+	java.io.StringWriter sw = new java.io.StringWriter();
+	java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+	//now put all the StackTraces into the returning string
+	super.printStackTrace(pw);
+
+	//if there are any encapsulated exceptions, write them also.
+	if (m_Exception != null)
+	{
+		StringWriter _sw = new StringWriter();
+		PrintWriter _pw = new PrintWriter(_sw);
+		m_Exception.printStackTrace(_pw);
+		_pw.close();
+		_sw.close();
+		StringTokenizer st = new StringTokenizer(_sw.toString(),"\n");
+		while (st.hasMoreElements())
+			pw.println(">" + st.nextElement());		
+	}
+	pw.close();
+	sw.close();
+	return sw.toString();
+}
 	/**
 	 * Get the type of the CmsException.
 	 * 
@@ -360,6 +318,100 @@ public class CmsException extends Exception {
 	public int getType() {
 		return m_Type;
 	}
+	 /** 
+	 * Creates a CmsException with reserved error code and a forwarded other exception
+	 * <p>
+	 * 
+	 * @param i Exception code
+	 * @param e Forawarded general exception
+	 */
+	public CmsException(int i, Exception e)	{
+		super("CmsException ID: " + i);
+		m_Type = i;
+		m_Exception = e;
+	}
+	 /** 
+	 * Contructs a CmsException with reserved error code
+	 * <p>
+	 * 
+	 * @param i Exception code
+	 */
+	public CmsException(int i) {
+		super("CmsException ID: " + i);
+		m_Type = i;
+	}
+	 /** 
+	 * Creates a CmsException with reserved error code, a forwarded other exception and a detail message
+	 * <p>
+	 * 
+	 * @param s Exception description 
+	 * @param i Exception code
+	 * @param e Forawarded general exception
+	 */
+	public CmsException(String s, int i, Exception e) {
+		super(s);
+		m_Type = i;
+		m_Exception = e;
+		m_message=s;
+	}
+	 /** 
+	 * Constructs a  CmsException with reserved error code and additional information
+	 * <p>
+	 * 
+	 * @param s Exception description
+	 * @param i Exception code
+	 */
+	public CmsException(String s, int i) {
+		super(s);
+		m_Type = i;
+		m_message=s;
+	}
+	/** 
+	 * Construtcs a CmsException  with a detail message and a forwarded other exception
+	 * 
+	 * @param s Exception description 
+	 * @param e Forwaarded general exception
+	 */
+	public CmsException(String s, Exception e){
+		super(s);
+		m_Exception = e;
+		m_message=s;
+	}
+	 /** 
+	 * Constructs a CmsException with a specified description.
+	 * 
+	 * @param s Exception description 
+	 */
+	public CmsException(String s) {
+		super(s);
+		m_message=s;
+	}
+		/**
+	 * Prints this <code>Throwable</code> and its backtrace to the 
+	 * specified print stream. 
+	 *
+	 * @since   JDK1.0
+	 */
+	public void printStackTrace(java.io.PrintStream s) { 
+		s.println(getStackTrace());
+	}
+	/**
+	 * Prints this <code>Throwable</code> and its backtrace to the specified
+	 * print writer.
+	 *
+	 * @since   JDK1.1
+	 */
+	public void printStackTrace(java.io.PrintWriter s) { 
+		s.println(getStackTrace());
+	}
+/**
+ * Insert the method's description here.
+ * Creation date: (10/23/00 %r)
+ */
+public void printStackTrace()
+{
+	printStackTrace(System.out);
+}
 	/**
 	 * Set an exception value.
 	 * 
@@ -368,21 +420,28 @@ public class CmsException extends Exception {
 	public void setException(Exception value){
 		m_Exception = value;
 	}
-	/**
-	 * Overwrites the standart toString method.
+/**
+ * Overwrites the standart toString method.
+ */
+public String toString()
+{
+	StringBuffer output = new StringBuffer();
+	output.append("[CmsException]: ");
+	output.append(m_Type + " ");
+	output.append(CmsException.C_EXTXT[m_Type] + ". ");
+	output.append("Detailed Error: ");
+	output.append(m_message + ". ");
+	if (m_Exception != null)
+	{
+		output.append("Caught Exception: >");
+		output.append(m_Exception + "<");
+	}
+	return output.toString();
+}
+	/** 
+	 * Constructs a simple CmsException
 	 */
-	public String toString(){
-		 StringBuffer output=new StringBuffer();
-		 output.append("[CmsException]: ");
-		 output.append(m_Type+" ");
-		 output.append(CmsException.C_EXTXT[m_Type]+"\n");
-		 output.append("Detailed Error: ");
-		 output.append(m_message+"\n");
-		 if (m_Exception != null){
-		 output.append("Caught Exception: ");
-		 output.append(m_Exception+"\n");
-		 }
-
-		 return output.toString();
+	public CmsException() {
+		super();
 	}
 }

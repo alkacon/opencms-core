@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbManager.java,v $
- * Date   : $Date: 2000/08/08 14:08:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/10/25 13:15:06 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import source.org.apache.java.util.*;
  * Initializes the configuret ResourceBroker and starts its init-method.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/08/08 14:08:23 $
+ * @version $Revision: 1.4 $ $Date: 2000/10/25 13:15:06 $
  */
 public class CmsRbManager implements I_CmsLogChannels, I_CmsConstants {
 
@@ -91,7 +91,7 @@ public class CmsRbManager implements I_CmsLogChannels, I_CmsConstants {
 			// return the configured resource-broker.
 			return(rbInstance);
 		} catch(Exception exc) {
-			String message = "Critical error while loading resourcebroker: " + Utils.getStackTrace(exc);
+			String message = "Critical error while loading resourcebroker. ";
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_INIT, "[CmsRbManager] " + message);
 			}
