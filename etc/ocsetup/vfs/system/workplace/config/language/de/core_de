@@ -256,7 +256,7 @@
                 <htmlnogallery>Es existiert noch keine HTML-Galerie.</htmlnogallery>
                 <htmlbrowser>Der Ordner für die Bildergalerien existiert noch nicht.</htmlbrowser>                               
                 <linknogallery>Es existiert noch keine Linkgalerie.</linknogallery>
-				<linkbrowser>Der Ordner für die Linkgalerien existiert noch nicht.</linkbrowser>
+                <linkbrowser>Der Ordner für die Linkgalerien existiert noch nicht.</linkbrowser>
                 <lock>Entweder haben Sie nicht die Zugriffsrechte diese Datei zu sperren, oder die Körperdatei wurde von einer anderen Steuerdatei gesperrt.</lock>
                 <lockchange>Die Datei ist noch von einem anderen Benutzer geöffnet.</lockchange>
                 <login>Die Anmeldedaten sind ungültig oder falsch eingegeben.</login>
@@ -370,7 +370,7 @@
                 <histproperties>Verwaltung Historieneigenschaften</histproperties>
                 <htmlbrowser>HTML-Galerie anlegen</htmlbrowser>                
                 <linkbrowser>Linkgalerie öffnen</linkbrowser>
-				<linkgallery>Linkgalerie anlegen</linkgallery>
+                <linkgallery>Linkgalerie anlegen</linkgallery>
                 <lock>Datei sperren</lock>
                 <lockchange>Datei Sperrung übernehmen</lockchange>
                 <login>Anmeldungsfehler</login>
@@ -848,7 +848,7 @@
                 <message1>Sind Sie sicher, dass sie das Projekt</message1>
                 <message2>nun veröffentlichen wollen?</message2>
                 <title>Projekt veröffentlichen</title>
-                <message_linkcheck>Das Projekt wird auf wird auf Links ohne Ziel überprüft.</message_linkcheck>
+                <message_linkcheck>Das Projekt wird auf Links ohne Ziel überprüft.</message_linkcheck>
                 <message_brokenlinks>Auf folgenden Seiten wurden Links ohne Ziel gefunden.</message_brokenlinks>
                 <message_brokenlinks2>Wollen Sie das Projekt trotzdem veröffentlichen?</message_brokenlinks2>
                 <message_publish>Das Projekt wird veröffentlicht.</message_publish>
