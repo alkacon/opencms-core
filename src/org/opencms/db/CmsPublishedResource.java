@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2003/09/26 15:11:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/29 19:11:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,9 @@ package org.opencms.db;
 
 import org.opencms.util.CmsUUID;
 
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsResourceTypeFolder;
+
 import java.io.Serializable;
 
 /**
@@ -45,29 +48,29 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/09/26 15:11:51 $
+ * @version $Revision: 1.2 $ $Date: 2003/09/29 19:11:34 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(int, int)
  */
 public class CmsPublishedResource extends Object implements Serializable, Cloneable {
 
-    /** The structure ID of the published resource.<p> */
-    private CmsUUID m_structureId;
+    /** The content ID of the published resource.<p> */
+    private CmsUUID m_contentId;
 
     /** The resource ID of the published resource.<p> */
     private CmsUUID m_resourceId;
 
-    /** The content ID of the published resource.<p> */
-    private CmsUUID m_contentId;
-
-    /** The root path of the published resource.<p> */
-    private String m_rootPath;
+    /** The state of the resource *before* it was published.<p> */
+    private int m_resourceState;
 
     /** The type of the published resource.<p> */
     private int m_resourceType;
 
-    /** The state of the resource *before* it was published.<p> */
-    private int m_resourceState;
+    /** The root path of the published resource.<p> */
+    private String m_rootPath;
+
+    /** The structure ID of the published resource.<p> */
+    private CmsUUID m_structureId;
 
     /**
      * Creates a new published resource object.<p>
@@ -89,39 +92,6 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     }
 
     /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-        m_structureId = null;
-        m_resourceId = null;
-        m_contentId = null;
-        m_rootPath = null;
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        String objInfo = "[" + this.getClass().getName() + ": ";
-
-        objInfo += "structure ID: " + m_structureId + ", ";
-        objInfo += "resource ID: " + m_resourceId + ", ";
-        objInfo += "content ID: " + m_contentId + ", ";
-        objInfo += "root path: " + m_rootPath + ", ";
-        objInfo += "state: " + m_resourceState + ", ";
-        objInfo += "type: " + m_resourceType + "]";
-
-        return objInfo;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        return m_structureId.hashCode();
-    }
-
-    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
@@ -137,30 +107,31 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     }
 
     /**
+     * @see java.lang.Object#finalize()
+     */
+    protected void finalize() throws Throwable {
+        m_structureId = null;
+        m_resourceId = null;
+        m_contentId = null;
+        m_rootPath = null;
+    }
+
+    /**
+     * Returns the content ID of the published resource.<p>
+     * 
+     * @return the content ID of the published resource
+     */
+    public CmsUUID getContentId() {
+        return m_contentId;
+    }
+
+    /**
      * Returns the resource ID of the published resource.<p>
      * 
      * @return the resource ID of the published resource
      */
     public CmsUUID getResourceId() {
         return m_resourceId;
-    }
-
-    /**
-     * Returns the resource state of the published resource.<p>
-     * 
-     * @return the resource state of the published resource
-     */
-    public int getResourceState() {
-        return m_resourceState;
-    }
-
-    /**
-     * Returns the resource type of the published resource.<p>
-     * 
-     * @return the resource type of the published resource
-     */
-    public int getResourceType() {
-        return m_resourceType;
     }
 
     /**
@@ -173,6 +144,15 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     }
 
     /**
+     * Returns the resource state of the published resource.<p>
+     * 
+     * @return the resource state of the published resource
+     */
+    public int getState() {
+        return m_resourceState;
+    }
+
+    /**
      * Returns the structure ID of the published resource.<p>
      * 
      * @return the structure ID of the published resource
@@ -182,12 +162,89 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     }
 
     /**
-     * Returns the content ID of the published resource.<p>
+     * Returns the resource type of the published resource.<p>
      * 
-     * @return the content ID of the published resource
+     * @return the resource type of the published resource
      */
-    public CmsUUID getContentId() {
-        return m_contentId;
+    public int getType() {
+        return m_resourceType;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return m_structureId.hashCode();
+    }
+    
+    /**
+     * Checks if the resource is changed.<p>
+     * 
+     * @return true if the resource is changed
+     */      
+    public boolean isChanged() {
+        return getState() == I_CmsConstants.C_STATE_CHANGED;
+    }
+    
+    /**
+     * Checks if the resource is deleted.<p>
+     * 
+     * @return true if the resource is deleted
+     */    
+    public boolean isDeleted() {
+        return getState() == I_CmsConstants.C_STATE_DELETED;
+    }
+
+    /**
+     * Determines if this resource is a file.<p>
+     *
+     * @return true if this resource is a file, false otherwise
+     */
+    public boolean isFile() {
+        return getType() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
+    }
+
+    /**
+     * Checks if this resource is a folder.<p>
+     * 
+     * @return true if this is is a folder
+     */
+    public boolean isFolder() {
+        return getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
+    }
+    
+    /**
+     * Checks if the resource is new.<p>
+     * 
+     * @return true if the resource is new
+     */
+    public boolean isNew() {
+        return getState() == I_CmsConstants.C_STATE_NEW;
+    }
+
+    /**
+     * Checks if the resource is unchanged.<p>
+     * 
+     * @return true if the resource is unchanged
+     */    
+    public boolean isUnChanged() {
+        return getState() == I_CmsConstants.C_STATE_UNCHANGED;
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        String objInfo = "[" + this.getClass().getName() + ": ";
+
+        objInfo += "structure ID: " + m_structureId + ", ";
+        objInfo += "resource ID: " + m_resourceId + ", ";
+        objInfo += "content ID: " + m_contentId + ", ";
+        objInfo += "root path: " + m_rootPath + ", ";
+        objInfo += "state: " + m_resourceState + ", ";
+        objInfo += "type: " + m_resourceType + "]";
+
+        return objInfo;
     }
 
 }
