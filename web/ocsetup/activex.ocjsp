@@ -1,0 +1,131 @@
+<!-- ------------------------------------------------- JSP DECLARATIONS ------------------------------------------------ -->
+<% /* Initialize the Bean */ %>
+<jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
+<jsp:useBean id="Thread" class="com.opencms.boot.CmsSetupThread" scope="session"/>
+
+<%	
+	/* true if properties are initialized */
+	boolean setupOk = (Bean.getProperties()!=null);
+	
+	/* next page to be accessed */
+	String nextPage = "finished.ocjsp";
+	
+	/* stop possible running threads */
+	Thread.stopLoggingThread();		
+	Thread.stop();	
+	
+%>
+
+<!-- ------------------------------------------------------------------------------------------------------------------- -->
+
+<html>
+<head> 
+	<title>OpenCms Setup Wizard</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<link rel="Stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td align="center" valign="middle">
+<table border="1" cellpadding="0" cellspacing="0">
+<tr>
+	<td><form action="<%= nextPage %>" method="POST">
+		<table class="background" width="700" height="500" border="0" cellpadding="5" cellspacing="0">
+			<tr>
+				<td class="title" height="25">OpenCms Setup Wizard</td>
+			</tr>
+
+			<tr>
+				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
+			</tr>
+			<% if(setupOk)	{ %>
+			<tr>
+				<td align="center" valign="top" height="375">	
+				<textarea style="width:600px;height:300px" cols="40" rows="20" wrap>
+------------------------------Attention--------------------------------
+OpenCms uses ActiveX components for user editors.
+The controls (there are 2, one for the WYSIWYG editor and one for the source code editor) are freely available, i.e. are shareware. 
+This, however, currently restricts the WYSIWYG editor to Microsoft’s Internet Explorer (Version 4 or higher).
+A thin version of Netscape Navigator is only available as source code editor. 
+It would be possible to replace the ActiveX controls with Java applets. 
+However, the OpenCms Team is currently not aware of an open source applet that could be plugged in. 
+Should anyone know of an open source applet or have even written one that can be used as a WYSIWYG or source text editor, we would, of course, be more than happy to hear about it.
+-----------------------------------------------------------------------
+
+
+--------------------Installing ActiveX controls------------------------
+The following ActiveX controls are used:
+- Microsoft Dynamic HTML Editing Component
+- AY Software LeEdit OCX Con-trol
+
+Please read the respective help files when you install the ActiveX controls.
+
+- 	You can get LeEdit at
+	http://www.aysoft.com/ledit/share.htm
+
+- 	and the other one at
+	http://msdn.microsoft.com/workshop/author/dhtml/edit/default.asp
+	(already included in IE 5 or higher).
+-----------------------------------------------------------------------
+
+
+--------------Configuring Microsoft Internet Explorer------------------
+On the menu bar, click on the menu item ”View” and select ”Internet options” (Tools -Internet Options for IE5). Then do the following:
+
+On the tab ”Security”, select ”Trusted site zones” from the drop-down menu and click on ”Add Sites” to add the URL (e.g. http://opencms.mycompany.com - ask your system administrator for the exact URL) of the zone’s OpenCms server. Deactivate the radio button ”Require server verification (https:) for all sites in this zone.” 
+-	On the tab ”Security”, select ”Trusted site zones” from the drop-down menu and click on ”Settings”. All ActiveX control elements must be set to ”Enable.” A note on security: It is safe to use ActiveX controls with these settings because the controls are executed by the OpenCms server only, and remain disabled for all other web sites.
+-	On the tab ”General” go to the section ”Temporary Internet Files” and click on ”Settings.” Select the option ”Every visit to the page” (Check for a newer version of stored pages).
+
+Cookies must be enabled.
+
+
+-----------------------Configuring Netscape Navigator------------------
+On the menu bar, click on the menu item ”Edit” and select ”Settings.” Then do the following:
+
+-	On the tab ”Settings” go to the section ”Extended” and enable the options ”Java” and ”Java Script.”
+-	On the tab ”Settings” go to the section ”Extended/Cache” and enable ”Compare cache and network document: always.”
+
+Cookies must be enabled.
+-----------------------------------------------------------------------
+</textarea>
+<p><input type="checkbox" name="understood" value="true"><b> I have understood how to enable the ActiveX Editors</b></p>
+
+</td>
+			</tr>
+
+			<tr>
+				<td height="50" align="center">
+					<table border="0">
+						<tr>
+							<td width="200" align="right">
+								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.back();">
+							</td>
+							<td width="200" align="left">
+								<input type="submit" name="submit" class="button" style="width:150px;" width="150" value="Finish">
+							</td>
+							<td width="200" align="center">
+								<input type="button" class="button" style="width:150px;" width="150" value="Cancel" onclick="location.href='cancel.ocjsp'">
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<% } else	{ %>			
+				<tr>
+					<td align="center" valign="top" height="425">
+						<p><b>ERROR</b></p>
+						The setup wizard has not been started correctly!<br>
+						Please click <a href="">here</a> to restart the Wizard
+					</td>
+				</tr>		
+			<% } %>
+		</form>
+		</table>
+	</td>
+</tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>
