@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/20 14:59:22 $
- * Version: $Revision: 1.198 $
+ * Date   : $Date: 2000/11/21 16:16:46 $
+ * Version: $Revision: 1.199 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.198 $ $Date: 2000/11/20 14:59:22 $
+ * @version $Revision: 1.199 $ $Date: 2000/11/21 16:16:46 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -981,71 +981,66 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 				CmsException.C_NO_ACCESS);
 		}
 	}
-	/**
-	 * Changes the owner for this resource.<br>
-	 * 
-	 * Only the owner of a resource in an offline project can be changed. The state
-	 * of the resource is set to CHANGED (1).
-	 * If the content of this resource is not exisiting in the offline project already,
-	 * it is read from the online project and written into the offline project.
-	 * The user may change this, if he is admin of the resource. <br>
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user is owner of the resource or the user is admin</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param filename The complete path to the resource.
-	 * @param newOwner The name of the new owner for this resource.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	public void chown(CmsUser currentUser, CmsProject currentProject,
-					  String filename, String newOwner)
-		throws CmsException {
-   		
-		CmsResource resource=null;
-		// read the resource to check the access
-	    if (filename.endsWith("/")) {          
-			resource = readFolder(currentUser,currentProject,filename);
-			 } else {
-			resource = (CmsFile)readFileHeader(currentUser,currentProject,filename);
-		}
-		
-		// has the user write-access? and is he owner or admin?
-		if( ( (resource.getOwnerId() == currentUser.getId()) || 
-			  isAdmin(currentUser, currentProject))) {
-	        CmsUser owner = readUser(currentUser, currentProject, newOwner);		  
-			resource.setUserId(owner.getId());
-			// write-acces  was granted - write the file.
-			 if (filename.endsWith("/")) { 
-				if (resource.getState()==C_STATE_UNCHANGED) {
-					 resource.setState(C_STATE_CHANGED);
-				}
-				m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true);
-				// update the cache
-				m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,(CmsFolder)resource);  
-			} else {           
-				m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,true);
-				if (resource.getState()==C_STATE_UNCHANGED) {
-					 resource.setState(C_STATE_CHANGED);
-				}
-				// update the cache
-				m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);                   
-			}
-			m_subresCache.clear();
-			// inform about the file-system-change
-			fileSystemChanged();
-		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
-				CmsException.C_NO_ACCESS);
-		}
+/**
+ * Changes the owner for this resource.<br>
+ * 
+ * Only the owner of a resource in an offline project can be changed. The state
+ * of the resource is set to CHANGED (1).
+ * If the content of this resource is not exisiting in the offline project already,
+ * it is read from the online project and written into the offline project.
+ * The user may change this, if he is admin of the resource. <br>
+ * 
+ * <B>Security:</B>
+ * Access is cranted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user is owner of the resource or the user is admin</li>
+ * <li>the resource is locked by the callingUser</li>
+ * </ul>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param filename The complete path to the resource.
+ * @param newOwner The name of the new owner for this resource.
+ * 
+ * @exception CmsException  Throws CmsException if operation was not succesful.
+ */
+public void chown(CmsUser currentUser, CmsProject currentProject, String filename, String newOwner) throws CmsException {
+	CmsResource resource = null;
+	// read the resource to check the access
+	if (filename.endsWith("/")) {
+		resource = readFolder(currentUser, currentProject, filename);
+	} else {
+		resource = (CmsFile) readFileHeader(currentUser, currentProject, filename);
 	}
+
+	// has the user write-access? and is he owner or admin?
+	if (((resource.getOwnerId() == currentUser.getId()) || isAdmin(currentUser, currentProject)) && (resource.isLockedBy() == currentUser.getId())) {
+		CmsUser owner = readUser(currentUser, currentProject, newOwner);
+		resource.setUserId(owner.getId());
+		// write-acces  was granted - write the file.
+		if (filename.endsWith("/")) {
+			if (resource.getState() == C_STATE_UNCHANGED) {
+				resource.setState(C_STATE_CHANGED);
+			}
+			m_dbAccess.writeFolder(currentProject, (CmsFolder) resource, true);
+			// update the cache
+			m_resourceCache.put(C_FOLDER + currentProject.getId() + filename, (CmsFolder) resource);
+		} else {
+			m_dbAccess.writeFileHeader(currentProject, (CmsFile) resource, true);
+			if (resource.getState() == C_STATE_UNCHANGED) {
+				resource.setState(C_STATE_CHANGED);
+			}
+			// update the cache
+			m_resourceCache.put(C_FILE + currentProject.getId() + filename, resource);
+		}
+		m_subresCache.clear();
+		// inform about the file-system-change
+		fileSystemChanged();
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NO_ACCESS);
+	}
+}
 	 /**
 	 * Changes the state for this resource<BR/>
 	 * 
@@ -2241,7 +2236,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	 * @param exportFile the name (absolute Path) of the export resource (zip)
 	 * @param exportPath the name (absolute Path) of folder from which should be exported
 	 * @param excludeSystem, decides whether to exclude the system
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+	 * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
 	 * @param cms the cms-object to use for the export.
 	 * 
 	 * @exception Throws CmsException if something goes wrong.
