@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsMessages.java,v $
- * Date   : $Date: 2003/02/26 15:19:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/03/28 19:51:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package com.opencms.flex.util;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -45,7 +47,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.0 beta 2
  */
@@ -53,6 +55,8 @@ public final class CmsMessages extends Object {
        
     // member variables
     private ResourceBundle m_bundle; 
+    private Locale m_locale;
+    
        
     /**
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
@@ -62,7 +66,8 @@ public final class CmsMessages extends Object {
      */
     public CmsMessages( String baseName, Locale locale ) {
         try {
-            m_bundle = ResourceBundle.getBundle( baseName, locale );        
+            m_locale = locale;
+            m_bundle = ResourceBundle.getBundle( baseName, m_locale );        
         } catch (MissingResourceException e) {
             m_bundle = null;
         }
@@ -161,4 +166,71 @@ public final class CmsMessages extends Object {
         if (m_bundle != null) return m_bundle.getString( keyName );
         else throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
     }       
+
+    /**
+     * Returns a formatted date.<p>
+     * 
+     * @param timestamp the date timestamp to format
+     * @return a formatted date
+     */
+    public String getDate( long timestamp ) {
+        return getDate(new Date(timestamp));
+    }
+    
+    /**
+     * Returns a formatted date.<p>
+     * 
+     * @param date the date to format 
+     * @return a formatted date
+     */    
+    public String getDate(Date date) {
+        return getDate(date, DateFormat.SHORT);
+    }
+    
+    /**
+     * Returns a formatted date.<p>
+     * 
+     * @param date the date to format 
+     * @param style the style to format the date with 
+     * @return a formatted date
+     * @see java.text.DateFormat
+     */      
+    public String getDate(Date date, int style) {
+        DateFormat df = DateFormat.getDateInstance(style, m_locale);
+        return df.format(date);
+    }
+    
+    /**
+     * Returns a formatted date with a time.<p>
+     * 
+     * @param timestamp the date timestamp to format
+     * @return a formatted date with a time
+     */    
+    public String getDateTime( long timestamp ) {
+        return getDateTime(new Date(timestamp));
+    }
+    
+    /**
+     * Returns a formatted date with a time.<p>
+     * 
+     * @param date the date to format 
+     * @return a formatted date with a time
+     */     
+    public String getDateTime(Date date) {
+        return getDateTime(date, DateFormat.SHORT);
+    }
+    
+    /**
+     * Returns a formatted date with a time.<p>
+     * 
+     * @param date the date to format 
+     * @param style the style to format the date with 
+     * @return a formatted date with a time
+     * @see java.text.DateFormat 
+     */     
+    public String getDateTime(Date date, int style) {
+        DateFormat df = DateFormat.getDateInstance(style, m_locale);
+        DateFormat tf = DateFormat.getTimeInstance(style, m_locale);
+        return df.format(date) + " " + tf.format(date);
+    }    
 }
