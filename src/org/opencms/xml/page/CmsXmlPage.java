@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/11/08 15:06:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/11/22 15:35:06 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,14 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -74,7 +77,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -187,7 +190,15 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * @param locale the locale of the value
      */
     public void addValue(String name, Locale locale) {
-
+        
+        if (name.indexOf('[') >= 0) {
+            throw new IllegalArgumentException("XML page element names must not contain indexes, invalid name '" + name + "''");            
+        }
+        
+        if (hasValue(name, locale)) {
+            throw new IllegalArgumentException("XML page already contains an element '" + name + "' for language '" + locale + "'");
+        }
+        
         Element pages = m_document.getRootElement();
         String localeStr = locale.toString();
         Element page = null;
@@ -288,6 +299,24 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
 
     /**
+     * @see org.opencms.xml.A_CmsXmlDocument#getNames(java.util.Locale)
+     */
+    public List getNames(Locale locale) {
+
+        Object o = m_elementNames.get(locale);
+        if (o != null) {
+            List result = new ArrayList(8);
+            Iterator i = ((Set)o).iterator();
+            while (i.hasNext()) {
+                String name = (String)i.next();
+                result.add(removeXpath(name));
+            }
+            return result;
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    /**
      * Checks if the element of a page object is enabled.<p>
      * 
      * @param name the name of the element
@@ -316,10 +345,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      */
     public void removeValue(String name, Locale locale) {
 
-        List list = removeBookmark(name, locale);
-        Iterator i = list.iterator();
-        while (i.hasNext()) {
-            I_CmsXmlContentValue value = (I_CmsXmlContentValue)i.next();
+        I_CmsXmlContentValue value =  removeBookmark(createXpath(name, 0), locale);
+        if (value != null) {
             Element element = value.getElement();
             element.detach();
         }
@@ -421,7 +448,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
             OpenCms.getLog(this).error("Error while initalizing XML page bookmarks", e);
         }
     }
-
+    
     /**
      * Sets the parameter that controls the relative link generation.<p>
      * 
@@ -491,5 +518,29 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
         // now replace the old with the new document
         m_document = newDocument;
+    }
+
+    /**
+     * Translates a simplified Xpath format to the simple lookup path.<p>
+     * 
+     * Examples:<br> 
+     * <code>title[0]</code> becomes <code>title</code><br>
+     * <code>title</code> is left untouched<br>
+     * <code>title[0]/subtitle[0]</code> becomes <code>title[0]/subtitle</code><br>
+     * <code>title/subtitle[1]</code> becomes <code>title/subtitle</code><p>
+     * 
+     * @param path the path to get the simplified Xpath for
+     * 
+     * @return the simple lookup path for the given name
+     */
+    private String removeXpath(String path) {
+
+        if (path.charAt(path.length() - 1) == ']') {
+            return path.substring(0, path.length() - 3);
+        } else {
+            return path;   
+        }
+            
+    
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/11/19 15:07:36 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/11/22 15:35:06 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -141,7 +141,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         // this path has only 1 node, append [index] if required
         return createXpathElementCheck(path, index);
     }
-
+    
     /**
      * Appends the provided index parameter in square brackets to the given name,
      * like <code>path[index]</code>.<p>
@@ -604,7 +604,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * @param locale the locale of the element
      * @return the element removed from the bookmarks or null
      */
-    protected List removeBookmark(String name, Locale locale) {
+    protected I_CmsXmlContentValue removeBookmark(String name, Locale locale) {
 
         // remove mapping of element name to locale
         Object o;
@@ -618,7 +618,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             ((Set)o).remove(name);
         }
         // remove the bookmark and return the removed element
-        return (List)m_bookmarks.remove(getBookmarkName(name, locale));
+        return (I_CmsXmlContentValue)m_bookmarks.remove(getBookmarkName(name, locale));
     }
 
     /**

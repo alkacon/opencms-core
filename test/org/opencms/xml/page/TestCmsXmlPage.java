@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2004/11/08 15:06:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/22 15:35:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.0
  */
@@ -71,6 +71,80 @@ public class TestCmsXmlPage extends TestCase {
      */    
     public TestCmsXmlPage(String arg0) {
         super(arg0);
+    }
+    
+    /**
+     * Tests accessing element names in the XML page.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testXmlPageElementNames() throws Exception {
+        
+        // create a XML entity resolver
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+        
+        System.out.println("Testing element name access in the XML page\n");
+        
+        // load stored XML page
+        String pageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
+        
+        // create a new XML page with this content
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);        
+           
+        assertTrue(page.hasValue("body", Locale.ENGLISH));
+        assertTrue(page.hasValue("body2", Locale.ENGLISH));
+        assertTrue(page.hasValue("body", Locale.GERMAN));
+
+        List names; 
+        
+        names = page.getNames(Locale.ENGLISH);
+        assertEquals(2, names.size());
+        assertTrue(names.contains("body"));
+        assertTrue(names.contains("body2"));        
+        
+        names = page.getNames(Locale.GERMAN);
+        assertEquals(1, names.size());
+        assertTrue(names.contains("body"));
+        
+        page.addLocale(Locale.FRENCH);
+        page.addValue("newbody", Locale.FRENCH);
+        page.addValue("newbody2", Locale.FRENCH);
+        page.addValue("anotherbody", Locale.FRENCH);
+        
+        names = page.getNames(Locale.FRENCH);
+        assertEquals(3, names.size());
+        assertTrue(names.contains("newbody"));
+        assertTrue(names.contains("newbody2"));                
+        assertTrue(names.contains("anotherbody"));
+        
+        page.removeValue("body2", Locale.ENGLISH); 
+        names = page.getNames(Locale.ENGLISH);
+        assertEquals(1, names.size());
+        assertTrue(names.contains("body"));
+        
+        page.removeLocale(Locale.GERMAN);
+        names = page.getNames(Locale.GERMAN);
+        assertEquals(0, names.size());
+        
+        boolean success = false;
+        try {
+            page.addValue("body[0]", Locale.ENGLISH);
+        } catch (IllegalArgumentException e) {
+            success = true;
+        }
+        if (! success) {
+            throw new Exception("Multiple element name creation possible"); 
+        }
+        
+        success = false;
+        try {
+            page.addValue("body[1]", Locale.ENGLISH);
+        } catch (IllegalArgumentException e) {
+            success = true;
+        }
+        if (! success) {
+            throw new Exception("Page element name creation with index [1] possible"); 
+        }        
     }
     
     /**
