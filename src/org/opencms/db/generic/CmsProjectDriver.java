@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/27 09:02:02 $
- * Version: $Revision: 1.186 $
+ * Date   : $Date: 2004/08/27 12:11:56 $
+ * Version: $Revision: 1.187 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.186 $ $Date: 2004/08/27 09:02:02 $
+ * @version $Revision: 1.187 $ $Date: 2004/08/27 12:11:56 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1745,7 +1745,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         ResultSet res = null;
         CmsUUID structureId = null;
         CmsUUID resourceId = null;
-        // CmsUUID contentId = null;
         String rootPath = null;
         int resourceType = I_CmsConstants.C_UNKNOWN_ID;
         int resourceState = I_CmsConstants.C_UNKNOWN_ID;
