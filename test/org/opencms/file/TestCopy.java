@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2004/06/29 14:38:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/02 12:31:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCopy extends OpenCmsTestCase {
   
@@ -73,6 +73,7 @@ public class TestCopy extends OpenCmsTestCase {
         
         suite.addTest(new TestCopy("testCopySingleResourceAsNew"));
         suite.addTest(new TestCopy("testCopyFolderAsNew"));
+        suite.addTest(new TestCopy("testCopyOverwriteDeletedFile"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -122,6 +123,52 @@ public class TestCopy extends OpenCmsTestCase {
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_COPY_AS_NEW);       
     }  
     
+    /**
+     * Tests the to copy a single resource to a destination that already exists but is
+     * marked as deleted.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCopyOverwriteDeletedFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing overwriting a deleted file");
+        
+        String source = "/folder1/page1.html";
+        String destination1 = "/folder1/page2.html";
+        
+        long timestamp = System.currentTimeMillis();
+      
+        cms.lockResource(destination1);
+        cms.deleteResource(destination1, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+       
+        
+        // we have to do this otherwiese the test will fail
+        // there is a caching problem within the readPathInProject method in the driver manager        
+        int warning = 0;       
+        cms.readResource(destination1, CmsResourceFilter.ALL);
+        
+        storeResources(cms, source);        
+        cms.copyResource(source, destination1);
+
+        
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        
+        // project must be current project
+        assertProject(cms, destination1, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, destination1, I_CmsConstants.C_STATE_CHANGED);
+        // date created must be new
+        assertDateCreatedAfter(cms, destination1, timestamp);
+        // user created must be current user
+        assertUserCreated(cms, source, cms.getRequestContext().currentUser());
+        // assert lock state
+        assertLock(cms, destination1, CmsLock.C_TYPE_EXCLUSIVE);
+        // now assert the filter for the rest of the attributes        
+        setMapping(destination1, source);        
+        assertFilter(cms, destination1, OpenCmsTestResourceFilter.FILTER_COPY_AS_NEW);       
+    }  
+        
     /**
      * Tests the "copy a folder as new" operation.<p>
      * 
