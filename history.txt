@@ -8,6 +8,21 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.38 Arakis - 17 November 2000
+
+! Added methods getFolderTree() and getSubResources(). 
+  They are needed for the new explorer.
+* Corrected a bug in  the editor. Now you can select a headline.
+* Added security-check to publish project functionality.
+* Corrected an error in security check for delete project.
+* Corrected an error in security-check for unlockProject().
+* Corrected an error in the plsql-part for publishing projects.
+* Changed the databasesetup: Groupnames have to be unique now.
+- Changed the fillDefaults-Method: The group "Projektmanager" 
+  is now subgroup of the group "Users".
+- Resolved a problem with browser caches. The browser is not allowed any more
+  to cache ressources in offline-projects.
+
 OpenCms 4.1.37 Arakis - 03 November 2000
 
 ! added module-cycle
