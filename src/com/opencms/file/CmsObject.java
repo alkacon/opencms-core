@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.24 $ $Date: 2000/01/14 10:59:14 $ 
+ * @version $Revision: 1.25 $ $Date: 2000/01/14 12:52:41 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -441,7 +441,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void moveFile(String source, String destination)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.moveFile(m_context.currentUser(), m_context.currentProject(), 
+					  source, destination );
 	}
 
     /**
@@ -1246,7 +1247,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void writeScheduleTask(A_CmsScheduleTask scheduleTask)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		return ; // TODO: implement this ScheduleTask operation! 
 	}
 
 	/**
@@ -1260,7 +1261,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void deleteScheduleTask(A_CmsScheduleTask scheduleTask)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		return ; // TODO: implement this ScheduleTask operation!
 	}
 	
 	/**
@@ -1272,7 +1273,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public Vector readAllScheduleTasks()
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return null;  // TODO: implement this ScheduleTask operation!
 	}
 	
     /**

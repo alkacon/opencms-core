@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2000/01/14 10:59:14 $
+ * @version $Revision: 1.22 $ $Date: 2000/01/14 12:52:41 $
  */
 interface I_CmsResourceBroker {
 
@@ -1204,6 +1204,25 @@ interface I_CmsResourceBroker {
 	 */	
 	public void copyFile(A_CmsUser currentUser, A_CmsProject currentProject,
                          String source, String destination)
+		throws CmsException;
+	
+	/**
+	 * Moves the file.
+	 * 
+	 * This operation includes a copy and a delete operation. These operations
+	 * are done with their security-checks.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param source The complete path of the sourcefile.
+	 * @param destination The complete path of the destinationfile.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be moved. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */	
+	public void moveFile(A_CmsUser currentUser, A_CmsProject currentProject,
+						 String source, String destination)
 		throws CmsException;
 	
     /**

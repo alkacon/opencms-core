@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.24 $ $Date: 2000/01/14 11:44:08 $
+ * @version $Revision: 1.25 $ $Date: 2000/01/14 12:52:41 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -2113,6 +2113,33 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		} else {
 			throw new CmsException(destination, CmsException.C_NO_ACCESS);
 		}
+	}
+	
+	/**
+	 * Moves the file.
+	 * 
+	 * This operation includes a copy and a delete operation. These operations
+	 * are done with their security-checks.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param source The complete path of the sourcefile.
+	 * @param destination The complete path of the destinationfile.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be moved. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */	
+	public void moveFile(A_CmsUser currentUser, A_CmsProject currentProject,
+						 String source, String destination)
+		throws CmsException { 
+		
+		// first copy the file, this may ends with an exception
+		copyFile(currentUser, currentProject, source, destination);
+		
+		// then delete the source-file, this may end with an exception
+		// => the file was only copied, not moved!
+		deleteFile(currentUser, currentProject, source);
 	}
 	
     /**
