@@ -375,9 +375,8 @@ PACKAGE BODY opencmsAccess IS
     IF opencmsGroup.userInGroup(pUserId, vAdminId) = 1 THEN
       RETURN 1;
     END IF;
-    select user_id into vOwnerId from cms_resources where resource_id = pResourceId;
+    select user_id, access_flags into vOwnerId, vAccessFlag from cms_resources where resource_id = pResourceId;
     IF vOwnerId = pUserId THEN
-      select access_flags into vAccessFlag from cms_resources where resource_id = pResourceID;
       IF bitand(vAccessFlag, pAccess) = pAccess THEN
         RETURN 1;
       END IF;
