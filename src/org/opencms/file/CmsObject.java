@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/05 10:10:35 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/06/06 08:50:03 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 public class CmsObject {
 
@@ -280,11 +280,11 @@ public class CmsObject {
         CmsAccessControlEntry acEntry = null;
         I_CmsPrincipal principal = null;
 
-        if ("group".equals(principalType.toLowerCase())) {
+        if (I_CmsPrincipal.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
             principal = readGroup(principalName);
             acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
             acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_GROUP);
-        } else if ("user".equals(principalType.toLowerCase())) {
+        } else if (I_CmsPrincipal.C_PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
             principal = readUser(principalName);
             acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
             acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
@@ -1784,14 +1784,14 @@ public class CmsObject {
     }
 
     /**
-     * Returns a Vector with the sub resources for a folder.<br>
+     * Returns a list with the sub resources for a folder.<br>
      *
      * @param folder the name of the folder to get the subresources from.
      * @param filter the resource filter
      * @return subfolders a Vector with resources
      * @throws CmsException  if operation was not succesful
      */
-    public Vector getResourcesInFolder(String folder, CmsResourceFilter filter) throws CmsException {
+    public List getResourcesInFolder(String folder, CmsResourceFilter filter) throws CmsException {
         return m_driverManager.getResourcesInFolder(m_context, addSiteRoot(folder), filter);
     }
 
@@ -2053,22 +2053,22 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-        return 0 == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, CmsResourceFilter.ALL, false).intValue();
+        return 0 == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, CmsResourceFilter.ALL).intValue();
     }
-
+    
     /**
-     * Checks if the current user has required permissions to access a given resource
+     * Checks if the current user has required permissions to access a given resource.
      * 
-     * @param resourceName the name of the resource that will be accessed
+     * @param resource the resource that will be accessed
      * @param requiredPermissions the set of required permissions
+     * @param filter the resource filter to use
      * @return true if the required permissions are satisfied
      * @throws CmsException if something goes wrong
      */
-    public boolean hasPermissions(String resourceName, CmsPermissionSet requiredPermissions) throws CmsException {
-        CmsResource resource = readFileHeader(resourceName);
-        return 0 == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, CmsResourceFilter.ALL, false).intValue();
+    public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions, CmsResourceFilter filter) throws CmsException {
+        return 0 == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, filter).intValue();
     }
-
+    
     /**
      * Imports a import-resource (folder or zipfile) to the cms.
      *
