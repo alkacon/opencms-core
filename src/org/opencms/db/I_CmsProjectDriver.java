@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/17 12:05:48 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/09/22 08:28:43 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.CmsException;
+import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
@@ -46,6 +47,7 @@ import com.opencms.file.CmsUser;
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -53,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.24 $ $Date: 2003/09/17 12:05:48 $
+ * @version $Revision: 1.25 $ $Date: 2003/09/22 08:28:43 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -213,16 +215,38 @@ public interface I_CmsProjectDriver {
      * @param report the report to log the output to
      * @param m the number of the file to publish
      * @param n the number of all files to publish
-     * @param onlineProject the online projecz
+     * @param onlineProject the online project
      * @param offlineResource the offline file to publish
+     * @param publishedContentIds contains the UUIDs of already published content records
      * @param backupEnabled flag if backup is enabled
      * @param publishDate the publishing date
      * @param publishHistoryId the publish history id
      * @param backupTagId the backup tag id
      * @param maxVersions the maxmum number of backup versions for each resource
+     * @return the published file (online), or null if the file was deleted
      * @throws Exception if something goes wrong
      */
-    void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineResource, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+    void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineResource, Set publishedContentIds, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+    
+    /**
+     * Publishes the content record of a file.<p>
+     * 
+     * The content record is only published unless it's UUID is not contained in publishedContentIds.
+     * The calling method has to take care about whether an existing content record has to be deleted 
+     * before or not.<p>  
+     * 
+     * The intention of this method is to get overloaded in a project driver
+     * for a specific DB server to shift the binary content from the offline into the online table
+     * in a more sophisticated way than in the generic ANSI-SQL implementation of this interface.
+     * 
+     * @param context the current request context
+     * @param onlineProject the online project
+     * @param offlineFileHeader the offline header of the file of which the content gets published
+     * @param publishedContentIds a Set with the UUIDs of the already published content records
+     * @return the published file (online)
+     * @throws Exception if something goes wrong
+     */
+    CmsFile publishFileContent(CmsRequestContext context, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception;
 
     /**
      * Publishes a new or changed folder.<p>

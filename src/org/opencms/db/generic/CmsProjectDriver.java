@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2003/09/22 08:28:42 $
+ * Version: $Revision: 1.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,8 @@ import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsEvent;
-import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
@@ -70,22 +70,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 import source.org.apache.java.util.Configurations;
 
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.107 $ $Date: 2003/09/19 14:42:52 $
+ * @version $Revision: 1.108 $ $Date: 2003/09/22 08:28:42 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -153,15 +145,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * Private helper method for publihing into the filesystem.
-     * test if resource must be written to the filesystem.<p>
+     * Private helper method for publishing into the filesystem.<p>
+     * Tests if resource must be written to the filesystem.<p>
      *
      * @param filename Name of a resource in the OpenCms system
      * @param exportpoints the exportpoints
      * @return key in exportpoints or null
      */
-    protected String internalCheckExport(String filename, Hashtable exportpoints) {
-
+    protected String internalCheckExportPoint(String filename, Hashtable exportpoints) {
         String key = null;
         String exportpoint = null;
         Enumeration e = exportpoints.keys();
@@ -671,6 +662,71 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             m_sqlManager.closeAll(conn, stmt, res);
         }
         return resourceId;
+    }  
+    
+    /**
+     * Exports a specified resource into the local filesystem as an "export point".<p>
+     * 
+     * @param context the current request context
+     * @param discAccess the export point driver
+     * @param exportKey the export key of the export point
+     * @param offlineResource the offline resource that gets exported to the local file system
+     * @throws Exception if something goes wrong
+     */
+    protected void internalWriteExportPoint(CmsRequestContext context, CmsExportPointDriver discAccess, String exportKey, CmsResource offlineResource) throws Exception {
+        CmsFile offlineFile = null;
+        byte[] contents = null;
+        String encoding = null;
+        
+        try {
+            if (offlineFile == null) {
+                // read the file content offline
+                offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), false, offlineResource.getStructureId());
+                offlineFile.setFullResourceName(offlineResource.getRootPath());                                
+            }
+                            
+            // make sure files are written in the right encoding 
+            contents = offlineFile.getContents();
+            encoding = m_driverManager.getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, context.currentProject().getId(), offlineFile, offlineFile.getType());
+
+            if (encoding != null) {
+                // only files that have the encodig property set will be encoded,
+                // other files will be ignored. images etc. are not touched.                        
+                try {
+                    contents = (new String(contents, encoding)).getBytes();
+                } catch (UnsupportedEncodingException uex) {
+                    // noop
+                }
+            }
+
+            discAccess.writeFile(offlineResource.getRootPath(), exportKey, contents);
+        } catch (Exception e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error writing export point of " + offlineResource.toString(), e);
+            }
+            
+            throw e;
+        }        
+    }
+    
+    /**
+     * Deleted a specified resource in the local filesystem as an "export point".<p>
+     * 
+     * @param discAccess the export point driver
+     * @param exportKey the export key of the export point
+     * @param offlineResource the offline resource that gets deleted in the local file system
+     * @throws Exception if something goes wrong
+     */
+    protected void internalDeleteExportPoint(CmsExportPointDriver discAccess, String exportKey, CmsResource offlineResource) throws Exception {
+        try {
+            discAccess.removeResource(offlineResource.getRootPath(), exportKey);
+        } catch (Exception e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error deleting export point of " + offlineResource.toString(), e);
+            }
+            
+            throw e;
+        }        
     }
 
     /**
@@ -690,6 +746,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFolder, currentFolder.getType());
                     m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFolder, offlineProperties, backupTagId, publishDate, maxVersions);
                 }
+                
                 writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, currentFolder.getRootPath(), currentFolder);
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -764,17 +821,18 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#publishFile(com.opencms.file.CmsRequestContext, org.opencms.report.I_CmsReport, int, int, com.opencms.file.CmsProject, com.opencms.file.CmsResource, boolean, long, int, int, int)
      */
-    public void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineFileHeader, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception {
-        CmsFile onlineFile = null;
+    public void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception {    
         CmsFile offlineFile = null;
         CmsFile newFile = null;
+        CmsResource onlineFileHeader = null;
         Map offlineProperties = null;
 
-        // TODO the file(-content) should be read only once while it is published
+        // TODO the file-content is still also read in publishProject() to write possible export-points
 
         /*
+         * Things to know:
          * Never use offlineFile.getState() here!
-         * Only use offlineFileHeader.getState() to determine the state of a resource!
+         * Only use offlineFileHeader.getState() to determine the state of an offline resource!
          * 
          * In case a resource has siblings, after a sibling was published the structure
          * and resource states are reset to UNCHANGED -> the state of the corresponding
@@ -784,17 +842,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
          */
 
         try {
-            offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), true, offlineFileHeader.getStructureId());
-            offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
-
             if (offlineFileHeader.getState() == I_CmsConstants.C_STATE_DELETED) {
                 report.print("( " + m + " / " + n + " ) " + report.key("report.deleting.file"), I_CmsReport.C_FORMAT_NOTE);
                 report.println(context.removeSiteRoot(offlineFileHeader.getRootPath()));
 
                 try {
-                    // read the file online
-                    onlineFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), true, offlineFile.getStructureId());
-                    onlineFile.setFullResourceName(offlineFileHeader.getRootPath());
+                    // read the file header online
+                    onlineFileHeader = m_driverManager.getVfsDriver().readFileHeader(onlineProject.getId(), offlineFileHeader.getStructureId(), true);
+                    onlineFileHeader.setFullResourceName(offlineFileHeader.getRootPath());
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error reading resource " + offlineFile.toString(), e);
@@ -803,35 +858,59 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     throw e;
                 }
 
-                if (offlineFile.isLabeled() && !m_driverManager.hasLabeledLinks(context, offlineFile)) {
-                    // update the resource flags to "unlabel" of the siblings of the offline resource
-                    int flags = offlineFile.getFlags();
+                if (offlineFileHeader.isLabeled() && !m_driverManager.hasLabeledLinks(context, offlineFileHeader)) {
+                    // update the resource flags to "unlabeled" of the siblings of the offline resource
+                    int flags = offlineFileHeader.getFlags();
                     flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
-                    offlineFile.setFlags(flags);
+                    offlineFileHeader.setFlags(flags);
                 }
 
-                if (onlineFile.isLabeled() && !m_driverManager.hasLabeledLinks(context, onlineFile)) {
-                    // update the resource flags to "unlabel" of the siblings of the online resource
-                    int flags = onlineFile.getFlags();
+                if (onlineFileHeader.isLabeled() && !m_driverManager.hasLabeledLinks(context, onlineFileHeader)) {
+                    // update the resource flags to "unlabeled" of the siblings of the online resource
+                    int flags = onlineFileHeader.getFlags();
                     flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
-                    onlineFile.setFlags(flags);
+                    onlineFileHeader.setFlags(flags);
                 }
+                
+                try {
+                    // write the file to the backup and publishing history
+                    if (backupEnabled) {
+                        if (offlineFile == null) {
+                            offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), true, offlineFileHeader.getStructureId());
+                            offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
+                        }
+                        
+                        if (offlineProperties == null) {
+                            offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
+                        }
+                        
+                        m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFile, offlineProperties, backupTagId, publishDate, maxVersions);
+                    }
+                    
+                    writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFileHeader);
+                } catch (CmsException e) {
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing backup/publishing history of " + offlineFile.toString(), e);
+                    }
+
+                    throw e;
+                }                
 
                 try {
                     // delete the properties online and offline
-                    m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFile);
-                    m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), offlineFile);
+                    m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFileHeader);
+                    m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), offlineFileHeader);
 
                     // if the offline file has a resource ID different from the online file
                     // (probably because a (deleted) file was replaced by a new file with the
                     // same name), the properties with the "old" resource ID have to be
                     // deleted also offline
-                    if (!onlineFile.getResourceId().equals(offlineFile.getResourceId())) {
-                        m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), onlineFile);
+                    if (!onlineFileHeader.getResourceId().equals(offlineFileHeader.getResourceId())) {
+                        m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), onlineFileHeader);
                     }
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error deleting properties of " + offlineFile.toString(), e);
+                        OpenCms.getLog(this).error("Error deleting properties of " + offlineFileHeader.toString(), e);
                     }
 
                     throw e;
@@ -839,11 +918,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 try {
                     // remove the file online and offline
-                    m_driverManager.getVfsDriver().removeFile(onlineProject, onlineFile);
-                    m_driverManager.getVfsDriver().removeFile(context.currentProject(), offlineFile);
+                    m_driverManager.getVfsDriver().removeFile(onlineProject, onlineFileHeader, true);
+                    m_driverManager.getVfsDriver().removeFile(context.currentProject(), offlineFileHeader, true);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error removing resource " + offlineFile.toString(), e);
+                        OpenCms.getLog(this).error("Error removing resource " + offlineFileHeader.toString(), e);
                     }
 
                     throw e;
@@ -851,26 +930,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 try {
                     // delete the ACL online and offline
-                    m_driverManager.getUserDriver().removeAccessControlEntries(onlineProject, onlineFile.getResourceId());
-                    m_driverManager.getUserDriver().removeAccessControlEntries(context.currentProject(), offlineFile.getResourceId());
+                    m_driverManager.getUserDriver().removeAccessControlEntries(onlineProject, onlineFileHeader.getResourceId());
+                    m_driverManager.getUserDriver().removeAccessControlEntries(context.currentProject(), offlineFileHeader.getResourceId());
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error removing ACLs of " + offlineFile.toString(), e);
-                    }
-
-                    throw e;
-                }
-
-                try {
-                    // write the file to the backup and publishing history
-                    if (backupEnabled) {
-                        offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFile, offlineFile.getType());
-                        m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFile, offlineProperties, backupTagId, publishDate, maxVersions);
-                    }
-                    writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFile);
-                } catch (CmsException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error writing backup/publishing history of " + offlineFile.toString(), e);
+                        OpenCms.getLog(this).error("Error removing ACLs of " + offlineFileHeader.toString(), e);
                     }
 
                     throw e;
@@ -880,32 +944,40 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 report.println(context.removeSiteRoot(offlineFileHeader.getRootPath()));
 
                 try {
-                    // read the file online
-                    onlineFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), true, offlineFile.getStructureId());
-                    onlineFile.setFullResourceName(offlineFileHeader.getRootPath());
+                    // read the file header online                   
+                    onlineFileHeader = m_driverManager.getVfsDriver().readFileHeader(onlineProject.getId(), offlineFileHeader.getStructureId(), false);
+                    onlineFileHeader.setFullResourceName(offlineFileHeader.getRootPath());                    
 
                     // delete the properties online
-                    m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFile);
+                    m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFileHeader);
 
                     // if the offline file has a resource ID different from the online file
                     // (probably because a (deleted) file was replaced by a new file with the
                     // same name), the properties with the "old" resource ID have to be
                     // deleted also offline
-                    if (!onlineFile.getResourceId().equals(offlineFile.getResourceId())) {
-                        m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), onlineFile);
+                    if (!onlineFileHeader.getResourceId().equals(offlineFileHeader.getResourceId())) {
+                        m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), onlineFileHeader);
                     }
 
                     // remove the file online
-                    m_driverManager.getVfsDriver().removeFile(onlineProject, onlineFile);
+                    boolean removeContent = !publishedContentIds.contains(offlineFileHeader.getFileId());
+                    m_driverManager.getVfsDriver().removeFile(onlineProject, onlineFileHeader, removeContent);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error deleting properties of " + offlineFile.toString(), e);
+                        OpenCms.getLog(this).error("Error deleting properties of " + offlineFileHeader.toString(), e);
                     }
 
                     throw e;
                 }
 
                 try {
+                    newFile = m_driverManager.getProjectDriver().publishFileContent(context, onlineProject, offlineFileHeader, publishedContentIds);
+                    
+                    /*
+                    // read the file offline
+                    offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), false, offlineFileHeader.getStructureId());
+                    offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
+                    
                     // create the file online              
                     newFile = (CmsFile) offlineFile.clone();
                     newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
@@ -913,9 +985,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                     m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentStructureId(), newFile.getName());
                     m_driverManager.getVfsDriver().writeResource(newFile, offlineFile);
+                    */
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error creating resource " + newFile.toString(), e);
+                        OpenCms.getLog(this).error("Error creating resource " + offlineFileHeader.toString(), e);
                     }
 
                     throw e;
@@ -923,7 +996,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 try {
                     // write the properties online
-                    offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFile, offlineFile.getType());
+                    offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
                     m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFile, newFile.getType(), false);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -935,87 +1008,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 try {
                     // write the ACL online
-                    m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, newFile.getResourceId(), onlineFile.getResourceId());
-                } catch (CmsException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error writing ACLs of " + offlineFile.toString(), e);
-                    }
-
-                    throw e;
-                }
-
-                try {
-                    // write the file to the backup and publishing history
-                    if (backupEnabled) {
-                        m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFile, offlineProperties, backupTagId, publishDate, maxVersions);
-                    }
-                    writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFile);
-                } catch (CmsException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error writing backup/publishing history of " + offlineFile.toString(), e);
-                    }
-
-                    throw e;
-                }
-
-                try {
-                    // reset the resource state and the last-modified-in-project ID offline
-                    if (offlineFileHeader.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
-                        offlineFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), offlineFile, CmsDriverManager.C_UPDATE_ALL);
-                    }
-                    m_driverManager.getVfsDriver().writeLastModifiedProjectId(context.currentProject(), 0, offlineFile);
-                } catch (CmsException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error reseting resource state of " + offlineFile.toString(), e);
-                    }
-
-                    throw e;
-                }
-            } else if (offlineFileHeader.getState() == I_CmsConstants.C_STATE_NEW) {
-                report.print("( " + m + " / " + n + " ) " + report.key("report.publishing.file"), I_CmsReport.C_FORMAT_NOTE);
-                report.println(context.removeSiteRoot(offlineFileHeader.getRootPath()));
-
-                try {
-                    // create the file online
-                    newFile = (CmsFile) offlineFile.clone();
-                    newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                    newFile.setFullResourceName(offlineFileHeader.getRootPath());
-                    m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentStructureId(), newFile.getName());
-                } catch (CmsException e) {
-                    if (e.getType() == CmsException.C_FILE_EXISTS) {
-                        try {
-                            m_driverManager.getVfsDriver().removeFile(onlineProject, offlineFile);
-                            m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentStructureId(), newFile.getName());
-                        } catch (CmsException e1) {
-                            if (OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error("Error creating resource " + offlineFile.toString(), e);
-                            }
-
-                            throw e1;
-                        }
-                    } else if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error creating resource " + offlineFile.toString(), e);
-                    }
-
-                    throw e;
-                }
-
-                try {
-                    // write the properties online
-                    offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFile, offlineFile.getType());
-                    m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFile, newFile.getType(), false);
-                } catch (CmsException e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error writing properties of " + newFile.toString(), e);
-                    }
-
-                    throw e;
-                }
-
-                try {
-                    // write the ACL online
-                    m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, offlineFile.getResourceId(), newFile.getResourceId());
+                    m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, newFile.getResourceId(), onlineFileHeader.getResourceId());
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error writing ACLs of " + newFile.toString(), e);
@@ -1027,9 +1020,128 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // write the file to the backup and publishing history
                     if (backupEnabled) {
+                        if (offlineFile == null) {
+                            offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), false, offlineFileHeader.getStructureId());
+                            offlineFile.setFullResourceName(offlineFileHeader.getRootPath());                            
+                        }
+                        
+                        if (offlineProperties == null) {
+                            offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
+                        }                        
+                        
                         m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFile, offlineProperties, backupTagId, publishDate, maxVersions);
                     }
-                    writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFile);
+                    
+                    writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFileHeader);
+                } catch (CmsException e) {
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing backup/publishing history of " + offlineFileHeader.toString(), e);
+                    }
+
+                    throw e;
+                }
+
+                try {
+                    // reset the resource state and the last-modified-in-project ID offline
+                    if (offlineFileHeader.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
+                        offlineFileHeader.setState(I_CmsConstants.C_STATE_UNCHANGED);
+                        m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), offlineFileHeader, CmsDriverManager.C_UPDATE_ALL);
+                    }
+                    
+                    m_driverManager.getVfsDriver().writeLastModifiedProjectId(context.currentProject(), 0, offlineFileHeader);
+                } catch (CmsException e) {
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error reseting resource state of " + offlineFileHeader.toString(), e);
+                    }
+
+                    throw e;
+                }
+            } else if (offlineFileHeader.getState() == I_CmsConstants.C_STATE_NEW) {
+                report.print("( " + m + " / " + n + " ) " + report.key("report.publishing.file"), I_CmsReport.C_FORMAT_NOTE);
+                report.println(context.removeSiteRoot(offlineFileHeader.getRootPath()));
+
+                try {
+                    newFile = m_driverManager.getProjectDriver().publishFileContent(context, onlineProject, offlineFileHeader, publishedContentIds);
+                    
+                    /*
+                    // read the file offline
+                    offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), false, offlineFileHeader.getStructureId());
+                    offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
+                    
+                    // create the file online
+                    newFile = (CmsFile) offlineFile.clone();
+                    newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
+                    newFile.setFullResourceName(offlineFileHeader.getRootPath());
+                    
+                    m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentStructureId(), newFile.getName());
+                    m_driverManager.getVfsDriver().writeResource(newFile, offlineFile);
+                    */
+                } catch (CmsException e) {
+                    if (e.getType() == CmsException.C_FILE_EXISTS) {
+                        try {
+                            // remove the existing file and ensure that it's content is written 
+                            // in any case by removing it's content ID from the set of published content IDs
+                            m_driverManager.getVfsDriver().removeFile(onlineProject, offlineFileHeader, true);
+                            publishedContentIds.remove(offlineFileHeader.getFileId());
+                            m_driverManager.getProjectDriver().publishFileContent(context, onlineProject, offlineFileHeader, publishedContentIds);
+                            
+                            //newFile = m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentStructureId(), newFile.getName());
+                            //m_driverManager.getVfsDriver().writeResource(newFile, offlineFile, false);
+                        } catch (CmsException e1) {
+                            if (OpenCms.getLog(this).isErrorEnabled()) {
+                                OpenCms.getLog(this).error("Error creating resource " + offlineFileHeader.toString(), e);
+                            }
+
+                            throw e1;
+                        }
+                    } else {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error("Error creating resource " + offlineFileHeader.toString(), e);
+                        }
+                        
+                        throw e;
+                    }
+                }
+
+                try {
+                    // write the properties online
+                    offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
+                    m_driverManager.getVfsDriver().writeProperties(offlineProperties, onlineProject.getId(), newFile, newFile.getType(), false);
+                } catch (CmsException e) {
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing properties of " + newFile.toString(), e);
+                    }
+
+                    throw e;
+                }
+
+                try {
+                    // write the ACL online
+                    m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, offlineFileHeader.getResourceId(), newFile.getResourceId());
+                } catch (CmsException e) {
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error writing ACLs of " + newFile.toString(), e);
+                    }
+
+                    throw e;
+                }
+
+                try {
+                    // write the file to the backup and publishing history
+                    if (backupEnabled) {
+                        if (offlineFile == null) {
+                            offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), false, offlineFileHeader.getStructureId());
+                            offlineFile.setFullResourceName(offlineFileHeader.getRootPath());                            
+                        }
+                        
+                        if (offlineProperties == null) {
+                            offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFileHeader, offlineFileHeader.getType());
+                        } 
+                                                
+                        m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFile, offlineProperties, backupTagId, publishDate, maxVersions);
+                    }
+                    
+                    writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFileHeader);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error writing backup/publishing history of " + newFile.toString(), e);
@@ -1041,13 +1153,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // reset the resource state and the last-modified-in-project ID offline
                     if (offlineFileHeader.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
-                        offlineFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), offlineFile, CmsDriverManager.C_UPDATE_ALL);
+                        offlineFileHeader.setState(I_CmsConstants.C_STATE_UNCHANGED);
+                        m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), offlineFileHeader, CmsDriverManager.C_UPDATE_ALL);
                     }
-                    m_driverManager.getVfsDriver().writeLastModifiedProjectId(context.currentProject(), 0, offlineFile);
+                    
+                    m_driverManager.getVfsDriver().writeLastModifiedProjectId(context.currentProject(), 0, offlineFileHeader);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error reseting resource state of " + offlineFile.toString(), e);
+                        OpenCms.getLog(this).error("Error reseting resource state of " + offlineFileHeader.toString(), e);
                     }
 
                     throw e;
@@ -1066,6 +1179,50 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // notify the app. that the published file and it's properties have been modified offline
             OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", offlineFileHeader)));
         }
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(com.opencms.file.CmsRequestContext, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Set)
+     */
+    public CmsFile publishFileContent(CmsRequestContext context, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception {
+        CmsFile newFile = null;
+        CmsFile offlineFile = null;
+
+        try {
+            // binary content gets only published once while a project is published
+            if (!offlineFileHeader.getFileId().isNullUUID() && !publishedContentIds.contains((CmsUUID) offlineFileHeader.getFileId())) {
+                // read the file offline
+                offlineFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), false, offlineFileHeader.getStructureId());
+                offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
+
+                // create the file online              
+                newFile = (CmsFile) offlineFile.clone();
+                newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
+                newFile.setFullResourceName(offlineFileHeader.getRootPath());                
+                m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentStructureId(), newFile.getName());
+
+                // update the online/offline structure and resource records of the file
+                m_driverManager.getVfsDriver().writeResource(newFile, offlineFile, false);
+
+                // add the content ID to the content IDs that got already published
+                publishedContentIds.add(offlineFileHeader.getFileId());
+            } else {
+                // create the sibling online
+                m_driverManager.getVfsDriver().createSibling(onlineProject, offlineFileHeader, offlineFileHeader.getUserCreated(), offlineFileHeader.getParentStructureId(), offlineFileHeader.getName());
+                
+                // TODO reading the file content here should be obsolete
+                newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), false, offlineFileHeader.getStructureId());
+                newFile.setFullResourceName(offlineFileHeader.getRootPath());                
+            }
+        } catch (Exception e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error creating file content " + offlineFileHeader.toString(), e);
+            }
+
+            throw e;
+        }
+        
+        return newFile;
     }
 
     /**
@@ -1092,7 +1249,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         try {
                             onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), newFolder.getStructureId());
                             onlineFolder.setFullResourceName(offlineFolder.getRootPath());
-                            m_driverManager.getVfsDriver().writeResource(onlineFolder, offlineFolder);
+                            m_driverManager.getVfsDriver().writeResource(onlineFolder, offlineFolder, false);
                         } catch (CmsException e1) {
                             if (OpenCms.getLog(this).isErrorEnabled()) {
                                 OpenCms.getLog(this).error("Error reading resource " + offlineFolder.toString(), e1);
@@ -1100,11 +1257,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                             throw e1;
                         }
-                    } else if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error creating resource " + offlineFolder.toString(), e);
-                    }
+                    } else {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error("Error creating resource " + offlineFolder.toString(), e);
+                        }
 
-                    throw e;
+                        throw e;
+                    }
                 }
 
                 try {
@@ -1148,16 +1307,18 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                             throw e1;
                         }
-                    } else if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error reading resource " + offlineFolder.toString(), e);
-                    }
+                    } else {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error("Error reading resource " + offlineFolder.toString(), e);
+                        }
 
-                    throw e;
+                        throw e;   
+                    }
                 }
 
                 try {
                     // update the folder online
-                    m_driverManager.getVfsDriver().writeResource(onlineFolder, offlineFolder);
+                    m_driverManager.getVfsDriver().writeResource(onlineFolder, offlineFolder, false);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error updating resource " + offlineFolder.toString(), e);
@@ -1194,8 +1355,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             try {
                 // write the folder to the backup and publishing history
                 if (backupEnabled) {
+                    if (offlineProperties == null) {
+                        offlineProperties = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), offlineFolder, offlineFolder.getType());
+                    }
+                    
                     m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFolder, offlineProperties, backupTagId, publishDate, maxVersions);
                 }
+                
                 writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFolder.getRootPath(), offlineFolder);
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1252,7 +1418,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     public synchronized Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints, CmsResource directPublishResource, int maxVersions) throws Exception {
         CmsExportPointDriver discAccess = null;
         CmsFolder currentFolder = null;
-        CmsFile currentFile = null;
         CmsResource currentFileHeader = null;
         CmsLock currentLock = null;
         List offlineFolders = null;
@@ -1267,10 +1432,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         List projectResources = null;
         Map sortedFolderMap = null;
         List sortedFolderList = null;
-        byte[] contents = null;
         int publishHistoryId = readNextPublishVersionId();
-        String encoding = null;
         int m, n;
+        Set publishedContentIds = (Set) new HashSet();
 
         try {
             discAccess = new CmsExportPointDriver(exportpoints);
@@ -1337,7 +1501,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (i.hasNext()) {
                 currentResourceName = (String) i.next();
                 currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
-                currentExportKey = internalCheckExport(currentResourceName, exportpoints);
+                currentExportKey = internalCheckExportPoint(currentResourceName, exportpoints);
 
                 if (currentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
                     // C_STATE_DELETE
@@ -1346,8 +1510,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
                     changedResources.addElement(currentResourceName);
 
-                    // export to filesystem if necessary
                     if (currentExportKey != null) {
+                        // export to filesystem
                         discAccess.createFolder(currentResourceName, currentExportKey);
                     }
 
@@ -1356,8 +1520,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
                     changedResources.addElement(currentResourceName);
 
-                    // export to filesystem if necessary
                     if (currentExportKey != null) {
+                        // export to filesystem
                         discAccess.createFolder(currentResourceName, currentExportKey);
                     }
 
@@ -1439,7 +1603,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFileHeader);
                 }
 
-                // do not publish resource that are locked
+                // do not publish resources that are locked
                 publishCurrentResource = publishCurrentResource && currentLock.isNullLock();
 
                 // handle temporary files immediately here coz they aren't "published" anyway
@@ -1451,7 +1615,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 if (currentFileHeader.getName().startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
                     // trash the current resource if it is a temporary file
                     m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), currentFileHeader);
-                    m_driverManager.getVfsDriver().removeFile(context.currentProject(), currentFileHeader);
+                    m_driverManager.getVfsDriver().removeFile(context.currentProject(), currentFileHeader, true);
                 }
 
                 if (!publishCurrentResource) {
@@ -1470,82 +1634,38 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (i.hasNext()) {
                 currentFileHeader = (CmsResource) i.next();
                 currentResourceName = currentFileHeader.getRootPath();
-                currentExportKey = internalCheckExport(currentResourceName, exportpoints);
-
-                currentFile = m_driverManager.getVfsDriver().readFile(context.currentProject().getId(), true, currentFileHeader.getStructureId());
-                currentFile.setFullResourceName(currentResourceName);
-
+                currentFileHeader.setFullResourceName(currentResourceName);
+                currentExportKey = internalCheckExportPoint(currentResourceName, exportpoints);
+                
+                changedResources.addElement(currentResourceName);
+                
+                // TODO the file content should be read only one time during the publishing process
+                // first the file with it's content should be read, optionally exported, and then published
+                // another process order is not possible since the file state is set back to UNCHANGED
+                // while it is publsihed -> no static export here!
+                // so publishFile should receive the offline file with it's content as an argument.
+                
                 if (currentFileHeader.getState() == I_CmsConstants.C_STATE_DELETED) {
-                    changedResources.addElement(currentResourceName);
-
                     if (currentExportKey != null) {
                         // delete the export point
-                        try {
-                            discAccess.removeResource(currentResourceName, currentExportKey);
-                        } catch (Exception e) {
-                            if (OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error("Error deleting export point of " + currentFile.toString(), e);
-                            }
-                        }
+                        internalDeleteExportPoint(discAccess, currentExportKey, currentFileHeader);
                     }
-
-                    // bounce the current publish task through all project drivers
-                    m_driverManager.getProjectDriver().publishFile(context, report, m++, n, onlineProject, currentFileHeader, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
-                } else if (currentFileHeader.getState() == I_CmsConstants.C_STATE_CHANGED) {
-                    changedResources.addElement(currentResourceName);
-
+                } else if (currentFileHeader.getState() == I_CmsConstants.C_STATE_CHANGED || currentFileHeader.getState() == I_CmsConstants.C_STATE_NEW) {
                     if (currentExportKey != null) {
-                        // write the export point
-                        try {
-                            // make sure files are written in the right encoding 
-                            contents = currentFile.getContents();
-                            encoding = m_driverManager.getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, context.currentProject().getId(), currentFile, currentFile.getType());
-
-                            if (encoding != null) {
-                                // only files that have the encodig property set will be encoded,
-                                // other files will be ignored. images etc. are not touched.                        
-                                try {
-                                    contents = (new String(contents, encoding)).getBytes();
-                                } catch (UnsupportedEncodingException uex) {
-                                    // noop
-                                }
-                            }
-
-                            discAccess.writeFile(currentResourceName, currentExportKey, contents);
-                        } catch (Exception e) {
-                            if (OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error("Error writing export point of " + currentFile.toString(), e);
-                            }
-                        }
+                        // export to filesystem
+                        internalWriteExportPoint(context, discAccess, currentExportKey, currentFileHeader);
                     }
-
-                    // bounce the current publish task through all project drivers
-                    m_driverManager.getProjectDriver().publishFile(context, report, m++, n, onlineProject, currentFileHeader, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
-                } else if (currentFileHeader.getState() == I_CmsConstants.C_STATE_NEW) {
-                    changedResources.addElement(currentResourceName);
-
-                    // export to filesystem if necessary
-                    if (currentExportKey != null) {
-                        // Encoding project: Make sure files are written in the right encoding 
-                        contents = currentFile.getContents();
-                        encoding = m_driverManager.getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, context.currentProject().getId(), currentFile, currentFile.getType());
-                        if (encoding != null) {
-                            // Only files that have the encodig property set will be encoded,
-                            // the other files will be ignored. So images etc. are not touched.
-                            try {
-                                contents = (new String(contents, encoding)).getBytes();
-                            } catch (UnsupportedEncodingException uex) {
-                                // contents will keep original value
-                            }
-                        }
-                        discAccess.writeFile(currentResourceName, currentExportKey, contents);
-                    }
-
-                    // bounce the current publish task through all project drivers
-                    m_driverManager.getProjectDriver().publishFile(context, report, m++, n, onlineProject, currentFileHeader, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
                 }
+                
+                // bounce the current publish task through all project drivers
+                m_driverManager.getProjectDriver().publishFile(context, report, m++, n, onlineProject, currentFileHeader, publishedContentIds, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);                
 
                 i.remove();
+                
+                // set back all vars. inside the while loop!
+                currentFileHeader = null;
+                currentResourceName = null;
+                currentExportKey = null;              
             }
 
             if (n > 0) {
@@ -1594,7 +1714,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (i.hasNext()) {
                 currentResourceName = (String) i.next();
                 currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
-                currentExportKey = internalCheckExport(currentResourceName, exportpoints);
+                currentExportKey = internalCheckExportPoint(currentResourceName, exportpoints);
 
                 if (currentExportKey != null) {
                     discAccess.removeResource(currentResourceName, currentExportKey);
@@ -1666,12 +1786,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 offlineFiles = null;
             }
 
-            currentFile = null;
             currentFileHeader = null;
             currentFolder = null;
             discAccess = null;
             currentExportKey = null;
-            contents = null;
         }
 
         return changedResources;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/09/22 08:28:43 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2003/09/19 14:42:52 $
+ * @version $Revision: 1.24 $ $Date: 2003/09/22 08:28:43 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -166,7 +166,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         
         m_reservedPoolUrls = (List) new ArrayList(64);
         for (int i = 0; i < 64; i++) {
-            m_poolUrls.add(i, null);
+            m_reservedPoolUrls.add(i, null);
         }
                 
         m_cachedQueries = (Map) new HashMap();
@@ -770,8 +770,9 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             id *= -1;
         }
 
-        m_reservedPoolUrls.add(id, poolUrl);
-    } 
+        ((ArrayList) m_reservedPoolUrls).ensureCapacity(id);
+        m_reservedPoolUrls.set(id, poolUrl);
+    }
 
     /**
      * Replaces null Strings by an empty string.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.137 $
+ * Date   : $Date: 2003/09/22 08:28:42 $
+ * Version: $Revision: 1.138 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.137 $ $Date: 2003/09/19 14:42:52 $
+ * @version $Revision: 1.138 $ $Date: 2003/09/22 08:28:42 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -137,7 +137,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // remove the existing file and it's properties
                 List modifiedResources = readSiblings(project, res);
                 deleteProperties(project.getId(), res);
-                removeFile(project, res);
+                removeFile(project, res, true);
 
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
@@ -617,7 +617,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // remove the existing file and it's properties
                 List modifiedResources = readSiblings(project, res);
                 deleteProperties(project.getId(), res);
-                removeFile(project, res);
+                removeFile(project, res, true);
 
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
@@ -1795,7 +1795,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#removeFile(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
      */
-    public void removeFile(CmsProject currentProject, CmsResource resource) throws CmsException {
+    public void removeFile(CmsProject currentProject, CmsResource resource, boolean removeFileContent) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         int linkCount = 0;
@@ -1838,10 +1838,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 m_sqlManager.closeAll(null, stmt, null);
 
-                // delete the content record
-                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_FILE_CONTENT_DELETE");
-                stmt.setString(1, resource.getFileId().toString());
-                stmt.executeUpdate();
+                if (!resource.getFileId().equals(CmsUUID.getNullUUID())) {
+                    // delete the content record
+                    stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_FILE_CONTENT_DELETE");
+                    stmt.setString(1, resource.getFileId().toString());
+                    stmt.executeUpdate();
+                }
             }
 
         } catch (SQLException e) {
@@ -2394,11 +2396,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int structureState = resource.getState();
         int resourceState = resource.getState();
         if (structureState != com.opencms.core.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
-            if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE)
+            if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE) {
                 resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
-            else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE)
+            } else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE) {
                 structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
-            else {
+            } else {
                 resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
                 structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
             }
@@ -2451,10 +2453,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeResource(com.opencms.file.CmsResource, com.opencms.file.CmsResource)
      */
-    public void writeResource(CmsResource onlineResource, CmsResource offlineResource) throws CmsException {
+    public void writeResource(CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        int resourceSize = I_CmsConstants.C_UNKNOWN_ID;
+        int resourceSize = offlineResource.getLength();
 
         try {
             conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
@@ -2463,9 +2465,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 // the resource record exists online already
 
-                if (offlineResource.isFile()) {
+                if (writeFileContent && offlineResource.isFile()) {
                     // update the online file content
-                    resourceSize = offlineResource.getLength();
                     writeFileContent(offlineResource.getFileId(), ((CmsFile)offlineResource).getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                 }
 
@@ -2500,7 +2501,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 // the resource record does NOT exist online yet
 
-                if (offlineResource.isFile() && !validateContentIdExists(I_CmsConstants.C_PROJECT_ONLINE_ID, offlineResource.getFileId())) {
+                if (writeFileContent && offlineResource.isFile() && !validateContentIdExists(I_CmsConstants.C_PROJECT_ONLINE_ID, offlineResource.getFileId())) {
                     // create the file content online
                     resourceSize = offlineResource.getLength();
                     createFileContent(offlineResource.getFileId(), ((CmsFile)offlineResource).getContents(), 0, I_CmsConstants.C_PROJECT_ONLINE_ID, false);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/18 16:24:55 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2003/09/22 08:28:43 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.60 $ $Date: 2003/09/18 16:24:55 $
+ * @version $Revision: 1.61 $ $Date: 2003/09/22 08:28:43 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -501,9 +501,10 @@ public interface I_CmsVfsDriver {
      * 
      * @param currentProject the current project
      * @param resource the resource
+     * @param removeFileContent if true, the content record is also removed; if false, only the structure/resource records are removed
      * @throws CmsException if something goes wrong
      */
-    void removeFile(CmsProject currentProject, CmsResource resource) throws CmsException;
+    void removeFile(CmsProject currentProject, CmsResource resource, boolean removeFileContent) throws CmsException;
 
     /**
      * Removes a folder physically in the database.<p>
@@ -550,9 +551,10 @@ public interface I_CmsVfsDriver {
      * 
      * @param onlineResource the online resource
      * @param offlineResource the offline resource
+     * @param writeFileContent true, if also the content record of the specified offline resource should be written to the online table; false otherwise
      * @throws CmsException if somethong goes wrong
      */
-    void writeResource(CmsResource onlineResource, CmsResource offlineResource) throws CmsException;
+    void writeResource(CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException;
     
     /**
      * Writes either the structure or resource state.<p>

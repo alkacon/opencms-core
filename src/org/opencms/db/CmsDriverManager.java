@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/19 15:33:08 $
- * Version: $Revision: 1.246 $
+ * Date   : $Date: 2003/09/22 08:28:43 $
+ * Version: $Revision: 1.247 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.246 $ $Date: 2003/09/19 15:33:08 $
+ * @version $Revision: 1.247 $ $Date: 2003/09/22 08:28:43 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2228,7 +2228,7 @@ public class CmsDriverManager extends Object {
                         flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
                         currentResource.setFlags(flags);
                     }
-                    m_vfsDriver.removeFile(context.currentProject(), currentResource);
+                    m_vfsDriver.removeFile(context.currentProject(), currentResource, true);
                 } else {
                     // delete the access control entries
                     deleteAllAccessControlEntries(context, currentResource);
@@ -2401,7 +2401,7 @@ public class CmsDriverManager extends Object {
                     // delete the properties
                     m_vfsDriver.deleteProperties(projectId, currentFile);
                     // delete the file
-                    m_vfsDriver.removeFile(context.currentProject(), currentFile);
+                    m_vfsDriver.removeFile(context.currentProject(), currentFile, true);
                     // remove the access control entries
                     m_userDriver.removeAccessControlEntries(context.currentProject(), currentFile.getResourceId());
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_CHANGED) {
