@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/02/25 14:12:43 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/03/06 18:53:41 $
+* Version: $Revision: 1.18 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,18 +71,15 @@ import org.dom4j.io.SAXReader;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.17 $ $Date: 2004/02/25 14:12:43 $
+ * @version $Revision: 1.18 $ $Date: 2004/03/06 18:53:41 $
  */
 public class CmsImport implements Serializable {
-
-
-    /**
-     * list to store all file modifiaction interface implementations
-     */
-    protected static List m_ImportImplementations;
-   
+    
     /** The algorithm for the message digest */
     public static final String C_IMPORT_DIGEST = "MD5";
+    
+    /** Stores all import interface implementations */
+    protected List m_importImplementations;
 
     /** The cms contect to do the operations on the VFS/COS with */
     protected CmsObject m_cms;
@@ -91,13 +88,13 @@ public class CmsImport implements Serializable {
     protected Document m_docXml;
 
     /** The object to report the log messages */
-    protected I_CmsReport m_report = null;
+    protected I_CmsReport m_report;
 
     /** The import-resource (folder) to load resources from */
-    protected File m_importResource = null;
+    protected File m_importResource;
 
     /**  The import-resource (zip) to load resources from */
-    protected ZipFile m_importZip = null;
+    protected ZipFile m_importZip;
 
     /** Indicates if module data is being imported */
     protected boolean m_importingChannelData;
@@ -147,11 +144,7 @@ public class CmsImport implements Serializable {
         m_importPath = importPath;
         m_report = report;
         m_importingChannelData = false;
-        // try to get all import implementations
-        // This has only made once.
-        if (m_ImportImplementations == null) {
-            m_ImportImplementations=OpenCms.getRegistry().getImportClasses();
-        }
+        m_importImplementations = OpenCms.getImportExportManager().getImportVersionClasses();
     }
 
     /**
@@ -160,7 +153,7 @@ public class CmsImport implements Serializable {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void importResources() throws CmsException {
+    public synchronized void importResources() throws CmsException {
         importResources(null, null, null, null, null);
     }
 
@@ -177,21 +170,21 @@ public class CmsImport implements Serializable {
      * @param propertyValue value of that property
      * @throws CmsException if something goes wrong
      */
-    public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
+    public synchronized void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
         // initialize the import
         boolean run=false;
         openImportFile();   
-        m_report.println("Import Version "+m_importVersion, I_CmsReport.C_FORMAT_NOTE);
+        m_report.println("Import Version " + m_importVersion, I_CmsReport.C_FORMAT_NOTE);
         try {
             // now find the correct import implementation         
-            Iterator i=m_ImportImplementations.iterator();
+            Iterator i = m_importImplementations.iterator();
             while (i.hasNext()) {
-                 I_CmsImport imp=((I_CmsImport)i.next());
-                    if (imp.getVersion()==m_importVersion) {
+                 I_CmsImport imp = (I_CmsImport)i.next();
+                    if (imp.getVersion() == m_importVersion) {
                         // this is the correct import version, so call it for the import process
                         imp.importResources(m_cms, m_importPath, m_report, 
                                             m_digest, m_importResource, m_importZip, m_docXml, excludeList, writtenFilenames, fileCodes, propertyName, propertyValue);
-                        run=true;
+                        run = true;
                         break;                    
                     }
             }   
