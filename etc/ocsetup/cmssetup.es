@@ -35,6 +35,8 @@ cms.createPropertydefinition("Keywords","compatiblePlain");
 cms.createPropertydefinition("Description","script");
 cms.createPropertydefinition("Keywords","script");
 cms.createPropertydefinition("module","compatiblePlain");
+cms.createPropertydefinition("Keywords","binary");
+cms.createPropertydefinition("Description","binary");
 cms.addFileExtension("doc","binary");
 cms.addFileExtension("pdf","binary");
 cms.addFileExtension("zip","binary");
