@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/06/13 14:48:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/08 16:30:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,16 @@
 
 package org.opencms.db.oracle;
 
+import oracle.jdbc.driver.OracleResultSet;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.SqlHelper;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,7 +51,7 @@ import java.util.Vector;
  * Oracle/OCI implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/08 16:30:53 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {   
@@ -104,4 +109,58 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         return new org.opencms.db.oracle.CmsSqlManager(dbPoolUrl);
     }
 
+	public void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int versionId) throws CmsException {
+		
+		PreparedStatement stmt = null;
+		PreparedStatement nextStatement = null;
+		PreparedStatement trimStatement = null;
+		Connection conn = null;
+		ResultSet res = null;
+		try {
+
+			conn = m_sqlManager.getConnectionForBackup();
+			stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILESFORUPDATE_BACKUP");
+
+			// update the file content in the FILES database.
+			stmt.setString(1, fileId.toString());
+			conn.setAutoCommit(false);
+			res = stmt.executeQuery();
+			try {
+				while (res.next()) {
+					oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("FILE_CONTENT");
+					// first trim the blob to 0 bytes, otherwise there could be left some bytes
+					// of the old content
+					//trimStatement = conn.prepareStatement(m_sqlManager.get("C_TRIMBLOB"));
+					trimStatement = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_TRIMBLOB"));
+					trimStatement.setBlob(1, blobnew);
+					trimStatement.setInt(2, 0);
+					trimStatement.execute();
+					ByteArrayInputStream instream = new ByteArrayInputStream(fileContent);
+					OutputStream outstream = blobnew.getBinaryOutputStream();
+					byte[] chunk = new byte[blobnew.getChunkSize()];
+					int i = -1;
+					while ((i = instream.read(chunk)) != -1) {
+						outstream.write(chunk, 0, i);
+					}
+					instream.close();
+					outstream.close();
+				}
+				// for the oracle-driver commit or rollback must be executed manually
+				// because setAutoCommit = false in CmsDbPool.CmsDbPool
+				//nextStatement = conn.prepareStatement(m_sqlManager.get("C_COMMIT"));
+				nextStatement = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.get("C_COMMIT"));
+				nextStatement.execute();
+				nextStatement.close();
+				conn.setAutoCommit(true);
+			} catch (IOException e) {
+				throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+			}
+		} catch (SQLException e) {
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+		} finally {
+			m_sqlManager.closeAll(conn, stmt, res);
+			m_sqlManager.closeAll(null, nextStatement, null);
+			m_sqlManager.closeAll(null, trimStatement, null);
+		}
+	}
 }
