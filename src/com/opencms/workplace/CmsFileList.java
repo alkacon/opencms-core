@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/05/09 09:57:35 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,38 +50,39 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2000/04/20 08:11:54 $
+ * @author Mario Stanke
+ * @version $Revision: 1.34 $ $Date: 2000/05/09 09:57:35 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
                                                            I_CmsConstants {    
    
       /** The head of the file list */
-    private final static String C_LIST_HEAD="LIST_HEAD";
+    private final static String C_LIST_HEAD="list_head";
  
     /** The entry of the file list */
-    private final static String C_LIST_ENTRY="LIST_ENTRY";    
+    private final static String C_LIST_ENTRY="list_entry";    
 
     /** The lockedby value column */
-    private final static String C_LOCKED_VALUE_NOLOCK="COLUMN_LOCK_VALUE_NOLOCK";
+    private final static String C_LOCKED_VALUE_NOLOCK="column_lock_value_nolock";
     
     /** The lockedby value column */
-    private final static String C_LOCKED_VALUE_OWN="COLUMN_LOCK_VALUE_OWN";
+    private final static String C_LOCKED_VALUE_OWN="column_lock_value_own";
     
     /** The lockedby value column */
-    private final static String C_LOCKED_VALUE_USER="COLUMN_LOCK_VALUE_USER";
+    private final static String C_LOCKED_VALUE_USER="column_lock_value_user";
 
     /** The name value column */
-    private final static String C_NAME_VALUE_FILE="COLUMN_NAME_VALUE_FILE";
+    private final static String C_NAME_VALUE_FILE="column_name_value_file";
 
     /** The name value column */
-    private final static String C_NAME_VALUE_FOLDER="COLUMN_NAME_VALUE_FOLDER";
+    private final static String C_NAME_VALUE_FOLDER="column_name_value_folder";
     
     /** The lockedby key */  
-    private final static String C_LOCKEDBY = "LOCKEDBY";
+    private final static String C_LOCKEDBY = "lockedby";
     
     /** The filefolder key */  
-    private final static String C_NAME_FILEFOLDER="NAME_FILEFOLDER";
+    private final static String C_NAME_FILEFOLDER="name_filefolder";
     
     /** The style for unchanged files or folders */
     private final static String C_STYLE_UNCHANGED="dateingeandert";
@@ -111,13 +112,13 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     private final static String C_DEFAULT_CONTEXTMENU="online";
 
     /** The context link */
-    private final static String C_CONTEXT_LINK="CONTEXT_LINK";
+    private final static String C_CONTEXT_LINK="context_link";
 
     /** The context menu */
-    private final static String C_CONTEXT_MENU="CONTEXT_MENU";
+    private final static String C_CONTEXT_MENU="context_menu";
 
     /** The context menu number */
-    private final static String C_CONTEXT_NUMBER="CONTEXT_NUMBER";
+    private final static String C_CONTEXT_NUMBER="context_number";
     
     /** The context menu postfix for lock*/
     private final static String C_CONTEXT_LOCK="lock";
@@ -149,9 +150,10 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         String template = n.getAttribute(C_FILELIST_TEMPLATE);
         String customizedTemplate = n.getAttribute(C_FILELIST_CUSTOMTEMPLATE);
 
-        CmsXmlWpTemplateFile filelistTemplate = new CmsXmlWpTemplateFile(cms,template);
-        filelistTemplate.setData(C_FILELIST_COLUMN_CUSTOMIZED, "");
-        filelistTemplate.setData(C_FILELIST_COLUMN_CUSTOMIZED_VALUE, "");
+        CmsXmlWpTemplateFile filelistTemplate = new CmsXmlWpTemplateFile(cms,template); 
+		
+        filelistTemplate.setXmlData(C_FILELIST_COLUMN_CUSTOMIZED, "");
+        filelistTemplate.setXmlData(C_FILELIST_COLUMN_CUSTOMIZED_VALUE, "");
         
         // Include the template file for the customized columns
         if(customizedTemplate != null && !"".equals(customizedTemplate)) {
@@ -168,7 +170,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
         
         I_CmsFileListUsers filelistUser = (I_CmsFileListUsers)callingObject;
-        Vector filelist = filelistUser.getFiles(cms);
+        Vector filelist = filelistUser.getFiles(cms); 
         return getFilelist(cms, filelist, filelistTemplate, lang, parameters, filelistUser, configFile);
     }          
     
@@ -194,6 +196,13 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             String currentFolder;
             String title = null;
             int contextNumber=0;
+			String[] tagList = {C_CONTEXT_LINK, C_CONTEXT_MENU , C_CONTEXT_NUMBER , C_FILELIST_ICON_VALUE, 
+								C_FILELIST_LINK_VALUE , C_FILELIST_LOCK_VALUE , C_FILELIST_NAME_VALUE,
+								C_FILELIST_TITLE_VALUE, C_FILELIST_TYPE_VALUE, C_FILELIST_CHANGED_VALUE, 
+								C_FILELIST_SIZE_VALUE, C_FILELIST_STATE_VALUE, C_FILELIST_OWNER_VALUE, 
+								C_FILELIST_GROUP_VALUE, C_FILELIST_ACCESS_VALUE, C_FILELIST_LOCKED_VALUE,
+								C_NAME_FILEFOLDER, C_FILELIST_SUFFIX_VALUE, C_LOCKEDBY, C_FILELIST_CLASS_VALUE}; 
+			
             String servlets=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
             
             //get the template
@@ -219,6 +228,12 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             // add the list header to the output.
             output.append(template.getProcessedDataValue(C_LIST_HEAD,callingObject));
             
+			// set all Xml tags somehow so that we can use fastSetXmlData below
+			 
+			for (int i=0; i < tagList.length; i++) { 
+				template.setXmlData(tagList[i], "");
+			} 
+			
             // go through all folders and files
             enum=list.elements();
             while (enum.hasMoreElements()) {
@@ -230,26 +245,26 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     folder=(CmsFolder)res; 
             
                     // Set output style class according to the project and state of the file.
-                    template.setData(C_FILELIST_CLASS_VALUE,getStyle(cms,folder));   
+                    template.setXmlData(C_FILELIST_CLASS_VALUE,getStyle(cms,folder));
                      // set the icon                
-                    template.setData(C_CONTEXT_LINK,res.getAbsolutePath());
-                    template.setData(C_CONTEXT_MENU,getContextMenue(cms,res,template));
-                    template.setData(C_CONTEXT_NUMBER,new Integer(contextNumber++).toString());
+                    template.fastSetXmlData(C_CONTEXT_LINK,res.getAbsolutePath());
+                    template.fastSetXmlData(C_CONTEXT_MENU,getContextMenue(cms,res,template));
+                    template.fastSetXmlData(C_CONTEXT_NUMBER,new Integer(contextNumber++).toString());
                     
                     A_CmsResourceType type=cms.getResourceType(folder.getType());
                     String icon=icon=getIcon(cms,type,config);
-                    template.setData(C_FILELIST_ICON_VALUE,config.getWpPictureUrl()+icon);
+                    template.fastSetXmlData(C_FILELIST_ICON_VALUE,config.getWpPictureUrl()+icon);
                     // set the link, but only if the folder is not deleted
                     if (res.getState()!=C_STATE_DELETED) {                
-                        template.setData(C_FILELIST_LINK_VALUE,folder.getAbsolutePath());   
+                        template.fastSetXmlData(C_FILELIST_LINK_VALUE,folder.getAbsolutePath());   
                     } else {
-                        template.setData(C_FILELIST_LINK_VALUE,"#");  
+                        template.fastSetXmlData(C_FILELIST_LINK_VALUE,"#");  
                     }
                     // set the lock icon if nescessary
-                    template.setData(C_FILELIST_LOCK_VALUE,template.getProcessedDataValue(getLock(cms,folder,template,lang),callingObject));  
+                    template.fastSetXmlData(C_FILELIST_LOCK_VALUE,template.getProcessedDataValue(getLock(cms,folder,template,lang),callingObject));  
                     // set the folder name
            
-                    template.setData(C_FILELIST_NAME_VALUE, folder.getName());
+                    template.fastSetXmlData(C_FILELIST_NAME_VALUE, folder.getName());
                     // set the folder title
                     title="";
                     try {
@@ -259,38 +274,38 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     if (title==null) {
                         title="";
                     }
-                    template.setData(C_FILELIST_TITLE_VALUE,title);   
+                    template.fastSetXmlData(C_FILELIST_TITLE_VALUE,title);
                     String typename=type.getResourceName();
                     typename=lang.getDataValue("fileicon."+typename);
-                    template.setData(C_FILELIST_TYPE_VALUE,typename);   
+                    template.fastSetXmlData(C_FILELIST_TYPE_VALUE,typename);
                     // get the folder date
                     long time=folder.getDateLastModified();
-                    template.setData(C_FILELIST_CHANGED_VALUE,getNiceDate(time));   
+                    template.fastSetXmlData(C_FILELIST_CHANGED_VALUE,getNiceDate(time));
                     // get the folder size
-                    template.setData(C_FILELIST_SIZE_VALUE,"");   
+                    template.fastSetXmlData(C_FILELIST_SIZE_VALUE,"");
                     // get the folder state
-                    template.setData(C_FILELIST_STATE_VALUE,getState(cms,folder,lang));  
+                    template.fastSetXmlData(C_FILELIST_STATE_VALUE,getState(cms,folder,lang));  
                     // get the owner of the folder
                     A_CmsUser owner = cms.readOwner(folder);
-                    template.setData(C_FILELIST_OWNER_VALUE,owner.getName());
+                    template.fastSetXmlData(C_FILELIST_OWNER_VALUE,owner.getName());
                     // get the group of the folder
                     A_CmsGroup group = cms.readGroup(folder);
-                    template.setData(C_FILELIST_GROUP_VALUE,group.getName());
+                    template.fastSetXmlData(C_FILELIST_GROUP_VALUE,group.getName());
                     // get the access flags
                     int access=folder.getAccessFlags();
-                    template.setData(C_FILELIST_ACCESS_VALUE,getAccessFlags(access));
+                    template.fastSetXmlData(C_FILELIST_ACCESS_VALUE,getAccessFlags(access));
                     // get the locked by
                     int lockedby = folder.isLockedBy();
                     if (lockedby == C_UNKNOWN_ID) {
-                        template.setData(C_FILELIST_LOCKED_VALUE,"");
+                        template.fastSetXmlData(C_FILELIST_LOCKED_VALUE,"");
                     } else {
-                        template.setData(C_FILELIST_LOCKED_VALUE,cms.lockedBy(folder).getName());
+                        template.fastSetXmlData(C_FILELIST_LOCKED_VALUE,cms.lockedBy(folder).getName());
                     }
 
                     // Get all customized column values
                     callingObject.getCustomizedColumnValues(cms, template, res, lang);
 
-                    template.setData(C_NAME_FILEFOLDER,template.getProcessedDataValue(getName(cms,folder),this));     
+                    template.fastSetXmlData(C_NAME_FILEFOLDER,template.getProcessedDataValue(getName(cms,folder),this));     
                                 
                     // as a last step, check which colums must be displayed and add the file
                     // to the output.
@@ -299,28 +314,28 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 } else {        
                     file=(CmsFile)res; 
                     // Set output style class according to the project and state of the file.                                                          
-                    template.setData(C_FILELIST_CLASS_VALUE,getStyle(cms, file));                   
+                    template.fastSetXmlData(C_FILELIST_CLASS_VALUE,getStyle(cms, file));                   
 
                     // set the icon                            
-                    template.setData(C_CONTEXT_LINK,res.getAbsolutePath());
-                    template.setData(C_CONTEXT_MENU,getContextMenue(cms,res,template));
-                    template.setData(C_CONTEXT_NUMBER,new Integer(contextNumber++).toString());
+                    template.fastSetXmlData(C_CONTEXT_LINK,res.getAbsolutePath());
+                    template.fastSetXmlData(C_CONTEXT_MENU,getContextMenue(cms,res,template));
+                    template.fastSetXmlData(C_CONTEXT_NUMBER,new Integer(contextNumber++).toString());
                     
                     A_CmsResourceType type=cms.getResourceType(file.getType());
                     String icon=getIcon(cms,type,config);
-                    template.setData(C_FILELIST_ICON_VALUE,config.getWpPictureUrl()+icon);
+                    template.fastSetXmlData(C_FILELIST_ICON_VALUE,config.getWpPictureUrl()+icon);
                      // set the link, but only if the resource is not deleted
                     if (res.getState()!=C_STATE_DELETED) {
-                        template.setData(C_FILELIST_LINK_VALUE,servlets+file.getAbsolutePath());  
+                        template.fastSetXmlData(C_FILELIST_LINK_VALUE,servlets+file.getAbsolutePath());  
                     } else {
-                         template.setData(C_FILELIST_LINK_VALUE,"#");
+                         template.fastSetXmlData(C_FILELIST_LINK_VALUE,"#");
                     }
                     // set the lock icon if nescessary
-                    template.setData(C_FILELIST_LOCK_VALUE,template.getProcessedDataValue(getLock(cms,file,template,lang),callingObject));                      
+                    template.fastSetXmlData(C_FILELIST_LOCK_VALUE,template.getProcessedDataValue(getLock(cms,file,template,lang),callingObject));                      
                      // set the filename
                     
                     
-                    template.setData(C_FILELIST_NAME_VALUE, file.getName());     
+                    template.fastSetXmlData(C_FILELIST_NAME_VALUE, file.getName());
                       // set the file title
                     title="";
                     try {
@@ -330,39 +345,39 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     if (title==null) {
                         title="";
                     }
-                    template.setData(C_FILELIST_TITLE_VALUE,title);   
+                    template.fastSetXmlData(C_FILELIST_TITLE_VALUE,title);   
                       // set the file type 
                     type=cms.getResourceType(file.getType());
                     String typename=type.getResourceName();
                     typename=lang.getDataValue("fileicon."+typename);
-                    template.setData(C_FILELIST_TYPE_VALUE,typename);   
+                    template.fastSetXmlData(C_FILELIST_TYPE_VALUE,typename);   
                     // get the file date
                     long time=file.getDateLastModified();
-                    template.setData(C_FILELIST_CHANGED_VALUE,getNiceDate(time));
+                    template.fastSetXmlData(C_FILELIST_CHANGED_VALUE,getNiceDate(time));
                      // get the file size
-                    template.setData(C_FILELIST_SIZE_VALUE,new Integer(file.getLength()).toString());   
+                    template.fastSetXmlData(C_FILELIST_SIZE_VALUE,new Integer(file.getLength()).toString()); 
                      // get the file state
-                    template.setData(C_FILELIST_STATE_VALUE,getState(cms,file,lang));
+                    template.fastSetXmlData(C_FILELIST_STATE_VALUE,getState(cms,file,lang));
                     // get the owner of the file
                     A_CmsUser owner = cms.readOwner(file);
-                    template.setData(C_FILELIST_OWNER_VALUE,owner.getName());
+                    template.fastSetXmlData(C_FILELIST_OWNER_VALUE,owner.getName());
                      // get the group of the file
                     A_CmsGroup group = cms.readGroup(file);
-                    template.setData(C_FILELIST_GROUP_VALUE,group.getName());
+                    template.fastSetXmlData(C_FILELIST_GROUP_VALUE,group.getName());
                      // get the access flags
                     int access=file.getAccessFlags();
-                    template.setData(C_FILELIST_ACCESS_VALUE,getAccessFlags(access));
+                    template.fastSetXmlData(C_FILELIST_ACCESS_VALUE,getAccessFlags(access));
                      // get the locked by
                     int lockedby = file.isLockedBy();
                     if (lockedby == C_UNKNOWN_ID) {
-                        template.setData(C_FILELIST_LOCKED_VALUE,"");
+                        template.fastSetXmlData(C_FILELIST_LOCKED_VALUE,"");
                     } else {
-                        template.setData(C_FILELIST_LOCKED_VALUE,cms.lockedBy(file).getName());
+                        template.fastSetXmlData(C_FILELIST_LOCKED_VALUE,cms.lockedBy(file).getName());
                     }
 
                     // Get all customized column values
                     callingObject.getCustomizedColumnValues(cms, template, res, lang);
-                    template.setData(C_NAME_FILEFOLDER,template.getProcessedDataValue(getName(cms,file),this));     
+                    template.fastSetXmlData(C_NAME_FILEFOLDER,template.getProcessedDataValue(getName(cms,file),this));     
                                         
                     // as a last step, check which colums must be displayed and add the file
                     // to the output.
@@ -386,34 +401,34 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                                                         CmsXmlWpTemplateFile template,
                                                         String suffix) {
             if ((filelist & C_FILELIST_NAME) == 0) {
-                template.setData(C_FILELIST_COLUMN_NAME+suffix,"");
+                template.fastSetXmlData(C_FILELIST_COLUMN_NAME+suffix,"");
             }
             if ((filelist & C_FILELIST_TITLE) == 0) {
-                template.setData(C_FILELIST_COLUMN_TITLE+suffix,"");
+                template.fastSetXmlData(C_FILELIST_COLUMN_TITLE+suffix,"");
             }
             if ((filelist & C_FILELIST_TYPE) == 0) {
-                template.setData(C_FILELIST_COLUMN_TYPE+suffix,"");
+                template.fastSetXmlData(C_FILELIST_COLUMN_TYPE+suffix,"");
             }
             if ((filelist & C_FILELIST_STATE) == 0) {
-                template.setData(C_FILELIST_COLUMN_STATE+suffix,"");
+                template.fastSetXmlData(C_FILELIST_COLUMN_STATE+suffix,"");
             }
             if ((filelist & C_FILELIST_CHANGED) == 0) {
-                template.setData(C_FILELIST_COLUMN_CHANGED+suffix,"");
+                template.fastSetXmlData(C_FILELIST_COLUMN_CHANGED+suffix,"");
             }
             if ((filelist & C_FILELIST_SIZE) == 0) {
-                template.setData(C_FILELIST_COLUMN_SIZE+suffix,"");
+                template.fastSetXmlData(C_FILELIST_COLUMN_SIZE+suffix,"");
             }
             if ((filelist & C_FILELIST_OWNER) == 0) {
-                template.setData(C_FILELIST_COLUMN_OWNER+suffix,"");
+                template.fastSetXmlData(C_FILELIST_COLUMN_OWNER+suffix,"");
             }
             if ((filelist & C_FILELIST_GROUP) == 0) {
-                template.setData(C_FILELIST_COLUMN_GROUP+suffix,"");
+                template.fastSetXmlData(C_FILELIST_COLUMN_GROUP+suffix,"");
             }                                                 
             if ((filelist & C_FILELIST_ACCESS) == 0) {
-                template.setData(C_FILELIST_COLUMN_ACCESS+suffix,"");
+                template.fastSetXmlData(C_FILELIST_COLUMN_ACCESS+suffix,"");
             }   
             if ((filelist & C_FILELIST_LOCKED) == 0) {
-                template.setData(C_FILELIST_COLUMN_LOCKED+suffix,"");
+                template.fastSetXmlData(C_FILELIST_COLUMN_LOCKED+suffix,"");
             }  
             return template;
      }
@@ -551,10 +566,10 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
            int locked=file.isLockedBy();
            // it is locked by the actuel user
              if (cms.getRequestContext().currentUser().getId()==locked) {
-                template.setData(C_LOCKEDBY,lang.getLanguageValue("explorer.lockedby")+cms.getRequestContext().currentUser().getName());
+                template.fastSetXmlData(C_LOCKEDBY,lang.getLanguageValue("explorer.lockedby")+cms.getRequestContext().currentUser().getName());
                 output.append(C_LOCKED_VALUE_OWN);
             } else {
-                template.setData(C_LOCKEDBY,lang.getLanguageValue("explorer.lockedby")+cms.lockedBy(file.getAbsolutePath()).getName());
+                template.fastSetXmlData(C_LOCKEDBY,lang.getLanguageValue("explorer.lockedby")+cms.lockedBy(file.getAbsolutePath()).getName());
                 output.append(C_LOCKED_VALUE_USER);
             }
          } else {
