@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/11/01 13:38:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/11/01 18:15:32 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2000/11/01 13:38:44 $
+ * @version $Revision: 1.18 $ $Date: 2000/11/01 18:15:32 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -87,7 +87,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 	/**
 	 * Declaration of an empty module in the registry.
 	 */
-	private static final String[] C_EMPTY_MODULE = { "<module><name>", "</name><nicename>", "</nicename><version>", "</version><description>", "</description><author>", "</author><email/><creationdate>", "</creationdate><view/><documentation/><dependencies/><maintenance_class/><parameters/></module>" }; 
+	private static final String[] C_EMPTY_MODULE = { "<module><name>", "</name><nicename>", "</nicename><version>", "</version><description>", "</description><author>", "</author><email/><creationdate>", "</creationdate><view/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" };
 
 /**
  * Creates a new CmsRegistry for a user. The cms-object represents the current state of the current user.
@@ -459,14 +459,31 @@ public void deleteModuleView(String modulename) {
 	try {
 		Element module = getModuleElement(modulename);
 		Element view = (Element) (module.getElementsByTagName("view").item(0));
-		Node name = view.getElementsByTagName("name").item(0).getFirstChild();
-		Node url = view.getElementsByTagName("url").item(0).getFirstChild();
-		view.removeChild(name);
-		view.removeChild(url);
+
+		// delete all subnodes
+		while(view.hasChildNodes()) {
+			view.removeChild(view.getFirstChild());
+		}
 		saveRegistry();
 	} catch (Exception exc) {
 		// ignore the exception - reg is not welformed
 	}
+}
+/**
+ * This method exports a module to the filesystem.
+ *
+ * @param moduleName the name of the module to be exported.
+ * @param String[] an array of resources to be exported.
+ * @param fileName the name of the file to write the export to.
+ */
+public void exportModule(String moduleName, String[] resources, String fileName) throws CmsException {
+	// check if the user is allowed to import a module.
+
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'exportModule'", CmsException.C_REGISTRY_ERROR);
+	}
+
+	CmsExport exp = new CmsExport(fileName, resources, m_cms, getModuleElement(moduleName));
 }
 	/**
 	 * Gets a description of this content type.
@@ -1417,7 +1434,8 @@ private void setModuleData(String module, String dataName, String value) {
 	try {
 		// TODO: check the access rights!
 		Element moduleElement = getModuleElement(module);
-		moduleElement.getElementsByTagName(dataName).item(0).getFirstChild().setNodeValue(value);
+		Node tag = moduleElement.getElementsByTagName(dataName).item(0);
+		setTagValue(tag, value);
 		// save the registry
 		saveRegistry();
 	} catch (Exception exc) {
@@ -1435,24 +1453,27 @@ private void setModuleData(String module, String dataName, String value) {
 public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) {
 	try {
 		Element module = getModuleElement(modulename);
-		Element oldDependencies = (Element) (module.getElementsByTagName("dependencies").item(0));
-		Element newDependencies = m_xmlReg.createElement("dependencies");
+		Element dependencies = (Element) (module.getElementsByTagName("dependencies").item(0));
 
+		// delete all subnodes
+		while(dependencies.hasChildNodes()) {
+			dependencies.removeChild(dependencies.getFirstChild());
+		}
+		
 		// create the new dependencies
 		for (int i = 0; i < modules.size(); i++) {
+			Element dependency = m_xmlReg.createElement("dependency");
+			dependencies.appendChild(dependency);
 			Element name = m_xmlReg.createElement("name");
 			Element min = m_xmlReg.createElement("minversion");
 			Element max = m_xmlReg.createElement("maxversion");
-			name.setNodeValue((String) modules.elementAt(i));
-			min.setNodeValue((String) minVersions.elementAt(i));
-			max.setNodeValue((String) maxVersions.elementAt(i));
-			newDependencies.appendChild(name);
-			newDependencies.appendChild(min);
-			newDependencies.appendChild(max);
+			name.appendChild(m_xmlReg.createTextNode(modules.elementAt(i).toString()));
+			min.appendChild(m_xmlReg.createTextNode(minVersions.elementAt(i).toString()));
+			max.appendChild(m_xmlReg.createTextNode(maxVersions.elementAt(i).toString()));
+			dependency.appendChild(name);
+			dependency.appendChild(min);
+			dependency.appendChild(max);
 		}
-
-		// replace the dependencies with the new one
-		module.replaceChild(oldDependencies, newDependencies);
 
 		// save the registry	
 		saveRegistry();
@@ -1656,6 +1677,49 @@ public void setModuleParameter(String modulename, String parameter, boolean valu
 	setModuleParameter(modulename, parameter, value + "");
 }
 /**
+ * Sets the module dependencies for the module.
+ *
+ * @param module String the name of the module to check.
+ * @param names Vector with parameternames
+ * @param descriptions Vector with parameterdescriptions
+ * @param types Vector with parametertypes (string, float,...)
+ * @param values Vector with defaultvalues for parameters
+ */
+public void setModuleParameterdef(String modulename, Vector names, Vector descriptions, Vector types, Vector values) {
+	try {
+		Element module = getModuleElement(modulename);
+		Element params = (Element) (module.getElementsByTagName("parameters").item(0));
+
+		// delete all subnodes
+		while(params.hasChildNodes()) {
+			params.removeChild(params.getFirstChild());
+		}
+		
+		// create the new parameters
+		for (int i = 0; i < names.size(); i++) {
+			Element para = m_xmlReg.createElement("para");
+			params.appendChild(para);
+			Element name = m_xmlReg.createElement("name");
+			Element desc = m_xmlReg.createElement("description");
+			Element type = m_xmlReg.createElement("type");
+			Element value = m_xmlReg.createElement("value");
+			name.appendChild(m_xmlReg.createTextNode(names.elementAt(i).toString()));
+			desc.appendChild(m_xmlReg.createTextNode(descriptions.elementAt(i).toString()));
+			type.appendChild(m_xmlReg.createTextNode(types.elementAt(i).toString()));
+			value.appendChild(m_xmlReg.createTextNode(values.elementAt(i).toString()));
+			para.appendChild(name);
+			para.appendChild(desc);
+			para.appendChild(type);
+			para.appendChild(value);
+		}
+
+		// save the registry	
+		saveRegistry();
+	} catch (Exception exc) {
+		// ignore the exception - reg is not welformed
+	}
+}
+/**
  * Sets all repositories for a module.
  *
  * @param String modulname the name of the module.
@@ -1665,22 +1729,24 @@ public void setModuleRepositories(String modulename, String[] repositories) {
 	String[] retValue = null;
 	try {
 		Element module = getModuleElement(modulename);
-		Element oldRepository = (Element) (module.getElementsByTagName("repository").item(0));
+		Element repository = (Element) (module.getElementsByTagName("repository").item(0));
 
-		Element newRepository = m_xmlReg.createElement("reporsitory");
+		// delete all subnodes
+		while(repository .hasChildNodes()) {
+			repository .removeChild(repository .getFirstChild());
+		}
 
 		// create the new repository
 		for(int i = 0; i < repositories.length; i++) {
 			Element path = m_xmlReg.createElement("path");
-			path.setNodeValue(repositories[i]);
-			newRepository.appendChild(path);
+			path.appendChild(m_xmlReg.createTextNode(repositories[i]));
+			repository .appendChild(path);
 		}
-		// replace the repository with the new one
-		module.replaceChild(oldRepository, newRepository);
 
 		// save the registry	
 		saveRegistry();
 	} catch (Exception exc) {
+		exc.printStackTrace();
 		// ignore the exception - reg is not welformed
 	}
 }
@@ -1704,11 +1770,27 @@ public void setModuleView(String modulename, String viewname, String viewurl) {
 	try {
 		Element module = getModuleElement(modulename);
 		Element view = (Element) (module.getElementsByTagName("view").item(0));
-		view.getElementsByTagName("name").item(0).getFirstChild().setNodeValue(viewname);
-		view.getElementsByTagName("url").item(0).getFirstChild().setNodeValue(viewurl);
+		if(!view.hasChildNodes()) {
+			view.appendChild(m_xmlReg.createElement("name"));
+			view.appendChild(m_xmlReg.createElement("url"));
+		}
+		setTagValue(view.getElementsByTagName("name").item(0), viewname);
+		setTagValue(view.getElementsByTagName("url").item(0), viewurl);
 		saveRegistry();
 	} catch (Exception exc) {
 		// ignore the exception - reg is not welformed
+	}
+}
+/**
+ * Creates or replaces a textvalue for a parent node.
+ * @param Node to set the textvalue.
+ * @param String the value to be set.
+ */
+private void setTagValue(Node node, String value) {
+	if (node.hasChildNodes()) {
+		node.getFirstChild().setNodeValue(value);
+	} else {
+		node.appendChild(m_xmlReg.createTextNode(value));
 	}
 }
 }

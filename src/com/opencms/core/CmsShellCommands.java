@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/11/01 13:38:43 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/11/01 18:15:32 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.13 $ $Date: 2000/11/01 13:38:43 $
+ * @version $Revision: 1.14 $ $Date: 2000/11/01 18:15:32 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -371,20 +371,6 @@ public void copyResourceToProject(String fromProjectId, String resource)
 		}		
 	}
 /**
- * Creates a module in the registry.
- * 
- * @param String modulename the name of the module.
- */
-public void createModule(String modulename) {
-	// create the module
-	try {
-		I_CmsRegistry reg = m_cms.getRegistry();
-		reg.createModule(modulename, "", "", "", 0, 0);
-	} catch (Exception exc) {
-		CmsShell.printException(exc);
-	}
-}
-/**
  * This method creates a new module in the repository.
  *
  * @param String modulename the name of the module.
@@ -500,6 +486,19 @@ public void createModule(String modulename, String niceModulename, String descri
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * This method deletes the view for an module.
+ *
+ * @param String the name of the module.
+ */
+public void deleteModuleView(String modulename) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.deleteModuleView(modulename);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Deletes a project.
 	 * 
@@ -588,6 +587,22 @@ public void createModule(String modulename, String niceModulename, String descri
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * Exports a module.
+ * 
+ * @param modulename the name of the module to export
+ * @param resource the folder to export.
+ * @param filename the name of the file to export to.
+ */
+public void exportModule(String modulename, String resource, String filename) {
+	try {
+		String[] resources = {resource};
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.exportModule(modulename, resources, filename);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Exports cms-resources to zip.
 	 * 
@@ -745,7 +760,7 @@ public void createModule(String modulename, String niceModulename, String descri
 		}
 	}
 	/**
-	 * Imports a module into the cms.
+	 * Prints out all files for a module.
 	 * 
 	 * @param moduleZip The file-name of module to import.
 	 */
@@ -764,68 +779,90 @@ public void createModule(String modulename, String niceModulename, String descri
 			CmsShell.printException(exc);
 		}
 	}
-	/**
-	 * Imports a module into the cms.
-	 * 
-	 * @param moduleZip The file-name of module to import.
-	 */
-	public void getModuleInformations() {
-		try {
-			I_CmsRegistry reg = m_cms.getRegistry();
-			java.util.Enumeration names = reg.getModuleNames();
+/**
+ * Imports a module into the cms.
+ * 
+ * @param moduleZip The file-name of module to import.
+ */
+public void getModuleInfo() {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		java.util.Enumeration names = reg.getModuleNames();
 
-			// print out the available modules
-			while (names.hasMoreElements()) {
-				String name = (String) names.nextElement();
-				System.out.println("\nModule: " + name + " v" + reg.getModuleVersion(name));
-				System.out.println("\tDescription: " + reg.getModuleDescription(name));
-				System.out.println("\tAuthor: " + reg.getModuleAuthor(name));
-				System.out.println("\tUploaded by: " + reg.getModuleUploadedBy(name));
-				System.out.println("\tEmail: " + reg.getModuleAuthorEmail(name));
-				System.out.println("\tCreationdate: " + new java.util.Date(reg.getModuleCreateDate(name)));
-				System.out.println("\tUploaddate: " + new java.util.Date(reg.getModuleUploadDate(name)));
-				System.out.println("\tDocumentationPath: " + reg.getModuleDocumentPath(name));
-				System.out.println("\trepositories: ");
-				String[] repositories = reg.getModuleRepositories(name);
+		// print out the available modules
+		while (names.hasMoreElements()) {
+			String name = (String) names.nextElement();
+			getModuleInfo(name);
+		}
+		System.out.println("\ngeneral stuff");
+		System.out.println("\tall repositories: ");
+		String[] repositories = reg.getRepositories();
+		for (int i = 0; i < repositories.length; i++) {
+			System.out.println("\t\t" + repositories[i]);
+		}
+		System.out.println("\tall views: ");
+		java.util.Vector views = new java.util.Vector();
+		java.util.Vector urls = new java.util.Vector();
+		int max = reg.getViews(views, urls);
+		for (int i = 0; i < max; i++) {
+			System.out.println("\t\t" + views.elementAt(i) + " -> " + urls.elementAt(i));
+		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Prints out informations about a module.
+ * 
+ * @param String module the name of the module to get infos about.
+ */
+public void getModuleInfo(String name) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		if (reg.moduleExists(name)) {
+			System.out.println("\nModule: " + name + " v" + reg.getModuleVersion(name));
+			System.out.println("\tNice Name: " + reg.getModuleNiceName(name));
+			System.out.println("\tDescription: " + reg.getModuleDescription(name));
+			System.out.println("\tAuthor: " + reg.getModuleAuthor(name));
+			System.out.println("\tUploaded by: " + reg.getModuleUploadedBy(name));
+			System.out.println("\tEmail: " + reg.getModuleAuthorEmail(name));
+			System.out.println("\tCreationdate: " + new java.util.Date(reg.getModuleCreateDate(name)));
+			System.out.println("\tUploaddate: " + new java.util.Date(reg.getModuleUploadDate(name)));
+			System.out.println("\tDocumentationPath: " + reg.getModuleDocumentPath(name));
+			String[] repositories = reg.getModuleRepositories(name);
+			System.out.println("\trepositories: ");
+			if (repositories != null) {
 				for (int i = 0; i < repositories.length; i++) {
 					System.out.println("\t\t" + repositories[i]);
 				}
-				System.out.println("\tparameters: ");
-				String[] parameters = reg.getModuleParameterNames(name);
+			}
+			String[] parameters = reg.getModuleParameterNames(name);
+			System.out.println("\tparameters: ");
+			if (parameters != null) {
 				for (int i = 0; i < parameters.length; i++) {
 					System.out.print("\t\t" + parameters[i]);
 					System.out.print(" = " + reg.getModuleParameter(name, parameters[i]));
 					System.out.print(" is " + reg.getModuleParameterType(name, parameters[i]));
 					System.out.println("  (" + reg.getModuleParameterDescription(name, parameters[i]) + ")");
 				}
-				System.out.println("\tWiew name: " + reg.getModuleViewName(name));
-				System.out.println("\tWiew url: " + reg.getModuleViewUrl(name));
-				System.out.println("\tDependencies");
-				java.util.Vector modules = new java.util.Vector();
-				java.util.Vector min = new java.util.Vector();
-				java.util.Vector max = new java.util.Vector();
-				reg.getModuleDependencies(name, modules, min, max);
-				for (int i = 0; i < modules.size(); i++) {
-					System.out.println("\t\t" + modules.elementAt(i) + ": min v" + min.elementAt(i) + " max v" + max.elementAt(i));
-				}
 			}
-			System.out.println("\ngeneral stuff");
-			System.out.println("\tall repositories: ");
-			String[] repositories = reg.getRepositories();
-			for (int i = 0; i < repositories.length; i++) {
-				System.out.println("\t\t" + repositories[i]);
+			System.out.println("\tWiew name: " + reg.getModuleViewName(name));
+			System.out.println("\tWiew url: " + reg.getModuleViewUrl(name));
+			System.out.println("\tDependencies");
+			java.util.Vector modules = new java.util.Vector();
+			java.util.Vector min = new java.util.Vector();
+			java.util.Vector max = new java.util.Vector();
+			reg.getModuleDependencies(name, modules, min, max);
+			for (int i = 0; i < modules.size(); i++) {
+				System.out.println("\t\t" + modules.elementAt(i) + ": min v" + min.elementAt(i) + " max v" + max.elementAt(i));
 			}
-			System.out.println("\tall views: ");
-			java.util.Vector views = new java.util.Vector();
-			java.util.Vector urls = new java.util.Vector();
-			int max = reg.getViews(views, urls);
-			for (int i = 0; i < max; i++) {
-				System.out.println("\t\t" + views.elementAt(i) + " -> " + urls.elementAt(i));
-			}
-		} catch (Exception exc) {
-			CmsShell.printException(exc);
+		} else {
+			System.out.println("No module with name " +name);
 		}
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
 	}
+}
 	/**
 	 * Returns the parent group of a group<P/>
 	 * 
@@ -1395,7 +1432,7 @@ public void printHelpText()
 	 * @param name The name of the propertydefinition to read.
 	 * @param resourcetype The name of the resource type for the propertydefinition.
 	 */
-	public void readpropertydefinition(String name, String resourcetype) {
+	public void readPropertydefinition(String name, String resourcetype) {
 		try {
 			System.out.println( m_cms.readPropertydefinition(name, resourcetype) );
 		} catch( Exception exc ) {
@@ -1479,6 +1516,135 @@ public void printHelpText()
 			CmsShell.printException(exc);
 		}
 	}
+/**
+ * This method sets the author of the module.
+ *
+ * @param String the name of the module.
+ * @param String the name of the author.
+ */
+public void setModuleAuthor(String modulename, String author) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.setModuleAuthor(modulename, author);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * This method sets the email of author of the module.
+ *
+ * @param String the name of the module.
+ * @param String the email of author of the module.
+ */
+public void setModuleAuthorEmail(String modulename, String email) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.setModuleAuthorEmail(modulename, email);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Sets the create date of the module.
+ *
+ * @param String the name of the module.
+ * @param long the create date of the module.
+ */
+public void setModuleCreateDate(String modulname, String createdate) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		long date = Long.parseLong(createdate);
+		reg.setModuleCreateDate(modulname, date);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Sets the description of the module.
+ *
+ * @param String the name of the module.
+ * @param String the description of the module.
+ */
+public void setModuleDescription(String module, String description) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.setModuleDescription(module, description);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Sets the url to the documentation of the module.
+ * 
+ * @param String the name of the module.
+ * @param java.lang.String the url to the documentation of the module.
+ */
+public void setModuleDocumentPath(String modulename, String url) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.setModuleDocumentPath(modulename, url);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Sets the classname, that receives all maintenance-events for the module.
+ * 
+ * @param String the name of the module.
+ * @param java.lang.Class that receives all maintenance-events for the module.
+ */
+public void setModuleMaintenanceEventClass(String modulname, String classname) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.setModuleMaintenanceEventClass(modulname, classname);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Sets the description of the module.
+ *
+ * @param String the name of the module.
+ * @param String the nice name of the module.
+ */
+public void setModuleNiceName(String module, String nicename) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.setModuleNiceName(module, nicename);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * This method sets the version of the module.
+ *
+ * @param String the name of the module.
+ * @param the version of the module.
+ */
+public void setModuleVersion(String modulename, String version) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		int ver = Integer.parseInt(version);
+		reg.setModuleVersion(modulename, ver);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * Sets a view for a module
+ * 
+ * @param String the name of the module.
+ * @param String the name of the view, that is implemented by the module.
+ * @param String the url of the view, that is implemented by the module.
+ */
+public void setModuleView(String modulename, String viewname, String viewurl) {
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.setModuleView(modulename, viewname, viewurl);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/** 
 	 * Sets the password for a user.
 	 * 
@@ -1673,7 +1839,7 @@ public void printHelpText()
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void writepropertydefinition(String name, 
+	public void writePropertydefinition(String name, 
 									String resourcetype, 
 									String type) {
 		try {

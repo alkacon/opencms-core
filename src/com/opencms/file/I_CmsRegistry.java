@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/11/01 13:38:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/11/01 18:15:32 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/11/01 13:38:44 $
+ * @version $Revision: 1.15 $ $Date: 2000/11/01 18:15:32 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -45,7 +45,6 @@ public interface I_CmsRegistry extends Cloneable {
 	* The name of the folder to extend the exportpath
 	*/
 	public final String C_MODULE_PATH="modules/";
-
 
 /**
  * This method clones the registry.
@@ -98,6 +97,14 @@ public void deleteModule(String module, Vector exclusion) throws CmsException;
  * @param String the name of the module.
  */
 public void deleteModuleView(String modulename);
+/**
+ * This method exports a module to the filesystem.
+ *
+ * @param moduleName the name of the module to be exported.
+ * @param String[] an array of resources to be exported.
+ * @param fileName the name of the file to write the export to.
+ */
+public void exportModule(String moduleName, String[] resources, String fileName) throws CmsException;
 /**
  * This method returns the author of the module.
  *
@@ -647,6 +654,16 @@ public void setModuleParameter(String modulename, String parameter, String value
  * @param the value to set for the parameter.
  */
 public void setModuleParameter(String modulename, String parameter, boolean value) throws CmsException;
+/**
+ * Sets the module dependencies for the module.
+ *
+ * @param module String the name of the module to check.
+ * @param names Vector with parameternames
+ * @param descriptions Vector with parameterdescriptions
+ * @param types Vector with parametertypes (string, float,...)
+ * @param values Vector with defaultvalues for parameters
+ */
+public void setModuleParameterdef(String modulename, Vector names, Vector descriptions, Vector types, Vector values);
 /**
  * Sets all repositories for a module.
  *

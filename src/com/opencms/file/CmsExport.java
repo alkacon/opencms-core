@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/08/22 13:22:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/11/01 18:15:32 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/08/22 13:22:48 $
+ * @version $Revision: 1.9 $ $Date: 2000/11/01 18:15:32 $
  */
 public class CmsExport implements I_CmsConstants {
 	
@@ -97,13 +97,40 @@ public class CmsExport implements I_CmsConstants {
 	 * This constructs a new CmsImport-object which imports the resources.
 	 * 
 	 * @param importFile the file or folder to import from.
+	 * @param importPath the path to the cms to import into.
+	 * @param cms the cms-object to work with.
+	 * @param Node moduleNode module informations in a Node for module-export.
+	 * @exception CmsException the CmsException is thrown if something goes wrong.
+	 */
+	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, Node moduleNode) 
+		throws CmsException {
+		this(exportFile, exportPaths, cms, false, moduleNode);
+	}
+/**
+ * This constructs a new CmsImport-object which imports the resources.
+ * 
+ * @param importFile the file or folder to import from.
+ * @param exportPaths the paths of folders and files to write into the exportFile
+ * @param cms the cms-object to work with.
+ * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
+ *        exportPaths are included
+ * @exception CmsException the CmsException is thrown if something goes wrong.
+ */
+public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem) throws CmsException {
+	this(exportFile, exportPaths, cms, excludeSystem, null);
+}
+	/**
+	 * This constructs a new CmsImport-object which imports the resources.
+	 * 
+	 * @param importFile the file or folder to import from.
 	 * @param exportPaths the paths of folders and files to write into the exportFile
 	 * @param cms the cms-object to work with.
 	 * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
 	 *        exportPaths are included
+	 * @param Node moduleNode module informations in a Node for module-export.
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
-	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem) 
+	public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, Node moduleNode) 
 		throws CmsException {
 		
 		m_exportFile = exportFile; 
@@ -124,7 +151,7 @@ public class CmsExport implements I_CmsConstants {
 		getExportResource();
 		
 		// create the xml-config file
-		getXmlConfigFile();
+		getXmlConfigFile(moduleNode);
 		
 		// remove the possible redundancies in the list of paths
 		checkRedundancies(folderNames, fileNames);
@@ -357,8 +384,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 	}
 	/**
 	 * Creates the xml-file and appends the initial tags to it.
+	 * @param Node moduleNode a node with module informations.
 	 */
-	private void getXmlConfigFile() 
+	private void getXmlConfigFile(Node moduleNode) 
 		throws CmsException {
 		
 		try {
@@ -371,6 +399,11 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 			Node exportNode = m_docXml.getFirstChild();
 			exportNode.appendChild( m_docXml.createComment("Creator   : " + m_cms.getRequestContext().currentUser().getName()));
 			exportNode.appendChild( m_docXml.createComment("Createdate: " + Utils.getNiceDate(new Date().getTime())));
+
+			if(moduleNode != null) {
+				// this is a module export - import module informations here
+				exportNode.appendChild(A_CmsXmlContent.getXmlParser().importNode(m_docXml, moduleNode));
+			}
 			
 			m_filesElement = m_docXml.createElement(C_EXPORT_TAG_FILES);
 			m_docXml.getDocumentElement().appendChild(m_filesElement);
