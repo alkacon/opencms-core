@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsDbcp.java,v $
- * Date   : $Date: 2003/05/20 11:31:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/20 11:47:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package com.opencms.dbpool;
 import java.sql.Driver;
 
 import org.apache.commons.dbcp.ConnectionFactory;
-import org.apache.commons.dbcp.DriverConnectionFactory;
+import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.pool.impl.GenericObjectPool;
@@ -42,7 +42,7 @@ import source.org.apache.java.util.Configurations;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/20 11:31:37 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/20 11:47:36 $
  */
 public class CmsDbcp extends Object {
 
@@ -82,12 +82,13 @@ public class CmsDbcp extends Object {
         String password = config.getString(key + "." + C_KEY_PASSWORD);
         String poolUrl = config.getString(key + "." + C_KEY_POOL_URL);
 
-        Driver sqlDriver = (Driver) (Class.forName(jdbcDriver).newInstance());
+        Class.forName(jdbcDriver).newInstance();
         GenericObjectPool connectionPool = new GenericObjectPool(null);
         connectionPool.setMaxActive(maxActive);
         connectionPool.setMaxIdle(maxIdle);
         connectionPool.setMaxWait(maxWait);
-        ConnectionFactory connectionFactory = new DriverConnectionFactory(sqlDriver, jdbcUrl, null);
+
+        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
         PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(connectionFactory, connectionPool, null, null, false, true);
         PoolingDriver driver = new PoolingDriver();
         driver.registerPool(poolUrl, connectionPool);
