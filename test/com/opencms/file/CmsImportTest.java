@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/file/Attic/CmsImportTest.java,v $
- * Date   : $Date: 2003/03/05 18:43:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/03/23 20:57:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -91,17 +91,23 @@ public class CmsImportTest extends TestCase {
         content = CmsImport.setDirectories(content, rules);        
         assertEquals(content, result);        
             
-        content =         
+        content =      
+            ".hbackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1.gif) no-repeat; background-color:#FFFFFF; }\n" +
+            ".hibackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1_cai_cpe.gif); no-repeat; background-color:#FFFFFF; }" +        
             "<img src=\"{OpenCmsContext}/pics/test/\">\n" +
             "picDir=/system/modules/li.castle.frontend/pics/\n" +
             "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";
         
         result =         
+            ".hbackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1.gif) no-repeat; background-color:#FFFFFF; }\n" +
+            ".hibackground {background:url(/lgt/cms/system/modules/li.castle.frontend/pics/bg_1_cai_cpe.gif); no-repeat; background-color:#FFFFFF; }" +        
             "<img src=\"{OpenCmsContext}/system/galleries/pics/test/\">\n" +
             "picDir=/system/modules/li.castle.frontend/pics/\n" +
             "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/system/galleries/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";           
         
-        content = CmsImport.setDirectories(content, rules);        
+        content = CmsImport.setDirectories(content, rules);      
+        
+        System.err.println(content);  
         assertEquals(content, result);           
     }
 
