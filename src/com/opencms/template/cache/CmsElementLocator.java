@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/05/15 10:31:01 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/05/15 14:01:40 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -53,8 +53,11 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
     /**
      * The default constructor for this locator.
      */
-    CmsElementLocator() {
-        m_elements = new CmsLruCache(2000);
+    CmsElementLocator(int cacheSize) {
+        if(cacheSize < 0){
+            cacheSize = 50000;
+        }
+        m_elements = new CmsLruCache(cacheSize);
     }
 
     /**

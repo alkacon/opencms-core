@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2001/05/10 12:32:56 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/15 14:01:40 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -50,9 +50,14 @@ public class CmsElementCache {
 
     private CmsElementLocator m_elementLocator;
 
-    public CmsElementCache() {
-        m_uriLocator = new CmsUriLocator();
-        m_elementLocator = new CmsElementLocator();
+    public CmsElementCache(){
+        m_uriLocator = new CmsUriLocator(10000);
+        m_elementLocator = new CmsElementLocator(50000);
+    }
+
+    public CmsElementCache(int uriCachesize, int elementCachesize) {
+        m_uriLocator = new CmsUriLocator(uriCachesize);
+        m_elementLocator = new CmsElementLocator(elementCachesize);
     }
 
     public CmsUriLocator getUriLocator() {

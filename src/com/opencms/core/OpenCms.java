@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/05/10 12:30:35 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2001/05/15 14:00:35 $
+* Version: $Revision: 1.52 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.51 $ $Date: 2001/05/10 12:30:35 $
+ * @version $Revision: 1.52 $ $Date: 2001/05/15 14:00:35 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -173,12 +173,13 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 
         // Check, if the element cache should be enabled
         m_enableElementCache = conf.getBoolean("elementcache.enabled", false);
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] element cache " + (m_enableElementCache?"en":"dis") + "abled. ");
-            }
-            if(m_enableElementCache) {
+        if(A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] element cache " + (m_enableElementCache?"en":"dis") + "abled. ");
+        }
+        if(m_enableElementCache) {
             try {
-                c_elementCache = new CmsElementCache();
+                c_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000),
+                                                    conf.getInteger("elementcache.elements", 50000));
             }
             catch(Exception e) {
                 if(A_OpenCms.isLogging()) {
