@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/01/04 09:49:13 $
- * Version: $Revision: 1.179 $
+ * Date   : $Date: 2001/01/04 13:53:31 $
+ * Version: $Revision: 1.180 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.179 $ $Date: 2001/01/04 09:49:13 $ * 
+ * @version $Revision: 1.180 $ $Date: 2001/01/04 13:53:31 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -934,11 +934,13 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 	int state = C_STATE_NEW;  
 	// Test if the folder is already there and marked as deleted.
 	// If so, delete it
+	// No, dont delete it, throw exception (h.riege, 04.01.01)
 	try {
 		oldFolder = readFolder(project.getId(), foldername);
 		if (oldFolder.getState() == C_STATE_DELETED) {
-			removeFolder(oldFolder);
-			state = C_STATE_CHANGED;
+			//removeFolder(oldFolder);
+			//state = C_STATE_CHANGED;
+			throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
 		} else {
 			if (oldFolder != null){
 				throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
@@ -1007,11 +1009,13 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlin
 
 	// Test if the file is already there and marked as deleted.
 	// If so, delete it
+	// No, dont delete it, throw exception (h.riege, 04.01.01)
 	try {
 		oldFolder = readFolder(project.getId(), foldername);
 		if (oldFolder.getState() == C_STATE_DELETED) {
-			removeFolder(oldFolder);
-			state = C_STATE_CHANGED;
+			//removeFolder(oldFolder);
+			//state = C_STATE_CHANGED;
+			throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
 		} else {
 			if (oldFolder != null) {
 				throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
