@@ -8,6 +8,19 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.0a22 Giedi Prime: Rabban - 17 March 2000
+
+! A news example is added to the OpenCms. This example shows the usage of content defintions.
+! Adminstration screen for news added to the adminstration section.
+! Folder tree added to several dialogs in the workplace.
+! System preferences ("hammer icon") added to the workplace.
+! Workflow functions are completed.
+! Enhanced content defintion for pages, additional funktions (e.g. save pages) added.
+* Bugfix in filelist, lock and unlock should now update the file state correctly.
+* Malformed HTML code in some workplace elements correctd.
+* Bugfix in login screen, multiple login and re-login is now possible.
+
+
 OpenCms 4.0a21 Giedi Prime: Rabban - 10 March 2000
 
 ! Added new workplace functions: change owner, change group, change type, change access flags.
