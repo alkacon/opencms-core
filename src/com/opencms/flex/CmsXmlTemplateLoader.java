@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/03/07 15:17:20 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/05/13 13:18:20 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,11 @@ package com.opencms.flex;
 
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.I_CmsRequest;
+import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.cache.CmsFlexCache;
+import com.opencms.flex.cache.CmsFlexController;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.launcher.CmsXmlLauncher;
@@ -44,7 +46,10 @@ import com.opencms.util.Encoder;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Implementation of the {@link I_CmsResourceLoader} and 
@@ -58,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.20.2.1 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -125,23 +130,30 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
      * @throws IOException might be thrown in the process of including the JSP 
      * 
      * @see I_CmsResourceLoader
-     * @see #service(CmsObject, CmsResource, CmsFlexRequest, CmsFlexResponse)
+     * @see #service(CmsObject, CmsResource, ServletRequest, ServletResponse)
      */
-    public void load(com.opencms.file.CmsObject cms, com.opencms.file.CmsFile file, javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse res) 
+    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException {    
-        CmsFlexRequest w_req; 
-        CmsFlexResponse w_res;
-        if (req instanceof CmsFlexRequest) {
-            w_req = (CmsFlexRequest)req; 
+        
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+                    
+        CmsFlexRequest f_req; 
+        CmsFlexResponse f_res;
+        
+        if (controller != null) {
+            // re-use currently wrapped request / response
+            f_req = controller.getCurrentRequest();
+            f_res = controller.getCurrentResponse();
         } else {
-            w_req = new CmsFlexRequest(req, file, m_cache, cms); 
-        }        
-        if (res instanceof CmsFlexResponse) {
-            w_res = (CmsFlexResponse)res;              
-        } else {
-            w_res = new CmsFlexResponse(res, false, false, cms.getRequestContext().getEncoding());
-        }                
-        service(cms, file, w_req, w_res);
+            // create new request / response wrappers
+            controller = new CmsFlexController(cms, file, m_cache, req, res);
+            req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
+            f_req = new CmsFlexRequest(req, controller);
+            f_res = new CmsFlexResponse(res, controller, false, false);
+            controller.pushRequest(f_req);
+            controller.pushResponse(f_res);
+        }              
+        service(cms, file, f_req, f_res);
     }
     
     /**
@@ -159,7 +171,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
      * 
      * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
      */    
-    public void service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res)
+    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
     throws ServletException, IOException {
         long timer1 = 0;
         if (DEBUG > 0) {
@@ -175,7 +187,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
         try {                        
             // get the CmsRequest
             byte[] result = null;
-            com.opencms.file.CmsFile fx = req.getCmsObject().readFile(file.getAbsolutePath());            
+            com.opencms.file.CmsFile fx = cms.readFile(file.getAbsolutePath());            
             // care about encoding issues
             String dnc = A_OpenCms.getDefaultEncoding().trim();
             String enc = cms.readProperty(fx.getAbsolutePath(), C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();

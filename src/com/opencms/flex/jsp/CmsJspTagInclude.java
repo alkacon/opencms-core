@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/03/28 10:02:57 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/05/13 13:18:20 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,7 @@ package com.opencms.flex.jsp;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
-import com.opencms.flex.cache.CmsFlexRequest;
-import com.opencms.flex.cache.CmsFlexResponse;
+import com.opencms.flex.cache.CmsFlexController;
 import com.opencms.launcher.CmsXmlLauncher;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -43,6 +42,8 @@ import com.opencms.workplace.I_CmsWpConstants;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -51,7 +52,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.22.2.1 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -217,16 +218,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      */
     public int doEndTag() throws JspException {
         
-        javax.servlet.ServletRequest req = pageContext.getRequest();
-        javax.servlet.ServletResponse res = pageContext.getResponse();
+        ServletRequest req = pageContext.getRequest();
+        ServletResponse res = pageContext.getResponse();
         
         // This will always be true if the page is called through OpenCms 
-        if ((req instanceof com.opencms.flex.cache.CmsFlexRequest) &&
-            (res instanceof com.opencms.flex.cache.CmsFlexResponse)) {
-
-            com.opencms.flex.cache.CmsFlexRequest c_req = (com.opencms.flex.cache.CmsFlexRequest)req;
-            com.opencms.flex.cache.CmsFlexResponse c_res = (com.opencms.flex.cache.CmsFlexResponse)res;    
-
+        if (CmsFlexController.isCmsRequest(req)) {
+            CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME); 
             String target = null;                       
             
             // Try to find out what to do
@@ -236,13 +233,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             } else if (m_property != null) {            
                 // Option 2: target is set with "property" parameter
                 try { 
-                    String prop = c_req.getCmsObject().readProperty(c_req.getCmsRequestedResource(), m_property, true);
+                    String prop = controller.getCmsObject().readProperty(controller.getCmsObject().getRequestContext().getUri(), m_property, true);
                     if (prop != null) target = prop + getSuffix();
                 } catch (Exception e) {} // target will be null
             } else if (m_attribute != null) {            
                 // Option 3: target is set in "attribute" parameter
                 try { 
-                    String attr = (String)c_req.getAttribute(m_attribute);
+                    String attr = (String)req.getAttribute(m_attribute);
                     if (attr != null) target = attr + getSuffix();
                 } catch (Exception e) {} // target will be null
             } else {
@@ -259,7 +256,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             } 
               
             // no perfrom the include action
-            includeTagAction(pageContext, target, m_element, m_parameterMap, c_req, c_res);
+            includeTagAction(pageContext, target, m_element, m_parameterMap, req, res);
             
             // must call release here manually to make sure m_parameterMap is cleared
             release();
@@ -287,12 +284,14 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @param res the current response
      * @throws JspException in case something goes wrong
      */
-    static void includeTagAction(PageContext context, String target, String element, Map paramMap, CmsFlexRequest req, CmsFlexResponse res) 
+    static void includeTagAction(PageContext context, String target, String element, Map paramMap, ServletRequest req, ServletResponse res) 
     throws JspException {
+        
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         
         if (target == null) {
             // set target to default
-            target = req.getCmsObject().getRequestContext().getUri();
+            target = controller.getCmsObject().getRequestContext().getUri();
         }
         
         Map parameterMap = new HashMap();      
@@ -313,15 +312,15 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         // try to figure out if the target is a page or XMLTemplate file        
         boolean isPageTarget = false;         
         try {
-            target = req.toAbsolute(target);
-            CmsResource resource = req.getCmsObject().readFileHeader(target);
-            isPageTarget = ((req.getCmsObject().getResourceType("page").getResourceType() == resource.getType()));
+            target = controller.getCurrentRequest().toAbsolute(target);
+            CmsResource resource = controller.getCmsObject().readFileHeader(target);
+            isPageTarget = ((controller.getCmsObject().getResourceType("page").getResourceType() == resource.getType()));
         } catch (CmsException e) {
             // any exception here and we will treat his as non-Page file
             throw new JspException("File not found: " + target, e);
         }
                 
-        String bodyAttribute = (String) req.getCmsObject().getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);               
+        String bodyAttribute = (String) controller.getCmsObject().getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);               
         if (bodyAttribute == null) {
             // no body attribute is set: this is NOT a sub-element in a XML mastertemplate
             if (isPageTarget) {
@@ -336,7 +335,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             // for other cases setting of "target" is fine 
         } else {
             // body attribute is set: this is a sub-element in a XML mastertemplate
-            if (target.equals(req.getCmsObject().getRequestContext().getUri())) {
+            if (target.equals(controller.getCmsObject().getRequestContext().getUri())) {
                 // target can be ignored, set body attribute as "element replace" parameter  
                 addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + bodyAttribute, true);
                 // redirect target to body loader
@@ -357,17 +356,16 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                
         // save old parameters from request
         Map oldParamterMap = req.getParameterMap();
-        req.addParameterMap(parameterMap);  
+        controller.getCurrentRequest().addParameterMap(parameterMap);  
         
         try {         
             // Write out a C_FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
             context.getOut().print((char)com.opencms.flex.cache.CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
             
             // Add an element to the include list (will be initialized if empty)
-            res.addToIncludeList(target, parameterMap);
+            controller.getCurrentResponse().addToIncludeList(target, parameterMap);
             
-            // CmsResponse w_res = new CmsResponse(c_res, target, true);
-            req.getCmsRequestDispatcher(target).include(req, res);    
+            controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);    
             
         } catch (javax.servlet.ServletException e) {
             if (DEBUG) System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
@@ -378,12 +376,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
             throw new JspException(e);
         } finally {
-            if (oldParamterMap != null) req.setParameterMap(oldParamterMap);            
+            if (oldParamterMap != null) controller.getCurrentRequest().setParameterMap(oldParamterMap);            
         }           
     }
     
 	/**
-     * This methods adds parameters to the FlexRequest. 
+     * This methods adds parameters to the current request.
      * Parameters added here will be treated like parameters from the 
      * HttpRequest on included pages.<p>
      * 

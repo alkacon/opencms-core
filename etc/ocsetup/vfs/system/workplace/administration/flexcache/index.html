@@ -40,20 +40,13 @@ top.head.helpUrl='administration/index.html';
 	com.opencms.flex.jsp.CmsJspActionElement cmsAction = new com.opencms.flex.jsp.CmsJspActionElement(pageContext, request, response);
 	
 	String locale = "en";
-	
-    if (request instanceof CmsFlexRequest) {
-        // out.write("<h3>CmsFlexRequest found!</h3>");
+	CmsFlexController controller = (CmsFlexController)request.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
 
-        CmsFlexRequest req = (CmsFlexRequest)request;
-
-        cache = req.getCmsCache();
-        cms = cmsAction.getCmsObject();
-        // get the current locale
-		locale = com.opencms.workplace.CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-    } else {
-        out.write("<h3>NO CmsFlexRequest!</h3>");
-    }
-
+    cache = controller.getCmsCache();
+    cms = cmsAction.getCmsObject();
+    
+    // get the current locale
+	locale = com.opencms.workplace.CmsXmlLanguageFile.getCurrentUserLanguage(cms);
 	CmsMessages messages = new CmsMessages("com/opencms/workplace/workplace", locale);
 	
 	out.println("<h1>" + messages.key("flexcache.admin.heading") + "</h1>");

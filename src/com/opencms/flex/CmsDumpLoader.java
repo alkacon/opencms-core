@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/05/13 13:18:20 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,15 +34,21 @@ package com.opencms.flex;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
+import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.cache.CmsFlexCache;
+import com.opencms.flex.cache.CmsFlexController;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -52,7 +58,7 @@ import javax.servlet.ServletException;
  * by other loaders. 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.12.2.1 $
  */
 public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implements I_CmsResourceLoader {
     
@@ -118,11 +124,15 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
      * @see com.opencms.launcher.I_CmsLauncher
      * @see #service(CmsObject, CmsResource, CmsFlexRequest, CmsFlexResponse)
      */
-    public void load(com.opencms.file.CmsObject cms, com.opencms.file.CmsFile file, javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse res) 
-    throws ServletException, IOException {           
-        CmsFlexRequest w_req = new CmsFlexRequest(req, file, m_cache, cms); 
-        CmsFlexResponse w_res = new CmsFlexResponse(res, false, false, cms.getRequestContext().getEncoding());
-        service(cms, file, w_req, w_res);
+    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException {                   
+        CmsFlexController controller = new CmsFlexController(cms, file, m_cache, req, res);
+        req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
+        CmsFlexRequest f_req = new CmsFlexRequest(req, controller);
+        CmsFlexResponse f_res = new CmsFlexResponse(res, controller, false, false);
+        controller.pushRequest(f_req);
+        controller.pushResponse(f_res);
+        service(cms, file, f_req, f_res);
     }   
     
     /**
@@ -140,7 +150,7 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
      * 
      * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
      */     
-    public void service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res)
+    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
     throws ServletException, IOException {
         long timer1 = 0;
         if (DEBUG > 0) {
@@ -148,7 +158,7 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
             System.err.println("========== DumpLoader loading: " + file.getAbsolutePath());            
         }
         try {
-            res.getOutputStream().write(req.getCmsObject().readFile(file.getAbsolutePath()).getContents());
+            res.getOutputStream().write(cms.readFile(file.getAbsolutePath()).getContents());
         }  catch (CmsException e) {
             System.err.println("Error in CmsDumpLoader: " + e.toString());
             if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));

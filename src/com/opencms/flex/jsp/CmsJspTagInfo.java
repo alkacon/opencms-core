@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInfo.java,v $
- * Date   : $Date: 2003/03/19 08:43:10 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/05/13 13:18:20 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,13 @@ package com.opencms.flex.jsp;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.core.A_OpenCms;
-import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.flex.cache.CmsFlexController;
 
 import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -77,7 +78,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.10.2.1 $
  */
 public class CmsJspTagInfo extends TagSupport {
     
@@ -138,12 +139,10 @@ public class CmsJspTagInfo extends TagSupport {
 		ServletRequest req = pageContext.getRequest();
         
         // This will always be true if the page is called through OpenCms 
-        if (req instanceof CmsFlexRequest) {
-
-            CmsFlexRequest c_req = (CmsFlexRequest)req;
+        if (CmsFlexController.isCmsRequest(req)) {
 
             try {       
-                String result = infoTagAction(m_property, c_req);
+                String result = infoTagAction(m_property, (HttpServletRequest)req);
                 // Return value of selected property
                 pageContext.getOut().print(result);
             } catch (Exception ex) {
@@ -163,9 +162,10 @@ public class CmsJspTagInfo extends TagSupport {
      * @param req the currents request
      * @return the looked up property value 
      */    
-	public static String infoTagAction(String property, CmsFlexRequest req) {   
-             
+	public static String infoTagAction(String property, HttpServletRequest req) {   
 		if (property == null) return "+++ Invalid info property selected: null +++";
+
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         			
 		String result = null;
 		switch (m_userProperty.indexOf(property)) {
@@ -185,16 +185,16 @@ public class CmsJspTagInfo extends TagSupport {
 				result = CmsBase.getWebBasePath();
 				break;
             case 5: // opencms.request.uri
-                result = req.getCmsRequestedResource();
+                result = controller.getCmsObject().getRequestContext().getUri();
                 break;   
             case 6: // opencms.request.element.uri
-                result = req.getCmsResource();
+                result = controller.getCurrentRequest().getElementUri();
                 break;                               
             case 7: // opencms.request.folder
-                result = com.opencms.file.CmsResource.getParent(req.getCmsRequestedResource());
+                result = com.opencms.file.CmsResource.getParent(controller.getCmsObject().getRequestContext().getUri());
                 break;  
             case 8: // opencms.request.encoding
-                result = req.getCmsObject().getRequestContext().getEncoding();
+                result = controller.getCmsObject().getRequestContext().getEncoding();
                 break;          
             default :
                 result = System.getProperty(property);

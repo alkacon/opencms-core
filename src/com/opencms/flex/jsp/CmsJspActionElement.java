@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/04/16 08:02:17 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/05/13 13:18:20 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,7 @@ import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.CmsJspLoader;
 import com.opencms.flex.CmsJspTemplate;
-import com.opencms.flex.cache.CmsFlexRequest;
-import com.opencms.flex.cache.CmsFlexResponse;
+import com.opencms.flex.cache.CmsFlexController;
 import com.opencms.flex.util.CmsMessages;
 import com.opencms.launcher.CmsDumpLauncher;
 import com.opencms.launcher.CmsLinkLauncher;
@@ -80,17 +79,20 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.24.2.1 $
  * 
  * @since 5.0 beta 2
  */
 public class CmsJspActionElement {
 
     /** OpenCms JSP request */
-    private CmsFlexRequest m_request;
+    private HttpServletRequest m_request;
 
     /** OpenCms JSP response */
-    private CmsFlexResponse m_response;
+    private HttpServletResponse m_response;
+    
+    /** OpenCms core CmsObject */
+    private CmsFlexController m_controller;
 
     /** JSP page context */
     private PageContext m_context;    
@@ -136,33 +138,19 @@ public class CmsJspActionElement {
      * instance of this bean.
      * 
      * @param content the JSP page context object
-     * @param req the JSP request casted to a CmsFlexRequest
-     * @param res the JSP response casted to a CmsFlexResponse
-     */
-    public void init(PageContext context, CmsFlexRequest req, CmsFlexResponse res) {
-        m_context = context;
-        m_request = req;
-        m_response = res;
-        m_notInitialized = false;
-    }
-    
-    /**
-     * Initialize the bean with the current page context, request and response.<p>
-     * 
-     * It is required to call one of the init() methods before you can use the 
-     * instance of this bean.
-     * 
-     * @param content the JSP page context object
      * @param req the JSP request 
      * @param res the JSP response 
      */
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-        try {
-            this.init(context, (CmsFlexRequest)req, (CmsFlexResponse)res);
-        } catch (ClassCastException e) {
-            // probably request / response where not of the right type
-            m_notInitialized = true;
+        m_controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        if (m_controller == null) {
+            // controller not found - this request was not initialized properly
+            
         }
+        m_context = context;
+        m_request = req;
+        m_response = res;
+        m_notInitialized = false;
     }    
     
     /**
@@ -237,13 +225,11 @@ public class CmsJspActionElement {
      * the CmsObject in your JSP scriplets.
      *
      * @return the CmsObject from the wrapped request
-     *
-     * @see com.opencms.flex.cache.CmsFlexRequest#getCmsObject()
      */
     public CmsObject getCmsObject() {
         if (m_notInitialized) return null;
         try { 
-            return m_request.getCmsObject();
+            return m_controller.getCmsObject();
         } catch (Throwable t) {
             handleException(t);
         }      
@@ -364,6 +350,18 @@ public class CmsJspActionElement {
         } catch (Throwable t) {
         }
     }    
+    
+    /**
+     * Converts a relative URI in the OpenCms VFS to an absolute one based on 
+     * the location of the currently processed OpenCms URI.
+     * 
+     * @param target the relative URI to convert
+     * @return the target URI converted to an absolute one
+     */
+    public String toAbsolute(String target) {
+        if (m_notInitialized) return C_NOT_INITIALIZED;
+        return m_controller.getCurrentRequest().toAbsolute(target);
+    }
             
     /**
      * Calculate a link with the OpenCms link management,
@@ -476,7 +474,7 @@ public class CmsJspActionElement {
     public String property(String name, String file, String defaultValue, boolean escapeHtml) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
         try {
-            if (file == null) file = m_request.getCmsObject().getRequestContext().getUri();
+            if (file == null) file = m_controller.getCmsObject().getRequestContext().getUri();
             return CmsJspTagProperty.propertyTagAction(name, file, defaultValue, escapeHtml, m_request);
         } catch (Throwable t) {
             handleException(t);
@@ -527,16 +525,16 @@ public class CmsJspActionElement {
                 case 5: // USE_ELEMENT_URI
                 case 6: // USE_THIS
                     // Read properties of this file            
-                    value = getCmsObject().readProperties(m_request.getCmsResource(), false);
+                    value = getCmsObject().readProperties(m_controller.getCurrentRequest().getElementUri(), false);
                     break;
                 case 7: // USE_SEARCH_ELEMENT_URI
                 case 8: // USE_SEARCH_THIS
                     // Try to find property on this file and all parent folders
-                    value = getCmsObject().readProperties(m_request.getCmsResource(), true);
+                    value = getCmsObject().readProperties(m_controller.getCurrentRequest().getElementUri(), true);
                     break;
                 default:
                     // Read properties of the file named in the attribute            
-                    value = getCmsObject().readProperties(m_request.toAbsolute(file), false);
+                    value = getCmsObject().readProperties(toAbsolute(file), false);
             }            
         } catch (Throwable t) {
             handleException(t);
@@ -613,7 +611,7 @@ public class CmsJspActionElement {
     public CmsRequestContext getRequestContext() {
         if (m_notInitialized) return null;
         try {
-            return m_request.getCmsObject().getRequestContext();
+            return m_controller.getCmsObject().getRequestContext();
         } catch (Throwable t) {
             handleException(t);
         }
@@ -631,7 +629,7 @@ public class CmsJspActionElement {
         if (m_notInitialized) return null;
         try {
             if (m_navigation == null) {
-                m_navigation = new CmsJspNavBuilder(m_request.getCmsObject());
+                m_navigation = new CmsJspNavBuilder(m_controller.getCmsObject());
             }
             return m_navigation;
         } catch (Throwable t) {
@@ -705,7 +703,7 @@ public class CmsJspActionElement {
     public String getContent(String target) {
         try {
             I_CmsLauncher launcher = null;
-            target = m_request.toAbsolute(target);
+            target = toAbsolute(target);
             try {
                 CmsResource resource = getCmsObject().readFileHeader(target);
                 launcher = getCmsObject().getLauncherManager().getLauncher(resource.getLauncherType());

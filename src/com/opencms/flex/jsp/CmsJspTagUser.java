@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagUser.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/05/13 13:18:20 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,19 @@
  
 package com.opencms.flex.jsp;
 
-import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsUser;
+import com.opencms.flex.cache.CmsFlexController;
+
+import javax.servlet.ServletRequest;
 
 /**
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  */
 public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -100,12 +106,10 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
 		javax.servlet.ServletRequest req = pageContext.getRequest();
         
         // This will always be true if the page is called through OpenCms 
-        if (req instanceof com.opencms.flex.cache.CmsFlexRequest) {
-
-            com.opencms.flex.cache.CmsFlexRequest c_req = (com.opencms.flex.cache.CmsFlexRequest)req;
+        if (CmsFlexController.isCmsRequest(req)) {
 
             try {       
-                String result = userTagAction(m_property, c_req);
+                String result = userTagAction(m_property, req);
                 // Return value of selected property
                 pageContext.getOut().print(result);
             } catch (Exception ex) {
@@ -123,12 +127,14 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
      * @param property the selected user property
      * @param req the current request
      * @return String the value of the selected user property
-     */
-	static String userTagAction(String property, CmsFlexRequest req) {   
+     */    
+	static String userTagAction(String property, ServletRequest req) {   
+       
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
              
-        com.opencms.file.CmsObject cms = req.getCmsObject();
-        com.opencms.file.CmsUser user = cms.getRequestContext().currentUser();
-        com.opencms.file.CmsGroup group = cms.getRequestContext().currentGroup();
+        CmsObject cms = controller.getCmsObject();
+        CmsUser user = cms.getRequestContext().currentUser();
+        CmsGroup group = cms.getRequestContext().currentGroup();
 
 		if (property == null)
 			property = m_userProperties[0];
@@ -152,11 +158,11 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
 				break;
 			case 5 : // zip
 				result =
-					(String) user.getAdditionalInfo(com.opencms.core.I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
+					(String) user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
 				break;
 			case 6 : // city
 				result =
-					(String) user.getAdditionalInfo(com.opencms.core.I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
+					(String) user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
 				break;
 			case 7 : // description
 				result = user.getDescription();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLabel.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/05/13 13:18:20 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.core.CmsException;
-import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.flex.cache.CmsFlexController;
 import com.opencms.workplace.CmsXmlLanguageFile;
 import com.opencms.workplace.CmsXmlWpLabelDefFile;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -51,7 +51,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.2.1 $
  */
 public class CmsJspTagLabel extends BodyTagSupport {
             
@@ -63,19 +63,16 @@ public class CmsJspTagLabel extends BodyTagSupport {
         ServletRequest req = pageContext.getRequest();
         
         // This will always be true if the page is called through OpenCms 
-        if (req instanceof CmsFlexRequest) {
-
-            CmsFlexRequest c_req = (CmsFlexRequest)req;
-               
-            try {       
+        if (CmsFlexController.isCmsRequest(req)) {
+            try {                       
                 
                 // Get label string from the body and reset body 
                 BodyContent body = this.getBodyContent();
                 String label = body.getString();            
-                body.clearBody();  
+                body.clearBody();                  
                 
                 // Get the result...
-                String result = wpLabelTagAction(label, c_req);
+                String result = wpLabelTagAction(label, req);
                 this.getPreviousOut().print(result);
                 
             } catch (Exception ex) {
@@ -95,13 +92,15 @@ public class CmsJspTagLabel extends BodyTagSupport {
      * @return String the value of the selected lable
      * @throws CmsException in case something goes wrong
      */    
-    public static String wpLabelTagAction(String label, CmsFlexRequest req) 
+    public static String wpLabelTagAction(String label, ServletRequest req) 
     throws CmsException {
         CmsXmlWpLabelDefFile labeldeffile;
         CmsXmlLanguageFile langfile;
         
-        labeldeffile = new CmsXmlWpLabelDefFile(req.getCmsObject(), I_CmsWpConstants.C_VFS_PATH_WORKPLACE +  I_CmsWpConstants.C_VFS_DIR_TEMPLATES + I_CmsWpConstants.C_LABELTEMPLATE);
-        langfile = new CmsXmlLanguageFile(req.getCmsObject());
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        
+        labeldeffile = new CmsXmlWpLabelDefFile(controller.getCmsObject(), I_CmsWpConstants.C_VFS_PATH_WORKPLACE +  I_CmsWpConstants.C_VFS_DIR_TEMPLATES + I_CmsWpConstants.C_LABELTEMPLATE);
+        langfile = new CmsXmlLanguageFile(controller.getCmsObject());
         
         return labeldeffile.getLabel(langfile.getLanguageValue(label));                        
     }

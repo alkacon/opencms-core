@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/05/13 13:18:20 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,12 @@ package com.opencms.flex;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.flex.cache.CmsFlexRequest;
-import com.opencms.flex.cache.CmsFlexResponse;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -66,7 +67,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  * @since FLEX alpha 1
  * 
  * @see com.opencms.flex.cache.CmsFlexRequest
@@ -114,7 +115,7 @@ public interface I_CmsResourceLoader {
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
      * 
-     * @see #service(CmsObject, CmsResource, CmsFlexRequest, CmsFlexResponse)
+     * @see #service(CmsObject, CmsResource, ServletRequest, ServletResponse)
      */
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException;
@@ -134,6 +135,6 @@ public interface I_CmsResourceLoader {
      * 
      * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
      */   
-    public void service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res) 
+    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) 
     throws ServletException, IOException;
 }

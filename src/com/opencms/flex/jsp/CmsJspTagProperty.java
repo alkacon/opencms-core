@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
- * Date   : $Date: 2003/04/08 13:46:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/05/13 13:18:20 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,10 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.core.CmsException;
-import com.opencms.flex.cache.CmsFlexRequest;
+import com.opencms.flex.cache.CmsFlexController;
 import com.opencms.util.Encoder;
+
+import javax.servlet.ServletRequest;
 
 /**
  * Provides access to the properties of a resource in the OpenCms VFS .<p>
@@ -81,7 +83,7 @@ import com.opencms.util.Encoder;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.2.1 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -222,15 +224,13 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
      */
     public int doStartTag() throws javax.servlet.jsp.JspException {
         
-        javax.servlet.ServletRequest req = pageContext.getRequest();
+        ServletRequest req = pageContext.getRequest();
         
         // This will always be true if the page is called through OpenCms 
-        if (req instanceof com.opencms.flex.cache.CmsFlexRequest) {
-
-            com.opencms.flex.cache.CmsFlexRequest c_req = (com.opencms.flex.cache.CmsFlexRequest)req;
-
+        if (CmsFlexController.isCmsRequest(req)) {
+            
             try {       
-                String prop = propertyTagAction(getName(), getFile(), m_defaultValue, m_escapeHtml, c_req);
+                String prop = propertyTagAction(getName(), getFile(), m_defaultValue, m_escapeHtml, req);
                 // Make sure that no null String is returned
                 if (prop == null) prop = "";
                 pageContext.getOut().print(prop);
@@ -253,18 +253,23 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
      * @param escape if the result html should be escaped or not
      * @param req the current request
      * @return String the value of the property or <code>null</code> if not found (and no
-     * defaultValue provided)
+     *      defaultValue provided)
      * @throws CmsException if something goes wrong
      */
-    public static String propertyTagAction(String property, String action, String defaultValue, boolean escape, CmsFlexRequest req) 
-    throws CmsException
-    {
+    public static String propertyTagAction(
+        String property, 
+        String action, 
+        String defaultValue, 
+        boolean escape, 
+        ServletRequest req
+    ) throws CmsException {
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         if (DEBUG > 0) {      
             System.err.println("propertyTagAction() called!\nproperty=" + property 
                 + "\naction=" + action 
                 + "\ndefaultValue=" + defaultValue 
                 + "\nescape=" + escape);
-            System.err.println("propertyTagAction() request URI=" + req.getCmsObject().getRequestContext().getUri());
+            System.err.println("propertyTagAction() request URI=" + controller.getCmsObject().getRequestContext().getUri());
         }
         String value;
         
@@ -275,27 +280,27 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
             case 0: // USE_URI
             case 1: // USE_PARENT
                 // Read properties of parent (i.e. top requested) file
-                value = req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, false, defaultValue); 
+                value = controller.getCmsObject().readProperty(controller.getCmsObject().getRequestContext().getUri(), property, false, defaultValue); 
                 break;
             case 2: // USE_SEARCH
             case 3: // USE_SEARCH_URI
             case 4: // USE_SEARCH_PARENT 
                 // Try to find property on parent file and all parent folders
-                value = req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, true, defaultValue);
+                value = controller.getCmsObject().readProperty(controller.getCmsObject().getRequestContext().getUri(), property, true, defaultValue);
                 break;                
             case 5: // USE_ELEMENT_URI
             case 6: // USE_THIS
                 // Read properties of this file            
-                value = req.getCmsObject().readProperty(req.getCmsResource(), property, false, defaultValue);
+                value = controller.getCmsObject().readProperty(controller.getCurrentRequest().getElementUri(), property, false, defaultValue);
                 break;
             case 7: // USE_SEARCH_ELEMENT_URI
             case 8: // USE_SEARCH_THIS
                 // Try to find property on this file and all parent folders
-                value = req.getCmsObject().readProperty(req.getCmsResource(), property, true, defaultValue);
+                value = controller.getCmsObject().readProperty(controller.getCurrentRequest().getElementUri(), property, true, defaultValue);
                 break;
             default:
                 // Read properties of the file named in the attribute            
-                value = req.getCmsObject().readProperty(req.toAbsolute(action), property, false, defaultValue);
+                value = controller.getCmsObject().readProperty(controller.getCurrentRequest().toAbsolute(action), property, false, defaultValue);
         }           
         if (escape) value = Encoder.escapeHtml(value);    
         if (DEBUG > 0) {

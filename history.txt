@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/04/23 15:24:04 $
- * Version: $Revision: 1.472 $
+ * Date   : $Date: 2003/05/13 13:18:20 $
+ * Version: $Revision: 1.472.2.1 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,11 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.0 (next version)
+OpenCms (next 5.0 update version)
+! Added "getNavigationBreadCrumb()" methods to com.opencms.flex.jsp.CmsJspNavBuilder
+- Refactored JSP integration to be more standards compliant
+
+OpenCms 5.0.0
 ! Added "import.immutable.resources" setting to opencms.properties, all resources
   listed there will be igored during an import if they already exist
 ! The size of the file upload can now be limited with the opencms.properties setting "workplace.file.maxuploadsize"
