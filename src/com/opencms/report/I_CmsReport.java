@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/I_CmsReport.java,v $
- * Date   : $Date: 2002/12/16 13:16:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/01/29 17:23:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.linkmanagement.CmsPageLinks;
  * @author Hanjo Riege
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public interface I_CmsReport {
 
@@ -48,7 +48,7 @@ public interface I_CmsReport {
     public static final int C_FORMAT_OK = 4;      
         
     /** The name of the property file */
-    public static final String C_BUNDLE_NAME = "com.opencms.report.report";
+    public static final String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
         
     /**
      * Adds a line break to the report.<p>
