@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
+ * Date   : $Date: 2001/01/08 10:57:56 $
  * Version: $ $
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.10 $ $Date: 2001/01/08 10:57:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -164,14 +164,22 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
 				// check if a new filename is given
 				if (newname != null) {
 					filename=newname;
-				} 
-				CmsFile file=cms.createFile(foldername, filename, filecontent, C_TYPE_IMAGE_NAME); 
+				}
+				try{ 
+					CmsFile file=cms.createFile(foldername, filename, filecontent, C_TYPE_IMAGE_NAME);
 				 
-				if (title!= null) {
-					String filepath= file.getAbsolutePath();
-					cms.lockResource(filepath);
-					cms.writeProperty(filepath, C_PROPERTY_TITLE,title); 
-				} 
+					if (title!= null) {
+						String filepath= file.getAbsolutePath();
+						cms.lockResource(filepath);
+						cms.writeProperty(filepath, C_PROPERTY_TITLE,title); 
+					} 
+				}catch (CmsException ex){
+					xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+					templateSelector="error"; 
+					xmlTemplateDocument.setData("link_value", foldername); 
+					xmlTemplateDocument.setData("lasturl", lasturl);
+					return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+				}
 				
 				try { 
 					cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+lasturl);
