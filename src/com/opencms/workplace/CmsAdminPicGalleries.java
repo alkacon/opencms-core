@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/07/26 12:13:17 $
+* Date   : $Date: 2001/07/27 14:26:45 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.20 $ $Date: 2001/07/26 12:13:17 $
+ * @version $Revision: 1.21 $ $Date: 2001/07/27 14:26:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -83,11 +83,21 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         // read the parameters
         String foldername = (String)parameters.get(C_PARA_FOLDER);
         if(foldername != null) {
-            int index = foldername.indexOf("/", 6);
-            if(index != foldername.lastIndexOf("/") ){
-                foldername = foldername.substring(0,index);
-                parameters.put(C_PARA_FOLDER, foldername);
+            try {
+                CmsFolder fold = cms.readFolder(foldername);
+                System.out.println(fold.getParent());
+                if(!(fold.getParent().equals("/pics/"))) {
+                    foldername = "/pics/";
+                }
+                if(fold.getState() == C_STATE_DELETED) {
+                    foldername = "/pics/";
+                }
+            } catch(CmsException exc) {
+                // couldn't read the folder - switch to /download/
+                foldername = "/pics/";
             }
+
+            parameters.put(C_PARA_FOLDER, foldername);
 
             // need the foldername in the session in case of an exception in the dialog
             session.putValue(C_PARA_FOLDER, foldername);

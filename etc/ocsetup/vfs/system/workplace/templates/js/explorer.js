@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/07/27 09:09:48 $
-  * Version: $Revision: 1.36 $
+  * Date   : $Date: 2001/07/27 14:26:45 $
+  * Version: $Revision: 1.37 $
   *
   * Copyright (C) 2000  The OpenCms Group
   *
@@ -937,7 +937,6 @@ function enableNewButton(showit){
  }
 
  function openthisfolderflat(thisdir){
-    // alert(flaturl + "?folder=" + vr.actDirectory+thisdir+"/\"");
     eval(flaturl + "?folder=" + vr.actDirectory+thisdir+"/\"");
  }
 
@@ -1039,11 +1038,11 @@ function enableNewButton(showit){
 
          wo.writeln("<td align=center>");
 
-         if(!this.projectView) {
+         if(!((this.projectView) || (this.flaturl != ""))) {
             wo.writeln(brcfg.showKontext + i + "'," + i + brcfg.showKontextEnd);
          }
          wo.write("<img src='"+vi.resource[vi.liste[i].type].icon+"' border=0 width=16 height=16>");
-         if(!this.projectView) {         
+         if(!((this.projectView) || (this.flaturl != ""))) {
             wo.write("</a>");
          }
          wo.writeln("</td>");
@@ -1096,6 +1095,11 @@ function enableNewButton(showit){
                  if(this.projectView) {
                     wo.write("&nbsp;"+ vi.liste[i].path + "&nbsp;");
                     wo.writeln("</td>");
+                 } else if(flaturl != ""){
+                    wo.write("<a href=javascript:top." + openfolderMethod + "('"+vi.liste[i].name+"'); class="+ssclass+">");
+                    wo.write("&nbsp;"+vi.liste[i].name+"&nbsp;");
+                    wo.write("</a>");
+                    wo.writeln("</td>");
                  } else {
                     wo.write("<a href=javascript:top." + openfolderMethod + "('"+vi.liste[i].name+"'); class="+ssclass+">");
                     wo.write("&nbsp;"+vi.liste[i].name+"&nbsp;");
@@ -1104,9 +1108,12 @@ function enableNewButton(showit){
                  }
              } else {
                  if(this.projectView) {                
+                    wo.write("<td  nowrap class="+ssclass+">");
+                    wo.writeln("&nbsp;" + vi.liste[i].path + vi.liste[i].name+ "&nbsp;</td>");
+                 } else if(flaturl != ""){
                     wo.write("<td  nowrap class="+ssclass+"><a href=javascript:top.openwinfull('");
-                    wo.write(vr.servpath + vi.liste[i].path + vi.liste[i].name);
-                    wo.writeln("'); class="+ssclass+">&nbsp;" + vi.liste[i].path + vi.liste[i].name+ "&nbsp;</a></td>");
+                    wo.write(vr.servpath+vr.actDirectory+vi.liste[i].name);
+                    wo.writeln("'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>");
                  } else {
                     wo.write("<td  nowrap class="+ssclass+"><a href=javascript:top.openwinfull('");
                     wo.write(vr.servpath+vr.actDirectory+vi.liste[i].name);

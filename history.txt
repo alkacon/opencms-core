@@ -19,6 +19,8 @@ OpenCms 4.3.35 Bela Tegeuse - ?? July 2001
   do this with new method readProjectView
 - Switched project-resent-files to new filelist.
 - Import: if a folder is already there the properties, owner, group and access are updated if necessary. 
+- Enabled the element-cache as a default.
+- Disabled the contextmenus in project-overview and gallery-overviews.
 
 OpenCms 4.3.34 Bela Tegeuse - 26 July 2001
 * Overwrought the import. Now the reource type classes import the resources.
