@@ -12,6 +12,11 @@ OpenCms 4.7.2 Ecaz - 25 March 2002
 ! new values for the property 'export'. https_enabled and dynamic_https_enabled say that
   the link to such a resource from a https page wont switch to http. Used to show pics
   on a https page.
+* Fixed bug in channellist when a channel is marked as deleted: now all the channels are displayed 
+  except the channels inside a deleted folder
+* Fixed bugs in Oracle-PL/SQL-procedures: when publishing a project all the actions for publishing
+  a resource are done immediately (e.g. deleting the resource and changing the state). 
+  For returning the cursors whith the list of changed resources pl/slq-tables are used.
 - Copied the web-app_2_3.dtd for distribution with OpenCms. Tomcat with no network
   access should start without getting the web-app_2_3.dtd from network.
 - Now the character $ is allowed in resourcenames
