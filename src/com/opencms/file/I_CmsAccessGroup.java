@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/22 17:56:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/03 09:54:34 $
  */
 interface I_CmsAccessGroup {
 		
@@ -84,7 +84,7 @@ interface I_CmsAccessGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	public A_CmsGroup addGroup(String name, String description, int flags,String parent)
+	public A_CmsGroup createGroup(String name, String description, int flags,String parent)
 		throws CmsException;
 
      /**

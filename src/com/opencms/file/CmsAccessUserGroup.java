@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/03 09:54:34 $
  */
  class CmsAccessUserGroup implements I_CmsAccessUserGroup, I_CmsConstants {
 
@@ -218,7 +218,7 @@ import com.opencms.core.*;
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 
 	 */
-	 public A_CmsUser addUser(String name, String password, 
+	 public A_CmsUser createUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
         throws CmsException {
@@ -228,7 +228,7 @@ import com.opencms.core.*;
         //get the group id of the user default group
         defaultGroup=m_accessGroup.readGroup(group);
         //add the basic user data in the user database.
-        user=m_accessUser.addUser(name,password,description);
+        user=m_accessUser.createUser(name,password,description);
         //store the additional information in the additional information database.
         additionalInfos.put(C_ADDITIONAL_INFO_DEFAULTGROUP_ID,new Integer(defaultGroup.getId()));
         additionalInfos.put(C_ADDITIONAL_INFO_FLAGS,new Integer(flags));
@@ -301,10 +301,10 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	 public A_CmsGroup addGroup(String name, String description, int flags,String parent)
+	 public A_CmsGroup createGroup(String name, String description, int flags,String parent)
          throws CmsException {
             A_CmsGroup group= null;
-            group=m_accessGroup.addGroup(name,description,flags,parent);
+            group=m_accessGroup.createGroup(name,description,flags,parent);
          return group;
      }
 

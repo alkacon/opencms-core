@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/03 09:54:34 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -167,7 +167,7 @@ import com.opencms.core.*;
          
          A_CmsUser user=null;
          //create new user.
-         user=m_accessUserGroup.addUser(name,password,group,description,additionalInfos,flags);
+         user=m_accessUserGroup.createUser(name,password,group,description,additionalInfos,flags);
          //add user to user group.
          m_accessUserGroup.addUserToGroup(name,group);
          return user;
@@ -230,7 +230,7 @@ import com.opencms.core.*;
          throws CmsException {
          
          A_CmsGroup group=null;
-         group=m_accessUserGroup.addGroup(name,description,flags,parent);    
+         group=m_accessUserGroup.createGroup(name,description,flags,parent);    
          return group;         
      }
 

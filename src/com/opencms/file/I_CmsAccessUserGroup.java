@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/03 09:54:34 $
  */
 interface I_CmsAccessUserGroup {
 
@@ -98,7 +98,7 @@ interface I_CmsAccessUserGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public A_CmsUser addUser(String name, String password, 
+	public A_CmsUser createUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
 		throws CmsException;
@@ -141,7 +141,7 @@ interface I_CmsAccessUserGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	public A_CmsGroup addGroup(String name, String description, int flags,String parent)
+	public A_CmsGroup createGroup(String name, String description, int flags,String parent)
 		throws CmsException;
 
      /**

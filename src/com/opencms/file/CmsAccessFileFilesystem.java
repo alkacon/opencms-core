@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/23 16:47:39 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/03 09:54:34 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -44,7 +44,7 @@ import com.opencms.core.*;
       }
     
 	/**
-	 * Creates a new file with the overgiven content and resourcetype.
+	 * Creates a new file with the given content and resourcetype.
      *
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * 

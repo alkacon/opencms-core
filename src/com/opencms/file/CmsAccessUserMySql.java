@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/03 09:54:34 $
  */
 class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
      
@@ -250,7 +250,7 @@ class CmsAccessUserMySql implements I_CmsAccessUser, I_CmsConstants  {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	 public A_CmsUser addUser(String name, String password, 
+	 public A_CmsUser createUser(String name, String password, 
 					   String description) 				
         throws CmsException {
 
