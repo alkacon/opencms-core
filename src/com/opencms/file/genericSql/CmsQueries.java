@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/22 08:25:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/09/22 09:22:45 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.8 $ $Date: 2000/09/22 08:25:16 $
+ * @version $Revision: 1.9 $ $Date: 2000/09/22 09:22:45 $
  */
 public class CmsQueries
 {
@@ -305,7 +305,10 @@ public class CmsQueries
 
 	public Integer C_SITE_PROJECTS_WRITE_KEY = new Integer(456);
 	public String C_SITE_PROJECTS_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "SITE_PROJECTS VALUES(?,?)";
-	
+
+	// statement needed for creating a sitematrix
+	public Integer C_GET_SITEMATRIXINFO_KEY = new Integer(459);
+	public String C_GET_SITEMATRIXINFO = "SELECT SITE_ID, " + C_DATABASE_PREFIX + "SITES.CATEGORY_ID, " + C_DATABASE_PREFIX + "SITES.LANGUAGE_ID, " + C_DATABASE_PREFIX + "SITES.COUNTRY_ID, " + C_DATABASE_PREFIX + "LANGUAGE.SHORTNAME AS LANG_NAME, " + C_DATABASE_PREFIX + "COUNTRY.SHORTNAME AS COUNTRY_NAME FROM " + C_DATABASE_PREFIX + "SITES," + C_DATABASE_PREFIX + "COUNTRY," + C_DATABASE_PREFIX + "LANGUAGE WHERE " + C_DATABASE_PREFIX + "SITES.LANGUAGE_ID=" + C_DATABASE_PREFIX + "LANGUAGE.LANGUAGE_ID AND " + C_DATABASE_PREFIX + "SITES.COUNTRY_ID=" + C_DATABASE_PREFIX + "COUNTRY.COUNTRY_ID";
 	
 	
 	// Constants for Users table
