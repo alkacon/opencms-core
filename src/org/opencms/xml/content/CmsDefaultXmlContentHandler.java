@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/09 15:59:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/12/09 16:45:54 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
@@ -62,7 +63,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -154,14 +155,30 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Key used to specify the full name of the current user as macro value. */
     public static final String KEY_CURRENT_USER_FULLNAME = "currentuser:fullname";
     
-    /** Key used to specify the address of the current user as macro value. */
-    public static final String KEY_CURRENT_USER_ADDRESS = "currentuser:address";
+    /** Key used to specify the street of the current user as macro value. */
+    public static final String KEY_CURRENT_USER_STREET = "currentuser:street";
+    
+    /** Key used to specify the zip code of the current user as macro value. */
+    public static final String KEY_CURRENT_USER_ZIP = "currentuser:zip";
+    
+    /** Key used to specify the city of the current user as macro value. */
+    public static final String KEY_CURRENT_USER_CITY = "currentuser:city";
     
     /** Key used to specify the email address of the current user as macro value. */
     public static final String KEY_CURRENT_USER_EMAIL = "currentuser:email";
     
+    /** Key used to specify the request uri as macro value. */
+    public static final String KEY_REQUEST_URI = "request:uri";
     
- 
+    /** Key used to specify the folder of the request uri as macro value. */
+    public static final String KEY_REQUEST_FOLDER = "request:folder";
+    
+    /** Key used to specify the request encoding as macro value. */
+    public static final String KEY_REQUEST_ENCODING = "request:encoding";
+    
+    /** Key user to specify the request locale as macro value. */
+    public static final String KEY_REQUEST_LOCALE = "request:locale";
+    
     /** Default message for validation warnings. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = 
         "${validation:path}: " +
@@ -252,10 +269,34 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 return m_cms.getRequestContext().currentUser().getEmail();
             }
             
-            if (KEY_CURRENT_USER_ADDRESS.equals(key) && m_cms != null) {
+            if (KEY_CURRENT_USER_STREET.equals(key) && m_cms != null) {
                 return m_cms.getRequestContext().currentUser().getAddress();
             }      
-           
+
+            if (KEY_CURRENT_USER_ZIP.equals(key) && m_cms != null) {
+                return (String)m_cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
+            }  
+            
+            if (KEY_CURRENT_USER_CITY.equals(key) && m_cms != null) {
+                return (String)m_cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
+            }  
+            
+            if (KEY_REQUEST_URI.equals(key) && m_cms != null) {
+                return m_cms.getRequestContext().getUri();
+            }
+            
+            if (KEY_REQUEST_FOLDER.equals(key) && m_cms != null) {
+                return CmsResource.getParentFolder(m_cms.getRequestContext().getUri());
+            }
+            
+            if (KEY_REQUEST_ENCODING.equals(key) && m_cms != null) {
+                return m_cms.getRequestContext().getEncoding();
+            }
+            
+            if (KEY_REQUEST_LOCALE.equals(key) && m_cms != null) {
+                return m_cms.getRequestContext().getLocale().toString();
+            }
+            
             if (key.startsWith(KEY_LOCALIZED_PREFIX) && m_locale != null) {
                 return key(key.substring(KEY_LOCALIZED_PREFIX.length()), m_locale);
             } 
