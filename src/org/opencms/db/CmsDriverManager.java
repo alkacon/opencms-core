@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/15 15:06:16 $
- * Version: $Revision: 1.215 $
+ * Date   : $Date: 2003/09/15 15:17:23 $
+ * Version: $Revision: 1.216 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.215 $ $Date: 2003/09/15 15:06:16 $
+ * @version $Revision: 1.216 $ $Date: 2003/09/15 15:17:23 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2813,7 +2813,7 @@ public class CmsDriverManager extends Object {
         CmsGroup newRole = m_userDriver.readGroup(newRoleName);
         CmsUser newUser = null;
         if (newUserName.equals("")) {
-            newUser = readUser(m_workflowDriver.findAgent(newRole.getId()));
+            newUser = readUser(m_workflowDriver.readAgent(newRole.getId()));
         } else {
             newUser = readUser(newUserName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         }
@@ -3878,7 +3878,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public String getTaskPar(CmsRequestContext context, int taskId, String parName) throws CmsException {
-        return m_workflowDriver.getTaskPar(taskId, parName);
+        return m_workflowDriver.readTaskParameter(taskId, parName);
     }
 
     /**
@@ -3891,7 +3891,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public int getTaskType(String taskName) throws CmsException {
-        return m_workflowDriver.getTaskType(taskName);
+        return m_workflowDriver.readTaskType(taskName);
     }
 
     /**
@@ -7636,7 +7636,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void setTaskPar(CmsRequestContext context, int taskId, String parName, String parValue) throws CmsException {
-        m_workflowDriver.setTaskPar(taskId, parName, parValue);
+        m_workflowDriver.writeTaskParameter(taskId, parName, parValue);
     }
 
     /**

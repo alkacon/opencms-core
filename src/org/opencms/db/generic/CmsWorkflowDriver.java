@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/09/15 15:06:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/15 15:17:23 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/09/15 15:06:15 $
+ * @version $Revision: 1.15 $ $Date: 2003/09/15 15:17:23 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -218,7 +218,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsUUID findAgent(CmsUUID roleId) throws CmsException {
+    public CmsUUID readAgent(CmsUUID roleId) throws CmsException {
         CmsUUID result = CmsUUID.getNullUUID();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -271,7 +271,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      * @return the parameter value
      * @throws CmsException if something goes wrong
      */
-    public String getTaskPar(int taskId, String parname) throws CmsException {
+    public String readTaskParameter(int taskId, String parname) throws CmsException {
 
         String result = null;
         ResultSet res = null;
@@ -305,7 +305,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public int getTaskType(String taskName) throws CmsException {
+    public int readTaskType(String taskName) throws CmsException {
         int result = 1;
 
         PreparedStatement stmt = null;
@@ -699,7 +699,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public int setTaskPar(int taskId, String parname, String parvalue) throws CmsException {
+    public int writeTaskParameter(int taskId, String parname, String parvalue) throws CmsException {
 
         ResultSet res = null;
         int result = 0;

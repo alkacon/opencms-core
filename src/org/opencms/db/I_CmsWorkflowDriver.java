@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/09/15 15:06:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/15 15:17:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Definitions of all required workflow driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/09/15 15:06:16 $
+ * @version $Revision: 1.11 $ $Date: 2003/09/15 15:17:23 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
@@ -88,16 +88,6 @@ public interface I_CmsWorkflowDriver {
     void endTask(int taskId) throws CmsException;
 
     /**
-     * Finds an agent for a given role (group).
-     * @param roleId The Id for the role (group).
-     *
-     * @return A vector with the tasks
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    CmsUUID findAgent(CmsUUID roleId) throws CmsException;
-
-    /**
      * Forwards a task to another user.
      *
      * @param taskId The id of the task that will be fowarded.
@@ -109,39 +99,27 @@ public interface I_CmsWorkflowDriver {
     void forwardTask(int taskId, CmsUUID newRoleId, CmsUUID newUserId) throws CmsException;
 
     /**
-     * Get a parameter value for a task.<p>
-     *
-     * @param taskId the id of the task
-     * @param parname Name of the parameter
-     * @return the parameter value
-     * @throws CmsException if something goes wrong
-     */
-    String getTaskPar(int taskId, String parname) throws CmsException;
-
-    /**
-     * Get the template task id fo a given taskname.
-     *
-     * @param taskName Name of the Task
-     *
-     * @return id from the task template
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    int getTaskType(String taskName) throws CmsException;
-
-    /**
      * Initializes the SQL manager for this driver.<p>
      *  
      * To obtain JDBC connections from different pools, further 
      * {online|offline|backup} pool Urls have to be specified.
      * 
-     * @param poolUrl the default connection pool URL
      * @return the SQL manager for this driver
      * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
      * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
      * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
      */
     org.opencms.db.generic.CmsSqlManager initQueries();
+
+    /**
+     * Finds an agent for a given role (group).
+     * @param roleId The Id for the role (group).
+     *
+     * @return A vector with the tasks
+     *
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */
+    CmsUUID readAgent(CmsUUID roleId) throws CmsException;
 
     /**
      * Reads a task.<p>
@@ -171,6 +149,16 @@ public interface I_CmsWorkflowDriver {
     Vector readTaskLogs(int taskId) throws CmsException;
 
     /**
+     * Get a parameter value for a task.<p>
+     *
+     * @param taskId the id of the task
+     * @param parname Name of the parameter
+     * @return the parameter value
+     * @throws CmsException if something goes wrong
+     */
+    String readTaskParameter(int taskId, String parname) throws CmsException;
+
+    /**
      * Reads all tasks of a user in a project.<p>
      * 
      * @param project the Project in which the tasks are defined
@@ -186,17 +174,15 @@ public interface I_CmsWorkflowDriver {
     Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) throws CmsException;
 
     /**
-     * Set a Parameter for a task.<p>
+     * Get the template task id fo a given taskname.
      *
-     * @param taskId the task
-     * @param parname the name of the parameter
-     * @param parvalue the value of the parameter
+     * @param taskName Name of the Task
      *
-     * @return The id of the inserted parameter or 0 if the parameter exists for this task.
+     * @return id from the task template
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    int setTaskPar(int taskId, String parname, String parvalue) throws CmsException;
+    int readTaskType(String taskName) throws CmsException;
 
     /**
      * Writes a system task log entry.<p>
@@ -228,6 +214,19 @@ public interface I_CmsWorkflowDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     void writeTaskLog(int taskId, CmsUUID userId, java.sql.Timestamp starttime, String comment, int type) throws CmsException;
+
+    /**
+     * Set a Parameter for a task.<p>
+     *
+     * @param taskId the task
+     * @param parname the name of the parameter
+     * @param parvalue the value of the parameter
+     *
+     * @return The id of the inserted parameter or 0 if the parameter exists for this task.
+     *
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */
+    int writeTaskParameter(int taskId, String parname, String parvalue) throws CmsException;
 
     /**
      * Creates a new tasktype set in the database.<p>
