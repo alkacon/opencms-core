@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/11/02 14:08:33 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/11/03 10:38:47 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2000/11/02 14:08:33 $
+ * @version $Revision: 1.20 $ $Date: 2000/11/03 10:38:47 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -667,6 +667,15 @@ public Class getModuleMaintenanceEventClass(String modulname) {
 	} catch(Exception exc) {
 		return null;
 	}
+}
+/**
+ * Returns the name of the class, that receives all maintenance-events for the module.
+ * 
+ * @parameter String the name of the module.
+ * @return java.lang.Class that receives all maintenance-events for the module.
+ */
+ public String getModuleMaintenanceEventName(String modulname) {
+	return getModuleData(modulname, "maintenance_class"); 
 }
 /**
  * Returns the names of all available modules.
@@ -1414,6 +1423,15 @@ public void setModuleAuthorEmail(String modulename, String email) throws CmsExce
  */
 public void setModuleCreateDate(String modulname, long createdate) throws CmsException {
 	setModuleData(modulname, "creationdate", m_dateFormat.format(new Date(createdate)));
+}
+/**
+ * Sets the create date of the module.
+ *
+ * @param String the name of the module.
+ * @param String the create date of the module. Format: mm.dd.yyyy
+ */
+public void setModuleCreateDate(String modulname, String createdate) throws CmsException {
+	setModuleData(modulname, "creationdate", createdate);
 }
 /**
  * Private method to set module data like author.

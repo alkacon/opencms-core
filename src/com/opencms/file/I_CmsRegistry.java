@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/11/02 14:08:33 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/11/03 10:38:47 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/11/02 14:08:33 $
+ * @version $Revision: 1.17 $ $Date: 2000/11/03 10:38:47 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -166,6 +166,13 @@ public int getModuleFiles(String modulename, Vector retNames, Vector retCodes);
  * @return java.lang.Class that receives all maintenance-events for the module.
  */
 public Class getModuleMaintenanceEventClass(String modulname);
+/**
+ * Returns the name of the class, that receives all maintenance-events for the module.
+ * 
+ * @parameter String the name of the module.
+ * @return java.lang.Class that receives all maintenance-events for the module.
+ */
+public String getModuleMaintenanceEventName(String modulname);
 /**
  * Returns the names of all available modules.
  *
@@ -513,6 +520,13 @@ public void setModuleAuthorEmail(String modulename, String email) throws CmsExce
  * @param long the create date of the module.
  */
 public void setModuleCreateDate(String modulname, long createdate) throws CmsException;
+/**
+ * Sets the create date of the module.
+ *
+ * @param String the name of the module.
+ * @param String the create date of the module. Format: mm.dd.yyyy
+ */
+public void setModuleCreateDate(String modulname, String createdate) throws CmsException;
 /**
  * Sets the module dependencies for the module.
  *
