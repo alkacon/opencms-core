@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/02 15:08:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 
@@ -48,7 +49,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsResourceTypeFolder extends A_CmsResourceType {
 
@@ -98,8 +99,11 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
      */
     public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource filename, int newType) throws CmsException {
         
-        // it is not possible to change the type of a folder
-        throw new CmsNotImplementedException("Folder resource type can not be changed!");
+        if (! OpenCms.getResourceManager().getResourceType(newType).isFolder()) {
+            // it is not possible to change the type of a folder to a file type
+            throw new CmsNotImplementedException("Folder resource type can only be changed to another folder!");
+        }
+        super.chtype(cms, securityManager, filename, newType);         
     }
 
     /**

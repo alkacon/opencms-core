@@ -52,6 +52,7 @@
 						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
 						<separator order="240"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="340"/>
 						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>

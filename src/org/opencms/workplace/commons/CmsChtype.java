@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2004/10/22 10:03:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/02 15:08:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.workplace.commons;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -60,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.0
  */
@@ -114,57 +113,69 @@ public class CmsChtype extends CmsDialog {
             int currentResTypeId = res.getTypeId();
             // get all available explorer type settings
             List resTypes = OpenCms.getWorkplaceManager().getExplorerTypeSettings();
-
+            boolean isFolder = res.isFolder();
             // loop through all visible resource types
             for (int i=0; i<resTypes.size(); i++) {                
+                boolean changeable = false;                
                 // get explorer type settings for current resource type
                 CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)resTypes.get(i);
                 int resTypeId = OpenCms.getResourceManager().getResourceType(settings.getName()).getTypeId();
-                // determine if this resource type is editable for the current user
-                CmsPermissionSet permissions;
-                try {
-                    // get permissions of the current user
-                    permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
-                } catch (CmsException e) {
-                    // error reading the groups of the current user
-                    permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
-                    if (OpenCms.getLog(dialog.getClass()).isErrorEnabled()) {
-                        OpenCms.getLog(dialog.getClass()).error("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
-                    }      
+                // determine if this resTypeId is changeable by currentResTypeId
+                
+                // changeable is true if current resource is a folder and this resource type also
+                if (isFolder && OpenCms.getResourceManager().getResourceType(resTypeId).isFolder()) {
+                    changeable = true;
+                } else if (!isFolder && !OpenCms.getResourceManager().getResourceType(resTypeId).isFolder()) {
+                    // changeable is true if current resource is NOT a folder and this resource type also NOT                    
+                    changeable = true;
+                }   
+                
+                if (changeable) {
+                    // determine if this resource type is editable for the current user
+                    CmsPermissionSet permissions;
+                    try {
+                        // get permissions of the current user
+                        permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
+                    } catch (CmsException e) {
+                        // error reading the groups of the current user
+                        permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+                        if (OpenCms.getLog(dialog.getClass()).isErrorEnabled()) {
+                            OpenCms.getLog(dialog.getClass()).error("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
+                        }      
+                    }
+    
+                    if (permissions.getPermissionString().indexOf("+w") == -1) {
+                        // skip resource types without needed permissions
+                        continue;    
+                    }
+                    // create table row with input radio button
+                    result.append("<tr><td>");
+                    result.append("<input type=\"radio\" name=\"");
+                    result.append(PARAM_NEWRESOURCETYPE);
+                    result.append("\" value=\"");
+                    if (useTypeId) {
+                        // use resource type id as value
+                        result.append(resTypeId);
+                    } else {
+                        // use resource type name as value
+                        result.append(settings.getName());    
+                    }
+                    result.append("\"");
+                    if (resTypeId == currentResTypeId) {
+                        result.append(" checked=\"checked\"");
+                    }
+                    result.append("></td>");
+                    result.append("\t<td><img src=\"");
+                    result.append(getSkinUri());
+                    result.append("filetypes/");
+                    result.append(settings.getIcon());
+                    result.append("\" border=\"0\" title=\"");
+                    result.append(dialog.key(settings.getKey()));
+                    result.append("\"></td>\n");
+                    result.append("<td>");
+                    result.append(dialog.key(settings.getKey()));
+                    result.append("</td></tr>\n");
                 }
-
-                if (permissions.getPermissionString().indexOf("+w") == -1 || settings.getName().equals(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) {
-                    // skip the resource type folder and resource types without needed permissions
-                    continue;    
-                }
-                // create table row with input radio button
-                result.append("<tr><td>");
-                result.append("<input type=\"radio\" name=\"");
-                result.append(PARAM_NEWRESOURCETYPE);
-                result.append("\" value=\"");
-                if (useTypeId) {
-                    // use resource type id as value
-                    result.append(resTypeId);
-                } else {
-                    // use resource type name as value
-                    result.append(settings.getName());    
-                }
-                result.append("\"");
-                if (resTypeId == currentResTypeId) {
-                    result.append(" checked=\"checked\"");
-                }
-                result.append("></td>");
-                result.append("\t<td><img src=\"");
-                result.append(getSkinUri());
-                result.append("filetypes/");
-                result.append(settings.getIcon());
-                result.append("\" border=\"0\" title=\"");
-                result.append(dialog.key(settings.getKey()));
-                result.append("\"></td>\n");
-                result.append("<td>");
-                result.append(dialog.key(settings.getKey()));
-                result.append("</td></tr>\n");
-
             }
         } catch (CmsException e) {
             // error reading the VFS resource, log error
