@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: IndexFiles.java,v $
-    $Date: 2002/03/01 13:30:35 $
-    $Revision: 1.6 $
+    $Date: 2002/07/15 14:04:17 $
+    $Revision: 1.7 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -25,9 +25,11 @@ import org.apache.lucene.index.*;
 import org.apache.lucene.document.*;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.text.*;
 
 /**
  *  Class to create a new or to expand an existing index for Lucene by adding
@@ -37,6 +39,8 @@ import java.util.*;
  *@created    13. Februar 2002
  */
 public class IndexFiles extends Thread {
+    private File m_file = null;
+
     // the debug flag
     private final boolean debug = false;
 
@@ -49,15 +53,20 @@ public class IndexFiles extends Thread {
 
     private Vector m_files = null;
 
-    private String m_configPath = "";
+    private int m_contentLength=0;
 
-    private int m_contentLenth=0;
-
-    private PdfParser convPdf = null;
+    private PdfParser m_convPdf = null;
 
     private String m_contentType = "";
 
-    private HtmlParser convHtml = null;
+    private long m_publishDate=0;
+
+    private HtmlParser m_convHtml = null;
+
+    private String m_analyzer="stopAnalyzer";
+
+    private DateFormat m_dateformat;
+
 
 
     // usage: IndexFiles <index-path> <file> ...
@@ -68,12 +77,20 @@ public class IndexFiles extends Thread {
      *@param  files       Description of the Parameter
      *@param  configPath  Description of the Parameter
      */
-    public IndexFiles(String indexPath, Vector files, String configPath) {
-        convPdf = new PdfParser();
-        convHtml = new HtmlParser();
+    public IndexFiles(String indexPath, Vector files, String analyzer) {
+        m_convPdf = new PdfParser();
+        m_convHtml = new HtmlParser();
         m_indexPath = indexPath;
         m_files = files;
-        m_configPath = configPath;
+        m_file = new File(m_indexPath);
+        m_dateformat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        if (analyzer.equalsIgnoreCase("german") || analyzer.equalsIgnoreCase("stopanalyzer")){
+                m_analyzer=analyzer;
+        }
+        if (debug) {
+            System.err.println("IndexFiles.IndexFiles(...).files.size()="+files.size());
+            System.err.println("IndexFiles.IndexFiles(...).m_analyzer="+m_analyzer);
+        }
     }
 
 
@@ -82,9 +99,11 @@ public class IndexFiles extends Thread {
      */
     public void run() {
         try {
+            System.out.println("start indexing");
             createIndexFiles();
+            System.out.println("indexing completed successfully");
         } catch(Exception ex) {
-
+            ex.printStackTrace();
         }
     }
 
@@ -105,27 +124,33 @@ public class IndexFiles extends Thread {
         try {
             //GermanAnalyzer ga=new GermanAnalyzer();
             StandardAnalyzer ga=new StandardAnalyzer();
-            writer = new IndexWriter(m_indexPath, ga, m_newIndex);
+            if (m_analyzer.equalsIgnoreCase("stopanalyzer")){
+                writer = new IndexWriter(m_indexPath, new StopAnalyzer(), m_newIndex);
+            }else if (m_analyzer.equalsIgnoreCase("german")){
+                writer = new IndexWriter(m_indexPath, new GermanAnalyzer(), m_newIndex);
+            }
             String completeContent = "";
             String keywords = "";
             String description = "";
             String title = "";
-            String
-                    parsedContent = "";
+            String parsedContent = "";
             String published = "";
             InputStream is = null;
             I_ContentParser parser = null;
 
             for(int i = 0; i < m_files.size(); i++) {
                 if(debug) {
-                    System.out.println("Indexing file " + m_files.elementAt(i));
+                    System.err.println("Indexing file " + m_files.elementAt(i));
                 }
                 doc = new Document();
                 con = connectUrl((String) m_files.elementAt(i));
-                if(m_contentType.equals("text/html")) {
-                    parser = convHtml;
-                } else if(m_contentType.equals("application/pdf")) {
-                    parser = convPdf;
+                if (con==null) continue;
+
+                //select the parser
+                if(m_contentType!=null && m_contentType.equals("text/html")) {
+                    parser = m_convHtml;
+                } else if(m_contentType!=null && m_contentType.equals("application/pdf")) {
+                    parser = m_convPdf;
                 } else {
                     continue;
                 }
@@ -133,14 +158,7 @@ public class IndexFiles extends Thread {
                 //the html-Parsing and Indexing
                 parser.parse(con);
                 completeContent = parser.getContents();
-                if(completeContent.indexOf("Not Found (404)") != -1 ||
-                        completeContent.indexOf("HTTP Status 404") != -1 ||
-                        completeContent.indexOf("Error 404") != -1) {
-                    if(debug) {
-                        System.out.println("Servermessage: Not Found (404)");
-                    }
-                    continue;
-                }
+
                 if(parser.getKeywords() != null) {
                     keywords = parser.getKeywords();
                 }
@@ -153,11 +171,14 @@ public class IndexFiles extends Thread {
                 if(parser.getContents() != null) {
                     parsedContent = parser.getContents();
                 }
-                if(parser.getPublished() != null) {
+                /*if(parser.getPublished() != null) {
                     published = parser.getPublished();
-                }
+                }else {*/
+                    published =DateField.timeToString(m_publishDate);
+                    //m_dateformat.format(m_publishDate);
+                //}
                 doc.add(Field.Keyword("path", (String) m_files.elementAt(i)));
-                doc.add(Field.Keyword("length", m_contentLenth+""));
+                doc.add(Field.Keyword("length", m_contentLength+""));
                 doc.add(Field.Keyword("keywords", keywords));
                 doc.add(Field.Keyword("description", description));
                 doc.add(Field.Keyword("modified", published));
@@ -165,25 +186,17 @@ public class IndexFiles extends Thread {
                 doc.add(Field.Keyword("content", parsedContent));
                 is = new ByteArrayInputStream(parsedContent.getBytes());
 
-                if(debug) {
-                    File output = new File("D:/Programme/Apache Group/Apache/htdocs/lucineTest/" + ((String) m_files.elementAt(i)).substring(((String) m_files.elementAt(i)).lastIndexOf("/"), ((String) m_files.elementAt(i)).lastIndexOf(".")) + ".txt");
-                    FileOutputStream os = new FileOutputStream(output);
-                    os.write(completeContent.getBytes());
-                    os.close();
-                }
-
                 doc.add(Field.Text("body", (Reader) new InputStreamReader(is)));
                 writer.addDocument(doc);
                 is.close();
             }
             writer.optimize();
             if(debug) {
-                System.out.println("Docs in Index " + writer.docCount());
+                System.err.println("Docs in Index " + writer.docCount());
             }
+            writer.close();
         } catch(Exception e) {
             e.printStackTrace();
-        } finally {
-            writer.close();
         }
     }
 
@@ -195,79 +208,52 @@ public class IndexFiles extends Thread {
      */
     private void deleteIndexFiles() throws Exception {
         IndexReader reader = null;
+        createPath();
         try {
             reader = IndexReader.open(m_indexPath);
             for(int i = 0; i < m_files.size(); i++) {
                 Term urlTerm = new Term("path", (String) m_files.elementAt(i));
                 if(reader.docFreq(urlTerm) > 0) {
                     if(debug) {
-                        System.out.println("Number of docs " + reader.docFreq(new Term("path", (String) m_files.elementAt(i))));
+                        System.err.println("Number of docs " + reader.docFreq(new Term("path", (String) m_files.elementAt(i))));
                     }
                     if(reader.delete(urlTerm) == 1) {
                         if(debug) {
-                            System.out.println("deleted from index " + (String) m_files.elementAt(i));
+                            System.err.println("deleted from index " + (String) m_files.elementAt(i));
                         }
                     } else {
                         if(debug) {
-                            System.out.println("not deleted from index " + (String) m_files.elementAt(i));
+                            System.err.println("not deleted from index " + (String) m_files.elementAt(i));
                         }
                     }
                 }
             }
+            reader.close();
         } catch(Exception ex) {
             if(debug) {
                 ex.printStackTrace();
             }
-            createPath();
             if(!m_newIndex) {
                 m_newIndex = true;
             }
             IndexDirectory.createIndexDirectory(m_indexPath);
             createIndexFiles();
-        } finally {
-            reader.close();
+            System.out.println("created new search-index for Lucene");
         }
         if(m_optimize) {
             IndexWriter writer = null;
-            writer = new IndexWriter(m_indexPath, new GermanAnalyzer(), m_newIndex);
+            if (m_analyzer.equalsIgnoreCase("stopanalyzer")){
+                writer = new IndexWriter(m_indexPath, new StopAnalyzer(), m_newIndex);
+            }else if (m_analyzer.equalsIgnoreCase("german")){
+                writer = new IndexWriter(m_indexPath, new GermanAnalyzer(), m_newIndex);
+            }
             writer.optimize();
             if(debug) {
-                System.out.println("Docs in Index " + writer.docCount());
+                System.err.println("Docs in Index " + writer.docCount());
             }
             writer.close();
         }
     }
-
-
-    /**
-     *  Description of the Method
-     *
-     *@param  con     Description of the Parameter
-     *@return         Description of the Return Value
-     */
-    private String fetchHtmlContent(InputStream con) {
-        int index = -1;
-        StringBuffer content = null;
-        DataInputStream input = null;
-        String line = null;
-
-        try {
-            input = new DataInputStream(con);
-            content = new StringBuffer();
-            while((line = input.readLine()) != null) {
-                content = content.append(line);
-            }
-            input.close();
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        if(debug) {
-            System.out.println("' done!");
-        }
-
-        return content.toString();
-    }
-
 
     /**
      *  Description of the Method
@@ -285,16 +271,28 @@ public class IndexFiles extends Thread {
         try {
             urlCon = new URL(theUrl).openConnection();
             urlCon.connect();
-            m_contentLenth=urlCon.getContentLength();
-            System.out.println("m_contentLenth="+m_contentLenth);
+
+            //return, if this file does not exist
+            if ((urlCon.getHeaderField(0)).indexOf("404")!=-1){
+                if (debug) System.err.println(urlCon.getHeaderField(0));
+                return null;
+            } else if ((urlCon.getHeaderField(0)).indexOf("500")!=-1){
+                if (debug) System.err.println(urlCon.getHeaderField(0));
+                return null;
+            }
+
+            m_contentLength=urlCon.getContentLength();
             m_contentType = urlCon.getContentType();
+            m_publishDate=urlCon.getDate();
+
             if(debug) {
-                System.out.println("connectUrl.theUrl=" + theUrl);
-                System.out.println("connectUrl.getContentType()=" + m_contentType);
+                System.err.println("m_contentLength="+m_contentLength);
+                System.err.println("connectUrl.theUrl=" + theUrl);
+                System.err.println("connectUrl.getContentType()=" + m_contentType);
             }
             input = new DataInputStream(urlCon.getInputStream());
             if(debug) {
-                System.out.println("' done!");
+                System.err.println("' done!");
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -328,10 +326,9 @@ public class IndexFiles extends Thread {
      *  Description of the Method
      */
     public void createPath() {
-        File f = new File(m_indexPath);
         try {
-            if(!f.exists()) {
-                f.mkdirs();
+            if(!m_file.exists()) {
+                m_file.mkdirs();
             }
         } catch(Exception ex) {
             ex.printStackTrace();

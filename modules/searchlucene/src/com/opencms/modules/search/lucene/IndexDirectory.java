@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: IndexDirectory.java,v $
-    $Date: 2002/02/28 13:00:11 $
-    $Revision: 1.2 $
+    $Date: 2002/07/15 14:04:24 $
+    $Revision: 1.3 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ public class IndexDirectory {
         try {
             writer = new IndexWriter(indexPath, null, true);
             if(debug) {
-                System.out.println("Index " + indexPath + " created");
+                System.err.println("Index " + indexPath + " created");
             }
         } catch(Exception e) {
             throw e;

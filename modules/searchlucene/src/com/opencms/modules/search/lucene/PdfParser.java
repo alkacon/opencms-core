@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
     $RCSfile: PdfParser.java,v $
     $Author: g.huhn $
-    $Date: 2002/02/28 13:00:11 $
-    $Revision: 1.5 $
+    $Date: 2002/07/15 14:04:02 $
+    $Revision: 1.6 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -292,18 +292,18 @@ public class PdfParser implements I_ContentParser {
      */
     public static void main(String[] args) {
 
-        //System.out.println("test");
+        //System.err.println("test");
         try {
             //String path = "z:/webapps/dev/pdf/HealthPlansOnline.pdf";]
             String path = "D:/ablage/Urlaubsantrag3_02.pdf";
             PdfParser p = new PdfParser();
             p.parse(new FileInputStream(path));
-            System.out.println("Title: " + p.getTitle());
-            System.out.println("Author: " + p.getAuthor());
-            System.out.println("Published " + p.getPublished());
-            System.out.println("Keywords: " + p.getKeywords());
-            System.out.println("Description: " + p.getDescription());
-            System.out.println("Content: " + p.getContents());
+            System.err.println("Title: " + p.getTitle());
+            System.err.println("Author: " + p.getAuthor());
+            System.err.println("Published " + p.getPublished());
+            System.err.println("Keywords: " + p.getKeywords());
+            System.err.println("Description: " + p.getDescription());
+            System.err.println("Content: " + p.getContents());
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -317,7 +317,7 @@ public class PdfParser implements I_ContentParser {
      *@exception  IOException  Description of the Exception
      */
     private boolean nextLine() throws IOException {
-        //System.out.println("look for new line");
+        //System.err.println("look for new line");
         while(true) {
             int b = read();
             if(b == -1) {
@@ -338,19 +338,19 @@ public class PdfParser implements I_ContentParser {
      */
     public void parse(InputStream in) {
 
-        //System.out.println("mark supported" + in.markSupported());
+        //System.err.println("mark supported" + in.markSupported());
 
         try {
             this.in = new BufferedInputStream(in);
             reset();
             parseContent();
             if(debug) {
-                System.out.println("Title: " + getTitle());
-                System.out.println("Author: " + getAuthor());
-                System.out.println("Published " + getPublished());
-                System.out.println("Keywords: " + getKeywords());
-                System.out.println("Description: " + getDescription());
-                System.out.println("Content: " + getContents());
+                System.err.println("Title: " + getTitle());
+                System.err.println("Author: " + getAuthor());
+                System.err.println("Published " + getPublished());
+                System.err.println("Keywords: " + getKeywords());
+                System.err.println("Description: " + getDescription());
+                System.err.println("Content: " + getContents());
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -375,7 +375,7 @@ public class PdfParser implements I_ContentParser {
             while(true) {
                 token = findToken();
                 if(token != null) {
-                    //System.out.println("found a token : " + token);
+                    //System.err.println("found a token : " + token);
                     if(token == AUTHOR) {
                         author = parseData();
                     } else if(token == CREATIONDATE) {
@@ -387,21 +387,21 @@ public class PdfParser implements I_ContentParser {
                     } else if(token == TITLE) {
                         title = parseData();
                     } else if(token == PARAMSTART) {
-                        //System.out.println("param set mark");
+                        //System.err.println("param set mark");
                         in.mark(10000);
                         //parseDataParams();
                     } else if(token == STREAM) {
                         if(!streamHit) {
-                            //System.out.println("new stream hit");
+                            //System.err.println("new stream hit");
                             // first time this stream has been hit
                             // go back and parseDataParams.
                             in.reset();
                             streamHit = true;
                             parseDataParams();
                         } else {
-                            //System.out.println("second stream hit");
+                            //System.err.println("second stream hit");
                             if(parseNextStream) {
-                                //System.out.println("parseDataStream");
+                                //System.err.println("parseDataStream");
                                 contents.append(parseDataStream());
                                 parseNextStream = false;
                             }
@@ -410,13 +410,13 @@ public class PdfParser implements I_ContentParser {
                     }
                 }
                 if(!nextLine()) {
-                    //System.out.println("new line");
+                    //System.err.println("new line");
                     break;
                 }
-                //System.out.println("new line");
+                //System.err.println("new line");
             }
 
-            //System.out.println("hello");
+            //System.err.println("hello");
             break;
         }
         replaceSpChars();
@@ -494,8 +494,8 @@ public class PdfParser implements I_ContentParser {
             b = read();
         }
         String params = new String(temp.toByteArray());
-        //System.out.println(params.length());
-        //System.out.println(params);
+        //System.err.println(params.length());
+        //System.err.println(params);
         if(params.length() < 38
         /*
             && params.indexOf("0 R") != -1
@@ -508,8 +508,8 @@ public class PdfParser implements I_ContentParser {
                 compression = LZW;
             }
             parseNextStream = true;
-            //System.out.println();
-            //System.out.println(params);
+            //System.err.println();
+            //System.err.println(params);
         }
 
         return new String(temp.toByteArray());
@@ -564,7 +564,7 @@ public class PdfParser implements I_ContentParser {
 
         // Uncompress if flateDecode is used
         if(compression == FLATE) {
-            //System.out.println("FlateDecode = " +flateDecode);
+            //System.err.println("FlateDecode = " +flateDecode);
             ByteArrayInputStream bis = new ByteArrayInputStream(temp.toByteArray());
             InflaterInputStream iin = new InflaterInputStream(bis);
             temp.reset();
@@ -573,8 +573,8 @@ public class PdfParser implements I_ContentParser {
             }
         }
 
-        //System.out.println(temp.size());
-        //System.out.println(new String(temp.toByteArray()));
+        //System.err.println(temp.size());
+        //System.err.println(new String(temp.toByteArray()));
 
         // parse content out from formating data. Content is wrapped in a
         // bunch of ()
@@ -609,8 +609,8 @@ public class PdfParser implements I_ContentParser {
 
         // reset flateDecode flag
         compression = NONE;
-        //System.out.println(tmp.size());
-        //System.out.println(new String(tmp.toByteArray()));
+        //System.err.println(tmp.size());
+        //System.err.println(new String(tmp.toByteArray()));
         return new String(tmp.toByteArray());
     }
 

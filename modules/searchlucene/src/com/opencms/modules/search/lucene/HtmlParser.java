@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: HtmlParser.java,v $
-    $Date: 2002/03/01 13:30:35 $
-    $Revision: 1.6 $
+    $Date: 2002/07/15 14:04:24 $
+    $Revision: 1.7 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -25,6 +25,7 @@ import com.opencms.htmlconverter.*;
 import java.io.*;
 import java.util.*;
 import java.text.*;
+import Entities;
 
 /**
  *  Parses the html-code by using tidy in connection with the HtmlConverter which
@@ -51,13 +52,20 @@ public class HtmlParser implements I_ContentParser {
 
     // the Config Strings to replace the german Sonderzeichen.
     private final String REPLACE_STRINGS =
-            "<replacestrings usedefaults=\"true\">" +
+        "<replacecontent usedefaults=\"true\">" +
+            "<string content=\"&amp;#252;\" replace=\"ue\"/><string content=\"&amp;#220;\" replace=\"Ue\"/>"+
+            "<string content=\"&amp;#228;\" replace=\"ae\"/><string content=\"&amp;#196;\" replace=\"Ae\"/>"+
+            "<string content=\"&amp;#246;\" replace=\"oe\"/><string content=\"&amp;#214;\" replace=\"Oe\"/>"+
+            "<string content=\"&amp;#223;\" replace=\"ss\"/><string content=\"&amp;nbsp;\" replace=\" \"/>"+
+        "</replacecontent>"+
+        "<replacestrings usedefaults=\"false\">" +
             "   <string content=\"&amp;auml;\" replace=\"ae\"/>        <string content=\"&amp;uuml;\" replace=\"ue\"/>" +
             "   <string content=\"&amp;ouml;\" replace=\"oe\"/>        <string content=\"&amp;Uuml;\" replace=\"Ue\"/>" +
             "   <string content=\"&amp;Auml;\" replace=\"Ae\"/>        <string content=\"&amp;Ouml;\" replace=\"Oe\"/>" +
-            "   <string content=\"&amp;lt;\" replace=\" \"/>		<string content=\"&amp;gt;\" replace=\" \"/>" +
-            "   <string content=\"&amp;szlig;\" replace=\"ss\"/><string content=\"&amp;qout;\" replace=\" \"/>        <string content=\"&amp;nbsp;\" replace=\" \"/>" +
-            "</replacestrings>";
+            "   <string content=\"&amp;lt;\" replace=\"<\"/>		<string content=\"&amp;gt;\" replace=\">\"/>" +
+            "   <string content=\"&amp;szlig;\" replace=\"ss\"/><string content=\"&amp;qout;\" replace=\" \"/>" +
+        "</replacestrings>";
+
 
     // the Config Strings to get the keywords from the meta-tag
     private final String KEYWORD_CONF = "<?xml version=\"1.0\"?>" +
@@ -187,7 +195,7 @@ public class HtmlParser implements I_ContentParser {
         conv.setConverterConfString(configuration);
         content = conv.convertHTML(content);
         if(debug) {
-            System.out.println("filterContent.html.content=" + content);
+            System.err.println("filterContent.html.content=" + content);
         }
         return content;
     }
@@ -230,7 +238,7 @@ public class HtmlParser implements I_ContentParser {
             ex.printStackTrace();
         }
         if(debug) {
-            System.out.println("' done!");
+            System.err.println("' done!");
         }
 
         return content.toString();
@@ -241,9 +249,9 @@ public class HtmlParser implements I_ContentParser {
      *  Description of the Method
      */
     private void actualDate() {
-        Calendar cal = new GregorianCalendar();
+        Calendar cal = GregorianCalendar.getInstance();
         cal.setTimeZone(TimeZone.getTimeZone("ECT"));
-        DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        DateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         m_published = format.format(cal.getTime());
     }
 

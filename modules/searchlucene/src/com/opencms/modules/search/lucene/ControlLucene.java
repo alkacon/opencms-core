@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: ControlLucene.java,v $
-    $Date: 2002/03/01 13:30:35 $
-    $Revision: 1.7 $
+    $Date: 2002/07/15 14:04:38 $
+    $Revision: 1.8 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -28,6 +28,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.boot.*;
 import javax.servlet.http.*;
+import java.text.*;
 
 /**
  *  The Control class to cennect OpenCms to the fulltext searchengine Lucene.
@@ -42,7 +43,8 @@ import javax.servlet.http.*;
  *@author     grehuh
  *@created    13. Februar 2002
  */
-public class ControlLucene implements com.opencms.core.I_CmsConstants, com.opencms.modules.search.form.I_CmsSearchEngine {
+public class ControlLucene implements com.opencms.core.I_CmsConstants,
+        com.opencms.modules.search.form.I_CmsSearchEngine {
     // the debug flag
     private final static boolean debug = false;
 
@@ -52,15 +54,28 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
     // the switch to stop or start indexing
     private static boolean m_active = false;
 
+    // the switch to stop or start indexing all exported files and not only
+    // the changed files
+    private static boolean m_indexAll = false;
+
+    // the switch to stop or start indexing
+    private static String m_analyzer = "stopAnalyzer";
+
+    private static DateFormat m_format=new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
+    // the switch to stop or start indexing all exported files and not only
+    // the changed files
+    private static boolean m_indexPDFs = true;
+
+
     // the switch to create a completely ne indexdirectory
     private static boolean m_newIndex = false;
 
-    private static String m_searchword = "ist";
-    private static String m_url = CmsBase.getAbsoluteWebPath("search/index");
+    private static String m_searchword = "inte*";
+    private static String m_url = CmsBase.getAbsoluteWebPath("search/content");
     /**
      *  Description of the Field
      */
-    private static String m_configPath = CmsBase.getAbsolutePath("config");
     private String m_link = "";
     private String m_title;
     private String m_excerpt;
@@ -73,8 +88,6 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
     private int m_lastdisplay;
     private int m_urlpage;
 
-    private static String c_select_format;
-
     private final static String C_PARAM_MODULE_NAME = "com.opencms.modules.search.lucene";
     /**
      *  Description of the Field
@@ -86,7 +99,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
     public final static String C_PARAM_FORMAT_LONG = "long";
 
     private final static String C_PARAM_METHOD_AND = "AND";
-    private final static String C_PARAM_METHOD_OR = "OR";
+    //private final static String C_PARAM_METHOD_OR = "OR";
     private final static String C_PARAM_METHOD_BOOLEAN = "boolean";
 
     private final static String C_PARAM_SORT_SCORE = "score";
@@ -98,7 +111,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
     /**
      *  Description of the Field
      */
-    public final static String C_PARAM_SEARCHENGINE_TOKEN = ",";
+
 
     private static Vector C_INDEX_FILES = null;
 
@@ -106,7 +119,8 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
     /**
      *  Constructor for the ControlLucene object
      */
-    public ControlLucene() { }
+    public ControlLucene() {
+    }
 
 
     /**
@@ -250,6 +264,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
      *@return    The title value
      */
     public String getTitle() {
+        if (m_title.length()==0) return m_link.substring(m_link.lastIndexOf("/")+1);
         return m_title;
     }
 
@@ -277,39 +292,50 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         Vector files = new Vector();
         String link = "";
         StringBuffer bl = null;
-
+        //for a start by the main-method
         if(mainStart) {
             String linkPrefix = "";
             for(int i = 0; i < vfiles.size(); i++) {
                 link = (String) vfiles.elementAt(i);
                 bl = new StringBuffer(link);
                 if(debug) {
-                    System.out.println("link=" + link);
+                    System.err.println("link=" + link);
                 }
-                if(link.toLowerCase().indexOf(".htm") != -1 || link.toLowerCase().indexOf(".pdf") != -1) {
+                if(link.toLowerCase().indexOf(".htm") != -1 ||
+                        link.toLowerCase().indexOf(".pdf") != -1) {
                     files.addElement(link);
                     if(debug) {
-                        System.out.println("wird indiziert");
+                        System.err.println("wird indiziert");
                     }
                 }
             }
-            m_configPath = "D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/WEB-INF/config";
-            path = "D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/" + m_url;
-        } else {
+            path = "C:/Programme/Apache Tomcat 4.0/webapps/opencms474/" + m_url;
+        }
+        //for a start of indexing by opencms
+        else {
             CmsRequestContext req = cms.getRequestContext();
             String linkPrefix = req.getRequest().getScheme() + "://"
-                     + req.getRequest().getServerName() + ":" + req.getRequest().getServerPort();
+                     + req.getRequest().getServerName() + ":"
+                     + req.getRequest().getServerPort();
             for(int i = 0; i < vfiles.size(); i++) {
                 link = (String) vfiles.elementAt(i);
                 bl = new StringBuffer(link);
+
                 if(debug) {
-                    System.out.println("link=" + link);
+                    System.err.println("link=" + link);
+                }
+                //the application name must be added to the exported links
+                if (m_indexAll) link=cms.getLinkSubstitution(link);
+
+                if(debug) {
+                    System.err.println("link=" + link);
+                    System.err.println("cms.getRequestContext()="+cms.getRequestContext().getRequest().getServletUrl());
                 }
 
-                //every html-page should contain a ".htm" or ".pdf"
-                if(!link.startsWith(cms.getRequestContext().getRequest().getServletUrl())
-                         && (link.indexOf(".htm") != -1
-                         || link.indexOf(".pdf") != -1)) {
+                //every link should contain a ".htm" or ".pdf" (if property m_indexPDFs is true)
+                if((!link.startsWith(cms.getRequestContext().getRequest().getServletUrl()) || m_indexAll)
+                     && (link.indexOf(".htm") != -1
+                         || (m_indexPDFs && link.indexOf(".pdf") != -1))) {
                     if(link.startsWith("/")) {
                         files.addElement(linkPrefix + link);
                     }
@@ -317,19 +343,19 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                         files.addElement(link);
                     }
                     if(debug) {
-                        System.out.println("wird indiziert");
+                        System.err.println("wird indiziert");
                     }
                 }
             }
         }
         try {
             if(files.size() > 0) {
-                if(debug) {
-                    System.out.println("thread gestartet");
-                }
-                IndexFiles indexfiles = new IndexFiles(path, files, m_configPath);
+                IndexFiles indexfiles = new IndexFiles(path, files, m_analyzer);
                 indexfiles.setNewIndex(m_newIndex);
                 indexfiles.start();
+                if(debug) {
+                    System.err.println("thread gestartet");
+                }
             }
         } catch(Exception ex) {
             ex.printStackTrace();
@@ -344,7 +370,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
      */
     public void createIndexDirectory() throws Exception {
         if(mainStart) {
-            m_url = "D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/" + m_url;
+            m_url = "C:/Programme/Apache Tomcat 4.0/webapps/opencms474/" + m_url;
         }
         IndexDirectory.createIndexDirectory(m_url);
     }
@@ -358,10 +384,10 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
     public void searchIndex() throws Exception {
         SearchLucene s = new SearchLucene();
         if(mainStart) {
-            m_url = "D:/Programme/Apache Group/jakarta-tomcat-4.0/webapps/opencms2/" + m_url;
+            m_url = "C:/Programme/Apache Tomcat 4.0/webapps/opencms474/" + m_url;
         }
         if(m_active) {
-            showSearchResults(s.performSearch(m_url, m_searchword));
+            showSearchResults(s.performSearch(m_url, m_searchword, m_analyzer, "any"));
         }
     }
 
@@ -375,19 +401,19 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         Hashtable oneHit = null;
         int matches = results.size();
         if(matches != 0) {
-            System.out.println(matches + " Treffer  für: " + m_searchword);
+            System.err.println(matches + " Treffer  für: " + m_searchword);
         } else {
-            System.out.println("Keine Treffer  für: " + m_searchword);
+            System.err.println("Keine Treffer  für: " + m_searchword);
         }
         for(int i = 0; i < matches; i++) {
             oneHit = (Hashtable) results.elementAt(i);
-            System.out.println("excerpt=" + oneHit.get("excerpt"));
-            System.out.println("description=" + oneHit.get("description"));
-            System.out.println("title=" + oneHit.get("title"));
-            System.out.println("keywords=" + oneHit.get("keywords"));
-            System.out.println("URL=" + oneHit.get("url"));
-            System.out.println("score=" + oneHit.get("score"));
-            System.out.println("size="+ (Integer.valueOf((String)oneHit.get("length")).intValue())/1024);
+            System.err.println("excerpt=" + oneHit.get("excerpt"));
+            System.err.println("description=" + oneHit.get("description"));
+            System.err.println("title=" + oneHit.get("title"));
+            System.err.println("keywords=" + oneHit.get("keywords"));
+            System.err.println("URL=" + oneHit.get("url"));
+            System.err.println("score=" + oneHit.get("score"));
+            System.err.println("size="+ (Integer.valueOf((String)oneHit.get("length")).intValue())/1024+1);
         }
     }
 
@@ -417,13 +443,16 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
             String page, String conf, String restrict,
             String matchPage, CmsObject cms) throws Exception {
         if(debug) {
-            System.out.println("word=" + word + " method=" + method + " sort=" + sort +
+            System.err.println("word=" + word + " method=" + method + " sort=" + sort +
                     " page=" + page + " conf=" + conf + " restrict=" + restrict + " matchPage=" + matchPage + " cms=" + cms);
         }
 
         if(conf.equals("default")) {
             conf = "Lucene";
         }
+        if (sort==null) sort="nolimit";
+
+        if (method==null) method=C_PARAM_METHOD_BOOLEAN;
         // Variable declaration
         int x = 0;
         // Variable declaration
@@ -431,7 +460,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         int size;
         int score;
         int last;
-        int matches;
+        int matches=0;
         int first;
         int setMatch;
         int pageNr;
@@ -439,21 +468,37 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         String title;
         String description;
         String modified;
+        long lmodified;
         String excerpt="";
         m_searchword = word;
+        int from=0;
 
         //start the search for m_searchword
-        SearchLucene s = new SearchLucene();
-        Vector results = s.performSearch(m_url, m_searchword);
+        SearchLucene search = new SearchLucene();
+        if (!sort.equalsIgnoreCase("nolimit") ) {
+            Calendar cal=Calendar.getInstance();
+            cal.setTimeZone(TimeZone.getTimeZone("ECT"));
+            if (sort.equalsIgnoreCase("hour")) cal.roll(Calendar.HOUR,-1);
+            else if (sort.equalsIgnoreCase("day")) cal.roll(Calendar.DAY_OF_YEAR ,-1);
+            else if (sort.equalsIgnoreCase("week")) cal.roll(Calendar.DAY_OF_YEAR,-7);
+            else if (sort.equalsIgnoreCase("month")) cal.roll(Calendar.MONTH,-1);
+            else if (sort.equalsIgnoreCase("year")) cal.roll(Calendar.YEAR,-1);
+            search.setFrom(cal.getTime().getTime());
+            if (debug) {
+                System.err.println("cal="+m_format.format(new Date(cal.getTime().getTime())));
+            }
+        }
 
-        matches = results.size();
+        Vector results = search.performSearch(m_url, m_searchword,m_analyzer, method);
+
+        if (results!=null) matches = results.size();
 
         Vector result = new Vector();
         ControlLucene cdh;
         // get value of match per page of the search form
         setMatch = Integer.valueOf(matchPage).intValue();
         if(debug) {
-            System.out.println("setMatch=" + setMatch);
+            System.err.println("setMatch=" + setMatch);
         }
 
         // nomatch or syntax Error
@@ -484,10 +529,13 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                 title = (String) oneHit.get("title");
                 description = (String) oneHit.get("description");
                 excerpt = (String) oneHit.get("excerpt");
-                modified = (String) oneHit.get("modified");
+                lmodified = ((Long) oneHit.get("modified")).longValue();
+                modified=m_format.format(new Date(lmodified));
                 size = Integer.valueOf((String)oneHit.get("length")).intValue();
-                size = size/1024;
-                score = Integer.valueOf((((String) oneHit.get("score")).substring(0, ((String) oneHit.get("score")).length() - 2)).trim()).intValue();
+                if (size !=0) size = size/1024;
+                //set size to at least 1 KByte
+                if (size==0) size=1;
+                score = ((Integer)oneHit.get("score")).intValue();
                 cdh = new ControlLucene(url, title, excerpt, size, score, modified);
                 result.addElement(cdh);
             }
@@ -505,31 +553,21 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
     public static void main(String[] args) throws Exception {
         mainStart = true;
         m_active = true;
+        m_newIndex = true;
         ControlLucene cl = new ControlLucene();
         C_INDEX_FILES = new Vector();
-        //C_INDEX_FILES.add("http://localhost/lucineTest/Thinking_in_Java.pdf");
-        //C_INDEX_FILES.add("http://localhost/lucineTest/Urlaubsantrag3_02.pdf");
-        //C_INDEX_FILES.add("http://localhost/lucineTest/OpenCMS_de.pdf");
-        //C_INDEX_FILES.add("http://localhost/lucineTest/test4.pdf");
-        //C_INDEX_FILES.add("http://localhost/lucineTest/Java_ist_auch_eine_Insel_20010426.PDF");
-        //C_INDEX_FILES.add("http://localhost/lucineTest/XXVI.pdf");
-        //C_INDEX_FILES.add("http://localhost/lucineTest/OpenCmsDoc300102.pdf");
-        //C_INDEX_FILES.add("http://localhost/lucineTest/Java-17.pdf");
 
+        C_INDEX_FILES.add("http://www.erzbistum-koeln.de/opencms/opencms/index.html");
 
-        //C_INDEX_FILES.add("http://www.dkv.com/ernaehrung_naehrstoffe.phtml?typ=content");
-        //C_INDEX_FILES.add("http://www.dkv.com/medizin_krankheitsbild.phtml?typ=content");
-        //C_INDEX_FILES.add("http://localhost:8080/opencms2/export/testseiten/warmwasser.html");
-        C_INDEX_FILES.add("http://intranet.ff.de/framfab/opencms/framfab/kantine/index.html");
-        //C_INDEX_FILES.add("http://localhost/lucineTest/content.html");
-
-        /*
-            "http://intranet.ff.de/framfab/opencms/bla.html"
-          */
-
-        //cl.createIndexDirectory();
-        //cl.publishLinks(new CmsObject(), C_INDEX_FILES);
-        cl.searchIndex();
+        if (args.length!=0){
+            if (args[0].equalsIgnoreCase("search")){
+                cl.searchIndex();
+            }else if (args[0].equalsIgnoreCase("index")){
+                cl.createIndex(new CmsObject(), m_url, C_INDEX_FILES);
+            }else if (args[0].equalsIgnoreCase("dir")){
+                cl.createIndexDirectory();
+            }
+        }
     }
 
 
@@ -547,12 +585,13 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         Vector parameter = new Vector();
         String[] temp = new String[6];
         int i = 0;
-        String moduleName = C_PARAM_MODULE_NAME;
-        String select_method = cms.getRegistry().getModuleParameter(moduleName.substring(0, moduleName.lastIndexOf(".")), "method");
-        String select_format = cms.getRegistry().getModuleParameter(moduleName.substring(0, moduleName.lastIndexOf(".")), "format");
-        String select_sort = cms.getRegistry().getModuleParameter(moduleName.substring(0, moduleName.lastIndexOf(".")), "sort");
+
+        String select_method = cms.getRegistry().getModuleParameter(C_PARAM_MODULE_NAME, "method");
+        String select_format = cms.getRegistry().getModuleParameter(C_PARAM_MODULE_NAME, "format");
+        String select_sort = cms.getRegistry().getModuleParameter(C_PARAM_MODULE_NAME, "sort");
         if(debug) {
-            System.out.println("select_method =" + select_method + " select_format =" + select_format + " select_sort =" + select_sort);
+            System.err.println("selection="+selection);
+            System.err.println("select_method =" + select_method + " select_format =" + select_format + " select_sort =" + select_sort);
         }
         if(selection.equals("method")) {
             if((select_method != "") && (select_method != null)) {
@@ -562,27 +601,28 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                         temp[i] = st.nextToken();
                         i++;
                     }
-                    parameter.addElement(C_PARAM_METHOD_AND);
-                    parameter.addElement(temp[0]);
-                    parameter.addElement(C_PARAM_METHOD_OR);
-                    parameter.addElement(temp[1]);
                     parameter.addElement(C_PARAM_METHOD_BOOLEAN);
-                    parameter.addElement(temp[2]);
+                    parameter.addElement(temp[0]);
+                    /*parameter.addElement(C_PARAM_METHOD_OR);
+                    parameter.addElement(temp[1]);*/
+                    parameter.addElement(C_PARAM_METHOD_AND);
+                    parameter.addElement(temp[1]);
                 } catch(Exception e) {
+                    e.printStackTrace();
                     System.err.println(e.toString());
                 }
             } else {
                 parameter.addElement(C_PARAM_METHOD_AND);
                 parameter.addElement("All");
-                parameter.addElement(C_PARAM_METHOD_OR);
-                parameter.addElement("Any");
+                /*parameter.addElement(C_PARAM_METHOD_OR);
+                parameter.addElement("Any");*/
                 parameter.addElement(C_PARAM_METHOD_BOOLEAN);
                 parameter.addElement("Boolean");
             }
         }
         if(selection.equals("format")) {
-            if((c_select_format != "") && (c_select_format != null)) {
-                StringTokenizer st = new StringTokenizer(c_select_format, C_PARAM_SEARCHENGINE_TOKEN);
+            if((select_format != "") && (select_format != null)) {
+                StringTokenizer st = new StringTokenizer(select_format,";");
                 try {
                     while(st.hasMoreTokens() && i < 2) {
                         temp[i] = st.nextToken();
@@ -593,6 +633,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                     parameter.addElement(C_PARAM_FORMAT_SHORT);
                     parameter.addElement(temp[1]);
                 } catch(Exception e) {
+                    e.printStackTrace();
                     System.err.println(e.toString());
                 }
             } else {
@@ -601,15 +642,41 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                 parameter.addElement(C_PARAM_FORMAT_SHORT);
                 parameter.addElement("Short");
             }
-        } else
-                if(selection.equals("sort")) {
+        } //else
+         if(selection.equals("sort")) {
             if((select_sort != "") && (select_sort != null)) {
                 StringTokenizer st = new StringTokenizer(select_sort, ";");
                 try {
-                    while(st.hasMoreTokens() && i < 6) {
+                    /*while(st.hasMoreTokens() && i < 6) {
                         temp[i] = st.nextToken();
                         i++;
+                    }*/
+                    if (st.hasMoreTokens()){
+                        parameter.addElement("nolimit");
+                        parameter.addElement(st.nextToken());
                     }
+                    if (st.hasMoreTokens()){
+                        parameter.addElement("hour");
+                        parameter.addElement(st.nextToken());
+                    }
+                    if (st.hasMoreTokens()){
+                        parameter.addElement("day");
+                        parameter.addElement(st.nextToken());
+                    }
+                    if (st.hasMoreTokens()){
+                        parameter.addElement("week");
+                        parameter.addElement(st.nextToken());
+                    }
+                    if (st.hasMoreTokens()){
+                        parameter.addElement("month");
+                        parameter.addElement(st.nextToken());
+                    }
+                    if (st.hasMoreTokens()){
+                        parameter.addElement("year");
+                        parameter.addElement(st.nextToken());
+                    }
+
+                    /*
                     parameter.addElement(C_PARAM_SORT_SCORE);
                     parameter.addElement(temp[0]);
                     parameter.addElement(C_PARAM_SORT_DATE);
@@ -621,11 +688,13 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                     parameter.addElement(C_PARAM_SORT_REV_DATE);
                     parameter.addElement(temp[4]);
                     parameter.addElement(C_PARAM_SORT_REV_TITLE);
-                    parameter.addElement(temp[5]);
+                    parameter.addElement(temp[5]);*/
                 } catch(Exception e) {
+                    e.printStackTrace();
                     System.err.println(e.toString());
                 }
-            } else {
+            //} else {
+                /*
                 parameter.addElement(C_PARAM_SORT_SCORE);
                 parameter.addElement("Score");
                 parameter.addElement(C_PARAM_SORT_DATE);
@@ -637,7 +706,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                 parameter.addElement(C_PARAM_SORT_REV_DATE);
                 parameter.addElement("Reverse Time");
                 parameter.addElement(C_PARAM_SORT_REV_TITLE);
-                parameter.addElement("Reverse Title");
+                parameter.addElement("Reverse Title");*/
             }
         }
         return parameter;
@@ -670,22 +739,74 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
      *@param  changedResources  Vector with the links to all exported Resources
      */
     public static void publishLinks(CmsObject cms, Vector changedResources) {
-
+        Vector files;
         try {
-            m_active = OpenCms.getRegistry().getModuleParameterBoolean("com.opencms.modules.search.lucene",
-                    "active");
-            m_newIndex = OpenCms.getRegistry().getModuleParameterBoolean("com.opencms.modules.search.lucene",
-                    "newIndex");
+            m_indexAll = false;
+            m_newIndex = false;
+            //get the modul-properties
+            m_active = OpenCms.getRegistry().getModuleParameterBoolean(
+                    C_PARAM_MODULE_NAME,"active");
+
+            m_indexPDFs = OpenCms.getRegistry().getModuleParameterBoolean(
+                    C_PARAM_MODULE_NAME,"indexPDFs");
+
         } catch(Exception ex) {
+            ex.printStackTrace();
             m_active = true;
             m_newIndex = false;
+            m_indexAll = false;
+            m_indexPDFs=false;
         }
         if(debug) {
-            System.out.println("m_active=" + m_active);
-            System.out.println("m_newIndex=" + m_newIndex);
+            System.err.println("ControlLucene.publishLinks.m_active=" + m_active);
+            System.err.println("ControlLucene.publishLinks.m_newIndex=" + m_newIndex);
+            System.err.println("ControlLucene.publishLinks.m_indexAll=" + m_indexAll);
+            System.err.println("ControlLucene.publishLinks.m_analyzer="+m_analyzer);
         }
         if(m_active) {
-            createIndex(cms, m_url, changedResources);
+            files=changedResources;
+            if (files!=null && files.size()>0) createIndex(cms, m_url, files);
+        }
+    }
+
+    /**
+     *  The method invoked by the publishing-mechanism of OpenCms
+     *
+     *@param  cms               the Cms Object
+     *@param  changedResources  Vector with the links to all exported Resources
+     */
+    public static void indexProject(CmsObject cms) {
+        Vector files=new Vector();
+        try {
+            m_indexAll = true;
+            //if all export-files are indexe a completely new index is created
+            m_newIndex=true;
+            //get the modul-properties
+            m_active = OpenCms.getRegistry().getModuleParameterBoolean(
+                    C_PARAM_MODULE_NAME,"active");
+            m_indexPDFs = OpenCms.getRegistry().getModuleParameterBoolean(
+                    C_PARAM_MODULE_NAME,"indexPDFs");
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            m_active = true;
+            m_newIndex = true;
+            m_indexAll = true;
+            m_indexPDFs=false;
+        }
+        if(debug) {
+            System.err.println("ControlLucene.indexProject.m_active=" + m_active);
+            System.err.println("ControlLucene.indexProject.m_newIndex=" + m_newIndex);
+            System.err.println("ControlLucene.indexProject.m_indexAll=" + m_indexAll);
+            System.err.println("ControlLucene.indexProject.m_analyzer="+m_analyzer);
+        }
+        if(m_active) {
+            try {
+                files=cms.getAllExportLinks();
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            if (files!=null) createIndex(cms, m_url, files);
         }
     }
 
