@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/03/22 09:22:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/22 09:42:24 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/03/22 09:22:34 $
+ * @version $Revision: 1.3 $ $Date: 2000/03/22 09:42:24 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -158,12 +158,14 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
              Enumeration enum=files.elements();
             while (enum.hasMoreElements()) {
                 CmsFile file =(CmsFile)enum.nextElement();
-                String nicename=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
-                if (nicename == null) {
-                       nicename=file.getName();
+                if (file.getState() != C_STATE_DELETED) {
+                    String nicename=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+                    if (nicename == null) {
+                           nicename=file.getName();
+                    }
+                    names.addElement(nicename);
+                    values.addElement(file.getAbsolutePath());
                 }
-                names.addElement(nicename);
-                values.addElement(file.getAbsolutePath());
             }
             return new Integer(0);           
       }
