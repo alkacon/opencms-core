@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/08/14 15:37:26 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/08/18 10:20:54 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,8 +73,9 @@ import org.w3c.dom.NodeList;
  * or a zip file into the OpenCms COS.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.4 $ $Date: 2003/08/14 15:37:26 $
+ * @version $Revision: 1.5 $ $Date: 2003/08/18 10:20:54 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -278,14 +279,6 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         newDataset.m_userId = userId;
         // get the id of the group or set the group to the current user        
         groupname = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_GROUP);
-
-        //        CmsUUID groupId = m_cms.getRequestContext().currentGroup().getId();
-        //        try{
-        //            if((groupname != null) && !("".equals(groupname.trim()))){
-        //                groupId = m_cms.readGroup(groupname).getId();
-        //            }
-        //        } catch (Exception e){
-        //        }
 
         CmsUUID groupId = CmsUUID.getNullUUID();
         try {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/08/18 09:19:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/08/18 10:20:54 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,8 +66,9 @@ import org.w3c.dom.Element;
  * to the filesystem.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.4 $ $Date: 2003/08/18 09:19:19 $
+ * @version $Revision: 1.5 $ $Date: 2003/08/18 10:20:54 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
