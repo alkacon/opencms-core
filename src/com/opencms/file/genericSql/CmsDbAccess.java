@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.269 $
+* Date   : $Date: 2003/02/22 11:20:02 $
+* Version: $Revision: 1.270 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.269 $ $Date: 2003/02/15 11:14:54 $ *
+ * @version $Revision: 1.270 $ $Date: 2003/02/22 11:20:02 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -9711,17 +9711,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 public CmsTask readTask(int id) throws CmsException {
     ResultSet res = null;
     CmsTask task = null;
-    Statement statement = null;
+    PreparedStatement statement = null;
     Connection con = null;
 
 
     try {
         con = DriverManager.getConnection(m_poolName);
-        // At this place I use a statement instead of a prepared statement because for some odd reason
-        // the prepared statement doesn't always work correctly. At the time the beans are spilled we should
-        // switch back to the prepared statement. Mario Stanke
-        statement = con.createStatement();
-        res = statement.executeQuery(m_cq.get("C_TASK_READ_STATEMENT")+id);
+        
+        statement = con.prepareStatement(m_cq.get("C_TASK_READ"));
+        statement.setInt(1, id);
+        res = statement.executeQuery();
+                
+        // CHECK: Now using PreparedStatement because of issues with MySQL 4
+        // statement = con.createStatement();
+        // res = statement.executeQuery(m_cq.get("C_TASK_READ_STATEMENT")+id);
         if (res.next()) {
             int autofinish = res.getInt(m_cq.get("C_TASK_AUTOFINISH"));
             java.sql.Timestamp endtime = SqlHelper.getTimestamp(res, m_cq.get("C_TASK_ENDTIME"));
