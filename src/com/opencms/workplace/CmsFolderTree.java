@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2001/07/31 15:50:18 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2001/12/20 15:43:33 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import java.util.*;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2001/07/31 15:50:18 $
+ * @version $Revision: 1.38 $ $Date: 2001/12/20 15:43:33 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -274,7 +274,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
 
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
         String icon = null;
-        String filename = config.getWpPicturePath() + C_ICON_PREFIX + type.getResourceTypeName().toLowerCase() + C_ICON_EXTENSION;
+        String filename = config.getWpPicturePath() + C_ICON_PREFIX + type.getResourceTypeName() + C_ICON_EXTENSION;
         CmsResource iconFile;
 
         // check if this icon is in the cache already
@@ -288,7 +288,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 iconFile = cms.readFileHeader(filename);
 
                 // add the icon to the cache
-                icon = C_ICON_PREFIX + type.getResourceTypeName().toLowerCase() + C_ICON_EXTENSION;
+                icon = C_ICON_PREFIX + type.getResourceTypeName() + C_ICON_EXTENSION;
                 m_iconCache.put(type.getResourceTypeName(), icon);
             }
             catch(CmsException e) {
