@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagFileProperty.java,v $
-* Date   : $Date: 2002/09/18 17:29:54 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/09/19 12:16:40 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import com.opencms.flex.util.CmsPropertyLookup;
  * This Tag provides access to the currently included files OpenCms properties.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport implements I_CmsJspConstants {
     
@@ -103,7 +103,7 @@ public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport i
                 
                 if ("parent".equals(getFile())) {                    
                     // Read properties of parent (i.e. top requested) file
-                    prop = CmsPropertyLookup.lookupProperty(cms, cms.getRequestContext().getUri(), getName(), false);                  
+                    prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsRequestedResource(), getName(), false);                  
                 } else if ("this".equals(getFile())) {
                     // Read properties of this file
                     prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsResource(), getName(), false);
@@ -112,7 +112,7 @@ public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport i
                     prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsResource(), getName(), true);
                 } else if ("search-parent".equals(getFile()) || "search".equals(getFile())) {
                     // Try to find property on parent file and all parent folders
-                    prop = CmsPropertyLookup.lookupProperty(cms, cms.getRequestContext().getUri(), getName(), true);
+                    prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsRequestedResource(), getName(), true);
                 } else {
                     // Read properties of the file named in the attribute
                     prop = CmsPropertyLookup.lookupProperty(cms, c_req.toAbsolute(getFile()), getName(), false);                  
