@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
- * Date   : $Date: 2000/02/20 17:54:08 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/03/09 16:46:06 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/02/20 17:54:08 $
+ * @version $Revision: 1.19 $ $Date: 2000/03/09 16:46:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -70,6 +70,11 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      */
     protected static CmsXmlWpTemplateFile m_tasklistdef = null;
     
+     /**
+     * Reference to the panel bar defintion file
+     */
+    protected static CmsXmlWpTemplateFile m_paneldef = null;
+    
     /**
      * Reference to taskdocu definition file
      */
@@ -90,6 +95,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      */
     protected static CmsXmlWpInputDefFile m_inputdef = null;
 
+    
      /**
      * Reference to the error defintion file
      */
@@ -249,7 +255,24 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
         //}
         return m_inputdef;
     }
-     
+
+     /**
+     * Reads the panel bar definition file.
+     * @param cms The actual cms object
+     * @return Reference to the label defintion file.
+     * @exception CmsException
+     */
+     public CmsXmlWpTemplateFile getPanelDefinitions(A_CmsObject cms) throws CmsException {
+        //if(m_inputdef == null) {
+            if(m_workplaceElementPath == null) {
+                CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+                m_workplaceElementPath = configFile.getWorkplaceElementPath();
+            }
+            m_paneldef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_PANELTEMPLATE);  
+        //}
+        return m_paneldef;
+    }
+          
      /**
      * Reads the error definition file.
      * @param cms The actual cms object

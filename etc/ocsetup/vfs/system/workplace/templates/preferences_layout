@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '1_2_2.html';
+}
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#ffffff" background="/pics/system/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<form id=EINST_TASK name=EINST_TASK>
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+	<tr><td>
+		<table cellspacing=0 cellpadding=0 border=0 width=100% height=360>
+			<tr> 
+           		<td colspan=4 class="head" height=22><p class=einzug>Einstellungen</p></td>
+			</tr>
+			<tr bgcolor="#838383"> 
+				<td colspan=4 valign=bottom> 		
+				]]><PANELBAR>
+					<PANEL name="explorer"/>
+					<PANEL name="task"/>
+					<PANEL name="start"/>
+					<PANEL name="user"/>
+				</PANELBAR><![CDATA[
+				</td>
+			</tr>
+			
+			<tr><td colspan=4 class=dialogtxt height=260>
+				Hier kommen die Einstellungen!
+			</td></tr>
+			<tr><td colspan=4 class=dialogtxt><hr></td></tr>			
+			<tr><td colspan=4 class=dialogtxt>
+				<table cellspacing=0 cellpadding=5 width=100% border=0>
+				<tr>
+					<td class=formular align=right width=60%><INPUT class=button width = 100 type="button" value="Übernehmen" id=UEBERNEHMEN name=UEBERNEHMEN></td>
+					<td class=formular align=right width=20%><INPUT class=button width = 100 type="button" value="OK" id=OK name=OK onClick="location='../action/explorer.html';"></td>
+					<td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="location='../action/explorer.html';"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			</table>
+	</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</BODY>
+</HTML>
+
+]]>
+</TEMPLATE>
+</WORKPLACE>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/09 09:36:23 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2000/03/09 16:47:15 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.55 $ $Date: 2000/03/09 09:36:23 $
+ * @version $Revision: 1.56 $ $Date: 2000/03/09 16:47:15 $
  */
 public interface I_CmsWpConstants {
 
@@ -124,6 +124,9 @@ public interface I_CmsWpConstants {
     /** Parameter for a new type*/
     public static final String C_PARA_NEWTYPE = "newtype";  
     
+    /** Parameter for a new type*/
+    public static final String C_PARA_PANEL = "panel";  
+
     
     // Filenames of workplace files
         
@@ -155,6 +158,9 @@ public interface I_CmsWpConstants {
  
     /** Name of the template containing label definitions */
     public static final String C_LABELTEMPLATE = "labelTemplate";
+
+    /** Name of the template containing panel bar definitions */
+    public static final String C_PANELTEMPLATE = "panelTemplate";
     
      /**
      *  Name of the template containing input field definitions
@@ -205,35 +211,44 @@ public interface I_CmsWpConstants {
     /** Name of the errorbox tag in the error definiton template */
    public static final String C_TAG_MESSAGEBOX="messagepage";
    
-   /**
-    * Name of the select start tag in the input definiton template
-    */
+   /** Name of the select start tag in the input definiton template */
    public static final String C_TAG_SELECTBOX_START="selectbox.start";
 
-   /**
-    * Name of the select end tag in the input definiton template
-    */
+   /** Name of the select end tag in the input definiton template */
    public static final String C_TAG_SELECTBOX_END="selectbox.end";
    
-   /**
-    * Name of the selectbox "class" option tag in the input definiton template
-    */
+   /** Name of the selectbox "class" option tag in the input definiton template */
    public static final String C_TAG_SELECTBOX_CLASS="selectbox.class";
    
-   /**
-    * Name of the (select) option tag in the input definiton template
-    */
+   /** Name of the (select) option tag in the input definiton template */
    public static final String C_TAG_SELECTBOX_OPTION="selectbox.option";
 
-   /**
-    * Name of the (select) selected option tag in the input definiton template
-    */
+   /** Name of the (select) selected option tag in the input definiton template */
    public static final String C_TAG_SELECTBOX_SELOPTION="selectbox.seloption";
       
-    /**
-    * Name if the error´page tag in the error definiton template
-    */
+   /** Name of the error´page tag in the error definiton template */
    public static final String C_TAG_ERRORPAGE="errorpage";
+
+   /** Panel bar starting sequence tag in the panel bar definiton template */
+   public static final String C_TAG_PANEL_STARTSEQ="paneldef.startseq";
+
+   /** Panel bar ending sequence tag in the panel bar definiton template */
+   public static final String C_TAG_PANEL_ENDSEQ="paneldef.endseq";
+   
+   /** Panel bar sequence for separating background and text area in the panel bar definiton template */
+   public static final String C_TAG_PANEL_SEPBGTEXT="paneldef.sepbgtext";
+
+   /** Panel bar sequence for active background in the panel bar definiton template */
+   public static final String C_TAG_PANEL_BGACTIVE="paneldef.bgactive";
+
+   /** Panel bar sequence for inactive background in the panel bar definiton template */
+   public static final String C_TAG_PANEL_BGINACTIVE="paneldef.bginactive";
+ 
+   /** Panel bar sequence for active text in the panel bar definiton template */
+   public static final String C_TAG_PANEL_TEXTACTIVE="paneldef.textactive";
+
+   /** Panel bar sequence for inactive text in the panel bar definiton template */
+   public static final String C_TAG_PANEL_TEXTINACTIVE="paneldef.textinactive";
    
    
     // Parameters for buttons
@@ -470,6 +485,16 @@ public interface I_CmsWpConstants {
         
     /** default selected option value for editor view select boxes */
     public static final int[] C_SELECTBOX_EDITORVIEWS_DEFAULT = {0, 1};
+    
+    
+    // Parameters for panel bars
+    
+    /** Link URL for each panel */
+    public static final String C_PANEL_LINK = "link";
+    
+    /** Text for each panel */
+    public static final String C_PANEL_NAME = "panelname";
+    
     
     // Parameters for file list
     
