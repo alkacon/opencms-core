@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/04/05 11:05:21 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.main;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.staticexport.CmsStaticExportData;
+import org.opencms.staticexport.CmsStaticExportRequest;
 
 import java.io.IOException;
 
@@ -68,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -147,9 +148,10 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 if (exportData != null) {
                    synchronized (this) {
                         try {
-                            // export the resource and set the response status according to the result 
-                            // of the export operation
-                            res.setStatus(OpenCms.getStaticExportManager().export(req, res, cms, exportData));
+                            // generate a static export request wrapper
+                            CmsStaticExportRequest exportReq = new CmsStaticExportRequest(req, exportData);
+                            // export the resource and set the response status according to the result
+                            res.setStatus(OpenCms.getStaticExportManager().export(exportReq, res, cms, exportData));
                         } catch (Throwable t) {
                             if (OpenCms.getLog(this).isWarnEnabled()) {                    
                                 OpenCms.getLog(this).warn("Error exporting " + exportData, t);

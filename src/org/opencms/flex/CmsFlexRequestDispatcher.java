@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/04/01 06:22:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/04/05 11:05:21 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -247,7 +247,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         String cacheProperty = null;
                         try {
                             // read caching property from requested VFS resource                                     
-                            cacheProperty = cms.readProperty(m_vfsTarget, I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);
+                            cacheProperty = cms.readPropertyObject(m_vfsTarget, I_CmsResourceLoader.C_LOADER_CACHEPROPERTY, false).getValue();
                             if (cacheProperty == null) {
                                 // caching property not set, use default for resource type
                                 cacheProperty = cms.getResourceType(resource.getType()).getCachePropertyDefault();

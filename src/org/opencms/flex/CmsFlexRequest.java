@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2004/03/22 16:34:06 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/04/05 11:05:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
     
@@ -265,6 +265,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
      */
     public String getParameter(String name) {
+        
         String[] values = (String[]) m_parameters.get(name);
         if (values != null) {
             return (values[0]);
@@ -285,7 +286,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @see javax.servlet.ServletRequest#getParameterMap()
      */
     public Map getParameterMap() {
-        return (this.m_parameters);
+        
+        return m_parameters;
     }
 
     /**
@@ -295,6 +297,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @see javax.servlet.ServletRequest#getParameterNames()
      */
     public Enumeration getParameterNames() {
+        
         Vector v = new Vector();
         v.addAll(m_parameters.keySet());
         return (v.elements());
@@ -311,12 +314,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      */
     public String[] getParameterValues(String name) {
 
-        String[] values = (String[]) m_parameters.get(name);
-        if (values != null) {
-            return (values);
-        } else {
-            return (null);
-        }
+        return (String[]) m_parameters.get(name);
     }
 
     /** 
