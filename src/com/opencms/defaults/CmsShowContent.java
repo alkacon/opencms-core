@@ -257,7 +257,7 @@ public class CmsShowContent extends CmsXmlTemplate {
             //register the class for the dependencies
             Vector theClass = new Vector();
             theClass.add(cdClass);
-            registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null, parameters, null, null,theClass);
+            Vector allCdClasses = new Vector();
             // get getFilterMethods method might throws NoSuchMethodException, IllegalAccessException
             String userParameter = getUserParameter(parameters, tagcontent);
             Vector cdObjects =  invokeFilterMethod(cms, cdClass, filterMethodName, userParameter);
@@ -284,6 +284,7 @@ public class CmsShowContent extends CmsXmlTemplate {
                 boolean showIt = true;
                 A_CmsContentDefinition curCont = (A_CmsContentDefinition)cdObjects.elementAt(i);
                 if(curCont.isTimedContent()){
+                    allCdClasses.add(curCont);
                     I_CmsTimedContentDefinition curTimed = (I_CmsTimedContentDefinition)curCont;
                     if(((curTimed.getPublicationDate() != 0) && (currentTime < curTimed.getPublicationDate()))
                             || ((curTimed.getPurgeDate() != 0) && (currentTime > curTimed.getPurgeDate()))){
@@ -295,6 +296,8 @@ public class CmsShowContent extends CmsXmlTemplate {
                    list.append(template.getProcessedDataValue(C_LISTENTRY_DATABLOCK, this));
                 }
             }
+            //register the classes for the dependencies
+            registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null, parameters, null, allCdClasses,theClass);
         } catch (Exception e) {
             if (e instanceof CmsException) {
                 throw (CmsException) e;
