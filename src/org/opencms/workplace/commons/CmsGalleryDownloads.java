@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryDownloads.java,v $
- * Date   : $Date: 2004/12/03 15:07:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/03 17:08:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplaceSettings;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.2
  */
@@ -153,28 +152,5 @@ public class CmsGalleryDownloads extends CmsGallery {
             }
         }
         return galleryTypeId;
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_DELETE.equals(getParamAction())) {
-            // delete a gallery item
-            setAction(ACTION_DELETE);                            
-        } else if (DIALOG_UPLOAD.equals(getParamAction())) {
-            // upload new gallery item
-            setAction(ACTION_UPLOAD);
-        } else {
-            // first call of dialog
-            setAction(ACTION_DEFAULT);
-            // build title for the gallery    
-            setParamTitle(key("title." + DIALOG_TYPE));
-        }   
-    }
+    }        
 }

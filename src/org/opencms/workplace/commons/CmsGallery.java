@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGallery.java,v $
- * Date   : $Date: 2004/12/03 15:07:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/03 17:08:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.2
  */
@@ -534,6 +535,7 @@ public abstract class CmsGallery extends CmsDialog {
         int resTypeId = getGalleryItemsTypeId();
         if (CmsStringUtil.isNotEmpty(getParamGalleryPath())) {
             try {
+                getSettings().setLastUsedGallery(getGalleryTypeId(), getParamGalleryPath());
                 CmsResourceFilter filter;
                 if (resTypeId == -1) {
                     filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFile();                    
@@ -604,7 +606,6 @@ public abstract class CmsGallery extends CmsDialog {
     public String getParamGalleryPath() {
         
         if (CmsStringUtil.isEmpty(m_paramGalleryPath)) {
-            // set gallery path of the first gallery for the first time
             m_paramGalleryPath = "";
         }
         
@@ -907,5 +908,27 @@ public abstract class CmsGallery extends CmsDialog {
         
         return previewRow.toString();
         
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        if (CmsStringUtil.isEmpty(getParamGalleryPath())) {
+            String lastUsedGallery = getSettings().getLastUsedGallery(getGalleryTypeId());
+            if (CmsStringUtil.isNotEmpty(lastUsedGallery)) {
+                // set the resourcepath of the last used gallery even the resource is not deleted
+                try {
+                    getCms().readResource(lastUsedGallery, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                    setParamGalleryPath(lastUsedGallery);
+                } catch (CmsException e) {
+                    //
+                }                
+            }
+        }          
     }
 }

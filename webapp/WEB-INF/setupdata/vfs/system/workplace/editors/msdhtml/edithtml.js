@@ -461,7 +461,11 @@ function DisplayChanged() {
 
 function checkPopup() {
 	if (openWindow && focusCount > 0) {
-		openWindow.focus();
+		try {
+			openWindow.focus();
+		} catch(e) {
+			
+		}
 		focusCount = 0;
 	}
 }

@@ -13,7 +13,11 @@
 	<script type="text/javascript">
 	<!--
 		function validateGalleryPath() {
-			top.gallery_fs.gallery_head.displayGallery();
+			try {
+				top.gallery_fs.gallery_head.displayGallery();
+			} catch(e) {
+			
+			}
 			var field_id = top.gallery_fs.gallery_head.document.forms['list'].<%= wp.PARAM_FIELDID %>.value;
 			var dialogmode = top.gallery_fs.gallery_head.document.forms['list'].<%= wp.PARAM_DIALOGMODE %>.value;
 			top.preview_fs.gallery_buttonbar.location.href="<%=wp.getJsp().link("download_buttonbar.jsp")%>?<%= wp.PARAM_FIELDID %>="+field_id+"&<%= wp.PARAM_DIALOGMODE %>="+dialogmode+"&resourcepath="+top.gallery_fs.gallery_head.previewUri;

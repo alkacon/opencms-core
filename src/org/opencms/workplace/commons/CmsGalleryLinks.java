@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryLinks.java,v $
- * Date   : $Date: 2004/12/03 15:07:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/03 17:08:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,13 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplaceSettings;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Generates the download gallery popup window which can be used in editors or as a dialog widget.<p>
+ * Generates the links gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * The following files use this class:
  * <ul>
@@ -54,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.2
  */
@@ -133,63 +132,7 @@ public class CmsGalleryLinks extends CmsGallery {
             // ignore this exception
         }
         return html.toString();
-    } 
-    
-    /**
-     * Builds the html String for the preview frame.<p>
-     * 
-     * @return the html String for the preview frame
-     */
-//    public String buildGalleryItemPreviewButtonBar() {
-//        
-//        StringBuffer html = new StringBuffer();
-//        try {
-//            if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
-//                CmsResource res = getCms().readResource(getParamResourcePath());
-//                if (res != null) {
-//                    if (ACTION_EDITPROPERTY.equals(getParamAction())) {
-//                        writeTitleProperty(res);
-//                    }                    
-//                    String title = getTitleProperty(res);
-//                    html.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0; border-right: 1px solid ThreeDShadow\">");
-//                    html.append("<tr align=\"left\">");
-//                    html.append(buttonBarStartTab(0, 0));  
-//                    html.append(button("javascript:link('"+getJsp().link(getParamResourcePath())+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0));
-//                    if (isEditable(res)) {
-//                        html.append(button("javascript:deleteResource(\'" + getParamResourcePath() + "\');", null, "deletecontent", "title.delete", 0));
-//                    } else {
-//                        html.append(button(null, null, "deletecontent_in", "", 0));
-//                    }
-//                    html.append(buttonBarSeparator(5, 5));                    
-//                    html.append("<td nowrap><b>");
-//                    html.append(key("input.title"));
-//                    html.append("</b>&nbsp;</td>");
-//                    html.append("<td width=\"80%\">");
-//                    html.append("<input name=\"title\" value=\"");
-//                    html.append(title);
-//                    html.append("\" style=\"width: 95%\">");
-//                    html.append("</td>\r\n");
-//                    if (isEditable(res)) {
-//                        html.append(button("javascript:editProperty('"+getParamResourcePath()+"');", null, "edit_property", "input.editpropertyinfo", 0));                        
-//                    } else {
-//                        html.append(button(null, null, "edit_property_in", "", 0));
-//                    }
-//                    html.append("<td nowrap><b>");
-//                    html.append(key("target"));
-//                    html.append("</b>&nbsp;</td>");
-//                    html.append("<td>\r\n");
-//                    html.append(buildLinkTargetSelectBox());
-//                    html.append("</td>");
-//                    html.append(buttonBarSeparator(5, 5));
-//                    html.append(button(getJsp().link(getCms().getSitePath(res)), "_preview", "preview", "button.preview", 0));
-//                    html.append(buttonBar(HTML_END));                                                         
-//                }
-//            }
-//        } catch (CmsException e) {
-//            // ignore this exception
-//        }
-//        return html.toString();
-//    }         
+    }           
     
     /**
      * @see org.opencms.workplace.commons.CmsGallery#getGalleryItemsTypeId()
@@ -213,28 +156,5 @@ public class CmsGalleryLinks extends CmsGallery {
             }
         }
         return galleryTypeId;
-    }
-        
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_DELETE.equals(getParamAction())) {
-            // delete a gallery item
-            setAction(ACTION_DELETE);                            
-        } else if (DIALOG_UPLOAD.equals(getParamAction())) {
-            // upload new gallery item
-            setAction(ACTION_UPLOAD);
-        } else {
-            // first call of dialog
-            setAction(ACTION_DEFAULT);
-            // build title for the gallery    
-            setParamTitle(key("title." + DIALOG_TYPE));
-        }   
     }
 }

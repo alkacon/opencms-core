@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/08/19 11:26:32 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/12/03 17:08:21 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -70,6 +70,8 @@ public class CmsWorkplaceSettings {
     private Map m_treeType;
     private Map m_frameUris;
     
+    private Map m_lastUsedGalleries;
+    
     private CmsUser m_user;
     private CmsUserSettings m_userSettings;
     private String m_viewUri;
@@ -84,6 +86,7 @@ public class CmsWorkplaceSettings {
         m_treeSite = new HashMap();
         m_resourceTypes = new HashMap();
         m_frameUris = new HashMap();
+        m_lastUsedGalleries = new HashMap();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
     }
 
@@ -508,4 +511,25 @@ public class CmsWorkplaceSettings {
         m_viewUri = string;
     }
 
+    /**
+     * Returns the last saved gallery for the given gallery type id.<p>
+     * 
+     * @param galleryTypeId the type id of the gallery
+     * @return the last saved gallery for the given gallery type id
+     */
+    public String getLastUsedGallery(int galleryTypeId) {
+
+        return (String)m_lastUsedGalleries.get(String.valueOf(galleryTypeId));
+    }
+    
+    /**
+     * Saves the last gallery.<p>
+     * 
+     * @param galleryTypeId the type id of the gallery as key
+     * @param gallerypath the resourcepath of the gallery
+     */
+    public void setLastUsedGallery(int galleryTypeId, String gallerypath) {
+
+        m_lastUsedGalleries.put(String.valueOf(galleryTypeId), gallerypath);
+    }
 }

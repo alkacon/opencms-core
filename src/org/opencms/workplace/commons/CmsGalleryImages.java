@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryImages.java,v $
- * Date   : $Date: 2004/12/03 15:07:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/03 17:08:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplaceSettings;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.2
  */
@@ -130,72 +129,7 @@ public class CmsGalleryImages extends CmsGallery {
     public String targetSelectBox() {
         return "";
     }
-    
-    /**
-     * Builds the html String for the preview frame.<p>
-     * 
-     * @return the html String for the preview frame
-     */
-//    public String buildGalleryItemPreviewButtonBar() {
-//        
-//        StringBuffer html = new StringBuffer();
-//        try {
-//            if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
-//                CmsResource res = getCms().readResource(getParamResourcePath());
-//                if (res != null) {
-//                    if (ACTION_EDITPROPERTY.equals(getParamAction())) {
-//                        writeTitleProperty(res);
-//                    }
-//                    boolean editable = false;
-//                    String resPath = getCms().getSitePath(res);
-//                    String resName = CmsResource.getName(resPath);
-//                    CmsProperty titleProperty = getCms().readPropertyObject(resPath, I_CmsConstants.C_PROPERTY_TITLE, false);
-//                    String title = titleProperty.getValue("["+resName+"]");
-//                    CmsLock lock = getCms().getLock(res);
-//                    // may delete resource only if this is unlocked or the lock owner is the current user
-//                    if (lock.getType() == CmsLock.C_TYPE_UNLOCKED || lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
-//                        editable = true;
-//                    } 
-//                    html.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0;\">");
-//                    html.append("<tr align=\"left\">");
-//                    html.append(buttonBarStartTab(0, 0));  
-//                    String uri = getParamResourcePath();
-//                    if (CmsStringUtil.isEmpty(getParamDialogMode())) {
-//                        uri = getJsp().link(uri);
-//                    }
-//                    html.append(button("javascript:pasteResource('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0));
-//                    if (editable) {
-//                        html.append(button("javascript:deleteResource(\'" + getParamResourcePath() + "\');", null, "deletecontent", "title.delete", 0));
-//                    } else {
-//                        html.append(button(null, null, "deletecontent_in", "", 0));
-//                    }
-//                    
-//                    html.append(buttonBarSeparator(5, 5));                    
-//                    html.append("<td nowrap><b>");
-//                    html.append(key("input.title"));
-//                    html.append("</b>&nbsp;</td>");
-//                    html.append("<td width=\"100%\">");
-//                    html.append("<input name=\"title\" value=\"");
-//                    html.append(title);
-//                    html.append("\" style=\"width: 98%\">");
-//                    html.append("</td>\r\n"); 
-//                    if (editable) {
-//                        html.append(button("javascript:editProperty('"+getParamResourcePath()+"');", null, "edit_property", "input.editpropertyinfo", 0));                        
-//                    } else {
-//                        html.append(button(null, null, "edit_property_in", "", 0));
-//                    }
-//                    // html.append(buttonBarSeparator(5, 5));
-//                    // html.append(button(getJsp().link(getCms().getSitePath(res)), "_preview", "preview", "button.preview", 0));
-//                    // html.append(buttonBar(HTML_END));
-//                    // html.append(buttonBarHorizontalLine());                    
-//                }
-//            }
-//        } catch (CmsException e) {
-//            // ignore this exception
-//        }
-//        return html.toString();
-//    }   
-    
+        
     /**
      * @see org.opencms.workplace.commons.CmsGallery#getGalleryItemsTypeId()
      */
@@ -218,28 +152,5 @@ public class CmsGalleryImages extends CmsGallery {
             }
         }
         return galleryTypeId;
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_DELETE.equals(getParamAction())) {
-            // delete a gallery item
-            setAction(ACTION_DELETE);                            
-        } else if (DIALOG_UPLOAD.equals(getParamAction())) {
-            // upload new gallery item
-            setAction(ACTION_UPLOAD);
-        } else {
-            // first call of dialog
-            setAction(ACTION_DEFAULT);
-            // build title for the gallery    
-            setParamTitle(key("title." + DIALOG_TYPE));
-        }   
-    }
+    }        
 }
