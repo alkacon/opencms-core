@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/09/10 13:12:45 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public interface I_CmsConstants {
 
@@ -202,6 +202,9 @@ public interface I_CmsConstants {
 
     /** Key for additional info start settings. */
     String C_ADDITIONAL_INFO_STARTSETTINGS = "USER_STARTSETTINGS";
+    
+    /** Key for additional info start settings. */
+    String C_ADDITIONAL_INFO_DEFAULTGROUP = "USER_DEFAULTGROUP";    
 
     /**
      * This constant is used to order the tasks by date.
