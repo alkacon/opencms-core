@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsCallableStatement.java,v $
-* Date   : $Date: 2002/06/30 22:38:16 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/09/02 07:30:54 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,8 +81,10 @@ public class CmsCallableStatement extends CmsPreparedStatement implements Callab
     return ((CallableStatement)m_originalStatement).getDouble(parameterIndex);
   }
 
+  /** @deprecated This is deprecated in JDBC 3.0 but still must be implemented */ 
   public BigDecimal getBigDecimal(int parameterIndex, int scale) throws SQLException {
-    return ((CallableStatement)m_originalStatement).getBigDecimal(parameterIndex, scale);
+    // return ((CallableStatement)m_originalStatement).getBigDecimal(parameterIndex, scale);
+    return ((CallableStatement)m_originalStatement).getBigDecimal(parameterIndex);
   }
 
   public byte[] getBytes(int parameterIndex) throws SQLException {

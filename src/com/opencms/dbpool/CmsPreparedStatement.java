@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPreparedStatement.java,v $
-* Date   : $Date: 2002/06/30 22:34:20 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/09/02 07:31:00 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -101,11 +101,6 @@ public class CmsPreparedStatement extends CmsStatement implements PreparedStatem
     ((PreparedStatement)m_originalStatement).setString(parameterIndex, x);
   }
   
-  /* TESTFIX (mfoley@iee.org) Old code:
-  public void setBytes(int parameterIndex, byte x[]) throws SQLException {
-    ((PreparedStatement)m_originalStatement).setBytes(parameterIndex, x);
-  }
-  ** TESTFIX (mfoley@iee.org) New code: */
   public void setBytes(int parameterIndex, byte x[]) throws SQLException {
     if(x.length < 2000)
         ((PreparedStatement)m_originalStatement).setBytes(parameterIndex, x);
@@ -142,7 +137,8 @@ public class CmsPreparedStatement extends CmsStatement implements PreparedStatem
   public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
     ((PreparedStatement)m_originalStatement).setAsciiStream(parameterIndex, x, length);
   }
-
+  
+  /** @deprecated This is deprecated in JDBC 3.0 but still must be implemented */ 
   public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
     ((PreparedStatement)m_originalStatement).setUnicodeStream(parameterIndex, x, length);
   }
