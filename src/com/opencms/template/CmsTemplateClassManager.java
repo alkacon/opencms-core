@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
-* Date   : $Date: 2001/02/12 08:52:13 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/02/20 14:22:25 $
+* Version: $Revision: 1.21 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * be cached and re-used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2001/02/12 08:52:13 $
+ * @version $Revision: 1.21 $ $Date: 2001/02/20 14:22:25 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels {
 
@@ -51,7 +51,6 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * Hashtable for caching the template class
      */
     private static Hashtable instanceCache = new Hashtable();
-    private static CmsClassLoader m_loader = null;
 
     /**
      * Clears the cache for template class instances.
@@ -61,8 +60,6 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsClassManager] clearing class instance cache.");
         }
         instanceCache.clear();
-        m_loader.clearCache();
-        m_loader = null;
     }
 
     /**
@@ -123,40 +120,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
         if(instanceCache.containsKey(classname)) {
             o = instanceCache.get(classname);
         }else {
-/*
-            Vector repositories = new Vector();
-            if (m_loader == null && cms != null){
-                String[] repositoriesFromConfigFile = null;
-                String[] repositoriesFromRegistry = null;
-
-                // add repositories from the configuration file
-                repositoriesFromConfigFile = cms.getConfigurations().getStringArray("repositories");
-                for(int i = 0;i < repositoriesFromConfigFile.length;i++) {
-                    repositories.addElement(repositoriesFromConfigFile[i]);
-                }
-
-                // add the repositories from the registry, if it is available
-                I_CmsRegistry reg = cms.getRegistry();
-                if(reg != null) {
-                    repositoriesFromRegistry = reg.getRepositories();
-                    for(int i = 0;i < repositoriesFromRegistry.length;i++) {
-                        try {
-                            cms.readFileHeader(repositoriesFromRegistry[i]);
-                            repositories.addElement(repositoriesFromRegistry[i]);
-                        }
-                        catch(CmsException e) {
-
-                        // this repository was not found, do do not add it to the repository list
-                        // no exception handling is nescessary here.
-                        }
-                    }
-                }
-            }
-*/          try {
-                if(m_loader == null) {
-                    m_loader = new CmsClassLoader();
-                }
-                //Class c = m_loader.loadClass(classname);
+            try {
                 Class c = CmsTemplateClassManager.class.getClassLoader().loadClass(classname);
                 // Now we have to look for the constructor
                 Constructor con = c.getConstructor(parameterTypes);

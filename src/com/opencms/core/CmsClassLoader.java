@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
-* Date   : $Date: 2001/02/20 08:52:16 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/02/20 14:20:30 $
+* Version: $Revision: 1.20 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -107,13 +107,13 @@ import java.lang.reflect.*;
  * with a parent classloader. Normally this should be the classloader
  * that loaded this loader.
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2001/02/20 08:52:16 $
+ * @version $Revision: 1.20 $ $Date: 2001/02/20 14:20:30 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 
     /** Boolean for additional debug output control */
-    private static final boolean C_DEBUG = false;
+    private static final boolean C_DEBUG = true;
 
     /**
      * Generation counter, incremented for each classloader as they are
@@ -131,7 +131,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      * Cache of the loaded classes. This contains Classes keyed
      * by class names.
      */
-    private static Hashtable cache;
+    private Hashtable cache;
 
     /**
      * The classpath which this classloader searches for class definitions.
@@ -145,18 +145,6 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
     private Method m_getContent;
 
     /**
-     * Clears the cache.
-     */
-    public static void clearCache() {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsClassLoader] clearing class instance cache.");
-        }
-        if (cache != null){
-            cache.clear();
-        }
-    }
-
-    /**
      * Creates a new class loader that will load classes from specified
      * class repositories.
      *
@@ -166,6 +154,10 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      *        in the vector are not valid cms folders.
      */
     public void init(Object cms, Vector classRepository) throws IllegalArgumentException {
+
+        if(C_DEBUG && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsClassLoader] init Method with repositorys: "+classRepository.toString());
+        }
         m_cms = cms;
 
         // Verify that all the repository are valid.
@@ -314,6 +306,24 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                 return c;
             }
         }
+        // Let's have a look in our own class cache
+        c = (Class)cache.get(name);
+        if(c != null) {
+            if(C_DEBUG && A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_DEBUG, "BINGO! Class " + name + "was found in cache.");
+            }
+
+            // bingo! the class is already loaded and is
+            // stored in our classcache
+            if(resolve) {
+                resolveClass(c);
+            }
+            return c;
+        }
+        if(C_DEBUG && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_DEBUG, "Class " + name + "was NOT found in cache.");
+        }
+        // No class found.
 
         // try to load the class using the parent class loader.
         try {
@@ -360,26 +370,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
         }
 
         // OK. The parent loader didn't find the class.
-        // Let's have a look in our own class cache
-        c = (Class)cache.get(name);
-        if(c != null) {
-            if(C_DEBUG && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_DEBUG, "BINGO! Class " + name + "was found in cache.");
-            }
-
-            // bingo! the class is already loaded and is
-            // stored in our classcache
-            if(resolve) {
-                resolveClass(c);
-            }
-            return c;
-        }
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "Class " + name + "was NOT found in cache.");
-        }
-
-        // No class found.
-        // Then we have to search in the OpenCMS System.
+//        // Then we have to search in the OpenCMS System.
         Enumeration allRepositories = repository.elements();
         String filename = null;
         byte[] myClassData = null;
