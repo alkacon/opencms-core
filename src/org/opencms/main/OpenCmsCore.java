@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/05/13 11:09:00 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2004/05/25 11:23:54 $
+ * Version: $Revision: 1.115 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.114 $
+ * @version $Revision: 1.115 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -125,9 +125,9 @@ public final class OpenCmsCore {
 
     /** URI of the authentication form (read from properties) in case of form based authentication */
     private String m_authenticationFormURI;
-
-    /** Member variable to store instances to modify resources */
-    private List m_resourceInitHandlers;
+    
+    /** The configuration manager that contains the information from the XML configuration */
+    private CmsConfigurationManager m_configurationManager;
 
     /** The cron table to use with the scheduler */
     private CmsCronTable m_cronTable;
@@ -179,6 +179,9 @@ public final class OpenCmsCore {
 
     /** Map of request handlers */
     private Map m_requestHandlers;
+
+    /** Member variable to store instances to modify resources */
+    private List m_resourceInitHandlers;
 
     /** The runlevel of this OpenCmsCore object instance */
     private int m_runLevel;
@@ -436,7 +439,7 @@ public final class OpenCmsCore {
             }
         }
     }
-
+    
     /**
      * Adds the specified request handler to the Map of OpenCms request handlers. <p>
      * 
@@ -532,6 +535,16 @@ public final class OpenCmsCore {
      */
     protected void fireCmsEvent(CmsObject cms, int type, java.util.Map data) {
         fireCmsEvent(new CmsEvent(cms, type, data));
+    }
+
+    /**
+     * Returns the configuration manager.<p>
+     *
+     * @return the configuration manager
+     */
+    protected CmsConfigurationManager getConfigurationManager() {
+
+        return m_configurationManager;
     }
 
     /**
@@ -1053,12 +1066,12 @@ public final class OpenCmsCore {
         }        
         
         // create the configuration manager instance    
-        CmsConfigurationManager configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/"));
+        m_configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/"));
         // now load the XML configuration
-        configurationManager.loadXmlConfiguration();
+        m_configurationManager.loadXmlConfiguration();
         
         // get the system configuration
-        CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
+        CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)m_configurationManager.getConfiguration(CmsSystemConfiguration.class);
         // set version history information        
         getSystemInfo().setVersionHistorySettings(systemConfiguration.isVersionHistoryEnabled(), systemConfiguration.getVersionHistoryMaxCount());
         // set mail configuration
@@ -1068,16 +1081,16 @@ public final class OpenCmsCore {
         m_resourceInitHandlers = systemConfiguration.getResourceInitHandlers();
         
         // get the VFS configuration
-        CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)configurationManager.getConfiguration(CmsVfsConfiguration.class);
+        CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(CmsVfsConfiguration.class);
         m_loaderManager = vfsConfiguation.getLoaderManager();        
         List resourceTypes = vfsConfiguation.getResourceTypes();
         
         // get the import/export configuration
-        CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)configurationManager.getConfiguration(CmsImportExportConfiguration.class);
+        CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)m_configurationManager.getConfiguration(CmsImportExportConfiguration.class);
         m_importExportManager = importExportConfiguration.getImportExportManager();
         
         // get the workplace configuration
-        CmsWorkplaceConfiguration workplaceConfiguration = (CmsWorkplaceConfiguration)configurationManager.getConfiguration(CmsWorkplaceConfiguration.class);
+        CmsWorkplaceConfiguration workplaceConfiguration = (CmsWorkplaceConfiguration)m_configurationManager.getConfiguration(CmsWorkplaceConfiguration.class);
         m_workplaceManager = workplaceConfiguration.getWorkplaceManager();
         // add the export points from the workplace
         addExportPoints(m_workplaceManager.getExportPoints());               
