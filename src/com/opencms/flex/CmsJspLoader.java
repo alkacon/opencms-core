@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/10/31 11:40:39 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/11/17 13:58:41 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,6 @@ import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 import com.opencms.flex.cache.*;
 import com.opencms.flex.jsp.*;
-import com.opencms.flex.util.CmsPropertyLookup;
 
 /**
  * The JSP loader which enables the execution of JSP in OpenCms.<p>
@@ -57,7 +56,7 @@ import com.opencms.flex.util.CmsPropertyLookup;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -174,24 +173,25 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             /*            
             // This works :-)
             try {
-                // TODO: Build the exportUrl automatically from the server settings
+                // TODO: static export of JSP pages
+                // 1:    Build the exportUrl automatically from the server settings
                 // [ok]  Maybe have some setting in opencms.properties
                 //       Default settings could be used in servlet to calculate server / webapp / context
-                // TODO: Check possibility to not make http request in case element is
+                // 2:    Check possibility to not make http request in case element is
                 // [ok]  already cached in FlexCache
                 //       However, FlexCache shoule be empty anyway since publish 
                 //       had occured, so element will never be found in cache.
-                // TODO: Add parameters to the exportUrl (don't forget to encode)
+                // 3:    Add parameters to the exportUrl (don't forget to encode)
                 // [ok]
 
-                // TODO: Must make a check / setting so that the http request is
+                // 4:    Must make a check / setting so that the http request is
                 //       recognized as export request, prop. "_flex=export" 
                 //       Set "mode" of CmsObject to "export" using cms.setMode(int)
                 //       Put the collected links from the vector 
                 //       cms.getRequestContext().getLinkVector() back through the request,
                 //       probably as a header in the http response (?)
                 
-                // TODO: Add handling of included JSP sub-elements 
+                // 5:    Add handling of included JSP sub-elements 
                 //       Maybe have some new parameter _flex=export
                 //       It is important to ensure the URI/pathInfo is in sync for exported/not exported elements
                 //       In export with request like below, URI will be URI of sub-element
@@ -208,7 +208,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                     String values[] = (String[])context.getRequest().getParameterValues(key);
                     for (int i=0; i<values.length; i++) {
                         exportUrl += key + "=";
-                        exportUrl += Encoder.encode(values[i], "'UTF-8", true);
+                        exportUrl += Encoder.encode(values[i], "UTF-8", true);
                         if ((i+1)<values.length) exportUrl+="&";
                     }
                     if (params.hasMoreElements()) exportUrl+="&";                       
@@ -585,7 +585,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                 contents = req.getCmsObject().readFile(file.getAbsolutePath()).getContents();
                 // Encoding project:
                 // Check the JSP "content-encoding" property
-                jspEncoding = CmsPropertyLookup.lookupProperty(cms, file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false);
+                jspEncoding = cms.readProperty(file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false);
                 if (jspEncoding == null) jspEncoding = C_DEFAULT_JSP_ENCODING;
                 jspEncoding = jspEncoding.trim().toLowerCase();
             } catch (CmsException e) {
