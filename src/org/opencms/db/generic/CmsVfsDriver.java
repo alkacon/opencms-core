@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/04/02 08:45:32 $
- * Version: $Revision: 1.170 $
+ * Date   : $Date: 2004/04/05 12:31:53 $
+ * Version: $Revision: 1.171 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.170 $ $Date: 2004/04/02 08:45:32 $
+ * @version $Revision: 1.171 $ $Date: 2004/04/05 12:31:53 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2484,8 +2484,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                         deletePropertyValue = true;
                     } else {
                         value = property.getStructureValue();
-                        if (value == null) {
-                            // no structure value set, continue with the resource value
+                        if (value == null || (value != null && "".equalsIgnoreCase(value.trim()))) {
+                            // no structure value set or the structure value is an empty string, 
+                            // continue with the resource value
                             continue;
                         }                        
                     }
@@ -2501,8 +2502,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                         deletePropertyValue = true;
                     } else {                    
                         value = property.getResourceValue();
-                        if (value == null) {
-                            // no resource value set, break out of the loop
+                        if (value == null || (value != null && "".equalsIgnoreCase(value.trim()))) {
+                            // no resource value set or the resource value is an empty string,
+                            // break out of the loop
                             break;
                         }                 
                     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/04/05 05:39:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/04/05 12:31:53 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,6 @@
  */
 
 package org.opencms.file;
-
-import org.opencms.main.OpenCms;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -69,7 +67,10 @@ import java.util.RandomAccess;
  * whether you want to save a new (non-existing) property, update an existing property, or delete an
  * existing property. To delete a property you would write a property object with either the
  * structure and/or resource record values set to {@link #C_DELETE_VALUE} to indicate that a
- * property value should be deleted in the database.<p>
+ * property value should be deleted in the database. Set property values to null if they should
+ * remain unchanged in the database when a property object is written. As for example you want to
+ * update just the structure value of a property, you would set the structure value to the new string,
+ * and the resource value to null (which is already the case by default).<p>
  * 
  * Use {@link #setAutoCreatePropertyDefinition(boolean)} to set a boolean flag whether a missing property
  * definition should be created implicitly for a resource type when a property is written to the database.
@@ -80,7 +81,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2004/04/05 05:39:54 $
+ * @version $Revision: 1.9 $ $Date: 2004/04/05 12:31:53 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -501,7 +502,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
         StringBuffer strBuf = new StringBuffer();
 
         strBuf.append("[").append(getClass().getName()).append(": ");
-        strBuf.append("key: ").append(m_key);
+        strBuf.append("key: '").append(m_key).append("'");
         strBuf.append(", value: '").append(getValue()).append("'");
         strBuf.append(", structure value: '").append(m_structureValue).append("'");
         strBuf.append(", resource value: '").append(m_resourceValue).append("'");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/04/05 05:33:02 $
- * Version: $Revision: 1.349 $
+ * Date   : $Date: 2004/04/05 12:31:53 $
+ * Version: $Revision: 1.350 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.349 $ $Date: 2004/04/05 05:33:02 $
+ * @version $Revision: 1.350 $ $Date: 2004/04/05 12:31:53 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8681,6 +8681,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             // check the permissions
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
+            
+            if (resource.isFolder()) {
+                // folders don't have (shared) resource property values
+                property.setResourceValue(null);
+            }            
 
             // write the property
             m_vfsDriver.writePropertyObject(context.currentProject(), resource, property);
@@ -8726,6 +8731,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             for (int i = 0; i < properties.size(); i++) {
                 // write the property
                 property = (CmsProperty) properties.get(i);
+                
+                if (resource.isFolder()) {
+                    // folders don't have (shared) resource property values
+                    property.setResourceValue(null);
+                }
+                
                 m_vfsDriver.writePropertyObject(context.currentProject(), resource, property);
             }
 
@@ -8770,36 +8781,42 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         
         // check if we have the result already cached
         String cacheKey = getCacheKey(C_CACHE_ALL_PROPERTIES + search, context.currentProject().getId(), resource.getRootPath());
-        List value = (List)m_propertyCache.get(cacheKey);
+        List properties = (List)m_propertyCache.get(cacheKey);
 
-        if (value == null) {
+        if (properties == null) {
             // result not cached, let's look it up in the DB
             if (search) {
                 boolean cont;
-                siteRoot += "/";
-                value = (List)new ArrayList();
-                List parentValue;
+                siteRoot += I_CmsConstants.C_FOLDER_SEPARATOR;
+                properties = (List)new ArrayList();
+                List parentProperties = null;
+                
                 do {
                     try {
-                        parentValue = readPropertyObjects(context, resourceName, siteRoot, false);
-                        parentValue.addAll(value);
-                        value.clear();
-                        value.addAll(parentValue);
-                        resourceName = CmsResource.getParentFolder(resourceName);
-                        cont = (!"/".equals(resourceName));
-                    } catch (CmsSecurityException se) {
+                        // parent value is a set to keep the propertities distinct
+                        parentProperties = readPropertyObjects(context, resourceName, siteRoot, false);
+                        
+                        parentProperties.removeAll(properties);
+                        parentProperties.addAll(properties);
+                        properties.clear();
+                        properties.addAll(parentProperties);
+                        
+                        resourceName = CmsResource.getParentFolder(resourceName);                        
+                        cont = (!I_CmsConstants.C_FOLDER_SEPARATOR.equals(resourceName));
+                    } catch (CmsSecurityException e) {
                         // a security exception (probably no read permission) we return the current result                      
                         cont = false;
                     }
                 } while (cont);
             } else {
-                value = m_vfsDriver.readPropertyObjects(context.currentProject(), resource);
+                properties = m_vfsDriver.readPropertyObjects(context.currentProject(), resource);
             }
-            // store the result in the cache
-            m_propertyCache.put(cacheKey, value);
+            
+            // store the result in the driver manager's cache
+            m_propertyCache.put(cacheKey, properties);
         }
         
-        return (List) new ArrayList(value);        
+        return (List) new ArrayList(properties);        
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/04/05 05:41:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/04/05 12:31:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -828,8 +828,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             for (int i=0; i<propertyDef.size(); i++) {
                 CmsPropertydefinition curPropDef = (CmsPropertydefinition)propertyDef.elementAt(i);
                 String propName = CmsEncoder.escapeXml(curPropDef.getName());
-                String valueStructure = "";
-                String valueResource = "";
+                String valueStructure = null;
+                String valueResource = null;                
                 
                 if (activeTab == 1) {
                     // get parameters from the structure tab
@@ -848,13 +848,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 // check values for blanks and null
                 if (valueStructure != null) {
                     valueStructure = valueStructure.trim();
-                } else {
-                    valueStructure = "";
-                }
+                } 
+                
                 if (valueResource != null) {
                     valueResource = valueResource.trim();
-                } else {
-                    valueResource = "";
                 }
                 
                 // create new CmsProperty object to store
@@ -870,18 +867,37 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     oldProperty = new CmsProperty();
                     oldProperty.setKey(curPropDef.getName());
                 }
-                if (oldProperty.getStructureValue() == null) {
-                    oldProperty.setStructureValue("");
-                }
-                if (oldProperty.getResourceValue() == null) {
-                    oldProperty.setResourceValue("");
+                
+                boolean writeStructureValue = false;
+                boolean writeResourceValue = false;
+                String oldValue = oldProperty.getStructureValue();
+                String newValue = newProperty.getStructureValue().trim();
+
+                // write the structure value if the existing structure value is not null and we want to delete the structure value
+                writeStructureValue = (oldValue != null && newProperty.deleteStructureValue());
+                // or if we want to write a value which is neither the delete value or an empty value
+                writeStructureValue |= !newValue.equals(oldValue) && !"".equalsIgnoreCase(newValue) && !CmsProperty.C_DELETE_VALUE.equalsIgnoreCase(newValue);
+                // set the structure value explicitly to null to leave it as is in the database
+                if (!writeStructureValue) {
+                    newProperty.setStructureValue(null);
+                }                
+                
+                oldValue = oldProperty.getResourceValue();
+                newValue = newProperty.getResourceValue().trim();
+
+                // write the resource value if the existing resource value is not null and we want to delete the resource value
+                writeResourceValue = (oldValue != null && newProperty.deleteStructureValue());
+                // or if we want to write a value which is neither the delete value or an empty value
+                writeResourceValue |= !newValue.equals(oldValue) && !"".equalsIgnoreCase(newValue) && !CmsProperty.C_DELETE_VALUE.equalsIgnoreCase(newValue);
+                // set the resource value explicitly to null to leave it as is in the database
+                if (!writeResourceValue) {
+                    newProperty.setResourceValue(null);
                 }
                 
-                // check if saving the properties is necessary
-                if (!newProperty.isIdentical(oldProperty)) {
+                if (writeStructureValue || writeResourceValue) {
                     // add property to list only if property values have changed
-                    propertiesToWrite.add(newProperty);
-                }   
+                    propertiesToWrite.add(newProperty);                    
+                }  
             }
             if (propertiesToWrite.size() > 0) {
                 // lock resource if autolock is enabled
