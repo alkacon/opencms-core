@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_editbrowser.js,v $
- * Date   : $Date: 2000/05/30 13:33:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/05/31 12:16:17 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,13 +56,7 @@ function updateSelection()
 		document.form1.FilterInput.value="";
 	}
 }
-
-function getSelection()
-{
-	document.form1.galerie.selectedIndex = top.selectedGallery;
-}
-
-
+  
 var DO_NEXT=1;
 var DO_PREV=2;
 var DO_SEARCH=3;
@@ -91,10 +85,7 @@ function doEdit(para)
     break;
   }
   case 2: // previous page
-  {
-//    if (parent.frames[0].document.BOL !=true)
-//     {
-//      page--;
+  { 
     page--;  //decrease page number
     if (page<1)  // already on first page?
      {

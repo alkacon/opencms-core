@@ -51,8 +51,8 @@
  	</tr>
 	<tr valign=top align=center>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
-		<td>]]><ICON name="ic_picgallery" label="picgallery" action="location.href='administration_content_picgalleries.html?initial=true';" href="administration_head_picgalleries1.html" target="admin_head" visiblemethod="isProjectManager"/><![CDATA[</td>
-		<td>]]><ICON name="ic_downloadgallery" label="downloadgallery" action="location.href='administration_content_downgalleries.html?initial=true';" href="administration_head_downgalleries1.html" target="admin_head" visiblemethod="isProjectManager"/><![CDATA[</td>
+		<td>]]><ICON name="ic_picgallery" label="picgallery" action="location.href='administration_content_picgalleries.html?initial=true';" href="administration_head_picgalleries1.html" target="admin_head" visiblemethod="isProjectManager" activemethod="isNotOnlineProject"/><![CDATA[</td>
+		<td>]]><ICON name="ic_downloadgallery" label="downloadgallery" action="location.href='administration_content_downgalleries.html?initial=true';" href="administration_head_downgalleries1.html" target="admin_head" visiblemethod="isProjectManager" activemethod="isNotOnlineProject"/><![CDATA[</td>
 	</tr>
 </table>
 

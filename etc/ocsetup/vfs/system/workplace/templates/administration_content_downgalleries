@@ -46,4 +46,9 @@ function show_help()
 
 <INCLUDE>/system/workplace/templates/explorer_files_contextmenu</INCLUDE>
 </TEMPLATE>
+
+<TEMPLATE name="error"> 
+<ERRORPAGE title="error.title.downgallery" message="error.message.gallerynoright" reason="error.reason.gallerynoright" suggestion="error.suggestion.none" ref="administration_content_downgalleries.html" ><PROCESS>ERRORDETAILS</PROCESS></ERRORPAGE> 
+</TEMPLATE>
+
 </WORKPLACE>
