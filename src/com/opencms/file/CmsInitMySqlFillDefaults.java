@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySqlFillDefaults.java,v $
- * Date   : $Date: 2000/04/17 10:37:10 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/04/17 15:33:19 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/04/17 10:37:10 $
+ * @version $Revision: 1.21 $ $Date: 2000/04/17 15:33:19 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -255,6 +255,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 		mt.put( "pdb", "chemical/x-pdb" );
 		mt.put( "xyz", "chemical/x-pdb" );
 		mt.put( "bmp", "image/bmp" );
+		mt.put( "wbmp", "image/vnd.wap.wbmp" );
 		mt.put( "gif", "image/gif" );
 		mt.put( "ief", "image/ief" );
 		mt.put( "jpeg", "image/jpeg" );
@@ -291,6 +292,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 		mt.put( "tsv", "text/tab-separated-values" );
 		mt.put( "etx", "text/x-setext" );
 		mt.put( "xml", "text/xml" );
+		mt.put( "wml", "text/vnd.wap.wml" );
 		mt.put( "mpeg", "video/mpeg" );
 		mt.put( "mpg", "video/mpeg" );
 		mt.put( "mpe", "video/mpeg" );
