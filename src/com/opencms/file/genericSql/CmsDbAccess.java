@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.262 $
+* Date   : $Date: 2002/12/12 19:01:14 $
+* Version: $Revision: 1.263 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.262 $ $Date: 2002/12/06 23:16:54 $ *
+ * @version $Revision: 1.263 $ $Date: 2002/12/12 19:01:14 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4865,7 +4865,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // folderIdIndex:    offlinefolderId   |   onlinefolderId
         Hashtable folderIdIndex = new Hashtable();
         Vector changedResources = new Vector();
-        report.addSeperator(0);
 
         CmsProject currentProject = readProject(projectId);
         int versionId = 1;
@@ -4880,8 +4879,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         offlineFolders = readFolders(projectId, false, true);
         for (int i = 0; i < offlineFolders.size(); i++){
             currentFolder = ((CmsFolder) offlineFolders.elementAt(i));
-            report.addString(currentFolder.getAbsolutePath());
-            report.addSeperator(0);
+            report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);
+            report.println(currentFolder.getAbsolutePath());
             // do not publish the folder if it is locked in another project
             if (currentFolder.isLocked()){
               // in this case do nothing
@@ -5073,12 +5072,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         } // end of for(...
 
         // now read all FILES in offlineProject
-        report.addSeperator(0);
         offlineFiles = readFiles(projectId, false, true);
         for (int i = 0; i < offlineFiles.size(); i++){
             currentFile = ((CmsFile) offlineFiles.elementAt(i));
-            report.addString(currentFile.getAbsolutePath());
-            report.addSeperator(0);
+            report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);
+            report.println(currentFile.getAbsolutePath());            
             if(!currentFile.isLocked()){
                 // remove the temporary files for this resource
                 removeTemporaryFile(currentFile);
@@ -5338,11 +5336,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
         } // end of for(...
         // now delete the "deleted" folders
-        report.addSeperator(0);
         for (int i = deletedFolders.size() - 1; i > -1; i--){
             currentFolder = ((CmsFolder) deletedFolders.elementAt(i));
-            report.addString(currentFolder.getAbsolutePath());
-            report.addSeperator(0);
+            report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
+            report.println(currentFolder.getAbsolutePath());
             String exportKey = checkExport(currentFolder.getAbsolutePath(), exportpoints);
             if (exportKey != null){
                 discAccess.removeResource(currentFolder.getAbsolutePath(), exportKey);
@@ -6487,7 +6484,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
             if(aktualBrokenList.getLinkTargets().size() != 0){
                 aktualBrokenList.setResourceName(((CmsResource)changed.elementAt(i)).getResourceName());
-                report.addPageLinks(aktualBrokenList);
+                report.println(aktualBrokenList);
             }
         }
         for(int i=0; i<newRes.size(); i++){
@@ -6504,7 +6501,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
             if(aktualBrokenList.getLinkTargets().size() != 0){
                 aktualBrokenList.setResourceName(((CmsResource)newRes.elementAt(i)).getResourceName());
-                report.addPageLinks(aktualBrokenList);
+                report.println(aktualBrokenList);
             }
         }
 
@@ -6525,10 +6522,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
         }
         // now lets put the results in the report (behind a seperator)
-        report.addSeperator(0);
         Enumeration enu = onlineResults.elements();
         while(enu.hasMoreElements()){
-            report.addPageLinks((CmsPageLinks)enu.nextElement());
+            report.println((CmsPageLinks)enu.nextElement());
         }
      }
 
