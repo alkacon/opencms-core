@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTaskLog.java,v $
-* Date   : $Date: 2001/07/31 15:50:14 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/11/02 10:32:22 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.util.*;
  * This class describes a tasklog in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.7 $ $Date: 2001/07/31 15:50:14 $
+ * @version $Revision: 1.8 $ $Date: 2002/11/02 10:32:22 $
  */
 public class CmsTaskLog implements I_CmsConstants {
 
@@ -97,12 +97,18 @@ public class CmsTaskLog implements I_CmsConstants {
         return equal;
     }
     /**
-     * Returns the name of this task.
+     * Returns the comment of this task.
      * 
-     * @return the name of this task.
+     * @return the comment of this task.
      */
     public String getComment() {
         return m_Comment; 
+    }
+    /**
+     * Sets the comment of this task.
+     */
+    public void setComment(String value) {
+        m_Comment = value; 
     }
     /**
      * Returns the id of this task.
