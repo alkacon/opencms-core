@@ -1,0 +1,14 @@
+<!ELEMENT page (elements)>
+<!ELEMENT elements (element+)>	
+<!ELEMENT element (links, content)>	
+   <!ATTLIST element name CDATA #REQUIRED>
+   <!ATTLIST element language CDATA "all">
+   <!ATTLIST element enabled (true|false) #IMPLIED>
+<!ELEMENT links (link*)>	
+<!ELEMENT link (target)>	
+   <!ATTLIST link name CDATA #REQUIRED>
+   <!ATTLIST link internal (true|false) #REQUIRED>
+   <!ATTLIST link type (A|IMG) #REQUIRED>   
+   <!ATTLIST link params CDATA #IMPLIED>   
+<!ELEMENT target (#PCDATA)>
+<!ELEMENT content (#PCDATA)>

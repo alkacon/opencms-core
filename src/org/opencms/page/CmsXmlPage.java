@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/04/29 10:21:05 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/04/30 10:09:34 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,14 @@
 
 package org.opencms.page;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSiteMatcher;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
@@ -61,6 +60,7 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
+import org.dom4j.DocumentType;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public class CmsXmlPage {
     
@@ -101,9 +101,6 @@ public class CmsXmlPage {
     
     /** Name of the root document node */
     private static final String C_DOCUMENT_NODE = "page";
-
-    /** Link to the external document type of this xml page */
-    private static final String C_DOCUMENT_TYPE = "/system/shared/page.dtd";
 
     /** Name of the anchor node */
     private static final String C_NODE_ANCHOR = "anchor";
@@ -131,24 +128,40 @@ public class CmsXmlPage {
         
     /** Property to check if relative links are allowed */
     private static final String C_PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
+
+    /** The DTD address of the OpenCms xmlpage */
+    public static final String C_XMLPAGE_DTD_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX + "xmlpage.dtd";    
+    
+    /** The entity resolver for reading / writing xmlpages */
+    private static CmsXmlPageEntityResolver m_resolver = new CmsXmlPageEntityResolver();
     
     /** Indicates if relative Links are allowed */
     private boolean m_allowRelativeLinks;
     
     /** Reference for named elements in the page */
     private Map m_bookmarks;
-
-    /** Set of locales contained in this page */
-    private Set m_locales;
     
     /** The document object of the page */
     private Document m_document;
     
-    /** The file that contains the page data (note: is not set when creating an empty or document based CmsXmlPage) */
-    private CmsFile m_file;
-    
     /** The encoding to use for this xml page */    
     private String m_encoding;
+    
+    /** The file that contains the page data (note: is not set when creating an empty or document based CmsXmlPage) */
+    private CmsFile m_file;
+
+    /** Set of locales contained in this page */
+    private Set m_locales;
+    
+    /**
+     * Creates a new CmsXmlPage based on the provided document.<p>
+     * 
+     * @param document the document to create the CmsXmlPage from
+     */
+    public CmsXmlPage(Document document) {
+        m_document = document;
+        initBookmarks();
+    }
 
     /**
      * Creates a new empty CmsXmlPage.<p>
@@ -159,16 +172,6 @@ public class CmsXmlPage {
     public CmsXmlPage(String encoding) {
         m_encoding = encoding;
         initDocument();
-        initBookmarks();
-    }
-    
-    /**
-     * Creates a new CmsXmlPage based on the provided document.<p>
-     * 
-     * @param document the document to create the CmsXmlPage from
-     */
-    public CmsXmlPage(Document document) {
-        m_document = document;
         initBookmarks();
     }
     
@@ -213,7 +216,7 @@ public class CmsXmlPage {
                     xmlData = new String();
                 }
             }            
-            newPage = read(cms, xmlData);
+            newPage = read(xmlData);
             
         } else {
             // content is empty
@@ -230,15 +233,14 @@ public class CmsXmlPage {
     /**
      * Reads the xml contents from a string into the page.<p>
      * 
-     * @param cms the current cms object
-     * @param xmlData the xml data
+     * @param xmlData the xml data in a String 
      * @return the page initialized with the given xml data
      * @throws CmsXmlPageException if something goes wrong
      */
-    public static CmsXmlPage read(CmsObject cms, String xmlData) throws CmsXmlPageException {        
+    public static CmsXmlPage read(String xmlData) throws CmsXmlPageException {        
         try {
             SAXReader reader = new SAXReader();
-            reader.setEntityResolver(new CmsEntityResolver(cms));
+            reader.setEntityResolver(m_resolver);
             Document document = reader.read(new StringReader(xmlData));            
             return new CmsXmlPage(document);
         } catch (DocumentException e) {
@@ -269,30 +271,6 @@ public class CmsXmlPage {
      */
     public boolean getAllowRelativeLinks() {
         return m_allowRelativeLinks;
-    }
-    
-    /**
-     * Returns the bookmarked element for the given key.<p>
-     * 
-     * @param name the name of the element
-     * @param locale the locale of the element
-     * @return the bookemarked element
-     */
-    protected Element getBookmark(String name, Locale locale) {     
-        if (locale != null) {
-            return (Element)m_bookmarks.get(locale.toString() + "|" + name);
-        } else {
-            return (Element)m_bookmarks.get(name);
-        }
-    }
-    
-    /**
-     * Returns all keys for bookmarked elements.<p>
-     * 
-     * @return the keys of bookmarked elements
-     */
-    protected Set getBookmarks() {
-        return (m_bookmarks != null)? m_bookmarks.keySet() : new HashSet(); 
     }
     
     /**
@@ -351,32 +329,14 @@ public class CmsXmlPage {
         
         return content;
     }
-
+    
     /**
-     * Returns the raw (unprocessed) content of an element.<p>
+     * Returns the encoding used for the page content.<p>
      * 
-     * @param name  name of the element
-     * @param locale locale of the element
-     * @return the raw (unprocessed) content
+     * @return the encoding used for the page content
      */
-    public String getRawContent(String name, Locale locale) {
-        
-        Element element = getBookmark(name, locale);        
-        String content = "";
-        
-        if (element != null) {
-
-            Element data = element.element(C_NODE_CONTENT);
-            Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);
-            
-            if (enabled == null || "true".equals(enabled.getValue())) {
-                
-                content = data.getStringValue();
-                // content = data.getText();
-            }
-        }
-        
-        return content;
+    public String getEncoding() {
+        return m_encoding;
     }
     
     /**
@@ -386,15 +346,6 @@ public class CmsXmlPage {
      */
     public CmsFile getFile() {
         return m_file;
-    }
-    
-    /**
-     * Returns the encoding used for the page content.<p>
-     * 
-     * @return the encoding used for the page content
-     */
-    public String getEncoding() {
-        return m_encoding;
     }
 
     /**
@@ -466,6 +417,33 @@ public class CmsXmlPage {
     }
 
     /**
+     * Returns the raw (unprocessed) content of an element.<p>
+     * 
+     * @param name  name of the element
+     * @param locale locale of the element
+     * @return the raw (unprocessed) content
+     */
+    public String getRawContent(String name, Locale locale) {
+        
+        Element element = getBookmark(name, locale);        
+        String content = "";
+        
+        if (element != null) {
+
+            Element data = element.element(C_NODE_CONTENT);
+            Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);
+            
+            if (enabled == null || "true".equals(enabled.getValue())) {
+                
+                content = data.getStringValue();
+                // content = data.getText();
+            }
+        }
+        
+        return content;
+    }
+
+    /**
      * Checks if the page object contains a name specified by name and language.<p>
      * 
      * @param name the name of the element
@@ -474,36 +452,6 @@ public class CmsXmlPage {
      */
     public boolean hasElement(String name, Locale locale) {    
         return getBookmark(name, locale) != null;
-    }
-    
-    /**
-     * Initializes the bookmarks according to the named elements in the document.<p>
-     */
-    protected void initBookmarks() {
-
-        m_bookmarks = new HashMap();
-        m_locales = new HashSet();
-        
-        for (Iterator i = m_document.getRootElement().element(C_NODE_ELEMENTS).elementIterator(C_NODE_ELEMENT); i.hasNext();) {
-   
-            Element elem = (Element)i.next();
-            try {
-                String elementName = elem.attribute(C_ATTRIBUTE_NAME).getValue();
-                String elementLang = elem.attribute(C_ATTRIBUTE_LANGUAGE).getValue();
-                setBookmark(elementName, CmsLocaleManager.getLocale(elementLang), elem);              
-            } catch (NullPointerException e) {
-                OpenCms.getLog(this).error("Error while initalizing xmlPage bookmarks", e);                
-            }    
-        }
-    }
-    
-    /**
-     * Initializes the internal document object.<p>
-     */
-    protected void initDocument() {        
-        m_document = DocumentHelper.createDocument(DocumentHelper.createElement(C_DOCUMENT_NODE));
-        m_document.addDocType(C_DOCUMENT_NODE, "", C_DOCUMENT_TYPE);
-        m_document.getRootElement().addElement(C_NODE_ELEMENTS);
     }
 
     /**
@@ -524,21 +472,6 @@ public class CmsXmlPage {
         
         return false;
     }
-    
-    /**
-     * Removes a bookmark with a given key.<p>
-     * 
-     * @param name the name of the element
-     * @param locale the locale of the element
-     * @return the element removed from the bookmarks or null
-     */
-    protected Element removeBookmark(String name, Locale locale) {
-        if (locale != null) {
-            return (Element)m_bookmarks.remove(locale.toString() + "|" + name);
-        } else {
-            return (Element)m_bookmarks.remove(name);
-        }
-    }
 
     /**
      * Removes an existing element with the given name and locale.<p>
@@ -551,22 +484,6 @@ public class CmsXmlPage {
         Element element = removeBookmark(name, locale);
         elements.remove(element);
     }
-    
-    /**
-     * Adds a bookmark for the given element.<p>
-     * 
-     * @param name the name of the element
-     * @param locale the locale of the element
-     * @param element the element to bookmark
-     */
-    protected void setBookmark(String name, Locale locale, Element element) {        
-        if (locale != null) {
-            m_locales.add(locale);
-            m_bookmarks.put(locale.toString() + "|" + name, element);
-        } else {
-            m_bookmarks.put(name, element);
-        }
-    }            
     
     /**
      * Sets the data of an already existing element.<p>
@@ -651,6 +568,34 @@ public class CmsXmlPage {
             enabled.setValue(Boolean.toString(isEnabled));
         }
     }
+        
+    /**
+     * Validates the xml structure of the page with the xmlpage dtd.<p>
+     * 
+     * This is required in case someone modifies the xml structure of a  
+     * xmlpage file using the "edit control code" option.<p>
+     * 
+     * @throws CmsXmlPageException if the validation fails
+     */
+    public void validateXmlStructure() throws CmsXmlPageException  {
+
+        // create a new validator and validate the xml structure
+        SAXValidator validator = new SAXValidator();
+        try {
+            // set the OpenCms xml validation error handler 
+            validator.setErrorHandler(new CmsXmlPageValidationErrorHandler());
+            // set the xmlpage entitiy resolver for the validation XML reader
+            validator.getXMLReader().setEntityResolver(m_resolver);
+            // validate the document
+            validator.validate(m_document);                        
+        } catch (SAXException e) {
+            // there was an validation error, so throw an exception
+            throw new CmsXmlPageException("XML validation error " + e.getMessage(), CmsException.C_XML_CORRUPT_INTERNAL_STRUCTURE);
+        } finally {
+           // clean up some memory
+           validator = null;
+        }           
+    }
     
     /**
      * Writes the xml contents into the assigned CmsFile,
@@ -705,6 +650,16 @@ public class CmsXmlPage {
             
             XMLWriter writer = new XMLWriter(out, format);
             writer.setEscapeText(false);
+            
+            // ensure xml page has proper system doc type set
+            DocumentType type = m_document.getDocType();
+            if (type != null) {
+                String systemId = type.getSystemID();
+                if ((systemId != null) && systemId.endsWith(CmsXmlPageEntityResolver.C_XMLPAGE_DTD_OLD_SYSTEM_ID)) {
+                    m_document.addDocType(C_DOCUMENT_NODE, "", C_XMLPAGE_DTD_SYSTEM_ID);
+                }
+            }
+            
             writer.write(m_document);
             writer.close();
             
@@ -726,39 +681,89 @@ public class CmsXmlPage {
         return write(m_file, encoding);
     }
     
+    /**
+     * Returns the bookmarked element for the given key.<p>
+     * 
+     * @param name the name of the element
+     * @param locale the locale of the element
+     * @return the bookemarked element
+     */
+    protected Element getBookmark(String name, Locale locale) {     
+        if (locale != null) {
+            return (Element)m_bookmarks.get(locale.toString() + "|" + name);
+        } else {
+            return (Element)m_bookmarks.get(name);
+        }
+    }
     
     /**
-     * Validated if the xml structure of the xmlpage does match the dtd.<p>
+     * Returns all keys for bookmarked elements.<p>
      * 
-     * This is nescessary, as someone could have edited the xml controlcode of the page and
-     * modified the xml structure there.
-     * 
-     * @throws CmsXmlPageException if the validation fails
+     * @return the keys of bookmarked elements
      */
-    public void validateXmlStructure() throws CmsXmlPageException  {
-
-        // Modifiy the path to the dtd. The xmlpage only contains the relative path to the
-        // dtd inside of opencms. To validate the xmlstructure, the complete path is required.
-         
-        CmsSiteMatcher workplace = OpenCms.getSiteManager().getWorkplaceSiteMatcher();                
-        CmsSystemInfo systemInfo = OpenCms.getSystemInfo();
-        String path = workplace.getUrl() + systemInfo.getOpenCmsContext();          
-     
-        m_document.addDocType(C_DOCUMENT_NODE, "", path+C_DOCUMENT_TYPE);
-        
-        // create a new validator and validate the xml structure
-        SAXValidator validator = new SAXValidator();
-        validator.setErrorHandler(new CmsXmlPageValidationErrorHandler());
-        try {
-            // validate the document
-            validator.validate(m_document);                        
-        } catch (SAXException e) {
-            // there was an validation error, so throw an exception
-            throw new CmsXmlPageException("XML validation error " +e.getMessage());
-        } finally {
-           // clean up some memory
-           validator = null;
-        }           
+    protected Set getBookmarks() {
+        return (m_bookmarks != null)? m_bookmarks.keySet() : new HashSet(); 
     }
+    
+    /**
+     * Initializes the bookmarks according to the named elements in the document.<p>
+     */
+    protected void initBookmarks() {
+
+        m_bookmarks = new HashMap();
+        m_locales = new HashSet();
+        
+        for (Iterator i = m_document.getRootElement().element(C_NODE_ELEMENTS).elementIterator(C_NODE_ELEMENT); i.hasNext();) {
+   
+            Element elem = (Element)i.next();
+            try {
+                String elementName = elem.attribute(C_ATTRIBUTE_NAME).getValue();
+                String elementLang = elem.attribute(C_ATTRIBUTE_LANGUAGE).getValue();
+                setBookmark(elementName, CmsLocaleManager.getLocale(elementLang), elem);              
+            } catch (NullPointerException e) {
+                OpenCms.getLog(this).error("Error while initalizing xmlPage bookmarks", e);                
+            }    
+        }
+    }
+    
+    /**
+     * Initializes the internal document object.<p>
+     */
+    protected void initDocument() {        
+        m_document = DocumentHelper.createDocument(DocumentHelper.createElement(C_DOCUMENT_NODE));
+        m_document.addDocType(C_DOCUMENT_NODE, "", C_XMLPAGE_DTD_SYSTEM_ID);
+        m_document.getRootElement().addElement(C_NODE_ELEMENTS);
+    }
+    
+    /**
+     * Removes a bookmark with a given key.<p>
+     * 
+     * @param name the name of the element
+     * @param locale the locale of the element
+     * @return the element removed from the bookmarks or null
+     */
+    protected Element removeBookmark(String name, Locale locale) {
+        if (locale != null) {
+            return (Element)m_bookmarks.remove(locale.toString() + "|" + name);
+        } else {
+            return (Element)m_bookmarks.remove(name);
+        }
+    }
+    
+    /**
+     * Adds a bookmark for the given element.<p>
+     * 
+     * @param name the name of the element
+     * @param locale the locale of the element
+     * @param element the element to bookmark
+     */
+    protected void setBookmark(String name, Locale locale, Element element) {        
+        if (locale != null) {
+            m_locales.add(locale);
+            m_bookmarks.put(locale.toString() + "|" + name, element);
+        } else {
+            m_bookmarks.put(name, element);
+        }
+    }            
     
 }

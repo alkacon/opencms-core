@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPageValidationErrorHandler.java,v $
- * Date   : $Date: 2004/04/29 09:41:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/04/30 10:09:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,38 +31,45 @@
  
 package org.opencms.page;
 
+import org.opencms.main.OpenCms;
+
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * Error hander for processing errors fopund during XMLpage structure validation.<p>
+ * Error hander for processing errors found during xmlPage validation.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
-public class CmsXmlPageValidationErrorHandler  implements ErrorHandler {
+public class CmsXmlPageValidationErrorHandler implements ErrorHandler {
 
-    
     /**
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
-    public void error(SAXParseException arg0) throws SAXException {
-        throw new SAXException("[Error] "+ arg0.getMessage().replaceAll("\"", "'"));
+    public void error(SAXParseException exception) throws SAXException {
+
+        OpenCms.getLog(this).error("Error parsing xmlPage resource", exception);
+        throw exception;
     }
-    
+
     /**
      * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
      */
-    public void fatalError(SAXParseException arg0) throws SAXException {  
-         throw new SAXException("[FatalError] "  + arg0.getMessage().replaceAll("\"", "'"));
+    public void fatalError(SAXParseException exception) throws SAXException {
+
+        OpenCms.getLog(this).error("Fatel error parsing xmlPage resource", exception);
+        throw exception;
     }
+
     /**
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
-    public void warning(SAXParseException arg0) throws SAXException { 
-        throw new SAXException("[Warning] " + arg0.getMessage().replaceAll("\"", "'"));
-    }
-    
-
+    public void warning(SAXParseException exception) {
+        
+        if (OpenCms.getLog(this).isWarnEnabled()) {
+            OpenCms.getLog(this).warn("Warning parsing xmlPage resource", exception);
+        }
+    }  
 }
