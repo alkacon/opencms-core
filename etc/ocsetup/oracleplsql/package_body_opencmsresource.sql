@@ -6,6 +6,7 @@ PACKAGE BODY opencmsresource IS
   bAnyList VARCHAR2(32767);
   bResourceList VARCHAR2(32767) := '';
   FUNCTION addInList(pName VARCHAR2) RETURN BOOLEAN;
+  FUNCTION readFileNoAccess(pUserId NUMBER, pProjectID NUMBER, pOnlineProjectId NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor;
 --------------------------------------------------------------------------------------------------------------
 -- this procedure is called from DbAccess. It calls the second lockResource-procedure and returns a resultset
 -- which is needed to update the resource-cache
@@ -274,19 +275,48 @@ PACKAGE BODY opencmsresource IS
 --------------------------------------------------------------------------------------------------------------
 -- returns a cursor for a resource with resource_name = pFileName including the file-content
 -- for the project with project_id = pProjectId or for online-projekt
+-- without checking access
 --------------------------------------------------------------------------------------------------------------
-  FUNCTION readFile(pUserId NUMBER, pProjectID NUMBER, pOnlineProjectId NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor IS
+  FUNCTION readFileNoAccess(pUserId NUMBER, pProjectID NUMBER, pOnlineProjectId NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor IS
     curResource userTypes.anyCursor;
     recFileHeader cms_resources%ROWTYPE;
   BEGIN
     -- first read the file-header either from the project or from the onlineProject
     curResource := readFileHeader(pUserId, pProjectId, pOnlineProjectId, pFileName);
     FETCH curResource INTO recFileHeader;
-    -- now create the cursor for the file including the file_content
+    -- now create the cursor for the file including the file_content    
     IF recFileHeader.resource_id IS NOT NULL THEN
       OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
                            where r.resource_id = recFileHeader.resource_id
                            and r.file_id = f.file_id(+);
+    ELSE
+      -- error: open the cursor with a select that returns no rows
+      OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
+                           where r.resource_id = -1 and r.file_id = f.file_id(+);
+    END IF;
+    RETURN curResource;
+  END readFileNoAccess;
+--------------------------------------------------------------------------------------------------------------
+-- returns a cursor for a resource with resource_name = pFileName including the file-content
+-- for the project with project_id = pProjectId or for online-projekt
+--------------------------------------------------------------------------------------------------------------
+  FUNCTION readFile(pUserId NUMBER, pProjectID NUMBER, pOnlineProjectId NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor IS
+    curResource userTypes.anyCursor;
+    recFile userTypes.fileRecord;
+  BEGIN
+    -- first read the file-header either from the project or from the onlineProject
+    curResource := readFileNoAccess(pUserId, pProjectId, pOnlineProjectId, pFileName);
+    FETCH curResource INTO recFile;
+    -- now create the cursor for the file including the file_content    
+    IF recFile.resource_id IS NOT NULL THEN
+      IF recFile.state = opencmsConstants.C_STATE_DELETED THEN
+	    userErrors.raiseUserError(userErrors.C_RESOURCE_DELETED);
+      END IF;    
+      IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
+          -- error: no access for this file
+        userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
+      END IF;    
+      curResource := readFileNoAccess(pUserId, pProjectId, pOnlineProjectId, pFileName);
     ELSE
       -- error: open the cursor with a select that returns no rows
       OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
@@ -302,24 +332,46 @@ PACKAGE BODY opencmsresource IS
     vCount NUMBER;
     curResource userTypes.anyCursor;
     recFile userTypes.fileRecord;
+    curProject userTypes.anyCursor;
+    recProject cms_projects%ROWTYPE;
+    vOnlineProjectId NUMBER;
   BEGIN
+    curProject := opencmsProject.onlineProject(pProjectId);
+    FETCH curProject INTO recProject;
+    CLOSE curProject;   
+    vOnlineProjectId := recProject.project_id; 
     -- first read the file
-    curResource := readFile(pUserId, pProjectId, 1, pFileName);
+    curResource := readFileNoAccess(pUserId, pProjectId, vOnlineProjectId, pFileName);
     FETCH curResource INTO recFile;
     CLOSE curResource;
     -- check the access for the existing file
     IF recFile.resource_id IS NOT NULL THEN
+      IF recFile.state = opencmsConstants.C_STATE_DELETED THEN
+	    userErrors.raiseUserError(userErrors.C_RESOURCE_DELETED);
+      END IF;
       IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
           -- error: no access for this file
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
       -- because the cursor was fetched into a record it seems to be necessary to read the file again for returning
       -- the cursor
-      curResource := readFile(pUserId, pProjectId, 1, pFileName);
+      curResource := readFileNoAccess(pUserId, pProjectId, vOnlineProjectId, pFileName);
     ELSE
-      -- error: open the cursor with a select that returns no rows
-      OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
+      IF pProjectId = vOnlineProjectId THEN
+        -- error: open the cursor with a select that returns no rows
+        OPEN curResource FOR select r.*, f.file_content from cms_resources r, cms_files f
                            where r.resource_id = -1 and r.file_id = f.file_id(+);
+      ELSE
+        curResource := readFileNoAccess(pUserId, vOnlineProjectId, vOnlineProjectId, pFileName);
+      	IF recFile.state = opencmsConstants.C_STATE_DELETED THEN
+	   	  userErrors.raiseUserError(userErrors.C_RESOURCE_DELETED);
+        END IF;
+        IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
+         -- error: no access for this file
+         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
+        END IF;        
+        curResource := readFileNoAccess(pUserId, vOnlineProjectId, vOnlineProjectId, pFileName);
+      END IF;
     END IF;
     RETURN curResource;
   END readFile;
