@@ -55,6 +55,10 @@
 					<value><![CDATA[/system/galleries/pics/ocms-templateone/head_img.jpg]]></value>
 				</property>
 				<property>
+					<name>style_show_head_img</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
 					<name>style_head_img_link</name>
 					<value><![CDATA[/]]></value>
 				</property>
