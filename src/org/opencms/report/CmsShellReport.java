@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/08/11 16:52:24 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,18 +41,19 @@ import java.util.Locale;
  * It stores nothing. It just prints everthing to <code>System.out</code>.
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsShellReport extends A_CmsReport {
-        
+
     /**
      * Empty default constructor. 
      * 
      * @see java.lang.Object#Object()
      */
     public CmsShellReport() {
+
         // generate a message object with the default (english) locale
-        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LOCALE);    
+        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LOCALE);
     }
 
     /**
@@ -61,30 +62,34 @@ public class CmsShellReport extends A_CmsReport {
      * 
      * @param locale the locale to use for the report output messages
      * @param bundleName the name of the resource bundle with localized strings
-     */      
+     */
     public CmsShellReport(String bundleName, Locale locale) {
-        init();     
-        addBundle(bundleName, locale);
+
+        init(locale);
+        addBundle(bundleName);
     }
-    
+
     /**
      * @see org.opencms.report.I_CmsReport#getReportUpdate()
      */
     public synchronized String getReportUpdate() {
+
         return "";
-    }    
+    }
 
     /**
      * @see org.opencms.report.I_CmsReport#print(java.lang.String)
      */
     public synchronized void print(String value) {
+
         this.print(value, C_FORMAT_DEFAULT);
     }
-        
+
     /**
      * @see org.opencms.report.I_CmsReport#print(java.lang.String, int)
      */
     public synchronized void print(String value, int format) {
+
         StringBuffer buf;
         switch (format) {
             case C_FORMAT_HEADLINE:
@@ -110,28 +115,31 @@ public class CmsShellReport extends A_CmsReport {
             case C_FORMAT_OK:
             case C_FORMAT_DEFAULT:
             default:
-            System.out.print(value);
-        }       
+                System.out.print(value);
+        }
     }
-        
+
     /**
      * @see org.opencms.report.I_CmsReport#println()
      */
     public synchronized void println() {
+
         System.out.println();
     }
-    
+
     /**
      * @see org.opencms.report.I_CmsReport#println(java.lang.String)
      */
     public synchronized void println(String value) {
-       this.println(value, C_FORMAT_DEFAULT);
+
+        this.println(value, C_FORMAT_DEFAULT);
     }
-    
+
     /**
      * @see org.opencms.report.I_CmsReport#println(java.lang.String, int)
      */
     public synchronized void println(String value, int format) {
+
         StringBuffer buf;
         switch (format) {
             case C_FORMAT_HEADLINE:
@@ -150,16 +158,17 @@ public class CmsShellReport extends A_CmsReport {
             case C_FORMAT_OK:
             case C_FORMAT_DEFAULT:
             default:
-            System.out.println(value);
-        }      
+                System.out.println(value);
+        }
     }
-    
+
     /**
      * @see org.opencms.report.I_CmsReport#println(java.lang.Throwable)
      */
     public synchronized void println(Throwable t) {
-        StringBuffer buf = new StringBuffer();        
-        buf.append(key("report.exception"));   
+
+        StringBuffer buf = new StringBuffer();
+        buf.append(key("report.exception"));
         buf.append(t.getMessage());
         this.println(new String(buf), C_FORMAT_WARNING);
         t.printStackTrace(System.out);

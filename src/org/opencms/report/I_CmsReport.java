@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/08/11 16:52:24 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Locale;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public interface I_CmsReport {
         
@@ -49,6 +49,9 @@ public interface I_CmsReport {
 
     /** Indicates default formatting. */
     int C_FORMAT_DEFAULT = 0;
+    
+    /** Indicates error formatting. */
+    int C_FORMAT_ERROR = 5;
     
     /** Indicates headline formatting. */
     int C_FORMAT_HEADLINE = 2;
@@ -62,16 +65,12 @@ public interface I_CmsReport {
     /** Indicates warning formatting. */
     int C_FORMAT_WARNING = 1;
     
-    /** Indicates error formatting. */
-    int C_FORMAT_ERROR = 5;
-    
     /**
      * Adds a bundle specified by it's name to the List of resource bundles.<p>
      * 
      * @param bundleName the name of the resource bundle with localized strings
-     * @param locale a 2-letter language code according to ISO 639 
      */
-    void addBundle(String bundleName, Locale locale);
+    void addBundle(String bundleName);
     
     /**
      * Adds an error object to the list of errors that occured during the report.<p>
@@ -81,11 +80,25 @@ public interface I_CmsReport {
     void addError(Object obj);
     
     /**
+     * Formats the runtime formatted as "hh:mm:ss".<p>
+     * 
+     * @return the runtime formatted as "hh:mm:ss"
+     */
+    String formatRuntime();
+    
+    /**
      * Returns a list of all errors that occured during the report.<p>
      * 
      * @return an error list that occured during the report
      */
     List getErrors();
+    
+    /**
+     * Returns the locale this report was initialized with.<p>
+     * 
+     * @return the locale this report was initialized with
+     */
+    Locale getLocale();
            
     /**
      * Updates this report, this processes all new output added since 
@@ -176,13 +189,6 @@ public interface I_CmsReport {
      * @param t the exception to add
      */
     void println(Throwable t);
-    
-    /**
-     * Formats the runtime formatted as "hh:mm:ss".<p>
-     * 
-     * @return the runtime formatted as "hh:mm:ss"
-     */
-    String formatRuntime();
     
     /**
      * Resets the runtime to 0 milliseconds.<p>

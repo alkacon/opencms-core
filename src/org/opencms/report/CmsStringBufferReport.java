@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsStringBufferReport.java,v $
- * Date   : $Date: 2004/04/01 04:48:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/11 16:52:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Locale;
  * report using the {@link #toString()} method.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/04/01 04:48:02 $
+ * @version $Revision: 1.3 $ $Date: 2004/08/11 16:52:24 $
  */
 public class CmsStringBufferReport extends A_CmsReport {
 
@@ -66,8 +66,8 @@ public class CmsStringBufferReport extends A_CmsReport {
      */
     public CmsStringBufferReport(String bundleName, Locale locale) {
 
-        init();
-        addBundle(bundleName, locale);
+        init(locale);
+        addBundle(bundleName);
 
         m_strBuf = new StringBuffer();
     }

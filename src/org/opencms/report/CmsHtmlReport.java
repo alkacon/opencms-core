@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2004/07/18 16:33:45 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/08/11 16:52:24 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,13 +28,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.report;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,19 +46,19 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsHtmlReport extends A_CmsReport {
-    
+
     /** Constant for a HTML linebreak with added "real" line break. */
     private static final String C_LINEBREAK = "<br>";
-    
+
     /** 
      * Constant for a HTML linebreak with added "real" line break- 
      * traditional style for report threads that still use XML templates for their output.
      */
-    private static final String C_LINEBREAK_TRADITIONAL = "<br>\\n";    
-    
+    private static final String C_LINEBREAK_TRADITIONAL = "<br>\\n";
+
     /** The list of report objects e.g. String, CmsPageLink, Exception ... */
     private List m_content;
 
@@ -67,25 +66,26 @@ public class CmsHtmlReport extends A_CmsReport {
      * Counter to remember what is already shown,
      * indicates the next index of the m_content list that has to be reported.
      */
-    private int m_indexNext;        
-    
+    private int m_indexNext;
+
     /** Flag to indicate if an exception should be displayed long or short. */
     private boolean m_showExceptionStackTracke;
-    
+
     /** Boolean flag indicating whether this report should generate HTML or JavaScript output. */
     private boolean m_writeHtml;
-        
+
     /**
      * Constructs a new report using the provided locale and the default OpenCms 
      * workplace resource bundle for the output language.<p>
      * 
      * @param locale a locale to use for the output language
      * @see I_CmsReport#C_BUNDLE_NAME 
-     */    
+     */
     public CmsHtmlReport(Locale locale) {
+
         this(C_BUNDLE_NAME, locale, false);
     }
-    
+
     /**
      * Constructs a new report using the provided locale and the default OpenCms 
      * workplace resource bundle for the output language.<p>
@@ -97,22 +97,24 @@ public class CmsHtmlReport extends A_CmsReport {
      * @param locale the locale to use for the report output messages
      * @param writeHtml true, if this report should generate HTML instead of JavaScript output
      * @see I_CmsReport#C_BUNDLE_NAME 
-     */    
+     */
     public CmsHtmlReport(Locale locale, boolean writeHtml) {
+
         this(C_BUNDLE_NAME, locale, writeHtml);
-    }    
-    
+    }
+
     /**
      * Constructs a new report using the provided locale and resource bundle
      * for the output language.<p>
      * 
      * @param locale the locale to use for the report output messages
      * @param bundleName the name of the resource bundle with localized strings
-     */    
+     */
     public CmsHtmlReport(String bundleName, Locale locale) {
+
         this(bundleName, locale, false);
     }
-    
+
     /**
      * Constructs a new report using the provided locale and resource bundle
      * for the output language.<p>
@@ -126,14 +128,192 @@ public class CmsHtmlReport extends A_CmsReport {
      * @param writeHtml true, if this report should generate HTML instead of JavaScript output
      */
     protected CmsHtmlReport(String bundleName, Locale locale, boolean writeHtml) {
-        init();
-        addBundle(bundleName, locale);
-        
+
+        init(locale);
+        addBundle(bundleName);
+
         m_content = new ArrayList(256);
-        m_showExceptionStackTracke = true;   
+        m_showExceptionStackTracke = true;
         m_writeHtml = writeHtml;
     }
-    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#getReportUpdate()
+     */
+    public synchronized String getReportUpdate() {
+
+        StringBuffer result = new StringBuffer();
+        int indexEnd = m_content.size();
+        for (int i = m_indexNext; i < indexEnd; i++) {
+            Object obj = m_content.get(i);
+            if (obj instanceof String || obj instanceof StringBuffer) {
+                result.append(obj);
+            } else if (obj instanceof Throwable) {
+                result.append(getExceptionElement((Throwable)obj));
+            }
+        }
+        m_indexNext = indexEnd;
+
+        return result.toString();
+    }
+
+    /**
+     * @see org.opencms.report.I_CmsReport#print(java.lang.String)
+     */
+    public synchronized void print(String value) {
+
+        this.print(value, C_FORMAT_DEFAULT);
+    }
+
+    /**
+     * @see org.opencms.report.I_CmsReport#print(java.lang.String, int)
+     */
+    public synchronized void print(String value, int format) {
+
+        value = convertChars(value);
+        StringBuffer buf;
+
+        if (!m_writeHtml) {
+            switch (format) {
+                case C_FORMAT_HEADLINE:
+                    buf = new StringBuffer();
+                    buf.append("aH('");
+                    buf.append(value);
+                    buf.append("'); ");
+                    m_content.add(buf);
+                    break;
+                case C_FORMAT_WARNING:
+                    buf = new StringBuffer();
+                    buf.append("aW('");
+                    buf.append(value);
+                    buf.append("'); ");
+                    m_content.add(buf);
+                    break;
+                case C_FORMAT_ERROR:
+                    buf = new StringBuffer();
+                    buf.append("aE('");
+                    buf.append(value);
+                    buf.append("'); ");
+                    m_content.add(buf);
+                    addError(value);
+                    break;
+                case C_FORMAT_NOTE:
+                    buf = new StringBuffer();
+                    buf.append("aN('");
+                    buf.append(value);
+                    buf.append("'); ");
+                    m_content.add(buf);
+                    break;
+                case C_FORMAT_OK:
+                    buf = new StringBuffer();
+                    buf.append("aO('");
+                    buf.append(value);
+                    buf.append("'); ");
+                    m_content.add(buf);
+                    break;
+                case C_FORMAT_DEFAULT:
+                default:
+                    buf = new StringBuffer();
+                    buf.append("a('");
+                    buf.append(value);
+                    buf.append("'); ");
+                    m_content.add(buf);
+            }
+
+            // the output lines get split back into single lines on the client-side.
+            // thus, a separate JavaScript call has to be added here to tell the
+            // client that we want a linebreak here...
+            if (value.trim().endsWith(getLineBreak())) {
+                buf.append("aB(); ");
+            }
+        } else {
+            // TODO remove this code when all reports are switched from XML templates to JSP pages
+            switch (format) {
+                case C_FORMAT_HEADLINE:
+                    buf = new StringBuffer();
+                    buf.append("<span class='head'>");
+                    buf.append(value);
+                    buf.append("</span>");
+                    m_content.add(buf);
+                    break;
+                case C_FORMAT_WARNING:
+                    buf = new StringBuffer();
+                    buf.append("<span class='warn'>");
+                    buf.append(value);
+                    buf.append("</span>");
+                    m_content.add(buf);
+                    break;
+                case C_FORMAT_ERROR:
+                    buf = new StringBuffer();
+                    buf.append("<span class='err'>");
+                    buf.append(value);
+                    buf.append("</span>");
+                    m_content.add(buf);
+                    addError(value);
+                    break;
+                case C_FORMAT_NOTE:
+                    buf = new StringBuffer();
+                    buf.append("<span class='note'>");
+                    buf.append(value);
+                    buf.append("</span>");
+                    m_content.add(buf);
+                    break;
+                case C_FORMAT_OK:
+                    buf = new StringBuffer();
+                    buf.append("<span class='ok'>");
+                    buf.append(value);
+                    buf.append("</span>");
+                    m_content.add(buf);
+                    break;
+                case C_FORMAT_DEFAULT:
+                default:
+                    m_content.add(value);
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.report.I_CmsReport#println()
+     */
+    public synchronized void println() {
+
+        this.print(getLineBreak());
+    }
+
+    /**
+     * @see org.opencms.report.I_CmsReport#println(java.lang.String)
+     */
+    public synchronized void println(String value) {
+
+        this.print(value + getLineBreak(), C_FORMAT_DEFAULT);
+    }
+
+    /**
+     * @see org.opencms.report.I_CmsReport#println(java.lang.String, int)
+     */
+    public synchronized void println(String value, int format) {
+
+        this.print(value + getLineBreak(), format);
+    }
+
+    /**
+     * @see org.opencms.report.I_CmsReport#println(java.lang.Throwable)
+     */
+    public synchronized void println(Throwable t) {
+
+        m_content.add(t);
+    }
+
+    /**
+     * Returns the corrent linebreak notation depending on the output style of thsi report.
+     * 
+     * @return the corrent linebreak notation
+     */
+    protected String getLineBreak() {
+
+        return m_writeHtml ? C_LINEBREAK_TRADITIONAL : C_LINEBREAK;
+    }
+
     /**
      * Converts chars and removes linebreaks from a String.<p>
      * 
@@ -141,6 +321,7 @@ public class CmsHtmlReport extends A_CmsReport {
      * @return the char converted String without linebreaks
      */
     private String convertChars(String value) {
+
         value = CmsStringUtil.substitute(value, "\"", "\\\"");
 
         StringBuffer buf = new StringBuffer();
@@ -149,7 +330,7 @@ public class CmsHtmlReport extends A_CmsReport {
             buf.append(tok.nextToken());
             buf.append(" ");
         }
-        
+
         return buf.toString();
     }
 
@@ -166,11 +347,12 @@ public class CmsHtmlReport extends A_CmsReport {
      * @param throwable the exception to format
      * @return the formatted StringBuffer
      */
-    private StringBuffer getExceptionElement(Throwable throwable) {        
+    private StringBuffer getExceptionElement(Throwable throwable) {
+
         StringBuffer buf = new StringBuffer();
-        
+
         if (!m_writeHtml) {
-        if (m_showExceptionStackTracke) {
+            if (m_showExceptionStackTracke) {
                 buf.append("aT('");
                 buf.append(key("report.exception"));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
@@ -181,205 +363,36 @@ public class CmsHtmlReport extends A_CmsReport {
                     buf.append(getLineBreak());
                 }
                 buf.append("'); ");
-                m_content.add(buf);                
+                m_content.add(buf);
             } else {
                 buf.append("aT('");
                 buf.append(key("report.exception"));
                 buf.append(throwable.toString());
                 buf.append("'); ");
-                m_content.add(buf);                  
+                m_content.add(buf);
             }
         } else {
             if (m_showExceptionStackTracke) {
-            buf.append("<span class='throw'>");
-            buf.append(key("report.exception"));
-            String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
-            exception = CmsStringUtil.substitute(exception, "\\", "\\\\");
-            StringTokenizer tok = new StringTokenizer(exception, "\r\n");
-            while (tok.hasMoreTokens()) {
-                buf.append(tok.nextToken());
+                buf.append("<span class='throw'>");
+                buf.append(key("report.exception"));
+                String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
+                exception = CmsStringUtil.substitute(exception, "\\", "\\\\");
+                StringTokenizer tok = new StringTokenizer(exception, "\r\n");
+                while (tok.hasMoreTokens()) {
+                    buf.append(tok.nextToken());
+                    buf.append(getLineBreak());
+                }
+                buf.append("</span>");
+            } else {
+                buf.append("<span class='throw'>");
+                buf.append(key("report.exception"));
+                buf.append(throwable.toString());
+                buf.append("</span>");
                 buf.append(getLineBreak());
-            }            
-            buf.append("</span>");
-        } else {
-            buf.append("<span class='throw'>");
-            buf.append(key("report.exception"));
-            buf.append(throwable.toString());
-            buf.append("</span>");
-            buf.append(getLineBreak());
-        }        
-    }
-    
-        return buf;        
-    }
-    
-    /**
-     * Returns the corrent linebreak notation depending on the output style of thsi report.
-     * 
-     * @return the corrent linebreak notation
-     */
-    protected String getLineBreak() {
-        return m_writeHtml ? C_LINEBREAK_TRADITIONAL : C_LINEBREAK;
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#getReportUpdate()
-     */
-    public synchronized String getReportUpdate() {
-        StringBuffer result = new StringBuffer();
-        int indexEnd = m_content.size();
-        for (int i=m_indexNext; i<indexEnd; i++) {
-            Object obj = m_content.get(i);
-            if (obj instanceof String || obj instanceof StringBuffer) {
-                result.append(obj);
-            } else if (obj instanceof Throwable) {
-                result.append(getExceptionElement((Throwable)obj));
             }
         }
-        m_indexNext = indexEnd;
 
-        return result.toString();
-    }  
-
-    /**
-     * @see org.opencms.report.I_CmsReport#print(java.lang.String)
-     */
-    public synchronized void print(String value) {
-        this.print(value, C_FORMAT_DEFAULT);
-    }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#print(java.lang.String, int)
-     */
-    public synchronized void print(String value, int format) {
-        value = convertChars(value);
-        StringBuffer buf;
-
-        if (!m_writeHtml) {
-            switch (format) {
-                case C_FORMAT_HEADLINE :
-                    buf = new StringBuffer();
-                    buf.append("aH('");
-                    buf.append(value);
-                    buf.append("'); ");
-                    m_content.add(buf);
-                    break;
-                case C_FORMAT_WARNING :
-                    buf = new StringBuffer();
-                    buf.append("aW('");
-                    buf.append(value);
-                    buf.append("'); ");
-                    m_content.add(buf);
-                    break;
-                case C_FORMAT_ERROR :
-                    buf = new StringBuffer();
-                    buf.append("aE('");
-                    buf.append(value);
-                    buf.append("'); ");
-                    m_content.add(buf);
-                    addError(value);
-                    break;
-                case C_FORMAT_NOTE :
-                    buf = new StringBuffer();
-                    buf.append("aN('");
-                    buf.append(value);
-                    buf.append("'); ");
-                    m_content.add(buf);
-                    break;
-                case C_FORMAT_OK :
-                    buf = new StringBuffer();
-                    buf.append("aO('");
-                    buf.append(value);
-                    buf.append("'); ");
-                    m_content.add(buf);
-                    break;
-                case C_FORMAT_DEFAULT :
-                default :
-                    buf = new StringBuffer();
-                    buf.append("a('");
-                    buf.append(value);
-                    buf.append("'); ");
-                    m_content.add(buf);
-            }
-            
-            // the output lines get split back into single lines on the client-side.
-            // thus, a separate JavaScript call has to be added here to tell the
-            // client that we want a linebreak here...
-            if (value.trim().endsWith(getLineBreak())) {
-                buf.append("aB(); ");
-            }            
-        } else {
-            // TODO remove this code when all reports are switched from XML templates to JSP pages
-            switch (format) {
-                case C_FORMAT_HEADLINE :
-                    buf = new StringBuffer();
-                    buf.append("<span class='head'>");
-                    buf.append(value);
-                    buf.append("</span>");
-                    m_content.add(buf);
-                    break;
-                case C_FORMAT_WARNING :
-                    buf = new StringBuffer();
-                    buf.append("<span class='warn'>");
-                    buf.append(value);
-                    buf.append("</span>");
-                    m_content.add(buf);
-                    break;
-                case C_FORMAT_ERROR :
-                    buf = new StringBuffer();
-                    buf.append("<span class='err'>");
-                    buf.append(value);
-                    buf.append("</span>");
-                    m_content.add(buf);
-                    addError(value);
-                    break;
-                case C_FORMAT_NOTE :
-                    buf = new StringBuffer();
-                    buf.append("<span class='note'>");
-                    buf.append(value);
-                    buf.append("</span>");
-                    m_content.add(buf);
-                    break;
-                case C_FORMAT_OK :
-                    buf = new StringBuffer();
-                    buf.append("<span class='ok'>");
-                    buf.append(value);
-                    buf.append("</span>");
-                    m_content.add(buf);
-                    break;
-                case C_FORMAT_DEFAULT :
-                default :
-                    m_content.add(value);
-            }
-        }
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#println()
-     */
-    public synchronized void println() {
-        this.print(getLineBreak());
-    }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#println(java.lang.String)
-     */
-    public synchronized void println(String value) {
-        this.print(value + getLineBreak(), C_FORMAT_DEFAULT);
-    }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#println(java.lang.String, int)
-     */
-    public synchronized void println(String value, int format) {
-        this.print(value + getLineBreak(), format);        
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#println(java.lang.Throwable)
-     */
-    public synchronized void println(Throwable t) {
-        m_content.add(t);
+        return buf;
     }
 
 }
