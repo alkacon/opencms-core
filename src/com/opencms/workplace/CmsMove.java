@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2000/07/18 16:13:50 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/07/28 14:03:48 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.27 $ $Date: 2000/07/18 16:13:50 $
+ * @version $Revision: 1.28 $ $Date: 2000/07/28 14:03:48 $
  */
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -489,8 +489,9 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
 				cms.moveFile((C_CONTENTBODYPATH.substring(0,help))+file.getAbsolutePath(),(C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
 				if (flags.equals("false")) {
 					 // set access flags of the new file to the default flags
-					CmsFile newfile=cms.readFile(newFolder,file.getName());
-				
+					CmsFile newfile=cms.readFile((C_CONTENTBODYPATH.substring(0,help))+newFolder+file.getName());
+				    //CmsFile newfile=cms.readFile(newFolder,file.getName());
+                    
                     Hashtable startSettings=null;
                     Integer accessFlags=null;
                     startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
