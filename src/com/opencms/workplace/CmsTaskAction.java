@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/03/21 11:39:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/04/13 08:48:37 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/03/21 11:39:41 $
+ * @version $Revision: 1.4 $ $Date: 2000/04/13 08:48:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
@@ -66,6 +66,18 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		cms.acceptTask(taskid);
 		String comment = "";
 		cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_ACCEPTED);
+		
+		// send an email
+		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+		A_CmsTask task = cms.readTask(taskid);
+		if (cms.getTaskPar(task.getId(),C_TASKPARA_ACCEPTATION).equals("checked")) {	
+			String content=lang.getLanguageValue("task.email.accept.content");
+			String subject=lang.getLanguageValue("task.email.accept.subject");
+			A_CmsUser[] users={cms.readAgent(task)};
+			CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,content);
+			mail.start();
+		}
+		
 	}
 	
 	/**
@@ -328,6 +340,20 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		comment += lang.getLanguageValue("task.label.editor") + ": " +  Utils.getFullName(cms.readUser(agentName)) + "\n";
 		comment += taskcomment;
 		cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_CREATED);
+		// send an email
+		
+		// per default send a mail from task's organizer to task's recipient.
+		String content=lang.getLanguageValue("task.email.create.content");
+		String subject=lang.getLanguageValue("task.email.create.subject");
+		A_CmsUser[] users={cms.readAgent(task)};
+		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,content);
+		
+		// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
+		if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL).equals("checked")) {
+			mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,content);
+		}
+		
+		mail.start();
 	}
 
 	/**

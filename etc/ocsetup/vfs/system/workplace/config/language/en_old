@@ -525,6 +525,16 @@
 		</select>
 		
 		<task>
+			<email>
+				<create>
+					<subject>Creating a new task.</subject>
+					<content>A new task was created.</content>
+				</create>
+				<accept>
+					<subject>Accepting a task.</subject>
+					<content>The task was accepted.</content>
+				</accept>
+			</email>
 			<label>
 				<selectdate>Select date</selectdate>
 				<allprojects>For all Projects</allprojects>
