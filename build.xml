@@ -5,7 +5,7 @@
     <property name="version.number"             		value="5.3.0" />    
     <property name="version.name"               		value="Ix" />
     
-	<property name="app.name" 							value="opencms6" />
+	<property name="app.name" 							value="opencms" />
     
     <property name="opencms.input" 						location="${basedir}" />
     <property name="opencms.output"						location="${basedir}/../" />    	
