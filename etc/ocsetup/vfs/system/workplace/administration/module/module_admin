@@ -90,6 +90,12 @@
 												<input type="text" name="maintenance" id="maintenance" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>maintenance</PROCESS><![CDATA[" >
 											</td>
 										</tr>
+										<tr>
+											<td class=formular nowrap>]]><LABEL value="module.lable.publishclass"/><![CDATA[</td>
+											<td class="dialogtxt">
+												<input type="text" name="publishclass" id="publishclass" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>publishclass</PROCESS><![CDATA[" >
+											</td>
+										</tr>
 											<tr>
 												<td class=formular>]]><LABEL value="label.author"/><![CDATA[</td>
 												<td class="dialogtxt">
