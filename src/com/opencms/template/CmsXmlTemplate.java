@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/01/28 14:38:39 $
-* Version: $Revision: 1.90 $
+* Date   : $Date: 2002/03/20 10:53:18 $
+* Version: $Revision: 1.91 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.90 $ $Date: 2002/01/28 14:38:39 $
+ * @version $Revision: 1.91 $ $Date: 2002/03/20 10:53:18 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -819,78 +819,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             exc.printStackTrace();
         }
 
-        // get the name of the frame and parameters
-        String frame = "", param = "";
-        if(!tagcontent.equals("")) {
-            if(!tagcontent.startsWith("&")) {
-                if(tagcontent.indexOf(",") != -1) {
-                    frame = tagcontent.substring(0, tagcontent.indexOf(","));
-                    param = tagcontent.substring(tagcontent.indexOf(",") + 1);
-                }
-                else {
-                    frame = tagcontent;
-                }
+        // get the parameters in the tagcontent
+        if((tagcontent != null) && (!"".equals(tagcontent))){
+            if(tagcontent.startsWith("?")){
+                tagcontent = tagcontent.substring(1);
             }
-            else {
-                param = tagcontent;
-            }
+            query = tagcontent +"&" + query;
         }
-        query = (query == null ? "" : query);
-        if(!query.equals("")) {
-            if(query.indexOf("cmsframe=") != -1) {
-                int start = query.indexOf("cmsframe=");
-                int end = query.indexOf("&", start);
-                String cmsframe = "";
-                if(end != -1) {
-                    cmsframe = query.substring(start + 9, end);
-                }
-                else {
-                    cmsframe = query.substring(start + 9);
-                }
-                if(!cmsframe.equals("plain")) {
-                    if(!frame.equals("")) {
-                        if(end != -1) {
-                            query = query.substring(0, start + 9) + frame + query.substring(end);
-                        }
-                        else {
-                            query = query.substring(0, start + 9) + frame;
-                        }
-                    }
-                    else {
-                        if(end != -1) {
-                            query = query.substring(0, start) + query.substring(end + 1);
-                        }
-                        else {
-                            query = query.substring(0, start);
-                        }
-                    }
-                }
-            }
-            else {
-                if(!tagcontent.equals("")) {
-                    query = query + "&cmsframe=" + frame;
-                }
-            }
-            if(!query.equals("")) {
-                query = "?" + query;
-            }
-        }
-        else {
-            if(!frame.equals("")) {
-                query = "?cmsframe=" + frame;
-            }
-        }
-        if(!query.equals("")) {
-            query = query + param;
-        }
-        else {
-            query = "?" + param.substring(param.indexOf("&") + 1);
-        }
-        if (query.trim().equals("?") || query.trim().equals("&") || query.trim().equals("?&") ||
-            query.trim().equals("??")) {
-            query="";
-        }
-        return query;
+        return getUri(cms, query, doc, userObject);
     }
 
     /**
