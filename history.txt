@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.1 Bela Tegeuse - 26 March 2001
+
+- New version-number for development release.
+! Creating and publishing of projects is now possible from the explorer-view.
+
 OpenCms 4.2 Giedi Prime - 05 March 2001
 
 - Updates for Major Release.
