@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/10/18 16:55:35 $
-* Version: $Revision: 1.337 $
+* Date   : $Date: 2002/10/21 15:31:02 $
+* Version: $Revision: 1.338 $
 
 *
 * This library is part of OpenCms -
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.337 $ $Date: 2002/10/18 16:55:35 $
+ * @version $Revision: 1.338 $ $Date: 2002/10/21 15:31:02 $
 
  *
  */
@@ -1714,8 +1714,8 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
          throws CmsException {
 
         // extract folder information
-        String folderName = newFileName.substring(0, newFileName.lastIndexOf(C_FOLDER_SEPERATOR, newFileName.length()-2)+1);
-        String resourceName = newFileName.substring(folderName.length(), newFileName.length()-1);
+        String folderName = newFileName.substring(0, newFileName.lastIndexOf(C_FOLDER_SEPERATOR, newFileName.length())+1);
+        String resourceName = newFileName.substring(folderName.length(), newFileName.length());
 
         // checks, if the filename is valid, if not it throws a exception
         validFilename(resourceName);
@@ -1883,18 +1883,25 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
                                        String ownername, String groupname, int accessFlags,
                                        byte[] filecontent)
         throws CmsException {
-            
+
         // extract folder information
-        String folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPERATOR, newResourceName.length()-2)+1);
-        String resourceName = newResourceName.substring(folderName.length(), newResourceName.length()-1);
-        
-        // checks, if the filename is valid, if not it throws a exception
-        validFilename(resourceName);
+        String folderName = null;
+        String resourceName = null;
+
         boolean isFolder = (resourceType == C_TYPE_FOLDER);
         if(isFolder){
             // append C_FOLDER_SEPERATOR if required
             if (! newResourceName.endsWith(C_FOLDER_SEPERATOR)) newResourceName += C_FOLDER_SEPERATOR;            
+            // extract folder information
+            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPERATOR, newResourceName.length()-2)+1);
+            resourceName = newResourceName.substring(folderName.length(), newResourceName.length()-1);
+        } else {
+            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPERATOR, newResourceName.length())+1);
+            resourceName = newResourceName.substring(folderName.length(), newResourceName.length());
         }
+                    
+        // checks, if the filename is valid, if not it throws a exception
+        validFilename(resourceName);
 
         CmsFolder parentFolder = readFolder(currentUser, currentProject, folderName);
         if( accessCreate(currentUser, currentProject, (CmsResource)parentFolder) ) {
