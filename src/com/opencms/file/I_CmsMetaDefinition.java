@@ -4,30 +4,10 @@ package com.opencms.file;
  * This interface describes a metadefinition in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/06 09:39:22 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/10 11:10:23 $
  */
 public interface I_CmsMetaDefinition
 {
-
-	/**
-	 * This constant signs a normal "classic" metadefinition.
-	 */
-	static final int C_METADEF_TYPE_NORMAL		= 0;
-
-	/**
-	 * This constant signs a optional metadefinition.
-	 * These metadefinitions will be shown at creation-time for a resource.
-	 * They may be filled out by the user.
-	 */
-	static final int C_METADEF_TYPE_OPTIONAL	= 1;
-
-	/**
-	 * This constant signs a mandatory metadefinition.
-	 * These metadefinitions will be shown at creation-time for a resource.
-	 * They must be filled out by the user, else the resource will not be created.
-	 */
-	static final int C_METADEF_TYPE_MANDATORY	= 2;
-
 	/**
 	 * Returns the name of this metadefinition.
 	 * 

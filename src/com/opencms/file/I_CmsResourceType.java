@@ -7,39 +7,9 @@ import java.util.*;
  * for a resource this resource-type is needed.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/07 18:50:35 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/10 11:10:23 $
  */
 public interface I_CmsResourceType {	
-
-	/**
-	 * The resource type-id for a folder.
-	 */
-	public final static int C_FOLDER		= 0;
-	
-	/**
-	 * The resource type-id for a plain text file.
-	 */
-	public final static int C_TEXTPLAIN		= 1;
-	
-	/**
-	 * The resource type-id for a binary file.
-	 */
-	public final static int C_BINARY		= 2;
-	
-	/**
-	 * The resource type-id for a xml base file.
-	 */
-	public final static int C_XMLBASE		= 3;
-
-	/**
-	 * The resource type-id for a xml templatefile.
-	 */
-	public final static int C_XMLTEMPLATE	= 4;
-	
-	/**
-	 * The resource type-id for a docloader file.
-	 */
-	public final static int C_DOCLOADER	= 5;
 	
 	/**
 	 * Returns all ResourceTypes in a hashtable. The ResourceType-name is the

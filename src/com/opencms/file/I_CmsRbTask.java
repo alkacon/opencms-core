@@ -5,7 +5,7 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This interface describes a resource broker for tasks and projects in the Cms.<BR/>
+ * This interface describes a resource broker for tasks in the Cms.<BR/>
  * <B>All</B> Methods get a first parameter: I_CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/09 16:28:43 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/10 11:10:23 $
  */
 public interface I_CmsRbTask { 	
 	

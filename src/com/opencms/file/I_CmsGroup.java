@@ -6,25 +6,9 @@ import java.util.*;
  * This interface describes a group in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/07 17:25:04 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/10 11:10:23 $
  */
-public interface I_CmsGroup extends I_CmsFlags { 
-	
-	/**
-	 * This is the group for guests.
-	 */
-	public static final String C_GUESTGROUP = "Guests";
-	
-	/**
-	 * This is the group for administrators.
-	 */
-	public static final String C_ADMINGROUP = "Administrators";
-	
-	/**
-	 * This is the group for projectleaders. It is the only group, which
-	 * can create new projects.
-	 */
-	public static final String C_PROJECTLEADERGROUP = "Projectleader";
+public interface I_CmsGroup { 
 	
 	/**
 	 * Returns the name of this group.

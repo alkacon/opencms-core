@@ -5,35 +5,10 @@ package com.opencms.file;
  * resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/07 18:50:35 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/10 11:10:23 $
  */
 public interface I_CmsProject
 {
-	/**
-	 * This constant defines the onlineproject. This is the project which
-	 * is used to show the resources for guestusers
-	 */
-	public static final String C_ONLINE_PROJECTNAME	= "Onlineproject";
-	
-	/**
-	 * This constant defines a unlocked project. 
-	 * Resources may be changed in this project.
-	 */
-	public static final int C_STATE_UNLOCKED			= 0;
-
-	/**
-	 * This constant defines a locked project.
-	 * Resources can't be changed in this project.
-	 */
-	public static final int C_STATE_LOCKED			= 1;
-
-	/**
-	 * This constant defines a project in a archive.
-	 * Resources can't be changed in this project. Its state will never
-	 * go back to the previos one.
-	 */
-	public static final int C_STATE_ARCHIVE			= 2;
-
 	/**
 	 * Returns the name of this project.
 	 * 

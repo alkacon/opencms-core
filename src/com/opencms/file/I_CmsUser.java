@@ -6,34 +6,9 @@ import java.util.*;
  * This interface describes a user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/07 18:50:35 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/10 11:10:23 $
  */
-public interface I_CmsUser extends I_CmsFlags{
-	
-	/**
-	 * Key for additional info emailaddress.
-	 */
-	public final static String C_ADDITIONAL_INFO_EMAIL		= "USER_EMAIL";
-
-	/**
-	 * Key for additional info firstname.
-	 */
-	public final static String C_ADDITIONAL_INFO_FIRSTNAME	= "USER_FIRSTNAME";
-
-	/**
-	 * Key for additional info surname.
-	 */
-	public final static String C_ADDITIONAL_INFO_SURNAME	= "UER_SURNAME";
-
-	/**
-	 * Key for additional info address.
-	 */
-	public final static String C_ADDITIONAL_INFO_ADDRESS	= "USER_ADDRESS";
-
-	/**
-	 * Key for additional info section.
-	 */
-	public final static String C_ADDITIONAL_INFO_SECTION	= "USER_SECTION";
+public interface I_CmsUser {
 	
 	/**
 	 * Gets the login-name of the user.
