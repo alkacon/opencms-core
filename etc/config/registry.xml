@@ -13,10 +13,6 @@
             <name>select.tasks</name>
             <url>/system/workplace/action/tasks.html</url>
         </view>
-        <view>
-            <name>select.oldexplorer</name>
-            <url>/system/workplace/action/explorer.html</url>
-        </view>		
 		<!--  Enable this view only for spaceage        <view>
             <name>select.news</name>
             <url>/system/workplace/action/news_admin.html</url>        </view>

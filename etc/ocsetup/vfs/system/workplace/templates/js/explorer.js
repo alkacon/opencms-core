@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/12/04 16:05:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/12/06 10:37:43 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -295,7 +295,7 @@ function display_ex(){
     explorer_head = window.body.explorer_content.explorer_head.document;
     framefill(explorer_head, framehead);
 
-    window.body.explorer_content.explorer_files.document.location="new_explorer_files.html";
+    window.body.explorer_content.explorer_files.document.location="explorer_files.html";
 }
 
 /* explorer_tree / tree functions ------------------------------------------ */
@@ -400,9 +400,9 @@ top.window.frames[1].frames[1].frames[1].document.writeln("<html><body><center><
 top.window.frames[1].frames[1].frames[1].document.close();
 
     folder=top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value;
-    top.window.frames[1].frames[1].frames[1].document.location="new_explorer_files.html?folder="+folder+"&check="+vi.checksum;
+    top.window.frames[1].frames[1].frames[1].document.location="explorer_files.html?folder="+folder+"&check="+vi.checksum;
 
-    //window.alert("new_explorer_files.html?folder="+folder+"&check="+vi.checksum);
+    //window.alert("explorer_files.html?folder="+folder+"&check="+vi.checksum);
 
 }
 
@@ -906,7 +906,7 @@ function printList(wo){
             "td.inactive{ color:#8c8c8c; } "+
             "/"+"/"+"--></style></head>";
 	var returnplace=window.frames[1].frames[1].frames[1].document.location.href;
-	returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/new_explorer_files.html";
+	returnplace=returnplace.substring(0, returnplace.lastIndexOf("/")) + "/explorer_files.html";
 	returnplace=simpleEscape(returnplace);
 
 	wo.open();
@@ -915,8 +915,8 @@ function printList(wo){
 
     wo.writeln("<table cellpadding=1 cellspacing=1 border=0><tr>");
 
-    wo.writeln("<td class=topic width=20>&nbsp;</td>");
-    wo.writeln("<td class=topic width=20>&nbsp;</td>");
+    wo.writeln("<td nowrap class=topic width=20>&nbsp;</td>");
+    wo.writeln("<td nowrap class=topic width=20>&nbsp;</td>");
     if(vi.check_name)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[0]+"</td>");
 
     if(vi.check_title)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[1]+"</td>");

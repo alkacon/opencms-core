@@ -635,15 +635,16 @@
 			<access>15</access>
 			<properties/>
 		</file>
-		<file>
-			<source>action/explorer_files.html</source>
-			<destination>system/workplace/action/explorer_files.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>15</access>
-			<properties/>
-		</file>
+        <file>
+            <source>action/explorer_files.html</source>
+            <destination>system/workplace/action/explorer_files.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <startclass>com.opencms.workplace.CmsNewExplorerFileList</startclass>
+            <properties/>
+        </file>
 		<file>
 			<source>action/explorer_files_new.html</source>
 			<destination>system/workplace/action/explorer_files_new.html</destination>

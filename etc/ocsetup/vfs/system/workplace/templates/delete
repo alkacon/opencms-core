@@ -221,7 +221,7 @@ function update_frames()
 	location.href=lasturl;
 	
 	if (window.top.body.explorer_tree)
-		window.top.body.explorer_tree.location.href='explorer_tree.html'; 
+		//window.top.body.explorer_tree.location.href='explorer_tree.html'; 
 }
 </SCRIPT> 
 

@@ -142,7 +142,7 @@ function show_help()
 
 <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
 	updateFrame('body.explorer_content.explorer_files','explorer_files.html');
-	updateFrame('body.explorer_tree','explorer_tree.html');
+	//updateFrame('body.explorer_tree','explorer_tree.html');
 </SCRIPT>
 
 </HEAD>
