@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/15 12:39:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/05/15 14:02:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import source.org.apache.java.util.Configurations;
  * MySQL implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/05/15 12:39:35 $
+ * @version $Revision: 1.4 $ $Date: 2003/05/15 14:02:43 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -99,13 +99,6 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         Connection con = null;
 
         try {
-//            // serialize the hashtable
-//            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-//            ObjectOutputStream oout = new ObjectOutputStream(bout);
-//            oout.writeObject(additionalInfos);
-//            oout.close();
-//            value = bout.toByteArray();
-
             value = serializeAdditionalUserInfo( additionalInfos );
 
             // user data is project independent- use a "dummy" project ID to receive
@@ -218,13 +211,6 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         try {
             con = DriverManager.getConnection(m_poolName);
             
-//            // serialize the hashtable
-//            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-//            ObjectOutputStream oout = new ObjectOutputStream(bout);
-//            oout.writeObject(user.getAdditionalInfo());
-//            oout.close();
-//            value = bout.toByteArray();
-
             value = serializeAdditionalUserInfo( user.getAdditionalInfo() );
 
             // write data to database

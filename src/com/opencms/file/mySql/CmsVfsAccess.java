@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/15 12:39:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/15 14:02:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  * MySQL implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/15 12:39:35 $
+ * @version $Revision: 1.3 $ $Date: 2003/05/15 14:02:43 $
  */
 public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -133,7 +133,6 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
             if (e.getType() == CmsException.C_RESOURCE_DELETED) {
                 removeFile(project.getId(), filename);
                 state = C_STATE_CHANGED;
-                //throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
             }
             if (e.getType() == CmsException.C_FILE_EXISTS) {
                 throw e;
@@ -149,9 +148,6 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
             usedPool = m_poolName;
             usedStatement = "";
         }
-        
-        //int resourceId = nextId(m_SqlQueries.get("C_TABLE_RESOURCES" + usedStatement));
-        //int fileId = nextId(m_SqlQueries.get("C_TABLE_FILES" + usedStatement));
         
         CmsUUID resourceId = new CmsUUID();
         CmsUUID fileId = new CmsUUID();
@@ -252,30 +248,7 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
             statement.setInt(2, projectId);
             res = statement.executeQuery();
             
-            if (res.next()) {
-                /*
-                int resId = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId = res.getInt(m_SqlQueries.get("C_RESOURCES_PARENT_ID"));
-                int resType = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId = res.getInt(m_SqlQueries.get("C_RESOURCES_USER_ID"));
-                int groupId = res.getInt(m_SqlQueries.get("C_RESOURCES_GROUP_ID"));
-                int fileId = res.getInt(m_SqlQueries.get("C_RESOURCES_FILE_ID"));
-                int accessFlags = res.getInt(m_SqlQueries.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state = res.getInt(m_SqlQueries.get("C_RESOURCES_STATE"));
-                int lockedBy = res.getInt(m_SqlQueries.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType = res.getInt(m_SqlQueries.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass = res.getString(m_SqlQueries.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created = SqlHelper.getTimestamp(res, m_SqlQueries.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified = SqlHelper.getTimestamp(res, m_SqlQueries.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy = res.getInt(m_SqlQueries.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int resSize = res.getInt(m_SqlQueries.get("C_RESOURCES_SIZE"));
-                byte[] content = res.getBytes(m_SqlQueries.get("C_RESOURCES_FILE_CONTENT"));
-                int resProjectId = res.getInt(m_SqlQueries.get("C_RESOURCES_PROJECT_ID"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId, resProjectId, accessFlags, state, lockedBy, launcherType, launcherClass, created, modified, modifiedBy, content, resSize, lockedInProject);
-                */
-                
+            if (res.next()) {                
                 file = createCmsFileFromResultSet(res,projectId,filename);
                 
                 // check if this resource is marked as deleted
@@ -328,30 +301,7 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
             statement.setString(1, filename);
             statement.setInt(2, projectId);
             res = statement.executeQuery();
-            if (res.next()) {
-                /*
-                int resId = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId = res.getInt(m_SqlQueries.get("C_RESOURCES_PARENT_ID"));
-                int resType = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags = res.getInt(m_SqlQueries.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId = res.getInt(m_SqlQueries.get("C_RESOURCES_USER_ID"));
-                int groupId = res.getInt(m_SqlQueries.get("C_RESOURCES_GROUP_ID"));
-                int fileId = res.getInt(m_SqlQueries.get("C_RESOURCES_FILE_ID"));
-                int accessFlags = res.getInt(m_SqlQueries.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state = res.getInt(m_SqlQueries.get("C_RESOURCES_STATE"));
-                int lockedBy = res.getInt(m_SqlQueries.get("C_RESOURCES_LOCKED_BY"));
-                int launcherType = res.getInt(m_SqlQueries.get("C_RESOURCES_LAUNCHER_TYPE"));
-                String launcherClass = res.getString(m_SqlQueries.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
-                long created = SqlHelper.getTimestamp(res, m_SqlQueries.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified = SqlHelper.getTimestamp(res, m_SqlQueries.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy = res.getInt(m_SqlQueries.get("C_RESOURCES_LASTMODIFIED_BY"));
-                int resSize = res.getInt(m_SqlQueries.get("C_RESOURCES_SIZE"));
-                byte[] content = res.getBytes(m_SqlQueries.get("C_RESOURCES_FILE_CONTENT"));
-                int resProjectId = res.getInt(m_SqlQueries.get("C_RESOURCES_PROJECT_ID"));
-                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId, resProjectId, accessFlags, state, lockedBy, launcherType, launcherClass, created, modified, modifiedBy, content, resSize, lockedInProject);
-                */
-                
+            if (res.next()) {                
                 file = createCmsFileFromResultSet(res,projectId,filename);
                 
                 // check if this resource is marked as deleted

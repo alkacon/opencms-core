@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/15 12:39:35 $
-* Version: $Revision: 1.88 $
+* Date   : $Date: 2003/05/15 14:02:43 $
+* Version: $Revision: 1.89 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.88 $ $Date: 2003/05/15 12:39:35 $ *
+ * @version $Revision: 1.89 $ $Date: 2003/05/15 14:02:43 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -180,71 +180,6 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
     }
 
     /**
-     * Private method to init all default-resources
-     */
-//    protected void fillDefaults() throws CmsException {
-//        // set the groups
-//        CmsGroup guests = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
-//        CmsGroup administrators = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER, null);
-//        CmsGroup users = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED | C_FLAG_GROUP_ROLE | C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
-//        CmsGroup projectleader = m_ResourceBroker.getUserAccess().createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER | C_FLAG_GROUP_PROJECTCOWORKER | C_FLAG_GROUP_ROLE, users.getName());
-//
-//        // add the users
-//        CmsUser guest = m_ResourceBroker.getUserAccess().addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, "", "", C_USER_TYPE_SYSTEMUSER);
-//        CmsUser admin = m_ResourceBroker.getUserAccess().addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, "", "", C_USER_TYPE_SYSTEMUSER);
-//        m_ResourceBroker.getUserAccess().addUserToGroup(guest.getId(), guests.getId());
-//        m_ResourceBroker.getUserAccess().addUserToGroup(admin.getId(), administrators.getId());
-//        writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
-//        
-//        // create the online project
-//        CmsTask task = createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(), C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), C_TASK_PRIORITY_NORMAL);
-//        CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
-//
-//        // create the root-folder for the online project
-//        CmsUUID siteRootId = CmsUUID.getNullUUID();
-//        CmsFolder rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), C_ROOT, 0);
-//        rootFolder.setGroupId(users.getId());
-//        rootFolder.setState(C_STATE_UNCHANGED);
-//        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
-//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, rootFolder.getResourceId(), CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOT, 0);
-//        rootFolder.setGroupId(users.getId());
-//        rootFolder.setState(C_STATE_UNCHANGED);
-//        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
-//        siteRootId = rootFolder.getResourceId();
-//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
-//        rootFolder.setGroupId(users.getId());
-//        rootFolder.setState(C_STATE_UNCHANGED);
-//        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
-//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, online, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
-//        rootFolder.setGroupId(users.getId());
-//        rootFolder.setState(C_STATE_UNCHANGED);
-//        m_ResourceBroker.getVfsAccess().writeFolder(online, rootFolder, false);
-//        
-//        // create the setup project
-//        task = createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(),"_setupProject", new java.sql.Timestamp(new java.util.Date().getTime()),new java.sql.Timestamp(new java.util.Date().getTime()),C_TASK_PRIORITY_NORMAL);
-//        CmsProject setup = createProject(admin, administrators, administrators, task, "_setupProject","the project for setup", C_FLAG_ENABLED, C_PROJECT_TYPE_TEMPORARY);
-//
-//        // create the root-folder for the offline project
-//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), C_ROOT, 0);
-//        rootFolder.setGroupId(users.getId());
-//        rootFolder.setState(C_STATE_UNCHANGED);
-//        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
-//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, rootFolder.getResourceId(), CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOT, 0);
-//        rootFolder.setGroupId(users.getId());
-//        rootFolder.setState(C_STATE_UNCHANGED);
-//        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
-//        siteRootId = rootFolder.getResourceId();
-//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
-//        rootFolder.setGroupId(users.getId());
-//        rootFolder.setState(C_STATE_UNCHANGED);
-//        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
-//        rootFolder = m_ResourceBroker.getVfsAccess().createFolder(admin, setup, siteRootId, CmsUUID.getNullUUID(), C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
-//        rootFolder.setGroupId(users.getId());
-//        rootFolder.setState(C_STATE_UNCHANGED);
-//        m_ResourceBroker.getVfsAccess().writeFolder(setup, rootFolder, false);
-//    }
-
-    /**
      * Finds an agent for a given role (group).
      * @param roleId The Id for the role (group).
      *
@@ -270,75 +205,6 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
     
         return queries;
     }
-
-
-    /**
-     * Creates a new task.<p>
-     * 
-     * MySQL 4 does not support the SQL from the generic driver, so that's
-     * why we have that special implementation here. 
-     * This was tested with MySQL 4.0.10. 
-     * 
-     * @param rootId id of the root task project
-     * @param parentId id of the parent task
-     * @param tasktype type of the task
-     * @param ownerId id of the owner
-     * @param agentId id of the agent
-     * @param roleId id of the role
-     * @param taskname name of the task
-     * @param wakeuptime time when the task will be wake up
-     * @param timeout time when the task times out
-     * @param priority priority of the task
-     *
-     * @return the Task object of the generated task
-     *
-     * @throws CmsException if something goes wrong.
-     */
-    /*
-    public CmsTask createTask(int rootId, int parentId, int tasktype,
-                               CmsUUID ownerId, CmsUUID agentId,CmsUUID  roleId, String taskname,
-                               java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout,
-                               int priority)
-    throws CmsException {
-        // fetch new task id
-        int newId = nextId(C_TABLE_TASK);        
-        // create the task id entry in the DB                 
-        PreparedStatement statement = null;
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_TASK_CREATE"));
-            statement.setInt(1, newId);
-            statement.executeUpdate();
-
-        } catch( SQLException exc ) {
-            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
-        } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-            if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-            }
-        }                
-        // create the task object, note that this does not user the "task type" table
-        // because the generic SQL does not work with MySQL 4 
-        CmsTask task = new CmsTask(newId, taskname, C_TASK_STATE_STARTED, tasktype, rootId, parentId, ownerId, roleId, agentId, 
-                        agentId, new java.sql.Timestamp(System.currentTimeMillis()), wakeuptime, timeout, null, 0, 
-                        "30308", priority, 0, "../taskforms/adhoc.asp", 0, 1);       
-        // write tast
-        task = writeTask(task);
-        return task;
-    }
-    */
     
     /**
      * Reads a task from the Cms with

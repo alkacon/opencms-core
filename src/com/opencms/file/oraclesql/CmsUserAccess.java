@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/15 12:39:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/05/15 14:02:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.4 $ $Date: 2003/05/15 14:02:43 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -97,7 +97,6 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
      * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser addImportUser(String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
-        //int id = m_SqlQueries.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
         byte[] value = null;
         PreparedStatement statement = null;
@@ -107,13 +106,6 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         ResultSet res = null;
 
         try {
-//            // serialize the hashtable
-//            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-//            ObjectOutputStream oout = new ObjectOutputStream(bout);
-//            oout.writeObject(additionalInfos);
-//            oout.close();
-//            value = bout.toByteArray();
-
             value = serializeAdditionalUserInfo( additionalInfos );
 
             // user data is project independent- use a "dummy" project ID to receive
@@ -252,13 +244,6 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         ResultSet res = null;
 
         try {
-//            // serialize the hashtable
-//            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-//            ObjectOutputStream oout = new ObjectOutputStream(bout);
-//            oout.writeObject(additionalInfos);
-//            oout.close();
-//            value = bout.toByteArray();
-
             value = serializeAdditionalUserInfo( additionalInfos );
 
             // user data is project independent- use a "dummy" project ID to receive
@@ -387,13 +372,6 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         ResultSet res = null;
         Connection con = null;
         try {
-//            // serialize the hashtable
-//            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-//            ObjectOutputStream oout = new ObjectOutputStream(bout);
-//            oout.writeObject(user.getAdditionalInfo());
-//            oout.close();
-//            value = bout.toByteArray();
-
             value = serializeAdditionalUserInfo( user.getAdditionalInfo() );
 
             // write data to database
