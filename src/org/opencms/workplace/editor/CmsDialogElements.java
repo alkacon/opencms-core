@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/01/23 09:38:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/01/23 14:25:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.0
  */
@@ -329,7 +329,7 @@ public class CmsDialogElements extends CmsDialog {
                 retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">" + elementNice);
                 retValue.append("</td>\n");
                 retValue.append("\t<td class=\"textcenter\" unselectable=\"on\"><input type=\"checkbox\" name=\"" + PREFIX_PARAM_BODY + elementName + "\" value=\"true\"");
-                if (page.isEnabled(elementName, getParamBodylanguage())) {
+                if (!page.hasElement(elementName, getParamBodylanguage()) || page.isEnabled(elementName, getParamBodylanguage())) {
                     retValue.append(" checked=\"checked\"");
                 }
                 if (isMandatory) {
