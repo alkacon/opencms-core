@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/11/10 16:12:32 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/11/10 17:14:29 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -229,79 +229,96 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Converts old style pointers to siblings if possible.<p>
-     * @throws CmsException if something goes wrong
      */
-    protected void convertPointerToSiblings() throws CmsException {
+    protected void convertPointerToSiblings() {
+        
         Set checkedProperties = new HashSet();
         Iterator keys = m_linkStorage.keySet().iterator();
         int linksSize = m_linkStorage.size();
         int i = 0;
         CmsResource resource = null;
+        String link = null;
+        String key = null;
         
-        // loop through all links to convert
-        while (keys.hasNext()) {
-            String key = (String)keys.next();
-            String link = (String)m_linkStorage.get(key);
-            List properties = (List)m_linkPropertyStorage.get(key);
-            m_report.print(" ( " + (++i) + " / " + linksSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(m_report.key("report.convert_link"), I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(key + " ");
-            m_report.print(m_report.key("report.dots"));
-
-            // check if this is an internal pointer
-            if (link.startsWith("/")) {
-                // check if the pointer target is existing
+        try {
+            // loop through all links to convert
+            while (keys.hasNext()) {
+                
                 try {
-                    CmsResource target = m_cms.readResource(link);
-
-                    // create a new sibling as CmsResource                         
-                    resource = new CmsResource(
-                        new CmsUUID(), // structure ID is always a new UUID
-                        target.getResourceId(), 
-                        key,
-                        target.getTypeId(),
-                        target.isFolder(), 
-                        0, 
-                        m_cms.getRequestContext().currentProject().getId(), // TODO: pass flags from import 
-                        I_CmsConstants.C_STATE_NEW, 
-                        target.getDateCreated(),
-                        target.getUserCreated(), 
-                        target.getDateLastModified(), 
-                        target.getUserLastModified(), 
-                        CmsResource.DATE_RELEASED_DEFAULT, 
-                        CmsResource.DATE_EXPIRED_DEFAULT, 
-                        1, 
-                        0
-                    );
+                    key = (String)keys.next();
+                    link = (String)m_linkStorage.get(key);
+                    List properties = (List)m_linkPropertyStorage.get(key);
                     
-                    m_cms.importResource(key, resource, null, properties);
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                } catch (CmsException ex) {
+                    m_report.print(" ( " + (++i) + " / " + linksSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(m_report.key("report.convert_link"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(key + " ");
+                    m_report.print(m_report.key("report.dots"));
+        
+                    // check if this is an internal pointer
+                    if (link.startsWith("/")) {
+                        // check if the pointer target is existing
+                        CmsResource target = m_cms.readResource(link);
+    
+                        // create a new sibling as CmsResource                         
+                        resource = new CmsResource(
+                            new CmsUUID(), // structure ID is always a new UUID
+                            target.getResourceId(), 
+                            key,
+                            target.getTypeId(),
+                            target.isFolder(), 
+                            0, 
+                            m_cms.getRequestContext().currentProject().getId(), // TODO: pass flags from import 
+                            I_CmsConstants.C_STATE_NEW, 
+                            target.getDateCreated(),
+                            target.getUserCreated(), 
+                            target.getDateLastModified(), 
+                            target.getUserLastModified(), 
+                            CmsResource.DATE_RELEASED_DEFAULT, 
+                            CmsResource.DATE_EXPIRED_DEFAULT, 
+                            1, 
+                            0
+                        );
+                        
+                        m_cms.importResource(key, resource, null, properties);
+                        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+        
+                    } else {
+                        
+                        // make sure all found properties are already defined
+                        for (int j = 0, n = properties.size(); j < n; j++) {
+                            CmsProperty property = (CmsProperty)properties.get(j);
+                            
+                            if (!checkedProperties.contains(property)) {
+                                // check the current property and create it, if necessary
+                                checkPropertyDefinition(property.getKey());
+                                checkedProperties.add(property);                        
+                            }
+                        }
+                        
+                        m_cms.createResource(key, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, link.getBytes(), properties);
+                        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                        
+                    }
+                } catch (CmsException e) {
                     m_report.println();
                     m_report.print(m_report.key("report.convert_link_notfound") + " " + link, I_CmsReport.C_FORMAT_WARNING);
                     
                     if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Link conversion of " + resource.getRootPath() + " failed: " + key + " -> " + link, ex);
-                    }
+                        OpenCms.getLog(this).error("Link conversion of " + key + " -> " + link + " failed", e);
+                    }                
                 }
-
-            } else {
-                // make sure all found properties are already defined
-                for (int j = 0, n = properties.size(); j < n; j++) {
-                    CmsProperty property = (CmsProperty)properties.get(j);
-                    
-                    if (!checkedProperties.contains(property)) {
-                        // check the current property and create it, if necessary
-                        checkPropertyDefinition(property.getKey());
-                        checkedProperties.add(property);                        
-                    }
-                }
-                m_cms.createResource(key, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, link.getBytes(), properties);
-                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             }
+        } finally {
+            if (m_linkStorage != null) {
+                m_linkStorage.clear();
+            }
+            m_linkStorage = null;
+            
+            if (m_linkPropertyStorage != null) {
+                m_linkPropertyStorage.clear();
+            }
+            m_linkPropertyStorage = null;
         }
-        m_linkStorage = null;
-        m_linkPropertyStorage = null;
     }
 
     /**
