@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronTable.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2004/01/06 13:36:14 $
+* Version: $Revision: 1.3.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,13 @@
 
 package com.opencms.core;
 
-import java.io.*;
-import java.util.*;
+import com.opencms.boot.I_CmsLogChannels;
+
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Vector;
 
 /**
  * Describes a complete crontable with cronentries.
@@ -43,15 +48,15 @@ class CmsCronTable {
      * Creates a new empty table.
      */
     CmsCronTable() {
+        // noop
     }
 
     /**
      * Creates a new table based on the parameter lines in this String.
      * @param table a String with parameterlines.
      * @throws IOException if the string couldn't be read
-     * @throws CmsException if the string contains a invalid parameterline.
      */
-    CmsCronTable(String table) throws IOException, CmsException {
+    CmsCronTable(String table) throws IOException {
         this(new StringReader(table));
     }
 
@@ -59,26 +64,37 @@ class CmsCronTable {
      * Creates a new table based on the parameter lines in this Reader.
      * @param reder a Reader with parameterlines.
      * @throws IOException if the reader couldn't be read
-     * @throws CmsException if the string contains a invalid parameterline.
      */
-    CmsCronTable(Reader reader) throws IOException, CmsException {
+    CmsCronTable(Reader reader) throws IOException {
         update(reader);
     }
 
     /**
      * Updates the table with the new values.
+     * 
      * @param reader - the Reader to get the new values from.
      * @throws IOException if the reader couldn't be read
-     * @throws CmsException if the string contains a invalid parameterline.
      */
-    void update(Reader reader) throws IOException, CmsException {
+    void update(Reader reader) throws IOException {
         m_cronEntries = new Vector();
         LineNumberReader lnreader = new LineNumberReader(reader);
         String line = lnreader.readLine();
-        while (line != null){
-            m_cronEntries.add(new CmsCronEntry(line));
+
+        while (line != null) {
+            line = line.trim();
+            if (!"".equals(line)) {
+                try {
+                    m_cronEntries.add(new CmsCronEntry(line));
+                } catch (CmsException e) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "Error parsing cron tab in line: " + line + ": " + e.toString());
+                    }
+                }
+            }
+
             line = lnreader.readLine();
         }
+
         reader.close();
     }
 
@@ -86,9 +102,8 @@ class CmsCronTable {
      * Updates the table with the new values.
      * @param table - the String to get the new values from.
      * @throws IOException if the reader couldn't be read
-     * @throws CmsException if the string contains a invalid parameterline.
      */
-    void update(String table) throws IOException, CmsException {
+    void update(String table) throws IOException {
         update(new StringReader(table));
     }
 
