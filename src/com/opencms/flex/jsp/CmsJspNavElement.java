@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2003/01/24 20:38:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/02/12 17:22:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 
@@ -45,7 +46,7 @@ import java.util.Vector;
  * structure.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -324,6 +325,7 @@ public class CmsJspNavElement implements Comparable {
      * @return A sorted (ascending) ArrayList of navigation elements.
      */
     public static ArrayList getNavigationForFolder(CmsObject cms, String folder, String prefix) {
+        folder = CmsFile.getPath(folder);
         ArrayList list = new ArrayList();
         Vector v = null, dir = null;
         try {
@@ -363,6 +365,7 @@ public class CmsJspNavElement implements Comparable {
      * @param prefix If not null, use only resources in navigation with a name starting with this prefix
      */
     public static ArrayList getNavigationForFolder(CmsObject cms, String folder, int level, String prefix) {
+        folder = CmsFile.getPath(folder);
         // If level is one just use root folder
         if (level == 0) return getNavigationForFolder(cms, "/", prefix);
         String navfolder = getFolderName(folder, level);
@@ -377,6 +380,7 @@ public class CmsJspNavElement implements Comparable {
      * endlevel.
      */
     public static ArrayList getNavigationTreeForFolder(CmsObject cms, String folder, int startlevel, int endlevel, String prefix) {
+        folder = CmsFile.getPath(folder);
         if (endlevel < startlevel) return new ArrayList(0);
         int currentlevel = getFolderLevel(folder);
         if (currentlevel < endlevel) endlevel = currentlevel;
