@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/04/01 13:34:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/04/01 13:38:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,6 @@
  */
 
 package org.opencms.file;
-
-import org.opencms.db.CmsDriverManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,8 +62,8 @@ import java.util.RandomAccess;
  * determines whether the value of the "PROPERTY_MAPPING_ID" attribute of the current row is
  * a structure or resource record ID.<p>
  * 
- * Property objects are written to the database using {@link CmsDriverManager#writePropertyObjects(org.opencms.file.CmsRequestContext, String, List)}
- * or {@link CmsDriverManager#writePropertyObject(org.opencms.file.CmsRequestContext, String, CmsProperty)}, no matter
+ * Property objects are written to the database using {@link org.opencms.db.CmsDriverManager#writePropertyObjects(org.opencms.file.CmsRequestContext, String, List)}
+ * or {@link org.opencms.db.CmsDriverManager#writePropertyObject(org.opencms.file.CmsRequestContext, String, CmsProperty)}, no matter
  * whether you want to save a new (non-existing) property, update an existing property, or delete an
  * existing property. To delete a property you would write a property object with either the
  * structure and/or resource record values set to {@link #C_DELETE_VALUE} to indicate that a
@@ -80,7 +78,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2004/04/01 13:34:31 $
+ * @version $Revision: 1.5 $ $Date: 2004/04/01 13:38:51 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
