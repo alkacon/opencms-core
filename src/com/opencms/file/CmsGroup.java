@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsGroup.java,v $
- * Date   : $Date: 2000/06/06 10:26:13 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/06/06 13:50:11 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This class describes a Cms user group and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/06/06 10:26:13 $
+ * @version $Revision: 1.13 $ $Date: 2000/06/06 13:50:11 $
  */
  public class CmsGroup implements I_CmsConstants { 
     
@@ -63,12 +63,7 @@ import com.opencms.core.*;
      */
 	private int m_flags=C_UNKNOWN_INT;
 	
-	/**
-     * The type of the user group.
-     */
-	private int m_type=C_UNKNOWN_INT;
-	
-	
+		
      /**
      * Constructor, creates a new Cms group object.
      * 
@@ -80,13 +75,13 @@ import com.opencms.core.*;
      
      */
     public CmsGroup (int id, int parent,String name, String description, 
-                     int flags, int type) {
+                     int flags) {
         m_id=id;
         m_name=name;
         m_description=description;
         m_flags=flags;
         m_parentId=parent;
-        m_type=type;
+       
     }  
     
     
@@ -228,27 +223,7 @@ import com.opencms.core.*;
      */
     public void  setEnabled() {
         setFlags(C_FLAG_ENABLED);
-    }
-	  
-     /**
-	 * Returns the GROUP_TYPE.
-	 * 
-	 * @return the GROUP_TYPE.
-	 */
-     public int getType() {
-         return m_type;
-     }
-
-    /**
-	 * Sets the GROUP_TYPE.
-	 * 
-	 * @param type The type to be set.
-	 * 
-	 */
-     void setType(int type) {
-         m_type=type;
-     }
-	 
+    }	 
      
 	/**
 	 * Returns the id of the parent group of the actual Cms group object, 
@@ -309,7 +284,7 @@ import com.opencms.core.*;
     */
     public Object clone() {
         CmsGroup group= new CmsGroup(m_id,m_parentId,new String(m_name),
-                                     new String(m_description),m_flags,m_type); 
+                                     new String(m_description),m_flags); 
         return group;   
     }   
     
