@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/23 07:40:55 $
- * Version: $Revision: 1.252 $
+ * Date   : $Date: 2001/07/23 11:23:03 $
+ * Version: $Revision: 1.253 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.252 $ $Date: 2001/07/23 07:40:55 $
+ * @version $Revision: 1.253 $ $Date: 2001/07/23 11:23:03 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -573,6 +573,11 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
         if(resource.isLockedBy() != currentUser.getId()) {
             // resource is not locked by the current user, no writing allowed
             return(false);
+        } else {
+            //check if the project that has locked the resource is the current project
+            if(resource.getLockedInProject() != currentProject.getId()){
+                return (false);
+            }
         }
 
         // check the rights for the current resource
@@ -603,6 +608,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
                 // is the resource locked?
                 if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
                     // resource locked by anopther user, no creation allowed
+
                     return(false);
                 }
 
@@ -2219,11 +2225,68 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         // read the project that should be deleted.
         CmsProject deleteProject = readProject(currentUser, currentProject, id);
 
-        if(isAdmin(currentUser, currentProject) ||
-           isManagerOfProject(currentUser, deleteProject)) {
-             // delete the project
-             m_dbAccess.deleteProject(deleteProject);
-             m_projectCache.remove(id);
+        if(isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, deleteProject)) {
+            Vector allFiles = m_dbAccess.readFiles(deleteProject.getId(), false, true);
+            Vector allFolders = m_dbAccess.readFolders(deleteProject.getId(), false, true);
+            // first delete files or undo changes in files
+            for(int i=0; i<allFiles.size();i++){
+                CmsFile currentFile = (CmsFile)allFiles.elementAt(i);
+                if(currentFile.getState() == C_STATE_NEW){
+                    // delete the properties
+		            m_dbAccess.deleteAllProperties(id, currentFile.getResourceId());
+		            // delete the file
+		            m_dbAccess.deleteFile(deleteProject, currentFile.getAbsolutePath());
+                } else if (currentFile.getState() == C_STATE_CHANGED){
+                    if(!currentFile.isLocked()){
+                        // lock the resource
+                        lockResource(currentUser,deleteProject,currentFile.getAbsolutePath(),true);
+                    }
+                    // undo all changes in the file
+                    undoChanges(currentUser, deleteProject, currentFile.getAbsolutePath());
+                } else if (currentFile.getState() == C_STATE_DELETED){
+                    // first undelete the file
+                    undeleteResource(currentUser, deleteProject, currentFile.getAbsolutePath());
+                    if(!currentFile.isLocked()){
+                        // lock the resource
+                        lockResource(currentUser,deleteProject,currentFile.getAbsolutePath(),true);
+                    }
+                    // then undo all changes in the file
+                    undoChanges(currentUser, deleteProject, currentFile.getAbsolutePath());
+                }
+            }
+            // now delete folders or undo changes in folders
+            for(int i=0; i<allFolders.size();i++){
+                CmsFolder currentFolder = (CmsFolder)allFolders.elementAt(i);
+                if(currentFolder.getState() == C_STATE_NEW){
+                    // delete the properties
+		            m_dbAccess.deleteAllProperties(id, currentFolder.getResourceId());
+		            // delete the folder
+		            m_dbAccess.deleteFolder(deleteProject, currentFolder, true);
+                } else if (currentFolder.getState() == C_STATE_CHANGED){
+                    if(!currentFolder.isLocked()){
+                        // lock the resource
+                        lockResource(currentUser,deleteProject,currentFolder.getAbsolutePath(),true);
+                    }
+                    // undo all changes in the folder
+                    undoChanges(currentUser, deleteProject, currentFolder.getAbsolutePath());
+                } else if (currentFolder.getState() == C_STATE_DELETED){
+                    // undelete the folder
+                    undeleteResource(currentUser, deleteProject, currentFolder.getAbsolutePath());
+                    if(!currentFolder.isLocked()){
+                        // lock the resource
+                        lockResource(currentUser,deleteProject,currentFolder.getAbsolutePath(),true);
+                    }
+                    // then undo all changes in the folder
+                    undoChanges(currentUser, deleteProject, currentFolder.getAbsolutePath());
+                }
+            }
+            // unlock all resources in the project
+            m_dbAccess.unlockProject(deleteProject);
+            m_resourceCache.clear();
+            //m_projectCache.clear();
+            // delete the project
+            m_dbAccess.deleteProject(deleteProject);
+            m_projectCache.remove(id);
         } else {
              throw new CmsException("[" + this.getClass().getName() + "] " + id,
                 CmsException.C_NO_ACCESS);
@@ -3861,6 +3924,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 
             // lock the resouece
             cmsResource.setLocked(currentUser.getId());
+            cmsResource.setLockedInProject(currentProject.getId());
             //update resource
             m_dbAccess.updateLockstate(cmsResource);
 
@@ -5928,7 +5992,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                                       backupFile.getLauncherType(), backupFile.getLauncherClassname(),
                                       offlineFile.getDateCreated(), offlineFile.getDateLastModified(),
                                       currentUser.getId(), backupFile.getContents(),
-                                      backupFile.getLength());
+                                      backupFile.getLength(), currentProject.getId());
             writeFile(currentUser, currentProject, newFile);
         }
     }
@@ -6217,11 +6281,41 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
     public void undoChanges(CmsUser currentUser, CmsProject currentProject, String resourceName)
         throws CmsException {
         CmsProject onlineProject = readProject(currentUser, currentProject, C_PROJECT_ONLINE_ID);
-        // read the file from the online project
-        CmsFile onlineFile = readFile(currentUser, onlineProject, resourceName);
-	    // read the file from the offline project and change the data
-        CmsFile offlineFile = readFile(currentUser, currentProject, resourceName);
-        CmsFile restoredFile = new CmsFile(offlineFile.getResourceId(), offlineFile.getParentId(),
+        // change folder or file?
+        if (resourceName.endsWith("/")){
+            // read the resource from the online project
+            CmsFolder onlineFolder = readFolder(currentUser, onlineProject, resourceName);
+	        // read the resource from the offline project and change the data
+            CmsFolder offlineFolder = readFolder(currentUser, currentProject, resourceName);
+            CmsFolder restoredFolder = new CmsFolder(offlineFolder.getResourceId(), offlineFolder.getParentId(),
+                                            offlineFolder.getFileId(), offlineFolder.getAbsolutePath(),
+                                            onlineFolder.getType(), onlineFolder.getFlags(),
+                                            onlineFolder.getOwnerId(), onlineFolder.getGroupId(),
+                                            currentProject.getId(), onlineFolder.getAccessFlags(),
+                                            C_STATE_UNCHANGED, offlineFolder.isLockedBy(), offlineFolder.getDateCreated(),
+                                            offlineFolder.getDateLastModified(), currentUser.getId(),
+                                            currentProject.getId());
+            // write the file in the offline project
+            // has the user write-access?
+            if( accessWrite(currentUser, currentProject, (CmsResource)restoredFolder) ) {
+                // write-access  was granted - write the folder without setting state = changed
+                m_dbAccess.writeFolder(currentProject, restoredFolder, false);
+                // update the cache
+                m_resourceCache.put(C_FOLDER+currentProject.getId()+restoredFolder.getAbsolutePath(),restoredFolder);
+                m_subresCache.clear();
+                m_accessCache.clear();
+                // inform about the file-system-change
+                fileSystemChanged(false);
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + "] " + restoredFolder.getAbsolutePath(),
+                    CmsException.C_NO_ACCESS);
+            }
+        } else {
+            // read the file from the online project
+            CmsFile onlineFile = readFile(currentUser, onlineProject, resourceName);
+	        // read the file from the offline project and change the data
+            CmsFile offlineFile = readFile(currentUser, currentProject, resourceName);
+            CmsFile restoredFile = new CmsFile(offlineFile.getResourceId(), offlineFile.getParentId(),
                                             offlineFile.getFileId(), offlineFile.getAbsolutePath(),
                                             onlineFile.getType(), onlineFile.getFlags(),
                                             onlineFile.getOwnerId(), onlineFile.getGroupId(),
@@ -6229,22 +6323,23 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                                             C_STATE_UNCHANGED, offlineFile.isLockedBy(), onlineFile.getLauncherType(),
                                             onlineFile.getLauncherClassname(), offlineFile.getDateCreated(),
                                             offlineFile.getDateLastModified(), currentUser.getId(),
-                                            onlineFile.getContents(), onlineFile.getLength());
-        // write the file in the offline project
-        // has the user write-access?
-        if( accessWrite(currentUser, currentProject, (CmsResource)restoredFile) ) {
-            // write-acces  was granted - write the file without setting state = changed
-            m_dbAccess.writeFile(currentProject,
+                                            onlineFile.getContents(), onlineFile.getLength(), currentProject.getId());
+            // write the file in the offline project
+            // has the user write-access?
+            if( accessWrite(currentUser, currentProject, (CmsResource)restoredFile) ) {
+                // write-acces  was granted - write the file without setting state = changed
+                m_dbAccess.writeFile(currentProject,
                                onlineProject(currentUser, currentProject), restoredFile, false);
-            // update the cache
-            m_resourceCache.put(C_FILE+currentProject.getId()+restoredFile.getAbsolutePath(),restoredFile);
-            m_subresCache.clear();
-            m_accessCache.clear();
-            // inform about the file-system-change
-            fileSystemChanged(false);
-        } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + restoredFile.getAbsolutePath(),
-                CmsException.C_NO_ACCESS);
+                // update the cache
+                m_resourceCache.put(C_FILE+currentProject.getId()+restoredFile.getAbsolutePath(),restoredFile);
+                m_subresCache.clear();
+                m_accessCache.clear();
+                // inform about the file-system-change
+                fileSystemChanged(false);
+            } else {
+                throw new CmsException("[" + this.getClass().getName() + "] " + restoredFile.getAbsolutePath(),
+                    CmsException.C_NO_ACCESS);
+            }
         }
         // restore the properties in the offline project
         deleteAllProperties(currentUser, currentProject, resourceName);
@@ -6268,7 +6363,6 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         throws CmsException {
         // read the project.
         CmsProject project = readProject(currentUser, currentProject, id);
-
         // check the security
         if( (isAdmin(currentUser, currentProject) ||
             isManagerOfProject(currentUser, project) ) &&
@@ -6316,15 +6410,13 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
              } else {
               cmsResource = (CmsFile)readFileHeader(currentUser,currentProject,resourcename);
         }
+
         // check, if the user may lock the resource
         if( accessUnlock(currentUser, currentProject, cmsResource) ) {
-
             // unlock the resource.
             if (cmsResource.isLocked()){
-
                 // check if the resource is locked by the actual user
                 if (cmsResource.isLockedBy()==currentUser.getId()) {
-
 
                 // unlock the resource
                 cmsResource.setLocked(C_UNKNOWN_ID);
@@ -6419,7 +6511,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 CmsException.C_BAD_NAME);
         }
 
-        int l = filename.length();
+        int l = filename.trim().length();
 
         if (l == 0 || filename.startsWith(".")) {
             throw new CmsException("[" + this.getClass().getName() + "] " + filename,
