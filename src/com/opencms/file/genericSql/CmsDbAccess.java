@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 15:50:22 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2000/06/09 16:02:13 $
+ * Version: $Revision: 1.53 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.52 $ $Date: 2000/06/09 15:50:22 $ * 
+ * @version $Revision: 1.53 $ $Date: 2000/06/09 16:02:13 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3267,6 +3267,41 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			 }	 
      }
 
+	/**
+	 * Writes a file to the Cms.<BR/>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param filename The complete name of the new file (including pathinformation).
+	 * @param changed Flag indicating if the file state must be set to changed.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void writeFile(CmsProject project,
+                           CmsProject onlineProject,
+                           CmsFile file,boolean changed)
+       throws CmsException {
+       
+		   PreparedStatement statement = null;
+           try {   
+             // update the file header in the RESOURCE database.
+             writeFileHeader(project,onlineProject,file,changed);
+             // update the file content in the FILES database.
+             statement = m_pool.getPreparedStatement(C_FILES_UPDATE_KEY);
+             statement.setBytes(1,file.getContents());
+             statement.setInt(2,file.getFileId());
+             statement.executeUpdate();
+
+           } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }finally {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_READ_KEY, statement);
+				}
+		 } 
+     }
+	
+
 
      /**
 	 * Writes a folder to the Cms.<BR/>
@@ -3765,6 +3800,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		// init statements for resources and files
 		m_pool.initPreparedStatement(C_RESOURCES_MAXID_KEY,C_RESOURCES_MAXID);
         m_pool.initPreparedStatement(C_FILES_MAXID_KEY,C_FILES_MAXID);
+        m_pool.initPreparedStatement(C_FILES_UPDATE_KEY,C_FILES_UPDATE);
         m_pool.initPreparedStatement(C_RESOURCES_READ_KEY,C_RESOURCES_READ);
         m_pool.initPreparedStatement(C_RESOURCES_WRITE_KEY,C_RESOURCES_WRITE);
         m_pool.initPreparedStatement(C_RESOURCES_GET_SUBFOLDER_KEY,C_RESOURCES_GET_SUBFOLDER);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/09 15:19:09 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/06/09 16:02:14 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.33 $ $Date: 2000/06/09 15:19:09 $
+ * @version $Revision: 1.34 $ $Date: 2000/06/09 16:02:14 $
  */
 public interface I_CmsQuerys {
     
@@ -182,6 +182,11 @@ public interface I_CmsQuerys {
     
     public static final Integer C_FILES_WRITE_KEY = new Integer(154);
 	public static final String C_FILES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "FILES VALUES(?,?)";
+    
+    public static final Integer C_FILES_UPDATE_KEY = new Integer(155);
+	public static final String C_FILES_UPDATE ="UPDATE " + C_DATABASE_PREFIX + "FILES SET "
+                                               +"FILE_CONTENT = ? "                                     
+                                               +"WHERE FILE_ID = ? ";
     
     
     // Constants for Groups table
