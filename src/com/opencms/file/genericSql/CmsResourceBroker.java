@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/23 16:56:05 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2000/06/25 07:30:56 $
+ * Version: $Revision: 1.70 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.69 $ $Date: 2000/06/23 16:56:05 $
+ * @version $Revision: 1.70 $ $Date: 2000/06/25 07:30:56 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2101,7 +2101,27 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
 				CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
 				CmsUser newUser = m_dbAccess.addUser(name, password, description, "", "", "", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, "", "", C_USER_TYPE_WEBUSER);
-				addUserToGroup(currentUser, currentProject, newUser.getName(),defaultGroup.getName());
+				CmsUser user;
+                CmsGroup usergroup;
+         
+                user=m_dbAccess.readUser(newUser.getName(),C_USER_TYPE_WEBUSER);
+										 
+				//check if the user exists
+				if (user != null) {
+					usergroup=readGroup(currentUser,currentProject,group);
+					//check if group exists
+					if (usergroup != null){
+						//add this user to the group
+						m_dbAccess.addUserToGroup(user.getId(),usergroup.getId());
+						// update the cache
+						m_usergroupsCache.clear();
+					} else {
+	                    throw new CmsException("["+this.getClass().getName()+"]"+group,CmsException.C_NO_GROUP);
+		            }
+			    } else {
+				    throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
+				}
+
 				return newUser;
 		} else {
 				throw new CmsException("[" + this.getClass().getName() + "] " + name, 
@@ -2350,7 +2370,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							   String username, String groupname)
         throws CmsException {
         // Check the security
-		//if( isAdmin(currentUser, currentProject) ) {
+		if( isAdmin(currentUser, currentProject) ) {
 			CmsUser user;
             CmsGroup group;
          
@@ -2371,10 +2391,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 throw new CmsException("["+this.getClass().getName()+"]"+username,CmsException.C_NO_USER);
             }
 		   
-	//	} else {
-	//		throw new CmsException("[" + this.getClass().getName() + "] " + username, 
-	//			CmsException.C_NO_ACCESS);
-	//	}
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 
 	/**
