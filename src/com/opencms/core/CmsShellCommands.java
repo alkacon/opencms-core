@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/10/22 15:08:52 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2001/10/25 10:28:48 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.42 $ $Date: 2001/10/22 15:08:52 $
+ * @version $Revision: 1.43 $ $Date: 2001/10/25 10:28:48 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -1440,6 +1440,26 @@ public class CmsShellCommands implements I_CmsConstants {
         }
     }
 
+    /**
+     * Returns a Vector with all resources of the given type that have set the given property
+     * to the given value.
+     *
+     * @param propertydef the name of the property-definition to check.
+     * @param property the value of the property for the resource.
+     * @param resourceType the type of the resource
+     */
+    public void getResourcesWithProperty(String propertyDefinition, String propertyValue, String resourceType) {
+        try {
+            int resTypeId = m_cms.getResourceType(resourceType).getResourceType();
+            Vector resources = m_cms.getResourcesWithProperty(propertyDefinition, propertyValue, resTypeId);
+            for(int i = 0;i < resources.size();i++) {
+                System.out.println((CmsResource)resources.elementAt(i));
+            }
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
     /**
      * Returns a CmsResourceTypes.
      *

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/10/24 14:21:46 $
-* Version: $Revision: 1.197 $
+* Date   : $Date: 2001/10/25 10:28:26 $
+* Version: $Revision: 1.198 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.197 $ $Date: 2001/10/24 14:21:46 $
+ * @version $Revision: 1.198 $ $Date: 2001/10/25 10:28:26 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1671,6 +1671,26 @@ public CmsRequestContext getRequestContext() {
 public Vector getResourcesInFolder(String folder) throws CmsException {
     return m_rb.getResourcesInFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folder));
 }
+
+   /**
+     * Returns a Vector with all resources of the given type that have set the given property to the given value.
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param propertyDefinition, the name of the propertydefinition to check.
+     * @param propertyValue, the value of the property for the resource.
+     * @param resourceType The resource type of the resource
+     *
+     * @return Vector with all resources.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public Vector getResourcesWithProperty(String propertyDefinition,
+                                           String propertyValue, int resourceType) throws CmsException {
+        return m_rb.getResourcesWithProperty(m_context.currentUser(), m_context.currentProject(),
+                                             propertyDefinition, propertyValue, resourceType);
+    }
 /**
  * Returns a I_CmsResourceType.
  *
@@ -2515,6 +2535,22 @@ public CmsFolder readFolder(String folder, boolean includeDeleted) throws CmsExc
 public CmsFolder readFolder(String folder, String folderName) throws CmsException {
     return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folder), folderName));
 }
+
+/**
+ * Reads a folder from the Cms.
+ *
+ * @param folderid the id of the folder to be read.
+ * @param includeDeleted Include the folder if it is marked as deleted
+ *
+ * @return folder the read folder.
+ *
+ * @exception CmsException if the user has not the rights
+ * to read this resource, or if the folder couldn't be read.
+ */
+public CmsFolder readFolder(int folderid, boolean includeDeleted) throws CmsException {
+    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), folderid, includeDeleted));
+}
+
 /**
   * Reads all given tasks from a user for a project.
   *

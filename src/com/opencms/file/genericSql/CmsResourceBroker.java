@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/22 15:09:41 $
-* Version: $Revision: 1.283 $
+* Date   : $Date: 2001/10/25 10:27:57 $
+* Version: $Revision: 1.284 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.283 $ $Date: 2001/10/22 15:09:41 $
+ * @version $Revision: 1.284 $ $Date: 2001/10/25 10:27:57 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3345,6 +3345,28 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
     }
     return retValue;
 }
+
+    /**
+     * Returns a Vector with all resources of the given type that have set the given property to the given value.
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param propertyDefinition, the name of the propertydefinition to check.
+     * @param propertyValue, the value of the property for the resource.
+     * @param resourceType The resource type of the resource
+     *
+     * @return Vector with all resources.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public Vector getResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition,
+                                           String propertyValue, int resourceType) throws CmsException {
+        return m_dbAccess.getResourcesWithProperty(currentProject.getId(), propertyDefinition, propertyValue, resourceType);
+    }
+
     /**
      * Returns a I_CmsResourceType.
      *
@@ -5135,6 +5157,49 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
  */
 public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder, String folderName) throws CmsException {
     return readFolder(currentUser, currentProject, folder + folderName);
+}
+
+/**
+ * Reads a folder from the Cms.<BR/>
+ *
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can read the resource</li>
+ * </ul>
+ *
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param folderid The id of the folder to be read.
+ * @param includeDeleted Include the folder it it is marked as deleted
+ *
+ * @return folder The read folder.
+ *
+ * @exception CmsException will be thrown, if the folder couldn't be read.
+ * The CmsException will also be thrown, if the user has not the rights
+ * for this resource.
+ */
+public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int folderid, boolean includeDeleted) throws CmsException {
+    CmsFolder cmsFolder = null;
+    // read the resource from the currentProject, or the online-project
+    try {
+        if (cmsFolder == null) {
+            cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folderid);
+        }
+    } catch (CmsException exc) {
+        throw exc;
+    }
+    if (accessRead(currentUser, currentProject, (CmsResource) cmsFolder)) {
+        // acces to all subfolders was granted - return the folder.
+        if ((cmsFolder.getState() == C_STATE_DELETED) && (!includeDeleted)) {
+            throw new CmsException("[" + this.getClass().getName() + "]" + cmsFolder.getAbsolutePath(), CmsException.C_RESOURCE_DELETED);
+        } else {
+            return cmsFolder;
+        }
+    } else {
+        throw new CmsException("[" + this.getClass().getName() + "] " + folderid, CmsException.C_ACCESS_DENIED);
+    }
 }
     /**
      * Reads all given tasks from a user for a project.

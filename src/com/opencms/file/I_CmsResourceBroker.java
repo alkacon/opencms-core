@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/22 15:09:26 $
-* Version: $Revision: 1.158 $
+* Date   : $Date: 2001/10/25 10:28:12 $
+* Version: $Revision: 1.159 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.158 $ $Date: 2001/10/22 15:09:26 $
+ * @version $Revision: 1.159 $ $Date: 2001/10/25 10:28:12 $
  *
  */
 
@@ -1357,6 +1357,25 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      */
     public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProject, String folder)
         throws CmsException;
+
+   /**
+     * Returns a Vector with all resources of the given type that have set the given property to the given value.
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param propertyDefinition, the name of the propertydefinition to check.
+     * @param propertyValue, the value of the property for the resource.
+     * @param resourceType The resource type of the resource
+     *
+     * @return Vector with all resources.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public Vector getResourcesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition,
+                                           String propertyValue, int resourceType) throws CmsException;
     /**
      * Returns a CmsResourceTypes.
      *
@@ -2215,6 +2234,30 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
                                 String folder, boolean includeDeleted)
         throws CmsException ;
 
+    /**
+     * Reads a folder from the Cms.<BR/>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read the resource</li>
+     * </ul>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param folderid The id of the folder to be read.
+     * @param includeDeleted Include the folder if it is marked as deleted
+     *
+     * @return folder The read folder.
+     *
+     * @exception CmsException will be thrown, if the folder couldn't be read.
+     * The CmsException will also be thrown, if the user has not the rights
+     * for this resource.
+     */
+    public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
+                                int folderid, boolean includeDeleted)
+        throws CmsException ;
      /**
       * Reads all given tasks from a user for a project.
       *
