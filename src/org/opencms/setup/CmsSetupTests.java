@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/06/13 23:39:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/08/02 07:51:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2004/06/13 23:39:54 $
+ * @version $Revision: 1.10 $ $Date: 2004/08/02 07:51:55 $
  * @since 5.3
  */
 public class CmsSetupTests extends Object implements Serializable, Cloneable {
@@ -302,7 +302,11 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
         try {
             testResult.setName("Unpacked WAR file");
             
-            File file = new File(m_pageContext.getServletConfig().getServletContext().getRealPath("/") + "WEB-INF" + File.separator + "config" + File.separator + "opencms.properties");
+            String basePath = m_pageContext.getServletConfig().getServletContext().getRealPath("/");
+            if (!basePath.endsWith(File.separator)) {
+                  basePath += File.separator;
+            }
+            File file = new File(basePath + "WEB-INF" + File.separator + "config" + File.separator + "opencms.properties");
             if (file.exists() && file.canRead() && file.canWrite()) {
                 testResult.setGreen();
                 testResult.setResult("yes");

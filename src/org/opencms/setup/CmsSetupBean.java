@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/07/18 16:33:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/08/02 07:51:55 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -1464,6 +1464,6 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             // all servlet runtimes
             m_webAppRfsPath += File.separator;
         }
-        m_configRfsPath = webInfRfsPath + "WEB-INF" + File.separator + "config" + File.separator;
+        m_configRfsPath = m_webAppRfsPath + "WEB-INF" + File.separator + "config" + File.separator;
     }
 }    
