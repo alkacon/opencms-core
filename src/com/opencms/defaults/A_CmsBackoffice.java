@@ -904,8 +904,8 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		//get the dialog from the langauge file and set it in the template
 		if (ls != C_NOT_LOCKED && ls != actUserId) {
       // "lock"
-			template.setData("locktitle", lang.getLanguageValue("messagebox.title.unlock"));
-			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.unlock"));
+			template.setData("locktitle", lang.getLanguageValue("messagebox.title.lockchange"));
+			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lockchange"));
 		}
 		if (ls == C_NOT_LOCKED) {
       // "nolock"
@@ -913,8 +913,8 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lock"));
 		}
 		if (ls == actUserId) {
-			template.setData("locktitle", lang.getLanguageValue("messagebox.title.lockchange"));
-			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lockchange"));
+			template.setData("locktitle", lang.getLanguageValue("messagebox.title.unlock"));
+			template.setData("lockstate", lang.getLanguageValue("messagebox.message1.unlock"));
 		}
 
 		//set the title of the selected entry

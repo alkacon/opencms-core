@@ -137,14 +137,14 @@ start();
 	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
 	<contextdisabled name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+	<contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
 </contextmenue>
 		
 <contextmenue name="backofficelockuser"> 
 	<contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
 	<contextentry name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+	<contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficenolock"> 
