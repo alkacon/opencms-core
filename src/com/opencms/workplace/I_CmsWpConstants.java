@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/02/19 10:32:16 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2000/02/19 11:35:04 $
+ * Version: $Revision: 1.46 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2000/02/19 10:32:16 $
+ * @version $Revision: 1.46 $ $Date: 2000/02/19 11:35:04 $
  */
 public interface I_CmsWpConstants {
 
@@ -433,8 +433,8 @@ public interface I_CmsWpConstants {
 
     /** option values for font select boxes */
     public static final String[] C_SELECTBOX_FONTSTYLES = 
-            { "Normal", "Heading 1", "Heading 2", "Heading 3", "Heading 4", 
-              "Heading 5", "Heading 6", "Address", "Formatted" };
+            { "Normal", "Überschrift 1", "Überschrift 2", "Überschrift 3", "Überschrift 4", 
+              "Überschrift 5", "Überschrift 6" };
 
     /** option values for font select boxes */
     public static final String[] C_SELECTBOX_FONTSIZES = 
