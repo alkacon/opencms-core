@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportCronJob.java,v $
- * Date   : $Date: 2004/04/13 15:04:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/04/13 15:08:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,15 @@ import javax.servlet.ServletException;
 /**
  * A Cms cron job to write a complete static export (e.g. nightly exports).<p>
  * 
+ * To enable logging add the following line to opencms.properties in the logging
+ * configuration section:
+ * 
+ * <pre>
+ * log4j.logger.org.opencms.staticexport.CmsStaticExportCronJob=INFO
+ * </pre>
+ * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsStaticExportCronJob extends Object implements I_CmsCronJob {
 
