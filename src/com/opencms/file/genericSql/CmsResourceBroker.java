@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/11 15:21:59 $
-* Version: $Revision: 1.316 $
+* Date   : $Date: 2002/04/17 09:53:40 $
+* Version: $Revision: 1.317 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.316 $ $Date: 2002/04/11 15:21:59 $
+ * @version $Revision: 1.317 $ $Date: 2002/04/17 09:53:40 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2570,7 +2570,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             !(username.equals(C_USER_ADMIN) || username.equals(C_USER_GUEST))) {
             m_dbAccess.deleteUser(username);
             // delete user from cache
-            m_userCache.remove(username+user.getType());
+            clearUserCache(user);
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + username,
                 CmsException.C_NO_ACCESS);
@@ -2591,7 +2591,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         CmsUser user = readUser(currentUser,currentProject,userId);
         m_dbAccess.deleteUser(user.getName());
         // delete user from cache
-        m_userCache.remove(user.getName()+user.getType());
+        clearUserCache(user);
     }
     /**
      * Destroys the resource broker and required modules and connections.
@@ -4247,6 +4247,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             // write the user back to the cms.
             m_dbAccess.writeUser(newUser);
             // update cache
+            clearUserCache(newUser);
             m_userCache.put(newUser.getName()+newUser.getType(),newUser);
             return(newUser);
         } else {
@@ -4284,6 +4285,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             // write the user back to the cms.
             m_dbAccess.writeUser(newUser);
             // update cache
+            clearUserCache(newUser);
             m_userCache.put(newUser.getName()+newUser.getType(),newUser);
             return(newUser);
         } else {
@@ -6166,9 +6168,12 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
         CmsUser user = null;
         // try to read the user from cache
         user = (CmsUser)m_userCache.get(username+C_USER_TYPE_SYSTEMUSER);
+        if(user == null){
+            user = (CmsUser)m_userCache.get(username+C_USER_TYPE_SYSTEMANDWEBUSER);
+        }
         if (user == null) {
             user = m_dbAccess.readUser(username, C_USER_TYPE_SYSTEMUSER);
-            m_userCache.put(username+C_USER_TYPE_SYSTEMUSER,user);
+            m_userCache.put(username+user.getType(),user);
         }
         return user;
     }
@@ -6192,9 +6197,12 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
         CmsUser user = null;
         // try to read the user from cache
         user = (CmsUser)m_userCache.get(username+type);
+        if(user == null){
+            user = (CmsUser)m_userCache.get(username+C_USER_TYPE_SYSTEMANDWEBUSER);
+        }
         if (user == null) {
             user = m_dbAccess.readUser(username, type);
-            m_userCache.put(username+type,user);
+            m_userCache.put(username+user.getType(),user);
         }
         return user;
     }
@@ -6218,11 +6226,9 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 
         CmsUser user = null;
         // ednfal: don't read user from cache because password may be changed
-        //user = (CmsUser)m_userCache.get(username+C_USER_TYPE_SYSTEMUSER);
-        // store user in cache
         if (user == null) {
             user = m_dbAccess.readUser(username, password, C_USER_TYPE_SYSTEMUSER);
-            m_userCache.put(username+C_USER_TYPE_SYSTEMUSER, user);
+            m_userCache.put(username+user.getType(), user);
         }
         return user;
     }
@@ -6245,10 +6251,13 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 
         CmsUser user = null;
         user = (CmsUser)m_userCache.get(username+C_USER_TYPE_WEBUSER);
+        if(user == null){
+            user = (CmsUser)m_userCache.get(username+C_USER_TYPE_SYSTEMANDWEBUSER);
+        }
         // store user in cache
         if (user == null) {
             user = m_dbAccess.readUser(username, C_USER_TYPE_WEBUSER);
-            m_userCache.put(username+C_USER_TYPE_WEBUSER, user);
+            m_userCache.put(username+user.getType(), user);
         }
         return user;
     }
@@ -6272,11 +6281,10 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 
         CmsUser user = null;
         // ednfal: don't read user from cache because password may be changed
-        //user = (CmsUser)m_userCache.get(username+C_USER_TYPE_WEBUSER);
         // store user in cache
         if (user == null) {
             user = m_dbAccess.readUser(username, password, C_USER_TYPE_WEBUSER);
-            //m_userCache.put(username+C_USER_TYPE_WEBUSER,user);
+            m_userCache.put(username+user.getType(),user);
         }
         return user;
     }
@@ -7473,7 +7481,8 @@ protected void validName(String name, boolean blank) throws CmsException {
             }
             m_dbAccess.writeUser(user);
             // update the cache
-            m_userCache.put(user.getName()+C_USER_TYPE_SYSTEMUSER,user);
+            clearUserCache(user);
+            m_userCache.put(user.getName()+user.getType(),user);
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(),
                 CmsException.C_NO_ACCESS);
@@ -7501,7 +7510,8 @@ protected void validName(String name, boolean blank) throws CmsException {
 
             m_dbAccess.writeUser(user);
             // update the cache
-            m_userCache.put(user.getName()+C_USER_TYPE_WEBUSER,user);
+            clearUserCache(user);
+            m_userCache.put(user.getName()+user.getType(),user);
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(),
                 CmsException.C_NO_ACCESS);
@@ -7649,6 +7659,15 @@ protected void validName(String name, boolean blank) throws CmsException {
     }
 
     /**
+     * Clears the user cache for the given user
+     */
+    public void clearUserCache(CmsUser user){
+        m_userCache.remove(user.getId());
+        m_userCache.remove(user.getName());
+        m_userCache.remove(user.getName()+user.getType());
+    }
+
+    /**
      * Method to encrypt the passwords.
      *
      * @param value The value to encrypt.
@@ -7762,12 +7781,7 @@ protected void validName(String name, boolean blank) throws CmsException {
     public void changeUserType(CmsUser currentUser, CmsProject currentProject, CmsUser user, int userType) throws CmsException{
         if(isAdmin(currentUser, currentProject)){
             // try to remove user from cache
-            try{
-               m_userCache.remove(user.getName()+user.getType());
-               m_userCache.remove(user.getId());
-            } catch (Exception e){
-                // the user does not exist in cache
-            }
+            clearUserCache(user);
             m_dbAccess.changeUserType(user.getId(), userType);
         } else {
             throw new CmsException("Only administrators can change usertype ",CmsException.C_NO_ACCESS);
