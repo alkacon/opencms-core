@@ -1,0 +1,96 @@
+<%
+		// ############ hidden field ############
+		if (fieldType.equals(CmsField.C_TYPE_HIDDEN)) {
+		%><input type="hidden" name="<%= field.getName() %>" value="<%= field.getValue() %>">
+		<%
+		}
+		
+		// ############ text field ############
+		else if (fieldType.equals(CmsField.C_TYPE_TEXT)) {
+		%><%= messages.key("form.html.row.start") %>
+			<%= messages.key("form.html.label.start") %><%= field.getDescription() %><%= mandatory %><%= messages.key("form.html.label.end") %>
+			<%= messages.key("form.html.field.start") %><input type="text" name="<%= field.getName() %>" value="<%= field.getValue() %>"<%= formConfiguration.getFormFieldAttributes() %>><%= messages.key("form.html.field.end") %>
+		<%= messages.key("form.html.row.end") %><%= errorMessage %>
+		<%
+		}
+		
+		// ############ textarea ############
+		else if (fieldType.equals(CmsField.C_TYPE_TEXTAREA)) {
+		%><%= messages.key("form.html.row.start") %>
+			<%= messages.key("form.html.label.start") %><%= field.getDescription() %><%= mandatory %><%= messages.key("form.html.label.end") %>
+			<%= messages.key("form.html.field.start") %><textarea name="<%= field.getName() %>"<%= formConfiguration.getFormFieldAttributes() %>><%= field.getValue() %></textarea><%= messages.key("form.html.field.end") %>
+		<%= messages.key("form.html.row.end") %><%= errorMessage %>
+		<%
+		}
+		
+		// ############ selectbox ############
+		else if (fieldType.equals(CmsField.C_TYPE_SELECT)) { 
+		%><%= messages.key("form.html.row.start") %>
+			<%= messages.key("form.html.label.start") %><%= field.getDescription() %><%= mandatory %><%= messages.key("form.html.label.end") %>
+			<%= messages.key("form.html.field.start") %>
+				<select name="<%= field.getName() %>"<%= formConfiguration.getFormFieldAttributes() %>>
+				<%
+				
+				Iterator k = field.getItems().iterator();
+				while (k.hasNext()) {
+					CmsFieldItem curOption = (CmsFieldItem)k.next();
+					String selected = "";
+					if (curOption.isSelected()) {
+						selected = " selected=\"selected\"";
+					}
+					out.print("<option value=\"" + curOption.getValue() + "\"" + selected + ">" + curOption.getLabel() + "</option>");
+				}
+				
+				%>
+				</select>
+			<%= messages.key("form.html.field.end") %>
+		<%= messages.key("form.html.row.end") %><%= errorMessage %>
+		<%
+		}
+		
+		// ############ checkbox ############
+		else if (fieldType.equals(CmsField.C_TYPE_CHECKBOX)) {
+		%><%= messages.key("form.html.row.start") %>
+			<%= messages.key("form.html.label.start") %><%= field.getDescription() %><%= mandatory %><%= messages.key("form.html.label.end") %>
+			<%= messages.key("form.html.field.start") %>
+			<%
+				
+				Iterator k = field.getItems().iterator();
+				while (k.hasNext()) {
+					CmsFieldItem curOption = (CmsFieldItem)k.next();
+					String checked = "";
+					if (curOption.isSelected()) {
+						checked = " checked=\"checked\"";
+					}
+					out.print("<input type=\"checkbox\" name=\"" + field.getName() + "\" value=\"" + curOption.getValue() + "\"" + checked + ">" + curOption.getLabel() + "<br>");
+				}
+				
+			%>
+			<%= messages.key("form.html.field.end") %>
+		<%= messages.key("form.html.row.end") %><%= errorMessage %>
+		<%
+		}
+		
+		// ############ radio buttons ############
+		else if (fieldType.equals(CmsField.C_TYPE_RADIO)) {
+		%><%= messages.key("form.html.row.start") %>
+			<%= messages.key("form.html.label.start") %><%= field.getDescription() %><%= mandatory %><%= messages.key("form.html.label.end") %>
+			<%= messages.key("form.html.field.start") %>
+			<%
+				
+				Iterator k = field.getItems().iterator();
+				while (k.hasNext()) {
+					CmsFieldItem curOption = (CmsFieldItem)k.next();
+					String checked = "";
+					if (curOption.isSelected()) {
+						checked = " checked=\"checked\"";
+					}
+					out.print("<input type=\"radio\" name=\"" + field.getName() + "\" value=\"" + curOption.getValue() + "\"" + checked + ">" + curOption.getLabel() + "<br>");
+				}
+				
+			%>
+			<%= messages.key("form.html.field.end") %>
+		<%= messages.key("form.html.row.end") %><%= errorMessage %>
+		<%
+		}
+%>

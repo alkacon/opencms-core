@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 alpha 3 Caladan</opencms_version>
+		<createdate>1/19/05 12:52 PM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.frontend.templateone.form</name>
+		<nicename><![CDATA[OpenCms 6.0 'templateone' online input form]]></nicename>
+		<class/>
+		<description><![CDATA[This module contains online form functionality for the OpenCms frontend template one. This module can easily be used to create online input forms.
+(c) 2005 by Alkacon Software (http://www.alkacon.com).
+]]></description>
+		<version>0.9.7</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Wed, 19 Jan 2005 12:52:20 GMT+01:00</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.frontend.templateone" version="0.9.0"/>
+		</dependencies>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/classes/" destination="WEB-INF/classes/"/>
+			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/lib/" destination="WEB-INF/lib/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.frontend.templateone.form/"/>
+			<resource uri="/system/workplace/resources/filetypes/emailform.gif"/>
+		</resources>
+		<parameters>
+			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.form/;/system/workplace/resources/filetypes/emailform.gif</param>
+		</parameters>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.form/pages/form.html</param>
+				<param name="resource.type.id">60</param>
+				<param name="resource.type.name">emailform</param>
+				<param name="schema">/system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="emailform" key="fileicon.emailform" icon="emailform.gif" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=emailform" order="60"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+		</explorertypes>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 25 Oct 2004 15:35:59 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 10:03:29 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 17:00:00 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/classes</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace.properties</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace.properties</destination>
+			<type>plain</type>
+			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
+			<datelastmodified>Mon, 17 Jan 2005 17:46:14 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 15:47:36 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_de.properties</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>ef61baa7-695b-11d9-8aac-f55bb5376c24</uuidresource>
+			<datelastmodified>Tue, 18 Jan 2005 16:01:20 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 18 Jan 2005 15:19:16 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_en.properties</destination>
+			<type>plain</type>
+			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
+			<datelastmodified>Mon, 17 Jan 2005 17:46:14 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 15:47:36 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/elements</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 11 Jan 2005 11:09:34 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 11 Jan 2005 11:09:34 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/elements/check.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/elements/check.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>9f6e5555-654f-11d9-ba18-f55bb5376c24</uuidresource>
+			<datelastmodified>Tue, 18 Jan 2005 15:16:19 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Jan 2005 11:41:03 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Form check page (optional)]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/elements/confirmation.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/elements/confirmation.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>ea1cd525-6884-11d9-9876-f55bb5376c24</uuidresource>
+			<datelastmodified>Mon, 17 Jan 2005 16:03:11 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 17 Jan 2005 13:40:05 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Form confirmation end page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/jsptemplates</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 13 Jan 2005 16:28:17 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Jan 2005 16:28:17 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/jsptemplates/inputfields.txt</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/jsptemplates/inputfields.txt</destination>
+			<type>plain</type>
+			<uuidresource>c5d9a9d2-6577-11d9-8a19-f55bb5376c24</uuidresource>
+			<datelastmodified>Thu, 13 Jan 2005 16:31:33 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Jan 2005 16:28:27 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Individual input fields]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/lib</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:11:28 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/pages</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 11 Jan 2005 11:09:56 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 11 Jan 2005 11:09:56 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/pages/form.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/pages/form.html</destination>
+			<type>jsp</type>
+			<uuidresource>ffb9f73b-63b8-11d9-ab74-f55bb5376c24</uuidresource>
+			<datelastmodified>Tue, 18 Jan 2005 15:15:48 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 11 Jan 2005 11:10:19 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;no-params]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Input form page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/schemas</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Jan 2005 14:15:10 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:15:10 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</destination>
+			<type>plain</type>
+			<uuidresource>a58c4c68-630d-11d9-ba58-f55bb5376c24</uuidresource>
+			<datelastmodified>Mon, 17 Jan 2005 16:19:31 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:43:44 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for online forms]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/schemas/inputfield.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/inputfield.xsd</destination>
+			<type>plain</type>
+			<uuidresource>adf38d6e-630b-11d9-ba58-f55bb5376c24</uuidresource>
+			<datelastmodified>Fri, 14 Jan 2005 17:52:56 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Jan 2005 14:29:39 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for a form input field]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/schemas/optionalconfig.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/optionalconfig.xsd</destination>
+			<type>plain</type>
+			<uuidresource>03161053-689a-11d9-b9b0-f55bb5376c24</uuidresource>
+			<datelastmodified>Mon, 17 Jan 2005 16:59:52 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 17 Jan 2005 16:11:07 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for optional configurations]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 17:00:00 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 14:02:00 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>15</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 17:00:00 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 17:00:00 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 12:39:40 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/emailform.gif</source>
+			<destination>system/workplace/resources/filetypes/emailform.gif</destination>
+			<type>image</type>
+			<uuidresource>6fb7c8fc-68a8-11d9-97b7-f55bb5376c24</uuidresource>
+			<datelastmodified>Mon, 17 Jan 2005 17:54:22 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 17 Jan 2005 17:54:22 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

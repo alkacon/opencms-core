@@ -1,0 +1,38 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="OptionalFormConfigurations" type="OpenCmsOptionalFormConfigurations"/>
+	
+	<xsd:complexType name="OpenCmsOptionalFormConfigurations">
+		<xsd:sequence>
+			<xsd:element name="OptionalFormConfiguration" type="OpenCmsOptionalFormConfiguration" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsOptionalFormConfiguration">
+		<xsd:sequence>
+			<xsd:element name="MailType" type="OpenCmsString" />
+			<xsd:element name="MailCC" type="OpenCmsString" />
+			<xsd:element name="MailBCC" type="OpenCmsString" />
+			<xsd:element name="ShowCheck" type="OpenCmsBoolean" />
+			<xsd:element name="CheckText" type="OpenCmsHtml" />
+			<xsd:element name="FormAttributes" type="OpenCmsString" />
+			<xsd:element name="FormFieldAttributes" type="OpenCmsString" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
+			<layouts>
+				<layout element="MailType" widget="SelectorWidget" />
+			</layouts>
+			<defaults>
+				<default element="MailType" value="html*:${key:form.email.type.html}|text:${key:form.email.type.text}"/>
+			</defaults>
+		</xsd:appinfo>
+	</xsd:annotation>  
+
+</xsd:schema>

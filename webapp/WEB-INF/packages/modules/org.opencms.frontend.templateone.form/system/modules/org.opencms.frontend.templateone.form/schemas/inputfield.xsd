@@ -1,0 +1,37 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="InputFields" type="OpenCmsInputFields"/>
+	
+	<xsd:complexType name="OpenCmsInputFields">
+		<xsd:sequence>
+			<xsd:element name="InputField" type="OpenCmsInputField" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsInputField">
+		<xsd:sequence>
+			<xsd:element name="FieldType" type="OpenCmsString" />
+			<xsd:element name="FieldLabel" type="OpenCmsString" />
+			<xsd:element name="FieldMandatory" type="OpenCmsBoolean" />
+			<xsd:element name="FieldDefault" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="FieldValidation" type="OpenCmsString" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
+			<layouts>
+				<layout element="FieldType" widget="SelectorWidget" />
+			</layouts>
+			<defaults>
+				<default element="FieldType" value="text*:${key:form.field.type.text}|textarea:${key:form.field.type.textarea}|checkbox:${key:form.field.type.checkbox}|radio:${key:form.field.type.radio}|select:${key:form.field.type.select}|hidden:${key:form.field.type.hidden}"/>
+			</defaults>
+		</xsd:appinfo>
+	</xsd:annotation>  
+
+ 
+</xsd:schema>
