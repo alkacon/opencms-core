@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2002/09/12 09:57:50 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2002/10/30 10:31:08 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.template;
 
+import com.opencms.boot.I_CmsLogChannels;
 import java.io.*;
 import java.util.*;
 import java.lang.reflect.*;
@@ -36,16 +37,6 @@ import com.opencms.core.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import com.opencms.launcher.*;
-
-// import com.sun.xml.*;
-
-// import com.sun.xml.tree.*;
-
-//import org.apache.xerces.*;
-
-//import org.apache.xerces.dom.*;
-
-//import org.apache.xerces.parsers.*;
 
 /**
  * Abstract class for OpenCms files with XML content.
@@ -76,7 +67,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.60 $ $Date: 2002/09/12 09:57:50 $
+ * @version $Revision: 1.61 $ $Date: 2002/10/30 10:31:08 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2002/09/03 11:57:08 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2002/10/30 10:38:56 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
@@ -41,7 +42,7 @@ import java.util.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.59 $ $Date: 2002/09/03 11:57:08 $
+ * @version $Revision: 1.60 $ $Date: 2002/10/30 10:38:56 $
  */
 
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,I_CmsWpConstants {

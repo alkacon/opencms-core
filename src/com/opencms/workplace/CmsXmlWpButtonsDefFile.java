@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpButtonsDefFile.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/10/30 10:38:32 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
@@ -41,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.16 $ $Date: 2002/10/30 10:38:32 $
  */
 
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2002/05/31 13:20:58 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2002/10/30 10:37:42 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -42,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2002/05/31 13:20:58 $
+ * @version $Revision: 1.23 $ $Date: 2002/10/30 10:37:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsCacheDirectives.java,v $
-* Date   : $Date: 2002/03/20 17:30:56 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/10/30 10:30:45 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.template;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.template.cache.CmsTimeout;
 import com.opencms.file.*;

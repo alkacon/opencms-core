@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/10/30 10:32:23 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.template;
 
+import com.opencms.boot.I_CmsLogChannels;
 import java.io.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -43,7 +44,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.17 $ $Date: 2002/10/30 10:32:23 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser,I_CmsLogChannels {
     

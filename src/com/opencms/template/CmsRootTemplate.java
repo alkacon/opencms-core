@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/10/30 10:31:29 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.template;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.launcher.*;
 import com.opencms.file.*;
@@ -43,7 +44,7 @@ import java.util.*;
  * generation of the master template class to be used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.29 $ $Date: 2002/10/30 10:31:29 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
 

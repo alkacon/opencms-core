@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlProjectXParser.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/10/30 10:32:23 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.xml.sax.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.xml.serialize.*;
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 
 /**
@@ -43,7 +44,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.10 $ $Date: 2002/10/30 10:32:23 $
  */
 public class CmsXmlProjectXParser implements I_CmsXmlParser,I_CmsLogChannels {
     
