@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/01/28 11:01:22 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/01/28 12:39:53 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -238,13 +238,19 @@ public class CmsTree extends CmsWorkplace {
             values.add(site.getSiteRoot());
             String curOption = site.getTitle();
             if (showSiteUrls) {
+                // show the site URL in editor link dialog tree 
                 curOption = site.getUrl() + " (" + curOption + ")";
+                if (getCms().getRequestContext().getSiteRoot().equals(site.getSiteRoot())) {
+                    // mark the current workplace site in selector
+                    curOption = "*" + curOption;
+                }
             }
-            options.add(curOption);
+            
             if (site.getSiteRoot().equals(preSelection)) { 
                 // this is the user's current site
                 selectedIndex = pos;
             }
+            options.add(curOption);          
             pos++;
         }
         
