@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/01 17:39:25 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2003/08/04 09:57:04 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.81 $ $Date: 2003/08/01 17:39:25 $
+ * @version $Revision: 1.82 $ $Date: 2003/08/04 09:57:04 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3785,9 +3785,10 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCE_REPLACE"); 
             stmt.setInt(1, newResType);
             stmt.setTimestamp(2, new Timestamp(dateModified));
-			stmt.setString(3, currentUser.getId().toString());
-			stmt.setInt(4,state);
-            stmt.setString(5, res.getResourceId().toString());
+            stmt.setString(3, currentUser.getId().toString());
+            stmt.setInt(4,state);
+            stmt.setInt(5, resContent.length);
+            stmt.setString(6, res.getResourceId().toString());
             stmt.executeUpdate(); 
             
         } catch (SQLException e) {
