@@ -20,6 +20,17 @@ OpenCms 4.1.56 Arakis - 06 February 2001
   The button for synchronizing in the workplace header is disabled until the entries 
   for synchronisation in registry.xml are enabled
 - Removed obsolete CmsMultipartRequest
+* new Resources cant be created if they exist in onlineproject.
+* navigation in picgallery and downloadgallery.
+* the searchfunction didnt work when the return key is used instead of the searchbutton.
+* pic and downloadgallery: new galleries are unlocked now and the accessrights for group are set correct.
+* newLink: if rootFolder was selected in the treewindow the link pointed to "rootfolder" instead of "/".
+* delete File: if no access the error message didnt go away when clicking the ok-button.
+! added in Historie the user who changed the file.
+* show error message when upload fails.
+* create Group works again
+* general bugfix in new Help system
+* adminUser: some groups apeared two times in the groupboxes after an errormessage
 
 OpenCms 4.1.55 Arakis - 02 February 2001
 
