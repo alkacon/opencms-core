@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/04/01 09:01:17 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
+ * Date   : $Date: 2004/04/01 10:21:29 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.db;
+package org.opencms.file;
+
+import org.opencms.db.CmsDriverManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -78,7 +80,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2004/04/01 09:01:17 $
+ * @version $Revision: 1.1 $ $Date: 2004/04/01 10:21:29 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
