@@ -54,7 +54,7 @@
 						/* invalidate session */
 						request.getSession().invalidate();
 				%>
-						<strong>Setup finished. If no major errors have occured (see output below) the OpenCms is ready to use. Click <a target="_blank" href="<%= request.getContextPath() %>/opencms/system/workplace/action/login.html">here</a> to start.</strong><br>
+						<strong>Setup finished. If no major errors have occured (see output below) the OpenCms is ready to use. Click <a target="_blank" href="<%= request.getContextPath() + request.getServletPath() %>/system/workplace/action/login.html">here</a> to start.</strong><br>
 				<%		}
 						else	{
 							out.println("Running...");
