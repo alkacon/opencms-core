@@ -38,7 +38,8 @@
     <property name="build.inputlib.dbcp"        value="${build.inputlib}/commons-dbcp.jar"/>
     <property name="build.inputlib.pool"        value="${build.inputlib}/commons-pool.jar"/>    
 
-    <property name="build.inputlib.oracle"      value="${build.externlib}/classes12.zip"/>  
+    <property name="build.inputlib.oracle"      value="${build.externlib}/classes12.zip"/>
+    <property name="build.inputlib.oracle9"		value="${build.externlib}/ojdbc14.jar"/>  
         
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
     <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/login/version.js"/>
@@ -66,11 +67,17 @@
         </condition>
         
         <condition property="build.excludes" value="org/opencms/db/oracle/**">
-            <not><available file="${build.inputlib.oracle}"/></not>
+            <not><or>
+            	<available file="${build.inputlib.oracle}"/>
+            	<available file="${build.inputlib.oracle9}"/>
+            </or></not>
         </condition>           
         
         <condition property="build.excludes" value="">
-            <available file="${build.inputlib.oracle}"/>
+            <or>
+            	<available file="${build.inputlib.oracle}"/>
+            	<available file="${build.inputlib.oracle9}"/>
+           	</or>
         </condition> 
         
         <condition property="tomcat.home" value="${env.TOMCAT_HOME}">
@@ -154,6 +161,7 @@ ${build.inputlib.dbcp}
                         ${build.inputlib.mail}:
                         ${build.inputlib.xerces}:
                         ${build.inputlib.oracle}:
+                        ${build.inputlib.oracle9}:
                         ${build.inputlib.mysql}:
                         ${build.inputlib.oro}:
                         ${build.inputlib.tidy}:

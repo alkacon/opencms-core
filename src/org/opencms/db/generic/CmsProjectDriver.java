@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/31 19:20:08 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/08/01 10:39:58 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.43 $ $Date: 2003/07/31 19:20:08 $
+ * @version $Revision: 1.44 $ $Date: 2003/08/01 10:39:58 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1155,16 +1155,22 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         }
 
         projectResources = m_driverManager.getVfsDriver().readProjectResources(context.currentProject());
-        offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject(), false, true);
+        // read all changed/new/deleted folders in the offline project
+        offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject(), false, false);
 
         i = offlineFolders.iterator();
         while (i.hasNext()) {
             currentFolder = (CmsFolder)i.next();
+
             currentResourceName = m_driverManager.readPath(context, currentFolder, true);
             currentLock = m_driverManager.getLock(context, currentResourceName);
+
+            // the resource must have either a new/deleted/changed state in the link or a new/delete/changed state in the resource record
+            publishCurrentResource = currentFolder.getState() > I_CmsConstants.C_STATE_UNCHANGED;
             
-            publishCurrentResource = false;
-            publishCurrentResource = m_driverManager.isInsideProject(projectResources, currentFolder);
+            // the resource must be in one of the paths defined for the project
+            // attention: the resource needs a full resource path ! (so readPath has to be done before !)            
+            publishCurrentResource = publishCurrentResource && m_driverManager.isInsideProject(projectResources, currentFolder);
             
             if (publishCurrentResource && currentLock.isNullLock()) {           
                 currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFolder, true));
@@ -1309,19 +1315,26 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         offlineFolders.clear();
         offlineFolders = null;
 
-        // now read all FILES in offlineProject
-        offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId(), false, true);
+        // now read all changed/new/deleted FILES in offlineProject
+        offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId(), false, false);
         
         i = offlineFiles.iterator();
         while (i.hasNext()) {
-            currentFile = (CmsFile) i.next();              
+            
+            currentFile = (CmsFile) i.next();
+                          
             currentResourceName = m_driverManager.readPath(context, currentFile, true);
             currentLock = m_driverManager.getLock(context, currentResourceName);
             
-            publishCurrentResource = false;
-            publishCurrentResource = m_driverManager.isInsideProject(projectResources, currentFile);
+            // the resource must have either a new/deleted/changed state in the link or a new/delete/changed state in the resource record
+            publishCurrentResource = currentFile.getState() > I_CmsConstants.C_STATE_UNCHANGED;
+            
+            // the resource must be in one of the paths defined for the project
+            // attention: the resource needs a full resource path ! (so readPath has to be done before !)
+            publishCurrentResource = publishCurrentResource && m_driverManager.isInsideProject(projectResources, currentFile);
             
             if (publishCurrentResource) {                  
+                
                 currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFile, true));
                 currentExportKey = checkExport(currentResourceName, exportpoints);
                 
