@@ -4,7 +4,7 @@
 <![CDATA[
 <html>
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<title>opencms</title>
+<title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
 	<!-- Sets the Document Source-Code for later including into the text editor -->
