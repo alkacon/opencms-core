@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 09:51:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/06 09:58:07 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,16 +46,21 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/06/06 09:51:09 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/06 09:58:07 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker {
 	
 	/**
-	 * Memeber to store the configuration of the property-file.
+	 * The configuration of the property-file.
 	 */
 	private Configurations m_configuration = null;
 
+	/**
+	 * The access-module.
+	 */
+	private CmsDbAccess m_dbAccess = null;
+	
     // Internal ResourceBroker methods   
     
     /**
@@ -69,7 +74,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker {
 		// Store the configuration.
 		m_configuration = config;
 		
-		
+		// initialize the access-module.
+		m_dbAccess = new CmsDbAccess(config);		
     }
 	
 	// Method to access the configuration

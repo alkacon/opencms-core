@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 09:51:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/06 09:58:07 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,16 +44,16 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.1 $ $Date: 2000/06/06 09:51:09 $ * 
+ * @version $Revision: 1.2 $ $Date: 2000/06/06 09:58:07 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants {
     
     /**
-     * Initializes the access-module and sets up all required modules and connections.
+     * Instanciates the access-module and sets up all required modules and connections.
      * @param config The OpenCms configuration.
      * @exception CmsException Throws CmsException if something goes wrong.
      */
-    public void init(Configurations config) 
+    public CmsDbAccess(Configurations config) 
         throws CmsException {
     }
 }
