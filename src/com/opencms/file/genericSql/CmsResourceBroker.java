@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/11 11:28:22 $
-* Version: $Revision: 1.314 $
+* Date   : $Date: 2002/04/11 14:50:41 $
+* Version: $Revision: 1.315 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.314 $ $Date: 2002/04/11 11:28:22 $
+ * @version $Revision: 1.315 $ $Date: 2002/04/11 14:50:41 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7462,7 +7462,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             }
             m_dbAccess.writeUser(user);
             // update the cache
-            m_userCache.put(user.getName()+user.getType(),user);
+            m_userCache.put(user.getName()+C_USER_TYPE_SYSTEMUSER,user);
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(),
                 CmsException.C_NO_ACCESS);
@@ -7486,11 +7486,11 @@ protected void validName(String name, boolean blank) throws CmsException {
                           CmsUser user)
         throws CmsException {
         // Check the security
-        if( user.getType() == C_USER_TYPE_WEBUSER) {
+        if((user.getType() == C_USER_TYPE_WEBUSER) || (user.getType() == C_USER_TYPE_SYSTEMANDWEBUSER)) {
 
             m_dbAccess.writeUser(user);
             // update the cache
-            m_userCache.put(user.getName()+user.getType(),user);
+            m_userCache.put(user.getName()+C_USER_TYPE_WEBUSER,user);
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(),
                 CmsException.C_NO_ACCESS);
