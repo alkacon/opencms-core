@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/12/07 11:14:59 $
- * Version: $Revision: 1.422 $
+ * Date   : $Date: 2002/12/12 19:14:43 $
+ * Version: $Revision: 1.423 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,14 +20,22 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next release)
+! Added report output for module management (import / export / delete)
+! Report output is now localized 
 ! Static export for JSP pages and JSP based templates added
 ! Help system will now look up if a directory for the current locale exists and display the "online help" button only in this case
 ! Preference panel for startup options will not display language selection if only one locale directory exists
 ! New "relativeroot" property tells the link substitution in the editor to generate relative URLs instead of absolute URLs
+* Improved spelling for english language locale
 * Gallery contents are exported even if "exclude system folder" is checked in export
 * Added entry for "publishclass" when creating a module
 * Fixed template selection issue when creating a new page
 * Fixed issue with response.setContentType() in JSP pages
+- Changed behaviour for deleted files that reside in a folder that is locked:
+  Now the file is also shifted to the current project where the lock is applied,
+  old behaviour was to stay in the project where it was deleted in
+- Improved report output for actions like "publish", "export" etc. with nicer html,
+  also improved the report templates and some of the workplace classes dealing with the reports
 - Added all default directories (like "/system/") to exclude-list in module import 
 - Modules are now exported to and read from /WEB-INF/export/modules/ (was /WEB-INF/export/)
 - Some cleanup of code comments
