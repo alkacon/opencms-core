@@ -224,16 +224,12 @@ OpenCms Setup Wizard - Module selection
 <input type="hidden" name="installModules" value="">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
-	<td align="center" valign="top">
-		<table border="0" width="450">
-			<tr>
-			<td align="left">
-			Yet another header has to be placed here telling people how to select modules to be installed...
-			</td>
-			</tr>		
-			<tr>
-				<td align="center">
-					<table border="0" cellpadding="2">
+	<td valign="top">
+	
+<%= Bean.getHtmlPart("C_BLOCK_START", "Modules available for installation") %>
+
+	<div style="width:100%; height: 300px; overflow: auto;">
+	<table border="0" cellpadding="2">	
 <%
 	for (int i=0;i<moduleNames.size();i++) {
 		moduleName = (String) moduleNames.get(i);
@@ -242,22 +238,23 @@ OpenCms Setup Wizard - Module selection
 		moduleVersion = (String) module.get("version");
 		moduleDescription = (String) module.get("description");
 %>
-						<tr>
-							<td>
-								<input type="checkbox" name="availableModules" value="<%= moduleName %>" checked onClick="checkDependencies('<%= moduleName %>')">
-							</td>
-							<td width="450" align="left" style="font-weight:bold;">
-								<%= moduleNiceName %> (<%= moduleVersion %>)
-							</td>
-						</tr>
+		<tr>
+			<td>
+				<input type="checkbox" name="availableModules" value="<%= moduleName %>" checked onClick="checkDependencies('<%= moduleName %>')">
+			</td>
+			<td width="450" align="left">
+				<%= moduleNiceName %> (<%= moduleVersion %>)
+			</td>
+		</tr>
 <%
 	}
 %>
-					</table>
-				</td>
-			</tr>
-		</table>
-	</td>
+	</table>
+	</div>
+
+<%= Bean.getHtmlPart("C_BLOCK_END") %>
+
+</td>
 </tr>
 </table>
 
