@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
- * Date   : $Date: 2000/02/20 11:42:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/20 16:07:52 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/02/20 11:42:09 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/20 16:07:52 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels { 	
         
@@ -128,7 +128,13 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
             while(parameters.hasMoreElements()) {
                 String paramName = (String)parameters.nextElement();
                 String paramValue = doc.getParameter(elementName, paramName);
-                newParameters.put(elementName + "." + paramName, paramValue);
+                if(paramValue!=null) {
+                    newParameters.put(elementName + "." + paramName, paramValue);
+                } else {
+                    if(A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Empty parameter \"" + paramName + "\" found.");
+                    }
+                }
             }     
         }           
                         
@@ -142,10 +148,18 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
         
         Enumeration urlParameterNames = req.getParameterNames();
         while(urlParameterNames.hasMoreElements()) {
+            
             String pname = (String)urlParameterNames.nextElement();
-                   
-            if((! "datafor".equals(pname)) && (! "_clearcache".equals(pname))) {
-                newParameters.put(datafor + pname, req.getParameter(pname));
+            String paramValue = req.getParameter(pname);
+
+            if(paramValue!=null) {
+                if((! "datafor".equals(pname)) && (! "_clearcache".equals(pname))) {
+                    newParameters.put(datafor + pname, paramValue);
+                }
+            } else {
+                if(A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Empty URL parameter \"" + pname + "\" found.");
+                }
             }
         }
        try {
