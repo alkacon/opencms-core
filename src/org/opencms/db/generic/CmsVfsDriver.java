@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/10/10 11:58:37 $
- * Version: $Revision: 1.149 $
+ * Date   : $Date: 2003/10/14 15:21:23 $
+ * Version: $Revision: 1.150 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.149 $ $Date: 2003/10/10 11:58:37 $
+ * @version $Revision: 1.150 $ $Date: 2003/10/14 15:21:23 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2319,6 +2319,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource, byte[], int, org.opencms.util.CmsUUID)
+     * NOTE: the file content is only written if filecontent != null, otherwise the values of the resource are written without changes
+     *
      */
     public void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException {
         PreparedStatement stmt = null;
@@ -2331,9 +2333,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         if (resource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
             isFolder = true;
         }
-        if (filecontent == null) {
-            filecontent = new byte[0];
-        }
+        // if (filecontent == null) {
+        //     filecontent = new byte[0];
+        // }
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             userId = resource.getUserLastModified();
         }
@@ -2363,7 +2365,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setTimestamp(4, new Timestamp(resourceDateModified));
             stmt.setString(5, userId.toString());
             stmt.setInt(6, resourceState);
-            stmt.setInt(7, filecontent.length);
+            stmt.setInt(7, (filecontent != null) ? filecontent.length : resource.getLength());
             stmt.setString(8, resource.getFileId().toString());
             stmt.setString(9, CmsUUID.getNullUUID().toString());
             stmt.setInt(10, resource.getProjectLastModified());
@@ -2390,7 +2392,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
 
         // write the filecontent if this is a file
-        if (!isFolder) {
+        if (!isFolder && filecontent != null) {
             this.writeFileContent(resource.getFileId(), filecontent, project.getId(), false);
         }
     }
