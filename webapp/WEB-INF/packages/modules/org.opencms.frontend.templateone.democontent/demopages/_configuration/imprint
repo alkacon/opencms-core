@@ -2,15 +2,49 @@
 
 <imprints xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/imprint.xsd">
   <imprint language="en">
-    <author><![CDATA[Alkacon Software]]></author>
-    <address><![CDATA[Eugen-Langen-StraÃŸe 8, 50968 KÃ¶ln]]></address>
+    <institution><![CDATA[Alkacon Software]]></institution>
+    <author/>
+    <street><![CDATA[Eugen-Langen-Straße 8]]></street>
+    <city><![CDATA[50968 Cologne]]></city>
+    <phone><![CDATA[+49 221 3797540]]></phone>
+    <fax><![CDATA[+49 221 3797541]]></fax>
     <email><![CDATA[sales@alkacon.com]]></email>
-    <includepage/>
+    <country><![CDATA[Germany]]></country>
+    <taxnumber/>
+    <register.number/>
+    <register.court/>
+    <responsible.content/>
+    <responsible.technic/>
+    <text.head name="text.head0">
+      <links/>
+      <content/>
+    </text.head>
+    <text.foot name="text.foot0">
+      <links/>
+      <content/>
+    </text.foot>
   </imprint>
   <imprint language="de">
-    <author><![CDATA[Alkacon Software]]></author>
-    <address><![CDATA[Eugen-Langen-StraÃŸe 8, 50968 KÃ¶ln]]></address>
+    <institution><![CDATA[Alkacon Software]]></institution>
+    <author/>
+    <street><![CDATA[Eugen-Langen-Straße 8]]></street>
+    <city><![CDATA[50968 Köln]]></city>
+    <phone><![CDATA[+49 221 3797540]]></phone>
+    <fax><![CDATA[+49 221 3797541]]></fax>
     <email><![CDATA[sales@alkacon.com]]></email>
-    <includepage/>
+    <country><![CDATA[Deutschland]]></country>
+    <taxnumber/>
+    <register.number/>
+    <register.court/>
+    <responsible.content/>
+    <responsible.technic/>
+    <text.head name="text.head0">
+      <links/>
+      <content/>
+    </text.head>
+    <text.foot name="text.foot0">
+      <links/>
+      <content/>
+    </text.foot>
   </imprint>
 </imprints>

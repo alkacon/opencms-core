@@ -14,7 +14,7 @@
 	<xsd:complexType name="OpenCmsConfiguration">
 		<xsd:sequence>
 			<xsd:element name="area.name" type="OpenCmsString" />
-			<xsd:element name="navigation.startfolder" type="OpenCmsString" />
+			<xsd:element name="navigation.startfolder" type="OpenCmsVfsFile" />
 			<xsd:element name="headnav.menus" type="OpenCmsBoolean" default="true" />
 			<xsd:element name="navleft.showselected" type="OpenCmsBoolean" />
 			<xsd:element name="page.form.letter" type="OpenCmsVfsFile" />

@@ -13,10 +13,21 @@
 
 	<xsd:complexType name="OpenCmsImprint">
 		<xsd:sequence>
+			<xsd:element name="institution" type="OpenCmsString" />
 			<xsd:element name="author" type="OpenCmsString" />
-			<xsd:element name="address" type="OpenCmsString" />
+			<xsd:element name="street" type="OpenCmsString" />
+			<xsd:element name="city" type="OpenCmsString" />
+			<xsd:element name="phone" type="OpenCmsString" />
+			<xsd:element name="fax" type="OpenCmsString" />
 			<xsd:element name="email" type="OpenCmsString" />
-			<xsd:element name="includepage" type="OpenCmsVfsFile" />
+			<xsd:element name="country" type="OpenCmsString" />
+			<xsd:element name="taxnumber" type="OpenCmsString" />
+			<xsd:element name="register.number" type="OpenCmsString" />
+			<xsd:element name="register.court" type="OpenCmsString" />
+			<xsd:element name="responsible.content" type="OpenCmsString" />
+			<xsd:element name="responsible.technic" type="OpenCmsString" />
+			<xsd:element name="text.head" type="OpenCmsHtml" />
+			<xsd:element name="text.foot" type="OpenCmsHtml" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>

@@ -21,7 +21,7 @@ function openPrintVersion() {
 function openImprint(imprintUri, pageUri, theLocale) {
 	pageUri = encodeURIComponent(pageUri); 
 	pageUri = "?__locale=" + theLocale + "&uri=" + pageUri;
-	window.open(imprintUri + pageUri, "imprint", "width=550,height=300,dependent=yes,status=no,toolbar=no,location=no,scrollbars=yes,resizable=yes");
+	window.open(imprintUri + pageUri, "imprint", "width=670,height=550,dependent=yes,status=no,toolbar=no,location=no,scrollbars=yes,resizable=yes");
 }
 
 /* open the recommend page form popup window */
