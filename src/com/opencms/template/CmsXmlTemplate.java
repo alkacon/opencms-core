@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/04/05 08:45:55 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/04/06 10:44:16 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2000/04/05 08:45:55 $
+ * @version $Revision: 1.28 $ $Date: 2000/04/06 10:44:16 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -394,33 +394,41 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getStylesheet(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public String getStylesheet(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-
-        // First create a copy of the parameter hashtable
-        Hashtable parameterHashtable = (Hashtable)((Hashtable)userObject).clone();
 
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
         
-        // Get the styles from the parameter hashtable
-        String styleIE = (String)parameterHashtable.get(C_ROOT_TEMPLATE_NAME + ".stylesheet-ie");
-        String styleNS = (String)parameterHashtable.get(C_ROOT_TEMPLATE_NAME + ".stylesheet-ns");
-                
-        if(styleIE == null) {
-            styleIE = templateFile.getParameter(C_ROOT_TEMPLATE_NAME, "stylesheet-ie");
+        // Get the styles from the parameter hashtable        
+        String styleIE = null;
+        String styleNS = null;
+        try {
+            styleIE = templateFile.getDataValue("stylesheet-ie");
+        } catch(Exception e1) {
+            try {
+                styleIE = templateFile.getDataValue("stylesheet");
+            } catch(Exception e2) {
+                styleIE = "";
+            }
         }
 
-        if(styleNS == null) {
-            styleNS = templateFile.getParameter(C_ROOT_TEMPLATE_NAME, "stylesheet-ns");
+        try {
+            styleNS = templateFile.getDataValue("stylesheet-ns");
+        } catch(Exception e1) {
+            try {
+                styleNS = templateFile.getDataValue("stylesheet");
+            } catch(Exception e2) {
+                styleNS = "";
+            }
         }
-        
+            
         // TODO: Check if the parameters really exist
         
-        HttpServletRequest req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-        String servletPath = req.getServletPath() + "/";
+        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+        String servletPath = orgReq.getServletPath() + "/";
 
         // Get the user's browser
-        String browser = req.getHeader("user-agent");                
+        String browser = orgReq.getHeader("user-agent");                
         if(browser.indexOf("MSIE") >-1) {
 			return servletPath + styleIE;
 		} else {

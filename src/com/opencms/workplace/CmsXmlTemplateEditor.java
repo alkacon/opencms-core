@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/04/06 09:26:34 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/04/06 10:44:08 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2000/04/06 09:26:34 $
+ * @version $Revision: 1.22 $ $Date: 2000/04/06 10:44:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -85,6 +85,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         // Get the user's browser
         String browser = orgReq.getHeader("user-agent");                
+        String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST");
                 
         Encoder encoder = new Encoder();
         
@@ -227,21 +228,13 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
             temporaryControlFile.write();
 
-            String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST") + orgReq.getServletPath() + "/";
-            String styleName = null;
-            if(browser.indexOf("MSIE") >-1) {
-		    	styleName = "stylesheet-ie";
-		    } else {
-		    	styleName = "stylesheet-ns";
-	    	}
             try {
-                style = hostName + temporaryControlFile.getParameter(styleName);
+                style = getStylesheet(cms, null, layoutTemplateFile, null);
+                if(style != null && !"".equals(style)) {
+                    style = hostName + style;
+                }                
             } catch(Exception e) {
-                try {
-                    style = hostName + layoutTemplateFile.getParameter("root", styleName);
-                } catch(Exception e2) {
-                    style = "";
-                }
+                style = "";
             }
             session.putValue("te_stylesheet", style);
         } else {
@@ -263,21 +256,13 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 // The user requested a change of the layout template
                 temporaryControlFile.setMasterTemplate(layoutTemplateFilename);
                 //temporaryControlFile.write();
-                String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST") + orgReq.getServletPath() + "/";
-                String styleName = null;
-                if(browser.indexOf("MSIE") >-1) {
-		        	styleName = "stylesheet-ie";
-    		    } else {
-	    	    	styleName = "stylesheet-ns";
-	        	}
                 try {
-                    style = hostName + temporaryControlFile.getParameter(styleName);
+                    style = getStylesheet(cms, null, layoutTemplateFile, null);
+                    if(style != null && !"".equals(style)) {
+                        style = hostName + style;
+                    }                
                 } catch(Exception e) {
-                    try {
-                        style = hostName + layoutTemplateFile.getParameter("root", styleName);
-                    } catch(Exception e2) {
-                        style = "";
-                    }
+                    style = "";
                 }
                 session.putValue("te_stylesheet", style);
             }
