@@ -1,6 +1,5 @@
 # setupscript for mysql-database
 
-
 create table CMS_SYSTEMPROPERTIES       (SYSTEMPROPERTY_ID int not null,
                                          SYSTEMPROPERTY_NAME VARCHAR(40) not null, 
                                          SYSTEMPROPERTY_VALUE blob,
@@ -31,7 +30,8 @@ create table CMS_GROUPS                 (GROUP_ID int not null auto_increment,
                                          GROUP_DESCRIPTION VARCHAR(255) not null,
                                          GROUP_FLAGS int not null,
                                          primary key(GROUP_ID),
-                                         unique(GROUP_NAME));
+                                         unique(GROUP_NAME),
+										 key group_parentid (parent_group_id));
 
 create table CMS_GROUPUSERS             (GROUP_ID int not null,
                                          USER_ID int not null,
@@ -53,19 +53,26 @@ create table CMS_PROJECTS               (PROJECT_ID int not null,
                                          PROJECT_TYPE int not null,
                                          primary key(PROJECT_ID), 
                                          key(PROJECT_NAME, PROJECT_CREATEDATE),
+										 key project_flags (project_flags),
+										 key projects_groupid (group_id),
+										 key projects_managerid (managergroup_id),
+										 key projects_userid (user_id),
+										 key projects_taskid (task_id),
                                          unique(PROJECT_NAME, PROJECT_CREATEDATE));
 
 create table CMS_PROPERTYDEF            (PROPERTYDEF_ID int not null, 
                                          PROPERTYDEF_NAME VARCHAR(64) not null,
                                          RESOURCE_TYPE int not null,
                                          PROPERTYDEF_TYPE int not null,
-                                         primary key(PROPERTYDEF_ID), unique(PROPERTYDEF_NAME, RESOURCE_TYPE));
+                                         primary key(PROPERTYDEF_ID), 
+										 unique(PROPERTYDEF_NAME, RESOURCE_TYPE));
 
 create table CMS_PROPERTIES             (PROPERTY_ID int not null,
                                          PROPERTYDEF_ID int not null,
                                          RESOURCE_ID int not null,
                                          PROPERTY_VALUE VARCHAR(255) not null,
-                                         primary key(PROPERTY_ID), unique(PROPERTYDEF_ID, RESOURCE_ID));
+                                         primary key(PROPERTY_ID), 
+										 unique(PROPERTYDEF_ID, RESOURCE_ID));
 
 create table CMS_RESOURCES              (RESOURCE_ID int not null,
                                          PARENT_ID int not null,
@@ -87,6 +94,17 @@ create table CMS_RESOURCES              (RESOURCE_ID int not null,
                                          RESOURCE_LASTMODIFIED_BY int not null,
                                          primary key(RESOURCE_ID),
                                          key(RESOURCE_NAME,PROJECT_ID),
+										 key resource_fileid (FILE_ID),
+										 key resource_group (GROUP_ID),
+										 key resource_locked_by (LOCKED_BY),
+										 key resource_parentid (PARENT_ID),
+										 key resource_projectid (PROJECT_ID),
+										 key resources_state (STATE),
+										 key resources_type (RESOURCE_TYPE),
+										 key resource_userid (USER_ID),
+										 index parent_resource_type (PARENT_ID, RESOURCE_TYPE),
+										 index resources_project_type (PROJECT_ID, RESOURCE_TYPE),
+										 index resources_resourceid_project (RESOURCE_ID, PROJECT_ID),
                                          unique(RESOURCE_NAME,PROJECT_ID));
 
 create table CMS_FILES                  (FILE_ID int not null,
