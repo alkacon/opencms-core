@@ -102,15 +102,15 @@
 		</translations>
 		<xmlcontent>
 			<widgets>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" alias="BooleanWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" alias="ColorpickerWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" alias="DateTimeWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" alias="HtmlWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" alias="StringWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" alias="VfsFileWidget" />			
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlImageGalleryWidget" alias="ImageGalleryWidget" /> 
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDownloadGalleryWidget" alias="DownloadGalleryWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlLinkGalleryWidget" alias="LinkGalleryWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" alias="BooleanWidget"/>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" alias="ColorpickerWidget"/>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" alias="DateTimeWidget"/>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" alias="HtmlWidget"/>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlImageGalleryWidget" alias="ImageGalleryWidget"/>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlLinkGalleryWidget" alias="LinkGalleryWidget"/>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" alias="StringWidget"/>
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" alias="VfsFileWidget"/>
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
