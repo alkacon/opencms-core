@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2001/12/06 10:02:00 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/04/24 07:10:41 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2001/12/06 10:02:00 $
+ * @version $Revision: 1.8 $ $Date: 2002/04/24 07:10:41 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -123,7 +123,21 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
                 try{
                     cms.publishResource(file.getAbsolutePath());
                     session.removeValue(C_PARA_FILE);
-                    template = "done";
+                    //template = "done";
+                    // return to filelist
+                    try {
+                        if(lasturl == null || "".equals(lasturl)) {
+                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
+                                        + C_WP_EXPLORER_FILELIST);
+                        }else {
+                            cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                        }
+                    }catch(Exception e) {
+                            throw new CmsException("Redirect fails :"
+                                    + getConfigFile(cms).getWorkplaceActionPath()
+                                    + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                    }
+                    return null;
                 } catch(CmsException e){
                     session.removeValue(C_PARA_FILE);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));

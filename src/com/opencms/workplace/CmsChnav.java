@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2002/02/26 15:58:02 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/04/24 07:09:04 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2002/02/26 15:58:02 $
+ * @version $Revision: 1.2 $ $Date: 2002/04/24 07:09:04 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -81,6 +81,8 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             clearSession(session);
         }
 
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
         String filename = (String)parameters.get(C_PARA_FILE);
         if(filename == null || "".equals(filename)){
             filename = (String)session.getValue(C_SESSIONHEADER + C_PARA_FILE);
@@ -113,14 +115,20 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                     session.putValue(C_SESSIONHEADER + C_PARA_NAVPOS, navpos);
                     session.putValue(C_SESSIONHEADER + C_PARA_NAVTEXT, navtext);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                    xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error_system");
                 }
+                // return to filelist
                 try {
-                    cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
+                    if(lasturl == null || "".equals(lasturl)) {
+                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                             + C_WP_EXPLORER_FILELIST);
-                } catch(Exception e) {
+                    }else {
+                        cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                    }
+                }catch(Exception e) {
                     throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                            + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                        + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
                 return null;
             } else if("fromerror".equalsIgnoreCase(action)){

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRestoreResource.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/04/24 07:10:50 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -40,7 +40,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.4 $ $Date: 2002/04/24 07:10:50 $
  */
 
 public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -104,10 +104,25 @@ public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpCo
                 try{
                     cms.restoreResource(Integer.parseInt(version),file.getAbsolutePath());
                     session.removeValue(C_PARA_FILE);
-                    template = "done";
+                    //template = "done";
+                    // return to filelist
+                    try {
+                        if(lasturl == null || "".equals(lasturl)) {
+                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
+                                        + C_WP_EXPLORER_FILELIST);
+                        }else {
+                            cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                        }
+                    }catch(Exception e) {
+                            throw new CmsException("Redirect fails :"
+                                    + getConfigFile(cms).getWorkplaceActionPath()
+                                    + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                    }
+                    return null;
                 } catch(CmsException e){
                     session.removeValue(C_PARA_FILE);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                    xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                 }
             } else {
