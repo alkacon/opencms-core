@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/04/03 10:48:28 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2000/04/04 09:57:11 $
+ * Version: $Revision: 1.67 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.66 $ $Date: 2000/04/03 10:48:28 $
+ * @version $Revision: 1.67 $ $Date: 2000/04/04 09:57:11 $
  */
 public interface I_CmsConstants
 {
@@ -103,36 +103,6 @@ public interface I_CmsConstants
 	 */
 	 final static String C_TYPE_FOLDER_NAME		= "folder";
 
-	 /**
-	 * The resource type-id for a plain text file.
-	 */
-	 final static int C_TYPE_TEXTPLAIN		= 1;
-	
-	/**
-	 * The resource type-id for a binary file.
-	 */
-	 final static int C_TYPE_BINARY		= 2;
-	
-	/**
-	 * The resource type-id for a xml base file.
-	 */
-	 final static int C_TYPE_XMLBASE		= 3;
-
-	/**
-	 * The resource type-id for a xml templatefile.
-	 */
-	 final static int C_TYPE_XMLTEMPLATE	= 4;
-	
-	/**
-	 * The resource type-id for a docloader file.
-	 */
-	 final static int C_TYPE_DOCLOADER	= 5;
-	 
-	/**
-	 * The resource type-id for a page file.
-	 */ 
-	 final static int C_TYPE_PAGE	= 6;
-
      /** The resource type-name for an image. */
 	 final static String C_TYPE_IMAGE_NAME		= "image";    
      
@@ -145,7 +115,14 @@ public interface I_CmsConstants
      * The resource type-name for a newspage file.
      */
     final static String C_TYPE_NEWSPAGE_NAME = "newspage";
-     								
+    
+    /**
+     * The resource type-name for plain files.
+     */
+    final static String C_TYPE_PLAIN_NAME = "plain";
+    
+    
+    
 	/**
 	 * This constant signs a normal "classic" propertydefinition.
 	 */
