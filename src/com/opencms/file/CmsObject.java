@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/11 12:54:53 $
-* Version: $Revision: 1.309 $
+* Date   : $Date: 2003/07/11 13:30:23 $
+* Version: $Revision: 1.310 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.309 $
+ * @version $Revision: 1.310 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2407,28 +2407,22 @@ protected void doMoveResource(String source, String destination) throws CmsExcep
 }
 
 
-/**
- * Publishes a project.
- *
- * @param id the id of the project to be published.
- *
- * @return a Vector of resources, that have been changed.
- *
- * @throws CmsException if operation was not successful.
- */
-public void publishProject(int id) throws CmsException {
-    publishProject(id, new CmsShellReport());
-}
+	/**
+	 * Publishes a project.<p>
+	 *
+	 * @param id the id of the project to be published
+	 * @throws CmsException if operation was not successful
+	 */
+	public void publishProject(int id) throws CmsException {
+	    publishProject(id, new CmsShellReport());
+	}
 
     /**
-     * Publishes a project.
+     * Publishes a project.<p>
      *
-     * @param id the id of the project to be published.
-     * @param report A report object to provide the loggin messages.
-     *
-     * @return a Vector of resources, that have been changed.
-     *
-     * @throws CmsException if operation was not successful.
+     * @param publishProjectId the id of the project to be published
+     * @param report A report object to provide the loggin messages
+     * @throws CmsException if operation was not successful
      */
     public void publishProject(int publishProjectId, I_CmsReport report) throws CmsException {
         Vector newResources = null;
@@ -4000,29 +3994,31 @@ public Vector getLoggedInUsers() throws CmsException {
     }
 }
 
-/**
- * Changes the project-id of a resource to the new project
- * for publishing the resource directly
- *
- * @param newProjectId The new project-id
- * @param resourcename The name of the resource to change
- */
-public void changeLockedInProject(int projectId, String resourcename) throws CmsException{
-    CmsResource res = m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resourcename), true);
-    I_CmsResourceType rt = getResourceType(res.getType());
-    rt.changeLockedInProject(this, projectId, resourcename);
-}
+	/**
+	 * Changes the project-id of a resource to the new project
+	 * for publishing the resource directly.<p>
+	 *
+	 * @param projectId The new project-id
+	 * @param resourcename The name of the resource to change
+	 * @throws CmsException if something goes wrong
+	 */
+	public void changeLockedInProject(int projectId, String resourcename) throws CmsException{
+	    CmsResource res = m_driverManager.readFileHeader(m_context.currentUser(), m_context.currentProject(), addSiteRoot(resourcename), true);
+	    I_CmsResourceType rt = getResourceType(res.getType());
+	    rt.changeLockedInProject(this, projectId, resourcename);
+	}
 
-/**
- * Changes the project-id of a resource to the new project
- * for publishing the resource directly
- *
- * @param newProjectId The new project-id
- * @param resourcename The name of the resource to change
- */
-protected void doChangeLockedInProject(int projectId, String resourcename) throws CmsException{
-    m_driverManager.changeLockedInProject(projectId, addSiteRoot(resourcename), m_context.currentUser());
-}
+	/**
+	 * Changes the project-id of a resource to the new project
+	 * for publishing the resource directly.<p>
+	 *
+	 * @param projectId The new project-id
+	 * @param resourcename The name of the resource to change
+	 * @throws CmsException if something goes wrong
+	 */
+	protected void doChangeLockedInProject(int projectId, String resourcename) throws CmsException{
+	    m_driverManager.changeLockedInProject(projectId, addSiteRoot(resourcename), m_context.currentUser());
+	}
 
     /**
      * Returns the name of a resource with the complete site root name,

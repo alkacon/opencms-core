@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/07/10 12:28:51 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2003/07/11 13:29:30 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.74 $ $Date: 2003/07/10 12:28:51 $
+ * @version $Revision: 1.75 $ $Date: 2003/07/11 13:29:30 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -350,7 +350,9 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             // the path
             if(projectView || vfslinkView){
                 content.append("\"");
-                content.append(res.getPath());
+                // TODO: check this
+                // content.append(res.getPath());
+                content.append(cms.readAbsolutePath(res));
                 content.append("\",");
             }else{
                 //is taken from top.setDirectory

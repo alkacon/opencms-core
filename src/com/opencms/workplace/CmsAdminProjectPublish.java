@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2003/06/25 13:52:24 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/11 13:29:50 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,30 +46,32 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2003/06/25 13:52:24 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/11 13:29:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_CmsConstants,I_CmsLogChannels {
 
-    private final String C_PUBLISH_THREAD = "publish.resource.thread";
-    private final String C_PUBLISH_LINKCHECK_THREAD = "publish.linkcheck.thread";
-    private final String C_PROJECT_ID_FOR_PUBLISH="project.id.for.publish";
+    private static String C_PUBLISH_THREAD = "publish.resource.thread";
+    private static String C_PUBLISH_LINKCHECK_THREAD = "publish.linkcheck.thread";
+    private static String C_PROJECT_ID_FOR_PUBLISH="project.id.for.publish";
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters.
+     * with the given parameters.<p>
      *
      * @see #getContent(CmsObject, String, String, Hashtable, String)
-     * @param cms CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
+     * @param cms CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName Element name of this template in our parent template
+     * @param parameters Hashtable with all template class parameters
+     * @param templateSelector template section that should be processed
+     * @return the processed content
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG ) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
