@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/08 14:54:54 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2000/03/08 17:10:01 $
+ * Version: $Revision: 1.54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2000/03/08 14:54:54 $
+ * @version $Revision: 1.54 $ $Date: 2000/03/08 17:10:01 $
  */
 public interface I_CmsWpConstants {
 
@@ -453,6 +453,9 @@ public interface I_CmsWpConstants {
     public static final String[] C_SELECTBOX_EDITORVIEWS = 
             { "edithtml", "edit"};
 
+    public static final int[] C_SELECTBOX_EDITORVIEWS_ALLOWED = 
+            { 3, 2 };
+    
     /** classes of the different option values for editor view select boxes */
     public static final String[] C_SELECTBOX_EDITORVIEWS_CLASSES = 
             { "com.opencms.workplace.CmsEditor", "com.opencms.workplace.CmsEditor"};
@@ -462,7 +465,7 @@ public interface I_CmsWpConstants {
             { "htmledit", "textedit"};
         
     /** default selected option value for editor view select boxes */
-    public static final int C_SELECTBOX_EDITORVIEWS_DEFAULT = 0;
+    public static final int[] C_SELECTBOX_EDITORVIEWS_DEFAULT = {0, 1};
     
     // Parameters for file list
     

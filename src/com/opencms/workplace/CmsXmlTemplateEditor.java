@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/03/08 17:10:01 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.15 $ $Date: 2000/03/08 17:10:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -87,6 +87,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
         HttpSession session = orgReq.getSession(true);
         // TODO: check, if this is neede: CmsFile editFile = null;
+
+        // Get the user's browser
+        String browser = orgReq.getHeader("user-agent");                
+                
         Encoder encoder = new Encoder();
         
         String content = (String)parameters.get("CONTENT");
@@ -161,8 +165,16 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             layoutTemplateFilename = originalControlFile.getMasterTemplate();
             layoutTemplateClassName = originalControlFile.getTemplateClass();
             
+            int browserId;
+            
+            if(browser.indexOf("MSIE") >-1) {
+		    	browserId = 0;
+		    } else {
+		    	browserId = 1;
+	    	}
+
             if(editor == null || "".equals(editor)) {
-                editor = this.C_SELECTBOX_EDITORVIEWS[C_SELECTBOX_EDITORVIEWS_DEFAULT];    
+                editor = this.C_SELECTBOX_EDITORVIEWS[C_SELECTBOX_EDITORVIEWS_DEFAULT[browserId]];    
                 parameters.put("editor", editor);
             }
             
@@ -212,8 +224,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
             temporaryControlFile.setMasterTemplate(layoutTemplateFilename);
             temporaryControlFile.write();
-            // Get the user's browser
-            String browser = orgReq.getHeader("user-agent");                
             String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST") + orgReq.getServletPath() + "/";
             String styleName = null;
             if(browser.indexOf("MSIE") >-1) {
@@ -248,8 +258,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             temporaryControlFile.setElementTemplate("body", tempBodyFilename);
             temporaryControlFile.write();
 
-            // Get the user's browser
-            String browser = orgReq.getHeader("user-agent");                
             String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST") + orgReq.getServletPath() + "/";
             String styleName = null;
             if(browser.indexOf("MSIE") >-1) {
@@ -381,7 +389,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         parameters.remove("file");
         parameters.remove("EXIT");
         parameters.remove("save");
-                        
+                                
         int numEditors = C_SELECTBOX_EDITORVIEWS.length;
         for(int i=0; i<numEditors; i++) {
             if(editor.equals(C_SELECTBOX_EDITORVIEWS[i])) {
@@ -506,7 +514,32 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      */
     public Integer getEditorViews(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
-        getConstantSelectEntries(names, values, C_SELECTBOX_EDITORVIEWS, lang);        
+        Vector names2 = new Vector();
+        Vector values2 = new Vector();
+
+        getConstantSelectEntries(names2, values2, C_SELECTBOX_EDITORVIEWS, lang);        
+
+
+        int browserId;
+
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
+        String browser = orgReq.getHeader("user-agent");                
+             
+        if(browser.indexOf("MSIE") >-1) {
+            browserId = 0;
+	    } else {
+	     	browserId = 1;
+	   	}
+        int loop=1;
+        for(int i=0; i<names2.size(); i++) {            
+            if((C_SELECTBOX_EDITORVIEWS_ALLOWED[browserId] & loop) > 0) {
+                values.addElement(values2.elementAt(i));
+                names.addElement(names2.elementAt(i));
+            }
+            loop <<= 1;
+        }
+        
         int currentIndex = values.indexOf((String)parameters.get("editor"));        
         return new Integer(currentIndex);
     }    
@@ -526,7 +559,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, errorMessage);
             }
-            return("no content");
+            content = "";
+            //return("no content");
             // throw new CmsException(errorMessage, CmsException.C_BAD_NAME);
         }
                     

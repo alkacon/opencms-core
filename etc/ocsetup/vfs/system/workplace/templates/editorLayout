@@ -19,6 +19,9 @@
 	<!-- Filename -->
 	var filename="]]><PROCESS>file</PROCESS><![CDATA[";
 
+	<!-- Needed space for additional toolbar -->
+	var space=0;
+
 	var NS = null;	
 	var IE = null;		
 	NS = (document.layers)? true:false;
@@ -76,7 +79,7 @@
 </head>
 
 <body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" scroll=no onLoad="setText();" leftmargin=5 topmargin=5 marginwidth = 5 marginheight = 5>
-<table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%"> <tr> <td>
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%"> <tr> <td valign="top">
 <form 
 	name=EDITOR 
 	id=EDITOR

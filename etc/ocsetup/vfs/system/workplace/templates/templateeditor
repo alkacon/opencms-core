@@ -66,6 +66,9 @@
 	<!-- Filename -->
 	var filename="]]><PROCESS>file</PROCESS><![CDATA[";
 	
+	<!-- Needed space for additional toolbar -->
+	var space=55;
+
 	var NS = null;
 	var IE = null;
 	
@@ -92,21 +95,33 @@
 <!-- Update the Font display on change -->
 <SCRIPT LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="DisplayChanged">
 <!--
-return DisplayChanged()
-//-->
+	function displayChangedHandle()
+	{
+	if (IE==true) return DisplayChanged();
+	}
+	displayChangedHandle();
+	//-->
 </script>
 
 <!-- Show a context menu if the right mousebutton is clicked -->
 <script LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="ShowContextMenu">
 <!--
-return ShowContextMenu()
+	function showContextMenuHandle()
+	{
+	if (IE==true) return ShowContextMenu();
+	}
+	showContextMenuHandle();
 //-->
 </script>
 
 <!-- Invoke a context menu action -->
 <script LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="ContextMenuAction(itemIndex)">
 <!--
-return ContextMenuAction(itemIndex)
+	function contextMenuActionHandle()
+	{
+	if (IE==true) return ContextMenuAction(itemIndex);
+	}
+	contextMenuActionHandle();
 //-->
 </script>
 
@@ -125,24 +140,24 @@ return ContextMenuAction(itemIndex)
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menubold><p class=einzug>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
-		<td class=dialogtxt>]]><INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[
+		<td class=dialogtxt>]]><INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[</td>
-		<td class=dialogtxt>]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle"/><![CDATA[
+		<td class=dialogtxt>]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle"/><![CDATA[</td>
 		<td class=menu><p class=tab>]]><BUTTON href="javascript:doTemplSubmit(6);" name="bt_newdoc" action="" alt="newbody"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="150" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
-		<td class=dialogtxt>]]><SELECT class="textfeld" name="editor" width="100" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
-		<td class=menu width="100%" align=right>]]><BUTTON href="#" name="bt_docpreview" action="javascript:doTemplSubmit(5);" alt="preview"/><![CDATA[</td>		
+		<td class=dialogtxt>]]><SELECT class="textfeld" name="editor" width="100" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td> 
+		<td class=menu width="100%" align=right>]]><BUTTON href="#" name="bt_docpreview" action="javascript:doTemplSubmit(5);" alt="preview"/><![CDATA[</td> 
 	</tr>
 </table>
-
-<hr>
+</td></tr>
+<tr><td><hr></td></tr>
+<tr><td>
 
   ]]><ELEMENT name="editor"/><![CDATA[
 </form>
-</table>
 <form 
 	name=PREVIEW 
 	id=PREVIEW
@@ -159,6 +174,8 @@ return ContextMenuAction(itemIndex)
 	<INPUT TYPE=HIDDEN NAME="CONTENT">
 	<INPUT TYPE=HIDDEN NAME="file">		
 </form>
+</td></tr>
+</table>
 </body>
 </html>
 ]]>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edit.js,v $
- * Date   : $Date: 2000/03/08 14:42:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/03/08 17:09:37 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -62,10 +62,10 @@ var windowHeight=null;
 
 // function for calculating the right dimensions of a HTML textarea
 function getDimensions() {
-	windowWidth = innerWidth;
-	windowHeight = innerHeight;
-	windowWidth = Math.round(windowWidth/8.5);
-	windowHeight = Math.round(windowHeight/19);
+	windowWidth = innerWidth - 15;
+	windowHeight = innerHeight - space;
+	windowWidth = Math.round(windowWidth/8.3);
+	windowHeight = Math.round(windowHeight/18.8);
 }
 
 // loads the file content into the editor
