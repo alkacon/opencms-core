@@ -1,3 +1,6 @@
+#
+# Script: Setup base
+
 # Turn echo on
 echo on
 
@@ -91,28 +94,5 @@ addFileExtension image tif
 addFileExtension image tiff
 addFileExtension jsp jsp
 
-# Switch to the root context
-setSiteRoot "/"
-
 # Set the path for the VFS database export / import
 writePackagePath "packages/"
-
-# Create folder structure
-createFolder "/" "system/"
-createFolder "/" "sites/"
-createFolder "/" "channels/"
-createFolder "/sites/" "default/"
-
-# Apply folder permissions
-chacc "/" "group" "Administrators" "+v+w+r+c+d+i"
-chacc "/" "group" "Projectmanagers" "+v+w+r+c+d+i"
-chacc "/" "group" "Users" "+v+w+r+c+i"
-chacc "/" "group" "Guests" "+v+r+i"
-
-# Publish the project
-unlockCurrentProject
-publishProject
-
-# Create the default "Offline" project
-createDefaultProject "Offline" "The Offline Project"
-setSiteRoot "/sites/default/"

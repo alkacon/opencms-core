@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/Attic/CmsShellTest.java,v $
- * Date   : $Date: 2004/05/25 11:26:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/25 13:30:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
+import org.opencms.report.CmsShellReport;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.test.OpenCmsTestCase;
 
@@ -42,7 +43,7 @@ import java.io.FileInputStream;
  * Test cases for the OpenCms shell.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
@@ -56,6 +57,18 @@ public class CmsShellTest extends OpenCmsTestCase {
     public CmsShellTest(String arg0) {
         super(arg0);
     }
+    
+    /**
+     * Imports a resource into the Cms.<p>
+     * 
+     * @param cms an initialized CmsObject
+     * @param importFile the name (absolute Path) of the import resource (zip or folder)
+     * @param targetPath the name (absolute Path) of the target folder in the VFS
+     * @throws Exception if something goes wrong
+     */
+    public void importResources(CmsObject cms, String importFile, String targetPath) throws Exception {
+        OpenCms.getImportExportManager().importData(cms, getTestDataPath() + File.separator + "imports" + File.separator + importFile, targetPath, new CmsShellReport());
+    }    
     
     /**
      * Tests the CmsShell.<p>
@@ -74,15 +87,31 @@ public class CmsShellTest extends OpenCmsTestCase {
             null);
         
         // open the test script 
-        File script = new File(getTestDataPath() + "scripts/script1.txt");
-        FileInputStream stream = new FileInputStream(script);
+        File script;
+        FileInputStream stream;
         
-        // start the shell with the script
+        // start the shell with the base script
+        script = new File(getTestDataPath() + "scripts/script_base.txt");
+        stream = new FileInputStream(script);        
         shell.start(stream);
         
-        // log in the Admin user as a test
+        // add the default folders by script
+        script = new File(getTestDataPath() + "scripts/script_default_folders.txt");
+        stream = new FileInputStream(script);        
+        shell.start(stream); 
+        
+        // log in the Admin user and switch to the setup project
         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
         cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
+        
+        // import the "simpletest" files
+        importResources(cms, "simpletest", "/sites/default/");
+        
+        // publish the current project by script
+        script = new File(getTestDataPath() + "scripts/script_publish.txt");
+        stream = new FileInputStream(script);        
+        shell.start(stream);                
         
         // get the name of the folder for the backup configuration files
         File configBackupDir = OpenCmsCore.getInstance().getConfigurationManager().getBackupFolder();
