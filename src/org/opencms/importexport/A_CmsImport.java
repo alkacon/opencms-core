@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/11/09 14:26:49 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/11/10 15:21:17 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ public abstract class A_CmsImport implements I_CmsImport {
     protected static final int DEBUG = 0;
 
     /** Access control entries for a single resource. */
-    private Vector m_acEntriesToCreate;
+    private List m_acEntriesToCreate;
 
     /** The cms context to do the import operations with. */
     protected CmsObject m_cms;
@@ -137,10 +137,10 @@ public abstract class A_CmsImport implements I_CmsImport {
     protected ZipFile m_importZip;
 
     /** Storage for all pointer properties which must be converted into links. */
-    protected HashMap m_linkPropertyStorage;
+    protected Map m_linkPropertyStorage;
 
     /** Storage for all pointers which must be converted into links. */
-    protected HashMap m_linkStorage;
+    protected Map m_linkStorage;
 
     /** The object to report the log messages. */
     protected I_CmsReport m_report;
@@ -152,9 +152,16 @@ public abstract class A_CmsImport implements I_CmsImport {
      * each import version that is kept in memory and reused.<p>
      */
     protected void initialize() {
-        m_importedPages = new Vector();
         m_groupsToCreate = new Stack();
-        m_acEntriesToCreate = new Vector();
+        m_importedPages = new ArrayList();
+        m_acEntriesToCreate = new ArrayList();
+        
+        if (OpenCms.getRunLevel() > 1) {
+            if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_acEntriesToCreate", m_acEntriesToCreate);
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_importedPages", m_importedPages);
+            }            
+        }            
     }
     
     /**
@@ -487,13 +494,16 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @throws CmsException if something goes wrong
      */
     protected void importAccessControlEntries(CmsResource resource) throws CmsException {
+        
+        if (getVersion() < 3) {
+            // imports with a version <3 don't have any ACE's at all
+            return;
+        }
+        
         try {
             try {
                 m_cms.importAccessControlEntries(resource, m_acEntriesToCreate);
-            } catch (CmsException exc) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error importing ACE of " + resource.getRootPath(), exc);
-                }                 
+            } catch (CmsException exc) {                 
                 m_report.println(m_report.key("report.import_accesscontroldata_failed"), I_CmsReport.C_FORMAT_WARNING);
             }
         } catch (Exception exc) {            

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/11/09 15:31:50 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2004/11/10 15:21:17 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.82 $
+ * @version $Revision: 1.83 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1528,10 +1528,10 @@ public class CmsObject {
      * Writes access control entries for a given resource.<p>
      * 
      * @param resource the resource to attach the control entries to
-     * @param acEntries a vector of access control entries
+     * @param acEntries a list of access control entries
      * @throws CmsException if something goes wrong
      */
-    public void importAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
+    public void importAccessControlEntries(CmsResource resource, List acEntries) throws CmsException {
         m_securityManager.importAccessControlEntries(m_context, resource, acEntries);
     }    
 
