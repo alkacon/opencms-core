@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/19 10:51:06 $
- * Version: $Revision: 1.243 $
+ * Date   : $Date: 2003/09/19 13:35:16 $
+ * Version: $Revision: 1.244 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.243 $ $Date: 2003/09/19 10:51:06 $
+ * @version $Revision: 1.244 $ $Date: 2003/09/19 13:35:16 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2132,6 +2132,9 @@ public class CmsDriverManager extends Object {
                 if (versionsToDelete > 0) {
                     m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);           
                 }
+                
+                //TODO: delete the old backup projects as well
+                
             }
         }       
     }
@@ -5210,7 +5213,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, cmsFile, I_CmsConstants.C_READ_ACCESS);
 
         // access to all subfolders was granted - return the file-history.
-        return m_backupDriver.readBackupFileHeaders(cmsFile.getStructureId());
+        return m_backupDriver.readBackupFileHeaders(cmsFile.getResourceId());
     }
 
     /**
@@ -5353,7 +5356,7 @@ public class CmsDriverManager extends Object {
             List path = readPath(context, filename, false);
             CmsResource resource = (CmsResource)path.get(path.size() - 1);
 
-            backupResource = m_backupDriver.readBackupFile(versionId, resource.getStructureId());
+            backupResource = m_backupDriver.readBackupFile(versionId, resource.getResourceId());
             backupResource.setFullResourceName(filename);
         } catch (CmsException exc) {
             throw exc;
@@ -5378,7 +5381,7 @@ public class CmsDriverManager extends Object {
         CmsBackupResource resource = null;
 
         try {
-            resource = m_backupDriver.readBackupFileHeader(tagId, cmsFile.getStructureId());
+            resource = m_backupDriver.readBackupFileHeader(tagId, cmsFile.getResourceId());
             resource.setFullResourceName(filename);
         } catch (CmsException exc) {
             throw exc;
