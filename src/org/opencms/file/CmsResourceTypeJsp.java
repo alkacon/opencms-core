@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/04/30 09:59:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * file properties are attached to new JSPs.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -90,10 +90,10 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
         contents = null;
         // Lock the new file
         cms.lockResource(newResourceName);
-        // Attach default JSP properties
-        cms.writeProperty(newResourceName, I_CmsConstants.C_PROPERTY_EXPORT, "false");
+        // Attach default JSP properties        
+        cms.writePropertyObject(newResourceName, new CmsProperty(I_CmsConstants.C_PROPERTY_EXPORT, "false", null));
         // JSP content encoding default it "ISO-8859-1" by JSP standard
-        cms.writeProperty(newResourceName, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, CmsJspLoader.C_DEFAULT_JSP_ENCODING);
+        cms.writePropertyObject(newResourceName, new CmsProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, CmsJspLoader.C_DEFAULT_JSP_ENCODING, null));
         return res;
     }
 }
