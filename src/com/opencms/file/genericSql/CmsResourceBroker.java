@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/08/07 14:04:27 $
-* Version: $Revision: 1.265 $
+* Date   : $Date: 2001/08/16 08:20:33 $
+* Version: $Revision: 1.266 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.265 $ $Date: 2001/08/07 14:04:27 $
+ * @version $Revision: 1.266 $ $Date: 2001/08/16 08:20:33 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -5201,6 +5201,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
         }
         return group;
     }
+
     /**
      * Gets the MimeTypes.
      * The Mime-Types will be returned.
@@ -5215,9 +5216,19 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
      */
     public Hashtable readMimeTypes(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
-        return(Hashtable) m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_MIMETYPES);
-
+        // read the mimetype-properties as ressource from classloader and convert them
+        // to hashtable
+        Properties props = new Properties();
+        try {
+            props.load(getClass().getClassLoader().getResourceAsStream("mimetypes.properties"));
+        } catch(Exception exc) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsResourceBroker] could not read mimetypes from properties. " + exc.getMessage());
+            }
+        }
+        return(Hashtable) props;
     }
+
     /**
      * Reads the original agent of a task from the OpenCms.
      *

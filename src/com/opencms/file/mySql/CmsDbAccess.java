@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/07/31 15:50:14 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2001/08/16 08:20:33 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.61 $ $Date: 2001/07/31 15:50:14 $ *
+ * @version $Revision: 1.62 $ $Date: 2001/08/16 08:20:33 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -435,9 +435,6 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 
         // add the resource-types to the database
         //addSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes);
-
-        // set the mimetypes
-        addSystemProperty(C_SYSTEMPROPERTY_MIMETYPES, initMimetypes());
 
         // set the groups
         CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
