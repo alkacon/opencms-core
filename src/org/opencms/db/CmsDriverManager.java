@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/11 16:29:28 $
- * Version: $Revision: 1.443 $
+ * Date   : $Date: 2004/11/12 17:31:48 $
+ * Version: $Revision: 1.444 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.443 $ $Date: 2004/11/11 16:29:28 $
+ * @version $Revision: 1.444 $ $Date: 2004/11/12 17:31:48 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1578,26 +1578,24 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 propertyDefinition = m_vfsDriver.readPropertyDefinition(
                     runtimeInfo,
                     name,
-                    context.currentProject().getId(),
-                    mappingtype);
+                    context.currentProject().getId());
             } catch (CmsException e) {
                 propertyDefinition = m_vfsDriver.createPropertyDefinition(
                     runtimeInfo,
                     context.currentProject().getId(),
-                    name,
-                    mappingtype);
+                    name);
             }
     
             try {
-                m_vfsDriver.readPropertyDefinition(runtimeInfo, name, I_CmsConstants.C_PROJECT_ONLINE_ID, mappingtype);
+                m_vfsDriver.readPropertyDefinition(runtimeInfo, name, I_CmsConstants.C_PROJECT_ONLINE_ID);
             } catch (CmsException e) {
-                m_vfsDriver.createPropertyDefinition(runtimeInfo, I_CmsConstants.C_PROJECT_ONLINE_ID, name, mappingtype);
+                m_vfsDriver.createPropertyDefinition(runtimeInfo, I_CmsConstants.C_PROJECT_ONLINE_ID, name);
             }
     
             try {
-                m_backupDriver.readBackupPropertyDefinition(runtimeInfo, name, mappingtype);
+                m_backupDriver.readBackupPropertyDefinition(runtimeInfo, name);
             } catch (CmsException e) {
-                m_backupDriver.createBackupPropertyDefinition(runtimeInfo, name, mappingtype);
+                m_backupDriver.createBackupPropertyDefinition(runtimeInfo, name);
             }
         } finally {
 
@@ -5516,7 +5514,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name, int mappingtype)
     throws CmsException {
 
-        return m_vfsDriver.readPropertyDefinition(null, name, context.currentProject().getId(), mappingtype);
+        return m_vfsDriver.readPropertyDefinition(null, name, context.currentProject().getId());
     }
 
     /**

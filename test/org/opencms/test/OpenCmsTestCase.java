@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/11/02 09:47:38 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/11/12 17:31:48 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 5.3.5
  */
@@ -1681,8 +1681,7 @@ public class OpenCmsTestCase extends TestCase {
         try {
             CmsPropertydefinition prop = cms.readPropertydefinition(propertyDefinition.getName());
             if (prop != null) {
-                if ((prop.getType() != propertyDefinition.getType())
-                    && (!prop.getName().equals(propertyDefinition.getName()))) {
+                if (!prop.getName().equals(propertyDefinition.getName())) {
                     fail("propertsdefinitions do not match: " + prop + " != " + propertyDefinition);
                 }
             } else {
@@ -2455,8 +2454,7 @@ public class OpenCmsTestCase extends TestCase {
         while (i.hasNext()) {
             CmsPropertydefinition prop = (CmsPropertydefinition)i.next();
             if ((!target.contains(prop))
-                && (!prop.getName().equals(exclude.getName()))
-                && (prop.getType() != exclude.getType())) {
+                && (!prop.getName().equals(exclude.getName()))) {
                 noMatches += "[" + prop + "]";
             }
         }

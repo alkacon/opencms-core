@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/09 15:31:50 $
- * Version: $Revision: 1.214 $
+ * Date   : $Date: 2004/11/12 17:31:48 $
+ * Version: $Revision: 1.215 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.214 $ $Date: 2004/11/09 15:31:50 $
+ * @version $Revision: 1.215 $ $Date: 2004/11/12 17:31:48 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -246,9 +246,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createPropertyDefinition(I_CmsRuntimeInfo, int, java.lang.String, int)
+     * @see org.opencms.db.I_CmsVfsDriver#createPropertyDefinition(I_CmsRuntimeInfo, int, java.lang.String)
      */
-    public CmsPropertydefinition createPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, int projectId, String name, int mappingtype) throws CmsException {
+    public CmsPropertydefinition createPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, int projectId, String name) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         
@@ -259,7 +259,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_CREATE");
             stmt.setString(1, new CmsUUID().toString());
             stmt.setString(2, name);
-            stmt.setInt(3, mappingtype);
             stmt.executeUpdate();         
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -267,7 +266,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
 
-        return readPropertyDefinition(runtimeInfo, name, projectId, mappingtype);
+        return readPropertyDefinition(runtimeInfo, name, projectId);
     }
 
     /**
@@ -714,7 +713,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
         
         try {
-            conn = m_sqlManager.getConnection(currentProject);
+            conn = m_sqlManager.getConnection(runtimeInfo, currentProject);
              
             query = m_sqlManager.readQuery(currentProject, "C_RESOURCES_GET_SUBRESOURCES") + " " + resourceTypeClause + " " + orderClause;
             stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
@@ -733,7 +732,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(null, conn, stmt, res);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
 
         // this is required in order to get the "folders first" sort order 
@@ -1046,9 +1045,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinition(I_CmsRuntimeInfo, java.lang.String, int, int)
+     * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinition(I_CmsRuntimeInfo, java.lang.String, int)
      */
-    public CmsPropertydefinition readPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name, int projectId, int mappingtype) throws CmsException {
+    public CmsPropertydefinition readPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name, int projectId) throws CmsException {
         CmsPropertydefinition propDef = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1058,12 +1057,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(runtimeInfo, projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_READ");
             stmt.setString(1, name);
-            stmt.setInt(2, mappingtype);
             res = stmt.executeQuery();
 
             // if resultset exists - return it
             if (res.next()) {
-                propDef = new CmsPropertydefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE")));
+                propDef = new CmsPropertydefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")));
             } else {
                 res.close();
                 res = null;
@@ -1091,11 +1089,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_READALL");
-            stmt.setInt(1, mappingtype);
-            
+           
             res = stmt.executeQuery();
             while (res.next()) {
-                propertyDefinitions.add(new CmsPropertydefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getInt(m_sqlManager.readQuery("C_PROPERTYDEF_PROPERTYDEF_MAPPING_TYPE"))));
+                propertyDefinitions.add(new CmsPropertydefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME"))));
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -1954,9 +1951,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_READ");
 
             stmt.setString(1, key);
-            stmt.setInt(2, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
-            stmt.setString(3, resource.getStructureId().toString());
-            stmt.setString(4, resource.getResourceId().toString());
+            stmt.setString(2, resource.getStructureId().toString());
+            stmt.setString(3, resource.getResourceId().toString());
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -2014,7 +2010,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, project.getId(), "C_PROPERTIES_READALL");
             stmt.setString(1, resource.getStructureId().toString());
             stmt.setString(2, resource.getResourceId().toString());
-            stmt.setInt(3, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -2081,25 +2076,25 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             // read the property definition
-            propertyDefinition = readPropertyDefinition(runtimeInfo, property.getKey(), project.getId(), I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+            propertyDefinition = readPropertyDefinition(runtimeInfo, property.getKey(), project.getId());
         } catch (CmsException e) {
             propertyDefinition = null;
         }
 
         if (propertyDefinition == null) {
             if (property.autoCreatePropertyDefinition()) {
-                propertyDefinition = createPropertyDefinition(runtimeInfo, project.getId(), property.getKey(), I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);   
+                propertyDefinition = createPropertyDefinition(runtimeInfo, project.getId(), property.getKey());   
                 
                 try {
-                    readPropertyDefinition(runtimeInfo, property.getKey(), I_CmsConstants.C_PROJECT_ONLINE_ID, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+                    readPropertyDefinition(runtimeInfo, property.getKey(), I_CmsConstants.C_PROJECT_ONLINE_ID);
                 } catch (CmsException e) {
-                    createPropertyDefinition(runtimeInfo, I_CmsConstants.C_PROJECT_ONLINE_ID, property.getKey(), I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+                    createPropertyDefinition(runtimeInfo, I_CmsConstants.C_PROJECT_ONLINE_ID, property.getKey());
                 } 
                 
                 try {
-                    m_driverManager.getBackupDriver().readBackupPropertyDefinition(runtimeInfo, property.getKey(), I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+                    m_driverManager.getBackupDriver().readBackupPropertyDefinition(runtimeInfo, property.getKey());
                 } catch (CmsException e) {
-                    m_driverManager.getBackupDriver().createBackupPropertyDefinition(runtimeInfo, property.getKey(), I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+                    m_driverManager.getBackupDriver().createBackupPropertyDefinition(runtimeInfo, property.getKey());
                 }                
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".writePropertyObject/1] " + property.getKey(), CmsException.C_NOT_FOUND);

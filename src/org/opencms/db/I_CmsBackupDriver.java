@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/11/12 17:31:48 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Vector;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.37 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.38 $ $Date: 2004/11/12 17:31:48 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -79,15 +79,13 @@ public interface I_CmsBackupDriver {
      * Creates a new property defintion in the databse.<p>
      *
      * Only the admin can do this.
-     * 
      * @param runtimeInfo the current runtime info
      * @param name the name of the propertydefinitions to overwrite
-     * @param mappingtype the mapping-type for the propertydefinitions
-     *
+     * 
      * @return the new propertydefinition
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition createBackupPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name, int mappingtype) throws CmsException;
+    CmsPropertydefinition createBackupPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name) throws CmsException;
     
     /**
      * Deletes all backup versions of a backup resource that are older than a given project tag and
@@ -229,15 +227,13 @@ public interface I_CmsBackupDriver {
     
     /**
      * Reads a property definition for the specified mapping type.<p>
-     * 
      * @param runtimeInfo the current runtime info
      * @param name the name of the propertydefinition to read
-     * @param mappingtype the mapping type for which the propertydefinition is valid
-     *
+     * 
      * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition.
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition readBackupPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name, int mappingtype) throws CmsException;
+    CmsPropertydefinition readBackupPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name) throws CmsException;
 
     /**
      * Gets the next available backup version ID for a resource.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsPropertydefinition.java,v $
- * Date   : $Date: 2004/11/11 16:29:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/12 17:31:48 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,12 +38,12 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsPropertydefinition implements Cloneable, Comparable {
 
     /** The null property definition object. */
-    private static final CmsPropertydefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertydefinition(CmsUUID.getNullUUID(), "", -1);
+    private static final CmsPropertydefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertydefinition(CmsUUID.getNullUUID(), "");
 
     /** The id of this property definition. */
     private CmsUUID m_id;
@@ -51,21 +51,14 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
     /** The name of this property definition. */
     private String m_name;
 
-    /** The mapping type for this property definition. */
-    private int m_mappingType;
-
     /**
      * Creates a new CmsPropertydefinition.<p>
-     *
      * @param id the id of the property definition
      * @param name the name of the property definition
-     * @param mappingtype the type of the resource for this property definition
      */
-    public CmsPropertydefinition(CmsUUID id, String name, int mappingtype) {
+    public CmsPropertydefinition(CmsUUID id, String name) {
         m_id = id;
         m_name = name;
-        m_mappingType = mappingtype;
-
     }
     
     /**
@@ -74,7 +67,7 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
      * @return a clone of this instance
      */   
     public Object clone() {
-        return new CmsPropertydefinition(m_id, m_name, m_mappingType);
+        return new CmsPropertydefinition(m_id, m_name);
     }
     
     /**
@@ -115,15 +108,6 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
     public String getName() {
         return m_name;
     }
-
-    /**
-     * Gets the resource type of this property definition.<p>
-     *
-     * @return the resource type of this property definition
-     */
-    public int getType() {
-        return m_mappingType;
-    }
     
     /**
      * @see java.lang.Object#hashCode()
@@ -154,8 +138,6 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
         result.append(m_name);
         result.append(" id:");
         result.append(m_id);
-        result.append(" type:");
-        result.append(getType());
         return result.toString();
     }
 }

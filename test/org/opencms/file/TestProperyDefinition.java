@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestProperyDefinition.java,v $
- * Date   : $Date: 2004/11/11 16:30:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/12 17:31:49 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsUUID;
 
@@ -47,7 +46,7 @@ import junit.framework.TestSuite;
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestProperyDefinition extends OpenCmsTestCase {
 
@@ -105,8 +104,7 @@ public class TestProperyDefinition extends OpenCmsTestCase {
         // create a property defintion with a dummy id value (the real id is created by db)
         CmsPropertydefinition prop = new CmsPropertydefinition(
             CmsUUID.getNullUUID(),
-            propertyDefiniton1,
-            I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+            propertyDefiniton1);
 
         cms.createPropertydefinition(propertyDefiniton1);
 

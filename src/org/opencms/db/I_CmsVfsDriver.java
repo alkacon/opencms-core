@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2004/11/12 17:31:48 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.94 $ $Date: 2004/10/31 21:30:18 $
+ * @version $Revision: 1.95 $ $Date: 2004/11/12 17:31:48 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -107,16 +107,14 @@ public interface I_CmsVfsDriver {
 
     /**
      * Creates a new property defintion in the database.<p>
-     * 
      * @param runtimeInfo the current runtime info
      * @param projectId the project in which the propertydefinition is created
      * @param name the name of the propertydefinitions to overwrite
-     * @param mappingtype the mapping-type for the propertydefinitions
-     *
+     * 
      * @return the new propertydefinition
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition createPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, int projectId, String name, int mappingtype) throws CmsException;
+    CmsPropertydefinition createPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, int projectId, String name) throws CmsException;
 
     /**
      * Creates a CmsResource instance from a JDBC ResultSet.<p>
@@ -303,16 +301,14 @@ public interface I_CmsVfsDriver {
 
     /**
      * Reads a property definition for the soecified resource type.<p>
-     * 
      * @param runtimeInfo the current runtime info
      * @param name the name of the propertydefinition to read
      * @param projectId the id of the project
-     * @param mappingtype the mapping type of the propertydefinition
-     *
+     * 
      * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition.
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition readPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name, int projectId, int mappingtype) throws CmsException;
+    CmsPropertydefinition readPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name, int projectId) throws CmsException;
 
     /**
      * Reads all property definitions for the specified mapping type.<p>
