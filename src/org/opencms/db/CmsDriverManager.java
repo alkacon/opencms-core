@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/07 14:13:26 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/07/07 16:00:24 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.23 $ $Date: 2003/07/07 14:13:26 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/07 16:00:24 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -6890,7 +6890,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         }
 
         // update the cache
-        this.clearResourceCache(file.getResourceName(), currentProject, currentUser);
+        clearResourceCache();
         m_accessCache.clear();
 
         // inform about the file-system-change
