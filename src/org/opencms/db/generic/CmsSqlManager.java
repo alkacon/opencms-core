@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/08/27 08:57:17 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/09/06 08:49:33 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,10 +96,10 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.40 $ $Date: 2004/08/27 08:57:17 $
+ * @version $Revision: 1.41 $ $Date: 2004/09/06 08:49:33 $
  * @since 5.1
  */
-public class CmsSqlManager extends Object implements Serializable, Cloneable {
+public class CmsSqlManager implements Serializable, Cloneable {
 
     /** 
      * The filename/path of the SQL query properties file.<p> 
@@ -382,7 +382,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Receives a JDBC connection from the (offline) pool.<p>
+     * Returns a JDBC connection from the (offline) pool.<p>
      * 
      * Using this method makes only sense to read/write project 
      * independent data such as user data.
@@ -395,7 +395,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Receives a JDBC connection from the pool specified by the given CmsProject.<p>
+     * Returns a JDBC connection from the pool specified by the given CmsProject.<p>
      * 
      * @param project the specified CmsProject
      * @return a JDBC connection from the pool specified by the project-ID 
@@ -406,7 +406,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Receives a JDBC connection from the pool specified by the given ID.<p>
+     * Returns a JDBC connection from the pool specified by the given ID.<p>
      * 
      * The ID is (usually) the ID of the current project.<p>
      * 
@@ -436,7 +436,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Receives a JDBC connection from the backup pool.<p>
+     * Returns a JDBC connection from the backup pool.<p>
      * 
      * Using this method makes only sense to read/write 
      * data to backup data. 
@@ -496,7 +496,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Receives a PreparedStatement for a JDBC connection specified by the key of a SQL query
+     * Returns a PreparedStatement for a JDBC connection specified by the key of a SQL query
      * and the CmsProject.<p>
      * 
      * @param con the JDBC connection
@@ -510,7 +510,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Receives a PreparedStatement for a JDBC connection specified by the key of a SQL query
+     * Returns a PreparedStatement for a JDBC connection specified by the key of a SQL query
      * and the project-ID.<p>
      * 
      * @param con the JDBC connection
@@ -525,7 +525,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Receives a PreparedStatement for a JDBC connection specified by the key of a SQL query.<p>
+     * Returns a PreparedStatement for a JDBC connection specified by the key of a SQL query.<p>
      * 
      * @param con the JDBC connection
      * @param queryKey the key of the SQL query
@@ -538,7 +538,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Receives a PreparedStatement for a JDBC connection specified by the SQL query.<p>
+     * Returns a PreparedStatement for a JDBC connection specified by the SQL query.<p>
      * 
      * @param con the JDBC connection
      * @param query the SQL query
