@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/11/22 10:34:55 $
- * Version: $Revision: 1.169 $
+ * Date   : $Date: 2000/11/23 09:12:37 $
+ * Version: $Revision: 1.170 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.169 $ $Date: 2000/11/22 10:34:55 $ * 
+ * @version $Revision: 1.170 $ $Date: 2000/11/23 09:12:37 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -836,102 +836,87 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 		 }		
 		 return readFile(project.getId(),onlineProject.getId(),filename);
 	  }
-	/**
-	 * Creates a new file with the given content and resourcetype.
-	 *
-	 * @param user The user who wants to create the file.
-	 * @param project The project in which the resource will be used.
-	 * @param onlineProject The online project of the OpenCms.
-	 * @param filename The complete name of the new file (including pathinformation).
-	 * @param flags The flags of this resource.
-	 * @param parentId The parentId of the resource.
-	 * @param contents The contents of the new file.
-	 * @param resourceType The resourceType of the new file.
-	 * 
-	 * @return file The created file.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */    
-	 public CmsFile createFile(CmsUser user,
-							   CmsProject project,
-							   CmsProject onlineProject,
-							   String filename, int flags,int parentId, 
-							   byte[] contents, CmsResourceType resourceType)
-							
-		 throws CmsException {
-		 
-		 // it is not allowed, that there is no content in the file
-		 // TODO: check if this can be done in another way:
-		 if(contents.length == 0) {
-			 contents = " ".getBytes();
-		 }
-		 
-		
+/**
+ * Creates a new file with the given content and resourcetype.
+ *
+ * @param user The user who wants to create the file.
+ * @param project The project in which the resource will be used.
+ * @param onlineProject The online project of the OpenCms.
+ * @param filename The complete name of the new file (including pathinformation).
+ * @param flags The flags of this resource.
+ * @param parentId The parentId of the resource.
+ * @param contents The contents of the new file.
+ * @param resourceType The resourceType of the new file.
+ * 
+ * @return file The created file.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, CmsResourceType resourceType) throws CmsException {
 
-		  int state= C_STATE_NEW;
-		   // Test if the file is already there and marked as deleted.
-		   // If so, delete it
-		   try {
-	
-			readFileHeader(project.getId(),filename);     
-	   
-		   } catch (CmsException e) {
-			   // if the file is maked as deleted remove it!
-			   if (e.getType()==CmsException.C_RESOURCE_DELETED) {
-		
-				   removeFile(project.getId(),filename);
-		
-				   state=C_STATE_CHANGED;
-			   }              
-		   }
-	
-		   int	resourceId = nextId(C_TABLE_RESOURCES);
-		   int fileId = nextId(C_TABLE_FILES);
-		   
-		   PreparedStatement statement = null;
-		   PreparedStatement statementFileWrite = null;
-	
-		   try {
-	  
-				statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY);
-				 // write new resource to the database
-				statement.setInt(1,resourceId);
-				statement.setInt(2,parentId);
-				statement.setString(3, filename);
-				statement.setInt(4,resourceType.getResourceType());
-				statement.setInt(5,flags);
-				statement.setInt(6,user.getId());
-				statement.setInt(7,user.getDefaultGroupId());
-				statement.setInt(8,project.getId());
-				statement.setInt(9,fileId);
-				statement.setInt(10,C_ACCESS_DEFAULT_FLAGS);
-				statement.setInt(11,state);
-				statement.setInt(12,C_UNKNOWN_ID);
-				statement.setInt(13,resourceType.getLauncherType());
-				statement.setString(14,resourceType.getLauncherClass());
-				statement.setTimestamp(15,new Timestamp(System.currentTimeMillis()));
-				statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
-				statement.setInt(17,contents.length);
-				statement.setInt(18,user.getId());
-				statement.executeUpdate();
-				
-				statementFileWrite = m_pool.getPreparedStatement(m_cq.C_FILES_WRITE_KEY);
-				statementFileWrite.setInt(1,fileId);
-				statementFileWrite.setBytes(2,contents);
-				statementFileWrite.executeUpdate();
-	  
-		  } catch (SQLException e){                        
-			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		 }finally {
-				if( statement != null) {
-					m_pool.putPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY, statement);
-				}
-				if( statementFileWrite != null) {
-					m_pool.putPreparedStatement(m_cq.C_FILES_WRITE_KEY, statementFileWrite);
-				}
-			 }	
-		 return readFile(project.getId(),onlineProject.getId(),filename);
-	 }
+	// it is not allowed, that there is no content in the file
+	// TODO: check if this can be done in another way:
+	if (contents.length == 0) {
+		contents = " ".getBytes();
+	}
+	int state = C_STATE_NEW;
+	// Test if the file is already there and marked as deleted.
+	// If so, delete it
+	try {
+		readFileHeader(project.getId(), filename);
+		throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
+	} catch (CmsException e) {
+		// if the file is maked as deleted remove it!
+		if (e.getType() == CmsException.C_RESOURCE_DELETED) {
+			removeFile(project.getId(), filename);
+			state = C_STATE_CHANGED;
+		}
+		if (e.getType() == CmsException.C_FILE_EXISTS) {
+			throw e;
+		}
+	}
+	int resourceId = nextId(C_TABLE_RESOURCES);
+	int fileId = nextId(C_TABLE_FILES);
+	PreparedStatement statement = null;
+	PreparedStatement statementFileWrite = null;
+	try {
+		statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY);
+		// write new resource to the database
+		statement.setInt(1, resourceId);
+		statement.setInt(2, parentId);
+		statement.setString(3, filename);
+		statement.setInt(4, resourceType.getResourceType());
+		statement.setInt(5, flags);
+		statement.setInt(6, user.getId());
+		statement.setInt(7, user.getDefaultGroupId());
+		statement.setInt(8, project.getId());
+		statement.setInt(9, fileId);
+		statement.setInt(10, C_ACCESS_DEFAULT_FLAGS);
+		statement.setInt(11, state);
+		statement.setInt(12, C_UNKNOWN_ID);
+		statement.setInt(13, resourceType.getLauncherType());
+		statement.setString(14, resourceType.getLauncherClass());
+		statement.setTimestamp(15, new Timestamp(System.currentTimeMillis()));
+		statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
+		statement.setInt(17, contents.length);
+		statement.setInt(18, user.getId());
+		statement.executeUpdate();
+		statementFileWrite = m_pool.getPreparedStatement(m_cq.C_FILES_WRITE_KEY);
+		statementFileWrite.setInt(1, fileId);
+		statementFileWrite.setBytes(2, contents);
+		statementFileWrite.executeUpdate();
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} finally {
+		if (statement != null) {
+			m_pool.putPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY, statement);
+		}
+		if (statementFileWrite != null) {
+			m_pool.putPreparedStatement(m_cq.C_FILES_WRITE_KEY, statementFileWrite);
+		}
+	}
+	return readFile(project.getId(), onlineProject.getId(), filename);
+}
 /**
  * Creates a new folder 
  * 
@@ -957,8 +942,15 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 		if (oldFolder.getState() == C_STATE_DELETED) {
 			removeFolder(oldFolder);
 			state = C_STATE_CHANGED;
-		}
+		} else {
+			if (oldFolder != null){
+				throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
+			}	
+		}	
 	} catch (CmsException e) {
+		if (e.getType() == CmsException.C_FILE_EXISTS) {
+			throw e;
+		}	
 	}
 	int resourceId = nextId(C_TABLE_RESOURCES);
 	PreparedStatement statement = null;
@@ -993,81 +985,81 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 	}
 	return readFolder(project.getId(), foldername);
 }
-	/**
-	 * Creates a new folder from an existing folder object.
-	 * 
-	 * @param user The user who wants to create the folder.
-	 * @param project The project in which the resource will be used.
-	 * @param onlineProject The online project of the OpenCms.
-	 * @param folder The folder to be written to the Cms.
-	 * @param parentId The parentId of the resource.
-	 *
-	 * @param foldername The complete path of the new name of this folder.
-	 * 
-	 * @return The created folder.
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */
-	 public CmsFolder createFolder(CmsUser user,
-								   CmsProject project,
-								   CmsProject onlineProject,
-								   CmsFolder folder,
-								   int parentId,
-								   String foldername)
-		 throws CmsException{
-		  CmsFolder oldFolder = null;
-		  int state=0;         
-		  if (project.equals(onlineProject)) {
-			 state=folder.getState();
-		  } else {
-			 state=C_STATE_NEW;
-		  }
-		 
-		   // Test if the file is already there and marked as deleted.
-		   // If so, delete it
-		   try {
-				 oldFolder = readFolder(project.getId(),foldername);
-				 if (oldFolder.getState() == C_STATE_DELETED){
-					removeFolder(oldFolder);
-					state = C_STATE_CHANGED;
-				 }	     
-		   } catch (CmsException e) {}
-	
-		   int resourceId = nextId(C_TABLE_RESOURCES);
-	       int fileId = nextId(C_TABLE_FILES);
-		   PreparedStatement statement = null;
-			try {   
-				// write new resource to the database
-				statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY);
-				statement.setInt(1,resourceId);
-				statement.setInt(2,parentId);
-				statement.setString(3, foldername);
-				statement.setInt(4,folder.getType());
-				statement.setInt(5,folder.getFlags());
-				statement.setInt(6,folder.getOwnerId());
-				statement.setInt(7,folder.getGroupId());
-				statement.setInt(8,project.getId());
-				statement.setInt(9,fileId);
-				statement.setInt(10,folder.getAccessFlags());
-				statement.setInt(11,state);
-				statement.setInt(12,folder.isLockedBy());
-				statement.setInt(13,folder.getLauncherType());
-				statement.setString(14,folder.getLauncherClassname());
-				statement.setTimestamp(15,new Timestamp(folder.getDateCreated()));
-				statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
-				statement.setInt(17,0);
-				statement.setInt(18,user.getId());
-				statement.executeUpdate();
+/**
+ * Creates a new folder from an existing folder object.
+ * 
+ * @param user The user who wants to create the folder.
+ * @param project The project in which the resource will be used.
+ * @param onlineProject The online project of the OpenCms.
+ * @param folder The folder to be written to the Cms.
+ * @param parentId The parentId of the resource.
+ *
+ * @param foldername The complete path of the new name of this folder.
+ * 
+ * @return The created folder.
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlineProject, CmsFolder folder, int parentId, String foldername) throws CmsException {
+	CmsFolder oldFolder = null;
+	int state = 0;
+	if (project.equals(onlineProject)) {
+		state = folder.getState();
+	} else {
+		state = C_STATE_NEW;
+	}
 
-			} catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-			}finally {
-				if( statement != null) {
-					m_pool.putPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY, statement);
-				}
-			 }  
-		 //return readFolder(project,folder.getAbsolutePath());
-		 return readFolder(project.getId(),foldername);
-	 }
+	// Test if the file is already there and marked as deleted.
+	// If so, delete it
+	try {
+		oldFolder = readFolder(project.getId(), foldername);
+		if (oldFolder.getState() == C_STATE_DELETED) {
+			removeFolder(oldFolder);
+			state = C_STATE_CHANGED;
+		} else {
+			if (oldFolder != null) {
+				throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
+			}
+		}
+	} catch (CmsException e) {
+		if (e.getType() == CmsException.C_FILE_EXISTS) {
+			throw e;
+		}
+	}
+	int resourceId = nextId(C_TABLE_RESOURCES);
+	int fileId = nextId(C_TABLE_FILES);
+	PreparedStatement statement = null;
+	try {
+		// write new resource to the database
+		statement = m_pool.getPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY);
+		statement.setInt(1, resourceId);
+		statement.setInt(2, parentId);
+		statement.setString(3, foldername);
+		statement.setInt(4, folder.getType());
+		statement.setInt(5, folder.getFlags());
+		statement.setInt(6, folder.getOwnerId());
+		statement.setInt(7, folder.getGroupId());
+		statement.setInt(8, project.getId());
+		statement.setInt(9, fileId);
+		statement.setInt(10, folder.getAccessFlags());
+		statement.setInt(11, state);
+		statement.setInt(12, folder.isLockedBy());
+		statement.setInt(13, folder.getLauncherType());
+		statement.setString(14, folder.getLauncherClassname());
+		statement.setTimestamp(15, new Timestamp(folder.getDateCreated()));
+		statement.setTimestamp(16, new Timestamp(System.currentTimeMillis()));
+		statement.setInt(17, 0);
+		statement.setInt(18, user.getId());
+		statement.executeUpdate();
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} finally {
+		if (statement != null) {
+			m_pool.putPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY, statement);
+		}
+	}
+	//return readFolder(project,folder.getAbsolutePath());
+	return readFolder(project.getId(), foldername);
+}
 	/**
 	 * Add a new group to the Cms.<BR/>
 	 * 
