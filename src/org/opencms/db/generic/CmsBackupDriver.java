@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/05/26 09:34:44 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2004/06/01 15:19:15 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.91 $ $Date: 2004/05/26 09:34:44 $
+ * @version $Revision: 1.92 $ $Date: 2004/06/01 15:19:15 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -102,8 +102,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_FILE_ID")));
         int state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
         int loaderId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LOADER_ID"));
-        long dateCreated = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED")).getTime();
-        long dateLastModified = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+        long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
+        long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
         long dateReleased = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_RELEASED"));
         long dateExpired = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_EXPIRED"));           
         int resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
@@ -1101,9 +1101,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     stmt.setInt(3, resource.getFlags());
                     stmt.setString(4, resource.getFileId().toString());
                     stmt.setInt(5, resource.getLoaderId());
-                    stmt.setTimestamp(6, new Timestamp(publishDate));
+                    stmt.setLong(6, publishDate);
                     stmt.setString(7, resource.getUserCreated().toString());
-                    stmt.setTimestamp(8, new Timestamp(resource.getDateLastModified()));
+                    stmt.setLong(8, resource.getDateLastModified());
                     stmt.setString(9, resource.getUserLastModified().toString());
                     stmt.setInt(10, resource.getState());
                     stmt.setInt(11, resource.getLength());

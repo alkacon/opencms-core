@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/05/28 16:01:14 $
- * Version: $Revision: 1.177 $
+ * Date   : $Date: 2004/06/01 15:19:15 $
+ * Version: $Revision: 1.178 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.177 $ $Date: 2004/05/28 16:01:14 $
+ * @version $Revision: 1.178 $ $Date: 2004/06/01 15:19:15 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2087,9 +2087,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(2, folder.getResourceId().toString());
             stmt.setString(3, folder.getName());
             stmt.setInt(4, structureState);
-            stmt.setString(5, folder.getStructureId().toString());
-            stmt.setLong(6, folder.getDateReleased());
-            stmt.setLong(7, folder.getDateExpired());
+            stmt.setLong(5, folder.getDateReleased());
+            stmt.setLong(6, folder.getDateExpired());
+            stmt.setString(7, folder.getStructureId().toString());            
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -2238,11 +2238,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.setString(2, offlineResource.getResourceId().toString());
                 stmt.setString(3, offlineResource.getName());
                 stmt.setInt(4, I_CmsConstants.C_STATE_UNCHANGED);
-                stmt.setString(5, offlineResource.getStructureId().toString());
-                stmt.setLong(6, offlineResource.getDateReleased());
-                stmt.setLong(7, offlineResource.getDateExpired());
+                stmt.setLong(5, offlineResource.getDateReleased());
+                stmt.setLong(6, offlineResource.getDateExpired());
+                stmt.setString(7, offlineResource.getStructureId().toString());
                 stmt.executeUpdate();
-
             } else {
 
                 // the resource record does NOT exist online yet
