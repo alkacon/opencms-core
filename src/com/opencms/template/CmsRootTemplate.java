@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
- * Date   : $Date: 2000/02/21 19:59:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/21 22:24:13 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/21 19:59:28 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/21 22:24:13 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels {
     
@@ -72,7 +72,10 @@ public class CmsRootTemplate implements I_CmsLogChannels {
     
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRootTemplate] Caching key for " + masterTemplate.getName() + " is: " + cacheKey);            
-        }
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRootTemplate] isCacheable: " + templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), null, parameters, null));
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRootTemplate] Cache has  : " + cache.has(cacheKey));
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRootTemplate] should reload: " + templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), null, parameters, null));
+        }                
         
         if(templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), null, parameters, null)
                 && cache.has(cacheKey) 

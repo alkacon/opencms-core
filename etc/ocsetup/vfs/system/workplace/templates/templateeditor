@@ -62,6 +62,9 @@
 	
 	<!-- URL for help file -->
 	var help="]]><METHOD name="helpUrl"/><![CDATA[";
+
+	<!-- Filename -->
+	var filename="]]><PROCESS>file</PROCESS><![CDATA[";
 	
 	var NS = null;
 	var IE = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsSimpleNav.java,v $
- * Date   : $Date: 2000/02/21 14:00:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/21 22:24:21 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * used for the CeBIT online application form.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/02/21 14:00:29 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/21 22:24:21 $
  */
 public class CmsSimpleNav extends CmsXmlTemplate implements I_CmsConstants {
     
@@ -123,14 +123,17 @@ public class CmsSimpleNav extends CmsXmlTemplate implements I_CmsConstants {
             String filename = currFile.getAbsolutePath();
             String navpos = cms.readMetainformation(filename, C_METAINFO_NAVPOS);
             String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);     
-            if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))
-                 && ((!currFile.getName().startsWith(C_TEMP_PREFIX)) || filename.equals(requestedUri))) {
-                Integer npValue = new Integer(navpos);
-                int npIntValue = npValue.intValue();
-                if(maxindex < npIntValue) {
-                    maxindex = npIntValue;
+            if(currFile.getState() != C_STATE_DELETED) { 
+                // Only list files in the nav bar if they are not deleted!
+                if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))
+                     && ((!currFile.getName().startsWith(C_TEMP_PREFIX)) || filename.equals(requestedUri))) {
+                    Integer npValue = new Integer(navpos);
+                    int npIntValue = npValue.intValue();
+                    if(maxindex < npIntValue) {
+                        maxindex = npIntValue;
+                    }
+                    sortedNav.put(npValue, filename);
                 }
-                sortedNav.put(npValue, filename);
             }        
         }
         

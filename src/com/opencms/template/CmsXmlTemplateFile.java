@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/02/20 16:08:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/02/21 22:23:42 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/02/20 16:08:27 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/21 22:23:42 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -335,8 +335,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }            
         tempXmlString.append("</template>\n");
         tempXmlString.append("</" + getXmlDocumentTagName() + ">\n");
-        
-        System.err.println(new String(tempXmlString));
         
         I_CmsXmlParser parser = getXmlParser();
         StringReader parserReader = new StringReader(tempXmlString.toString());

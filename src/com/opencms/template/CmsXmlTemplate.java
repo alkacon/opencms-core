@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/02/20 17:57:13 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/02/21 22:23:55 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,9 +44,9 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/02/20 17:57:13 $
+ * @version $Revision: 1.15 $ $Date: 2000/02/21 22:23:55 $
  */
-public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
+public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
     /** Boolean for additional debug output control */
     protected final static boolean C_DEBUG = true;
@@ -409,7 +409,31 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
 		}
             
     }  
-    
+
+    /**
+     * Inserts the correct document title into the template.
+     * <P>
+     * This method can be called using <code>&lt;METHOD name="getTitle"&gt;</code>
+     * in the template file.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getTitle(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+
+        String requestedUri = cms.getRequestContext().getUri();
+        String title = cms.readMetainformation(requestedUri, C_METAINFO_TITLE);
+        if(title == null) {
+            title = "";
+        }
+        return title;            
+    }  
+        
     /**
      * For debugging purposes only.
      * Prints out all parameters.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/02/21 14:00:39 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/21 22:24:32 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/02/21 14:00:39 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/21 22:24:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -586,7 +586,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
         String tempPath = (String)session.getValue("te_temppagefile");
         String result = servletPath + tempPath;
-        System.err.println("##### " + result);
         return result;
     }
     
