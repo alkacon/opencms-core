@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2004/12/22 16:47:46 $
+ * Version: $Revision: 1.116 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.115 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.116 $ $Date: 2004/12/22 16:47:46 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -90,7 +90,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#createBackupPropertyDefinition(org.opencms.db.CmsDbContext, java.lang.String)
      */
-    public CmsPropertydefinition createBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsException {
+    public CmsPropertyDefinition createBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -236,9 +236,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
     
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#deleteBackupPropertyDefinition(org.opencms.db.CmsDbContext, org.opencms.file.CmsPropertydefinition)
+     * @see org.opencms.db.I_CmsBackupDriver#deleteBackupPropertyDefinition(org.opencms.db.CmsDbContext, org.opencms.file.CmsPropertyDefinition)
      */
-    public void deleteBackupPropertyDefinition(CmsDbContext dbc, CmsPropertydefinition metadef) throws CmsException {
+    public void deleteBackupPropertyDefinition(CmsDbContext dbc, CmsPropertyDefinition metadef) throws CmsException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -765,8 +765,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupPropertyDefinition(org.opencms.db.CmsDbContext, java.lang.String)
      */
-    public CmsPropertydefinition readBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsException {
-        CmsPropertydefinition propDef = null;
+    public CmsPropertyDefinition readBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsException {
+        CmsPropertyDefinition propDef = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -778,7 +778,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             res = stmt.executeQuery();
 
             if (res.next()) {
-                propDef = new CmsPropertydefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")));
+                propDef = new CmsPropertyDefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")));
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".readBackupPropertyDefinition] " + name, CmsException.C_NOT_FOUND);
             }
@@ -941,7 +941,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         int mappingType = -1;
         String value = null;
         CmsUUID id = null;
-        CmsPropertydefinition propdef = null;
+        CmsPropertyDefinition propdef = null;
         
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -1131,7 +1131,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
      * @return the amount of properties for a propertydefinition
      * @throws CmsException if something goes wrong
      */
-    protected int internalCountProperties(CmsDbContext dbc, CmsPropertydefinition metadef, int projectId) throws CmsException {
+    protected int internalCountProperties(CmsDbContext dbc, CmsPropertyDefinition metadef, int projectId) throws CmsException {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;

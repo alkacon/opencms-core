@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/12/14 13:30:18 $
- * Version: $Revision: 1.224 $
+ * Date   : $Date: 2004/12/22 16:43:09 $
+ * Version: $Revision: 1.225 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.224 $ $Date: 2004/12/14 13:30:18 $
+ * @version $Revision: 1.225 $ $Date: 2004/12/22 16:43:09 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -278,7 +278,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createPropertyDefinition(org.opencms.db.CmsDbContext, int, java.lang.String)
      */
-    public CmsPropertydefinition createPropertyDefinition(CmsDbContext dbc, int projectId, String name) throws CmsException {
+    public CmsPropertyDefinition createPropertyDefinition(CmsDbContext dbc, int projectId, String name) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         
@@ -627,9 +627,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#deletePropertyDefinition(org.opencms.db.CmsDbContext, org.opencms.file.CmsPropertydefinition)
+     * @see org.opencms.db.I_CmsVfsDriver#deletePropertyDefinition(org.opencms.db.CmsDbContext, org.opencms.file.CmsPropertyDefinition)
      */
-    public void deletePropertyDefinition(CmsDbContext dbc, CmsPropertydefinition metadef) throws CmsException {
+    public void deletePropertyDefinition(CmsDbContext dbc, CmsPropertyDefinition metadef) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -1144,8 +1144,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinition(org.opencms.db.CmsDbContext, java.lang.String, int)
      */
-    public CmsPropertydefinition readPropertyDefinition(CmsDbContext dbc, String name, int projectId) throws CmsException {
-        CmsPropertydefinition propDef = null;
+    public CmsPropertyDefinition readPropertyDefinition(CmsDbContext dbc, String name, int projectId) throws CmsException {
+        CmsPropertyDefinition propDef = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1158,7 +1158,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             // if resultset exists - return it
             if (res.next()) {
-                propDef = new CmsPropertydefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")));
+                propDef = new CmsPropertyDefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")));
             } else {
                 res.close();
                 res = null;
@@ -1189,7 +1189,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
            
             res = stmt.executeQuery();
             while (res.next()) {
-                propertyDefinitions.add(new CmsPropertydefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME"))));
+                propertyDefinitions.add(new CmsPropertyDefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME"))));
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -1869,7 +1869,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @see org.opencms.db.I_CmsVfsDriver#writePropertyObject(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsResource, org.opencms.file.CmsProperty)
      */
     public void writePropertyObject(CmsDbContext dbc, CmsProject project, CmsResource resource, CmsProperty property) throws CmsException {
-        CmsPropertydefinition propertyDefinition = null;
+        CmsPropertyDefinition propertyDefinition = null;
         PreparedStatement stmt = null;
         Connection conn = null;
         String value = null;
@@ -2177,7 +2177,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @return the amount of properties for a propertydefinition
      * @throws CmsException if something goes wrong
      */
-    protected int internalCountProperties(CmsDbContext dbc, CmsPropertydefinition metadef, int projectId) throws CmsException {
+    protected int internalCountProperties(CmsDbContext dbc, CmsPropertyDefinition metadef, int projectId) throws CmsException {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
