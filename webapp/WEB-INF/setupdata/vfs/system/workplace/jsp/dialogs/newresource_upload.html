@@ -177,6 +177,13 @@ default:
 			theButton.value = labelNext;
 		}
 	}
+	
+	function startTimeOut() {
+		// this is required for Mozilla since the onChange event dosent work there for <input type="file">
+		window.setTimeout("checkValue();startTimeOut();", 500);
+	}
+	
+	startTimeOut();	
 //-->
 </script>
 <%= wp.bodyStart("dialog") %>
@@ -190,7 +197,7 @@ default:
 <table border="0" width="100%">
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
-	<td class="maxwidth"><input name="<%= wp.PARAM_UPLOADFILE %>" id="newresfield" type="file" value="" class="maxwidth" onchange="checkValue();"></td>
+	<td class="maxwidth"><input name="<%= wp.PARAM_UPLOADFILE %>" id="newresfield" type="file" value="" size="60" class="maxwidth" onchange="checkValue();"></td>
 </tr> 
 <tr>
 	<td>&nbsp;</td>
