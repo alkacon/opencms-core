@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/01/31 16:24:06 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2002/04/09 12:35:30 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -193,6 +193,9 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
  */
 
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+
+
+
 
     //return var
     byte[] returnProcess = null;
@@ -2957,6 +2960,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
                                        String templateSelector) throws CmsException{
 
 
+
     //return varlue
     byte[] returnProcess = null;
     //error storage
@@ -3129,6 +3133,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
                                           I_CmsSession session, CmsXmlWpTemplateFile template,
                                           Hashtable parameters, String templateSelector,
                                           String action, String error) throws CmsException{
+
+
 
   // storage for possible errors during plausibilization
   Vector errorCodes=null;
@@ -3521,6 +3527,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         filteredSelectors.addElement(selector);
       }
     }
+
     String selectedPage=(String)parameters.get("backofficepage");
 
     // check if there is more than one useful template selector. If not, do not display the selectbox.
@@ -3528,7 +3535,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       template.setData("BOSELECTOR","");
     }
 
-    if (selectedPage!=null) {
+    if (selectedPage!=null && selectedPage.length()>0) {
+
       templateSelector=selectedPage;
     } else if (filteredSelectors.size()>0) {
       templateSelector=(String)filteredSelectors.elementAt(0);
