@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/05/24 17:23:12 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/07 15:49:07 $
+ * Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -449,102 +449,8 @@ public class CmsRegistry extends A_CmsXmlContent {
         Vector filesInUse, 
         Vector resourcesForProject
     ) throws CmsException {
-        // module type SIMPLE - just do nothing here, as SIMPLE modules do not require file conflict checks
-        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
-            return;
-        }
-        // the files and checksums for this module
-        Vector moduleFiles = new Vector();
-        Vector moduleChecksums = new Vector();
-        // the files and checksums for all other modules
-        Vector otherFiles = new Vector();
-        Vector otherChecksums = new Vector();
-
-        getModuleFiles(modulename, moduleFiles, moduleChecksums);
-
-        Enumeration modules = getModuleNames();
-        while (modules.hasMoreElements()) {
-            String module = (String)modules.nextElement();
-            // get the files only for modules that are not for the current module.
-            if (!module.equals(modulename)) {
-                // get the files
-                getModuleFiles(module, otherFiles, otherChecksums);
-            }
-        }
-        for (int i = 0; i < moduleFiles.size(); i++) {
-            // get the current file and checksum
-            String currentFile = (String)moduleFiles.elementAt(i);
-            String currentChecksum = (String)moduleChecksums.elementAt(i);
-            CmsFile file = null;
-
-            try {
-                String resource = currentFile.substring(0, currentFile.indexOf("/", 1) + 1);
-                if (!resourcesForProject.contains(resource)) {
-                    // add the resource, if it dosen't already exist
-                    resourcesForProject.addElement(resource);
-                }
-            } catch (StringIndexOutOfBoundsException exc) {
-                // this is a resource in root-folder: ignore the excpetion
-            }
-
-            // is it a file - then check all the possibilities
-            if (!currentFile.endsWith("/")) {
-                // exists the file in the cms?
-                try {
-                    file = m_cms.readFile(currentFile);
-                } catch (CmsException exc) {
-                    // the file dosen't exist - mark it as deleted
-                    missingFiles.addElement(currentFile);
-                }
-
-                // is the file in use of another module?
-                if (otherFiles.contains(currentFile)) {
-                    // yes - mark it as in use
-                    filesInUse.addElement(currentFile);
-                }
-
-                // was the file changed?
-                if (file != null) {
-                    // create the current digest-content for the file
-                    // encoding project:
-                    String digestContent;
-                    try {
-                        digestContent = org.opencms.i18n.CmsEncoder.escape(new String(m_digest.digest(file.getContents()), m_cms.getRequestContext().getEncoding()), m_cms.getRequestContext().getEncoding());
-                    } catch (UnsupportedEncodingException e) {
-                        digestContent = org.opencms.i18n.CmsEncoder.escape(new String(m_digest.digest(file.getContents())), m_cms.getRequestContext().getEncoding());
-                    }
-                    if (!currentChecksum.equals(digestContent)) {
-                        // the file was changed, the checksums are different
-                        wrongChecksum.addElement(currentFile);
-                    }
-                }
-            }
-        }
-
-        Vector files = m_cms.getFilesWithProperty("module", modulename + "_" + getModuleVersion(modulename));
-        int fileCount = files.size();
-
-        for (int i = 0; i < fileCount; i++) {
-            String currentFile = (String)files.elementAt(i);
-
-            if (!moduleFiles.contains(currentFile)) {
-                // is the file in use of another module?
-                if (!otherFiles.contains(currentFile)) {
-                    filesWithProperty.addElement(currentFile);
-
-                    try {
-                        String resource = currentFile.substring(0, currentFile.indexOf("/", 1) + 1);
-
-                        if (!resourcesForProject.contains(resource)) {
-                            // add the resource, if it dosen't already exist
-                            resourcesForProject.addElement(resource);
-                        }
-                    } catch (StringIndexOutOfBoundsException exc) {
-                        // this is a resource in root-folder: ignore the excpetion
-                    }
-                }
-            }
-        }
+        // this functionality is pretty redundant
+        return;
     }
 
     /**

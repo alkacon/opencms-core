@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/04/01 12:27:22 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/07 15:48:57 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.31 $ $Date: 2004/04/01 12:27:22 $
+ * @version $Revision: 1.32 $ $Date: 2004/06/07 15:48:57 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
@@ -109,14 +109,4 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         propertyValue = CmsSqlManager.escape(propertyValue);
         return super.readResources(projectId, propertyDefinition, propertyValue, resourceType);
     }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readResourceNames(int, java.lang.String, java.lang.String)
-     */
-    public Vector readResourceNames(int projectId, String propertyDefinition, String propertyValue) throws CmsException {
-
-        propertyValue = CmsSqlManager.escape(propertyValue);
-        return super.readResourceNames(projectId, propertyDefinition, propertyValue);
-    }
-
 }
