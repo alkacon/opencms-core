@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterDataSet.java,v $
-* Date   : $Date: 2002/01/25 08:04:54 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/01/31 10:19:13 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -38,8 +38,8 @@ import com.opencms.core.I_CmsConstants;
  * should only be used within this mastermodule.
  *
  * @author A. Schouten $
- * $Revision: 1.5 $
- * $Date: 2002/01/25 08:04:54 $
+ * $Revision: 1.6 $
+ * $Date: 2002/01/31 10:19:13 $
  */
 public class CmsMasterDataSet implements Serializable {
 
@@ -170,6 +170,49 @@ public class CmsMasterDataSet implements Serializable {
     public CmsMasterDataSet() {
     }
 
+    /**
+     * Creates a new CmsMasterDataSet by cloning
+     */
+    public Object clone(){
+        CmsMasterDataSet retValue = new CmsMasterDataSet();
+        retValue.m_accessFlags = this.m_accessFlags;
+        retValue.m_channel = this.m_channel;
+        retValue.m_channelToAdd = this.m_channelToAdd;
+        retValue.m_channelToDelete = this.m_channelToDelete;
+        retValue.m_dataBig = this.m_dataBig;
+        retValue.m_dataDate = this.m_dataDate;
+        retValue.m_dataInt = this.m_dataInt;
+        retValue.m_dataMedium = this.m_dataMedium;
+        retValue.m_dataReference = this.m_dataReference;
+        retValue.m_dataSmall = this.m_dataSmall;
+        retValue.m_dateCreated = this.m_dateCreated;
+        retValue.m_dateLastModified = this.m_dateLastModified;
+        retValue.m_feedFilename = this.m_feedFilename;
+        retValue.m_feedId = this.m_feedId;
+        retValue.m_feedReference = this.m_feedReference;
+        retValue.m_flags = this.m_flags;
+        retValue.m_groupId = this.m_groupId;
+        retValue.m_groupName = this.m_groupName;
+        retValue.m_lastModifiedBy = this.m_lastModifiedBy;
+        retValue.m_lastModifiedByName = this.m_lastModifiedByName;
+        retValue.m_lockedBy = this.m_lockedBy;
+        retValue.m_lockedInProject = this.m_lockedInProject;
+        retValue.m_masterId = this.m_masterId;
+        retValue.m_media = this.m_media;
+        retValue.m_mediaToAdd = this.m_mediaToAdd;
+        retValue.m_mediaToDelete = this.m_mediaToDelete;
+        retValue.m_mediaToUpdate = this.m_mediaToUpdate;
+        retValue.m_projectId = this.m_projectId;
+        retValue.m_publicationDate = this.m_publicationDate;
+        retValue.m_purgeDate = this.m_purgeDate;
+        retValue.m_state = this.m_state;
+        retValue.m_subId = this.m_subId;
+        retValue.m_title = this.m_title;
+        retValue.m_userId = this.m_userId;
+        retValue.m_userName = this.m_userName;
+        retValue.m_versionId = this.m_versionId;
+        return retValue;
+    }
     /**
      * Returns all member-data in a long String. This can be used for debugging.
      */
