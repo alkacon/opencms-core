@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/09/16 14:55:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/09/16 19:12:39 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -933,8 +933,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 fs.write(contents);                
                 fs.close();
                 
-                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) 
-                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "Updated JSP file \"" + jspfilename + "\" for resource \"" + cms.readAbsolutePath(file) + "\"");
+                if (OpenCms.isLogging(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_INFO)) {
+                    OpenCms.log(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_INFO, "Updated JSP file \"" + jspfilename + "\" for resource \"" + cms.readAbsolutePath(file) + "\"");
+                }
             } catch (FileNotFoundException e) {
                 throw new ServletException("JspLoader: Could not write to file '" + f.getName() + "'\n" + e, e);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2003/09/16 14:55:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/16 19:12:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import source.org.apache.java.util.Configurations;
+
 /**
  * Provides the OpenCms logging mechanism.<p>
  * 
@@ -46,23 +48,23 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsLog {
 
-    /** Messages of the OpenCms Scheduler */
+    /** Messages of the OpenCms Cron Scheduler */
     public static final String CHANNEL_CRON = "org.opencms.cron";
 
-    /** Flex loader messages */
+    /** Messages for JSP generation and caching */
     public static final String CHANNEL_FLEX = "org.opencms.flex";
 
     /** Initialization messages */
     public static final String CHANNEL_INIT = "org.opencms.init";
 
-    /** Informational messages */
+    /** The master log channel (all other channels are child channels of this) */
     public static final String CHANNEL_MAIN = "org.opencms";
 
-    /** Informational messages */
+    /** Module messsages */
     public static final String CHANNEL_MODULE = "org.opencms.module";
     
     /** Messages of the static export */
@@ -74,8 +76,8 @@ public class CmsLog {
     /** Messages of the (legacy) XML workplace */
     public static final String CHANNEL_WORKPLACE_XML = "org.opencms.workplace.xml"; 
 
-    /** Messages of the new OpenCms element cache */
-    public static final String CHANNEL_XMLTEMPLATE = "org.opencms.template.xml";        
+    /** Messages of the xml template mechanism */
+    public static final String CHANNEL_TEMPLATE_XML = "org.opencms.template.xml";        
 
     /** Debug log level (2 - between trace and info) */
     public static final int LEVEL_DEBUG = 2;
@@ -97,12 +99,40 @@ public class CmsLog {
 
     /** Map that contains the different loggers */
     private Map m_loggers;
+    
+    /** The path to the loggers configuration file */
+    private String m_configFile;
 
     /**
      * Creates a new OpenCms logger.<p>
+     * 
+     * @param configuration the OpenCms configuration
+     * @param configFile the path to the logger configuration file 
      */
-    public CmsLog() {
+    public CmsLog(Configurations configuration, String configFile) {
+        m_configFile = configFile;
         m_loggers = new HashMap();
+        try {
+            // set "opencms.log" variable 
+            System.setProperty("opencms.log", configuration.getString("log.file"));
+            // set property values for log4j configuration, will be ignored if log4j is not used
+            String log4jDebug = configuration.getString("log.log4j.debug");
+            if (log4jDebug != null) {
+                // enable log4j debug output 
+                System.setProperty("log4j.debug", log4jDebug);
+            }
+            String log4jPath = configuration.getString("log.log4j.configuration");
+            if (log4jPath != null) {
+                // set the log4j configuration path
+                log4jPath = log4jPath.trim();
+                if ("this".equalsIgnoreCase(log4jPath)) {
+                    log4jPath = m_configFile;                                        
+                }
+                System.setProperty("log4j.configuration", "file:" + log4jPath);                
+            }
+        } catch (SecurityException e) {
+            // ignore, in this case log settings must be provided by environment or servlet context
+        }        
     }
     
     /**
@@ -114,8 +144,10 @@ public class CmsLog {
     private Log getLogger(String channel) {
         Object log = m_loggers.get(channel);
         if (log == null) {
-            log = LogFactory.getLog(channel);
-            m_loggers.put(channel, log);
+            synchronized (m_loggers) {
+                log = LogFactory.getLog(channel);
+                m_loggers.put(channel, log);
+            }
         }
         return (Log)log;
     }    

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/09/16 12:06:10 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/09/16 19:12:39 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 5.0 beta 2
  */
@@ -755,8 +755,8 @@ public class CmsJspActionElement {
      * @param t the Throwable that was catched
      */
     private void handleException(Throwable t) {
-        if (OpenCms.isLogging(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_WARN, Utils.getStackTrace(t));
+        if (OpenCms.isLogging(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_ERROR)) {
+            OpenCms.log(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_ERROR, Utils.getStackTrace(t));
         } 
         if (! (m_handleExceptions || getRequestContext().currentProject().isOnlineProject())) {    
             if (DEBUG > 0) {        

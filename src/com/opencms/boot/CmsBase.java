@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsBase.java,v $
-* Date   : $Date: 2003/09/02 12:15:38 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/09/16 19:12:39 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.File;
  * and helper functions, e.g. OpenCms logging oder OpenCms base path.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2003/09/02 12:15:38 $
+ * @version $Revision: 1.14 $ $Date: 2003/09/16 19:12:39 $
  */
 public final class CmsBase extends Object {
     
@@ -97,6 +97,8 @@ public final class CmsBase extends Object {
         }
     }
 
+    private static final char m_replaceSep = (File.separatorChar == '/')?'\\':'/';
+
     /**
      * Gets the absolute path for a given path.<p>
      * 
@@ -106,17 +108,17 @@ public final class CmsBase extends Object {
     public static String getAbsolutePath(String s) {
         if (s == null) {
             return null;
-        }
+        }         
 
         File f = new File(s);
         if (! f.isAbsolute()) {
             if (OpenCms.getBasePath() == null) {
                 return null;
             } else {
-                return OpenCms.getBasePath() + s;
+                return (OpenCms.getBasePath() + s).replace(m_replaceSep, File.separatorChar);
             }
         } else {
-            return s;
+            return s.replace(m_replaceSep, File.separatorChar);
         }
     }
 
@@ -127,7 +129,7 @@ public final class CmsBase extends Object {
      * @return the relative or absolute path to opencms.properties
      */
     public static String getPropertiesPath(boolean absolute) {
-        String result = "config/opencms.properties";
+        String result = "config/opencms.properties".replace('/', File.separatorChar);
         if (absolute) {
             if (OpenCms.getBasePath() == null) {
                 result = null;

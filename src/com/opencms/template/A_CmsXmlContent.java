@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/09/16 14:55:49 $
-* Version: $Revision: 1.89 $
+* Date   : $Date: 2003/09/16 19:12:39 $
+* Version: $Revision: 1.90 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.89 $ $Date: 2003/09/16 14:55:49 $
+ * @version $Revision: 1.90 $ $Date: 2003/09/16 19:12:39 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
@@ -251,8 +251,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * Deletes all files from the file cache.
      */
     public static void clearFileCache() {
-        if (OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, "[A_CmsXmlContent] clearing XML file cache.");
+        if (OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, "[A_CmsXmlContent] clearing XML file cache.");
         }
         m_filecache.clear();
     }
@@ -1783,8 +1783,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             selectedRun.put(tagname.toLowerCase(), c.getDeclaredMethod(methodName, C_PARAMTYPES_HANDLING_METHODS));
         }
         catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, "[A_CmsXmlContent] Exception in register tag: " + e.getMessage());
+            if (OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, "[A_CmsXmlContent] Exception in register tag: " + e.getMessage());
             }
         }
         registerTag(tagname);

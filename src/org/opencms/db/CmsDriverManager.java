@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/16 14:55:48 $
- * Version: $Revision: 1.225 $
+ * Date   : $Date: 2003/09/16 19:12:39 $
+ * Version: $Revision: 1.226 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.225 $ $Date: 2003/09/16 14:55:48 $
+ * @version $Revision: 1.226 $ $Date: 2003/09/16 19:12:39 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -5087,8 +5087,8 @@ public class CmsDriverManager extends Object {
                     try {
                         m_projectCache.remove(new Integer(publishProjectId));
                     } catch (Exception e) {
-                        if (OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                            OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, "Could not remove project " + publishProjectId + " from cache");
+                        if (OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                            OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, "Could not remove project " + publishProjectId + " from cache");
                         }
                     }
                     if (publishProjectId == context.currentProject().getId()) {

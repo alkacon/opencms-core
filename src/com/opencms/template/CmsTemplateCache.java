@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2003/09/16 12:06:10 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/09/16 19:12:39 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,15 +41,15 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
     
     /** Default constructor to create a template cache */
     public CmsTemplateCache() {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN) ) {
-            OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, ". Template cache       : Initialized successfully");
+        if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN) ) {
+            OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, ". Template cache       : Initialized successfully");
         }
     }
     
     /** Deletes all documents from the template cache. */
     public void clearCache() {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, "[CmsTemplateCache] clearing template cache.");
+        if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, "[CmsTemplateCache] clearing template cache.");
         }
         templateCache.clear();
     }
@@ -64,8 +64,8 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
             templateCache.remove(key);
         }
         else {
-            if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, "[CmsTemplateCache] clearCache failed: " + key);
+            if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, "[CmsTemplateCache] clearCache failed: " + key);
             }
         }
     }
@@ -76,15 +76,15 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
      * @return byte array with the cached template content or null if no cached value was found.
      */
     public byte[] get(Object key) {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, "[CmsTemplateCache] Getting " + key + " from cache.");
+        if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, "[CmsTemplateCache] Getting " + key + " from cache.");
         }
         if(key instanceof String) {
             return (byte[])templateCache.get(key);
         }
         else {
-            if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, "[CmsTemplateCache] Getting " + key + " from cache failed.");
+            if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, "[CmsTemplateCache] Getting " + key + " from cache failed.");
             }
             return null;
         }
@@ -101,8 +101,8 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
             return templateCache.get(key) != null;
         }
         else {
-            if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, "[CmsTemplateCache] " + key + " is not instanceof String.");
+            if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, "[CmsTemplateCache] " + key + " is not instanceof String.");
             }
             return false;
         }
@@ -118,8 +118,8 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
             templateCache.put(key, content);
         }
         else {
-            if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, "[CmsTemplateCache] " + key + " is not instanceof String.");
+            if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, "[CmsTemplateCache] " + key + " is not instanceof String.");
             }
         }
     }

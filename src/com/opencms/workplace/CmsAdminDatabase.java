@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/09/16 12:06:06 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/09/16 19:12:39 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -94,16 +94,16 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         }
         filecontent = (byte[])session.getValue(C_PARA_FILECONTENT);
         // first create the folder if it doesnt exists
-        File discFolder = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath()) + "/");
+        File discFolder = new File(CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator));
         if(!discFolder.exists()) {
             boolean success = discFolder.mkdir();
-            if(OpenCms.isLogging(org.opencms.main.CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) && (!success)) {
-                OpenCms.log(org.opencms.main.CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, "[CmsExportPointDriver] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath()) + "/"+ ".");
+            if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) && (!success)) {
+                OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, "[CmsExportPointDriver] Couldn't create folder " + discFolder.getAbsolutePath() + ".");
             }
         }
 
         // now write the file into the modules dierectory in the exportpaht
-        File discFile = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath()) + "/"  + filename);
+        File discFile = new File(CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + filename));
         try {
 
             // write the new file to disk
@@ -247,7 +247,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 }
                 // start the thread for: export
                 A_CmsReportThread doExport = new CmsDatabaseExportThread(cms, 
-                    CmsBase.getAbsolutePath(cms.readPackagePath()) + File.separator + fileName, 
+                    CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + fileName), 
                     exportPaths, excludeSystem, excludeUnchanged, exportUserdata, contentAge);
                     
                 doExport.start();
@@ -279,7 +279,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 
                 // start the thread for: exportmodules
                 A_CmsReportThread doExport = new CmsDatabaseExportThread(cms, 
-                    CmsBase.getAbsolutePath(cms.readPackagePath()) + File.separator + fileName, 
+                    CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + fileName), 
                     exportChannels, exportModules);
                             
                 doExport.start();
@@ -300,7 +300,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 if ("go".equals(step) ){
                     // start the thread for: import
                     A_CmsReportThread doImport = new CmsDatabaseImportThread(cms, 
-                        CmsBase.getAbsolutePath(cms.readPackagePath()) + File.separator + existingFile);
+                        CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator + existingFile));
                         
                     doImport.start();
                     session.putValue(C_DATABASE_THREAD, doImport);

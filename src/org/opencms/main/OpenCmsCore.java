@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/16 14:55:48 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/09/16 19:12:39 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1406,7 +1406,6 @@ public class OpenCmsCore {
         }
         base = setBasePath(base);        
         
-        String logFile;
         ExtendedProperties extendedProperties = null;
         
         // Collect the configurations        
@@ -1417,9 +1416,10 @@ public class OpenCmsCore {
         }
         
         // Change path to log file, if given path is not absolute
-        logFile = (String)extendedProperties.get("log.file");
+        String logFile = (String)extendedProperties.get("log.file");
         if (logFile != null) {
-            extendedProperties.put("log.file", CmsBase.getAbsolutePath(logFile));
+            logFile = CmsBase.getAbsolutePath(logFile);
+            extendedProperties.put("log.file", logFile);
         }
         
         // read the the OpenCms servlet mapping from the servlet context
@@ -1457,7 +1457,7 @@ public class OpenCmsCore {
             OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms servlet path : " + servletMapping);                    
             OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms base path    : " + getBasePath());        
             OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms property file: " + CmsBase.getPropertiesPath(true));      
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms logfile      : " + CmsBase.getAbsolutePath(logFile));   
+            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". OpenCms logfile      : " + logFile);   
             OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Servlet container    : " + context.getServerInfo());        
         }
 
@@ -1487,7 +1487,7 @@ public class OpenCmsCore {
      * @param config The configurations read from <code>opencms.properties</code>
      */
     private void initLogging(Configurations config) {
-        m_log = new CmsLog();
+        m_log = new CmsLog(config, CmsBase.getPropertiesPath(true));
     }
     
     /**

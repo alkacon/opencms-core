@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/09/16 14:55:48 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/09/16 19:12:39 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -127,8 +127,8 @@ public abstract class A_CmsElement {
      * @return a CmsElementVariant of dependencies that must be deleted from extern store for this element
      */
     public Vector addVariant(Object key, CmsElementVariant variant) {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, toString() + " adding variant \"" + key + "\" to cache. ");
+        if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, toString() + " adding variant \"" + key + "\" to cache. ");
         }
         if(key != null){
             CmsElementVariant old = (CmsElementVariant)m_variants.get(key);
@@ -145,8 +145,8 @@ public abstract class A_CmsElement {
      *
      */
     public void removeVariant(Object key){
-        if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, toString() + " removing variant \"" + key + "\" from cache. ");
+        if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+            OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, toString() + " removing variant \"" + key + "\" from cache. ");
         }
         if(key != null){
             m_variants.remove(key);
@@ -233,11 +233,11 @@ public abstract class A_CmsElement {
         if(result != null && result.size() == 0){
             result = null;
         }
-        if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
+        if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
             if(result != null) {
-                OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, toString() + " getting variant \"" + key + "\" from cache. ");
+                OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, toString() + " getting variant \"" + key + "\" from cache. ");
             } else {
-                OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, toString() + " Variant \"" + key + "\" is not in element cache. ");
+                OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, toString() + " Variant \"" + key + "\" is not in element cache. ");
             }
         }
         return result;
@@ -317,8 +317,8 @@ public abstract class A_CmsElement {
 
                 }catch(Exception e){
                     // do nothing, set everything to false and log the error
-                    if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                        OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, toString()
+                    if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                        OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, toString()
                                     + " could not find out if the element is proxy cacheable. "+ e.getMessage());
                     }
                 }
@@ -494,8 +494,8 @@ public abstract class A_CmsElement {
                             // The subelement object is null, i.e. the element could not be found.
                             // Do nothing but a little bit logging here.
                             if(resolveDebug) System.err.println("= Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
-                            if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                                OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, toString() + " Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
+                            if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                                OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, toString() + " Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
                             }
                         }
 
@@ -509,8 +509,8 @@ public abstract class A_CmsElement {
                         // No element definition could be found.
                         // Do some logging only and ignore this element
                         baos.write(("[" + lookupName + "] Element not defined.").getBytes());
-                        if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                            OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, toString() + " No element definition found for \"" + lookupName +"\". Ignoring this link. ");
+                        if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                            OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, toString() + " No element definition found for \"" + lookupName +"\". Ignoring this link. ");
                         }
                         if(resolveDebug) {
                             System.err.println("= No element definition found for \"" + lookupName +"\". Ignoring this link. ");
@@ -547,8 +547,8 @@ public abstract class A_CmsElement {
                         // The subelement object is null, i.e. the element could not be found.
                         // Do nothing but a little bit logging here.
                         if(resolveDebug) System.err.println("= Cannot find methodElemtn object for \"" + methodName +"\". Ignoring this link. ");
-                        if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                            OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, toString() + " Cannot find method Element object for \"" + methodName +"\". Ignoring this link. ");
+                        if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                            OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, toString() + " Cannot find method Element object for \"" + methodName +"\". Ignoring this link. ");
                         }
                     }
                     // If we have some results print them out.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/09/16 14:55:49 $
-* Version: $Revision: 1.130 $
+* Date   : $Date: 2003/09/16 19:12:39 $
+* Version: $Revision: 1.131 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.130 $ $Date: 2003/09/16 14:55:49 $
+ * @version $Revision: 1.131 $ $Date: 2003/09/16 19:12:39 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1592,9 +1592,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         } catch(Exception e) {
             if(templateFile != null){
-                if(OpenCms.isLogging(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, getClassName() + "Could not generate my template cache element.");
-                    OpenCms.log(CmsLog.CHANNEL_XMLTEMPLATE, CmsLog.LEVEL_WARN, getClassName() + e);
+                if(OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
+                    OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, getClassName() + "Could not generate my template cache element.");
+                    OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, getClassName() + e);
                 }
             }
         }

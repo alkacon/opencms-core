@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/09/16 14:59:30 $
- * Version: $Revision: 1.504 $
+ * Date   : $Date: 2003/09/16 19:12:39 $
+ * Version: $Revision: 1.505 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,8 +20,9 @@ Legend:
 - General comment
 
 OpenCms 5.1.11 Salusa Secundus - September xx, 2003
-! Logging in OpenCms now uses the commons package from Apache Jarkarta
+! Logging in OpenCms now uses the commons-logging package from Apache Jarkarta
 ! By default, OpenCms now uses log4j to generate log files
+  The provided configuration specifies logfile rotation if log becomes larger then 2 mb
 - Rewrote / Renamed / Refactores several methods for a more consistent API
 - Improved JavaDocs 
 * "Create New Link" dialog now automatically fills the target name
