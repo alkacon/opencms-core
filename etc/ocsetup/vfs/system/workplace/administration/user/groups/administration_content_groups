@@ -53,7 +53,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 					<tr><td class=dialogtxt>
 						<table border=0 width=100% height=200>
 							<tr><td class=dialogtxt>]]>
-							<SELECT class="textfeld" name="GROUPNAME" size="10" width="330" method="getGroups" 
+							<SELECT class="textfeld" name="GROUPNAME" size="20" width="330" method="getGroups" 
 								style="WIDTH: 330px" onDblClick="" onchange=""/>
 							<![CDATA[
                                  
