@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/18 07:50:15 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2001/10/22 14:34:28 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.68 $ $Date: 2001/10/18 07:50:15 $ *
+ * @version $Revision: 1.69 $ $Date: 2001/10/22 14:34:28 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -567,6 +567,10 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename) thr
             file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId,
                                groupId, resProjectId, accessFlags, state, lockedBy, launcherType,
                                launcherClass, created, modified, modifiedBy, content, resSize, lockedInProject);
+            // check if this resource is marked as deleted
+            if (file.getState() == C_STATE_DELETED) {
+                throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
+            }
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
         }
