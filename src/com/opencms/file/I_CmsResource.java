@@ -1,11 +1,12 @@
 package com.opencms.file;
 
+import java.util.*;
 /**
  * This interface describes a resource in the Cms.
  * This resource can be a I_CmsFile or a I_CmsFolder.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/06 09:39:22 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/07 17:25:04 $
  */
 public interface I_CmsResource extends I_CmsFlags {
 	
@@ -154,14 +155,7 @@ public interface I_CmsResource extends I_CmsFlags {
 	 * @return the name of this resource.
 	 */
     public String getName();
-    
-	/**
-	 * Sets the type for this resource.
-	 * 
-	 * @param type the new type for this resource.
-	 */
-	public void setType(I_CmsResourceType type);
-	
+    	
 	/**
 	 * Gets the type for this resource.
 	 * 
@@ -285,15 +279,6 @@ public interface I_CmsResource extends I_CmsFlags {
 	 */
 	public I_CmsProject getProject();
 	
-	/**
-	 * Adds a metainfo to this resource. The resource must be explicitly written 
-	 * to the Cms via the CmsObject.
-	 * 
-	 * @param key The name of the metadefinition to be set.
-	 * @param value The value of the metainfo to be set.
-	 */
-	public void addMetainfo(String key, String value);
-
 	// the following methods are not used, because the functionality is handled by
 	// a I_CmsObjectBase:
 	/*

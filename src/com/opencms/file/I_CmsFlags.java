@@ -5,7 +5,7 @@ package com.opencms.file;
  * which are used in the database.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/06 09:39:22 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/07 17:25:04 $
  */
 public interface I_CmsFlags
 {
@@ -13,11 +13,11 @@ public interface I_CmsFlags
 	 * This flag is set for enabled entrys in the database.
 	 * (GROUP_FLAGS for example)
 	 */
-	public static int C_FLAG_ENABLED = 0;
+	public static final int C_FLAG_ENABLED = 0;
 	
 	/**
 	 * This flag is set for disabled entrys in the database.
 	 * (GROUP_FLAGS for example)
 	 */
-	public static int C_FLAG_DISABLED = 1;
+	public static final int C_FLAG_DISABLED = 1;
 }

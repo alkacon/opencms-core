@@ -4,19 +4,19 @@ package com.opencms.file;
  * This interface describes a task in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/06 13:57:08 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/07 17:25:04 $
  */
 public interface I_CmsTask
 {
 	/**
 	 * This constant is used to order the tasks by date.
 	 */
-	public static int C_ORDER_BY_DATE =		1;
+	public static final int C_ORDER_BY_DATE =		1;
 
 	/**
 	 * This constant is used to order the tasks by name.
 	 */
-	public static int C_ORDER_BY_NAME =		2;
+	public static final int C_ORDER_BY_NAME =		2;
 	
 	// TODO: add order-criteria here.
 	
