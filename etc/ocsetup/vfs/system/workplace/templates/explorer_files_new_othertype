@@ -14,6 +14,21 @@ function show_help()
 
 <head>
 
+<script language=JavaScript>
+<!--
+function check_namefield()
+{
+if(document.NEU.NEUNAME.value=="")
+	{
+		alert(']]><LABEL value="error.reason.namemissing" /><![CDATA[');
+		document.NEU.NEUNAME.focus();
+		return false;
+	}
+return true;
+}
+//-->
+</script>
+
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -47,7 +62,7 @@ function show_help()
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
 				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER onClick="a=check_textfeld('NEU', 'NEUNAME'); if(a==true)location='explorer_files_new_othertype.html?step=1&file='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value;"></td>
+				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER onClick="a=check_namefield(); if(a==true)location='explorer_files_new_othertype.html?step=1&file='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value;"></td>
 				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 			</tr>
 			</table>
@@ -80,6 +95,7 @@ function show_help()
 </script>
 
 <head>
+
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms.js,v $
- * Date   : $Date: 2000/05/22 10:32:25 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/05/22 15:30:18 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,17 +44,6 @@ var charList="0123456789-._~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
 ns = (document.layers)? true:false;
 ie = (document.all)? true:false;
 
-// Formularfelder (Textfelder) auf Inhalt überprüfen
-function check_textfeld(formular, feld)
-{
-if(document[formular][feld].value=="")
-	{
-		alert('Bitte geben Sie einen Namen bzw. Titel an!');
-		document[formular][feld].focus();
-		return false;
-	}
-return true;
-}
 // get date
 	aktDat = new Date;
 	aktTag= aktDat.getDate();

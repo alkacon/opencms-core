@@ -200,6 +200,27 @@ function show_help()
 
 <head>
 
+<script language=JavaScript>
+<!--
+function check_text_local()
+{
+	if (document.UPLOADPIC.name.value=="")
+		{
+			alert(']]><LABEL value="error.reason.namemissing" /><![CDATA[');
+			document.UPLOADPIC.name.focus;
+			return false;
+		}
+	if (document.UPLOADPIC.title.value=="")
+		{
+			alert(']]><LABEL value="error.reason.titlemissing" /><![CDATA[');
+			document.UPLOADPIC.title.focus;
+			return false;
+		}
+	return true;
+}
+//-->
+</script>
+
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 
@@ -214,7 +235,7 @@ function show_help()
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<form id="UPLOADPIC" name="UPLOADPIC" onSubmit="return check_textfeld('UPLOADPIC', 'title')">
+<form id="UPLOADPIC" name="UPLOADPIC" onSubmit="return check_text_local()">
 <table border=2 cellspacing=0 cellpadding=0 width=500>
 
 <tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>

@@ -159,6 +159,8 @@
 				<lockchange>The file is locked by another user.</lockchange>
 				<login>The data entered is not correct.</login>
 				<projectlockchange>There was an error.</projectlockchange>
+				<namemissing>The field Name must be filled out.</namemissing>
+				<titlemissing>The field Title must be filled out.</titlemissing>
 				<newproject>The entered project data is invalid.</newproject>
 				<newextformat>Your input was in the wrong format.</newextformat>
 				<newprop>see details</newprop>
