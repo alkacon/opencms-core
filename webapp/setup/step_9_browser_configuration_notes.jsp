@@ -1,8 +1,7 @@
-<% /* Initialize the Bean */ %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-<jsp:useBean id="Thread" class="org.opencms.setup.CmsSetupThread" scope="session"/>
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
+--%><jsp:useBean id="Thread" class="org.opencms.setup.CmsSetupThread" scope="session"/><%--
 
-<%
+--%><%
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);
 

@@ -1,4 +1,6 @@
-<%
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
+--%><%
+
 boolean isInitialized = false;
 boolean wizardEnabled = false;
 boolean showButtons = false;
@@ -6,10 +8,10 @@ boolean showButtons = false;
 /* next page to be accessed */
 String nextPage = "step_1_content_encoding.jsp";
 
-/* Initialize the Bean */ %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-<%
 try {
+
+	/* Initialize the Bean */
+
 	/* set the base path to the opencms home folder */
 	Bean.setBasePath(config.getServletContext().getRealPath("/"));
 
@@ -25,7 +27,7 @@ try {
 	/* check wizards accessability */
 	wizardEnabled = Bean.getWizardEnabled();
 
-	if(!wizardEnabled)	{
+	if (!wizardEnabled) {
 		request.getSession().invalidate();
 	}
 

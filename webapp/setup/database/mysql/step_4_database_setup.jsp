@@ -1,7 +1,7 @@
-<%@ page import="java.util.*" %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-<jsp:setProperty name="Bean" property="*" />
-<%
+<%@ page import="java.util.*" %><%--
+--%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%--
+--%><%
 	String conStr = request.getParameter("dbCreateConStr");
 	String database = request.getParameter("db");
 	boolean isSetupOk = (Bean.getProperties() != null);

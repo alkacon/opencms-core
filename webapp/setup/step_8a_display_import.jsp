@@ -1,8 +1,5 @@
-<% /* Initialize the Bean */ %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-
-
-<%
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
+--%><%
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties() != null);
 
@@ -18,7 +15,6 @@
 
 
 %>
-
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>

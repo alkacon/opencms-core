@@ -1,13 +1,8 @@
-<% /* Initialize the Bean */ %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%--
+--%><%@ page import="org.opencms.setup.*,java.util.*" %><%--
 
-<% /* Set all given Properties */%>
-<jsp:setProperty name="Bean" property="*" />
-
-<% /* Import packages */ %>
-<%@ page import="org.opencms.setup.*,java.util.*" %>
-
-<%
+--%><%
 
 	/* next page to be accessed */
 	String nextPage = "step_8_import_workplace.jsp";

@@ -1,7 +1,7 @@
-<%@ page import="java.util.*" %>
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-<jsp:setProperty name="Bean" property="*" />
-<%
+<%@ page import="java.util.*" %><%--
+--%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
+--%><jsp:setProperty name="Bean" property="*" /><%--
+--%><%
 	String nextPage = "step_7_save_properties.jsp";
 	
 	/* previous page in the setup process */

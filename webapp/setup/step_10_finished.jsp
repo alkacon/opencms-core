@@ -1,9 +1,7 @@
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
+--%><%@ page import="org.opencms.setup.*" %><%--
 
-<% /* Import packages */ %>
-<%@ page import="org.opencms.setup.*" %>
-
-<%
+--%><%
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties() != null);
 	
