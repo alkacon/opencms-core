@@ -5,8 +5,8 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @uathor Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2000/02/08 09:54:19 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.31 $ $Date: 2000/02/09 19:05:21 $
  */
 public interface I_CmsConstants
 {
@@ -415,48 +415,113 @@ public interface I_CmsConstants
     /** Identifier for request type console */
     public static final int C_RESPONSE_CONSOLE = 1;
 
-	/**
-	 * Task type values of getting tasks 
-	 */
+	/** Task type value of getting all tasks  */
 	public static final int C_TASKS_ALL    = 1;
-	public static final int C_TASKS_NEW    = 2;
-	public static final int C_TASKS_OPEN   = 3;
-	public static final int C_TASKS_ACTIVE = 4;
-	public static final int C_TASKS_DONE   = 5;
-
 	
-	/**
-	 * Task priority
-	 */
+	/** Task type value of getting new tasks  */
+	public static final int C_TASKS_NEW    = 2;
+	
+	/** Task type value of getting open tasks  */
+	public static final int C_TASKS_OPEN   = 3;
+	
+	/** Task type value of getting active tasks  */
+	public static final int C_TASKS_ACTIVE = 4;
+	
+	/** Task type value of getting done tasks  */
+	public static final int C_TASKS_DONE   = 5;
+	
+	/** Task order value */
+	public static final String C_ORDER_ID			  = "id";
+	
+	/** Task order value */
+	public static final String C_ORDER_NAME			  = "name";
+	
+	/** Task order value */
+	public static final String C_ORDER_STATE		  = "state";
+	
+	/** Task order value */
+	public static final String C_ORDER_TASKTYPE		  = "tasktyperef"; 
+	
+	/** Task order value */
+	public static final String C_ORDER_INITIATORUSER  = "initiatoruserref";
+	
+	/** Task order value */
+	public static final String C_ORDER_ROLE			  = "roleref";
+	
+	/** Task order value */
+	public static final String C_ORDER_AGENTUSER	  = "agentuserref";
+	
+	/** Task order value */
+	public static final String C_ORDER_ORIGINALUSER   = "originaluserref";
+	
+	/** Task order value */
+	public static final String C_ORDER_STARTTIME	  = "starttime";
+	
+	/** Task order value */
+	public static final String C_ORDER_WAKEUPTIME	  = "wakeuptime";
+	
+	/** Task order value */
+	public static final String C_ORDER_TIMEOUT		  = "timeout";
+	
+	/** Task order value */
+	public static final String C_ORDER_ENDTIME		  = "endtime";
+	
+	/** Task order value */
+	public static final String C_ORDER_PERCENTAGE	  = "percentage";
+	
+	/** Task order value */
+	public static final String C_ORDER_PRIORITY		  = "priorityref"; 
+	
+	/** Task sort value ascending  */
+	public static final String C_SORT_ASC = "ASC";
+	
+	/** Task sort value descending */
+	public static final String C_SORT_DESC = "DESC";
+	
+	/** Task priority high */
 	public static final int C_TASK_PRIORITY_HIGH   = 1;
+	
+	/** Task priority normal */
 	public static final int C_TASK_PRIORITY_NORMAL = 2;
+	
+	/** Task priority low */
 	public static final int C_TASK_PRIORITY_LOW    = 3;
 	
-	/**
-	 * Values for order tasks 
-	 */
+	/** Value for order tasks by none */
 	public static final int C_TASKORDER_NONE      = 0;
+	
+	/** Value for order tasks by startdate */
 	public static final int C_TASKORDER_STARTDATE = 1;
+	
+	/** Value for order tasks by timeout */
 	public static final int C_TASKORDER_TIMEOUT   = 2;
+	
+	/** Value for order tasks by taskname */
 	public static final int C_TASKSORDER_TASKNAME = 3;
 		
 	
-	/**
-	 * state values of a task internal
-	 */
+	/** state values of a task prepared to start*/
 	public static final int C_TASK_STATE_PREPARE  = 0;
+	
+	/** state values of a task ready to start */
 	public static final int C_TASK_STATE_START	  = 1;
+	
+	/** state values of a task started */
 	public static final int C_TASK_STATE_STARTED  = 2;
+	
+	/** state values of a task ready to end */
 	public static final int C_TASK_STATE_NOTENDED = 3;
+	
+	/** state values of a task ended */
 	public static final int C_TASK_STATE_ENDED	  = 4;
+	
+	/** state values of a task halted */
 	public static final int C_TASK_STATE_HALTED   = 5;
-	public static final int C_TASK_STATE_MAIL	  = 7;
-	public static final int C_TASK_STATE_ONHOLD   = 8; 
 
-	/**
-	 * Type values for the task log
-	 */
+	/**System type values for the task log */
 	public static final int C_TASKLOG_SYSTEM = 0;
+	
+	/**User type value for the task log */
 	public static final int C_TASKLOG_USER   = 1;	
 	
 }
