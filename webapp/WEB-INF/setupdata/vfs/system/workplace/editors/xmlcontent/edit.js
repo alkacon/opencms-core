@@ -39,25 +39,41 @@ function buttonAction(para) {
 
 	switch (para) {
 	case 1: 
+		// exit editor without saving
 		_form.action.value = actionExit;
 		_form.target = "_top";
 		submit(_form);
 		_form.submit();
 		break;
 	case 2:
+		// save and exit editor
 		_form.action.value = actionSaveExit;
 		_form.target = "_top";
 		submit(_form);
 		_form.submit();
 		break;
 	case 3:
+		// save content
 		_form.action.value = actionSave;
 		submit(_form);
 		_form.submit();
 		break;
 	case 4:
+		// change element (change locale)
 		_form.action.value = actionChangeElement;
 		_form.target = "_self";
+		submit(_form);
+		_form.submit();
+		break;
+	case 5:
+		// add optional element
+		_form.action.value = actionAddElement;
+		submit(_form);
+		_form.submit();
+		break;
+	case 6:
+		// remove optional element
+		_form.action.value = actionRemoveElement;
 		submit(_form);
 		_form.submit();
 		break;
@@ -90,4 +106,18 @@ function opensmallwin(url, name, w, h) {
 		}
 	}
 	return smallwindow;
+}
+
+function addElement(elemName, insertAfter) {
+	var _form = document.EDITOR;
+	_form.elementname.value = elemName;
+	_form.elementindex.value = insertAfter;
+	buttonAction(5);
+}
+
+function removeElement(elemName, index) {
+	var _form = document.EDITOR;
+	_form.elementname.value = elemName;
+	_form.elementindex.value = index;
+	buttonAction(6);
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlVfsImageWidget.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/02 09:07:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.3
  */
 public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {
@@ -87,7 +87,7 @@ public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {
         I_CmsWidgetDialog widgetDialog,
         I_CmsXmlDocument document) {
         
-        StringBuffer result = new StringBuffer(8);
+        StringBuffer result = new StringBuffer(16);
         result.append("function initVfsImageSelector() {\n");
         result.append("\timgContextPrefix = \"");
         result.append(OpenCms.getSystemInfo().getOpenCmsContext());
@@ -108,11 +108,7 @@ public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {
         I_CmsXmlContentValue value) throws CmsXmlException {
 
         String id = getParameterName(value);
-        StringBuffer result = new StringBuffer(128);
-        result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
-        result.append(": </td>");
-        result.append(getHelpBubble(cms, widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));        
+        StringBuffer result = new StringBuffer(128);       
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"); 
         result.append("<input class=\"xmlInputMedium\" value=\"");
@@ -144,7 +140,8 @@ public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {
         result.append("</div></td>");
         result.append("</tr></table>");
         
-        result.append("</td></tr>\n");
+        result.append("</td>");
+        
         return result.toString();
     }
 }

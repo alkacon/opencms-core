@@ -472,7 +472,17 @@ span.tabactive {
 	height: 22px; 
 }
 
+.xmlTdDisabled {
+	font-style: italic; 
+	border: 1px dotted ThreeDShadow;
+}
+
 .xmlLabel { 
+	white-space: nowrap;
+}
+
+.xmlLabelDisabled {
+	font-style: italic; 
 	white-space: nowrap;
 }
 

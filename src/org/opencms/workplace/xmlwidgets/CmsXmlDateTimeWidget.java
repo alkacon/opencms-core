@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlDateTimeWidget.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/02 09:07:58 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
@@ -81,11 +81,7 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
 
         CmsXmlDateTimeValue castValue = (CmsXmlDateTimeValue)value;
 
-        StringBuffer result = new StringBuffer(128);
-        result.append("<tr><td class=\"xmlLabel\">");        
-        result.append(getMessage(widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
-        result.append(": </td>");
-        result.append(getHelpBubble(cms, widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
+        StringBuffer result = new StringBuffer(16);
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"); 
         result.append("<input class=\"xmlInputSmall\" value=\"");
@@ -113,7 +109,8 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
         
         result.append(widgetDialog.calendarInit(id, id + ".calendar", "cR", false, false, true, null, true));
 
-        result.append("</td></tr>\n");
+        result.append("</td>");
+        
         return result.toString();
     }
 

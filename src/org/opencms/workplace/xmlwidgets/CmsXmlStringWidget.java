@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2004/12/01 13:39:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/02 09:07:58 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.0
  */
 public class CmsXmlStringWidget extends A_CmsXmlWidget {
@@ -134,22 +134,15 @@ public class CmsXmlStringWidget extends A_CmsXmlWidget {
         I_CmsXmlContentValue value) {
 
         String id = getParameterName(value);
-
-        StringBuffer result = new StringBuffer(128);
-        result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
-        result.append(": </td>");
-
-        result.append(getHelpBubble(cms, widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
-
+        
+        StringBuffer result = new StringBuffer(16);
+                
         result.append("<td class=\"xmlTd\"><input class=\"xmlInput maxwidth\" name=\"");
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
         result.append("\">");
         result.append("</td>");
-
-        result.append("</tr>\n");
 
         return result.toString();
     }

@@ -12749,6 +12749,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/buttons/new.gif</source>
+			<destination>system/workplace/resources/buttons/new.gif</destination>
+			<type>image</type>
+			<uuidresource>f76da2e8-438c-11d9-8a02-c7395cc0b5af</uuidresource>
+			<datelastmodified>Wed, 01 Dec 2004 12:34:30 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 01 Dec 2004 12:34:30 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/buttons/numlist.gif</source>
 			<destination>system/workplace/resources/buttons/numlist.gif</destination>
 			<type>image</type>

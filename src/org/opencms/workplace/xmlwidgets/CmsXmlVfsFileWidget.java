@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlVfsFileWidget.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/02 09:07:58 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
@@ -89,7 +89,7 @@ public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
         I_CmsWidgetDialog widgetDialog,
         I_CmsXmlDocument document) {
         
-        StringBuffer result = new StringBuffer(8);
+        StringBuffer result = new StringBuffer(16);
         result.append("function initVfsFileSelector() {\n");
         //initialize tree javascript, does parts of CmsTree.initTree(CmsObject, encoding, skinuri);
         result.append("\tinitResources(\"");
@@ -115,10 +115,7 @@ public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
 
         String id = getParameterName(value);
         StringBuffer result = new StringBuffer(128);
-        result.append("<tr><td class=\"xmlLabel\">");
-        result.append(getMessage(widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));
-        result.append(": </td>");
-        result.append(getHelpBubble(cms, widgetDialog, value.getDocument().getContentDefinition(), value.getElementName()));        
+           
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"); 
         result.append("<input class=\"xmlInputMedium\" value=\"");
@@ -132,7 +129,8 @@ public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
         result.append(widgetDialog.button("javascript:openTreeWin('EDITOR',  '" + id + "', document);", null, "folder", "button.search", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
         result.append("</tr></table>");
         
-        result.append("</td></tr>\n");
+        result.append("</td>");
+        
         return result.toString();
     }
 }

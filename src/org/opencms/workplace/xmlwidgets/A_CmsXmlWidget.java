@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/02 09:07:58 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -162,7 +162,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
      * @param value the value to create the help bubble for
      * @return HTML code for adding a help bubble
      */
-    protected String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, String value) {
+    public static String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, String value) {
         StringBuffer result = new StringBuffer(128);
         String contentDefinitionName = new String();
         // get the name of the content defintion if there is one
@@ -252,7 +252,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
      * @param value the value to create the message for
      * @return message key for message locales with the correct prefix
      */
-    protected String getMessage(I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, String value) {
+    public static String getMessage(I_CmsWidgetDialog widgetDialog, CmsXmlContentDefinition contentDefintion, String value) {
         String contentDefinitionName = new String();
         // get the name of the content defintion if there is one
         if (contentDefintion != null) {
