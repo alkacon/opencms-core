@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/09/05 16:05:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/05 16:11:48 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $ $Date: 2003/09/05 16:05:59 $ 
+ * @version $Revision: 1.10 $ $Date: 2003/09/05 16:11:48 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -2885,7 +2885,7 @@ class CmsShellCommands {
     /**
      * Starts a new cron job with the given index.<p>
      * 
-     * @param index the job index within the cron table
+     * @param no the job index within the cron table
      */
     public void startCronJob(String no) {
         try {
