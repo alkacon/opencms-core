@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/22 08:04:40 $
-* Version: $Revision: 1.375.2.1 $
+* Date   : $Date: 2003/06/27 14:59:46 $
+* Version: $Revision: 1.375.2.2 $
 
 *
 * This library is part of OpenCms -
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.375.2.1 $ $Date: 2003/05/22 08:04:40 $
+ * @version $Revision: 1.375.2.2 $ $Date: 2003/06/27 14:59:46 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2213,10 +2213,10 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             // check the name
             validFilename(name);
             m_propertyDefVectorCache.clear();
-            return( m_dbAccess.createPropertydefinition(name,
+            return m_dbAccess.createPropertydefinition(name,
                                                         getResourceType(currentUser,
                                                                         currentProject,
-                                                                        resourcetype).getResourceType()) );
+                                                                        resourcetype).getResourceType(), currentProject.getId() );
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + name,
                 CmsException.C_NO_ACCESS);
@@ -4955,7 +4955,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
         Vector returnValue = null;
         returnValue = (Vector) m_propertyDefVectorCache.get(Integer.toString(resourceType));
         if (returnValue == null){
-            returnValue = m_dbAccess.readAllPropertydefinitions(resourceType);
+            returnValue = m_dbAccess.readAllPropertydefinitions(resourceType, currentProject.getId());
             Collections.sort(returnValue); 
             m_propertyDefVectorCache.put(Integer.toString(resourceType), returnValue);
         }
@@ -4986,7 +4986,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
 
         returnValue = (Vector)m_propertyDefVectorCache.get(resType.getResourceTypeName());
         if (returnValue == null){
-            returnValue = m_dbAccess.readAllPropertydefinitions(resType);
+            returnValue = m_dbAccess.readAllPropertydefinitions(resType, currentProject.getId());
             Collections.sort(returnValue); // TESTFIX (a.kandzior@alkacon.com)
             m_propertyDefVectorCache.put(resType.getResourceTypeName(), returnValue);
         }
@@ -6287,7 +6287,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
         returnValue = (CmsPropertydefinition)m_propertyDefCache.get(name + resType.getResourceType());
 
         if (returnValue == null){
-            returnValue = m_dbAccess.readPropertydefinition(name, resType);
+            returnValue = m_dbAccess.readPropertydefinition(name, resType, currentProject.getId());
             m_propertyDefCache.put(name + resType.getResourceType(), returnValue);
         }
         return returnValue;
@@ -7762,7 +7762,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      // check the security
         if( isAdmin(currentUser, currentProject) ) {
             m_propertyDefVectorCache.clear();
-            return( m_dbAccess.writePropertydefinition(propertydef) );
+            return( m_dbAccess.writePropertydefinition(propertydef, currentProject.getId()) );
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + propertydef.getName(),
                 CmsException.C_NO_ACCESS);

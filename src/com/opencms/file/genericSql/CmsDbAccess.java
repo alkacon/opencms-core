@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/18 01:52:03 $
-* Version: $Revision: 1.278 $
+* Date   : $Date: 2003/06/27 14:59:47 $
+* Version: $Revision: 1.278.2.1 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.278 $ $Date: 2003/03/18 01:52:03 $ *
+ * @version $Revision: 1.278.2.1 $ $Date: 2003/06/27 14:59:47 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -1661,7 +1661,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition createPropertydefinition(String name,
-                                                          int resourcetype)
+                                                          int resourcetype, 
+                                                          int projectId)
         throws CmsException {
         Connection con = null;
         PreparedStatement statement = null;
@@ -1713,7 +1714,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                  }
             }
           }
-         return(readPropertydefinition(name, resourcetype));
+         return readPropertydefinition(name, resourcetype, projectId);
     }
 
    /**
@@ -2377,7 +2378,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             usedPool = m_poolName;
             usedStatement = "";
         }
-        CmsPropertydefinition propdef = readPropertydefinition(meta, resourceType);
+        CmsPropertydefinition propdef = readPropertydefinition(meta, resourceType, projectId);
         if( propdef == null) {
             // there is no propdefinition with the overgiven name for the resource
             throw new CmsException("[" + this.getClass().getName() + "] " + meta,
@@ -4977,8 +4978,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 // copy properties
                 Map props = new HashMap();
                 try {
+                    deleteAllProperties(onlineProject.getId(), newFolder);
                     props = readProperties(projectId, currentFolder, currentFolder.getType());
-                    writeProperties(props, onlineProject.getId(), newFolder, newFolder.getType());
+                    writeProperties(props, onlineProject.getId(), newFolder, currentFolder.getType());
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + newFolder.toString() + " Message= " + exc.getMessage());
@@ -5604,7 +5606,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             String key;
             while(keys.hasNext()) {
                 key = (String) keys.next();
-                CmsPropertydefinition propdef = readPropertydefinition(key, resource.getType());
+                CmsPropertydefinition propdef = readPropertydefinition(key, resource.getType(), projectId);
                 String value = (String) properties.get(key);
                 if( propdef == null) {
                     // there is no propertydefinition for with the overgiven name for the resource
@@ -5951,17 +5953,27 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public Vector readAllPropertydefinitions(int resourcetype)
+    public Vector readAllPropertydefinitions(int resourcetype, int projectId)
         throws CmsException {
          Vector metadefs = new Vector();
          ResultSet result = null;
          PreparedStatement statement = null;
          Connection con = null;
-
+         String usedPool;
+         String usedStatement;
+         
+         if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID){
+             usedPool = m_poolNameOnline;
+             usedStatement = "_ONLINE";
+         } else {
+             usedPool = m_poolName;
+             usedStatement = "";
+         }
+         
          try {
-             con = DriverManager.getConnection(m_poolName);
+             con = DriverManager.getConnection(usedPool);
              // create statement
-             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_READALL"));
+             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_READALL"+usedStatement));
              statement.setInt(1,resourcetype);
              result = statement.executeQuery();
 
@@ -6011,9 +6023,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public Vector readAllPropertydefinitions(I_CmsResourceType resourcetype)
+    public Vector readAllPropertydefinitions(I_CmsResourceType resourcetype, int projectId)
         throws CmsException {
-        return(readAllPropertydefinitions(resourcetype.getResourceType()));
+        return readAllPropertydefinitions(resourcetype.getResourceType(), projectId);
     }
 
     /**
@@ -9164,18 +9176,28 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsPropertydefinition readPropertydefinition(String name, int type)
+    public CmsPropertydefinition readPropertydefinition(String name, int type, int projectId)
         throws CmsException {
          CmsPropertydefinition propDef=null;
          ResultSet res = null;
          PreparedStatement statement = null;
          Connection con = null;
-
+         String usedPool;
+         String usedStatement;
+         
+         if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID){
+             usedPool = m_poolNameOnline;
+             usedStatement = "_ONLINE";
+         } else {
+             usedPool = m_poolName;
+             usedStatement = "";
+         }
+         
          try {
-             con = DriverManager.getConnection(m_poolName);
+             con = DriverManager.getConnection(usedPool);
 
              // create statement
-             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_READ"));
+             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_READ"+usedStatement));
              statement.setString(1,name);
              statement.setInt(2,type);
              res = statement.executeQuery();
@@ -9233,9 +9255,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsPropertydefinition readPropertydefinition(String name, I_CmsResourceType type)
+    public CmsPropertydefinition readPropertydefinition(String name, I_CmsResourceType type, int projectId)
         throws CmsException {
-        return( readPropertydefinition(name, type.getResourceType() ) );
+        return( readPropertydefinition(name, type.getResourceType(), projectId ) );
     }
 
     /**
@@ -11753,7 +11775,7 @@ public CmsTask readTask(int id) throws CmsException {
         throws CmsException {
         CmsPropertydefinition propdef = null;
         try{
-        	propdef = readPropertydefinition(meta, resourceType);
+        	propdef = readPropertydefinition(meta, resourceType, projectId);
         } catch (CmsException ex){
         	// do nothing
         }
@@ -11761,7 +11783,7 @@ public CmsTask readTask(int id) throws CmsException {
             // there is no propertydefinition for with the overgiven name for the resource
             // add this definition or throw an exception
             if(addDefinition){
-            	this.createPropertydefinition(meta, resourceType);
+            	this.createPropertydefinition(meta, resourceType, projectId);
             } else {
             	throw new CmsException("[" + this.getClass().getName() + "] " + meta,
                 	CmsException.C_NOT_FOUND);
@@ -11834,7 +11856,7 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition metadef)
+    public CmsPropertydefinition writePropertydefinition(CmsPropertydefinition propertyDef, int projectId)
         throws CmsException {
         PreparedStatement statement = null;
         CmsPropertydefinition returnValue = null;
@@ -11843,29 +11865,29 @@ public CmsTask readTask(int id) throws CmsException {
             // write the propertydef in the offline db
             con = DriverManager.getConnection(m_poolName);
             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_UPDATE"));
-            statement.setString(1, metadef.getName() );
-            statement.setInt(2, metadef.getId() );
+            statement.setString(1, propertyDef.getName() );
+            statement.setInt(2, propertyDef.getId() );
             statement.executeUpdate();
             statement.close();
             con.close();
             // write the propertydef in the online db
             con = DriverManager.getConnection(m_poolNameOnline);
             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_UPDATE_ONLINE"));
-            statement.setString(1, metadef.getName() );
-            statement.setInt(2, metadef.getId() );
+            statement.setString(1, propertyDef.getName() );
+            statement.setInt(2, propertyDef.getId() );
             statement.executeUpdate();
             statement.close();
             con.close();
             // write the propertydef in the backup db
             con = DriverManager.getConnection(m_poolNameBackup);
             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_UPDATE_BACKUP"));
-            statement.setString(1, metadef.getName() );
-            statement.setInt(2, metadef.getId() );
+            statement.setString(1, propertyDef.getName() );
+            statement.setInt(2, propertyDef.getId() );
             statement.executeUpdate();
             statement.close();
             con.close();
             // read the propertydefinition
-            returnValue = readPropertydefinition(metadef.getName(), metadef.getType());
+            returnValue = readPropertydefinition(propertyDef.getName(), propertyDef.getType(), projectId);
          } catch( SQLException exc ) {
              throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
                 CmsException.C_SQL_ERROR, exc);
