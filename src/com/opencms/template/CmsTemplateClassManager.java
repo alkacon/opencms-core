@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
-* Date   : $Date: 2003/01/20 23:59:21 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/02/01 22:59:31 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,24 +44,9 @@ import com.opencms.core.*;
  * be cached and re-used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2003/01/20 23:59:21 $
+ * @version $Revision: 1.29 $ $Date: 2003/02/01 22:59:31 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels {
-
-    /**
-     * Hashtable for caching the template class
-     */
-    private static Hashtable instanceCache = new Hashtable();
-
-    /**
-     * Clears the cache for template class instances.
-     */
-    public static void clearCache() {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "[CmsClassManager] clearing class instance cache.");
-        }
-        instanceCache.clear();
-    }
 
     /**
      * Gets the instance of the class with the given classname.
@@ -73,7 +58,8 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
      * @throws CmsException
      */
     public static Object getClassInstance(CmsObject cms, String classname) throws CmsException {
-        return getClassInstance(cms, classname, null);
+                
+        return getClassInstance(cms, classname, null, null);
     }
 
     /**
@@ -118,40 +104,35 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
         if(parameterTypes == null) {
             parameterTypes = new Class[0];
         }
-        if(instanceCache.containsKey(classname)) {
-            o = instanceCache.get(classname);
-        }else {
-            try {
-                Class c = CmsTemplateClassManager.class.getClassLoader().loadClass(classname);
-                // Now we have to look for the constructor
-                Constructor con = c.getConstructor(parameterTypes);
-                o = con.newInstance(callParameters);
-            }catch(Exception e) {
-                String errorMessage = null;
+        try {
+            Class c = CmsTemplateClassManager.class.getClassLoader().loadClass(classname);
+            // Now we have to look for the constructor
+            Constructor con = c.getConstructor(parameterTypes);
+            o = con.newInstance(callParameters);
+        }catch(Exception e) {
+            String errorMessage = null;
 
-                // Construct error message for the different exceptions
-                if(e instanceof ClassNotFoundException) {
-                    errorMessage = "Could not load template class " + classname + ". " + e.getMessage();
+            // Construct error message for the different exceptions
+            if(e instanceof ClassNotFoundException) {
+                errorMessage = "Could not load template class " + classname + ". " + e.getMessage();
+            }
+            else {
+                if(e instanceof InstantiationException) {
+                    errorMessage = "Could not instantiate template class " + classname;
                 }
                 else {
-                    if(e instanceof InstantiationException) {
-                        errorMessage = "Could not instantiate template class " + classname;
+                    if(e instanceof NoSuchMethodException) {
+                        errorMessage = "Could not find constructor of template class " + classname;
                     }
                     else {
-                        if(e instanceof NoSuchMethodException) {
-                            errorMessage = "Could not find constructor of template class " + classname;
-                        }
-                        else {
-                            errorMessage = "Unknown error while getting instance of template class " + classname;
-                        }
+                        errorMessage = "Unknown error while getting instance of template class " + classname;
                     }
                 }
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
-                }
-                throw new CmsException(errorMessage, CmsException.C_CLASSLOADER_ERROR, e);
             }
-            instanceCache.put(classname, o);
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
+            }
+            throw new CmsException(errorMessage, CmsException.C_CLASSLOADER_ERROR, e);
         }
         return o;
     }

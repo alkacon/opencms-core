@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2003/01/20 23:59:23 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/02/01 22:58:58 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Hashtable;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2003/01/20 23:59:23 $
+ * @version $Revision: 1.40 $ $Date: 2003/02/01 22:58:58 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
 
@@ -285,9 +285,6 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      */
     private static void clearLauncherCache(CmsObject cms, boolean clearClasses, boolean clearFiles, boolean clearTemplates) {
         long currentFsCounter = cms.getFileSystemChanges();
-        if(clearClasses) {
-            CmsTemplateClassManager.clearCache();
-        }
         if(clearFiles || (currentFsCounter > m_lastFsCounterFile)) {
             A_CmsXmlContent.clearFileCache();
             m_lastFsCounterFile = currentFsCounter;
