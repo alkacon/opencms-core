@@ -669,9 +669,17 @@ TABLE.filekontext
 	/*BORDER-BOTTOM: #c0c0c0 outset 1px;
     BORDER-LEFT: #c0c0c0 outset 1px;
     BORDER-RIGHT: #c0c0c0 outset 1px;
-    BORDER-TOP: #c0c0c0 outset 1px;*/
-    
- 	
+    BORDER-TOP: #c0c0c0 outset 1px;*/ 	
+}
+TABLE.picturebrowser
+{
+	
+    background-image:url(pics/bg_grauekachel.gif);
+    //background-color:red;
+	/*BORDER-BOTTOM: #c0c0c0 outset 1px;
+    BORDER-LEFT: #c0c0c0 outset 1px;
+    BORDER-RIGHT: #c0c0c0 outset 1px;
+    BORDER-TOP: #c0c0c0 outset 1px;*/ 	
 }
 A.kontextlink
 {
