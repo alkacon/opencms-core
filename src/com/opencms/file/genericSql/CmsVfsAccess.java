@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/07 11:43:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/07 14:24:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/07 11:43:26 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/07 14:24:51 $
  */
 public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChannels {
 
@@ -2053,31 +2053,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
                 int modifiedBy = res.getInt(m_SqlQueries.get("C_RESOURCES_LASTMODIFIED_BY"));
                 String modifiedByName = res.getString(m_SqlQueries.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                file =
-                    new CmsBackupResource(
-                        versionId,
-                        resId,
-                        parentId,
-                        fileId,
-                        resName,
-                        resType,
-                        resFlags,
-                        userId,
-                        userName,
-                        groupId,
-                        groupName,
-                        projectID,
-                        accessFlags,
-                        state,
-                        launcherType,
-                        launcherClass,
-                        created,
-                        modified,
-                        modifiedBy,
-                        modifiedByName,
-                        new byte[0],
-                        resSize,
-                        lockedInProject);
+                file = new CmsBackupResource(versionId, resId, parentId, fileId, resName, resType, resFlags, userId, userName, groupId, groupName, projectID, accessFlags, state, launcherType, launcherClass, created, modified, modifiedBy, modifiedByName, new byte[0], resSize, lockedInProject);
 
                 allHeaders.addElement(file);
             }
@@ -2420,31 +2396,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
                 byte[] content = m_SqlQueries.getBytes(res, m_SqlQueries.get("C_RESOURCES_FILE_CONTENT"));
                 int resProjectId = res.getInt(m_SqlQueries.get("C_RESOURCES_PROJECT_ID"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                file =
-                    new CmsBackupResource(
-                        versionId,
-                        resId,
-                        parentId,
-                        fileId,
-                        filename,
-                        resType,
-                        resFlags,
-                        userId,
-                        userName,
-                        groupId,
-                        groupName,
-                        resProjectId,
-                        accessFlags,
-                        state,
-                        launcherType,
-                        launcherClass,
-                        created,
-                        modified,
-                        modifiedBy,
-                        modifiedByName,
-                        content,
-                        resSize,
-                        lockedInProject);
+                file = new CmsBackupResource(versionId, resId, parentId, fileId, filename, resType, resFlags, userId, userName, groupId, groupName, resProjectId, accessFlags, state, launcherType, launcherClass, created, modified, modifiedBy, modifiedByName, content, resSize, lockedInProject);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -2759,31 +2711,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
                 int modifiedBy = res.getInt(m_SqlQueries.get("C_RESOURCES_LASTMODIFIED_BY"));
                 String modifiedByName = res.getString(m_SqlQueries.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                file =
-                    new CmsBackupResource(
-                        versionId,
-                        resId,
-                        parentId,
-                        fileId,
-                        filename,
-                        resType,
-                        resFlags,
-                        userId,
-                        userName,
-                        groupId,
-                        groupName,
-                        projectID,
-                        accessFlags,
-                        state,
-                        launcherType,
-                        launcherClass,
-                        created,
-                        modified,
-                        modifiedBy,
-                        modifiedByName,
-                        new byte[0],
-                        resSize,
-                        lockedInProject);
+                file = new CmsBackupResource(versionId, resId, parentId, fileId, filename, resType, resFlags, userId, userName, groupId, groupName, projectID, accessFlags, state, launcherType, launcherClass, created, modified, modifiedBy, modifiedByName, new byte[0], resSize, lockedInProject);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
