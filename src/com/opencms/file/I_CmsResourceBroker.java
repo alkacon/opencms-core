@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.29 $ $Date: 2000/01/31 18:59:50 $
  */
 interface I_CmsResourceBroker {
 
@@ -1497,6 +1497,25 @@ interface I_CmsResourceBroker {
 											 String resourceType) 
 		throws CmsException;
 
+	/**
+	 * Returns a CmsResourceTypes.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourceType the id of the resourceType to get.
+	 * 
+	 * Returns a CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsResourceType getResourceType(A_CmsUser currentUser, 
+											 A_CmsProject currentProject,
+											 int resourceType)
+		throws CmsException;
+	
 	/**
 	 * Adds a CmsResourceTypes.
 	 * 

@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/01/28 18:45:53 $
+ * @version $Revision: 1.26 $ $Date: 2000/01/31 18:59:50 $
  */
 public interface I_CmsConstants
 {
@@ -115,7 +115,7 @@ public interface I_CmsConstants
 	 * This is the group for projectleaders. It is the only group, which
 	 * can create new projects.
 	 */
-	 static final String C_GROUP_PROJECTLEADER = "Projectleader";
+	 static final String C_GROUP_PROJECTLEADER = "Projectmanager";
 
 	/**
 	 * This is the group for users. If you are in this group, you can use

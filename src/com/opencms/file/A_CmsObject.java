@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2000/01/25 15:37:31 $ 
+ * @version $Revision: 1.34 $ $Date: 2000/01/31 18:59:50 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -98,6 +98,18 @@ public abstract class A_CmsObject {
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
 	abstract public A_CmsResourceType getResourceType(String resourceType) 
+		throws CmsException ;
+	
+	/**
+	 * Returns a CmsResourceTypes.
+	 * 
+	 * @param resourceType the idof the resource to get.
+	 * 
+	 * @return a CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	abstract public A_CmsResourceType getResourceType(int resourceType) 
 		throws CmsException ;
 	
 	/**

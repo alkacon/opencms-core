@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2000/01/28 17:42:31 $ 
+ * @version $Revision: 1.34 $ $Date: 2000/01/31 18:59:50 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -116,7 +116,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	}
 	
 	/**
-	 * Returns a Vector with all I_CmsResourceTypes.
+	 * Returns a I_CmsResourceTypes.
 	 * 
 	 * @param resourceType the name of the resource to get.
 	 * 
@@ -125,6 +125,21 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
 	public A_CmsResourceType getResourceType(String resourceType) 
+		throws CmsException {
+		return( c_rb.getResourceType(m_context.currentUser(), 
+									 m_context.currentProject(), resourceType) );
+	}
+	
+	/**
+	 * Returns a I_CmsResourceTypes.
+	 * 
+	 * @param resourceType the id of the resource to get.
+	 * 
+	 * @return a CmsResourceTypes.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsResourceType getResourceType(int resourceType) 
 		throws CmsException {
 		return( c_rb.getResourceType(m_context.currentUser(), 
 									 m_context.currentProject(), resourceType) );
