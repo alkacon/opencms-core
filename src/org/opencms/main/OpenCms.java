@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/09/22 10:58:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/25 16:07:46 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public final class OpenCms {
     
@@ -152,13 +152,22 @@ public final class OpenCms {
     }
     
     /**
-     * Returns an initialized CmsObject with "Guest" user permissions,
+     * Returns an initialized CmsObject with the user initialized as provided,
      * with the "online" project selected and "/" set as the current site root.<p>
      * 
+     * Note: Only the default users 'Guest' and 'Export' can initialized with 
+     * this method, all other user names will throw a RuntimeException.<p>
+     * 
+     * @param user the user name to initialize, can only be 
+     *        {@link org.opencms.db.CmsDefaultUsers#getUserGuest()} or
+     *        {@link org.opencms.db.CmsDefaultUsers#getUserExport()}
      * @return an initialized CmsObject with "Guest" user permissions
-     */    
-    public static CmsObject getGuestCmsObject() {
-        return OpenCmsCore.getInstance().initCmsObjectGuest();
+     * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
+     * @see org.opencms.db.CmsDefaultUsers#getUserExport()
+     * @throws RuntimeException in case an invalid user name is provided
+     */     
+    public static CmsObject initCmsObject(String user) {
+        return OpenCmsCore.getInstance().initCmsObject(user);
     }
     
     /**

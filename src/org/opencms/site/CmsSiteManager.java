@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/09/19 15:33:08 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/25 16:07:45 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,16 +56,16 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
     
-    /** The list of configured site roots */
-    private HashMap m_sites;
-    
     /** The default site root */
     private CmsSite m_defaultSite;
+    
+    /** The list of configured site roots */
+    private HashMap m_sites;
     
     /**
      * Creates a new site manager.<p>
@@ -122,65 +122,6 @@ public final class CmsSiteManager implements Cloneable {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root default    : " + m_defaultSite);
         }
-    }
-    
-    /**
-     * Matches the given request against all configures sites and returns 
-     * the matching site, or null if no sites matches.<p>
-     * 
-     * @param req the request to match 
-     * @return the matching site, or null if no sites matches
-     */
-    public CmsSite matchRequest(HttpServletRequest req) {
-        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getProtocol(), req.getServerName(), req.getServerPort());                    
-        CmsSite site = (CmsSite)m_sites.get(matcher);
-        if (site == null) {
-            // return the default site (might be null as well)
-            site = m_defaultSite;
-        }
-        return site;
-    }
-    
-    /**
-     * Returns the list of configured sites.<p>
-     * 
-     * @return the list of configured sites
-     */
-    public Map getSiteList() {
-        return m_sites;
-    }
-    
-    /**
-     * Returns the default site.<p>
-     * 
-     * @return the default site
-     */
-    public CmsSite getDefaultSite() {
-        return m_defaultSite;
-    }    
-    
-    /**
-     * Initializes the site manager with the OpenCms system configuration.<p>
-     * 
-     * @param conf the OpenCms configuration
-     * @return the initialized site manager
-     */
-    public static CmsSiteManager initialize(Configurations conf) {
-        String[] siteRoots;
-        String siteDefault;
-        
-        // try to initialize the site root list from the configuration
-        siteRoots = conf.getStringArray("site.root.list");            
-        if (siteRoots == null) {
-            // if no site root list is defined we use only the site root default
-            siteRoots = new String[0];
-        }
-
-        // read the site root default from the configuration 
-        siteDefault = conf.getString("site.root.default");            
-        
-        // create ad return the site manager 
-        return new CmsSiteManager(siteRoots, siteDefault);
     }
     
     /**
@@ -256,6 +197,84 @@ public final class CmsSiteManager implements Cloneable {
             cms.getRequestContext().restoreSiteRoot();
         }
         return result;
+    }
+    
+    /**
+     * Returns the current site for the provided cms context object.<p>
+     * 
+     * @param cms the cms context object to check for the site
+     * @return the current site for the provided cms context object
+     */
+    public static CmsSite getCurrentSite(CmsObject cms) {
+        Map sites = OpenCms.getSiteManager().getSiteList();
+        Iterator i = sites.keySet().iterator();
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        while (i.hasNext()) {
+            CmsSite site = (CmsSite)sites.get(i.next());
+            if (siteRoot.equals(site.getSiteRoot())) {
+                return site;
+            }
+        }
+        return OpenCms.getSiteManager().getDefaultSite();
+    }
+    
+    /**
+     * Initializes the site manager with the OpenCms system configuration.<p>
+     * 
+     * @param conf the OpenCms configuration
+     * @return the initialized site manager
+     */
+    public static CmsSiteManager initialize(Configurations conf) {
+        String[] siteRoots;
+        String siteDefault;
+        
+        // try to initialize the site root list from the configuration
+        siteRoots = conf.getStringArray("site.root.list");            
+        if (siteRoots == null) {
+            // if no site root list is defined we use only the site root default
+            siteRoots = new String[0];
+        }
+
+        // read the site root default from the configuration 
+        siteDefault = conf.getString("site.root.default");            
+        
+        // create ad return the site manager 
+        return new CmsSiteManager(siteRoots, siteDefault);
+    }
+    
+    /**
+     * Returns the default site.<p>
+     * 
+     * @return the default site
+     */
+    public CmsSite getDefaultSite() {
+        return m_defaultSite;
+    }    
+    
+    /**
+     * Returns the list of configured sites.<p>
+     * 
+     * @return the list of configured sites
+     */
+    public Map getSiteList() {
+        return m_sites;
+    }
+    
+    /**
+     * Matches the given request against all configures sites and returns 
+     * the matching site, or null if no sites matches.<p>
+     * 
+     * @param req the request to match 
+     * @return the matching site, or null if no sites matches
+     */
+    public CmsSite matchRequest(HttpServletRequest req) {
+        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getProtocol(), req.getServerName(), req.getServerPort());                    
+        CmsSite site = (CmsSite)m_sites.get(matcher);
+        if (site == null) {
+            // return the default site (might be null as well)
+            site = m_defaultSite;
+        }
+        return site;
     }
     
 }

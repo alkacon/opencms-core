@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/24 14:19:24 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/09/25 16:07:45 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -959,7 +959,7 @@ public class OpenCmsCore {
             // initialize the requested site root
             CmsSite site = OpenCms.getSiteManager().matchRequest(req);
             // no user name found in session or no session, login the user as guest user
-            cms = initCmsObject(cmsReq, cmsRes, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_sessionStorage);            
+            cms = initCmsObject(cmsReq, cmsRes, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);            
             if (m_useBasicAuthentication) {
                 // check if basic authorization data was provided
                 checkBasicAuthorization(cms, req, res);
@@ -1044,18 +1044,33 @@ public class OpenCmsCore {
     }
     
     /**
-     * Returns an initialized CmsObject with "Guest" user permissions,
+     * Returns an initialized CmsObject with the user initialized as provided,
      * with the "online" project selected and "/" set as the current site root.<p>
      * 
-     * @return a cms context that has been initialized with "Guest" permissions
-     */
-    protected CmsObject initCmsObjectGuest() {
+     * Note: Only the default users 'Guest' and 'Export' can initialized with 
+     * this method, all other user names will throw a RuntimeException.<p>
+     * 
+     * @param user the user name to initialize, can only be 
+     *        {@link org.opencms.db.CmsDefaultUsers#getUserGuest()} or
+     *        {@link org.opencms.db.CmsDefaultUsers#getUserExport()}
+     * @return an initialized CmsObject with "Guest" user permissions
+     * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
+     * @see org.opencms.db.CmsDefaultUsers#getUserExport()
+     * @throws RuntimeException in case an invalid user name is provided
+     */  
+    protected CmsObject initCmsObject(String user) {
+        if (user == null) {
+            user = getDefaultUsers().getUserGuest();
+        } else if (!user.equalsIgnoreCase(getDefaultUsers().getUserGuest()) 
+                && !user.equalsIgnoreCase(getDefaultUsers().getUserExport())) {
+            throw new RuntimeException("Invalid user for default CmsObject initialization: " + user);
+        }
         try {
-            return initCmsObject(null, null, getDefaultUsers().getUserGuest(), null);
+            return initCmsObject(null, null, user, null);
         } catch (CmsException e) {
             // should not happen since the guest user can always be created like this
             if (getLog(this).isWarnEnabled()) {
-                getLog(this).warn("Unable to initialize Guest CmsObject", e);
+                getLog(this).warn("Unable to initialize CmsObject for user " + user, e);
             }
             return new CmsObject();            
         } 

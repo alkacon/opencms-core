@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/09/25 16:07:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -173,7 +173,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     Vector resources = publishedResources.getChangedVfsResources();
                     if (resources != null) {
                         // get a guest user cms context
-                        CmsObject cms = OpenCms.getGuestCmsObject();
+                        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
                         // iterate list of published resources
                         Iterator i = resources.iterator();
                         while (i.hasNext()) {
@@ -255,7 +255,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         File exportFolder = new File(exportFolderName);
         if (!exportFolder.exists()) {
             if (!exportFolder.mkdirs()) {
-                throw new CmsException("Creation of export folder failed for RFS file " + rfsName);
+                throw new CmsException("Creation of static export folder failed for RFS file " + rfsName);
             }
         }
 
@@ -266,7 +266,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         try {
             exportStream = new FileOutputStream(exportFile);
         } catch (Throwable t) {
-            throw new CmsException("Creation of export output stream failed for RFS file " + rfsName);
+            throw new CmsException("Creation of static export output stream failed for RFS file " + rfsName);
         }
 
         // ensure we have exactly the same setup as if called "the usual way"
@@ -287,7 +287,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         
         // log export success 
         if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info("Exported vfs file '" + vfsName + "' to rfs file '" + rfsName + "'");
+            OpenCms.getLog(this).info("Static exported vfs file '" + vfsName + "' to rfs file '" + rfsName + "'");
         }
     }    
     
@@ -558,7 +558,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         Vector resources;
         CmsObject cms = null;
         try {
-            cms = OpenCms.getGuestCmsObject();
+            cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             resources = cms.getResourcesWithPropertyDefinition(I_CmsConstants.C_PROPERTY_EXPORTNAME);
         } catch (CmsException e) {
             resources = new Vector(0);

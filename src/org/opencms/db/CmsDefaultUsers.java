@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2003/09/19 15:33:08 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/25 16:07:46 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,50 +46,25 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $ $Date: 2003/09/19 15:33:08 $
+ * @version $Revision: 1.12 $ $Date: 2003/09/25 16:07:46 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
-    
-    /** Matching group names for group name translation */
-    private Map m_groupTranslations;
 
     // member variables    
     private String m_groupAdministrators;
     private String m_groupGuests;
-    private String m_groupProjectmanagers;
+    private String m_groupProjectmanagers;    
     private String m_groupUsers;
     private String m_userAdmin;
+    private String m_userExport;
     private String m_userGuest;
+
+    /** Matching group names for group name translation */
+    private Map m_groupTranslations;
 
     /** Matching user names for user name translation */  
     private Map m_userTranslations;
-      
-    /**
-     * Public constructor with individual names.<p>
-     * 
-     * @param userAdmin name of the default admin user
-     * @param userGuest name of the guest user
-     * @param groupAdministrators name of the adminsitrators group 
-     * @param groupProjectmanagers name of the project managers group
-     * @param groupUsers name of the users group
-     * @param groupGuests name of the guest group
-     */
-    public CmsDefaultUsers(
-        String userAdmin,
-        String userGuest,
-        String groupAdministrators,
-        String groupProjectmanagers,
-        String groupUsers,
-        String groupGuests
-    ) {
-        m_userAdmin = userAdmin.trim();
-        m_userGuest = userGuest.trim();
-        m_groupAdministrators = groupAdministrators.trim(); 
-        m_groupProjectmanagers = groupProjectmanagers.trim();
-        m_groupUsers = groupUsers.trim();
-        m_groupGuests = groupGuests.trim();
-    }
     
     /**
      * Public constructor with name array.<p>
@@ -97,6 +72,7 @@ public class CmsDefaultUsers {
      * The order of names in the array must be:<ol>
      * <li>Name of the default admin user
      * <li>Name of the guest user
+     * <li>Name of the export user
      * <li>Name of the administrators group
      * <li>Name of the project managers group
      * <li>Name of the users group
@@ -105,15 +81,16 @@ public class CmsDefaultUsers {
      * @param names the name array
      */
     public CmsDefaultUsers(String[] names) {
-        if ((names == null) || (names.length != 6)) {
-            throw new RuntimeException("CmsDefaultUsers(): Exactly 6 user / group names are required");
+        if ((names == null) || (names.length != 7)) {
+            throw new RuntimeException("CmsDefaultUsers(): Exactly 7 user / group names are required");
         }
         m_userAdmin = names[0].trim();
         m_userGuest = names[1].trim();
-        m_groupAdministrators = names[2].trim();
-        m_groupProjectmanagers = names[3].trim();
-        m_groupUsers = names[4].trim();
-        m_groupGuests = names[5].trim();
+        m_userExport = names[2].trim();
+        m_groupAdministrators = names[3].trim();
+        m_groupProjectmanagers = names[4].trim();
+        m_groupUsers = names[5].trim();
+        m_groupGuests = names[6].trim();
     } 
 
     /**
@@ -141,6 +118,7 @@ public class CmsDefaultUsers {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {            
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Admin user           : " + defaultUsers.getUserAdmin());
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Guest user           : " + defaultUsers.getUserGuest());
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export user          : " + defaultUsers.getUserExport());
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Administrators group : " + defaultUsers.getGroupAdministrators());
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Projectmanagers group: " + defaultUsers.getGroupProjectmanagers());
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Users group          : " + defaultUsers.getGroupUsers());
@@ -204,6 +182,15 @@ public class CmsDefaultUsers {
      */
     public String getUserAdmin() {
         return m_userAdmin;
+    }
+      
+    /**
+     * Returns the name of the user used to generate the static export.<p>
+     * 
+     * @return the name of the user used to generate the static export
+     */
+    public String getUserExport() {
+        return m_userExport;
     }
 
     /**

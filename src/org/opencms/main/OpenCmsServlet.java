@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2003/09/22 10:58:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/25 16:07:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class OpenCmsServlet extends HttpServlet {
     
@@ -106,19 +106,22 @@ public class OpenCmsServlet extends HttpServlet {
                 CmsObject cms = null;            
                 CmsStaticExportData exportData = null;
                 try {
-                    cms = OpenCmsCore.getInstance().initCmsObject(req, res, null, null);            
+                    cms = OpenCmsCore.getInstance().initCmsObject(req, res, OpenCms.getDefaultUsers().getUserExport(), null);            
                     exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
                 } catch (CmsException e) {
                     // unlikley to happen 
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
+                    if (OpenCms.getLog(this).isWarnEnabled()) {                    
                         OpenCms.getLog(this).warn("Error initializing CmsObject in error handler for '" + path + "' code " + error, e);
-                    }                    
+                    }
                 }
                 if (exportData != null) {
                     synchronized (this) {
                         try {
                             OpenCms.getStaticExportManager().export(req, res, cms, exportData);
                         } catch (Throwable t) {
+                            if (OpenCms.getLog(this).isWarnEnabled()) {                    
+                                OpenCms.getLog(this).warn("Error exporting " + exportData, t);
+                            }
                             res.sendError(HttpServletResponse.SC_NOT_FOUND);
                         }
                     }

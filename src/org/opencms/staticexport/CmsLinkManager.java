@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/09/03 08:28:08 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/25 16:07:46 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsLinkManager {
     
@@ -142,7 +142,7 @@ public class CmsLinkManager {
             try {
                 // static export must always be checked with the export users permissions,
                 // not the current users permissions
-                CmsObject cms = OpenCms.getGuestCmsObject();
+                CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
                 cms.getRequestContext().setSiteRoot(cmsParam.getRequestContext().getSiteRoot());
                 // let's look up export property in VFS
                 String exportValue = cms.readProperty(vfsName, I_CmsConstants.C_PROPERTY_EXPORT, true);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportData.java,v $
- * Date   : $Date: 2003/08/15 18:35:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/25 16:07:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.file.CmsResource;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsStaticExportData {
     
@@ -89,5 +89,23 @@ public class CmsStaticExportData {
      */
     public String getVfsName() {
         return m_vfsName;
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */    
+    public String toString() {
+        StringBuffer result = new StringBuffer();
+        result.append(this.getClass().getName());
+        result.append("[vfsName=");
+        result.append(m_vfsName);
+        result.append(", rfsName=");
+        result.append(m_rfsName);
+        if (m_resource != null) {
+            result.append(", resStructureId=");
+            result.append(m_resource.getStructureId());
+        }
+        result.append("]");
+        return result.toString();                
     }
 }
