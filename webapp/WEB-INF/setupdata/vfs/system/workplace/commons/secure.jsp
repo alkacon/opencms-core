@@ -135,10 +135,9 @@ wp.setParamAction("secure");
       <% } %>
       </tr>
 
-      <% 
-      // folders can not be marked as secure 
-      if(!wp.getCms().readResource(wp.getParamResource()).isFolder()) {
-      %>
+
+      <%  // folders can not be marked as intern
+      if(!wp.resourceIsFolder()) { %>
       
       <tr>
         <td style="white-space:nowrap;"><%= wp.key("input.intern") %>&nbsp;</td>
@@ -171,6 +170,7 @@ wp.setParamAction("secure");
         </td>
       </tr>
     
+      <% if(wp.resourceIsFolder()) { %>
       <tr>
         <td style="white-space:nowrap;"><%= wp.key("input.exportname") %>&nbsp;</td>
 
@@ -178,6 +178,7 @@ wp.setParamAction("secure");
           <input type="text" id="exportname" name="exportname" class="maxwidth" value="<%= wp.readProperty(I_CmsConstants.C_PROPERTY_EXPORTNAME) %>">
         </td>
       </tr>
+      <% } %>
 
     </table>
 

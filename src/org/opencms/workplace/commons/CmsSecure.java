@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/03/31 13:25:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/31 14:22:57 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0
  */
@@ -238,6 +239,16 @@ public class CmsSecure extends CmsDialog {
     }
 
     /**
+     * returns if the resource to be changed is a folder.
+     * @return true if the resource is a folder
+     * @throws CmsException if the reading of the resource fails
+     */
+    public boolean resourceIsFolder() throws CmsException {
+
+        return getCms().readResource(getParamResource()).isFolder();
+    }
+
+    /**
      * Returns value of the the intern property of the resource.
      *  
      * @return the value of the intern property of the resource
@@ -263,7 +274,8 @@ public class CmsSecure extends CmsDialog {
     public String getResourceUrl() {
 
         CmsObject cms = getCms();
-        String address = "";
+        String uri = "";
+        String serverPrefix = "";        
         String vfsName = CmsLinkManager.getAbsoluteUri(getParamResource(), cms.getRequestContext().getUri());
         String secureResource = "";
         String exportedResource = "";
@@ -278,16 +290,22 @@ public class CmsSecure extends CmsDialog {
             }
         }
         if (Boolean.valueOf(exportedResource).booleanValue()) {
-            address = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+            uri = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
         } else {
-            address = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+            uri = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
         }
-        if (Boolean.valueOf(secureResource).booleanValue()) {
-            address = CmsSiteManager.getCurrentSite(cms).getSecureUrl().concat(address);
+        CmsSite currentSite = CmsSiteManager.getCurrentSite(getCms());
+        if (currentSite == OpenCms.getSiteManager().getDefaultSite()) {
+            serverPrefix = OpenCms.getSiteManager().getWorkplaceServer();
         } else {
-            address = CmsSiteManager.getCurrentSite(cms).getUrl().concat(address);
+            if (Boolean.valueOf(secureResource).booleanValue()) {
+                serverPrefix = currentSite.getSecureUrl();
+            } else {
+                serverPrefix = currentSite.getUrl();
+            }
         }
-        return address;
+        return serverPrefix + uri;
+
     }
 
     /**
