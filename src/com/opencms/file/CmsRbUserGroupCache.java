@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroupCache.java,v $
- * Date   : $Date: 2000/03/13 15:54:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/07 07:56:06 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/03/13 15:54:50 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/07 07:56:06 $
  */
  class CmsRbUserGroupCache extends CmsRbUserGroup {
 
@@ -265,10 +265,13 @@ import com.opencms.core.*;
          throws CmsException {
          A_CmsGroup group = readGroup(delgroup);
          Vector childs=null;
+		 Vector users=null;
          // get all child groups of the group
          childs=getChild(delgroup);
+		 // get all users in this group
+		 users=getUsersOfGroup(delgroup);
          // delete group only if it has no childs
-         if (childs == null) {
+         if ((childs == null) && ((users == null) || (users.size() == 0))) {
             m_accessUserGroup.deleteGroup(delgroup);
             m_groupcache.remove(group.getName());
             m_groupcache.remove(new Integer(group.getId()));
