@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/07 21:02:12 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/03/08 06:21:01 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.35 $ $Date: 2005/03/07 21:02:12 $
+ * @version $Revision: 1.36 $ $Date: 2005/03/08 06:21:01 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -94,6 +94,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** A search query to return all documents in the index. */
     public static final String C_SEARCH_QUERY_RETURN_ALL = "*";
+
+    /** Constant for a field list that cointains only the "meta" field. */
+    private static final String[] C_DOC_META_FIELDS = new String[] {
+        I_CmsDocumentFactory.DOC_META,
+        I_CmsDocumentFactory.DOC_CONTENT};
 
     /** The permission check mode for this index. */
     private boolean m_checkPermissions;
@@ -344,6 +349,25 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 throw new CmsException("Index source association for \"" + sourceName + "\" failed", exc);
             }
         }
+    }
+
+    /**
+     * Performs a search on the index within the fields "content" and "meta".<p>
+     * 
+     * The result is returned as List with entries of type I_CmsSearchResult.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param searchRoot only resource that are sub-resource of the search root are included in the search result
+     * @param searchQuery the search term to search the index
+     * @param page the page to calculate the search result list, or -1 to return all found documents in the search result
+     * @param matchesPerPage the number of search results per page, or -1 to return all found documents in the search result
+     * @return the List of results found or an empty list
+     * @throws CmsException if something goes wrong
+     */
+    public synchronized List search(CmsObject cms, String searchRoot, String searchQuery, int page, int matchesPerPage)
+    throws CmsException {
+
+        return search(cms, searchRoot, searchQuery, C_DOC_META_FIELDS, page, matchesPerPage);
     }
 
     /**

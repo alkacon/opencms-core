@@ -13,8 +13,7 @@ cms.includeWithPageUri("head");
 %><%--
 --%><jsp:useBean id="search" scope="request" class="org.opencms.search.CmsSearch"><%--
 --%><jsp:setProperty name="search" property="*"/><% 
-    	search.init(cms.getCmsObject()); 
-    	search.setField(new String[] {"title", "keywords", "description", "content"});
+    	search.init(cms.getCmsObject());
     	search.setMatchesPerPage(10);
     	search.setQueryLength(3);
     	search.setDisplayPages(11); %><%--

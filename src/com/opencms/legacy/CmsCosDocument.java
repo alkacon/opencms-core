@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2005/03/04 13:42:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/08 06:21:01 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.11 $ $Date: 2005/03/04 13:42:22 $
+ * @version $Revision: 1.12 $ $Date: 2005/03/08 06:21:01 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
@@ -147,11 +147,11 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
         
         Document document = new Document();
         CmsMasterDataSet content = (CmsMasterDataSet)resource.getData();
-        String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
         String value;
 
         if ((value = content.m_title) != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_TITLE, value));
+            document.add(Field.Text(I_CmsDocumentFactory.DOC_META, value));
         }                       
 
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, 
@@ -161,10 +161,13 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
 
         document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CHANNEL, ((CmsCosIndexResource)resource).getChannel()));
         document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CONTENT_DEFINITION, ((CmsCosIndexResource)resource).getContentDefinition()));
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_PATH, path));
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_SOURCE, resource.getSource()));
+
+        String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, path));        
+        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_SOURCE, resource.getSource()));
         
         document.add(Field.UnIndexed(I_CmsCosDocumentFactory.DOC_CONTENT_ID, resource.getId().toString()));
+        
         document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(cms, resource, language)));
 
         return document;

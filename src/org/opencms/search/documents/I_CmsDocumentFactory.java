@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2005/03/07 21:02:12 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/03/08 06:21:01 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.14 $ $Date: 2005/03/07 21:02:12 $
+ * @version $Revision: 1.15 $ $Date: 2005/03/08 06:21:01 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
@@ -74,6 +74,9 @@ public interface I_CmsDocumentFactory {
 
     /** Search field for document title. */
     String DOC_TITLE = "title";
+    
+    /** Combined search field for all document "meta" information, that is title, keywords, description and root path. */
+    String DOC_META = "meta";
 
     /**
      * Returns the document key for the search manager.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/03/07 15:30:50 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/03/08 06:21:01 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.19 $ $Date: 2005/03/07 15:30:50 $
+ * @version $Revision: 1.20 $ $Date: 2005/03/08 06:21:01 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -161,6 +161,9 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public String getFields() {
 
+        if (m_fields == null) {
+            return "";
+        }
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < m_fields.length; i++) {
             result.append(m_fields[i]);
@@ -350,7 +353,13 @@ public class CmsSearch implements Serializable, Cloneable {
             }
 
             try {
-                List result = m_index.search(m_cms, m_searchRoot, m_query, m_fields, m_page, m_matchesPerPage);
+                List result;
+                
+                if (m_fields != null) {
+                    result = m_index.search(m_cms, m_searchRoot, m_query, m_fields, m_page, m_matchesPerPage);
+                } else {
+                    result = m_index.search(m_cms, m_searchRoot, m_query, m_page, m_matchesPerPage);
+                }
                 
                 if (result.size() > 1) {
                     // the total number of search results matching the query is saved at the last index in the result 
@@ -421,8 +430,11 @@ public class CmsSearch implements Serializable, Cloneable {
     /**
      * Sets the fields to search.<p>
      * 
-     * Syntax and fieldnames depend on the search engine used.
-     * A former search result will be deleted.<p>
+     * If the fields are set to <code>null</code>, 
+     * or not set at all, the default fields "content" and "meta" are used.<p>
+     * 
+     * For a list of valid field names, see the Interface constants of
+     * <code>{@link org.opencms.search.documents.I_CmsDocumentFactory}</code>. 
      * 
      * @param fields the fields to search
      */
