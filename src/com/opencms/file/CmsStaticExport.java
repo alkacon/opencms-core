@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/02/01 19:14:46 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.39 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.40 $ $Date: 2003/02/01 19:14:46 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -221,9 +221,9 @@ public class CmsStaticExport implements I_CmsConstants{
 
         if(!doTheExport){
             // this is just to generate the dynamic rulesets
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
-                                "[CmsStaticExport] Generating the dynamic rulesets.");
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT,
+                                ". Generating rulesets  : ok");                                
             }
             createDynamicRules();
         }else if (cms.getRequestContext().getRequest() != null) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2003/02/01 19:14:45 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import FESI.jslib.JSUtil;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.74 $ $Date: 2003/01/20 23:59:20 $
+ * @version $Revision: 1.75 $ $Date: 2003/02/01 19:14:45 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -106,6 +106,7 @@ public class CmsShell implements I_CmsConstants {
      * Creates a new CmsShell-Object.
      */
     public CmsShell() {
+        A_OpenCms.initVersion(this);        
         try {
             String propsPath = CmsBase.getPropertiesPath(true);
             System.out.println("%%% props: " + propsPath);

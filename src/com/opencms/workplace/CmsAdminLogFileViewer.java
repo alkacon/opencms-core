@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLogFileViewer.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/02/01 19:14:46 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ public class CmsAdminLogFileViewer extends CmsWorkplaceDefault implements I_CmsC
                 logfilecontent.append(Utils.getStackTrace(exc));
             }
             //Gridnine AB Aug 8, 2002
-            templateDocument.setData("logfile", Encoder.escape(logfilecontent.toString(),
+            templateDocument.setData("logfile", Encoder.escapeWBlanks(logfilecontent.toString(),
                 cms.getRequestContext().getEncoding()));
             templateDocument.setData("logfilesize", length + "");
         }

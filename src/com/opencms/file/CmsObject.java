@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/01/23 10:44:10 $
-* Version: $Revision: 1.255 $
+* Date   : $Date: 2003/02/01 19:14:45 $
+* Version: $Revision: 1.256 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import com.opencms.util.Utils;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -63,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.255 $
+ * @version $Revision: 1.256 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -71,11 +70,6 @@ public class CmsObject implements I_CmsConstants {
      * Method that can be invoked to find out all currently logged in users.
      */
     private CmsCoreSession m_sessionStorage = null;
-
-    /**
-     * The current version-number of OpenCms
-     */
-    private static String c_versionNumber = null;
 
     /**
      * The resource broker to access the cms.
@@ -785,14 +779,6 @@ protected void doCopyResourceToProject(String resource) throws CmsException {
     m_rb.copyResourceToProject(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
 }
 
-/**
- * Returns the copyright information for this OpenCms.
- *
- * @return copyright a String arry containing copyright information.
- */
-public String[] copyright() {
-    return C_COPYRIGHT;
-}
 /**
  * Counts the locked resources in a project.
  *
@@ -3878,26 +3864,6 @@ protected void doUnlockResource(String resource) throws CmsException {
  */
 public boolean userInGroup(String username, String groupname) throws CmsException {
     return (m_rb.userInGroup(m_context.currentUser(), m_context.currentProject(), username, groupname));
-}
-/**
- * Returns a String containing version information for this OpenCms.
- *
- * @return version a String containnig the version of OpenCms.
- */
-public String version() {
-    // read the version-informations from properties, if not done
-    if( c_versionNumber == null) {
-        Properties props = new Properties();
-        try {
-            props.load(getClass().getClassLoader().getResourceAsStream("com/opencms/core/version.properties"));
-        } catch(java.io.IOException exc) {
-            // ignore this exception - no properties found
-        }
-        c_versionNumber =
-            props.getProperty("version.number", "??") + " " +
-            props.getProperty("version.name", "??");
-    }
-    return c_versionNumber;
 }
 /**
  * Writes the export-path for the system.

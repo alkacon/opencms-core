@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsResourceTranslator.java,v $
- * Date   : $Date: 2002/11/02 10:32:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/02/01 19:14:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator implements I_CmsLogChannels {
@@ -123,7 +123,7 @@ public class CmsResourceTranslator implements I_CmsLogChannels {
         m_perlUtil = new Perl5Util(m_perlPatternCache);
         if (DEBUG > 0) System.out.println("["+this.getClass().getName()+"] Resource translation: Iinitialized " + translations.length + " rules.");        
         if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO) ) {
-            A_OpenCms.log(C_OPENCMS_INFO, "["+this.getClass().getName()+"] Resource translation: Iinitialized " + translations.length + " rules.");
+            A_OpenCms.log(C_OPENCMS_INIT, ". Resource translation : " + translations.length + " rules initialized");
         }          
     }    
     

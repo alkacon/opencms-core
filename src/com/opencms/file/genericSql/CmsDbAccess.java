@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/01/21 13:27:35 $
-* Version: $Revision: 1.267 $
+* Date   : $Date: 2003/02/01 19:14:47 $
+* Version: $Revision: 1.268 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.267 $ $Date: 2003/01/21 13:27:35 $ *
+ * @version $Revision: 1.268 $ $Date: 2003/02/01 19:14:47 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -237,30 +237,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         String rbName = null;
         String digest = null;
-        // CHECK: String exportpoint = null;
-        // CHECK: String exportpath = null;
         boolean fillDefaults = true;
 
 
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] init the dbaccess-module.");
+        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database access init : ok" );
         }
 
         // read the name of the rb from the properties
         rbName = (String)config.getString(C_CONFIGURATION_RESOURCEBROKER);
-
-/*
-        // read the exportpoints
-        m_exportpointStorage = new Hashtable();
-        int i = 0;
-        while ((exportpoint = config.getString(C_EXPORTPOINT + Integer.toString(i))) != null){
-            exportpath = config.getString(C_EXPORTPOINT_PATH + Integer.toString(i));
-            if (exportpath != null){
-                m_exportpointStorage.put(exportpoint, com.opencms.boot.CmsBase.getAbsoluteWebPath(exportpath));
-            }
-            i++;
-        }
-*/
 
         // read all needed parameters from the configuration
         // all needed pools are read in the following method
@@ -268,23 +253,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         digest = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST, "MD5");
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read digest from configurations: " + digest);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest configured    : " + digest);
         }
 
-        m_digestFileEncoding = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST_FILE_ENCODING, "ISO8859_1");
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read digestFileEncoding from configurations: " + m_digestFileEncoding);
+        m_digestFileEncoding = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST_FILE_ENCODING, "ISO-8859-1");
+        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest file encoding : " + m_digestFileEncoding);
         }
 
         // create the digest
         try {
             m_digest = MessageDigest.getInstance(digest);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] digest created, using: " + m_digest.toString() );
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Using digest encoding: " + 
+                    m_digest.getAlgorithm() + 
+                    " from " + m_digest.getProvider().getName() +
+                    " version " + m_digest.getProvider().getVersion());
             }
         } catch (NoSuchAlgorithmException e){
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error creating digest - using clear paswords: " + e.getMessage());
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Error setting digest : using clear passwords - " + e.getMessage());
             }
         }
 
@@ -300,7 +288,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         if(fillDefaults) {
             // YES!
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fill default resources");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database fill default: yes");
             }
             fillDefaults();
         }
@@ -317,17 +305,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // set the default pool for the id generator
         com.opencms.dbpool.CmsIdGenerator.setDefaultPool(m_poolName);
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read pool-name from configurations: " + m_poolName);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database offline pool: " + m_poolName);
         }
         //get the pool for the online resources
         m_poolNameOnline = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + ".online." + C_CONFIGURATIONS_POOL);
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read online-pool-name from configurations: " + m_poolNameOnline);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database online pool : " +  m_poolNameOnline);
         }
         //get the pool for the backup resources
         m_poolNameBackup = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + ".backup." + C_CONFIGURATIONS_POOL);
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read backup-pool-name from configurations: " + m_poolNameBackup);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database backup pool : " + m_poolNameBackup);
         }
     }
 

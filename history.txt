@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/01/31 10:03:17 $
- * Version: $Revision: 1.439 $
+ * Date   : $Date: 2003/02/01 19:14:46 $
+ * Version: $Revision: 1.440 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,12 +20,18 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! Improved editor GUI (for both source code and WYSIWYG editor) 
+! The setup wizards now checks for the correct setting of the Java file.encoding 
 ! The com.opencms.flex.jsp.CmsJspNavElement now provides direct access to all properties of a file
+* Fixed various issues regarding the character encoding, as a result it is now possible to use any encoding,
+  not just UTF-8 as with previous releases
 * Fixed an issue with JSP error pages not working in Tomcat 4.1,
   see comment for the setting "flex.jsp.errorpagecommit" in opencms.properties
 * Fixed issues #43, 44 and 45 from Bugzilla
-* CmsMethodElement could produce NullPointerExceptions in rare circumstances
+* Fixed isse where CmsMethodElement could produce NullPointerExceptions in rare circumstances
 * Fixed issue with text editor not displaying save/exit buttons in IE if ActiveX is not installed
+- The default character encoding for a new OpenCms installation is now ISO-8859-1
+- Improved the OpenCms logfile output during startup
 - The proprietary XML style localization for the workplace has been replaced by standard java.util.ResourceBundles and 
   support of it is disabled by default (can be enabled in opencms.properties with the "compatibility.support.oldlocales" flag)
 - The Italian locale has been moved to a separate module "com.opencms.locales.it" and is

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInfo.java,v $
- * Date   : $Date: 2002/12/06 23:16:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/02/01 19:14:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.boot.CmsBase;
+import com.opencms.core.A_OpenCms;
 import com.opencms.flex.cache.CmsFlexRequest;
 
 /**
@@ -37,7 +38,7 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * JDK version etc.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -128,15 +129,13 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
      */    
 	public static String infoTagAction(String property, CmsFlexRequest req) {   
              
-        com.opencms.file.CmsObject cms = req.getCmsObject();
-
 		if (property == null)
 			property = m_systemProperties[0];
 
 		String result = null;
 		switch (m_userProperty.indexOf(property)) {
 			case 0 : // opencms.version
-				result = cms.version();
+				result = A_OpenCms.version();
 				break;
 			case 1 : // opencms.url
 				result = req.getRequestURL().toString();

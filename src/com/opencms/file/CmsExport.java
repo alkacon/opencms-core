@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2003/01/31 16:55:36 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/02/01 19:14:46 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.file;
 
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.report.CmsShellReport;
@@ -63,7 +64,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.44 $ $Date: 2003/01/31 16:55:36 $
+ * @version $Revision: 1.45 $ $Date: 2003/02/01 19:14:46 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -626,7 +627,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             Element info = m_docXml.createElement(C_EXPORT_TAG_INFO);
             m_docXml.getDocumentElement().appendChild(info);
             addElement(info, C_EXPORT_TAG_CREATOR, m_cms.getRequestContext().currentUser().getName());
-            addElement(info, C_EXPORT_TAG_OC_VERSION, m_cms.version());
+            addElement(info, C_EXPORT_TAG_OC_VERSION, A_OpenCms.version());
             addElement(info, C_EXPORT_TAG_DATE, Utils.getNiceDate(new Date().getTime()));
             addElement(info, C_EXPORT_TAG_PROJECT, m_cms.getRequestContext().currentProject().getName());
             addElement(info, C_EXPORT_TAG_VERSION, C_EXPORT_VERSION);
@@ -659,7 +660,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         try {
             ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
             m_exportZipStream.putNextEntry(entry);
-            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml,m_exportZipStream, I_CmsRegistry.C_REGISTRY_ENCODING);
+            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml,m_exportZipStream, A_OpenCms.getDefaultEncoding());
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);

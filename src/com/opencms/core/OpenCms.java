@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/01/31 17:55:47 $
-* Version: $Revision: 1.107 $
+* Date   : $Date: 2003/02/01 19:14:45 $
+* Version: $Revision: 1.108 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.107 $ $Date: 2003/01/31 17:55:47 $
+ * @version $Revision: 1.108 $ $Date: 2003/02/01 19:14:45 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -176,7 +176,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * Flag to indicate if the startup classes have already been initialized
      */
     private boolean isInitialized = false;
-
+    
     /**
      * Constructor to create a new OpenCms object.<p>
      * 
@@ -189,23 +189,28 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      *
      * @param conf The configurations from the <code>opencms.properties</code> file.
      */
-    public OpenCms(Configurations conf) throws Exception {
-
-        CmsObject cms;
-        
+    public OpenCms(Configurations conf) throws Exception {        
         // Save the configuration
         setConfiguration(conf);
 
-        // Encoding project:
         // this will initialize the encoding with some default from the A_OpenCms
         String defaultEncoding = getDefaultEncoding();
+        // check the opencms.properties for a different setting
+        defaultEncoding = conf.getString("defaultContentEncoding", defaultEncoding);
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms encoding     : " + defaultEncoding);
+        String systemEncoding = null;
         try {
-            defaultEncoding = System.getProperty("file.encoding");
+            systemEncoding = System.getProperty("file.encoding");
         } catch (SecurityException se) {
             // security manager is active, but we will try other options before giving up
         }
-        // check the opencms.properties for a different setting
-        defaultEncoding = conf.getString("defaultContentEncoding", defaultEncoding);
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". System file.encoding : " + systemEncoding);
+        if (! defaultEncoding.equals(systemEncoding)) { 
+            String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + 
+                "' not equal to OpenCms encoding '" + defaultEncoding + "'";
+            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, ". Critical init error/1: " + msg);
+            throw new Exception(msg);                 
+        }
         try {
             // check if the found encoding is supported 
             // this will work with Java 1.4+ only
@@ -218,30 +223,25 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             // so you must make sure your setting in "opencms.properties" is correct.             
         }        
         setDefaultEncoding(defaultEncoding);
-        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] Default encoding set to: " + defaultEncoding);
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Encoding set to      : " + defaultEncoding);
         
         // invoke the ResourceBroker via the initalizer
         try {
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) {
-                log(C_OPENCMS_INIT, "[OpenCmsServlet] logging started");
                 String jdkinfo = System.getProperty("java.vm.name") + " ";
                 jdkinfo += System.getProperty("java.vm.version") + " ";
                 jdkinfo += System.getProperty("java.vm.info") + " ";
                 jdkinfo += System.getProperty("java.vm.vendor") + " ";
-                log(C_OPENCMS_INIT, "[OpenCmsServlet] JDK Info: " + jdkinfo);
-
+                log(C_OPENCMS_INIT, ". Java VM in use       : " + jdkinfo);
                 String osinfo = System.getProperty("os.name") + " ";
                 osinfo += System.getProperty("os.version") + " ";
                 osinfo += System.getProperty("os.arch") + " ";
-                log(C_OPENCMS_INIT, "[OpenCmsServlet] OS Info: " + osinfo);
-
-                log(C_OPENCMS_INIT, "[OpenCmsServlet] file.encoding: " + System.getProperty("file.encoding"));
-                log(C_OPENCMS_INIT, "[OpenCms] creating first cms-object...");
+                log(C_OPENCMS_INIT, ". Operating sytem      : " + osinfo);
             }
-            cms = new CmsObject();
+            // CHECKME: new CmsObject();
             m_sessionFailover = conf.getBoolean("sessionfailover.enabled", false);
         } catch(Exception e) {
-            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, "[OpenCms] Startup init failed - " + e.getMessage());
+            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, ". Critical init error/2: " + e.getMessage());
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
@@ -249,37 +249,33 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         try {           
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing the main resource-broker");
             c_rb = CmsRbManager.init(conf);
         } catch(Exception e) {
-            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, "[OpenCms] Database init failed - " + e.getMessage());
+            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, ". Critical init error/3: " + e.getMessage());
             // any exception here is fatal and will cause a stop in processing
             throw new CmsException("Database init failed", CmsException.C_RB_INIT_ERROR, e);
         }
         
         try {       
-            printCopyrightInformation(cms);
-
             // initalize the Hashtable with all available mimetypes
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] read mime types");
             m_mt = c_rb.readMimeTypes(null, null);
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] found " + m_mt.size() + " mime-type entrys");
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Found mime types     : " + m_mt.size() + " entrys");
 
             // Check, if the HTTP streaming should be enabled
             m_streaming = conf.getBoolean("httpstreaming.enabled", true);
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] HTTP streaming " + (m_streaming?"en":"dis") + "abled. ");
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Legacy HTTP streaming: " + (m_streaming?"enabled":"disabled"));
 
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if(!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
                 // now initialise the OpenCms scheduler to launch cronjobs
                 m_table = new CmsCronTable(c_rb.readCronTable(null, null));
                 m_scheduler = new CmsCronScheduler(this, m_table);
-                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsCronScheduler... DONE");
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms scheduler    : enabled");
             } else {
-                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCmsServlet] CmsCronScheduler is disabled!");
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms scheduler    : disabled");
             }
         } catch(Exception e) {
-            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, "[OpenCms] Type init falied - " + e.getMessage());
+            if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, ". Critical init error/5: " + e.getMessage());
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
@@ -292,107 +288,106 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length()-1);
             }
             setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT))
-                log(C_OPENCMS_INIT, "[OpenCms] setting JSP export URL to value from opencms.properties: " + flexExportUrl);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". JSP export URL       : using value from opencms.properties - " + flexExportUrl);
         }
         
         // read flex jsp error page commit property and save in runtime configuration
         Boolean flexErrorPageCommit = (Boolean)conf.getBoolean(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, new Boolean(true));
         setRuntimeProperty(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, flexErrorPageCommit);
-        if(C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, "[OpenCms] setting JSP error page commit value to: " + flexErrorPageCommit);      
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". JSP errorPage commit : " + (flexErrorPageCommit.booleanValue()?"enabled":"disabled"));      
 
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean supportOldLocales = (Boolean)conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));
         setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
-        if(C_LOGGING && isLogging(C_OPENCMS_INIT))
-            log(C_OPENCMS_INIT, "[OpenCms] Supporting deprecated module locales: " + supportOldLocales);      
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old locale support   : " + (supportOldLocales.booleanValue()?"enabled":"disabled"));      
 
         
         // try to initialize directory translations
         try {
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing directory translations...");
             boolean translationEnabled = conf.getBoolean("directory.translation.enabled", false);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Directory translation: " + (translationEnabled?"enabled":"disabled"));
             if (translationEnabled) {
                 String[] translations = conf.getStringArray("directory.translation.rules");
                 // Directory translation stops after fist match, hence the "false" parameter
                 m_directoryTranslator = new CmsResourceTranslator(translations, false);        
             }
         } catch(Exception e) {
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.toString());
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Directory translation: non-critical error " + e.toString());
         }   
         // make sure we always have at last an emtpy array      
         if (m_directoryTranslator == null) m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
         
         // try to initialize filename translations
         try {
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing filename translations...");
             boolean translationEnabled = conf.getBoolean("filename.translation.enabled", false);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Filename translation : " + (translationEnabled?"enabled":"disabled"));
             if (translationEnabled) {
                 String[] translations = conf.getStringArray("filename.translation.rules");
                 // Filename translations applies all rules, hence the true patameters
                 m_fileTranslator = new CmsResourceTranslator(translations, true);        
             }
         } catch(Exception e) {
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.toString());
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Filename translation : non-critical error " + e.toString());
         }           
         // make sure we always have at last an emtpy array      
         if (m_fileTranslator == null) m_fileTranslator = new CmsResourceTranslator(new String[0], false);
                     
         // try to initialize default file names
         try {
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing directory default files...");
             m_defaultFilenames = conf.getStringArray("directory.default.files");
             for (int i=0; i<m_defaultFilenames.length; i++) {
                 // remove possible white space
                 m_defaultFilenames[i] = m_defaultFilenames[i].trim();
-                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] directory default file " + i + " is: " + m_defaultFilenames[i] );               
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Default file         : " + (i+1) + " - " + m_defaultFilenames[i] );               
             }
         } catch(Exception e) {
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.toString());
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Default file         : non-critical error " + e.toString());
         }    
         // make sure we always have at last an emtpy array      
         if (m_defaultFilenames == null) m_defaultFilenames = new String[0];                
                 
         // try to initialize the flex cache
         try {
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing flex cache...");
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Flex cache init      : starting");
             // com.opencms.flex.cache.CmsFlexCache flexCache = new com.opencms.flex.cache.CmsFlexCache(this);
             // the flexCache has static members that must be initialized with "this" object
             new com.opencms.flex.cache.CmsFlexCache(this);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Flex cache init      : finished");
         } catch(Exception e) {
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.toString());
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Flex cache init      : non-critical error " + e.toString());
         }        
         
         // try to initialize the launchers.
         try {
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initialize launchers...");
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Launcher init        : starting");
             m_launcherManager = new CmsLauncherManager(this);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Launcher init        : finished");
         }
         catch(Exception e) {
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Launcher init        : non-critical error " + e.toString());
         }
 
         // get the password validating class
         c_passwordValidatingClass = conf.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Password validation  : " + c_passwordValidatingClass);
 
         // Check, if the element cache should be enabled
         m_enableElementCache = conf.getBoolean("elementcache.enabled", false);
-        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] element cache " + (m_enableElementCache?"en":"dis") + "abled. ");
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Element cache        : " + (m_enableElementCache?"enabled":"disabled"));
         if(m_enableElementCache) {
             try {
                 c_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000),
                                                     conf.getInteger("elementcache.elements", 50000),
                                                     conf.getInteger("elementcache.variants", 100));
             }catch(Exception e) {
-                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Element cache        : non-critical error " + e.toString());
             }
             c_variantDeps = new Hashtable();
             c_elementCache.getElementLocator().setExternDependencies(c_variantDeps);
         }
         // now for the link replacement rules there are up to three rulesets for export online and offline
         try{
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing link replace rules.");
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Link rules init      : starting");
             
             String[] staticUrlPrefix = new String[4];
             staticUrlPrefix[0]=Utils.replace(conf.getString(C_URL_PREFIX_EXPORT, ""), C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
@@ -498,8 +493,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                     c_exportProperties.setLinkRulesOnline(new String[]{"s#^#" + staticUrlPrefix[1] + "#"});
                 }
             }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Link rules init      : finished");
         }catch(Exception e){
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] Exception initializing link rules: " + e.toString());
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Link rules init      : non-critical error " + e.toString());
         }
     }
 
@@ -514,9 +510,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             initUser(cms, null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_PROJECT_ONLINE_ID, null);
             new CmsStaticExport(cms, null, false, null, null, null, null);
         }catch(Exception e){
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) {
-                log(C_OPENCMS_INIT, "Error initialising dynamic link rules. Error: " + Utils.getStackTrace(e));
-            }
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Dynamic link rules   : non-critical error " + e.toString());
         }
     }
     
@@ -538,7 +532,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         // Set the initialized flag to true
         isInitialized = true;
 
-        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] OpenCms init() starting.");
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : starting");
 
         // check for the JSP export URL runtime property
         String jspExportUrl = (String)getRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL);
@@ -558,8 +552,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             }
             setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
             CmsJspLoader.setJspExportUrl(flexExportUrl);
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) 
-                log(C_OPENCMS_INIT, "[OpenCms] Setting JSP export URL to value from first request: " + flexExportUrl);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". JSP export URL       : using value from first request - " + flexExportUrl);
         }
         
 
@@ -572,17 +565,21 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                     try {
                         Class.forName(currentClass).newInstance();
 
-                        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] created instance of class " + currentClass );
+                        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : " + currentClass + " instanciated");
                     } catch (Exception e1){
-                        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] Exception creating instance of startup class " +  currentClass + ": " + e1.toString());
+                        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e1.toString());
                     }
                 }
             }
         } catch (Exception e2){
-            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] Exception creating startup classes: " + e2.toString());
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e2.toString());
         }
 
-        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] OpenCms init() finished.");
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
+            A_OpenCms.log(C_OPENCMS_INIT, ". Startup class init   : finished");
+            A_OpenCms.log(C_OPENCMS_INIT, ".                      ...............................................................");        
+            A_OpenCms.log(C_OPENCMS_INIT, ".");        
+        }    
     }
 
     /**
@@ -774,27 +771,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage, m_directoryTranslator, m_fileTranslator);
         }
     }
-
-    /**
-     * Prints the OpenCms copyright information to all log-files.<p>
-     */
-    private void printCopyrightInformation(CmsObject cms) {
-        String copy[] = cms.copyright();
-
-        // log to error-stream
-        System.err.println("\n\nStarting OpenCms, version " + cms.version());
-        for(int i = 0;i < copy.length;i++) {
-            System.err.println(copy[i]);
-        }
-
-        // log with opencms-logger
-        if(C_PREPROCESSOR_IS_LOGGING && isLogging(C_OPENCMS_INFO)) {
-            log(C_OPENCMS_INFO, cms.version());
-            for(int i = 0;i < copy.length;i++) {
-                log(C_OPENCMS_INFO, copy[i]);
-            }
-        }
-    }   
 
     /**
      * Sets the mimetype of the response.<p>

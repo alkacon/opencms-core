@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/01/31 16:53:33 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/02/01 19:14:45 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Properties;
 
 import source.org.apache.java.util.Configurations;
 
@@ -54,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $ $Date: 2003/01/31 16:53:33 $
+ * @version $Revision: 1.30 $ $Date: 2003/02/01 19:14:45 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -72,7 +73,10 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     
     /** Default encoding, can be overwritten in "opencms.properties" */
     private static String m_defaultEncoding = "ISO-8859-1";    
-    
+
+    /** The version number of this OpenCms installation */
+    private static String c_versionNumber = null;
+        
     /**
      * Destructor, should be called when the the class instance is shut down.
      */
@@ -315,4 +319,35 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     protected void setDefaultEncoding(String encoding) {
         m_defaultEncoding = encoding;
     }
+    
+    
+    /**
+     * Returns a String containing version information for this OpenCms.
+     *
+     * @return version a String containnig the version of OpenCms.
+     */
+    public static String version() {
+        return c_versionNumber;
+    }        
+    
+    /**
+     * Initialized the version for this OpenCms, will be called by 
+     * CmsHttpServlet or CmsShell upon system startup.
+     * 
+     * @param o instance of calling object
+     */
+     static void initVersion(Object o) {
+        // read the version-informations from properties, if not done
+        Properties props = new Properties();
+        try {
+            props.load(o.getClass().getClassLoader().getResourceAsStream("com/opencms/core/version.properties"));
+        } catch(java.io.IOException exc) {
+            // ignore this exception - no properties found
+            c_versionNumber = "unknown";
+            return;
+        }
+        c_versionNumber =
+            props.getProperty("version.number", "??") + " " +
+            props.getProperty("version.name", "??");
+    }        
 }

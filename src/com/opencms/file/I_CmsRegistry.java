@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2003/01/31 16:56:12 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/02/01 19:14:45 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,15 +37,12 @@ import com.opencms.report.I_CmsReport;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.34 $ $Date: 2003/01/31 16:56:12 $
+ * @version $Revision: 1.35 $ $Date: 2003/02/01 19:14:45 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
     
     public static final int C_ANY_VERSION = -1;
-    
-    /** Encoding for the registry and the export files, this is always "UTF-8" */
-    public final static String C_REGISTRY_ENCODING = "UTF-8";
 
     /**
      * The name of the folder to extend the exportpath

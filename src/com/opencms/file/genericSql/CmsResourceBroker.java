@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/01/23 10:44:10 $
-* Version: $Revision: 1.350 $
+* Date   : $Date: 2003/02/01 19:14:46 $
+* Version: $Revision: 1.351 $
 
 *
 * This library is part of OpenCms -
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.350 $ $Date: 2003/01/23 10:44:10 $
+ * @version $Revision: 1.351 $ $Date: 2003/02/01 19:14:46 $
 
  *
  */
@@ -4173,7 +4173,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 
         // initialize the access-module.
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init the dbaccess-module.");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource broker init : phase 3 ok - creating db access module" );            
         }
         m_dbAccess = createDbAccess(config);
 
@@ -4191,21 +4191,24 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         m_cachelimit = config.getInteger(C_CONFIGURATION_CACHE + ".maxsize", 20000);
         m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
 
-        // initialize the registry#
+        // initialize the registry
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init registry.");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing registry: starting" );            
         }
-
         try {
             m_registry= new CmsRegistry(CmsBase.getAbsolutePath(config.getString(C_CONFIGURATION_REGISTRY)));
-        }
-        catch (CmsException ex) {
+        } catch (CmsException ex) {
             throw ex;
-        }
-        catch(Exception ex) {
+        } catch(Exception ex) {
             // init of registry failed - throw exception
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) 
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/4: " + ex.getMessage());
             throw new CmsException("Init of registry failed", CmsException.C_REGISTRY_ERROR, ex);
         }
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing registry: finished" );            
+        }
+        
     }
     /**
      * Determines, if the users current group is the admin-group.

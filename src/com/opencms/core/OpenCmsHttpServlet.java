@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/01/21 14:15:10 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/02/01 19:14:45 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import com.opencms.boot.CmsMain;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
 import com.opencms.util.Utils;
 
 import java.io.IOException;
@@ -41,7 +40,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -78,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.40 $ $Date: 2003/01/21 14:15:10 $
+ * @version $Revision: 1.41 $ $Date: 2003/02/01 19:14:45 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -108,16 +106,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     private OpenCms m_opencms;
 
     /**
-     * Storage for redirects.
-     */
-    private Vector m_redirect = new Vector();
-
-    /**
-     * Storage for redirect locations.
-     */
-    private Vector m_redirectlocation = new Vector();
-
-    /**
      * Storage for the clusterurl.
      */
     private String m_clusterurl = null;
@@ -142,6 +130,27 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
     private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";
 
     /**
+     * Prints the OpenCms copyright information to all log-files.<p>
+     */
+    private void printCopyrightInformation() {
+        String copy[] = C_COPYRIGHT;
+
+        // log to error-stream
+        System.err.println("\n\nStarting OpenCms, version " + A_OpenCms.version());
+        for(int i = 0;i < copy.length;i++) {
+            System.err.println(copy[i]);
+        }
+
+        // log with opencms-logger
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
+            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms version " + A_OpenCms.version());
+            for(int i = 0;i < copy.length;i++) {
+                A_OpenCms.log(C_OPENCMS_INIT, ". " + copy[i]);
+            }
+        }
+    }   
+    
+    /**
      * Initialization of the OpenCms servlet (overloaded Servlet API method).<p>
      *
      * The connection information for the database is read 
@@ -154,6 +163,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      */
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        A_OpenCms.initVersion(this);
         
         // Check for OpenCms home (base) directory path
         String base = config.getInitParameter("opencms.home");
@@ -194,31 +204,20 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             A_OpenCms.log(C_OPENCMS_INIT, ".");        
             A_OpenCms.log(C_OPENCMS_INIT, ".");        
             A_OpenCms.log(C_OPENCMS_INIT, ".");        
-            A_OpenCms.log(C_OPENCMS_INIT, ".");        
-            A_OpenCms.log(C_OPENCMS_INIT, ".");        
-            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Startup time: " + (new Date(System.currentTimeMillis())));        
-            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Server info: " + config.getServletContext().getServerInfo());        
-            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Base path: " + CmsBase.getBasePath());        
-            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Property file: " + CmsBase.getPropertiesPath(true));        
-            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Logfile: " + CmsBase.getAbsolutePath(logFile));        
-        }
-
-        // initialize the redirect information
-        int count = 0;
-        String redirect;
-        String redirectlocation;
-        while((redirect = (String)m_configurations.getString(C_PROPERTY_REDIRECT + "." + count)) != null) {
-            redirectlocation = (String)m_configurations.getString(C_PROPERTY_REDIRECTLOCATION + "." + count);
-            redirectlocation = Utils.replace(redirectlocation, C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-            m_redirect.addElement(redirect);
-            m_redirectlocation.addElement(redirectlocation);
-            count++;
-            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] redirect-rule: " + redirect + " -> " + redirectlocation);
+            A_OpenCms.log(C_OPENCMS_INIT, ".");
+            printCopyrightInformation();       
+            A_OpenCms.log(C_OPENCMS_INIT, ".                      ...............................................................");        
+            A_OpenCms.log(C_OPENCMS_INIT, ". Startup time         : " + (new Date(System.currentTimeMillis())));        
+            A_OpenCms.log(C_OPENCMS_INIT, ". Servlet container    : " + config.getServletContext().getServerInfo());        
+            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms version      : " + A_OpenCms.version()); 
+            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms base path    : " + CmsBase.getBasePath());        
+            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms property file: " + CmsBase.getPropertiesPath(true));        
+            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms logfile      : " + CmsBase.getAbsolutePath(logFile));        
         }
         
         // check cluster configuration
         m_clusterurl = (String)m_configurations.getString(C_CLUSTERURL, "");
-        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Clusterurl: " + m_clusterurl);                
+        if((! "".equals(m_clusterurl)) && C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, ". Clusterurl           : " + m_clusterurl);                
 
         try {
             // create the OpenCms object
@@ -232,13 +231,12 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         }
 
         // initalize the session storage
-        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] initializing session storage");
         m_sessionStorage = new CmsCoreSession();
-        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] initializing... DONE");
-
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) A_OpenCms.log(C_OPENCMS_INIT, ". Session storage      : initialized");
+             
         // check if basic or form based authentication should be used      
         this.m_UseBasicAuthentication = m_configurations.getBoolean( "auth.basic", true );        
-        this.m_AuthenticationFormURI = m_configurations.getString( "auth.form_uri" , "/system/workplace/action/authenticate.html" );               
+        this.m_AuthenticationFormURI = m_configurations.getString( "auth.form_uri" , "/system/workplace/action/authenticate.html" );
     }
 
     /**
@@ -305,48 +303,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      */
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {            
         doGet(req, res);
-    }
-    /**
-     * Checks if the requested resource must be redirected to the server docroot and
-     * excecutes the redirect if nescessary.
-     * @param cms The CmsObject
-     * @return true, if the ressource was redirected
-     * @exeption Throws CmsException if something goes wrong.
-     */
-    private boolean checkRelocation(CmsObject cms) throws CmsException {
-        CmsRequestContext context = cms.getRequestContext();
-
-        // check the if the current project is the online project. Only in this project,
-        // a redirect is nescessary.
-        if(context.currentProject().equals(cms.onlineProject())) {
-            String filename = context.getUri();
-
-            // check all redirect locations
-            for(int i = 0;i < m_redirect.size();i++) {
-                String redirect = (String)m_redirect.elementAt(i);
-
-                // found a match, so redirect
-                if(filename.startsWith(redirect)) {
-                    String redirectlocation = (String)m_redirectlocation.elementAt(i);
-                    String doRedirect = redirectlocation + filename.substring(redirect.length());
-
-                    // try to redirect
-                    try {
-                        ((HttpServletResponse)context.getResponse().getOriginalResponse()).sendRedirect(doRedirect);
-                    }
-                    catch(Exception e) {
-                        throw new CmsException("Redirect fails :" + doRedirect, CmsException.C_UNKNOWN_EXCEPTION, e);
-                    }
-                    // the ressource was redirected, return true
-                    return true;
-                } else {
-                    // the ressource was not redirected, return false
-                    return false;
-                }
-            }
-        }
-        // not in online-project, or no redirect information found - so no redirect needed
-        return false;
     }
 
     /**

@@ -8,7 +8,7 @@
     value at the command line.
     Set it like this: ant all -Dversion.number=4.3.28     
     You can also uncomment the line below. -->
-    <property name="version.number"             value="5.0_rc_1"/>
+    <property name="version.number"             value="5.0_rc_2"/>
     
     <property name="version.name"               value="Kaitain"/>
     <property name="app.name"                   value="opencms"/>
