@@ -11,9 +11,9 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/22 11:40:59 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/22 12:15:10 $
  */
- class CmsAccessFileMySql extends A_CmsAccessFile implements I_CmsConstants  {
+ class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
     /**
     * This is the connection object to the database
@@ -66,7 +66,7 @@ import com.opencms.core.*;
     private static final String C_FILE_UPDATE ="UPDATE FILES SET "
                                                +"FILE_CONTENT = ? "
                                                +"WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
- /**
+    /**
      * SQL Command for renaming a resource. 
      */   
     private static final String C_RESOURCE_RENAME  ="UPDATE RESOURCES SET "
@@ -261,8 +261,7 @@ import com.opencms.core.*;
     */
     private PreparedStatement m_statementFileRename;
 
- 
-    
+
     /**
      * Constructor, creartes a new CmsAccessFileMySql object and connects it to the
      * user information database.
@@ -296,7 +295,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 CmsFile createFile(A_CmsUser user, A_CmsProject project, 
+	 public CmsFile createFile(A_CmsUser user, A_CmsProject project, 
                         String filename,int flags,
                         byte[] contents, A_CmsResourceType resourceType) 
 							
@@ -363,7 +362,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 CmsFile readFile(A_CmsProject project, String filename)
+	 public CmsFile readFile(A_CmsProject project, String filename)
          throws CmsException {
               
          CmsFile file=null;
@@ -401,7 +400,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 A_CmsResource readFileHeader(A_CmsProject project, String filename)
+	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
          throws CmsException {
                  
          CmsResource file=null;
@@ -447,7 +446,7 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-     void writeFile(A_CmsProject project, CmsFile file)
+     public void writeFile(A_CmsProject project, CmsFile file)
        throws CmsException {
      
            try {   
@@ -476,7 +475,7 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void writeFileHeader(A_CmsProject project, CmsFile file)
+	 public void writeFileHeader(A_CmsProject project, CmsFile file)
          throws CmsException {
          
            try {   
@@ -525,7 +524,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */		
-	 void renameFile(A_CmsProject project, String oldname, String newname)
+	 public void renameFile(A_CmsProject project, String oldname, String newname)
          throws CmsException {
           try { 
              // delete the resource
@@ -556,7 +555,7 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void deleteFile(A_CmsProject project, String filename)
+	 public void deleteFile(A_CmsProject project, String filename)
          throws CmsException {
          try { 
              // delete the resource
@@ -586,7 +585,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void copyFile(A_CmsProject project, String source, String destination)
+	 public void copyFile(A_CmsProject project, String source, String destination)
          throws CmsException {
          CmsFile file;
          
@@ -650,7 +649,7 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void moveFile(A_CmsProject project, String source,  String destination)
+	 public void moveFile(A_CmsProject project, String source,  String destination)
          throws CmsException {
          
          renameFile(project,source,destination);
@@ -668,7 +667,7 @@ import com.opencms.core.*;
 	 * @return The created folder.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 CmsFolder createFolder(A_CmsUser user,
+	 public CmsFolder createFolder(A_CmsUser user,
                             A_CmsProject project, String foldername,
                             int flags)
          throws CmsException {
@@ -721,7 +720,7 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 CmsFolder readFolder(A_CmsProject project, String foldername)
+	 public CmsFolder readFolder(A_CmsProject project, String foldername)
          throws CmsException {
          
          CmsFolder folder=null;
@@ -772,7 +771,7 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */			
-	 void renameFolder(A_CmsProject project, String oldname, 
+	 public void renameFolder(A_CmsProject project, String oldname, 
 					   String newname, boolean force)
          throws CmsException {
      }
@@ -790,7 +789,7 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void deleteFolder(A_CmsProject project, String foldername, boolean force)
+	 public void deleteFolder(A_CmsProject project, String foldername, boolean force)
          throws CmsException {
      }
 	
@@ -808,7 +807,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void copyFolder(A_CmsProject project, String source, String destination, 
+	 public void copyFolder(A_CmsProject project, String source, String destination, 
 						    boolean force)
 		throws CmsException
      {
@@ -828,7 +827,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void moveFolder(A_CmsProject project, String source, 
+	 public void moveFolder(A_CmsProject project, String source, 
 						   String destination, boolean force)
          throws CmsException {
      }
@@ -843,7 +842,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 Vector getSubFolders(A_CmsProject project, String foldername)
+	 public Vector getSubFolders(A_CmsProject project, String foldername)
          throws CmsException {
          Vector folders=new Vector();
          CmsFolder folder=null;
@@ -889,7 +888,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 Vector getFilesInFolder(A_CmsProject project, String foldername)
+	 public Vector getFilesInFolder(A_CmsProject project, String foldername)
          throws CmsException {
          Vector files=new Vector();
          CmsResource file=null;

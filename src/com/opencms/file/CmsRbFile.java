@@ -5,7 +5,7 @@ import java.util.*;
 import com.opencms.core.*;
 
 /**
- * This abstract class describes a resource broker for files and folders in 
+ * This  class describes a resource broker for files and folders in 
  * the Cms.<BR/>
  * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
@@ -14,9 +14,9 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/21 14:23:14 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/22 12:15:10 $
  */
- class CmsRbFile {
+ class CmsRbFile implements I_CmsRbFile {
 	
 	/**
 	 * Returns the root-folder object.<P/>
@@ -27,7 +27,7 @@ import com.opencms.core.*;
 	 * @param callingUser The user who wants to use this method.
 	 * @return the root-folder object.
 	 */
-     CmsFolder rootFolder(A_CmsUser callingUser) {
+     public CmsFolder rootFolder(A_CmsUser callingUser) {
          return null;
      }
 	
@@ -68,7 +68,7 @@ import com.opencms.core.*;
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	 CmsFile createFile(A_CmsUser callingUser, String project, String folder, String filename, 
+	 public CmsFile createFile(A_CmsUser callingUser, String project, String folder, String filename, 
 								byte[] contents, A_CmsResourceType type, 
 								Hashtable metainfos)
          throws CmsException, CmsDuplicateKeyException {
@@ -96,7 +96,7 @@ import com.opencms.core.*;
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	 CmsFile readFile(A_CmsUser callingUser, String project, String folder, String filename)
+	 public CmsFile readFile(A_CmsUser callingUser, String project, String folder, String filename)
          throws CmsException {
                return null;
      }
@@ -123,7 +123,7 @@ import com.opencms.core.*;
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	 A_CmsResource readFileHeader(A_CmsUser callingUser, String project, String folder, 
+	 public A_CmsResource readFileHeader(A_CmsUser callingUser, String project, String folder, 
 										String filename)
          throws CmsException {
                return null;
@@ -154,7 +154,7 @@ import com.opencms.core.*;
 	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
 	 * if the user has not the rights for this resource.
 	 */	
-	 void writeFile(A_CmsUser callingUser, String project, 
+	 public void writeFile(A_CmsUser callingUser, String project, 
 				   CmsFile file, Hashtable metainfos)
          throws CmsException {
      }
@@ -184,7 +184,7 @@ import com.opencms.core.*;
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	 void writeFileHeader(A_CmsUser callingUser, String project, 
+	 public void writeFileHeader(A_CmsUser callingUser, String project, 
 						 A_CmsResource resource, Hashtable metainfos)
          throws CmsException {
      }
@@ -209,7 +209,7 @@ import com.opencms.core.*;
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */		
-	 void renameFile(A_CmsUser callingUser, String project, 
+	 public void renameFile(A_CmsUser callingUser, String project, 
 					String oldname, String newname)
          throws CmsException {
      }
@@ -233,7 +233,7 @@ import com.opencms.core.*;
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	 void deleteFile(A_CmsUser callingUser, String project, String filename)
+	 public void deleteFile(A_CmsUser callingUser, String project, String filename)
          throws CmsException {
      }
 	
@@ -260,7 +260,7 @@ import com.opencms.core.*;
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	 void copyFile(A_CmsUser callingUser, String project, String source, String destination)
+	 public void copyFile(A_CmsUser callingUser, String project, String source, String destination)
          throws CmsException, CmsDuplicateKeyException {
      }
 	
@@ -288,7 +288,7 @@ import com.opencms.core.*;
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	 void moveFile(A_CmsUser callingUser, String project, String source, 
+	public void moveFile(A_CmsUser callingUser, String project, String source, 
 				  String destination)
          throws CmsException, CmsDuplicateKeyException {
      }
@@ -314,7 +314,7 @@ import com.opencms.core.*;
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	 void setResourceType(A_CmsUser callingUser, String project, String resource, 
+	 public void setResourceType(A_CmsUser callingUser, String project, String resource, 
 								A_CmsResourceType newType, Hashtable metainfos)
          throws CmsException {
      }
@@ -339,7 +339,7 @@ import com.opencms.core.*;
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if 
 	 * same templfile already exists
 	 */		
-     CmsFile copyTemporaryFile(A_CmsUser callingUser, String source)
+     public CmsFile copyTemporaryFile(A_CmsUser callingUser, String source)
          throws CmsException, CmsDuplicateKeyException {
          return null;
      }
@@ -361,7 +361,7 @@ import com.opencms.core.*;
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-     void commitTemporaryFile(A_CmsUser callingUser, String source) 
+    public void commitTemporaryFile(A_CmsUser callingUser, String source) 
          throws CmsException {
          
      }
@@ -382,7 +382,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-     void deleteTemporaryFile(A_CmsUser callingUser, String source) 
+     public void deleteTemporaryFile(A_CmsUser callingUser, String source) 
          throws CmsException {
          
      }
@@ -421,7 +421,7 @@ import com.opencms.core.*;
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	 CmsFolder createFolder(A_CmsUser callingUser, String project, String folder, 
+	 public CmsFolder createFolder(A_CmsUser callingUser, String project, String folder, 
 								  String newFolderName, Hashtable metainfos)
          throws CmsException, CmsDuplicateKeyException {
          return null;
@@ -449,7 +449,7 @@ import com.opencms.core.*;
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	 CmsFolder readFolder(A_CmsUser callingUser, String project, String folder, String folderName)
+	 public CmsFolder readFolder(A_CmsUser callingUser, String project, String folder, String folderName)
          throws CmsException {
          return null;
      }
@@ -479,7 +479,7 @@ import com.opencms.core.*;
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */		
-	 void renameFolder(A_CmsUser callingUser, String project, String oldname, 
+	 public void renameFolder(A_CmsUser callingUser, String project, String oldname, 
 							 String newname, boolean force)
          throws CmsException {
          
@@ -509,7 +509,7 @@ import com.opencms.core.*;
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	 void deleteFolder(A_CmsUser callingUser, String project, String foldername, boolean force)
+	 public void deleteFolder(A_CmsUser callingUser, String project, String foldername, boolean force)
          throws CmsException {
      }
 	
@@ -542,7 +542,7 @@ import com.opencms.core.*;
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination foldername.
 	 */	
-	 void copyFolder(A_CmsUser callingUser, String project, String source, String destination, 
+	 public void copyFolder(A_CmsUser callingUser, String project, String source, String destination, 
 						   boolean force)
          throws CmsException, CmsDuplicateKeyException {
      }
@@ -576,7 +576,7 @@ import com.opencms.core.*;
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * the destination filename.
 	 */	
-	 void moveFolder(A_CmsUser callingUser, String project, String source, 
+	 public void moveFolder(A_CmsUser callingUser, String project, String source, 
 						   String destination, boolean force)
          throws CmsException, CmsDuplicateKeyException {
      }
@@ -600,7 +600,7 @@ import com.opencms.core.*;
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	 Vector getSubFolders(A_CmsUser callingUser, String project, String foldername)
+	 public Vector getSubFolders(A_CmsUser callingUser, String project, String foldername)
          throws CmsException {
          return null;
      }
@@ -624,7 +624,7 @@ import com.opencms.core.*;
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	 Vector getFilesInFolder(A_CmsUser callingUser, String project, String foldername)
+	 public Vector getFilesInFolder(A_CmsUser callingUser, String project, String foldername)
          throws CmsException {
          return null;
      }
@@ -647,7 +647,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return true, if the user has full access, else returns false.
 	 */
-     boolean accessFile(A_CmsUser callingUser, String project, String filename){
+     public boolean accessFile(A_CmsUser callingUser, String project, String filename){
      return true;
      }
      
@@ -670,7 +670,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return true, if the user may read, else returns false.
 	 */
-     boolean isReadable(A_CmsUser callingUser, String project, String filename) {
+     public boolean isReadable(A_CmsUser callingUser, String project, String filename) {
          return true;
      }
 
@@ -692,7 +692,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return true, if the user may write, else returns false.
 	 */
-     boolean isWriteable(A_CmsUser callingUser, String project, String filename) {
+    public boolean isWriteable(A_CmsUser callingUser, String project, String filename) {
          return true;
      }
 
@@ -713,7 +713,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return true, if the user may view, else returns false.
 	 */
-     boolean isViewable(A_CmsUser callingUser, String project, String filename) {
+     public boolean isViewable(A_CmsUser callingUser, String project, String filename) {
       return true;
      }
 
@@ -735,7 +735,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return true, if the resource is internal, else returns false.
 	 */
-     boolean isInternal(A_CmsUser callingUser, String project, String filename) {
+     public boolean isInternal(A_CmsUser callingUser, String project, String filename) {
          return true;
      }
 
@@ -756,7 +756,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return true, if the resource exists, else returns false.
 	 */
-     boolean fileExists(A_CmsUser callingUser, String project, String filename) {
+     public boolean fileExists(A_CmsUser callingUser, String project, String filename) {
          return true;
      }
 
@@ -779,7 +779,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return true, if the user has admin-rights, else returns false.
 	 */
-     boolean adminResource(A_CmsUser callingUser, String project, String filename) {
+     public boolean adminResource(A_CmsUser callingUser, String project, String filename) {
          return true;
      }
 	
@@ -804,7 +804,7 @@ import com.opencms.core.*;
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource.
 	 */
-	 void chmod(A_CmsUser callingUser, String project, String filename, int flags)
+	 public void chmod(A_CmsUser callingUser, String project, String filename, int flags)
          throws CmsException {
      }
 	
@@ -829,7 +829,7 @@ import com.opencms.core.*;
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if the newOwner doesn't exists.
 	 */
-	 void chown(A_CmsUser callingUser, String project, String filename, String newOwner)
+	 public void chown(A_CmsUser callingUser, String project, String filename, String newOwner)
          throws CmsException {
      }
 
@@ -854,7 +854,7 @@ import com.opencms.core.*;
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if the newGroup doesn't exists.
 	 */
-	 void chgrp(A_CmsUser callingUser, String project, String filename, String newGroup)
+	 public void chgrp(A_CmsUser callingUser, String project, String filename, String newGroup)
          throws CmsException {
      }
 
@@ -881,7 +881,7 @@ import com.opencms.core.*;
 	 * for this resource. It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	 void lockFile(A_CmsUser callingUser, String project, String resource, boolean force)
+	 public void lockFile(A_CmsUser callingUser, String project, String resource, boolean force)
          throws CmsException {
      }
 	
@@ -907,7 +907,7 @@ import com.opencms.core.*;
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	 boolean isLocked(A_CmsUser callingUser, String project, String resource)
+	 public boolean isLocked(A_CmsUser callingUser, String project, String resource)
          throws CmsException {
          return true;
      }
@@ -934,7 +934,7 @@ import com.opencms.core.*;
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	 A_CmsUser lockedBy(A_CmsUser callingUser, String project, String resource)
+	 public A_CmsUser lockedBy(A_CmsUser callingUser, String project, String resource)
          throws CmsException {
          return null;
      }
@@ -958,7 +958,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 String readMetaInformation(A_CmsUser callingUser, String project, String name, String meta)
+	 public String readMetaInformation(A_CmsUser callingUser, String project, String name, String meta)
          throws CmsException {
          return null;
      }
@@ -982,7 +982,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 void writeMetaInformation(A_CmsUser callingUser, String project, String name, 
+	 public void writeMetaInformation(A_CmsUser callingUser, String project, String name, 
 									 String meta, String value)
          throws CmsException {
          
@@ -1006,7 +1006,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 void writeMetaInformations(A_CmsUser callingUser, String project, String name, 
+	 public void writeMetaInformations(A_CmsUser callingUser, String project, String name, 
 									  Hashtable metainfos)
          throws CmsException {
      }
@@ -1029,7 +1029,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 Vector readAllMetaInformations(A_CmsUser callingUser, String project, String name)
+	 public Vector readAllMetaInformations(A_CmsUser callingUser, String project, String name)
          throws CmsException {
          return null;
      }
@@ -1051,7 +1051,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 void deleteAllMetaInformations(A_CmsUser callingUser, String project, String resourcename)
+	 public void deleteAllMetaInformations(A_CmsUser callingUser, String project, String resourcename)
          throws CmsException {
      }
 
@@ -1073,7 +1073,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 void deleteMetaInformation(A_CmsUser callingUser, String project, String resourcename, 
+	 public void deleteMetaInformation(A_CmsUser callingUser, String project, String resourcename, 
 									  String meta)
          throws CmsException {
      }
@@ -1093,7 +1093,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 void declineResource(A_CmsUser callingUser, String project, String resource)
+	 public void declineResource(A_CmsUser callingUser, String project, String resource)
          throws CmsException {
      }
 
@@ -1113,7 +1113,7 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 void rejectResource(A_CmsUser callingUser, String project, String resource)
+	 public void rejectResource(A_CmsUser callingUser, String project, String resource)
          throws CmsException {
      }
 
@@ -1126,7 +1126,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return the actual number of Filesystem-changes since starting the cms.
 	 */
-     long getNumberOfFsChanges(A_CmsUser callingUser) {
+     public long getNumberOfFsChanges(A_CmsUser callingUser) {
          return 0;
      }
 }
