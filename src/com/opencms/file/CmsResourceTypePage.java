@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2001/08/07 14:03:16 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/08/16 09:49:02 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2001/08/07 14:03:16 $
+ * @version $Revision: 1.17 $ $Date: 2001/08/16 09:49:02 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -422,7 +422,11 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         //CmsFile bodyFile = cms.doCreateFile(bodyFolder, name, (C_DEFAULTBODY_START + new String(contents) + C_DEFAULTBODY_END).getBytes(), I_CmsConstants.C_TYPE_BODY_NAME, new Hashtable());
         CmsFile bodyFile = cms.doCreateFile(bodyFolder, name, (C_DEFAULTBODY_START + new String(contents) + C_DEFAULTBODY_END).getBytes(), I_CmsConstants.C_TYPE_PLAIN_NAME, new Hashtable());
         cms.doLockResource(bodyFolder + name, true);
-        cms.chmod(bodyFile.getAbsolutePath(), bodyFile.getAccessFlags() + C_ACCESS_INTERNAL_READ);
+        int flags = bodyFile.getAccessFlags();
+        if ((flags & C_ACCESS_INTERNAL_READ) ==0 ) {
+            flags += C_ACCESS_INTERNAL_READ;
+        }
+        cms.chmod(bodyFile.getAbsolutePath(), flags);
         return file;
     }
 
