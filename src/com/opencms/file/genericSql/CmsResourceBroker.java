@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/10 13:55:24 $
- * Version: $Revision: 1.247 $
+ * Date   : $Date: 2001/07/18 15:11:15 $
+ * Version: $Revision: 1.248 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.247 $ $Date: 2001/07/10 13:55:24 $
+ * @version $Revision: 1.248 $ $Date: 2001/07/18 15:11:15 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1510,6 +1510,17 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             }
             // create the projectresource only if the resource is not in the current project
             if ((offlineRes == null) || (offlineRes.getProjectId() != currentProject.getId())){
+                // check if there are already any subfolders of this resource
+                if(resource.endsWith("/")){
+                    Vector projectResources = m_dbAccess.readAllProjectResources(currentProject.getId());
+                    for(int i=0; i<projectResources.size(); i++){
+                        String resname = (String)projectResources.elementAt(i);
+                        if(resname.startsWith(resource)){
+                            // delete the existing project resource first
+                            m_dbAccess.deleteProjectResource(currentProject.getId(), resname);
+                        }
+                    }
+                }
                 try {
                     m_dbAccess.createProjectResource(currentProject.getId(), resource);
 			    } catch (CmsException exc) {
@@ -3695,6 +3706,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         throws CmsException {
         return userInGroup(currentUser, currentProject,currentUser.getName(), C_GROUP_ADMIN);
     }
+
     /**
      * Determines, if the users may manage a project.<BR/>
      * Only the manager of a project may publish it.
@@ -4291,6 +4303,19 @@ public void setCmsObjectForStaticExport(CmsObject cms){
                  CmsException.C_ACCESS_DENIED);
         }
      }
+
+    /**
+     * select all projectResources from an given project
+     *
+     * @param project The project in which the resource is used.
+     *
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+    public Vector readAllProjectResources(int projectId) throws CmsException {
+        return m_dbAccess.readAllProjectResources(projectId);
+    }
+
     /**
      * Returns a list of all propertyinformations of a file or folder.
      *
@@ -6201,12 +6226,26 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                                             onlineFile.getType(), onlineFile.getFlags(),
                                             onlineFile.getOwnerId(), onlineFile.getGroupId(),
                                             currentProject.getId(), onlineFile.getAccessFlags(),
-                                            C_STATE_CHANGED, offlineFile.isLockedBy(), onlineFile.getLauncherType(),
+                                            C_STATE_UNCHANGED, offlineFile.isLockedBy(), onlineFile.getLauncherType(),
                                             onlineFile.getLauncherClassname(), offlineFile.getDateCreated(),
                                             offlineFile.getDateLastModified(), currentUser.getId(),
                                             onlineFile.getContents(), onlineFile.getLength());
         // write the file in the offline project
-        writeFile(currentUser, currentProject, restoredFile);
+        // has the user write-access?
+        if( accessWrite(currentUser, currentProject, (CmsResource)restoredFile) ) {
+            // write-acces  was granted - write the file without setting state = changed
+            m_dbAccess.writeFile(currentProject,
+                               onlineProject(currentUser, currentProject), restoredFile, false);
+            // update the cache
+            m_resourceCache.put(C_FILE+currentProject.getId()+restoredFile.getAbsolutePath(),restoredFile);
+            m_subresCache.clear();
+            m_accessCache.clear();
+            // inform about the file-system-change
+            fileSystemChanged(false);
+        } else {
+            throw new CmsException("[" + this.getClass().getName() + "] " + restoredFile.getAbsolutePath(),
+                CmsException.C_NO_ACCESS);
+        }
         // restore the properties in the offline project
         deleteAllProperties(currentUser, currentProject, resourceName);
         Hashtable propertyInfos = readAllProperties(currentUser, onlineProject, resourceName);
