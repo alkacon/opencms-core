@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/05/25 11:25:21 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/06/07 15:49:49 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResourceTypePlain;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsEvent;
@@ -69,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1522,7 +1523,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             if (res.getLinkCount() > 1) {
                 // ensure all siblings are scrubbed if the resource has one 
                 try {
-                    List li = cms.getAllVfsLinks(res.getRootPath());
+                    List li = cms.readSiblings(res.getRootPath(), CmsResourceFilter.ALL);
                     siblings = new ArrayList();
                     for (int i = 0, l = li.size(); i < l; i++) {
                         siblings.add(cms.readAbsolutePath((CmsResource)li.get(i)));

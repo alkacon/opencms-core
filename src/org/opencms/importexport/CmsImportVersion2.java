@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/04 17:14:37 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/06/07 15:51:04 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -891,10 +891,10 @@ public class CmsImportVersion2 extends A_CmsImport {
             String resname = (String)i.previous();
             resname = (resname.startsWith("/") ? "" : "/") + resname + (resname.endsWith("/") ? "" : "/");
             // now check if the folder is really empty. Only delete empty folders
-            List files = m_cms.getFilesInFolder(resname, CmsResourceFilter.DEFAULT);
+            List files = m_cms.getFilesInFolder(resname, CmsResourceFilter.IGNORE_EXPIRATION);
 
             if (files.size() == 0) {
-                List folders = m_cms.getSubFolders(resname, CmsResourceFilter.DEFAULT);
+                List folders = m_cms.getSubFolders(resname, CmsResourceFilter.IGNORE_EXPIRATION);
                 if (folders.size() == 0) {
                     m_report.print("( " + counter + " / " + size + " ) ",  I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(m_report.key("report.delfolder") + " " , I_CmsReport.C_FORMAT_NOTE);

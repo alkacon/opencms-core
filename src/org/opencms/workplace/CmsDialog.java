@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/05/19 16:20:53 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/06/07 15:50:35 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 5.1
  */
@@ -1217,9 +1217,9 @@ public class CmsDialog extends CmsWorkplace {
             result.append("<script type=\"text/javascript\">\n");
             result.append(dialogScriptSubmit());
             if (helpUrl != null) {          
+                result.append("if (top.head && top.head.helpUrl) {\n");
                 result.append("top.head.helpUrl=\"");
-                result.append(helpUrl + "\";\n");
-               
+                result.append(helpUrl + "\";\n}\n");
             }
             result.append("</script>\n");
             return result.toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/06/06 10:44:09 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/06/07 15:49:36 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -569,7 +569,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void ls() throws Exception {        
         String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
-        List resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
+        List resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
         System.out.println("\nThe current folder '" + folder + "' contains " + resources.size() + " resources");
         Iterator i = resources.iterator();
         while (i.hasNext()) {

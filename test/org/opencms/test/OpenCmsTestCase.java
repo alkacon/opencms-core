@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/06/07 12:59:51 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/06/07 15:51:30 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.opencms.util.CmsUUID;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.3.5
  */
@@ -765,7 +765,7 @@ public class OpenCmsTestCase extends TestCase {
         List parentResources = new ArrayList();
         try {
             // get all parent folders of the current file
-            parentResources = cms.readPath(resourceName, CmsResourceFilter.DEFAULT);
+            parentResources = cms.readPath(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             // ignore
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2004/05/19 16:20:53 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2004/06/07 15:46:08 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -311,7 +311,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
      */
     private boolean checkWriteable(CmsObject cms, String resPath, int projectId)  throws CmsException {
 		CmsProject theProject = cms.readProject(projectId);
-		CmsResource res = cms.readFileHeader(resPath, projectId, CmsResourceFilter.DEFAULT);
+		CmsResource res = cms.readFileHeader(resPath, projectId, CmsResourceFilter.IGNORE_EXPIRATION);
         return cms.hasPermissions(res, C_WRITE_ACCESS);
     }
 }

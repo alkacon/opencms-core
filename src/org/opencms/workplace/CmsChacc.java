@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/07 15:50:13 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1
  */
@@ -781,7 +781,7 @@ public class CmsChacc extends CmsDialog {
         List parentResources = new ArrayList();
         try {
             // get all parent folders of the current file
-            parentResources = getCms().readPath(path, CmsResourceFilter.DEFAULT);
+            parentResources = getCms().readPath(path, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             // ignore
         }

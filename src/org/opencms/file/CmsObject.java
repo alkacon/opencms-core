@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/06 08:50:03 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/06/07 15:49:15 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public class CmsObject {
 
@@ -1413,28 +1413,18 @@ public class CmsObject {
     }
 
     /**
-     * Reads all siblings that point to the resource record of a specified resource name.<p>
+     * Returns a List of all siblings of the specified resource,
+     * the specified resource being always part of the result set.<p>
      * 
-     * @param resourcename name of a resource
-     * @return List of siblings of the resource
+     * @param resourcename the name of the specified resource
+     * @param filter a resource filter
+     * @return a List of CmsResources that are siblings to the specified resource, including the specified resource itself 
      * @throws CmsException if something goes wrong
      */
-    public List getAllVfsLinks(String resourcename) throws CmsException {
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), true, CmsResourceFilter.ALL);
+    public List readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), filter);
     }
-
-    /**
-     * Reads all siblings that point to the resource record of a specified resource name,
-     * excluding the specified resource from the result.<p>
-     * 
-     * @param resourcename name of a resource
-     * @return List of siblings of the resource
-     * @throws CmsException if something goes wrong 
-     */
-    public List getAllVfsSoftLinks(String resourcename) throws CmsException {       
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), false, CmsResourceFilter.ALL);
-    } 
-
+    
     /**
      * Fires a CmsEvent
      *
@@ -1627,18 +1617,16 @@ public class CmsObject {
     }
     
     /**
-     * Returns a Vector with all files of a given folder.
-     * (only the direct subfiles, not the files in subfolders)
-     * <br>
-     * Files of a folder can be read from an offline Project and the online Project.
+     * Returns a Vector with all files of a given folder
+     * (only the direct subfiles, not the files in subfolders).<p>
      *
      * @param foldername the complete path to the folder.
-     *
-     * @return subfiles a Vector with all files of the given folder.
-     *
-     * @throws CmsException if the user has not hte appropriate rigths to access or read the resource.
+     * @return a Vector with all files of the given folder.
+     * @throws CmsException something goes wrong
      */
     public List getFilesInFolder(String foldername) throws CmsException {
+        int warning = 0;
+        // must check usages in the workplace, better remove this altogether
         return (m_driverManager.getSubFiles(m_context, addSiteRoot(foldername), CmsResourceFilter.DEFAULT));
     }
 
@@ -1656,20 +1644,6 @@ public class CmsObject {
      */
     public List getFilesInFolder(String foldername, CmsResourceFilter filter) throws CmsException {
         return (m_driverManager.getSubFiles(m_context, addSiteRoot(foldername), filter));
-    }
-
-    /**
-     * Returns a Vector with all resource-names of the resources that have set the given property to the given value.
-     *
-     * @param propertyDefinition the name of the property-definition to check.
-     * @param propertyValue the value of the property for the resource.
-     *
-     * @return a Vector with all names of the resources.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public Vector getFilesWithProperty(String propertyDefinition, String propertyValue) throws CmsException {
-        return m_driverManager.getFilesWithProperty(m_context, propertyDefinition, propertyValue);
     }
 
     /**
@@ -1916,6 +1890,8 @@ public class CmsObject {
      * @throws CmsException if the user has not the permissions to access or read the resource
      */
     public List getSubFolders(String foldername) throws CmsException {
+        int warning = 0;
+        // check all occurences, replace with version using filter
         return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), CmsResourceFilter.DEFAULT));
     }
 
@@ -2025,25 +2001,7 @@ public class CmsObject {
     public Vector getUsersOfGroup(String groupname) throws CmsException {
         return (m_driverManager.getUsersOfGroup(m_context, groupname));
     }
-
-    /**
-     * Returns a Vector with all resources of the given type that have set the given property to the given value.
-     *
-     * <B>Security:</B>
-     * All users that have read and view access are granted.
-     *
-     * @param propertyDefinition the name of the propertydefinition to check.
-     * @param propertyValue the value of the property for the resource.
-     * @param resourceType the resource type of the resource
-     *
-     * @return Vector with all resources.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public Vector getVisibleResourcesWithProperty(String propertyDefinition, String propertyValue, int resourceType) throws CmsException {
-        return m_driverManager.getVisibleResourcesWithProperty(m_context, propertyDefinition, propertyValue, resourceType);
-    }
-
+    
     /**
      * Checks if the current user has required permissions to access a given resource.
      * 
@@ -2478,6 +2436,8 @@ public class CmsObject {
      * @return the absolute path
      */
     public String readAbsolutePath(CmsResource resource) {
+        int warning = 0;
+        // TODO: check where this is used and ensure proper filter is selected
         return readAbsolutePath(resource, CmsResourceFilter.DEFAULT);
     }
 

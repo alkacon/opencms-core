@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/06/07 12:44:06 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2004/06/07 15:50:47 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  * 
  * @since 5.1
  */
@@ -323,7 +323,7 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showUserWhoCreated = (preferences & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0;
 
         // now get the entries for the filelist
-        Vector resources = getRessources(getSettings().getExplorerResource());
+        List resources = getRessources(getSettings().getExplorerResource());
 
         // if a folder contains to much entrys we split them to pages of C_ENTRYS_PER_PAGE length
         int startat = 0;
@@ -358,7 +358,7 @@ public class CmsExplorer extends CmsWorkplace {
         }
 
         for (int i = startat; i < stopat; i++) {
-            CmsResource res = (CmsResource)resources.elementAt(i);
+            CmsResource res = (CmsResource)resources.get(i);
             CmsLock lock = null;
             String path = getCms().readAbsolutePath(res);
             
@@ -580,100 +580,39 @@ public class CmsExplorer extends CmsWorkplace {
     }
     
     /**
-     * Get the resources in the folder stored in parameter param
-     * or in the project shown in the projectview
+     * Returns a list resources that should be displayed in the 
+     * OpenCms Exlorer.<p>
+     * 
+     * How the list is build depends on the current Workplace settings 
+     * of the user.
      *
-     * @param resource the resource to read the files from
-     * @return a vector with ressources to display
+     * @param resource the resource to read the files from (usually a folder)
+     * @return a list of resources to display
      */
-    private Vector getRessources(String resource) {
-        
-        // convert this to a List!
-        int warning = 0;
-        
+    private List getRessources(String resource) {
+
         if (getSettings().getExplorerShowLinks()) {
+            // show all siblings of a resource
             try {
-                return new Vector(getCms().getAllVfsLinks(resource));
+                // also return "invisible" siblings (the user might get confused if not all are returned)
+                return getCms().readSiblings(resource, CmsResourceFilter.ALL);
             } catch (CmsException e) {
-                return new Vector();
+                return Collections.EMPTY_LIST;
             }
         } else if ("projectview".equals(getSettings().getExplorerMode())) {
-            // show only files belonging to the selected project
+            // show files in the selected project using some additional filter
             try {
-                return getCms().readProjectView(getSettings().getExplorerProjectId(), getSettings().getExplorerProjectFilter());
+                return new ArrayList(getCms().readProjectView(getSettings().getExplorerProjectId(), getSettings().getExplorerProjectFilter()));
             } catch (CmsException e) {
-                return new Vector();
+                return Collections.EMPTY_LIST;
             }
         } else {
+            // default is to return a list of all files in the folder
             try {
-                return new Vector(getCms().getResourcesInFolder(resource, CmsResourceFilter.ALL));
+                return getCms().getResourcesInFolder(resource, CmsResourceFilter.ONLY_VISIBLE);
             } catch (CmsException e) {
-                return new Vector();
+                return Collections.EMPTY_LIST;
             }
         }
-                
-        /*
-        // String mode = (String)parameters.get("mode")!=null?(String)parameters.get("mode"):"";        
-        // String submode = (String)parameters.get("submode")!=null?(String)parameters.get("submode"):"";
-        
-        if("projectview".equals(mode)) {
-            
-            
-            // I_CmsSession session = getCms().getRequestContext().getSession(true);
-            
-            
-            if("search".equals(submode)){
-                Vector resources = new Vector();
-                // String currentFilter = (String)session.getValue("ocms_search.currentfilter");
-                CmsSearchFormObject searchForm = null;
-                if(currentFilter != null){
-                    searchForm = (CmsSearchFormObject)((Hashtable)session.getValue("ocms_search.allfilter")).get(currentFilter);
-                    if((currentFilter != null) && (searchForm != null)){
-                        // flag for using lucene for search
-                        I_CmsRegistry registry = getCms().getRegistry();
-                        boolean luceneEnabled = "on".equals(registry.getSystemValue("searchbylucene"));
-                        if("property".equals(currentFilter)){
-                            String definition = searchForm.getValue02();
-                            String value = searchForm.getValue03();
-                            int type = Integer.parseInt(searchForm.getValue01());
-                            resources = getCms().getVisibleResourcesWithProperty(definition, value, type);
-                        } else if ("filename".equals(currentFilter)){
-                            String filename = searchForm.getValue01();
-                            // if lucene is enabled the use lucene for searching by filename
-                            // else use the method that reads from the database
-                            if(luceneEnabled){
-                                // put here the lucene search for filenames
-                            } else {
-                                resources = getCms().readResourcesLikeName(filename);
-                            }
-                        } else if ("content".equals(currentFilter)){
-                            // this search is only available if lucene is enabled
-                            searchForm.getValue01();
-                        }
-                    }
-                }
-                // remove the channel resources
-                for(int i=0; i<resources.size(); i++){
-                    CmsResource curRes = (CmsResource)resources.elementAt(i);
-                    if(curRes.getResourceName().startsWith(getCms().getRequestContext().getSiteName()+CmsObject.C_ROOTNAME_COS)){
-                        resources.remove(i);
-                    }
-                }
-                return resources;
-            } else {
-                String filter = new String();
-                filter = (String) session.getValue("filter");
-                String projectId = (String) session.getValue("projectid");
-                int currentProjectId;
-                if(projectId == null || "".equals(projectId)){
-                    currentProjectId = getCms().getRequestContext().currentProject().getId();
-                } else {
-                    currentProjectId = Integer.parseInt(projectId);
-                }
-                session.removeValue("filter");
-                return getCms().readProjectView(currentProjectId, filter);
-            }
-        } else 
-        */       
     }   
 }

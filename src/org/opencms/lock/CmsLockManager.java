@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/05/24 17:06:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/07 15:49:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.4
  * 
@@ -337,7 +337,7 @@ public final class CmsLockManager extends Object {
         // inevitably result in an infinite loop...
 
         try {
-            List path = driverManager.readPath(context, resourcename, CmsResourceFilter.DEFAULT);
+            List path = driverManager.readPath(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
             resource = (CmsResource)path.get(path.size() - 1);
             resource.setFullResourceName(resourcename);
         } catch (CmsException e) {
@@ -374,8 +374,7 @@ public final class CmsLockManager extends Object {
             }
         }
 
-        driverManager.setFullResourceNames(context, siblings);
-        return siblings;
+        return driverManager.setFullResourceNames(context, siblings);
     }
 
     /**

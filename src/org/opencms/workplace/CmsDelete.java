@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2004/05/19 16:20:53 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/06/07 15:50:23 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1
  */
@@ -241,7 +241,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
      */
     public boolean hasVfsLinks() {
         try {
-            return getCms().getAllVfsSoftLinks(getParamResource()).size() > 0;
+            return getCms().readSiblings(getParamResource(), CmsResourceFilter.ALL).size() > 1;
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error getting siblings of resource " + getParamResource(), e);
