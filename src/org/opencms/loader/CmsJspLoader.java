@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2004/08/30 12:38:57 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -243,11 +243,6 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
         // remove the controller from the request
         CmsFlexController.removeController(req);
-
-        // write to the export stream (if required)
-        if (result != null) {
-            res.setStatus(HttpServletResponse.SC_OK);
-        }
 
         // return the contents
         return result;
@@ -468,7 +463,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     // get the result byte array
                     result = f_res.getWriterBytes();
                     if (controller.getTopRequest().getHeader(I_CmsConstants.C_HEADER_OPENCMS_EXPORT) != null) {
-                        // this is an export request, don't write to the response stream
+                        // this is a non "on-demand" static export request, don't write to the response stream
                         controller.getTopRequest().setAttribute(
                             I_CmsConstants.C_HEADER_OPENCMS_EXPORT,
                             new Long(controller.getDateLastModified()));
@@ -490,6 +485,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                                 CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
                             }       
                         }
+                        // set response status to "200 - OK" (required for static export "on-demand")
+                        res.setStatus(HttpServletResponse.SC_OK);  
+                        // proecess the headers
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);
                         res.getOutputStream().flush();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/08/10 15:46:18 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/08/30 12:38:57 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -220,7 +220,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         // make sure we have the file contents available
         CmsFile file = CmsFile.upgrade(resource, cms);
                 
-        // set response status to "200 - OK" (required for export since a 404 status might have been set before)
+        // set response status to "200 - OK" (required for static export "on-demand")
         res.setStatus(HttpServletResponse.SC_OK);           
         // set content length header
         res.setContentLength(file.getContents().length);
