@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/04 09:55:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -177,9 +177,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultValue(org.opencms.xml.types.I_CmsXmlSchemaType, java.util.Locale)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultValue(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.util.Locale)
      */
-    public String getDefaultValue(I_CmsXmlSchemaType type, Locale locale) {
+    public String getDefaultValue(CmsObject Cms, I_CmsXmlSchemaType type, Locale locale) {
 
         String defaultValue = (String)m_defaultValues.get(type.getElementName());
         if (defaultValue != null) {

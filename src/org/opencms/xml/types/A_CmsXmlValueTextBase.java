@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlValueTextBase.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public abstract class A_CmsXmlValueTextBase extends A_CmsXmlContentValue {
 
@@ -95,9 +95,9 @@ public abstract class A_CmsXmlValueTextBase extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void setStringValue(String value) {
+    public void setStringValue(CmsObject cms, String value) {
 
         m_element.clearContent();
         if (CmsStringUtil.isNotEmpty(value)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -167,20 +167,15 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
 
     /**
-     * @see org.opencms.xml.I_CmsXmlDocument#addLocale(java.util.Locale)
+     * @see org.opencms.xml.I_CmsXmlDocument#addLocale(org.opencms.file.CmsObject, java.util.Locale)
      */
-    public void addLocale(Locale locale) throws CmsXmlException {
+    public void addLocale(CmsObject cms, Locale locale) throws CmsXmlException {
 
         if (hasLocale(locale)) {
             throw new CmsXmlException("Locale '" + locale + "' already exists in XML document");
         }
-
-        // append new "page" element
-        Element pages = m_document.getRootElement();
-        Element newPage = pages.addElement(NODE_PAGE);
-        // add "language" attribute
-        newPage.addAttribute(ATTRIBUTE_LANGUAGE, locale.toString());
-
+        // add element node for Locale
+        getContentDefinition().createLocale(cms, this, m_document.getRootElement(), locale);
         // re-initialize the bookmarks
         initDocument(m_document, m_encoding, null);
     }

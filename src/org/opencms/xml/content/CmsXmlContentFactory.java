@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2004/11/30 17:20:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,10 @@ import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
-import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -52,6 +50,7 @@ import java.util.Locale;
 import javax.servlet.ServletRequest;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.xml.sax.EntityResolver;
 
 /**
@@ -59,7 +58,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public final class CmsXmlContentFactory {
@@ -73,46 +72,33 @@ public final class CmsXmlContentFactory {
     }
 
     /**
-     * Creates a valid XML content document for the given content definition, 
-     * containing one empty element in the given locale.<p>
+     * Create a new instance of an XML content based on the given content definiton,
+     * that will have one language node for the given locale all initialized with default values.<p> 
      * 
-     * @param locale the locale to create the XML content for
-     * @param contentDefinition the content definition to create the XML content for
+     * The given encoding is used when marshalling the XML again later.<p>
      * 
-     * @return a valid XML page document
+     * @param cms the current users OpenCms content
+     * @param locale the locale to generate the default content for
+     * @param encoding the encoding to use when marshalling the XML content later
+     * @param contentDefinition the content definiton to create the content for
+     * 
+     * @return the created XML content
      */
-    public static Document createDocument(Locale locale, CmsXmlContentDefinition contentDefinition) {
+    public static CmsXmlContent createDocument(
+        CmsObject cms,
+        Locale locale,
+        String encoding,
+        CmsXmlContentDefinition contentDefinition) {
 
-        CmsXmlContent document = new CmsXmlContent(contentDefinition, locale, CmsEncoder.C_UTF8_ENCODING);
-        return contentDefinition.createDocument(document, locale);
+        // create the XML content
+        return new CmsXmlContent(cms, locale, encoding, contentDefinition);
     }
 
     /**
-     * Creates a valid XML content String representation for the given content definition, 
-     * containing one empty element in the given locale.<p>
-     * 
-     * @param locale the locale to create the XML content for
-     * @param encoding the encoding to use when creating the String from the XML 
-     * @param contentDefinition the content definition to create the XML content for
-     * 
-     * @return a valid XML page document as a String
-     */
-    public static String createDocument(Locale locale, String encoding, CmsXmlContentDefinition contentDefinition) {
-
-        try {
-            return CmsXmlUtils.marshal(createDocument(locale, contentDefinition), encoding);
-        } catch (CmsXmlException e) {
-            // this should never happen
-            OpenCms.getLog(CmsXmlContentFactory.class).error("Could not create XML document", e);
-            return null;
-        }
-    }
-
-    /**
-     * Factory method to unmarshal (read) a XML content instance from a byte array
+     * Factory method to unmarshal (generate) a XML content instance from a byte array
      * that contains XML data.<p>
      * 
-     * When unmarshalling, the encoding is read directly from the XML header. 
+     * When unmarshalling, the encoding is read directly from the XML header of the byte array. 
      * The given encoding is used only when marshalling the XML again later.<p>
      * 
      * @param xmlData the XML data in a byte array
@@ -124,7 +110,7 @@ public final class CmsXmlContentFactory {
     public static CmsXmlContent unmarshal(byte[] xmlData, String encoding, EntityResolver resolver)
     throws CmsXmlException {
 
-        return new CmsXmlContent(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);
+        return unmarshal(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);
     }
 
     /**
@@ -158,7 +144,7 @@ public final class CmsXmlContentFactory {
      */
     public static CmsXmlContent unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding) throws CmsXmlException {
 
-        byte[] content = file.getContents();
+        byte[] contentBytes = file.getContents();
         String filename = cms.getSitePath(file);
 
         String encoding = null;
@@ -176,18 +162,18 @@ public final class CmsXmlContentFactory {
             }
         }
 
-        CmsXmlContent newContent;
-        if (content.length > 0) {
+        CmsXmlContent content;
+        if (contentBytes.length > 0) {
             // content is initialized
             if (keepEncoding) {
                 // use the encoding from the content
-                newContent = unmarshal(content, encoding, new CmsXmlEntityResolver(cms));
+                content = unmarshal(contentBytes, encoding, new CmsXmlEntityResolver(cms));
             } else {
                 // use the encoding from the file property
                 // this usually only triggered by a save operation                
                 try {
-                    String contentStr = new String(content, encoding);
-                    newContent = unmarshal(contentStr, encoding, new CmsXmlEntityResolver(cms));
+                    String contentStr = new String(contentBytes, encoding);
+                    content = unmarshal(contentStr, encoding, new CmsXmlEntityResolver(cms));
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
                     throw new CmsXmlException("Invalid content-encoding property set for xml content '"
@@ -197,12 +183,13 @@ public final class CmsXmlContentFactory {
             }
         } else {
             // content is empty
-            newContent = new CmsXmlContent(encoding, new CmsXmlEntityResolver(cms));
+            content = new CmsXmlContent(DocumentHelper.createDocument(), encoding, new CmsXmlEntityResolver(cms));
         }
 
         // set the file
-        newContent.setFile(file);
-        return newContent;
+        content.setFile(file);
+        // return the result
+        return content;
     }
 
     /**
@@ -238,33 +225,30 @@ public final class CmsXmlContentFactory {
             req.setAttribute(rootPath, content);
         }
 
+        // return the result
         return content;
     }
-    
-    /**
-     * Factory method to unmarshal (read) a XML document instance from
-     * a filename in the VFS, using the request attributes as cache.<p>
-     * 
-     * @param cms the current OpenCms context object
-     * @param filename the filename of the resource to unmarshal
-     * @param req the current request
-     * 
-     * @return the unmarshaled xml document, or null if the given resource was not of type {@link A_CmsXmlDocument}
-     * 
-     * @throws CmsException in something goes wrong
-     */
-    public static A_CmsXmlDocument unmarshal(CmsObject cms, String filename, ServletRequest req) throws CmsException {
-        
-        // use code from XML page factory implementation
-        return CmsXmlPageFactory.unmarshal(cms, filename, req);        
-    }    
 
     /**
-     * Factory method to unmarshal (read) a XML content instance from a String
+     * Factory method to unmarshal (generate) a XML content instance from a XML document.<p>
+     * 
+     * The given encoding is used when marshalling the XML again later.<p>
+     * 
+     * @param document the XML document to generate the XML content from
+     * @param encoding the encoding to use when marshalling the XML content later
+     * @param resolver the XML entitiy resolver to use
+     * @return a XML content instance unmarshalled from the String
+     */
+    public static CmsXmlContent unmarshal(Document document, String encoding, EntityResolver resolver) {
+
+        return new CmsXmlContent(document, encoding, resolver);
+    }
+
+    /**
+     * Factory method to unmarshal (generate) a XML content instance from a String
      * that contains XML data.<p>
      * 
-     * When unmarshalling, the encoding is read directly from the XML header. 
-     * The given encoding is used only when marshalling the XML again later.<p>
+     * The given encoding is used when marshalling the XML again later.<p>
      * 
      * @param xmlData the XML data in a String
      * @param encoding the encoding to use when marshalling the XML content later
@@ -275,6 +259,10 @@ public final class CmsXmlContentFactory {
     public static CmsXmlContent unmarshal(String xmlData, String encoding, EntityResolver resolver)
     throws CmsXmlException {
 
-        return new CmsXmlContent(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);
+        // create the XML content object from the provided String
+        CmsXmlContent content = unmarshal(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);
+        // return the result with the user context set
+        return content;
+
     }
 }

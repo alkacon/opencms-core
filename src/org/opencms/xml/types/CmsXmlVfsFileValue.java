@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
@@ -174,14 +174,5 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         } else {
             m_stringValue = null;
         }
-    }
-
-    /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
-     */
-    public void setStringValue(String value) {
-
-        // we don't have any information available for link processing
-        setStringValue(null, value);
     }
 }

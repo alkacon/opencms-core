@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -153,7 +153,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         if (! m_content.hasLocale(getElementLocale())) {
             // create new element if selected language element is not present
             try {
-                m_content.addLocale(getElementLocale());
+                m_content.addLocale(getCms(), getElementLocale());
             } catch (CmsXmlException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error(e);
@@ -260,19 +260,25 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             
             // one resource serves as a "template" for the new resource
             CmsFile templateFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-            CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCms(), templateFile);            
+            CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCms(), templateFile);
             Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
-            
+
             // now create a new XML content based on the templates content definition            
-            CmsXmlContent newContent = new CmsXmlContent(template.getContentDefinition(), locale, template.getEncoding());  
-            
+            CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
+                getCms(),
+                locale,
+                template.getEncoding(),
+                template.getContentDefinition());
+
             // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
             String newFileName = collector.getCreateLink(getCms(), collectorName, param);            
             
             // now create the resource, fill it with the marshalled XML and write it back to the VFS
             getCms().createResource(newFileName, templateFile.getTypeId());
-            CmsFile newFile = getCms().readFile(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
+            // re-read the created resource
+            CmsFile newFile = getCms().readFile(newFileName, CmsResourceFilter.ALL);
             newFile.setContents(newContent.marshal());
+            // write the file with the updated content
             getCms().writeFile(newFile);
             
             // wipe out parameters for the editor to ensure proper operation
@@ -402,7 +408,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 m_content.removeValue(getParamElementName(), getElementLocale(), index);
             } else {
                 // add the new value after the clicked element
-                m_content.addValue(getParamElementName(), getElementLocale(), index + 1);
+                m_content.addValue(getCms(), getParamElementName(), getElementLocale(), index + 1);
             }
             try {
                 // write the modified content to temporary file
@@ -578,7 +584,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 if (elementCount < 1) {
                     // current element is disabled
                     elementCount = 1;
-                    elementSequence.addValue(0);
+                    elementSequence.addValue(getCms(), 0);
                     disabledElement = true;
                 }
                 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.5.0
  */
@@ -106,7 +106,7 @@ public class TestCmsXmlPage extends TestCase {
         assertEquals(1, names.size());
         assertTrue(names.contains("body"));
         
-        page.addLocale(Locale.FRENCH);
+        page.addLocale(null, Locale.FRENCH);
         page.addValue("newbody", Locale.FRENCH);
         page.addValue("newbody2", Locale.FRENCH);
         page.addValue("anotherbody", Locale.FRENCH);

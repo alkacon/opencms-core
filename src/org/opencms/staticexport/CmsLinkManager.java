@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/10/23 06:50:36 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public class CmsLinkManager {
     
@@ -212,7 +212,8 @@ public class CmsLinkManager {
                 query = "";
             }
             
-        } catch (Exception exc) {   
+        } catch (Exception e) {
+            OpenCms.getLog(CmsLinkManager.class).warn(e);
             return null;
         }
         

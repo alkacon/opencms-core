@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  */
 public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
@@ -118,7 +118,7 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
     /**
      * Sets the provided String as value of this XML content node.<p>  
      * 
-     * This method does does provide processing of the content based on the
+     * This method does provide processing of the content based on the
      * users current OpenCms context. This can be used e.g. for link 
      * extraction and replacement in the content.<p>
      * 
@@ -126,22 +126,6 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * @param value the value to set
      * 
      * @throws CmsXmlException if something goes wrong
-     * 
-     * @see #setStringValue(String)
      */
     void setStringValue(CmsObject cms, String value) throws CmsXmlException;
-
-    /**
-     * Sets the provided String as value of this XML content node.<p>  
-     * 
-     * This method does not provide special processing of the content based on the
-     * users current OpenCms context.<p>
-     * 
-     * @param value the value to set
-     * 
-     * @throws CmsXmlException if something goes wrong
-     * 
-     * @see #setStringValue(CmsObject, String)
-     */
-    void setStringValue(String value) throws CmsXmlException;
 }

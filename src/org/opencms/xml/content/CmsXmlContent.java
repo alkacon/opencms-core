@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.xml.sax.EntityResolver;
@@ -70,9 +69,12 @@ import org.xml.sax.SAXException;
  * Implementation of a XML content object,
  * used to access and manage structured content.<p>
  *
+ * Use the {@link org.opencms.xml.content.CmsXmlContentFactory} to generate an
+ * instance of this class.<p>
+ *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -81,67 +83,63 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     public static final String C_XERCES_SCHEMA_PROPERTY = "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation";
 
     /**
-     * Creates a new xml content based on the provided content definition and encoding.<p>
+     * Create a new XML content based on the given content definiton,
+     * that will have one language node for the given locale all initialized with default values.<p> 
      * 
-     * The encoding is used when saving/serializing the XML document.<p>
+     * The given encoding is used when marshalling the XML again later.<p>
      * 
-     * @param contentDefinition the content definition to create the xml content from
-     * @param locale the locale for the xml content to create
-     * @param encoding the encoding of the xml content
+     * @param cms the current users OpenCms content
+     * @param locale the locale to generate the default content for
+     * @param encoding the encoding to use when marshalling the XML content later
+     * @param contentDefinition the content definiton to create the content for
      */
-    public CmsXmlContent(CmsXmlContentDefinition contentDefinition, Locale locale, String encoding) {
+    protected CmsXmlContent(CmsObject cms, Locale locale, String encoding, CmsXmlContentDefinition contentDefinition) {
 
-        // must set content definition here to be able to create a document
+        // content defition must be set here since it's used during document creation
         m_contentDefinition = contentDefinition;
-        initDocument(contentDefinition.createDocument(this, locale), encoding, contentDefinition);
+        // create the XML document according to the content definition
+        Document document = contentDefinition.createDocument(cms, this, locale);
+        // initialize the XML content structure
+        initDocument(document, encoding, m_contentDefinition);
     }
 
     /**
-     * Creates a new xml content based on the provided document and encoding.<p>
+     * Creates a new XML content based on the provided XML document.<p>
      * 
-     * The encoding is used when saving/serializing the XML document.<p>
+     * The given encoding is used when marshalling the XML again later.<p>
      * 
      * @param document the document to create the xml content from
      * @param encoding the encoding of the xml content
      * @param resolver the XML entitiy resolver to use
      */
-    public CmsXmlContent(Document document, String encoding, EntityResolver resolver) {
+    protected CmsXmlContent(Document document, String encoding, EntityResolver resolver) {
 
+        // must set document first to be able to get the content definition
         m_document = document;
-        initDocument(m_document, encoding, getContentDefinition(resolver));
+        // for the next line to work the document must already be available
+        m_contentDefinition = getContentDefinition(resolver);
+        // initialize the XML content structure
+        initDocument(m_document, encoding, m_contentDefinition);
     }
 
     /**
-     * Creates a new empty xml content with the provided encoding.<p>
-     * 
-     * The content is initialized according to the minimal neccessary xml structure.
-     * The encoding is used when saving/serializing the XML document.<p>
-     * 
-     * @param encoding the encoding of the xml content
-     * @param resolver the XML entitiy resolver to use
+     * Hides the public constructor.<p>
      */
-    public CmsXmlContent(String encoding, EntityResolver resolver) {
+    private CmsXmlContent() {
 
-        m_document = DocumentHelper.createDocument();
-        initDocument(m_document, encoding, getContentDefinition(resolver));
+        // noop
     }
 
     /**
-     * @see org.opencms.xml.I_CmsXmlDocument#addLocale(java.util.Locale)
+     * @see org.opencms.xml.I_CmsXmlDocument#addLocale(org.opencms.file.CmsObject, java.util.Locale)
      */
-    public void addLocale(Locale locale) throws CmsXmlException {
+    public void addLocale(CmsObject cms, Locale locale) throws CmsXmlException {
 
         if (hasLocale(locale)) {
             throw new CmsXmlException("Locale '" + locale + "' already exists in XML document");
         }
-
-        // create empty document with new Locale
-        Document newDocument = m_contentDefinition.createDocument(this, locale);
-        Element newElement = (Element)newDocument.getRootElement().elements().get(0);
-
-        // detach new element from parent folder before adding it 
-        m_document.getRootElement().add(newElement.detach());
-
+        // add element node for Locale
+        m_contentDefinition.createLocale(cms, this, m_document.getRootElement(), locale);
         // re-initialize the bookmarks
         initDocument(m_document, m_encoding, m_contentDefinition);
     }
@@ -150,13 +148,14 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * Adds a new XML content value for the given element name and locale at the given index position
      * to this XML content document.<p> 
      * 
+     * @param cms the current users OpenCms context
      * @param path the path to the XML content value element
      * @param locale the locale where to add the new value 
      * @param index the index where to add the value (relative to all other values of this type)
      * 
      * @return the created XML content value
      */
-    public I_CmsXmlContentValue addValue(String path, Locale locale, int index) {
+    public I_CmsXmlContentValue addValue(CmsObject cms, String path, Locale locale, int index) {
 
         // get the schema type of the requested path           
         I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(path);
@@ -182,12 +181,13 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             contentDefinition = m_contentDefinition;
         }
 
-        List values = getValues(path, locale);
+        // read the XML siblings from the parent node
+        List siblings = parentElement.elements(elementName);
 
         int insertIndex;
-        if (values.size() > 0) {
+        if (siblings.size() > 0) {
 
-            if (values.size() >= type.getMaxOccurs()) {
+            if (siblings.size() >= type.getMaxOccurs()) {
                 // must not allow adding an element if max occurs would be violated
                 throw new RuntimeException("Element '"
                     + elementName
@@ -196,31 +196,33 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                     + " times");
             }
 
-            // iterate all elements of the parent node            
-            Iterator i = parentElement.content().iterator();
-            int pos = 0;
-            int foundCount = 0;
-            while (i.hasNext()) {
-                pos++;
-                Node node = (Node)i.next();
-                if (node instanceof Element) {
-                    if (node.getName().equals(elementName)) {
-                        // found an element of this type
-                        foundCount++;
-                        if (foundCount >= index) {
-                            // found the index position required
-                            if (index == 0) {
-                                // insert before the last position found as first element of this type
-                                pos--;
-                            }
-                            break;
-                        }
-                    }
-                }
+            if (index > siblings.size()) {
+                // index position behind last element of the list
+                throw new RuntimeException("You can't insert at position "
+                    + index
+                    + " because element '"
+                    + elementName
+                    + "' only occurs "
+                    + siblings.size()
+                    + " times");
             }
-            insertIndex = pos;
 
+            // check for offset required to append beyond last position
+            int offset = (index == siblings.size()) ? 1 : 0;
+            // get the element from the parent at the selected position
+            Element sibling = (Element)siblings.get(index - offset);
+            // check position of the node in the parent node content
+            insertIndex = sibling.getParent().content().indexOf(sibling) + offset;
         } else {
+
+            if (index > 0) {
+                // since the element does not occur, index must be 0
+                throw new RuntimeException("You must insert at 0 not at position "
+                    + index
+                    + " because element '"
+                    + elementName
+                    + "' does not yet occur in the parent node");
+            }
 
             // check where in the type sequence the type should appear
             int typeIndex = contentDefinition.getTypeSequence().indexOf(type);
@@ -255,7 +257,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         }
 
         // append the new element at the calculated position
-        I_CmsXmlContentValue newValue = addValue(contentDefinition, parentElement, type, locale, insertIndex);
+        I_CmsXmlContentValue newValue = addValue(cms, parentElement, type, locale, insertIndex);
 
         // re-initialize this XML content 
         initDocument(m_document, m_encoding, m_contentDefinition);
@@ -445,30 +447,20 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @return the created XML content value
      */
     private I_CmsXmlContentValue addValue(
-        CmsXmlContentDefinition contentDefinition,
+        CmsObject cms,
         Element parent,
         I_CmsXmlSchemaType type,
         Locale locale,
         int insertIndex) {
 
-        // now generate the default value for the content definition
-        Element element = contentDefinition.createDefaultXml(this, type.getElementName(), locale);
-
-        List parentContent = parent.content();
-        parentContent.add(insertIndex, element);
-
-        I_CmsXmlContentValue value = type.createValue(this, element, locale);
-        String defaultValue = contentDefinition.getContentHandler().getDefaultValue(type, locale);
-        if (defaultValue != null) {
-            try {
-                value.setStringValue(defaultValue);
-            } catch (CmsXmlException e) {
-                // should not happen if default value is correct
-                OpenCms.getLog(this).error("Invalid default value '" + defaultValue + "' for XML content", e);
-                element.clearContent();
-            }
-        }
-        return value;
+        // first generate the XML element for the new value
+        Element element = type.generateXml(cms, this, parent, locale);
+        // detatch the XML element from the appended position in order to insert it at the required position
+        element.detach();
+        // add the XML element at the required position in the parent XML node 
+        parent.content().add(insertIndex, element);
+        // create the type and return it
+        return type.createValue(this, element, locale);
     }
 
     /**

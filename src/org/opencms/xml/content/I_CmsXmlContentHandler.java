@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/04 09:55:37 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -80,10 +80,11 @@ public interface I_CmsXmlContentHandler {
     void analyzeAppInfo(Element appInfoElement, CmsXmlContentDefinition contentDefinition) throws CmsXmlException;
 
     /**
-     * Returns the default String value for the given XML content schema type object.<p> 
+     * Returns the default String value for the given XML content schema type object in the given XML content.<p> 
      * 
      * If a schema type does not have a default value, this method must return <code>null</code>.
      * 
+     * @param cms the current users OpenCms context
      * @param type the value to get the default for
      * @param locale the currently selected locale for the value
      * 
@@ -91,7 +92,7 @@ public interface I_CmsXmlContentHandler {
      * 
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getDefault(Locale)
      */
-    String getDefaultValue(I_CmsXmlSchemaType type, Locale locale);
+    String getDefaultValue(CmsObject cms, I_CmsXmlSchemaType type, Locale locale);
 
     /**
      * Returns the editor widget that should be used for the given XML content value.<p>

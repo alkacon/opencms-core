@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.file.CmsObject;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.I_CmsXmlDocument;
 
@@ -58,7 +59,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -70,22 +71,6 @@ public interface I_CmsXmlSchemaType extends Comparable {
 
     /** Constant for the XML schema attribute "noNamespaceSchemaLocation" in the XML schema instance namespace. */
     QName XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION = QName.get("noNamespaceSchemaLocation", XSI_NAMESPACE);
-
-    /**
-     * Appends an XML for a new, empty node of this schema type to the given root element.<p>
-     * 
-     * This is used to dynamically build a vaild XML content object from an initialized
-     * {@link org.opencms.xml.CmsXmlContentDefinition} class.<p>
-     * 
-     * Important: This method can only be used during initialization of a XML content object,
-     * not to add values to an already initialized XML content. To add values after initialization,
-     * use {@link org.opencms.xml.content.CmsXmlContent#addValue(String, java.util.Locale, int)}.<p>
-     * 
-     * @param document the document this value belongs to
-     * @param root the element to append the XML to
-     * @param locale the locale to generate the element default content for
-     */
-    void appendDefaultXml(I_CmsXmlDocument document, Element root, Locale locale);
 
     /**
      * Appends an XML representation of this schema type to the given XML element.<p>
@@ -109,6 +94,25 @@ public interface I_CmsXmlSchemaType extends Comparable {
     I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale);
 
     /**
+     * Appends an XML for a new, empty node of this schema type to the given root element.<p>
+     * 
+     * This is used to dynamically build a vaild XML content object from an initialized
+     * {@link org.opencms.xml.CmsXmlContentDefinition} class.<p>
+     * 
+     * Important: This method can only be used during initialization of a XML content object,
+     * not to add values to an already initialized XML content. To add values after initialization,
+     * use {@link org.opencms.xml.content.CmsXmlContent#addValue(CmsObject, String, Locale, int)}.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param document the document the XML is generated for
+     * @param root the element to append the XML to
+     * @param locale the locale to generate the element default content for
+     * 
+     * @return the generated XML element
+     */
+    Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale);
+
+    /**
      * Returns the content definition this schema type belongs to.<p> 
      * 
      * Note that for nested schemas, the content definition of a nested 
@@ -128,7 +132,7 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * 
      * @return the default value for a node of this type in the current schema
      * 
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultValue(I_CmsXmlSchemaType, Locale)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefaultValue(CmsObject, I_CmsXmlSchemaType, Locale)
      */
     String getDefault(Locale locale);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPageFactory.java,v $
- * Date   : $Date: 2004/11/10 12:41:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,10 +41,10 @@ import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -63,7 +63,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public final class CmsXmlPageFactory {
@@ -267,17 +267,17 @@ public final class CmsXmlPageFactory {
      * @param filename the filename of the resource to unmarshal
      * @param req the current request
      * 
-     * @return the unmarshaled xml document, or null if the given resource was not of type {@link A_CmsXmlDocument}
+     * @return the unmarshaled xml document, or null if the given resource was not of type {@link I_CmsXmlDocument}
      * 
      * @throws CmsException in something goes wrong
      */
-    public static A_CmsXmlDocument unmarshal(CmsObject cms, String filename, ServletRequest req) throws CmsException {
+    public static I_CmsXmlDocument unmarshal(CmsObject cms, String filename, ServletRequest req) throws CmsException {
         
         // add site root to filename
         String rootPath = cms.getRequestContext().addSiteRoot(filename);
         
         // try to get the requested page form the current request attributes
-        A_CmsXmlDocument doc = (A_CmsXmlDocument)req.getAttribute(rootPath);
+        I_CmsXmlDocument doc = (I_CmsXmlDocument)req.getAttribute(rootPath);
 
         if (doc != null) {
             return doc;

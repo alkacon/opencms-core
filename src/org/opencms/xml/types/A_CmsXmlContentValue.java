@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -141,25 +141,6 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(I_CmsXmlDocument, org.dom4j.Element, Locale)
-     */
-    public void appendDefaultXml(I_CmsXmlDocument document, Element root, Locale locale) {
-
-        Element element = root.addElement(getElementName());
-        String defaultValue = document.getContentDefinition().getContentHandler().getDefaultValue(this, locale);
-        if (defaultValue != null) {
-            try {
-                I_CmsXmlContentValue value = createValue(document, element, locale);
-                value.setStringValue(defaultValue);
-            } catch (CmsXmlException e) {
-                // should not happen if default value is correct
-                OpenCms.getLog(this).error("Invalid default value '" + defaultValue + "' for XML content", e);
-                element.clearContent();
-            }
-        }
-    }
-
-    /**
      * Appends an element XML representation of this type to the given root node.<p>
      * 
      * @param root the element to append the XML to
@@ -209,6 +190,27 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
         return (getElementName().equals(other.getElementName())
             && getTypeName().equals(other.getTypeName())
             && (getMinOccurs() == other.getMinOccurs()) && (getMaxOccurs() == other.getMaxOccurs()));
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#generateXml(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.dom4j.Element, java.util.Locale)
+     */
+    public Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
+
+        Element element = root.addElement(getElementName());
+        // get the default value from the content handler
+        String defaultValue = document.getContentDefinition().getContentHandler().getDefaultValue(cms, this, locale);
+        if (defaultValue != null) {
+            try {
+                I_CmsXmlContentValue value = createValue(document, element, locale);
+                value.setStringValue(cms, defaultValue);
+            } catch (CmsXmlException e) {
+                // should not happen if default value is correct
+                OpenCms.getLog(this).error("Invalid default value '" + defaultValue + "' for XML content", e);
+                element.clearContent();
+            }
+        }
+        return element;
     }
 
     /**
@@ -344,15 +346,6 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     public void setDefault(String defaultValue) {
 
         m_defaultValue = defaultValue;
-    }
-
-    /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public void setStringValue(CmsObject cms, String value) throws CmsXmlException {
-
-        // for most values, no special processing on the users OpenCms context is required
-        setStringValue(value);
     }
 
     /**

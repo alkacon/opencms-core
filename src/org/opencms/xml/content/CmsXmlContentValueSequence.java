@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.file.CmsObject;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -43,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsXmlContentValueSequence {
@@ -83,15 +84,16 @@ public class CmsXmlContentValueSequence {
     /**
      * Adds a value element of the sequence type at the seleted index to the XML content document.<p> 
      * 
+     * @param cms the current users OpenCms context
      * @param index the index where to add the new value element
      * 
      * @return the added XML content value element
      * 
-     * @see CmsXmlContent#addValue(String, Locale, int)
+     * @see CmsXmlContent#addValue(CmsObject, String, Locale, int)
      */
-    public I_CmsXmlContentValue addValue(int index) {
+    public I_CmsXmlContentValue addValue(CmsObject cms, int index) {
 
-        I_CmsXmlContentValue newValue = m_content.addValue(getPath(), getLocale(), index);
+        I_CmsXmlContentValue newValue = m_content.addValue(cms, getPath(), getLocale(), index);
 
         // re-initialize the value list
         m_values = m_content.getValues(getPath(), getLocale());

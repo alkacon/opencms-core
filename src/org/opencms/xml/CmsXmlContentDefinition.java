@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/12/04 10:39:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -564,35 +564,15 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Creates the default XML element for a node of the given name according to the rules of 
-     * this XML content definition.<p>
-     *  
-     * @param document the OpenCms XML document the XML is created for
-     * @param name the name of the node to generate the XML for
-     * @param locale the localet to generate the XML for
-     * 
-     * @return the default XML element for a node of the given name
-     */
-    public Element createDefaultXml(I_CmsXmlDocument document, String name, Locale locale) {
-
-        Document doc = DocumentHelper.createDocument();
-        I_CmsXmlSchemaType type = getSchemaType(name);
-        Element root = doc.addElement("root");
-        type.appendDefaultXml(document, root, locale);
-        Element result = (Element)root.elements().get(0);
-        result.detach();
-        return result;
-    }
-
-    /**
      * Generates a valid XML document according to the XML schema of this content definition.<p>
      * 
+     * @param cms the current users OpenCms context
      * @param document the OpenCms XML document the XML is created for
      * @param locale the locale to create the default element in the document with
      * 
      * @return a valid XML document according to the XML schema of this content definition
      */
-    public Document createDocument(I_CmsXmlDocument document, Locale locale) {
+    public Document createDocument(CmsObject cms, I_CmsXmlDocument document, Locale locale) {
 
         Document doc = DocumentHelper.createDocument();
 
@@ -600,18 +580,34 @@ public class CmsXmlContentDefinition implements Cloneable {
         root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
         root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, getSchemaLocation());
 
-        Element element = root.addElement(getName());
-        element.addAttribute(XSD_ATTRIBUTE_VALUE_LANGUAGE, locale.toString());
+        createLocale(cms, document, root, locale);
+        return doc;
+    }
 
+    /**
+     * Generates a valid locale (language) element fot the XML schema of this content definition.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param document the OpenCms XML document the XML is created for
+     * @param root the root node of the document where to append the locale to
+     * @param locale the locale to create the default element in the document with
+     * 
+     * @return a valid XML element for the locale according to the XML schema of this content definition
+     */
+    public Element createLocale(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
+        
+        Element element = root.addElement(getName()); 
+        element.addAttribute(XSD_ATTRIBUTE_VALUE_LANGUAGE, locale.toString());
+        
         Iterator i = m_typeSequence.iterator();
         while (i.hasNext()) {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
             for (int j = 0; j < type.getMinOccurs(); j++) {
-                type.appendDefaultXml(document, element, locale);
+                type.generateXml(cms, document, element, locale);
             }
-        }
-
-        return doc;
+        }  
+        
+        return element;
     }
 
     /**

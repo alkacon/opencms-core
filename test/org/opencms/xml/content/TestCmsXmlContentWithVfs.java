@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -149,7 +149,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         xmlcontent.validateXmlStructure(resolver);
 
         // add a deep cascaded node
-        xmlcontent.addValue("DeepCascade", Locale.ENGLISH, 0);
+        xmlcontent.addValue(cms, "DeepCascade", Locale.ENGLISH, 0);
         CmsXmlContentValueSequence level0Sequence = xmlcontent.getValueSequence("DeepCascade[1]", Locale.ENGLISH);
         assertEquals(1, level0Sequence.getElementCount());
 
@@ -169,7 +169,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(1, level2Sequence.getElementCount());
 
         // now append an element to the nested element 
-        level1Sequence.addValue(1);
+        level1Sequence.addValue(cms, 1);
         assertEquals(2, level1Sequence.getElementCount());
 
         // validate the XML structure
@@ -194,9 +194,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(1, level2Sequence.getElementCount());
 
         // add some values to the level 2 sequence
-        level2Sequence.addValue(0);
-        level2Sequence.addValue(2);
-        level2Sequence.addValue(1);
+        level2Sequence.addValue(cms, 0);
+        level2Sequence.addValue(cms, 2);
+        level2Sequence.addValue(cms, 1);
         assertEquals(4, level2Sequence.getElementCount());
 
         // output the current document
@@ -214,8 +214,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // now add an optional, deep nested node that has no current value
         level2Sequence = xmlcontent.getValueSequence("DeepCascade[1]/Cascade[2]/Option", Locale.ENGLISH);
         assertEquals(0, level2Sequence.getElementCount());
-        level2Sequence.addValue(0);
-        level2Sequence.addValue(1);
+        level2Sequence.addValue(cms, 0);
+        level2Sequence.addValue(cms, 1);
         assertEquals(2, level2Sequence.getElementCount());
 
         // output the current document
@@ -247,7 +247,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(0, level0Sequence.getElementCount());
 
         // add a new value for the deep cascade
-        level0Sequence.addValue(0);
+        level0Sequence.addValue(cms, 0);
         assertEquals(1, level0Sequence.getElementCount());
 
         // output the current document
@@ -299,10 +299,10 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         CmsXmlStringValue newValue;
 
-        newValue = (CmsXmlStringValue)titleSequence.addValue(0);
+        newValue = (CmsXmlStringValue)titleSequence.addValue(cms, 0);
         assertEquals(2, titleSequence.getElementCount());
         assertEquals(newValue, titleSequence.getValue(0));
-        newValue.setStringValue("This is another Value!");
+        newValue.setStringValue(cms, "This is another Value!");
 
         // now re-create the XML content from the XML document
         content = xmlcontent.toString();
@@ -319,12 +319,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals("This is just a modification test", titleSequence.getValue(1).getStringValue(cms));
 
         // add an element at the last position
-        newValue = (CmsXmlStringValue)titleSequence.addValue(2);
-        newValue.setStringValue("This is the last value.");
+        newValue = (CmsXmlStringValue)titleSequence.addValue(cms, 2);
+        newValue.setStringValue(cms, "This is the last value.");
         assertEquals(newValue, titleSequence.getValue(2));
         // add another element at the 2nd position
-        newValue = (CmsXmlStringValue)titleSequence.addValue(1);
-        newValue.setStringValue("This is the 2nd value.");
+        newValue = (CmsXmlStringValue)titleSequence.addValue(cms, 1);
+        newValue.setStringValue(cms, "This is the 2nd value.");
         assertEquals(newValue, titleSequence.getValue(1));
         assertEquals(4, titleSequence.getElementCount());
 
@@ -354,12 +354,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(2, optionSequence.getMaxOccurs());
 
         // add an element for the optional element
-        newValue = (CmsXmlStringValue)optionSequence.addValue(0);
-        newValue.setStringValue("Optional value 1");
+        newValue = (CmsXmlStringValue)optionSequence.addValue(cms, 0);
+        newValue.setStringValue(cms, "Optional value 1");
         assertEquals(newValue, optionSequence.getValue(0));
         // add another element
-        newValue = (CmsXmlStringValue)optionSequence.addValue(0);
-        newValue.setStringValue("Optional value 0");
+        newValue = (CmsXmlStringValue)optionSequence.addValue(cms, 0);
+        newValue.setStringValue(cms, "Optional value 0");
         assertEquals(newValue, optionSequence.getValue(0));
         assertEquals(2, optionSequence.getElementCount());
 
@@ -434,7 +434,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         nestedSequence = xmlcontent.getValueSequence("Cascade", Locale.ENGLISH);
         assertEquals(1, nestedSequence.getElementCount());
         I_CmsXmlContentValue newValue;
-        newValue = nestedSequence.addValue(0);
+        newValue = nestedSequence.addValue(cms, 0);
         assertNotNull(newValue);
         assertFalse(newValue.isSimpleType());
         assertEquals(CmsXmlNestedContentDefinition.class.getName(), newValue.getClass().getName());
@@ -453,7 +453,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         deepNestedSequence = xmlcontent.getValueSequence("DeepCascade", Locale.ENGLISH);
         assertEquals(0, deepNestedSequence.getElementCount());
 
-        newValue = deepNestedSequence.addValue(0);
+        newValue = deepNestedSequence.addValue(cms, 0);
         assertNotNull(newValue);
         assertFalse(newValue.isSimpleType());
         assertEquals(CmsXmlNestedContentDefinition.class.getName(), newValue.getClass().getName());
@@ -731,10 +731,10 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
 
         // add 2 deep cascaded nodes
-        xmlcontent.addValue("DeepCascade", Locale.ENGLISH, 0);
-        xmlcontent.addValue("DeepCascade", Locale.ENGLISH, 1);
-        xmlcontent.addLocale(Locale.GERMAN);
-        xmlcontent.addValue("DeepCascade", Locale.GERMAN, 0);
+        xmlcontent.addValue(cms, "DeepCascade", Locale.ENGLISH, 0);
+        xmlcontent.addValue(cms, "DeepCascade", Locale.ENGLISH, 1);
+        xmlcontent.addLocale(cms, Locale.GERMAN);
+        xmlcontent.addValue(cms, "DeepCascade", Locale.GERMAN, 0);
         // output the current document
         System.out.println(xmlcontent.toString());
 
@@ -748,13 +748,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         I_CmsXmlContentValue value1;
 
         value1 = xmlcontent.getValue("Test", Locale.ENGLISH);
-        value1.setStringValue("This produces a warning!");
+        value1.setStringValue(cms, "This produces a warning!");
 
         errorHandler = xmlcontent.validate(cms);
         assertFalse(errorHandler.hasErrors());
         assertTrue(errorHandler.hasWarnings());
 
-        value1.setStringValue("This produces a warning and an error!");
+        value1.setStringValue(cms, "This produces a warning and an error!");
 
         errorHandler = xmlcontent.validate(cms);
         assertTrue(errorHandler.hasErrors());
@@ -763,7 +763,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(1, errorHandler.getWarnings().size());
 
         value1 = xmlcontent.getValue("Toast", Locale.ENGLISH);
-        value1.setStringValue("This produces a warning but no error!");
+        value1.setStringValue(cms, "This produces a warning but no error!");
 
         errorHandler = xmlcontent.validate(cms);
         assertTrue(errorHandler.hasErrors());
@@ -771,7 +771,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(1, errorHandler.getErrors().size());
         assertEquals(2, errorHandler.getWarnings().size());
 
-        value1 = xmlcontent.addValue("Option", Locale.ENGLISH, 0);
+        value1 = xmlcontent.addValue(cms, "Option", Locale.ENGLISH, 0);
         assertEquals("Default value from the appinfos", value1.getStringValue(cms));
 
         // output the current document
@@ -787,7 +787,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value1 = xmlcontent.getValue("DeepCascade[1]/Cascade[1]/Html", Locale.ENGLISH);
         value1.setStringValue(cms, "This HTML contains an error!");
 
-        value1 = xmlcontent.addValue("DeepCascade[1]/Cascade[1]/Option", Locale.ENGLISH, 0);
+        value1 = xmlcontent.addValue(cms, "DeepCascade[1]/Cascade[1]/Option", Locale.ENGLISH, 0);
         assertEquals("Default value from the appinfos", value1.getStringValue(cms));
 
         // output the current document
@@ -834,8 +834,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContentValueSequence toastSequence = xmlcontent.getValueSequence("Toast", Locale.ENGLISH);
 
         for (int i = 0; i < 2; i++) {
-            I_CmsXmlContentValue value = toastSequence.addValue(0);
-            value.setStringValue("Added toast value " + i);
+            I_CmsXmlContentValue value = toastSequence.addValue(cms, 0);
+            value.setStringValue(cms, "Added toast value " + i);
         }
 
         // output the current document

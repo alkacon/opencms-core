@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.List;
@@ -50,7 +50,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -211,7 +211,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
             String filename = controller.getCmsObject().getRequestContext().getUri();
             
-            A_CmsXmlDocument content = null;
+            I_CmsXmlDocument content = null;
             try {
                 content = CmsXmlPageFactory.unmarshal(controller.getCmsObject(), filename, req);               
             } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2004/12/04 09:55:37 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.5
  */
@@ -113,9 +113,13 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
                 CmsResource.getParentFolder(resourcename)
             ).get(0);
 
-            // create the new content
-            CmsXmlContent newContent = 
-                new CmsXmlContent(contentDefinition, locale, OpenCms.getSystemInfo().getDefaultEncoding());
+            // create the new content from the content defintion
+            CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
+                cms, 
+                locale, 
+                OpenCms.getSystemInfo().getDefaultEncoding(), 
+                contentDefinition);
+            // get the bytes from the created content
             content = newContent.marshal();
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/11/08 15:55:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
-import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.IOException;
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.0
  */
@@ -195,15 +195,15 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
               
             if ((element != null) && (resource.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
                 // check if the desired element is available (in case of xml page)
-                A_CmsXmlDocument page = CmsXmlPageFactory.unmarshal(cmsObject, filename, req);
-                List locales = page.getLocales();
+                I_CmsXmlDocument document = CmsXmlPageFactory.unmarshal(cmsObject, filename, req);
+                List locales = document.getLocales();
                 Locale locale;
                 if ((locales == null) || (locales.size() == 0)) {
                     locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename).get(0);                    
                 } else { 
                     locale = OpenCms.getLocaleManager().getBestMatchingLocale(null, OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename), locales);
                 }
-                if (!page.hasValue(element, locale) || !page.isEnabled(element, locale)) {
+                if (!document.hasValue(element, locale) || !document.isEnabled(element, locale)) {
                     return C_DIRECT_EDIT_MODE_INACTIVE;
                 }                
             }

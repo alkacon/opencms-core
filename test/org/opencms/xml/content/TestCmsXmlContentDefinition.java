@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/05 02:54:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.xml.content;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
@@ -50,7 +51,7 @@ import org.dom4j.io.XMLWriter;
  * Tests for generating an XML content definition.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsXmlContentDefinition extends TestCase {
 
@@ -125,17 +126,17 @@ public class TestCmsXmlContentDefinition extends TestCase {
         cd1.addType(new CmsXmlDateTimeValue("Date", "1", "1"));
         cd1.addType(new CmsXmlStringValue("Option", "0", "1")); 
         
-        CmsXmlEntityResolver.cacheSystemId(schemaUri, cd1.getSchema().asXML().getBytes("UTF-8"));
+        CmsXmlEntityResolver.cacheSystemId(schemaUri, cd1.getSchema().asXML().getBytes(CmsEncoder.C_UTF8_ENCODING));
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
         
         Locale locale = Locale.ENGLISH;
         
-        CmsXmlContent content = new CmsXmlContent(cd1, locale, "UTF-8");
+        CmsXmlContent content = CmsXmlContentFactory.createDocument(null, locale, CmsEncoder.C_UTF8_ENCODING, cd1);        
         content.validateXmlStructure(resolver);
 
         // change cd to break validation
         cd1.addType(new CmsXmlStringValue("Kaputt", "1", "1"));
-        CmsXmlEntityResolver.cacheSystemId(schemaUri, cd1.getSchema().asXML().getBytes("UTF-8"));
+        CmsXmlEntityResolver.cacheSystemId(schemaUri, cd1.getSchema().asXML().getBytes(CmsEncoder.C_UTF8_ENCODING));
 
         try {
             content.validateXmlStructure(resolver);
