@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/02/08 18:07:29 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/09 14:15:00 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -144,7 +144,16 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 
     /** The default icon */
     private final static String C_ICON_DEFAULT="ic_file_othertype.gif";
+    
+    /** The default context menu */
+    private final static String C_DEFAULT_CONTEXTMENU="online";
+    
+    /** The context menu postfix for lock*/
+    private final static String C_CONTEXT_LOCK="lock";
 
+    /** The context menu postfix for lock user*/
+    private final static String C_CONTEXT_LOCKUSER="user";
+    
     /** Storage for caching icons */
     private Hashtable m_iconCache=new Hashtable();
     
@@ -171,7 +180,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         String template=n.getAttribute(C_FILELIST_TEMPLATE);
         
         CmsXmlWpTemplateFile filelistTemplate = new CmsXmlWpTemplateFile(cms,template);
-        
+              
         CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
         
         Vector filelist=new Vector();
@@ -265,7 +274,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // Set output style class according to the project and state of the file.
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,folder));   
                      // set the icon
-                    template.setXmlData("CONTEXT_MENU","plainlock");
+                    template.setXmlData("CONTEXT_MENU",getContextMenue(cms,res,template));
                     template.setXmlData("CONTEXT_NUMBER",new Integer(contextNumber++).toString());
                     
                     A_CmsResourceType type=cms.getResourceType(folder.getType());
@@ -317,7 +326,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // Set output style class according to the project and state of the file.
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));                   
                     // set the icon
-                    template.setXmlData("CONTEXT_MENU","plainlock");
+                    template.setXmlData("CONTEXT_MENU",getContextMenue(cms,res,template));
                     template.setXmlData("CONTEXT_NUMBER",new Integer(contextNumber++).toString());
                     
                     A_CmsResourceType type=cms.getResourceType(file.getType());
@@ -583,12 +592,17 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * @param file The CmsResource displayed in the the file list.
      * @return The style used for the actual entry.
      */
-     private String getStyle(A_CmsObject cms, CmsResource file) {
+     private String getStyle(A_CmsObject cms, CmsResource file) 
+        throws CmsException {
          StringBuffer output=new StringBuffer();
          // check if the resource is in the actual project
          if (!file.inProject(cms.getRequestContext().currentProject())) {
              output.append(C_STYLE_NOTINPROJECT); 
-         }else {         
+         }else if (cms.getRequestContext().currentProject().equals(cms.onlineProject())) {         
+             // check if the actual project is the online project
+             output.append(C_STYLE_UNCHANGED);
+         } else {
+             
             int style=file.getState();
             switch (style) {
             case 0: output.append(C_STYLE_UNCHANGED);
@@ -638,6 +652,30 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             }            
         }             
         return icon;
+     }
+     
+     
+     /** 
+      * Selects the context 
+      */
+     private String getContextMenue(A_CmsObject cms, CmsResource res, 
+                                    CmsXmlWpTemplateFile template) 
+         throws CmsException {
+      
+         String contextMenu=null;
+         // get the type of the resource
+         A_CmsResourceType type=cms.getResourceType(res.getType());
+         // get the context menu
+         contextMenu=type.getResourceName();
+         // test if this resource is locked
+         if (res.isLocked()) {
+             contextMenu+=C_CONTEXT_LOCK;
+             // is this resource locked by the current user    
+             if (cms.getRequestContext().currentUser().getId()==res.isLockedBy()){
+                contextMenu+=C_CONTEXT_LOCKUSER;          
+             }             
+         } 
+         return contextMenu;
      }
      
      

@@ -14,7 +14,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/02/08 15:45:03 $
+ * @version $Revision: 1.25 $ $Date: 2000/02/09 14:15:00 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -271,4 +271,15 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     public String getProcessedXmlDataValue(String tag, Object callingObject) throws CmsException {
         return getProcessedDataValue(tag, callingObject);
     }    
+    
+      /**
+     * Checks if this Template owns a datablock with the given key.
+     * @param key Datablock key to be checked.
+     * @return true if a datablock is found, false otherwise.
+     */
+    public boolean hasXmlData(String tag) throws CmsException {
+        return hasData(tag);
+    }
+    
+    
 }
