@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/Attic/CmsModuleSelectionDialog.java,v $
- * Date   : $Date: 2005/02/16 11:43:02 $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
+ * Date   : $Date: 2005/02/18 12:10:04 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,6 +40,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.*;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -47,6 +48,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
@@ -57,7 +59,7 @@ import javax.swing.border.Border;
  * @version $Revision: 1.1 $
  * @since 6.0
  */
-public class CmsModuleSelectionDialog extends JDialog implements ActionListener {
+public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener {
 
     private static final int BORDER_SIZE = 10;
 
@@ -65,31 +67,33 @@ public class CmsModuleSelectionDialog extends JDialog implements ActionListener 
     protected boolean m_aborted = true;
 
     private String[] m_allList = null;
-    private Border m_border = BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE);
-    private JPanel m_buttons = new JPanel();
-    private JButton m_cancel = new JButton("Cancel");
-    private JPanel m_content = new JPanel();
     private String[] m_defList = null;
-
-    private final CmsAntTaskModulePrompt m_modulePrompt;
-    private JCheckBox[] m_modules = null;
-    private JButton m_ok = new JButton("Ok");
-    private JLabel m_prompt = new JLabel("Please select the modules to process:");
-    private JScrollPane m_view = new JScrollPane(m_content);
+    private final CmsAntTaskSelectionPrompt m_promptTask;
+    
+    private final Border m_border = BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE);
+    private JLabel m_label = null;
+    private final JPanel m_content = new JPanel();
+    private final JScrollPane m_view = new JScrollPane(m_content);
+    private JToggleButton[] m_selections = null;
+    private final JPanel m_buttons = new JPanel();
+    private final JButton m_ok = new JButton("Ok");
+    private final JButton m_cancel = new JButton("Cancel");
+    private final JButton m_selAll = new JButton("All");
+    private final JButton m_selNone = new JButton("None");
 
     /**
      * Default Ctor.<p>
      * 
-     * @param modulePrompt the <code>{@link CmsAntTaskModulePrompt}</code> object.<p>
+     * @param promptTask the <code>{@link CmsAntTaskSelectionPrompt}</code> object.<p>
      */
-    public CmsModuleSelectionDialog(CmsAntTaskModulePrompt modulePrompt) {
+    public CmsAntTaskSelectionDialog(CmsAntTaskSelectionPrompt promptTask) {
 
-        super((JFrame)null, "Module Selection", true);
-        m_modulePrompt = modulePrompt;
+        super((JFrame)null, promptTask.getTitle(), true);
+        m_promptTask = promptTask;
 
-        m_allList = m_modulePrompt.getAllModules().split(CmsAntTaskModulePrompt.LIST_SEPARATOR);
+        m_allList = m_promptTask.getAllValues().split(CmsAntTaskSelectionPrompt.LIST_SEPARATOR);
         m_defList = getDefaultList();
-        m_modules = new JCheckBox[m_modulePrompt.getAllModules().split(CmsAntTaskModulePrompt.LIST_SEPARATOR).length];
+        m_label = new JLabel(m_promptTask.getPrompt());
         
         addWindowListener(new WindowAdapter() {
 
@@ -102,15 +106,39 @@ public class CmsModuleSelectionDialog extends JDialog implements ActionListener 
 
         getRootPane().setDefaultButton(m_ok);
 
-        m_prompt.setBorder(m_border);
-        getContentPane().add(m_prompt, BorderLayout.NORTH);
+        m_label.setBorder(m_border);
+        if (!m_promptTask.isSingleSelection()) {
+            JPanel p1 = new JPanel();
+            p1.add(new JLabel("Select: "));
+            m_selAll.addActionListener(this);
+            p1.add(m_selAll);
+            m_selNone.addActionListener(this);
+            p1.add(m_selNone);
+            JPanel p = new JPanel(new BorderLayout());
+            p.add(m_label, BorderLayout.NORTH);
+            p.add(p1, BorderLayout.SOUTH);
+            getContentPane().add(p, BorderLayout.NORTH);
+        } else {
+            getContentPane().add(m_label, BorderLayout.NORTH);
+        }
 
         m_view.setBorder(m_border);
-        m_content.setLayout(new GridLayout(m_modules.length, 1));
-        for (int i = 0; i < m_modules.length; i++) {
-            m_modules[i] = new JCheckBox(m_allList[i].trim(), firstPositionOfItemInArray(m_defList, m_allList[i]) != -1);
-            m_content.add(m_modules[i]);
+        m_selections = new JToggleButton[m_promptTask.getAllValues().split(CmsAntTaskSelectionPrompt.LIST_SEPARATOR).length];
+        m_content.setLayout(new GridLayout(m_selections.length, 1));
+        for (int i = 0; i < m_selections.length; i++) {
+            if (m_promptTask.isSingleSelection()) {
+                m_selections[i] = new JRadioButton(m_allList[i].trim(), firstPositionOfItemInArray(m_defList, m_allList[i]) != -1);
+            } else {
+                m_selections[i] = new JCheckBox(m_allList[i].trim(), firstPositionOfItemInArray(m_defList, m_allList[i]) != -1);
+            }
+            m_content.add(m_selections[i]);
         }
+        if (m_promptTask.isSingleSelection()) {
+            ButtonGroup group = new ButtonGroup();
+            for (int i = 0; i < m_selections.length; i++) {
+                group.add(m_selections[i]);
+            }
+        } 
         getContentPane().add(m_view, BorderLayout.CENTER);
 
         m_buttons.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE / 2, BORDER_SIZE));
@@ -128,33 +156,43 @@ public class CmsModuleSelectionDialog extends JDialog implements ActionListener 
      */
     public void actionPerformed(ActionEvent e) {
 
-        m_aborted = !e.getActionCommand().equals(m_ok.getText());
-        hide();
+        if (e.getActionCommand().equals(m_ok.getText()) || e.getActionCommand().equals(m_cancel.getText())) {
+            m_aborted = !e.getActionCommand().equals(m_ok.getText());
+            hide();
+        }  else if (e.getActionCommand().equals(m_selAll.getText())) {
+            for (int i = 0; i < m_selections.length; i++) {
+                m_selections[i].setSelected(true);
+            }
+        }  else if (e.getActionCommand().equals(m_selNone.getText())) {
+            for (int i = 0; i < m_selections.length; i++) {
+                m_selections[i].setSelected(false);
+            }
+        } 
     }
 
     /**
      * Returns <code>null</code> if the dialog was canceled, 
-     * or a list of selected modules if not.<p>
+     * or a list of selected items if not.<p>
      * 
      * @return the user selection. 
      */
-    public String getModuleSelection() {
+    public String getSelection() {
 
         center();
         show();
 
         String ret = "";
-        for (int i = 0; i < m_modules.length; i++) {
-            if (m_modules[i].isSelected()) {
-                ret += m_modules[i].getText() + CmsAntTaskModulePrompt.LIST_SEPARATOR;
+        for (int i = 0; i < m_selections.length; i++) {
+            if (m_selections[i].isSelected()) {
+                ret += m_selections[i].getText() + CmsAntTaskSelectionPrompt.LIST_SEPARATOR;
             }
         }
-        if (m_aborted || ret.trim().length() < CmsAntTaskModulePrompt.LIST_SEPARATOR.length()) {
+        if (m_aborted || ret.trim().length() < CmsAntTaskSelectionPrompt.LIST_SEPARATOR.length()) {
             dispose();
             return null;
         }
         dispose();
-        return ret.substring(0, ret.length() - CmsAntTaskModulePrompt.LIST_SEPARATOR.length());
+        return ret.substring(0, ret.length() - CmsAntTaskSelectionPrompt.LIST_SEPARATOR.length());
     }
 
     /**
@@ -197,9 +235,9 @@ public class CmsModuleSelectionDialog extends JDialog implements ActionListener 
 
     private String[] getDefaultList() {
 
-        if (m_modulePrompt.getDefaultValue() == null || m_modulePrompt.getDefaultValue().trim().equals("")) {
+        if (m_promptTask.getDefaultValue() == null || m_promptTask.getDefaultValue().trim().equals("")) {
             return m_allList;
         }
-        return m_modulePrompt.getDefaultValue().split(CmsAntTaskModulePrompt.LIST_SEPARATOR);
+        return m_promptTask.getDefaultValue().split(CmsAntTaskSelectionPrompt.LIST_SEPARATOR);
     }
 }

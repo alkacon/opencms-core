@@ -35,11 +35,16 @@
     <target name="clean" description="Deletes outputs">
         <delete dir="${module.output.classes}" />
         <delete dir="${module.output.jar}" />
-        <delete>
-            <fileset dir="${module.output.zip}">
-                <include name="${module.name}_*.zip"/>
-            </fileset>
-        </delete>
+    	<if> 
+    		<available file="${module.output.zip}" />
+    		<then>
+		        <delete>
+		            <fileset dir="${module.output.zip}">
+		                <include name="${module.name}_*.zip"/>
+		            </fileset>
+		        </delete>
+    		</then>
+    	</if>
     </target>        
 	
     <target name="init" 

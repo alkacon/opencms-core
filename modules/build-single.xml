@@ -35,7 +35,16 @@
     <target name="clean" description="Deletes outputs">
         <delete dir="${module.output.classes}" />
         <delete dir="${module.output.jar}" />
-        <delete file="${module.output.zip}/${module.name}_${module.version}.zip" />
+    	<if> 
+    		<available file="${module.output.zip}" />
+    		<then>
+		        <delete>
+		            <fileset dir="${module.output.zip}">
+		                <include name="${module.name}_*.zip"/>
+		            </fileset>
+		        </delete>
+    		</then>
+    	</if>
     </target>        
 	
     <target name="init" 
@@ -137,7 +146,7 @@
 		    		 </not>
 		    		 <then>
 		            	<echo message="Module dependency @{dependency} is missing, building it" />
-		        		<ant antfile="${@{dependency}.input}/build.xml" target="jar" inheritAll="false" >
+		        		<ant antfile="${@{dependency}.input}/build.xml" target="dist" inheritAll="false" >
 		            		<property name="module.name" value="@{dependency}" />
 		            	</ant>
 		    		 </then>

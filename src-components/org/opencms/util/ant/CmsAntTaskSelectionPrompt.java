@@ -12,19 +12,22 @@ import javax.swing.UIManager;
  * @version $Revision: 1.1 $
  * @since 6.0
  */
-public class CmsAntTaskModulePrompt extends org.apache.tools.ant.Task {
+public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
 
     /** the module list separator constant. */
     public static final String LIST_SEPARATOR = ",";
 
-    private String m_allModules; // required
-    private String m_defaultValue;
-    private String m_propertyName; // required
+    private String m_allValues; // required
+    private String m_defaultValue = "";
+    private String m_prompt = "Please make your choice:";
+    private String m_property; // required
+    private boolean m_singleSelection = false;
+    private String m_title = "Selection Dialog";
 
     /**
      * PropertyPrompt default constructor.<p>
      */
-    public CmsAntTaskModulePrompt() {
+    public CmsAntTaskSelectionPrompt() {
 
         super();
     }
@@ -41,17 +44,16 @@ public class CmsAntTaskModulePrompt extends org.apache.tools.ant.Task {
      */
     public void execute() throws org.apache.tools.ant.BuildException {
 
-        log("Prompting user for " + m_propertyName);
+        log("Prompting user for " + m_property);
 
-        String value = new CmsModuleSelectionDialog(this).getModuleSelection();
+        String value = new CmsAntTaskSelectionDialog(this).getSelection();
 
         if (value == null) {
             value = "__ABORT__";
-            log("cancelled");
         } else {
-            log("sel: " + value);
+            log("user selection: " + value);
         }
-        getProject().setProperty(m_propertyName, value);
+        getProject().setProperty(m_property, value);
     }
 
     /**
@@ -59,9 +61,9 @@ public class CmsAntTaskModulePrompt extends org.apache.tools.ant.Task {
      * 
      * @return Returns the all-modules list
      */
-    public String getAllModules() {
+    public String getAllValues() {
 
-        return m_allModules;
+        return m_allValues;
     }
 
     /**
@@ -75,13 +77,33 @@ public class CmsAntTaskModulePrompt extends org.apache.tools.ant.Task {
     }
 
     /**
+     * Returns the prompt.<p>
+     *
+     * @return the prompt
+     */
+    public String getPrompt() {
+
+        return m_prompt;
+    }
+
+    /**
      * Returns the property to store the user selection.<p>
      * 
      * @return Returns the m_propertyName.
      */
-    public String getPropertyName() {
+    public String getProperty() {
 
-        return m_propertyName;
+        return m_property;
+    }
+
+    /**
+     * Returns the title.<p>
+     *
+     * @return the title
+     */
+    public String getTitle() {
+
+        return m_title;
     }
 
     /**
@@ -90,7 +112,6 @@ public class CmsAntTaskModulePrompt extends org.apache.tools.ant.Task {
     public void init() {
 
         super.init();
-        m_defaultValue = "";
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -99,13 +120,23 @@ public class CmsAntTaskModulePrompt extends org.apache.tools.ant.Task {
     }
 
     /**
+     * Returns the Single Selection flag.<p>
+     *
+     * @return the single Selection flag
+     */
+    public boolean isSingleSelection() {
+
+        return m_singleSelection;
+    }
+
+    /**
      * Sets the <code>{@link #LIST_SEPARATOR}</code> separated list of all available modules.<p>
      * 
-     * @param allModules all-modules list to set
+     * @param allValues all-modules list to set
      */
-    public void setAllModules(String allModules) {
+    public void setAllValues(String allValues) {
 
-        this.m_allModules = allModules;
+        this.m_allValues = allValues;
     }
 
     /**
@@ -119,13 +150,43 @@ public class CmsAntTaskModulePrompt extends org.apache.tools.ant.Task {
     }
 
     /**
+     * Sets the prompt.<p>
+     *
+     * @param prompt the prompt to set
+     */
+    public void setPrompt(String prompt) {
+
+        m_prompt = prompt;
+    }
+
+    /**
      * Sets the property for storing the selected value.
      * 
-     * @param propertyName The property to set.
+     * @param property The property to set.
      */
-    public void setPropertyName(String propertyName) {
+    public void setProperty(String property) {
 
-        this.m_propertyName = propertyName;
+        this.m_property = property;
+    }
+
+    /**
+     * Sets the single Selection flag.<p>
+     *
+     * @param singleSelection the single Selection flag to set
+     */
+    public void setSingleSelection(boolean singleSelection) {
+
+        m_singleSelection = singleSelection;
+    }
+
+    /**
+     * Sets the title.<p>
+     *
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+
+        m_title = title;
     }
 
 }

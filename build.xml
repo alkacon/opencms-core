@@ -70,6 +70,12 @@
     
     <property environment="env" />
 
+ 	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	  <classpath>
+	    <pathelement location="${opencms.input.libs}/ant-contrib-1.0b1.jar"/>
+	  </classpath>
+	</taskdef>
+	
     <target name="init" 
     	description="Checks if all required libraries are available">
     	
@@ -189,6 +195,7 @@ ${opencms.inputlib.pdfbox}
         <delete dir="${opencms.output.jars}" />
         <delete dir="${opencms.output.warfiles}" />
         <delete dir="${opencms.output}/build" />
+        <delete dir="${opencms.output.distfiles}" />
     </target>
     
     		
@@ -419,8 +426,41 @@ ${opencms.inputlib.pdfbox}
     
     
     <target name="bindist" 
-    	depends="clean, war" description="Creates a binary distribution ZIP">
+    	depends="clean" description="Creates a binary distribution ZIP, including the templateone demopages">
     	
+    	<!-- read list of all available modules -->
+    	<property file="${opencms.input}/modules/all-modules.properties" />
+    	
+    	<!-- remove org.opencms.frontend.templateone.modules -->
+    	<var name="modules.common.selection" value="" />
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    		<sequential>
+    	    	<if>
+    				<not>
+    		    		<equals arg1="@{module}" arg2="org.opencms.frontend.templateone.modules" />
+    				</not>
+    				<then>
+    					<if>
+    						<equals arg1="${modules.common.selection}" arg2="" />
+    						<then>
+		    			    	<var name="modules.common.selection" value="@{module}" />
+    						</then>
+    						<else>
+		    			    	<var name="modules.common.selection" value="${modules.common.selection},@{module}" />
+    						</else>
+    					</if>
+    				</then>
+    	    	</if>
+      	    </sequential>
+      	</for>
+    	
+    	<!-- build war with selected modules -->
+	  	<ant antfile="${opencms.input}/modules/build.xml" target="war" inheritAll="false" >
+	  		<property name="modules.common.selection" value="${modules.common.selection}" />
+	  		<property name="modules.selection.mode" value="selection" />
+	  	</ant>    	
+    	
+    	<!-- build distro -->
         <mkdir dir="${opencms.output.distfiles}" />                    
     	
         <zip destfile="${opencms.output.distfiles}/opencms_${version.number}.zip">
@@ -428,47 +468,7 @@ ${opencms.inputlib.pdfbox}
             <zipfileset dir="${opencms.input}" includes="install.html,license.txt,history.txt"/>
         </zip>
 
-    </target>
-    
-    
-    <target name="bindist-fat" depends="jar" 
-    	description="Builds from scratch and creates a fat-binary distribution ZIP with additional modules and imports">
-    	        	
-        <war 
-        	destfile="${opencms.output}/build/${app.name}.war" 
-        	webxml="${opencms.input.warfiles}/WEB-INF/web.xml"
-        	manifest="${opencms.input.warfiles}/META-INF/MANIFEST.MF">
-        	     		
-       		<lib dir="${opencms.output.jars}">
-       			<include name="*.jar" />
-       		</lib>
-       		<lib dir="${opencms.input.libs}">
-       			<exclude name="servlet.jar" />
-       			<exclude name="junit.jar" />
-       			<exclude name="${libexcludes1}" />
-       			<exclude name="${libexcludes2}" />
-       			<exclude name="${libexcludes3}" />
-       			<exclude name="${excludes}" />       			
-       		</lib>     		
-       		<fileset dir="${opencms.input.warfiles}">       		
-       			<exclude name="WEB-INF/web.xml" />
-       			<exclude name="WEB-INF/lib/*" />
-       			<exclude name="WEB-INF/config/opencms.properties" />
-       			<exclude name="WEB-INF/config/registry.xml" />
-       			<exclude name="WEB-INF/setupdata/vfs/system/login/version.js" />
-       			<exclude name="setup/versions.txt" />
-       			<exclude name="build.xml,.*,${excludes}" />
-       		</fileset>
-  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.properties" />
-  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="registry.xml" />  			
-  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/setupdata/vfs/system/login" includes="version.js" />
-  			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="versions.txt" />
-            <zipfileset dir="${additional.modules}" prefix="WEB-INF/packages/modules" excludes="${excludes}" />   
-            <!-- zipfileset dir="${additional.export}" prefix="export" //-->		
-        </war> 
-            	       
     </target>    
-        
     
     <target name="srcdist" 
     	description="Creates a source distribution ZIP">
@@ -487,13 +487,14 @@ ${opencms.inputlib.pdfbox}
 		
         <zip destfile="${opencms.output.distfiles}/opencms_src_${version.number}.zip">
         	<zipfileset dir="${opencms.input}/src" excludes="${excludes}" prefix="src" />
+        	<zipfileset dir="${opencms.input}/src-modules" excludes="${excludes}" prefix="src-modules" />
+        	<zipfileset dir="${opencms.input}/src-components" excludes="${excludes}" prefix="src-components" />
             <zipfileset dir="${opencms.input}/test" excludes="${excludes}" prefix="test" />
             <zipfileset dir="${opencms.input.warfiles}" excludes="${excludes}" prefix="webapp" />
             <zipfileset dir="${opencms.input}" includes="build.xml,install.html,license.txt,history.txt"/>
         </zip>
     </target>
-	
-	
+		
     <target name="compile-tests" 
     	depends="jar" if="libsAvailable" description="Compile the OpenCms test classes">
     	
