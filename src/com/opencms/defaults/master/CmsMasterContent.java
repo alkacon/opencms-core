@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
  * Author : $Author: m.dernen $
- * Date   : $Date: 2001/11/15 11:11:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2001/11/15 13:55:09 $
+ * Version: $Revision: 1.11 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -39,8 +39,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.10 $
- * $Date: 2001/11/15 11:11:43 $
+ * $Revision: 1.11 $
+ * $Date: 2001/11/15 13:55:09 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -726,6 +726,8 @@ public abstract class CmsMasterContent
                 for (int j=0; j<selectedChannels.size(); j++) {
                     if (subChannels.elementAt(i).equals(selectedChannels.elementAt(j))) {
                         subChannels.removeElementAt(i);
+                        i--;
+                        break;
                     }
                 }
             }
