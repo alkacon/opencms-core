@@ -196,6 +196,7 @@ public class HtmlConverter {
      * @return String with transformed code
      */
     public String convertHTML(String filename, String inString, Hashtable properties) {
+        
         m_tempString = new StringBuffer();
         m_write = true;
         m_filename = filename.replace('\\', '/');

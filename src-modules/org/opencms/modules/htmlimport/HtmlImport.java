@@ -278,16 +278,15 @@ public class HtmlImport {
             String relativeFSName = subresources[i].getAbsolutePath().substring(m_inputDir.length()+1);
             String absoluteVFSName = getVfsName(relativeFSName, subresources[i].getName(), subresources[i].isFile());        
             m_report.append("Create Index for "+subresources[i].getAbsolutePath() +" -> "+absoluteVFSName+"<br>");
-                    
             m_fileIndex.put(subresources[i].getAbsolutePath().replace('\\', '/'), absoluteVFSName);
             // if the subresource is a folder, get all subresources of it as well
             if (subresources[i].isDirectory()) {
                 buildIndex(subresources[i].getAbsolutePath());
-            } 
+            }  
         }        
     }
 
-
+       
 
     /**
      * Tests if all given input parameters for the HTML Import are valid, i.e. that all the 
@@ -546,39 +545,48 @@ public class HtmlImport {
                 // try to find a meta.properties file in the folder
                 String propertyFileName=foldername+File.separator+C_META_PROPERTIES;
          
+                boolean metaPropertiesFound = false;
                 ExtendedProperties propertyFile = new ExtendedProperties(); 
                 try {                   
                     propertyFile.load(new FileInputStream(new File(propertyFileName)));
+                    metaPropertiesFound = true;
                 } catch (Exception e1) {
                     // do nothing if the propertyfile could not be loaded since it is not required
                     // that such s file does exist
                 }
                 // now copy all values from the propertyfile to the already found properties of the
                 // new folder in OpenCms
-                Enumeration enu = propertyFile.keys();
-                while (enu.hasMoreElements()) {
-                       // get property and value
-                       try {
-                           String property=(String)enu.nextElement();
-                           String propertyvalue=(String) propertyFile.get(property);
-                           // copy to the properties of the OpenCms folder
-                           properties.put(property, propertyvalue);
-                       } catch (Exception e2) {
-                           // just skip this property if it could ne be read.
-                       }
-                }
-                                
-                // check if we have to set the navpos property.
-                if (properties.get(I_CmsConstants.C_PROPERTY_NAVPOS)==null) {
-                    // set the position in the folder as navpos
-                    // we have to add one to the postion, since it is counted from 0
-                    properties.put(I_CmsConstants.C_PROPERTY_NAVPOS, (position+1)+"");
-                }
-                // check if we have to set the navpos property.
-                if (properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT)==null) {
-                    // set the foldername in the folder as navtext
-                    String navtext=folder.substring(1, 2).toUpperCase()+folder.substring(2, folder.length()-1);
-                    properties.put(I_CmsConstants.C_PROPERTY_NAVTEXT, navtext);
+                // only do this if we have found a meta.properties file          
+                if (metaPropertiesFound) {
+                    Enumeration enu = propertyFile.keys();
+                    while (enu.hasMoreElements()) {
+                           // get property and value
+                           try {
+                               String property=(String)enu.nextElement();
+                               String propertyvalue=(String) propertyFile.get(property);
+                               // copy to the properties of the OpenCms folder
+                               properties.put(property, propertyvalue);
+                           } catch (Exception e2) {
+                               // just skip this property if it could ne be read.
+                           }
+                    }
+                                    
+                    // check if we have to set the navpos property.
+                    if (properties.get(I_CmsConstants.C_PROPERTY_NAVPOS)==null) {
+                        // set the position in the folder as navpos
+                        // we have to add one to the postion, since it is counted from 0
+                        properties.put(I_CmsConstants.C_PROPERTY_NAVPOS, (position+1)+"");
+                    }
+                    // check if we have to set the navpos property.
+                    if (properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT)==null) {
+                        // set the foldername in the folder as navtext
+                        String navtext=folder.substring(1, 2).toUpperCase()+folder.substring(2, folder.length()-1);
+                        properties.put(I_CmsConstants.C_PROPERTY_NAVTEXT, navtext);
+                    }
+                } else {
+                    // if there was no meta.properties file, no properties should be added to the
+                    // folder
+                    properties = new Hashtable();
                 }
                 CmsResource newFolder;
                 // try to read the folder, it its there we must not create it again
@@ -589,7 +597,7 @@ public class HtmlImport {
                     newFolder = m_cms.createResource(path, folder, "folder");
                 }
                 // now write all properties as well
-                enu = properties.keys();
+                Enumeration enu = properties.keys();
                 while (enu.hasMoreElements()) {
                     // get property and value
                     String property=(String)enu.nextElement();
@@ -635,14 +643,22 @@ public class HtmlImport {
      */
     public  String getAbsoluteUri(String relativeUri, String baseUri) {         
         if ((relativeUri == null) || (relativeUri.charAt(0) == '/') || (relativeUri.startsWith("#"))) {
+
             return relativeUri;
         }
+        
+        // if we are on a windows system, we must add a ":" in the uri later               
+        String windowsAddition="";               
+        if (File.separator.equals("\\")) {
+            windowsAddition=":";
+        }
+        
         try {            
             URL url = new URL(new URL(m_baseUrl, "file://"+baseUri), relativeUri);
             if (url.getQuery() == null) {                       
-                return url.getHost()+":"+url.getPath();             
+                return url.getHost()+windowsAddition+url.getPath();             
             } else {
-                return url.getHost()+":"+url.getPath() + "?" + url.getQuery();
+                return url.getHost()+windowsAddition+url.getPath() + "?" + url.getQuery();
             }
         } catch (MalformedURLException e) {           
             return relativeUri;
@@ -845,7 +861,19 @@ public class HtmlImport {
         String translatedLink;
         translatedLink=(String)m_fileIndex.get(link.replace('\\', '/'));
         if (translatedLink==null) {
-            translatedLink=link;
+            
+            // its an anchor link, so copy use it
+            if (link.startsWith("#")) {    
+                translatedLink=link;
+               
+            } else {
+                // create a 'faked' link into the VFS. Original link was directing to a missing
+                // page, so let the link so to the same page inside of OpenCms.
+                String relativeFSName = link.substring(m_inputDir.length()+1);
+                translatedLink=m_destinationDir+relativeFSName;             
+              
+            }
+                    
         }
         return translatedLink;
     }
