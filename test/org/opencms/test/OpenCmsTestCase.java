@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/28 08:21:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/05/28 08:38:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.3.5
  */
@@ -167,49 +167,49 @@ public class OpenCmsTestCase extends TestCase {
             }
             // compare the date creted if nescessary
             if (filter.testDateCreated()) {
-               if (storedResource.getDateCreated() != res.getDateCreated() ) {
+               if (storedResource.getDateCreated() != res.getDateCreated()) {
                 noMatches += "[DateCreated " + storedResource.getDateCreated() + " <-> " + res.getDateCreated() + "]";
                }
             }
             // compare the date expired if nescessary
             if (filter.testDateExpired()) {
-               if (storedResource.getDateExpired() != res.getDateExpired() ) {
+               if (storedResource.getDateExpired() != res.getDateExpired()) {
                 noMatches += "[DateExpired " + storedResource.getDateExpired() + " <-> " + res.getDateExpired() + "]";
                }
             }
             // compare the date last modified if nescessary
             if (filter.testDateLastModified()) {
-               if (storedResource.getDateLastModified() != res.getDateLastModified() ) {
+               if (storedResource.getDateLastModified() != res.getDateLastModified()) {
                 noMatches += "[DateLastModified " + storedResource.getDateLastModified() + " <-> " + res.getDateLastModified() + "]";
                }
             }
             // compare the date last released if nescessary
             if (filter.testDateReleased()) {
-               if (storedResource.getDateReleased() != res.getDateReleased() ) {
+               if (storedResource.getDateReleased() != res.getDateReleased()) {
                 noMatches += "[DateReleased " + storedResource.getDateReleased() + " <-> " + res.getDateReleased() + "]";
                }
             }
             // compare the flags if nescessary
             if (filter.testFlags()) {
-               if (storedResource.getFlags() != res.getFlags() ) {
+               if (storedResource.getFlags() != res.getFlags()) {
                 noMatches += "[Flags " + storedResource.getFlags() + " <-> "+res.getFlags() + "]";
                }
             }
             // compare the length if nescessary
             if (filter.testLength()) {
-               if (storedResource.getLength() != res.getLength() ) {
+               if (storedResource.getLength() != res.getLength()) {
                 noMatches += "[Length " + storedResource.getLength() + " <-> " + res.getLength() + "]";
                }
             }
             // compare the link count if nescessary
             if (filter.testLinkCount()) {
-               if (storedResource.getLinkCount() != res.getLinkCount() ) {
+               if (storedResource.getLinkCount() != res.getLinkCount()) {
                 noMatches += "[LinkCount " + storedResource.getLinkCount() + " <-> " + res.getLinkCount() + "]";
                }
             }
             // compare the loader id if nescessary
             if (filter.testLoaderId()) {
-               if (storedResource.getLoaderId() != res.getLoaderId() ) {
+               if (storedResource.getLoaderId() != res.getLoaderId()) {
                 noMatches += "[LoaderId " + storedResource.getLoaderId() + " <-> " + res.getLoaderId() + "]";
                }
             }
@@ -222,19 +222,19 @@ public class OpenCmsTestCase extends TestCase {
             }
             // compare the name if nescessary
             if (filter.testName()) {
-               if (!storedResource.getName().equals(res.getName()) ) {
+               if (!storedResource.getName().equals(res.getName())) {
                 noMatches += "[Name " + storedResource.getName() + " <-> " + res.getName() + "]";
                }
             }
             // compare the parent id if nescessary
             if (filter.testParentId()) {
-               if (!storedResource.getParentStructureId().equals(res.getParentStructureId()) ) {
+               if (!storedResource.getParentStructureId().equals(res.getParentStructureId())) {
                 noMatches += "[ParentId " + storedResource.getParentStructureId() + " <-> " + res.getParentStructureId() + "]";
                }
             }
             // compare the project last modified if nescessary
             if (filter.testProjectLastModified()) {
-               if (storedResource.getProjectLastModified() != res.getProjectLastModified() ) {
+               if (storedResource.getProjectLastModified() != res.getProjectLastModified()) {
                 noMatches += "[ProjectLastModified " + storedResource.getProjectLastModified() + " <-> " + res.getProjectLastModified() + "]";
                }
             }
@@ -244,43 +244,43 @@ public class OpenCmsTestCase extends TestCase {
             }  
             // compare the resource id if nescessary
             if (filter.testResourceId()) {
-               if (!storedResource.getResourceId().equals(res.getResourceId()) ) {
+               if (!storedResource.getResourceId().equals(res.getResourceId())) {
                 noMatches += "[ResourceId " + storedResource.getResourceId() + " <-> " + res.getResourceId() + "]";
                }
             }
             // compare the state if nescessary
             if (filter.testState()) {
-               if (storedResource.getState() != res.getState() ) {
+               if (storedResource.getState() != res.getState()) {
                 noMatches += "[State " + storedResource.getState() + " <-> " + res.getState() + "]";
                }
             }
             // compare the structure id if nescessary
             if (filter.testStructureId()) {
-               if (!storedResource.getStructureId().equals(res.getStructureId()) ) {
+               if (!storedResource.getStructureId().equals(res.getStructureId())) {
                 noMatches += "[StructureId " + storedResource.getStructureId() + " <-> " + res.getStructureId() + "]";
                }
             }
             // compare the touched flag if nescessary
             if (filter.testTouched()) {
-               if (storedResource.isTouched() != res.isTouched() ) {
+               if (storedResource.isTouched() != res.isTouched()) {
                 noMatches += "[Touched " + storedResource.isTouched() + " <-> " + res.isTouched() + "]";
                }
             }
             // compare the type if nescessary
             if (filter.testType()) {
-               if (storedResource.getType() != res.getType() ) {
+               if (storedResource.getType() != res.getType()) {
                 noMatches += "[Type " + storedResource.getType() + " <-> " + res.getType() + "]";
                }
             }
             // compare the user created if nescessary
             if (filter.testUserCreated()) {
-               if (!storedResource.getUserCreated().equals(res.getUserCreated()) ) {
+               if (!storedResource.getUserCreated().equals(res.getUserCreated())) {
                 noMatches += "[UserCreated " + storedResource.getUserCreated() + " <-> " + res.getUserCreated() +"]";
                }
             }
             // compare the user created if nescessary
             if (filter.testUserLastModified()) {
-               if (!storedResource.getUserLastModified().equals(res.getUserLastModified()) ) {
+               if (!storedResource.getUserLastModified().equals(res.getUserLastModified())) {
                 noMatches += "[UserLastModified " + storedResource.getUserLastModified() + " <-> " + res.getUserLastModified() + "]";
                }
             }
@@ -1106,11 +1106,11 @@ public class OpenCmsTestCase extends TestCase {
             List properties = cms.readPropertyObjects(resourceName, false);
             List unmatchedProperties;
             unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
-            if (unmatchedProperties.size() >0 ) {
+            if (unmatchedProperties.size() >0) {
                 noMatches += "[Properies missing "+unmatchedProperties.toString()+"]";   
             }
             unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(properties, storedProperties, excludeList);
-            if (unmatchedProperties.size() >0 ) {
+            if (unmatchedProperties.size() >0) {
                 noMatches += "[Properies additional "+unmatchedProperties.toString()+"]";   
             } 
             return noMatches;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestCmsObjectWritePropertyObject.java,v $
- * Date   : $Date: 2004/05/27 10:13:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/28 08:38:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
         
@@ -92,10 +92,10 @@ public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
   
          long timestamp = System.currentTimeMillis();
          
-         CmsProperty property1 = new CmsProperty("Title","OpenCms",null);
-         CmsProperty property2 = new CmsProperty("NavPos","1",null);
-         CmsProperty property3 = new CmsProperty("Title","OpenCms2",null);
-         CmsProperty property4 = new CmsProperty("NavPos","2",null);
+         CmsProperty property1 = new CmsProperty("Title", "OpenCms", null);
+         CmsProperty property2 = new CmsProperty("NavPos", "1", null);
+         CmsProperty property3 = new CmsProperty("Title", "OpenCms2", null);
+         CmsProperty property4 = new CmsProperty("NavPos", "2", null);
          List propertyList1 = new ArrayList();
          propertyList1.add(property1);
          propertyList1.add(property2);        
@@ -131,7 +131,7 @@ public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
   
          long timestamp = System.currentTimeMillis();
          
-         CmsProperty property1 = new CmsProperty("Title","OpenCms",null);
+         CmsProperty property1 = new CmsProperty("Title", "OpenCms", null);
          //CmsProperty property2 = new CmsProperty("Title","OpenCms2",null);
          
          cms.writePropertyObject(resource1, property1);
@@ -162,7 +162,7 @@ public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
   
          long timestamp = System.currentTimeMillis();
          
-         CmsProperty property1 = new CmsProperty("Title",CmsProperty.C_DELETE_VALUE,CmsProperty.C_DELETE_VALUE);         
+         CmsProperty property1 = new CmsProperty("Title", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);         
          //CmsProperty property2 = new CmsProperty("Title","OpenCms",null);
          
          cms.writePropertyObject(resource1, property1);
@@ -193,8 +193,8 @@ public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
 
         long timestamp = System.currentTimeMillis();
         
-        CmsProperty property1 = new CmsProperty("Title",CmsProperty.C_DELETE_VALUE,CmsProperty.C_DELETE_VALUE);
-        CmsProperty property2 = new CmsProperty("NavPos",CmsProperty.C_DELETE_VALUE,CmsProperty.C_DELETE_VALUE);
+        CmsProperty property1 = new CmsProperty("Title", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);
+        CmsProperty property2 = new CmsProperty("NavPos", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);
 
         List propertyList1 = new ArrayList();
         propertyList1.add(property1);
@@ -228,8 +228,8 @@ public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
 
          long timestamp = System.currentTimeMillis();
          
-         CmsProperty property1 = new CmsProperty("Newproperty","testvalue1","testvalue2");
-         //CmsProperty property2 = new CmsProperty("Title","test", null);
+         CmsProperty property1 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
+         //CmsProperty property2 = new CmsProperty("Title", "test", null);
          
          cms.writePropertyObject(resource1, property1);
                   
@@ -259,11 +259,11 @@ public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
 
          long timestamp = System.currentTimeMillis();
           
-         CmsProperty property1 = new CmsProperty("Newproperty","testvalue1","testvalue2");
-         CmsProperty property2 = new CmsProperty("AnotherNewproperty","anothervalue", null);
-         CmsProperty property3 = new CmsProperty("Newproperty","test","test2");
-         CmsProperty property4 = new CmsProperty("AnotherNewproperty","test", null);
-         //CmsProperty property5 = new CmsProperty("Title","test", null);
+         CmsProperty property1 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
+         CmsProperty property2 = new CmsProperty("AnotherNewproperty", "anothervalue", null);
+         CmsProperty property3 = new CmsProperty("Newproperty", "test", "test2");
+         CmsProperty property4 = new CmsProperty("AnotherNewproperty", "test", null);
+         //CmsProperty property5 = new CmsProperty("Title", "test", null);
          
          List propertyList1 = new ArrayList();
          propertyList1.add(property1);

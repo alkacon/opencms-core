@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2004/05/28 08:21:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/28 08:38:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class OpenCmsTestResourceStorage {
 
@@ -199,8 +199,7 @@ public class OpenCmsTestResourceStorage {
      * <li>New -> New</li>
      * <li>Deleted -> Deleted</li>
      * </ul>
-     * @param cms the current CmsObject
-     * @param resourceName the name of the resource 
+     * @param res the resource 
      * @return new precalculated state
      */
     private Integer preCalculateState(CmsResource res) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/05/26 17:04:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/28 08:38:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * be tested to a new, specified value, the equal test must be disabled in the filter.<p>
  * 
  *  @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class OpenCmsTestResourceFilter {
 
@@ -123,30 +123,30 @@ public class OpenCmsTestResourceFilter {
      */    
     public static List compareProperties(List source, List target, List exclude) {
         
-		List result = new ArrayList();
-		List targetClone = new ArrayList(target);
-		Iterator i = source.iterator();
-		while (i.hasNext()) {
-			boolean found = false;
-			CmsProperty sourceProperty = (CmsProperty) i.next();
-			Iterator j = targetClone.iterator();
-			CmsProperty targetProperty = null;
-			while (j.hasNext()) {
-				targetProperty = (CmsProperty) j.next();
-				if (sourceProperty.isIdentical(targetProperty)) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				result.add(sourceProperty);
-			} else {
-				targetClone.remove(targetProperty);
-			}
-		}
+        List result = new ArrayList();
+        List targetClone = new ArrayList(target);
+        Iterator i = source.iterator();
+        while (i.hasNext()) {
+            boolean found = false;
+            CmsProperty sourceProperty = (CmsProperty) i.next();
+            Iterator j = targetClone.iterator();
+            CmsProperty targetProperty = null;
+            while (j.hasNext()) {
+                targetProperty = (CmsProperty) j.next();
+                if (sourceProperty.isIdentical(targetProperty)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                result.add(sourceProperty);
+            } else {
+                targetClone.remove(targetProperty);
+            }
+        }
         
         // finally match the result list with the exclude list
-        if ( exclude != null) {
+        if (exclude != null) {
             Iterator l = exclude.iterator();
             while (l.hasNext()) {
                 CmsProperty excludeProperty = (CmsProperty) l.next();   
@@ -156,8 +156,8 @@ public class OpenCmsTestResourceFilter {
             }
         }        
         
-		return result;
-	}            
+        return result;
+    }            
     
     /**
      * Creates a new filter used for the "touch" method.<p>
@@ -188,12 +188,12 @@ public class OpenCmsTestResourceFilter {
     }
     
     
-	/**
-	 * Disables the Content Id test.<p>
-	 */
-	public void disableContentIdTest() {
-		m_contentId = false;
-	}
+    /**
+     * Disables the Content Id test.<p>
+     */
+    public void disableContentIdTest() {
+        m_contentId = false;
+    }
     
     /**
      * Disables the Contenttest.<p>
@@ -202,61 +202,61 @@ public class OpenCmsTestResourceFilter {
         m_contents = false;
     }
     
-	/**
-	 * Disables the date created test.<p>
-	 */
-	public void disableDateCreatedTest() {
-		m_dateCreated = false;
-	}
+    /**
+     * Disables the date created test.<p>
+     */
+    public void disableDateCreatedTest() {
+        m_dateCreated = false;
+    }
     
-	/**
-	 * Disables the date expired test.<p>
-	 */
-	public void disableDateExpiredTest() {
-		m_dateExpired = false;
-	}
+    /**
+     * Disables the date expired test.<p>
+     */
+    public void disableDateExpiredTest() {
+        m_dateExpired = false;
+    }
     
-	/**
-	 * Disables the date last modified test.<p>
-	 */
-	public void disableDateLastModifiedTest() {
-		m_dateLastModified = false;
-	}
+    /**
+     * Disables the date last modified test.<p>
+     */
+    public void disableDateLastModifiedTest() {
+        m_dateLastModified = false;
+    }
     
-	/**
-	 * Disables the date released test.<p>
-	 */
-	public void disableDateReleasedTest() {
-		m_dateReleased = false;
-	}
+    /**
+     * Disables the date released test.<p>
+     */
+    public void disableDateReleasedTest() {
+        m_dateReleased = false;
+    }
    
-	/**
-	 * Disables the flags test.<p>
-	 */
-	public void disableFlagsTest() {
-		this.m_flags = false;
-	}
+    /**
+     * Disables the flags test.<p>
+     */
+    public void disableFlagsTest() {
+        this.m_flags = false;
+    }
     
-	/**
-	 * Disables the length test.<p>
-	 */
-	public void disableLengthTest() {
-		this.m_length = false;
-	}
+    /**
+     * Disables the length test.<p>
+     */
+    public void disableLengthTest() {
+        this.m_length = false;
+    }
     
-	/**
-	 * Disables the link count test.<p>
-	 */
-	public void disableLinkCountTest() {
-		m_linkCount = false;
-	}
+    /**
+     * Disables the link count test.<p>
+     */
+    public void disableLinkCountTest() {
+        m_linkCount = false;
+    }
     
-	/**
-	 * Disables the loader Id test.<p>
-	 */
-	public void disableLoaderIdTest() {
-		m_loaderId = false;
-	}
+    /**
+     * Disables the loader Id test.<p>
+     */
+    public void disableLoaderIdTest() {
+        m_loaderId = false;
+    }
     
     /**
      * Disables the lockstate test.<p>
@@ -265,26 +265,26 @@ public class OpenCmsTestResourceFilter {
         m_lockstate = false;
     }
     
-	/**
-	 * Disables the name test.<p>
-	 */
-	public void disableNameTest() {
-		m_name = false;
-	}
+    /**
+     * Disables the name test.<p>
+     */
+    public void disableNameTest() {
+        m_name = false;
+    }
     
-	/**
-	 * Disables the parent Id test.<p>
-	 */
-	public void disableParentIdTest() {
-		m_parentId = false;
-	}
+    /**
+     * Disables the parent Id test.<p>
+     */
+    public void disableParentIdTest() {
+        m_parentId = false;
+    }
     
-	/**
-	 * Disables the project last modified test.<p>
-	 */
-	public void disableProjectLastModifiedTest() {
-		m_projectLastModified = false;
-	}
+    /**
+     * Disables the project last modified test.<p>
+     */
+    public void disableProjectLastModifiedTest() {
+        m_projectLastModified = false;
+    }
     
     /**
      * Disables the properties test test.<p>
@@ -293,63 +293,63 @@ public class OpenCmsTestResourceFilter {
         m_properties = false;
     }
     
-	/**
-	 * Disables the resource Id test.<p>
-	 */
-	public void disableResourceIdTest() {
-		m_resourceId = false;
-	}
+    /**
+     * Disables the resource Id test.<p>
+     */
+    public void disableResourceIdTest() {
+        m_resourceId = false;
+    }
     
-	/**
-	 * Disables the state test.<p>
-	 */
-	public void disableStateTest() {
-		this.m_state = false;
-	}
+    /**
+     * Disables the state test.<p>
+     */
+    public void disableStateTest() {
+        this.m_state = false;
+    }
     
-	/**
-	 * Disables the structure Id test.<p>
-	 */
-	public void disableStructureIdTest() {
-		m_structureId = false;
-	}
+    /**
+     * Disables the structure Id test.<p>
+     */
+    public void disableStructureIdTest() {
+        m_structureId = false;
+    }
     
-	/**
-	 * Disables the touched test.<p>
-	 */
-	public void disableTouchedTest() {
-		m_isTouched = false;
-	}
+    /**
+     * Disables the touched test.<p>
+     */
+    public void disableTouchedTest() {
+        m_isTouched = false;
+    }
     
-	/**
-	 * Disables the type test.<p>
-	 */
-	public void disableTypeTest() {
-		m_type = false;
-	}
+    /**
+     * Disables the type test.<p>
+     */
+    public void disableTypeTest() {
+        m_type = false;
+    }
     
-	/**
+    /**
      * Disables the user created test.
-	 */
-	public void disableUserCreatedTest() {
-		m_userCreated = false;
-	}
+     */
+    public void disableUserCreatedTest() {
+        m_userCreated = false;
+    }
     
-	/**
-	 * Disables the user last modified test.<p>
-	 */
-	public void disableUserLastModifiedTest() {
-		m_userLastModified = false;
-	}
+    /**
+     * Disables the user last modified test.<p>
+     */
+    public void disableUserLastModifiedTest() {
+        m_userLastModified = false;
+    }
         
-	/**
-	 * Returns true if the Content Id test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testContentId() {
-		return m_contentId;
-	}
+    /**
+     * Returns true if the Content Id test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testContentId() {
+        return m_contentId;
+    }
     
     /**
      * Returns true if the Contents test is enabled.<p>
@@ -360,77 +360,77 @@ public class OpenCmsTestResourceFilter {
         return m_contents;
     }
     
-	/**
-	 * Returns true if the date created test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testDateCreated() {
-		return m_dateCreated;
-	}
+    /**
+     * Returns true if the date created test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testDateCreated() {
+        return m_dateCreated;
+    }
     
-	/**
-	 * Returns true if the date expired test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testDateExpired() {
-		return m_dateExpired;
-	}
+    /**
+     * Returns true if the date expired test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testDateExpired() {
+        return m_dateExpired;
+    }
     
-	/**
-	 * Returns true if the date last modified test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testDateLastModified() {
-		return m_dateLastModified;
-	}
+    /**
+     * Returns true if the date last modified test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testDateLastModified() {
+        return m_dateLastModified;
+    }
     
-	/**
-	 * Returns true if the date released test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testDateReleased() {
-		return m_dateReleased;
-	}
+    /**
+     * Returns true if the date released test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testDateReleased() {
+        return m_dateReleased;
+    }
     
-	/**
-	 * Returns true if the flags test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testFlags() {
-		return m_flags;
-	}
+    /**
+     * Returns true if the flags test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testFlags() {
+        return m_flags;
+    }
     
-	/**
-	 * Returns true if the length test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testLength() {
-		return m_length;
-	}
+    /**
+     * Returns true if the length test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testLength() {
+        return m_length;
+    }
     
-	/**
-	 * Returns true if the link count test is enabled..<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testLinkCount() {
-		return m_linkCount;
-	}
+    /**
+     * Returns true if the link count test is enabled..<p>
+     *
+     * @return true or false
+     */
+    public boolean testLinkCount() {
+        return m_linkCount;
+    }
     
-	/**
-	 * Returns true if the loader Id test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testLoaderId() {
-		return m_loaderId;
-	}
+    /**
+     * Returns true if the loader Id test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testLoaderId() {
+        return m_loaderId;
+    }
     
     /**
      * Returns true if the lockstate test is enabled.<p>
@@ -441,32 +441,32 @@ public class OpenCmsTestResourceFilter {
         return m_lockstate;
     }
     
-	/**
-	 * Returns true if the name test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testName() {
-		return m_name;
-	}
+    /**
+     * Returns true if the name test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testName() {
+        return m_name;
+    }
     
-	/**
-	 * Returns true if the parent Id test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testParentId() {
-		return m_parentId;
-	}
+    /**
+     * Returns true if the parent Id test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testParentId() {
+        return m_parentId;
+    }
     
-	/**
-	 * Returns true if the project last modified test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testProjectLastModified() {
-		return m_projectLastModified;
-	}
+    /**
+     * Returns true if the project last modified test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testProjectLastModified() {
+        return m_projectLastModified;
+    }
     
     /**
      * Returns true if the properties test is enabled.<p>
@@ -477,66 +477,66 @@ public class OpenCmsTestResourceFilter {
         return m_properties;
     }
     
-	/**
-	 * Returns true if the resource Id test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testResourceId() {
-		return m_resourceId;
-	}
+    /**
+     * Returns true if the resource Id test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testResourceId() {
+        return m_resourceId;
+    }
     
-	/**
-	 * Returns true if the state test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testState() {
-		return m_state;
-	}
+    /**
+     * Returns true if the state test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testState() {
+        return m_state;
+    }
     
-	/**
-	 * Returns true if the structure Id test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testStructureId() {
-		return m_structureId;
-	}
+    /**
+     * Returns true if the structure Id test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testStructureId() {
+        return m_structureId;
+    }
   
-	/**
-	 * Returns true if the touched test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testTouched() {
-		return m_isTouched;
-	}
+    /**
+     * Returns true if the touched test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testTouched() {
+        return m_isTouched;
+    }
     
-	/**
-	 * Returns true if the type test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testType() {
-		return m_type;
-	}
+    /**
+     * Returns true if the type test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testType() {
+        return m_type;
+    }
     
-	/**
-	 * Returns true if the user created test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testUserCreated() {
-		return m_userCreated;
-	}
+    /**
+     * Returns true if the user created test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testUserCreated() {
+        return m_userCreated;
+    }
     
-	/**
-	 * Returns true if the user last modified test is enabled.<p>
-	 *
-	 * @return true or false
-	 */
-	public boolean testUserLastModified() {
-		return m_userLastModified;
-	}
+    /**
+     * Returns true if the user last modified test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testUserLastModified() {
+        return m_userLastModified;
+    }
 }
