@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/11/12 11:32:24 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -193,5 +193,6 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             }
         }
         res.getOutputStream().write(content);
+        content = null;
     }
  }

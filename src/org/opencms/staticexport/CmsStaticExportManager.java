@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/11/06 15:09:31 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/11/12 11:32:37 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -436,6 +436,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         
         // do the export
         loader.export(cms, file, exportStream, req, res);
+        
+        // set unused resources
+        file = null;
         
         // close the export stream 
         exportStream.close();       
