@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/23 14:03:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2001/07/24 12:15:35 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -423,7 +423,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
         getAllResources(cms, source, allSubFiles, allSubFolders);
-        destination = destination +"/";
+        if (!destination.endsWith("/")){
+            destination = destination +"/";
+        }
         // first the folder
         cms.doCopyFolder(source, destination);
         if(!keepFlags){
