@@ -148,7 +148,7 @@
         
 Error: Some of the required libraries are not available.
 
-To comile OpenCms, you need the following libaries:
+To compile OpenCms, you need the following libaries:
 ${opencms.inputlib.servlet}
 ${opencms.inputlib.activation}
 ${opencms.inputlib.mail}
