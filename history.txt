@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/08/18 11:54:39 $
- * Version: $Revision: 1.561 $
+ * Date   : $Date: 2004/08/27 16:00:01 $
+ * Version: $Revision: 1.562 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.5.0 Ix - August xx, 2004
+OpenCms 5.5.1 Ix (aka 6.0 alpha 1) - August xx, 2004
 ! Junit test suites now have nice display names
 * Improved "Cache-Control" headers by adding a "max-age=0" for all Workplace requests 
   to prevent caching, this should allow operation with a browser 
@@ -35,6 +35,12 @@ OpenCms 5.5.0 Ix - August xx, 2004
 ! Improved/cleaned up package structure for the OpenCms workplace
 ! Used Base64 encoder/decoder from org.apache.commons.codec package
 ! Removed dependencies from sun.* packages so OpenCms runs better in other vendors VMs
+! Changed DB schema: Removed unrequired fields in CMS_USER tables
+! Changed DB schema: General clean up and rename for more consistent use of names
+! WYSIWYG editor: Editor options can now be controlled by user permissions
+! WYSIWYG editor: Improved editor API with "add Link" and "insert code" functions
+! WYSIWYG editor: First public version of HtmlArea add-on module
+! Workplace dialog "Edit external link" is now JSP
 
 OpenCms 5.3.6 Ix - August 2, 2004
 ! Improved core search configuration by adding configurable "input sources" for the indexers
