@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
-* Date   : $Date: 2002/08/21 11:29:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/08/30 14:06:22 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import javax.servlet.ServletException;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher {
         
@@ -147,7 +147,6 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
      * @throws ServletException In case something goes wrong
      * @throws IOException In case something goes wrong
      */ 
-    // public void includeFromCms(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse) 
     public void include(CmsFlexRequest req, CmsFlexResponse res) 
     throws ServletException, java.io.IOException {
         
@@ -243,13 +242,9 @@ public class CmsFlexRequestDispatcher implements javax.servlet.RequestDispatcher
                 // File might not exist or no read permissions
                 throw new ServletException("FlexDispatcher: Error while reading header for cms resource " + m_target + "\n" + e, e);
             }
-
-            try {                        
-                if (DEBUG > 0) System.err.println("FlexDispatcher: Internal call, loading file using loader.service() for " + m_target);
-                loader.service(m_cms, resource, w_req, w_res);
-            } catch (com.opencms.core.CmsException e) {
-                throw new ServletException("FlexDispatcher: Error in internal call, loading file using loader.service() for " + m_target + "\n" + e, e);
-            }                
+                     
+            if (DEBUG > 0) System.err.println("FlexDispatcher: Internal call, loading file using loader.service() for " + m_target);
+            loader.service(m_cms, resource, w_req, w_res);
 
             entry = w_res.processCacheEntry(); 
             if ((entry != null) && (variation != null) && w_req.isCacheable()) {                                      
