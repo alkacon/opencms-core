@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2004/07/01 16:09:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/02 09:37:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestResourceFilter;
 
 /**
  * Unit tests OpenCms publishing.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -95,6 +96,7 @@ public class TestPublishing extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();     
         echo("Testing publish new files");
         
+        
         String source = "/folder2/subfolder21/image1.gif";
         String destination1 = "/folder2/image1_new.gif";
         String destination2 = "/folder2/image1_sibling1.gif";
@@ -104,11 +106,18 @@ public class TestPublishing extends OpenCmsTestCase {
         CmsProject onlineProject  = cms.readProject("Online");
         CmsProject offlineProject  = cms.readProject("Offline");
         
+
+        
         // make four copies of a file to be published later
         cms.copyResource(source, destination1, I_CmsConstants.C_COPY_AS_NEW);
         cms.copyResource(source, destination2, I_CmsConstants.C_COPY_AS_SIBLING);
         cms.copyResource(source, destination3, I_CmsConstants.C_COPY_AS_SIBLING);
         cms.copyResource(source, destination4, I_CmsConstants.C_COPY_AS_SIBLING);
+        
+        storeResources(cms, destination1);
+        storeResources(cms, destination2);
+        storeResources(cms, destination3);
+        storeResources(cms, destination4);
         
         // unlock all new resources
         // do not neet do unlock destination3 as it is a sibling of destination2     
@@ -125,12 +134,13 @@ public class TestPublishing extends OpenCmsTestCase {
             cms.readResource(destination1);
         } catch (CmsException e) {
             fail("Resource " + destination1 + " not found in online project:" +e);
-        }
+        }    
+        assertFilter(cms, destination1, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
         
         // check if the file in the offline project is unchancged now
         cms.getRequestContext().setCurrentProject(offlineProject);
         assertState(cms, destination1, I_CmsConstants.C_STATE_UNCHANGED);     
-        
+ 
         // publish a sibling without publishing other siblings
         //
         cms.publishResource(destination2);
@@ -159,6 +169,9 @@ public class TestPublishing extends OpenCmsTestCase {
                 fail("Resource " + destination4 + " error:" +e);
             }
         }
+        
+        assertFilter(cms, destination2, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);          
+        
         // check if the file in the offline project is unchancged now
         cms.getRequestContext().setCurrentProject(offlineProject);
         assertState(cms, destination2, I_CmsConstants.C_STATE_UNCHANGED);
@@ -181,6 +194,9 @@ public class TestPublishing extends OpenCmsTestCase {
         } catch (CmsException e) {
             fail("Resource " + destination4 + " not found in online project:" +e);
         }
+        assertFilter(cms, destination3, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
+        assertFilter(cms, destination4, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
+        
         // check if the file in the offline project is unchancged now
         cms.getRequestContext().setCurrentProject(offlineProject);
         assertState(cms, destination3, I_CmsConstants.C_STATE_UNCHANGED);
@@ -209,7 +225,7 @@ public class TestPublishing extends OpenCmsTestCase {
         CmsProperty prop2;
         CmsProperty prop3;
         CmsProperty prop4;
-        
+
         
         // make changes to the resources 
         // do not need to make any changes to resource3 and resource4 as they are
@@ -226,6 +242,11 @@ public class TestPublishing extends OpenCmsTestCase {
         // unlock all resources
         cms.unlockResource(resource1);
         cms.unlockResource(resource2);
+                      
+        storeResources(cms, resource1);
+        storeResources(cms, resource2);
+        storeResources(cms, resource3);
+        storeResources(cms, resource4);
        
         // publish a modified resource without siblings
         //
@@ -239,7 +260,7 @@ public class TestPublishing extends OpenCmsTestCase {
         if (!prop1.getValue().equals((resource1))) {
             fail("Property not published for " + resource1);
         }
-
+        assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
         
         // check if the file in the offline project is unchancged now
         cms.getRequestContext().setCurrentProject(offlineProject);
@@ -265,6 +286,8 @@ public class TestPublishing extends OpenCmsTestCase {
             fail("Property  published for " + resource4);
         }
         
+        assertFilter(cms, resource2, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);          
+        
         // check if the file in the offline project is unchancged now
         cms.getRequestContext().setCurrentProject(offlineProject);
         assertState(cms, resource2, I_CmsConstants.C_STATE_UNCHANGED);
@@ -287,6 +310,9 @@ public class TestPublishing extends OpenCmsTestCase {
             fail("Property  not published for " + resource4);
         }
         
+        assertFilter(cms, resource3, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
+        assertFilter(cms, resource4, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);  
+                
         // check if the file in the offline project is unchancged now
         cms.getRequestContext().setCurrentProject(offlineProject);
         assertState(cms, resource3, I_CmsConstants.C_STATE_UNCHANGED);

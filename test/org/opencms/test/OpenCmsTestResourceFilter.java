@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/06/29 14:38:56 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/07/02 09:37:04 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public abstract class OpenCmsTestResourceFilter {
 
@@ -86,7 +86,11 @@ public abstract class OpenCmsTestResourceFilter {
     
     /** Definition of a filter used for the writeProperty method. */   
     public static final OpenCmsTestResourceFilter FILTER_WRITEPROPERTY = getFilterWriteProperty();
-   
+  
+    /** Definition of a filter used for the publsihResource method. */   
+    public static final OpenCmsTestResourceFilter FILTER_PUBLISHRESOURCE = getFilterPublishResource();
+  
+    
     /** Flag to enable/disable access (ACL) tests. */
     protected boolean m_acl;
 
@@ -368,7 +372,7 @@ public abstract class OpenCmsTestResourceFilter {
     
     
     /**
-     * Creates a new filter used for the "touch" method.<p>
+     * Creates a new filter used for the "write property" method.<p>
      * 
      * @return the created filter
      */
@@ -383,6 +387,22 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disablePropertiesTest();
         return filter;
     }
+
+    /**
+     * Creates a new filter used for the "publishResource" method.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceFilter getFilterPublishResource() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableLockTest();
+        filter.disableStateTest();
+        filter.disableSiblingCountTest();
+        return filter;
+    }
+    
     
     /**
      * Returns true if the acl test is enabled.<p>
