@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/02/23 11:35:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/24 13:26:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,6 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRequestContext;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.I_CmsResourceLoader;
@@ -73,44 +71,23 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.0 beta 2
  */
-public class CmsJspActionElement {
-
-    /** OpenCms JSP request */
-    private HttpServletRequest m_request;
-
-    /** OpenCms JSP response */
-    private HttpServletResponse m_response;
-    
-    /** OpenCms core CmsObject */
-    private CmsFlexController m_controller;
-
-    /** JSP page context */
-    private PageContext m_context;    
+public class CmsJspActionElement extends CmsJspBean {
     
     /** JSP navigation builder */
     private CmsJspNavBuilder m_navigation = null;    
-    
-    /** Flag to indicate that this bean was properly initialized */
-    private boolean m_notInitialized;
-    
-    /** Flag to indicate if we want default or custom Exception handling */
-    private boolean m_handleExceptions = true;
         
     /** Error message in case bean was not properly initialized */
     public static final String C_NOT_INITIALIZED = "+++ CmsJspActionElement not initialized +++";
-
-    /** DEBUG flag */
-    private static final int DEBUG = 0;
     
     /**
      * Empty constructor, required for every JavaBean.
      */
     public CmsJspActionElement() {
-        m_notInitialized = true;
+        super();
     }
     
     /**
@@ -121,30 +98,8 @@ public class CmsJspActionElement {
      * @param res the JSP response 
      */
     public CmsJspActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-        m_notInitialized = true;
+        super();
         init(context, req, res);
-    }    
-    
-    /**
-     * Initialize the bean with the current page context, request and response.<p>
-     * 
-     * It is required to call one of the init() methods before you can use the 
-     * instance of this bean.
-     * 
-     * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
-     */
-    public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-        m_controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        if (m_controller == null) {
-            // controller not found - this request was not initialized properly
-            
-        }
-        m_context = context;
-        m_request = req;
-        m_response = res;
-        m_notInitialized = false;
     }    
 
     /**
@@ -157,7 +112,7 @@ public class CmsJspActionElement {
     public void editable(boolean isEditable) throws JspException {
         
         if (isEditable) {
-            CmsJspTagEditable.editableTagAction(m_context, null, m_request, m_response);
+            CmsJspTagEditable.editableTagAction(getJspContext(), null, getRequest(), getResponse());
         }
     }
     
@@ -172,99 +127,8 @@ public class CmsJspActionElement {
     public void editable(boolean isEditable, String filename) throws JspException {
     
         if (isEditable) {
-            CmsJspTagEditable.editableTagAction(m_context, filename, m_request, m_response);
+            CmsJspTagEditable.editableTagAction(getJspContext(), filename, getRequest(), getResponse());
         }
-    }
-    
-    /**
-     * Returns <code>true</code> if Exceptions are handled by the class instace, or
-     * <code>false</code> if they will be thrown and have to be handled by the calling class.<p>
-     * 
-     * The default is <code>true</code>.
-     * If set to <code>false</code> Exceptions that occur internally will be wrapped into
-     * a RuntimeException and thrown to the calling class instance.<p>
-     * 
-     * <b>Important:</b> Exceptions that occur during a call to {@link #includeSilent(String, String, Map)}
-     * will NOT be handled.
-     * 
-     * @return <code>true</code> if Exceptions are handled by the class instace, or
-     *      <code>false</code> if they will be thrown and have to be handled by the calling class
-     */
-    public boolean getHandleExceptions() {
-        return m_handleExceptions;
-    }
-
-    /**
-     * Controls if Exceptions that occur in methods of this class are supressed (true)
-     * or not (false).<p>
-     * 
-     * The default is <code>true</code>.
-     * If set to <code>false</code> all Exceptions that occur internally will be wrapped into
-     * a RuntimeException and thrown to the calling class instance.<p>
-     * 
-     * <b>Important:</b> Exceptions that occur during a call to {@link #includeSilent(String, String, Map)}
-     * will NOT be handled.
-     * 
-     * @param value the value to set the Exception handing to
-     */
-    public void setHandleExceptions(boolean value) {
-        m_handleExceptions = value;
-    }    
-    
-    /**
-     * Returns the request wrapped by the element.<p>
-     * 
-     * @return the request wrapped by the element
-     */
-    public HttpServletRequest getRequest() {
-        if (m_notInitialized) {
-            return null;
-        }
-        return m_request;        
-    }
-    
-    /**
-     * Returns the reponse wrapped by this element.<p>
-     * 
-     * @return the reponse wrapped by this element
-     */
-    public HttpServletResponse getResponse() {
-        if (m_notInitialized) {
-            return null;
-        }
-        return m_response;        
-    }    
-    
-    /**
-     * Returns the JSP page context wrapped by this element.<p>
-     * 
-     * @return the JSP page context wrapped by this element
-     */    
-    public PageContext getPageContext() {
-        if (m_notInitialized) {
-            return null;
-        }
-        return m_context;           
-    }
-
-    /**
-     * Returns the CmsObject from the wrapped request.<p>
-     *
-     * This is a convenience method in case you need access to
-     * the CmsObject in your JSP scriplets.
-     *
-     * @return the CmsObject from the wrapped request
-     */
-    public CmsObject getCmsObject() {
-        if (m_notInitialized) {
-            return null;
-        }
-        try { 
-            return m_controller.getCmsObject();
-        } catch (Throwable t) {
-            handleException(t);
-        }      
-        return null;            
     }
     
     /**
@@ -340,7 +204,7 @@ public class CmsJspActionElement {
      * included file type. Most often it is used as template selector.<p>
      * 
      * <b>Important:</b> Exceptions that occur in the include process are NOT
-     * handled even if {@link #setHandleExceptions(boolean)} was set to <code>true</code>.
+     * handled even if {@link #setSupressingExceptions(boolean)} was set to <code>true</code>.
      * 
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
@@ -351,7 +215,7 @@ public class CmsJspActionElement {
      * @see org.opencms.jsp.CmsJspTagInclude
      */
     public void include(String target, String element, boolean editable, Map parameterMap) throws JspException {
-        if (m_notInitialized) {
+        if (isNotInitialized()) {
             return;
         }
         if (parameterMap != null) {
@@ -377,7 +241,7 @@ public class CmsJspActionElement {
                 // parameter map is immutable, just use it "as is"
             }
         }
-        CmsJspTagInclude.includeTagAction(m_context, target, element, editable, parameterMap, m_request, m_response);
+        CmsJspTagInclude.includeTagAction(getJspContext(), target, element, editable, parameterMap, getRequest(), getResponse());
     }
     
     /**
@@ -468,10 +332,10 @@ public class CmsJspActionElement {
      * @return the target URI converted to an absolute one
      */
     public String toAbsolute(String target) {
-        if (m_notInitialized) {
+        if (isNotInitialized()) {
             return C_NOT_INITIALIZED;
         }
-        return CmsLinkManager.getAbsoluteUri(target, m_controller.getCurrentRequest().getElementUri());
+        return CmsLinkManager.getAbsoluteUri(target, getController().getCurrentRequest().getElementUri());
     }
             
     /**
@@ -487,11 +351,11 @@ public class CmsJspActionElement {
      * @see org.opencms.jsp.CmsJspTagLink
      */
     public String link(String link) {
-        if (m_notInitialized) {
+        if (isNotInitialized()) {
             return C_NOT_INITIALIZED;
         }
         try {        
-            return CmsJspTagLink.linkTagAction(link, m_request);
+            return CmsJspTagLink.linkTagAction(link, getRequest());
         } catch (Throwable t) {
             handleException(t);
         }  
@@ -509,11 +373,11 @@ public class CmsJspActionElement {
      * @see org.opencms.jsp.CmsJspTagUser
      */
     public String user(String property) {
-        if (m_notInitialized) {
+        if (isNotInitialized()) {
             return C_NOT_INITIALIZED;
         }
         try {
-            return CmsJspTagUser.userTagAction(property, m_request);
+            return CmsJspTagUser.userTagAction(property, getRequest());
         } catch (Throwable t) {
             handleException(t);
         }  
@@ -587,14 +451,14 @@ public class CmsJspActionElement {
      * @see org.opencms.jsp.CmsJspTagProperty
      */
     public String property(String name, String file, String defaultValue, boolean escapeHtml) {
-        if (m_notInitialized) {
+        if (isNotInitialized()) {
             return C_NOT_INITIALIZED;
         }
         try {
             if (file == null) {
-                file = m_controller.getCmsObject().getRequestContext().getUri();
+                file = getController().getCmsObject().getRequestContext().getUri();
             }
-            return CmsJspTagProperty.propertyTagAction(name, file, defaultValue, escapeHtml, m_request);
+            return CmsJspTagProperty.propertyTagAction(name, file, defaultValue, escapeHtml, getRequest());
         } catch (CmsSecurityException e) {
             if (defaultValue == null) {
                 handleException(e);
@@ -631,7 +495,7 @@ public class CmsJspActionElement {
      * @see org.opencms.jsp.CmsJspTagProperty
      */
     public Map properties(String file) {
-        if (m_notInitialized) {
+        if (isNotInitialized()) {
             return new HashMap();
         }
         Map value = new HashMap();        
@@ -652,12 +516,12 @@ public class CmsJspActionElement {
                 case 5: // USE_ELEMENT_URI
                 case 6: // USE_THIS
                     // Read properties of this file            
-                    value = getCmsObject().readProperties(m_controller.getCurrentRequest().getElementUri(), false);
+                    value = getCmsObject().readProperties(getController().getCurrentRequest().getElementUri(), false);
                     break;
                 case 7: // USE_SEARCH_ELEMENT_URI
                 case 8: // USE_SEARCH_THIS
                     // Try to find property on this file and all parent folders
-                    value = getCmsObject().readProperties(m_controller.getCurrentRequest().getElementUri(), true);
+                    value = getCmsObject().readProperties(getController().getCurrentRequest().getElementUri(), true);
                     break;
                 default:
                     // Read properties of the file named in the attribute            
@@ -682,7 +546,7 @@ public class CmsJspActionElement {
      */
     public String info(String property) {
         try {        
-            return CmsJspTagInfo.infoTagAction(property, m_request);   
+            return CmsJspTagInfo.infoTagAction(property, getRequest());   
         } catch (Throwable t) {
             handleException(t);
         }  
@@ -702,11 +566,11 @@ public class CmsJspActionElement {
      * @see org.opencms.jsp.CmsJspTagLabel
      */
     public String label(String label) {
-        if (m_notInitialized) {
+        if (isNotInitialized()) {
             return C_NOT_INITIALIZED;
         }
         try {
-            return CmsJspTagLabel.wpLabelTagAction(label, m_request);
+            return CmsJspTagLabel.wpLabelTagAction(label, getRequest());
         } catch (Throwable t) {
             handleException(t);
         }  
@@ -752,32 +616,15 @@ public class CmsJspActionElement {
      * @see org.opencms.jsp.CmsJspTagUser
      */
     public boolean template(String element, String elementlist, boolean checkall) {
-        if (m_notInitialized) {
+        if (isNotInitialized()) {
             return true;
         }
         try {
-            return CmsJspTagTemplate.templateTagAction(element, elementlist, checkall, false, m_request);
+            return CmsJspTagTemplate.templateTagAction(element, elementlist, checkall, false, getRequest());
         } catch (Throwable t) {
             handleException(t);
         }
         return true;
-    }
-    
-    /** 
-     * Returns the current request context from the internal CmsObject.
-     * 
-     * @return the current request context from the internal CmsObject
-     */
-    public CmsRequestContext getRequestContext() {
-        if (m_notInitialized) {            
-            return null;
-        }
-        try {
-            return m_controller.getCmsObject().getRequestContext();
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return null;
     }
     
     /**
@@ -788,12 +635,12 @@ public class CmsJspActionElement {
      * @see org.opencms.jsp.CmsJspNavBuilder
      */
     public CmsJspNavBuilder getNavigation() {
-        if (m_notInitialized) {
+        if (isNotInitialized()) {
             return null;
         }
         try {
             if (m_navigation == null) {
-                m_navigation = new CmsJspNavBuilder(m_controller.getCmsObject());
+                m_navigation = new CmsJspNavBuilder(getController().getCmsObject());
             }
             return m_navigation;
         } catch (Throwable t) {
@@ -914,27 +761,5 @@ public class CmsJspActionElement {
             handleException(cause);
             return CmsMessages.formatUnknownKey(cause.getMessage());
         }
-    }
-    
-    /**
-     * Handles any exception that might occur in the context of this element to 
-     * ensure that templates are not disturbed.<p>
-     * 
-     * @param t the Throwable that was catched
-     */
-    private void handleException(Throwable t) {
-        if (OpenCms.getLog(this).isErrorEnabled()) {
-            OpenCms.getLog(this).error("Error in JSP action element", t);
-        } 
-        if (! (m_handleExceptions || getRequestContext().currentProject().isOnlineProject())) {    
-            if (DEBUG > 0) {        
-                System.err.println("Exception in " + this.getClass().getName() + ":");
-                if (DEBUG > 1) {
-                    t.printStackTrace(System.err);
-                }
-            }
-            throw new RuntimeException("Exception in " + this.getClass().getName(), t);
-        }
-    }
-    
+    }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2004/02/20 12:45:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/24 13:26:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsFlexController {
     
@@ -262,7 +262,8 @@ public class CmsFlexController {
     }
     
     /**
-     * Returns an exception (Throwable) that was caught during inclusion of sub elements.<p>
+     * Returns an exception (Throwable) that was caught during inclusion of sub elements, 
+     * or null if no exceptions where thrown in sub elements.<p>
      * 
      * @return an exception (Throwable) that was caught during inclusion of sub elements
      */
