@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/17 12:00:40 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/18 08:22:42 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/07/17 12:00:40 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/18 08:22:42 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -95,7 +95,7 @@ public interface I_CmsVfsDriver {
      * @throws SQLException in case the result set does not include a requested table attribute
      * @throws CmsException if the CmsFile object cannot be created by its constructor
      */    
-    CmsFile createCmsFileFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException;
+    // CmsFile createCmsFileFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException;
     
     /**
      * Semi-constructor to create a CmsFile instance from a JDBC result set.
@@ -107,7 +107,7 @@ public interface I_CmsVfsDriver {
      * @throws SQLException in case the result set does not include a requested table attribute
      * @throws CmsException if the CmsFile object cannot be created by its constructor
      */    
-    CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasFileContentInResultSet) throws SQLException, CmsException;
+    // CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet, boolean hasFileContentInResultSet) throws SQLException, CmsException;
     
     CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename, boolean isVfsLink) throws CmsException;
     
@@ -310,9 +310,9 @@ public interface I_CmsVfsDriver {
     int updateAllResourceFlags(CmsProject theProject, int theValue) throws CmsException;
     void updateLockstate(CmsResource res, int projectId) throws CmsException;
     int updateResourceFlags(CmsProject theProject, int theResourceID, int theValue) throws CmsException;
-    void updateResourcestate(CmsResource res) throws CmsException;
-    void writeFile(CmsProject project, CmsFile file, boolean changed) throws CmsException;
-    void writeFile(CmsProject project, CmsFile file, boolean changed, CmsUUID userId) throws CmsException;
+    void updateResourcestate(CmsResource res, int changed) throws CmsException;
+    void writeFile(CmsProject project, CmsFile file, int changed) throws CmsException;
+    void writeFile(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;
     
     /**
      * Writes the file content of an existing file
@@ -325,10 +325,10 @@ public interface I_CmsVfsDriver {
      */    
     void writeFileContent(CmsUUID fileId, byte[] fileContent, int projectId, boolean writeBackup) throws CmsException;
     
-    void writeFileHeader(CmsProject project, CmsFile file, boolean changed) throws CmsException;
-    void writeFileHeader(CmsProject project, CmsFile file, boolean changed, CmsUUID userId) throws CmsException;
-    void writeFolder(CmsProject project, CmsFolder folder, boolean changed) throws CmsException;
-    void writeFolder(CmsProject project, CmsFolder folder, boolean changed, CmsUUID userId) throws CmsException;
+    void writeFileHeader(CmsProject project, CmsFile file, int changed) throws CmsException;
+    void writeFileHeader(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;
+    void writeFolder(CmsProject project, CmsFolder folder, int changed) throws CmsException;
+    void writeFolder(CmsProject project, CmsFolder folder, int changed, CmsUUID userId) throws CmsException;
     void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType) throws CmsException;
     void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException;
     
@@ -347,7 +347,7 @@ public interface I_CmsVfsDriver {
     void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException;
     
     CmsPropertydefinition writePropertydefinition(CmsPropertydefinition metadef) throws CmsException;
-    void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, boolean isChanged, CmsUUID userId) throws CmsException;
+    void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException;
     
     /**
      * Publishes the content of an existing offline resource into it's existing online counterpart.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/16 13:45:49 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/07/18 08:22:42 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $ $Date: 2003/07/16 13:45:49 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/18 08:22:42 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -615,12 +615,13 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             stmt.setString(4, resource.getResourceName());
             stmt.setInt(5, vfsLinkType);
             stmt.setInt(6, resource.getState());
-            stmt.setString(7, resource.getUserLastModified().toString());
-            stmt.setString(8, resource.getUserCreated().toString());
-            stmt.setString(9, lastModifiedName);
-            stmt.setString(10, createdName);
-            stmt.setInt(11, versionId);
-            stmt.setString(12, backupPkId.toString());
+            stmt.setTimestamp(7, new Timestamp(resource.getDateLastModified()));
+            stmt.setString(8, resource.getUserLastModified().toString());
+            stmt.setString(9, resource.getUserCreated().toString());
+            stmt.setString(10, lastModifiedName);
+            stmt.setString(11, createdName);
+            stmt.setInt(12, versionId);
+            stmt.setString(13, backupPkId.toString());
             stmt.executeUpdate();
             
             List existingBackups = readAllBackupFileHeaders(resource.getId());

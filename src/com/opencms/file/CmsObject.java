@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/17 12:00:40 $
-* Version: $Revision: 1.330 $
+* Date   : $Date: 2003/07/18 08:22:42 $
+* Version: $Revision: 1.331 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.330 $
+ * @version $Revision: 1.331 $
  */
 public class CmsObject extends Object {
 
@@ -2975,7 +2975,8 @@ public class CmsObject extends Object {
         if (oldProjectId != I_CmsConstants.C_PROJECT_ONLINE_ID) {
             // check access to project
             if (isAdmin() || isManagerOfProject()) {
-                int newProjectId = m_driverManager.createDirectPublishProject(m_context, "Direct Publish", "", "Users", "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
+                String projectName = justPrepare ? "Check direct publish" : "Direct publish";
+                int newProjectId = m_driverManager.createDirectPublishProject(m_context, projectName, "", "Users", "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
                 retValue = newProjectId;
                 getRequestContext().setCurrentProject(newProjectId);
                 I_CmsResourceType rt = getResourceType(res.getType());

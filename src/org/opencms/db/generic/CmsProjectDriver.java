@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/16 16:34:49 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/07/18 08:22:42 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.26 $ $Date: 2003/07/16 16:34:49 $
+ * @version $Revision: 1.27 $ $Date: 2003/07/18 08:22:42 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -274,6 +274,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
     /**
     * Creates a project.<p>
+    * TODO: name x timestamp must be unique - since timestamp typically has a resulution
+    * of one second, creation of several tasks with the same name may fail.
     *
     * @param owner The owner of this project
     * @param group The group for this project
@@ -711,13 +713,13 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         CmsFolder onlineRootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), I_CmsConstants.C_ROOT, 0);
         // onlineRootFolder.setGroupId(users.getId());
         onlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(online, onlineRootFolder, false);        		
+        m_driverManager.getVfsDriver().writeFolder(online, onlineRootFolder, CmsDriverManager.C_UPDATE_ALL);        		
 
         // create the folder for the default site for the online project
         CmsFolder onlineDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineRootFolder.getId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE, 0);
         // onlineDefaultFolder.setGroupId(users.getId());
         onlineDefaultFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(online, onlineDefaultFolder, false); 
+        m_driverManager.getVfsDriver().writeFolder(online, onlineDefaultFolder, CmsDriverManager.C_UPDATE_ALL); 
         CmsUUID onlineDefaultId = onlineDefaultFolder.getId();
 		
 		// create the access control entries
@@ -730,13 +732,13 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         CmsFolder onlineVfsFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_VFS, 0);
         // onlineVfsFolder.setGroupId(users.getId());
         onlineVfsFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(online, onlineVfsFolder, false);
+        m_driverManager.getVfsDriver().writeFolder(online, onlineVfsFolder, CmsDriverManager.C_UPDATE_ALL);
 
         // create the folder for the context objects system for the online project
         CmsFolder onlineCosFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_COS, 0);
         // onlineCosFolder.setGroupId(users.getId());
         onlineCosFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(online, onlineCosFolder, false);
+        m_driverManager.getVfsDriver().writeFolder(online, onlineCosFolder, CmsDriverManager.C_UPDATE_ALL);
                 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // setup project stuff
@@ -751,14 +753,15 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         CmsFolder setupRootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineRootFolder, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOT);        
         // setupRootFolder.setGroupId(users.getId());
         setupRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(setup, setupRootFolder, false);
+        m_driverManager.getVfsDriver().writeFolder(setup, setupRootFolder, CmsDriverManager.C_UPDATE_ALL);
         
         // create the folder for the default site for the offline project
         //CmsFolder setupDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, setupRootFolder.getId(), CmsUUID.getNullUUID(), I_CmsConstants.C_DEFAULT_SITE, 0);
         CmsFolder setupDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineDefaultFolder, onlineDefaultFolder.getParentId(), I_CmsConstants.C_DEFAULT_SITE);
         // setupDefaultFolder.setGroupId(users.getId());
         setupDefaultFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(setup, setupDefaultFolder, false);
+        setupDefaultFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
+        m_driverManager.getVfsDriver().writeFolder(setup, setupDefaultFolder, CmsDriverManager.C_UPDATE_ALL);
         //CmsUUID offlineDefaultId = setupDefaultFolder.getId();
         
 		// create the access control entries
@@ -772,14 +775,14 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         CmsFolder setupVfsFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineVfsFolder, onlineVfsFolder.getParentId(), I_CmsConstants.C_ROOTNAME_VFS);
         // setupVfsFolder.setGroupId(users.getId());
         setupVfsFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(setup, setupVfsFolder, false);
+        m_driverManager.getVfsDriver().writeFolder(setup, setupVfsFolder, CmsDriverManager.C_UPDATE_ALL);
         
         // create the folder for the context objects system for the offline project
         //CmsFolder setupCosFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, offlineDefaultId, CmsUUID.getNullUUID(), I_CmsConstants.C_ROOTNAME_COS, 0);
         CmsFolder setupCosFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineCosFolder, onlineCosFolder.getParentId(), I_CmsConstants.C_ROOTNAME_COS);
         // setupCosFolder.setGroupId(users.getId());
         setupCosFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(setup, setupCosFolder, false);
+        m_driverManager.getVfsDriver().writeFolder(setup, setupCosFolder, CmsDriverManager.C_UPDATE_ALL);
     }
 
     /**
@@ -1246,7 +1249,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     if (currentFolder.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
                         // set the state of current folder in the offline project to unchanged
                         currentFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().updateResourcestate(currentFolder);
+                        m_driverManager.getVfsDriver().updateResourcestate(currentFolder, CmsDriverManager.C_UPDATE_ALL);
                     }
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
                     // I_CmsConstants.C_STATE_CHANGED
@@ -1262,7 +1265,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                             // create the new folder
                             onlineFolder = m_driverManager.getVfsDriver().createFolder(context.currentUser(), onlineProject, currentFolder, currentFolder.getParentId(), currentFolder.getResourceName());
                             onlineFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                            m_driverManager.getVfsDriver().updateResourcestate(onlineFolder);
+                            m_driverManager.getVfsDriver().updateResourcestate(onlineFolder, CmsDriverManager.C_UPDATE_ALL);
                         } else {
                             throw exc;
                         }
@@ -1302,7 +1305,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     if (currentFolder.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
                         // set the state of current folder in the offline project to unchanged
                         currentFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().updateResourcestate(currentFolder);
+                        m_driverManager.getVfsDriver().updateResourcestate(currentFolder, CmsDriverManager.C_UPDATE_ALL);
                     }
                 }
             }
@@ -1463,7 +1466,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     if (currentFile.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
                         // set the file state to unchanged
                         currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().updateResourcestate(currentFile);
+                        m_driverManager.getVfsDriver().updateResourcestate(currentFile, CmsDriverManager.C_UPDATE_ALL);
                     }
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_NEW) {
                     // C_STATE_NEW
@@ -1532,7 +1535,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     if (currentFile.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
                         // set the file state to unchanged
                         currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().updateResourcestate(currentFile);
+                        m_driverManager.getVfsDriver().updateResourcestate(currentFile, CmsDriverManager.C_UPDATE_ALL);
                     }
                 }
             }
@@ -1948,27 +1951,27 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        String orderClause = " ORDER BY CMS_OFFLINE_STRUCTURE.STRUCTURE_ID";        
+        String orderClause = " ORDER BY CMS_T_STRUCTURE.STRUCTURE_ID";        
         String whereClause = new String();
 
 		// TODO: dangerous - move this somehow into query.properties
         if ("new".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_NEW;
+            whereClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_NEW;
         } else if ("changed".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_CHANGED;
+            whereClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_CHANGED;
         } else if ("deleted".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_DELETED;
+            whereClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_DELETED;
         } else if ("locked".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.LOCKED_BY!='" + CmsUUID.getNullUUID() + "'";
+            whereClause = " AND CMS_T_STRUCTURE.LOCKED_BY!='" + CmsUUID.getNullUUID() + "'";
         } else {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
+            whereClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
         }        
 
         try {
             // TODO make the getConnection and getPreparedStatement calls project-ID dependent
             conn = m_sqlManager.getConnection();
             String query = m_sqlManager.get("C_RESOURCES_PROJECTVIEW") + whereClause + orderClause;
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, CmsSqlManager.replaceTableKey(I_CmsConstants.C_PROJECT_ONLINE_ID+1,query));
 
             stmt.setInt(1, project);
             res = stmt.executeQuery();

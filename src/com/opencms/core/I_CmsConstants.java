@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/15 13:43:48 $
-* Version: $Revision: 1.245 $
+* Date   : $Date: 2003/07/18 08:22:42 $
+* Version: $Revision: 1.246 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.245 $ $Date: 2003/07/15 13:43:48 $
+ * @version $Revision: 1.246 $ $Date: 2003/07/18 08:22:42 $
  */
 public interface I_CmsConstants {
 
@@ -461,21 +461,25 @@ public interface I_CmsConstants {
 
     /**
      * Is set, if the resource is unchanged in this project.
+     * WARNING: Don't change the state values, they are used to calculate the importance !
      */
     int C_STATE_UNCHANGED = 0;
 
     /**
      * Is set, if the resource was changed in this project.
+     * WARNING: Don't change the state values, they are used to calculate the importance !
      */
     int C_STATE_CHANGED = 1;
 
     /**
      * Is set, if the resource is new in this project.
+     * WARNING: Don't change the state values, they are used to calculate the importance !
      */
     int C_STATE_NEW = 2;
 
     /**
      * Is set, if the resource was deleted in this project.
+     * WARNING: Don't change the state values, they are used to calculate the importance !
      */
     int C_STATE_DELETED = 3;
 

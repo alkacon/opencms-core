@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/17 12:00:40 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2003/07/18 08:22:42 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.62 $ $Date: 2003/07/17 12:00:40 $
+ * @version $Revision: 1.63 $ $Date: 2003/07/18 08:22:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -83,6 +83,15 @@ public class CmsDriverManager extends Object {
     // Constants used for cache property lookup
     protected static final String C_CACHE_NULL_PROPERTY_VALUE = "__CACHE_NULL_PROPERTY_VALUE__";
 
+    // Dummy task used in createDirectPublishProject
+    protected static final CmsTask noTask = new CmsTask();
+    
+    //
+    public static final int C_NOTHING_CHANGED = 0;
+    public static final int C_UPDATE_RESOURCE_STATE = 1;
+    public static final int C_UPDATE_STRUCTURE_STATE = 2;
+    public static final int C_UPDATE_ALL = 3; 
+    
     protected Map m_accessCache = null;
     protected Map m_accessControlListCache = null;
 
@@ -959,12 +968,12 @@ public class CmsDriverManager extends Object {
         resource.setState(state);
         // write-acces  was granted - write the file.
         if (filename.endsWith("/")) {
-            m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, false, context.currentUser().getId());
+            m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, C_UPDATE_ALL, context.currentUser().getId());
             // update the cache
             //clearResourceCache(filename, context.currentProject(), context.currentUser());
             clearResourceCache();
         } else {
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, false, context.currentUser().getId());
+            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_UPDATE_ALL, context.currentUser().getId());
             // update the cache
             //clearResourceCache(filename, context.currentProject(), context.currentUser());
             clearResourceCache();
@@ -1011,7 +1020,7 @@ public class CmsDriverManager extends Object {
         // write-acces  was granted - write the file.
         resource.setType(type.getResourceType());
         resource.setLauncherType(type.getLauncherType());
-        m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, true, context.currentUser().getId());
+        m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
         }
@@ -1334,23 +1343,22 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Creates a project for the direct publish.
+     * Creates a project for the direct publish.<p>
      *
      * <B>Security</B>
      * Only the users which are in the admin or projectleader-group of the current project are granted.
      *
      * Changed: added the project type
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     * @param name The name of the project to read.
-     * @param description The description for the new project.
-     * @param group the group to be set.
-     * @param managergroup the managergroup to be set.
-     * @param project type the type of the project
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @param context the current context (user/project)
+     * @param name The name of the project to read
+     * @param description The description for the new project
+     * @param groupname the group to be set
+     * @param managergroupname the managergroup to be set
+     * @param projecttype the type of the project
+     * @throws CmsException if something goes wrong
      */
     public CmsProject createDirectPublishProject(CmsRequestContext context, String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException {
-        if (isAdmin(context) || isManagerOfProject(context)) {
+       if (isAdmin(context) || isManagerOfProject(context)) {
             if (I_CmsConstants.C_PROJECT_ONLINE.equals(name)) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
             }
@@ -1358,9 +1366,7 @@ public class CmsDriverManager extends Object {
             CmsGroup group = readGroup(context, groupname);
             CmsGroup managergroup = readGroup(context, managergroupname);
 
-            // create a new task for the project
-            CmsTask task = createProject(context, name, 1, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-            return m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_UNLOCKED, projecttype);
+            return m_projectDriver.createProject(context.currentUser(), group, managergroup, noTask, name, description, I_CmsConstants.C_PROJECT_STATE_UNLOCKED, projecttype);
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
         }
@@ -2248,18 +2254,18 @@ public class CmsDriverManager extends Object {
 
         if ((metadef != null)) {
             m_vfsDriver.deleteProperty(property, context.currentProject().getId(), res, res.getType());
+
             // set the file-state to changed
             if (res.isFile()) {
-                m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, true, context.currentUser().getId());
-                if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-                    res.setState(I_CmsConstants.C_STATE_CHANGED);
-                }
+                m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
             } else {
-                if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-                    res.setState(I_CmsConstants.C_STATE_CHANGED);
-                }
-                m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), true, context.currentUser().getId());
+                m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
             }
+            
+            if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+                res.setState(I_CmsConstants.C_STATE_CHANGED);
+            }
+            
             // update the cache
             //clearResourceCache(resource, context.currentProject(), context.currentUser());
             clearResourceCache();
@@ -2687,9 +2693,10 @@ public class CmsDriverManager extends Object {
         Vector acEntries = m_userDriver.getAccessControlEntries(context.currentProject(), resourceId, false);
 
         // add the aces of each predecessor
-        while (getInherited && !(resourceId = res.getParentId()).isNullUUID()) {
+        CmsUUID structureId;
+        while (getInherited && !(structureId = res.getParentId()).isNullUUID()) {
 
-            res = m_vfsDriver.readFolder(res.getProjectId(), resourceId);
+            res = m_vfsDriver.readFolder(res.getProjectId(), structureId);
             acEntries.addAll(m_userDriver.getAccessControlEntries(context.currentProject(), res.getResourceAceId(), getInherited));
         }
 
@@ -7579,17 +7586,15 @@ public class CmsDriverManager extends Object {
         // touch the resource
         resource.setDateLastModified(timestamp);
         if (isFolder) {
-            if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-                resource.setState(I_CmsConstants.C_STATE_CHANGED);
-            }
-            m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, true, context.currentUser().getId());
+            m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
         } else {
-            if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-                resource.setState(I_CmsConstants.C_STATE_CHANGED);
-            }
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, true, context.currentUser().getId());
+            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
         }
 
+        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+            resource.setState(I_CmsConstants.C_STATE_CHANGED);
+        }
+        
         //clearResourceCache(resource.getFullResourceName(), context.currentProject(), context.currentUser());
         clearResourceCache();
 
@@ -7659,9 +7664,9 @@ public class CmsDriverManager extends Object {
 
         // write the file.
         if (resource.isFolder()) {
-            m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, false, context.currentUser().getId());
+            m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, C_NOTHING_CHANGED, context.currentUser().getId());
         } else {
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, false, context.currentUser().getId());
+            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_NOTHING_CHANGED, context.currentUser().getId());
         }
 
         clearResourceCache();
@@ -7719,7 +7724,7 @@ public class CmsDriverManager extends Object {
             // this sets a flag so that the file date is not set to the current time
             restoredFolder.setDateLastModified(onlineFolder.getDateLastModified());
             // write-access  was granted - write the folder without setting state = changed
-            m_vfsDriver.writeFolder(context.currentProject(), restoredFolder, false, context.currentUser().getId());
+            m_vfsDriver.writeFolder(context.currentProject(), restoredFolder, C_NOTHING_CHANGED, context.currentUser().getId());
             // restore the properties in the offline project
             m_vfsDriver.deleteAllProperties(context.currentProject().getId(), restoredFolder);
             Map propertyInfos = m_vfsDriver.readProperties(onlineProject.getId(), onlineFolder, onlineFolder.getType());
@@ -7762,7 +7767,7 @@ public class CmsDriverManager extends Object {
             // this sets a flag so that the file date is not set to the current time
             restoredFile.setDateLastModified(onlineFile.getDateLastModified());
             // write-acces  was granted - write the file without setting state = changed
-            m_vfsDriver.writeFile(context.currentProject(), restoredFile, false);
+            m_vfsDriver.writeFile(context.currentProject(), restoredFile, C_NOTHING_CHANGED);
             // restore the properties in the offline project
             m_vfsDriver.deleteAllProperties(context.currentProject().getId(), restoredFile);
             Map propertyInfos = m_vfsDriver.readProperties(onlineProject.getId(), onlineFile, onlineFile.getType());
@@ -8140,7 +8145,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, (CmsResource) file, I_CmsConstants.C_WRITE_ACCESS);
 
         // write-acces  was granted - write the file.
-        m_vfsDriver.writeFile(context.currentProject(), file, true, context.currentUser().getId());
+        m_vfsDriver.writeFile(context.currentProject(), file, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
 
         if (file.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             file.setState(I_CmsConstants.C_STATE_CHANGED);
@@ -8214,7 +8219,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, file, I_CmsConstants.C_WRITE_ACCESS);
 
         // write-acces  was granted - write the file.
-        m_vfsDriver.writeFileHeader(context.currentProject(), file, true, context.currentUser().getId());
+        m_vfsDriver.writeFileHeader(context.currentProject(), file, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
 
         if (file.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             file.setState(I_CmsConstants.C_STATE_CHANGED);
@@ -8296,15 +8301,17 @@ public class CmsDriverManager extends Object {
 
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), res, res.getType());
         m_propertyCache.clear();
+
+        if (res.isFile()) {
+            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
+        } else {
+            m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
+        }
+
         if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             res.setState(I_CmsConstants.C_STATE_CHANGED);
         }
-        if (res.isFile()) {
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, false, context.currentUser().getId());
-        } else {
-            m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), false, context.currentUser().getId());
-        }
-
+        
         // update the cache
         clearResourceCache();
     }
@@ -8336,15 +8343,13 @@ public class CmsDriverManager extends Object {
         m_propertyCache.clear();
         // set the file-state to changed
         if (res.isFile()) {
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, true, context.currentUser().getId());
-            if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-                res.setState(I_CmsConstants.C_STATE_CHANGED);
-            }
+            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
         } else {
-            if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-                res.setState(I_CmsConstants.C_STATE_CHANGED);
-            }
-            m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), true, context.currentUser().getId());
+            m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
+        }
+        
+        if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+            res.setState(I_CmsConstants.C_STATE_CHANGED);
         }
 
         // update the cache
@@ -8411,10 +8416,12 @@ public class CmsDriverManager extends Object {
         // check if the user has write access 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
+        m_vfsDriver.writeResource(context.currentProject(), resource, filecontent, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
+
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
         }
-        m_vfsDriver.writeResource(context.currentProject(), resource, filecontent, true, context.currentUser().getId());
+
         // write the properties
         m_vfsDriver.writeProperties(properties, context.currentProject().getId(), resource, resource.getType(), true);
 
