@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/16 19:12:39 $
- * Version: $Revision: 1.226 $
+ * Date   : $Date: 2003/09/17 07:29:20 $
+ * Version: $Revision: 1.227 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,15 +40,15 @@ import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockDispatcher;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsEvent;
-import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
-import org.opencms.security.I_CmsPasswordValidation;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.security.I_CmsPasswordValidation;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
@@ -60,6 +60,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.exceptions.CmsResourceNotFoundException;
 import com.opencms.file.*;
 import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -83,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.226 $ $Date: 2003/09/16 19:12:39 $
+ * @version $Revision: 1.227 $ $Date: 2003/09/17 07:29:20 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2017,12 +2018,14 @@ public class CmsDriverManager extends Object {
                // of allowed versions and which are older then the maximum backup date
               int resVersions=m_backupDriver.readBackupMaxVersion(res.getResourceId());
               int versionsToDelete=resVersions-versions;
-//if (resVersions>1) {                   
-//System.err.println("processing "+res.getPath());
+              // now we know which backup versions must be deleted, so remove them now
+if (resVersions>1) {                   
+//System.err.println("processing "+res.getName()+" ("+res.getVersionId()+")");
 //System.err.println(resVersions + " Versions");        
 //System.err.println("Delete "+ versionsToDelete);          
 //System.err.println("");
-//}
+}
+            
            }
        }
            
@@ -3189,7 +3192,7 @@ public class CmsDriverManager extends Object {
     public Vector getChild(CmsRequestContext context, String groupname) throws CmsException {
         // check security
         if (!context.currentUser().isGuestUser()) {
-            return m_userDriver.getChildGroups(groupname);
+            return m_userDriver.readChildGroups(groupname);
         } else {
             throw new CmsSecurityException("[" + getClass().getName() + "] getChild()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
@@ -3216,7 +3219,7 @@ public class CmsDriverManager extends Object {
             CmsGroup group = null;
 
             // get all child groups if the user group
-            childs = m_userDriver.getChildGroups(groupname);
+            childs = m_userDriver.readChildGroups(groupname);
             if (childs != null) {
                 allChilds = childs;
                 // now get all subchilds for each group

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/16 08:35:22 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/09/17 07:29:20 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2003/09/16 08:35:22 $
+ * @version $Revision: 1.23 $ $Date: 2003/09/17 07:29:20 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -177,16 +177,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     String encryptPassword(String value);
 
     /**
-     * Returns all child groups of a groups<P/>
-     *
-     *
-     * @param groupname The name of the group.
-     * @return users A Vector of all child groups or null.
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    Vector getChildGroups(String groupname) throws CmsException;
-
-    /**
      * Adds a user to the database.
      *
      * @param id user id
@@ -258,6 +248,16 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if something goes wrong
      */
     CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
+
+    /**
+     * Returns all child groups of a groups<P/>
+     *
+     *
+     * @param groupname The name of the group.
+     * @return users A Vector of all child groups or null.
+     * @throws CmsException Throws CmsException if operation was not succesful.
+     */
+    Vector readChildGroups(String groupname) throws CmsException;
 
     /**
      * Returns a group object.<P/>

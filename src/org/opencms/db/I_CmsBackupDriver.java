@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/16 09:15:50 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/09/17 07:29:20 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.23 $ $Date: 2003/09/16 09:15:50 $
+ * @version $Revision: 1.24 $ $Date: 2003/09/17 07:29:20 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -91,8 +91,13 @@ public interface I_CmsBackupDriver {
      * @param maxdate long timestamp of the last version that should remain
      * @return int the oldest remaining version
      * @throws CmsException if something goes wrong
+     * TODO: remove this later, its not required anymore
      */
     int deleteBackups(long maxdate) throws CmsException;
+
+
+    //void deleteBackup(CmsBackupResource res, long maxdate, int verisons) throws CmsException
+
 
     /**
      * Destroys this driver.<p>

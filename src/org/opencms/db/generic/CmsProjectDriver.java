@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/16 14:55:48 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2003/09/17 07:29:20 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.100 $ $Date: 2003/09/16 14:55:48 $
+ * @version $Revision: 1.101 $ $Date: 2003/09/17 07:29:20 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -949,7 +949,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     if (backupEnabled) {
                         m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFile, offlineProperties, backupTagId, publishDate, maxVersions);
                     }
-                    m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), offlineFile, offlineProperties, backupTagId, publishDate, maxVersions);
+                    writePublishHistory(context.currentProject(), publishHistoryId, backupTagId, offlineFileHeader.getRootPath(), offlineFile);     
                 } catch (CmsException e) {
                     if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
                         OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishFile] error writing backup/publishing history, type: " + e.getTypeText() + ",  " + offlineFile.toString());
@@ -1247,7 +1247,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @param directPublishResource contains CmsResource when in publish directly mode
      * @param maxVersions maximum number of backup versions
      * @return a vector of changed or deleted resources
-     * @throws CmsException if something goes wrong
+     * @throws Exception if something goes wrong
      */
     public synchronized Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints, CmsResource directPublishResource, int maxVersions) throws Exception {
         CmsExportPointDriver discAccess = null;

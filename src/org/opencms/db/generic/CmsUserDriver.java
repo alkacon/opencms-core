@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/16 14:55:48 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/09/17 07:29:20 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.28 $ $Date: 2003/09/16 14:55:48 $
+ * @version $Revision: 1.29 $ $Date: 2003/09/17 07:29:20 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -379,47 +379,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
         m_sqlManager = null;
         m_driverManager = null;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#getChildGroups(java.lang.String)
-     */
-    public Vector getChildGroups(String groupname) throws CmsException {
-
-        Vector childs = new Vector();
-        CmsGroup group;
-        CmsGroup parent;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            // get parent group
-            parent = readGroup(groupname);
-            // parent group exists, so get all childs
-            if (parent != null) {
-                // create statement
-                conn = m_sqlManager.getConnection();
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETCHILD");
-                stmt.setString(1, parent.getId().toString());
-                res = stmt.executeQuery();
-                // create new Cms group objects
-                while (res.next()) {
-                    group = new CmsGroup(new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_GROUP_ID"))), new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.get("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.get("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.get("C_GROUPS_GROUP_FLAGS")));
-                    childs.addElement(group);
-                }
-            }
-
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-        //check if the child vector has no elements, set it to null.
-        if (childs.size() == 0) {
-            childs = null;
-        }
-        return childs;
     }
 
     /** (non-Javadoc)
@@ -734,6 +693,47 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#getChildGroups(java.lang.String)
+     */
+    public Vector readChildGroups(String groupname) throws CmsException {
+
+        Vector childs = new Vector();
+        CmsGroup group;
+        CmsGroup parent;
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            // get parent group
+            parent = readGroup(groupname);
+            // parent group exists, so get all childs
+            if (parent != null) {
+                // create statement
+                conn = m_sqlManager.getConnection();
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETCHILD");
+                stmt.setString(1, parent.getId().toString());
+                res = stmt.executeQuery();
+                // create new Cms group objects
+                while (res.next()) {
+                    group = new CmsGroup(new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_GROUP_ID"))), new CmsUUID(res.getString(m_sqlManager.get("C_GROUPS_PARENT_GROUP_ID"))), res.getString(m_sqlManager.get("C_GROUPS_GROUP_NAME")), res.getString(m_sqlManager.get("C_GROUPS_GROUP_DESCRIPTION")), res.getInt(m_sqlManager.get("C_GROUPS_GROUP_FLAGS")));
+                    childs.addElement(group);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            // close all db-resources
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+        //check if the child vector has no elements, set it to null.
+        if (childs.size() == 0) {
+            childs = null;
+        }
+        return childs;
     }
 
     /**

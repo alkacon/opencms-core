@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/16 14:55:48 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2003/09/17 07:29:20 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.52 $ $Date: 2003/09/16 14:55:48 $
+ * @version $Revision: 1.53 $ $Date: 2003/09/17 07:29:20 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -445,9 +445,10 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             res = stmt.executeQuery();
             while (res.next()) {
                 currentBackupResource = createBackupResource(res, false);
-                // only add each structureIdxresourceId combination once
-                String key = currentBackupResource.getStructureId().toString() + currentBackupResource.getResourceId().toString();
+                // only add each structureId x resourceId combination once
+                String key = currentBackupResource.getStructureId().toString() + currentBackupResource.getResourceId().toString();                      
                 if (!storage.contains(key)) {
+                    // no entry found, so add it
                     allHeaders.add(currentBackupResource);
                     storage.add(key);
                 }
