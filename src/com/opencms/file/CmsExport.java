@@ -1,30 +1,30 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.46 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
+ * Date   : $Date: 2003/02/21 23:33:24 $
+ * Version: $Revision: 1.47 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2001  The OpenCms Group
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.file;
 
@@ -60,75 +60,56 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
- * This class holds the functionaility to export resources from the cms
- * to the filesystem.
+ * Provides the functionality to export files from the OpenCms VFS to a ZIP file.<p>
+ * 
+ * The ZIP file written will contain a copy of all exported files with their contents.
+ * It will also contain a <code>manifest.xml</code> file in wich all meta-information 
+ * about this files are stored, like permissions etc.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.46 $ $Date: 2003/02/15 11:14:54 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.47 $ $Date: 2003/02/21 23:33:24 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
-    /**
-     * The export-zipfile to store resources to
-     */
+    /** The export ZIP file to store resources in */
     private String m_exportFile;
 
-    /**
-     * The export-stream (zip) to store resources to
-     */
+    /** The export ZIP stream to write resources to */
     private ZipOutputStream m_exportZipStream = null;
 
-    /**
-     * The cms-object to do the operations.
-     */
+    /** The CmsObject to do the operations */
     private CmsObject m_cms;
 
-    /**
-     * The xml manifest-file.
-     */
+    /** The xml manifest-file */
     private Document m_docXml;
 
-    /**
-     * The xml-elemtent to store fileinformations to.
-     */
+    /** The xml element to store file information in */
     private Element m_filesElement;
 
-    /**
-     * The xml-elemtent to store userdatainformations to.
-     */
+    /** The xml elemtent to store user data and further information in */
     private Element m_userdataElement;
 
-    /**
-     * Decides, if the system should be included to the export.
-     */
+    /** Indicates if the system should be included to the export */
     private boolean m_excludeSystem;
 
-    /**
-     * Decides, if the unchanged resources should be included to the export.
-     */
+    /** Indicated if the unchanged resources should be included to the export */
     private boolean m_excludeUnchanged;
 
-    /**
-     * Decides, if the userdata and groupdata should be included to the export.
-     */
+    /** Indicates if the user data and group data should be included to the export */
     private boolean m_exportUserdata;
     
     /** Max file age of contents to export */
     private long m_contentAge = 0; 
 
-    /**
-     * Is the current project the online project?
-     */
+    /** Indicates if the current project it the online project */
     private boolean m_isOnlineProject;
 
-    /**
-     * Cache for previously added super folders
-     */
+    /** Cache for previously added super folders */
     private Vector m_superFolders;
 
-    /**
-     * The object to report the log-messages.
-     */
+    /** The report for the log messages */
     private I_CmsReport m_report = null;
     
     /** Set to store the names of page files in, required for later page body file export */
@@ -141,12 +122,12 @@ public class CmsExport implements I_CmsConstants, Serializable {
     private int m_pageType;
 
     /**
-     * This constructs a new CmsImport-object which imports the resources.
+     * Constructs a new export.<p>
      *
-     * @param importFile the file or folder to import from.
-     * @param importPath the path to the cms to import into.
-     * @param cms the cms-object to work with.
-     * @throws CmsException the CmsException is thrown if something goes wrong.
+     * @param importFile the file or folder to import from
+     * @param importPath the path to the cms to import into
+     * @param cms the cmsObject to work with
+     * @throws CmsException if something goes wrong
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms)
         throws CmsException {
@@ -154,13 +135,13 @@ public class CmsExport implements I_CmsConstants, Serializable {
     }
     
     /**
-     * This constructs a new CmsImport-object which imports the resources.
+     * Constructs a new export.<p>
      *
-     * @param importFile the file or folder to import from.
-     * @param importPath the path to the cms to import into.
-     * @param cms the cms-object to work with.
+     * @param importFile the file or folder to import from
+     * @param importPath the path to the cms to import into
+     * @param cms the cmsObject to work with
      * @param Node moduleNode module informations in a Node for module-export.
-     * @throws CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, Node moduleNode)
         throws CmsException {
@@ -168,31 +149,31 @@ public class CmsExport implements I_CmsConstants, Serializable {
     }
     
     /**
-     * This constructs a new CmsImport-object which imports the resources.
+     * Constructs a new export.<p>
      *
-     * @param importFile the file or folder to import from.
+     * @param importFile the file or folder to import from
      * @param exportPaths the paths of folders and files to write into the exportFile
-     * @param cms the cms-object to work with.
+     * @param cms the cmsObject to work with
      * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
      *        exportPaths are included
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     * @throws CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged) throws CmsException {
         this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null);
     }
     
     /**
-     * This constructs a new CmsImport-object which imports the resources.
+     * Constructs a new export.<p>
      *
-     * @param importFile the file or folder to import from.
+     * @param importFile the file or folder to import from
      * @param exportPaths the paths of folders and files to write into the exportFile
-     * @param cms the cms-object to work with.
+     * @param cms the cmsObject to work with
      * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
      *        exportPaths are included
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     * @param Node moduleNode module informations in a Node for module-export.
-     * @throws CmsException the CmsException is thrown if something goes wrong.
+     * @param Node moduleNode module informations in a Node for module-export
+     * @throws CmsException if something goes wrong
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, Node moduleNode)
         throws CmsException {
@@ -200,17 +181,17 @@ public class CmsExport implements I_CmsConstants, Serializable {
     }
     
     /**
-     * This constructs a new CmsImport-object which imports the resources.
+     * Constructs a new export.<p>
      *
-     * @param importFile the file or folder to import from.
+     * @param importFile the file or folder to import from
      * @param exportPaths the paths of folders and files to write into the exportFile
-     * @param cms the cms-object to work with.
+     * @param cms the cmsObject to work with
      * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
      *        exportPaths are included
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     * @param Node moduleNode module informations in a Node for module-export.
+     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded
+     * @param Node moduleNode module informations in a Node for module-export
      * @param exportUserdata if true, the userdata and groupdata are exported
-     * @throws CmsException the CmsException is thrown if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem
                             , boolean excludeUnchanged, Node moduleNode, boolean exportUserdata)
@@ -220,18 +201,18 @@ public class CmsExport implements I_CmsConstants, Serializable {
     }
 
     /**
-     * This constructs a new CmsImport-object which imports the resources.
+     * Constructs a new export.<p>
      *
-     * @param importFile the file or folder to import from.
+     * @param importFile the file or folder to import from
      * @param exportPaths the paths of folders and files to write into the exportFile
-     * @param cms the cms-object to work with.
+     * @param cms the cmsObject to work with
      * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
      *        exportPaths are included
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     * @param Node moduleNode module informations in a Node for module-export.
+     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded
+     * @param Node moduleNode module informations in a Node for module-export
      * @param exportUserdata if true, the userdata and groupdata are exported
-     * @param report the cmsReport to handle the log messages.
-     * @throws CmsException the CmsException is thrown if something goes wrong.
+     * @param report the cmsReport to handle the log messages
+     * @throws CmsException if something goes wrong
      */
     public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, Node moduleNode, boolean exportUserdata, long contentAge, I_CmsReport report)
         throws CmsException {
@@ -300,11 +281,13 @@ public class CmsExport implements I_CmsConstants, Serializable {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
+    
     /**
-     * Adds a element to the xml-document.
-     * @param element The element to add the subelement to.
-     * @param name The name of the new subelement.
-     * @param value The value of the element.
+     * Adds a CDATA element to the XML document.<p>
+     * 
+     * @param element the element to add the subelement to
+     * @param name the name of the new subelement
+     * @param value the value of the element
      */
     private void addCdataElement(Element element, String name, String value) {
         Element newElement = m_docXml.createElement(name);
@@ -312,11 +295,13 @@ public class CmsExport implements I_CmsConstants, Serializable {
         CDATASection text = m_docXml.createCDATASection(value);
         newElement.appendChild(text);
     }
+    
     /**
-     * Adds a element to the xml-document.
-     * @param element The element to add the subelement to.
-     * @param name The name of the new subelement.
-     * @param value The value of the element.
+     * Adds a text element to the XML document.<p>
+     * 
+     * @param element the element to add the subelement to.
+     * @param name the name of the new subelement
+     * @param value the value of the element
      */
     private void addElement(Element element, String name, String value) {
         Element newElement = m_docXml.createElement(name);
@@ -327,7 +312,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
 
     /**
      * Exports all page body files that have not explicityl been
-     * added by the user.
+     * added by the user.<p>
      */
     public void addPageBodyFiles() throws CmsException {
         Iterator i;   
@@ -348,152 +333,156 @@ public class CmsExport implements I_CmsConstants, Serializable {
         addSingleFiles(bodyFileNames);
     }
 
-/**
- * adds all files with names in fileNames to the xml-config file
- * Creation date: (10.08.00 17:12:05)
- * @param fileNames java.util.Vector of Strings, e.g. /folder/index.html
- */
-public void addSingleFiles(Vector fileNames) throws CmsException {
-    if (fileNames != null) {
-        for (int i = 0; i < fileNames.size(); i++) {
-            String fileName = (String) fileNames.elementAt(i);
-            try {
-                CmsFile file = m_cms.readFile(fileName);
-                if((file.getState() != C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
-                    addSuperFolders(fileName);
-                    exportFile(file);
-                    m_exportedResources.add(fileName);
-                }
-            } catch(CmsException exc) {
-                if(exc.getType() != CmsException.C_RESOURCE_DELETED) {
-                    throw exc;
+    /**
+     * Adds all files with names in fileNames to the xml-config file.<p>
+     * 
+     * @param fileNames Vector of path Strings, e.g. /folder/index.html
+     */
+    public void addSingleFiles(Vector fileNames) throws CmsException {
+        if (fileNames != null) {
+            for (int i = 0; i < fileNames.size(); i++) {
+                String fileName = (String) fileNames.elementAt(i);
+                try {
+                    CmsFile file = m_cms.readFile(fileName);
+                    if((file.getState() != C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
+                        addSuperFolders(fileName);
+                        exportFile(file);
+                        m_exportedResources.add(fileName);
+                    }
+                } catch(CmsException exc) {
+                    if(exc.getType() != CmsException.C_RESOURCE_DELETED) {
+                        throw exc;
+                    }
                 }
             }
         }
     }
-}
-/**
- * Adds the superfolders of path to the config file, starting at the top, excluding the root folder
- * Creation date: (10.08.00 11:07:58)
- * @param path java.lang.String the path of the folder in the filesystem
- */
-public void addSuperFolders(String path) throws CmsException {
-    // Initialize the "previously added folder cache"
-    if(m_superFolders == null) {
-        m_superFolders = new Vector();
-    }
-    Vector superFolders = new Vector();
 
-    // Check, if the path is really a folder
-    if(path.lastIndexOf(C_ROOT) != (path.length()-1)) {
-        path = path.substring(0, path.lastIndexOf(C_ROOT)+1);
-    }
-    while (path.length() > C_ROOT.length()) {
-        superFolders.addElement(path);
-        path = path.substring(0, path.length() - 1);
-        path = path.substring(0, path.lastIndexOf(C_ROOT)+1);
-    }
-    for (int i = superFolders.size()-1; i >= 0; i--) {
-        String addFolder = (String)superFolders.elementAt(i);
-        if(!m_superFolders.contains(addFolder)) {
-            // This super folder was NOT added previously. Add it now!
-            CmsFolder folder = m_cms.readFolder(addFolder);
-            writeXmlEntrys(folder);
-            // Remember that this folder was added
-            m_superFolders.addElement(addFolder);
+    /**
+     * Adds the superfolders of path to the config file, starting at the top, 
+     * excluding the root folder.<p>
+     * 
+     * @param path the path of the folder in the filesystem
+     */
+    public void addSuperFolders(String path) throws CmsException {
+        // Initialize the "previously added folder cache"
+        if (m_superFolders == null) {
+            m_superFolders = new Vector();
+        }
+        Vector superFolders = new Vector();
+
+        // Check, if the path is really a folder
+        if (path.lastIndexOf(C_ROOT) != (path.length() - 1)) {
+            path = path.substring(0, path.lastIndexOf(C_ROOT) + 1);
+        }
+        while (path.length() > C_ROOT.length()) {
+            superFolders.addElement(path);
+            path = path.substring(0, path.length() - 1);
+            path = path.substring(0, path.lastIndexOf(C_ROOT) + 1);
+        }
+        for (int i = superFolders.size() - 1; i >= 0; i--) {
+            String addFolder = (String)superFolders.elementAt(i);
+            if (!m_superFolders.contains(addFolder)) {
+                // This super folder was NOT added previously. Add it now!
+                CmsFolder folder = m_cms.readFolder(addFolder);
+                writeXmlEntrys(folder);
+                // Remember that this folder was added
+                m_superFolders.addElement(addFolder);
+            }
         }
     }
-}
 
     /**
      * Checks if a given resource is already included in the export
-     * or not.
+     * or not.<p>
      * 
      * @param resourcename the VFS resource name to check
      * @return <code>true</code> if the resource must not be exported again, <code>false</code> otherwise
      */
     private boolean isRedundant(String resourcename) {
-        if (m_exportedResources == null) return false;
+        if (m_exportedResources == null)
+            return false;
         Iterator i = m_exportedResources.iterator();
         while (i.hasNext()) {
             String s = (String)i.next();
-            if (resourcename.startsWith(s)) return true;
+            if (resourcename.startsWith(s))
+                return true;
         }
         return false;
     }
 
-/** Check whether some of the resources are redundant because a superfolder has also
-  *  been selected or a file is included in a folder and change the parameter Vectors
-  *
-  * @param folderNames contains the full pathnames of all folders
-  * @param fileNames contains the full pathnames of all files
-  */
-
-private void checkRedundancies(Vector folderNames, Vector fileNames) {
-    int i, j;
-    if (folderNames == null) {
-        return;
-    }
-    Vector redundant = new Vector();
-    int n = folderNames.size();
-    if (n > 1) {
-        // otherwise no check needed, because there is only one resource
-
-        for (i = 0; i < n; i++) {
-            redundant.addElement(new Boolean(false));
+    /** 
+     * Checks whether some of the resources are redundant because a superfolder has also
+     * been selected or a file is included in a folder.<p>
+     * 
+     * @param folderNames contains the full pathnames of all folders
+     * @param fileNames contains the full pathnames of all files
+     */
+    private void checkRedundancies(Vector folderNames, Vector fileNames) {
+        int i, j;
+        if (folderNames == null) {
+            return;
         }
-        for (i = 0; i < n - 1; i++) {
-            for (j = i + 1; j < n; j++) {
-                if (((String) folderNames.elementAt(i)).length() < ((String) folderNames.elementAt(j)).length()) {
-                    if (((String) folderNames.elementAt(j)).startsWith((String) folderNames.elementAt(i))) {
-                        redundant.setElementAt(new Boolean(true), j);
-                    }
-                } else {
-                    if (((String) folderNames.elementAt(i)).startsWith((String) folderNames.elementAt(j))) {
-                        redundant.setElementAt(new Boolean(true), i);
+        Vector redundant = new Vector();
+        int n = folderNames.size();
+        if (n > 1) {
+            // otherwise no check needed, because there is only one resource
+
+            for (i = 0; i < n; i++) {
+                redundant.addElement(new Boolean(false));
+            }
+            for (i = 0; i < n - 1; i++) {
+                for (j = i + 1; j < n; j++) {
+                    if (((String)folderNames.elementAt(i)).length() < ((String)folderNames.elementAt(j)).length()) {
+                        if (((String)folderNames.elementAt(j)).startsWith((String)folderNames.elementAt(i))) {
+                            redundant.setElementAt(new Boolean(true), j);
+                        }
+                    } else {
+                        if (((String)folderNames.elementAt(i)).startsWith((String)folderNames.elementAt(j))) {
+                            redundant.setElementAt(new Boolean(true), i);
+                        }
                     }
                 }
             }
-        }
-        for (i = n - 1; i >= 0; i--) {
-            if (((Boolean) redundant.elementAt(i)).booleanValue()) {
-                folderNames.removeElementAt(i);
+            for (i = n - 1; i >= 0; i--) {
+                if (((Boolean)redundant.elementAt(i)).booleanValue()) {
+                    folderNames.removeElementAt(i);
+                }
             }
         }
-    }
-    // now remove the files who are included automatically in a folder
-    // otherwise there would be a zip exception
+        // now remove the files who are included automatically in a folder
+        // otherwise there would be a zip exception
 
-    for (i = fileNames.size() - 1; i >= 0; i--) {
-        for (j = 0; j < folderNames.size(); j++) {
-            if (((String) fileNames.elementAt(i)).startsWith((String) folderNames.elementAt(j))) {
-                fileNames.removeElementAt(i);
+        for (i = fileNames.size() - 1; i >= 0; i--) {
+            for (j = 0; j < folderNames.size(); j++) {
+                if (((String)fileNames.elementAt(i)).startsWith((String)folderNames.elementAt(j))) {
+                    fileNames.removeElementAt(i);
+                }
             }
         }
     }
-}
+    
     /**
-     * Exports one single file with all its data and content.
+     * Exports one single file with all its data and content.<p>
      *
-     * @param file the file to be exported,
-     * @throws throws a CmsException if something goes wrong.
+     * @param file the file to be exported
+     * @throws CmsException if something goes wrong
      */
-    private void exportFile(CmsFile file)
-        throws CmsException {
+    private void exportFile(CmsFile file) throws CmsException {
         String source = getSourceFilename(file.getAbsolutePath());
 
         m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
         m_report.print(file.getAbsolutePath());
-        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);        
+        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
         try {
             // create the manifest-entrys
-            writeXmlEntrys((CmsResource) file);
+            writeXmlEntrys((CmsResource)file);
             // store content in zip-file
             ZipEntry entry = new ZipEntry(source);
             m_exportZipStream.putNextEntry(entry);
             m_exportZipStream.write(file.getContents());
             m_exportZipStream.closeEntry();
-        } catch(Exception exc) {
+        } catch (Exception exc) {
             m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
@@ -504,56 +493,62 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 
         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
+    
     /**
-     * Exports all needed sub-resources to the zip-file.
+     * Exports all needed sub-resources to the zip-file.<p>
      *
      * @param path to complete path to the resource to export
-     * @throws throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
-    private void exportResources(String path)
-        throws CmsException {
+    private void exportResources(String path) throws CmsException {
         // get all subFolders
         Vector subFolders = m_cms.getSubFolders(path);
         // get all files in folder
         Vector subFiles = m_cms.getFilesInFolder(path);
 
         // walk through all files and export them
-        for(int i = 0; i < subFiles.size(); i++) {
-            CmsResource file = (CmsResource) subFiles.elementAt(i);
+        for (int i = 0; i < subFiles.size(); i++) {
+            CmsResource file = (CmsResource)subFiles.elementAt(i);
             int state = file.getState();
             long age = file.getDateLastModified();
 
-            if(m_isOnlineProject || (!m_excludeUnchanged) || state == C_STATE_NEW || state == C_STATE_CHANGED) {
-                if((state != C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
+            if (m_isOnlineProject || (!m_excludeUnchanged) || state == C_STATE_NEW || state == C_STATE_CHANGED) {
+                if ((state != C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
                     exportFile(m_cms.readFile(file.getAbsolutePath()));
                 }
-            }            
+            }
             // release file header memory
             subFiles.set(i, null);
-        }        
+        }
         // all files are exported, release memory
         subFiles = null;
 
         // walk through all subfolders and export them
-        for(int i = 0; i < subFolders.size(); i++) {
-            CmsResource folder = (CmsResource) subFolders.elementAt(i);
-            if(folder.getState() != C_STATE_DELETED){
+        for (int i = 0; i < subFolders.size(); i++) {
+            CmsResource folder = (CmsResource)subFolders.elementAt(i);
+            if (folder.getState() != C_STATE_DELETED) {
                 // check if this is a system-folder and if it should be included.
                 String export = folder.getAbsolutePath();
-                if( // new VFS, always export "/system/" OR
-                    (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.equalsIgnoreCase(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) ||
-                    // new VFS, always export "/system/bodies/" OR
-                    (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) ||
-                    // new VFS, always export "/system/galleries/" OR
-                    (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith(I_CmsWpConstants.C_VFS_PATH_GALLERIES)) ||
-                    // option "exclude system folder" selected AND
-                    !(m_excludeSystem && 
-                        // export folder is a system folder 
-                        (export.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM) ||            
-                        // if new VFS, ignore old system folders (are below "/system" in new VFS)
-                        ((! I_CmsWpConstants.C_VFS_NEW_STRUCTURE) && export.startsWith("/pics/system/")) ||
-                        ((! I_CmsWpConstants.C_VFS_NEW_STRUCTURE) && export.startsWith("/moduledemos/")))                                           
-                    )) {
+                if (// new VFS, always export "/system/" OR
+                 (I_CmsWpConstants.C_VFS_NEW_STRUCTURE
+                    && export.equalsIgnoreCase(I_CmsWpConstants.C_VFS_PATH_SYSTEM))
+                    || // new VFS, always export "/system/bodies/" OR
+                 (
+                        I_CmsWpConstants.C_VFS_NEW_STRUCTURE && export.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES))
+                    || // new VFS, always export "/system/galleries/" OR
+                 (
+                        I_CmsWpConstants.C_VFS_NEW_STRUCTURE
+                            && export.startsWith(I_CmsWpConstants.C_VFS_PATH_GALLERIES))
+                    || // option "exclude system folder" selected AND
+                !(
+                        m_excludeSystem
+                    && // export folder is a system folder 
+                 (
+                        export.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)
+                    || // if new VFS, ignore old system folders (are below "/system" in new VFS)
+                 (
+                        (!I_CmsWpConstants.C_VFS_NEW_STRUCTURE) && export.startsWith("/pics/system/"))
+                            || ((!I_CmsWpConstants.C_VFS_NEW_STRUCTURE) && export.startsWith("/moduledemos/"))))) {
                     // export this folder
                     if (folder.getDateLastModified() >= m_contentAge) {
                         // only export folder data to manifest.xml if it has changed
@@ -562,52 +557,53 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
                     // export all resources in this folder
                     exportResources(folder.getAbsolutePath());
                 }
-            }            
+            }
             // release folder memory
             subFolders.set(i, null);
         }
     }
+    
     /**
-     * Gets the import resource and stores it in object-member.
+     * Gets the export resource and stores it in a member variable.<p>
      */
-    private void getExportResource()
-        throws CmsException {
+    private void getExportResource() throws CmsException {
         try {
             // add zip-extension, if needed
-            if( !m_exportFile.toLowerCase().endsWith(".zip") ) {
+            if (!m_exportFile.toLowerCase().endsWith(".zip")) {
                 m_exportFile += ".zip";
             }
 
             // create the export-zipstream
             m_exportZipStream = new ZipOutputStream(new FileOutputStream(m_exportFile));
 
-        } catch(Exception exc) {
+        } catch (Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
+    
     /**
-     * Substrings the source-filename, so it is shrinked to the needed part for
-     * import/export.
-     * @param absoluteName The absolute path of the resource.
-     * @return The shrinked path.
+     * Substrings the source filename, so it is shrinked to the needed part for export.<p>
+     * 
+     * @param absoluteName the absolute path of the resource
+     * @return the shrinked path
      */
     private String getSourceFilename(String absoluteName) {
-        // String path = absoluteName.substring(m_exportPath.length());
         String path = absoluteName; // keep absolute name to distinguish resources
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
-        if(path.endsWith("/")) {
+        if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
         }
         return path;
     }
+    
     /**
-     * Creates the xml-file and appends the initial tags to it.
-     * @param Node moduleNode a node with module informations.
+     * Creates the export XML file and appends the initial tags to it.<p>
+     * 
+     * @param moduleNode a node with module informations
      */
-    private void getXmlConfigFile(Node moduleNode)
-        throws CmsException {
+    private void getXmlConfigFile(Node moduleNode) throws CmsException {
 
         try {
             // creates the document
@@ -624,47 +620,48 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             addElement(info, C_EXPORT_TAG_PROJECT, m_cms.getRequestContext().currentProject().getName());
             addElement(info, C_EXPORT_TAG_VERSION, C_EXPORT_VERSION);
 
-            if(moduleNode != null) {
+            if (moduleNode != null) {
                 // this is a module export - import module informations here
                 exportNode.appendChild(A_CmsXmlContent.getXmlParser().importNode(m_docXml, moduleNode));
                 // now remove the unused file informations
                 NodeList files = ((Element)exportNode).getElementsByTagName("files");
-                if(files.getLength() == 1) {
+                if (files.getLength() == 1) {
                     files.item(0).getParentNode().removeChild(files.item(0));
                 }
             }
             m_filesElement = m_docXml.createElement(C_EXPORT_TAG_FILES);
             m_docXml.getDocumentElement().appendChild(m_filesElement);
             // add userdata
-            if (m_exportUserdata){
+            if (m_exportUserdata) {
                 m_userdataElement = m_docXml.createElement(C_EXPORT_TAG_USERGROUPDATA);
                 m_docXml.getDocumentElement().appendChild(m_userdataElement);
             }
-        } catch(Exception exc) {
+        } catch (Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
+    
     /**
-     * Writes the xml-config file (manifest) to the zip-file.
+     * Writes the <code>manifex.xml</code> configuration file to the esport zip file.<p>
      */
-    private void writeXmlConfigFile()
-        throws CmsException {
+    private void writeXmlConfigFile() throws CmsException {
         try {
             ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
             m_exportZipStream.putNextEntry(entry);
-            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml,m_exportZipStream, A_OpenCms.getDefaultEncoding());
+            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream, A_OpenCms.getDefaultEncoding());
             m_exportZipStream.closeEntry();
-        } catch(Exception exc) {
+        } catch (Exception exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
+    
     /**
-     * Writes the data for a resources (like acces-rights) to the manifest-xml-file.
-     * @param resource The resource to get the data from.
-     * @throws throws a CmsException if something goes wrong.
+     * Writes the data for a resources (like acces-rights) to the <code>manifest.xml</code> file.<p>
+     * 
+     * @param resource the resource to get the data from
+     * @throws CmsException if something goes wrong
      */
-    private void writeXmlEntrys(CmsResource resource)
-        throws CmsException {
+    private void writeXmlEntrys(CmsResource resource) throws CmsException {
         String source, type, user, group, access, launcherStartClass;
 
         // get all needed informations from the resource
@@ -680,7 +677,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         m_filesElement.appendChild(file);
 
         // only write source if resource is a file
-        if(resource.isFile()) {
+        if (resource.isFile()) {
             addElement(file, C_EXPORT_TAG_SOURCE, source);
         } else {
             // output something to the report for the folder
@@ -694,7 +691,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         addElement(file, C_EXPORT_TAG_USER, user);
         addElement(file, C_EXPORT_TAG_GROUP, group);
         addElement(file, C_EXPORT_TAG_ACCESS, access);
-        if(launcherStartClass != null && !"".equals(launcherStartClass) && !C_UNKNOWN_LAUNCHER.equals(launcherStartClass)) {
+        if (launcherStartClass != null
+            && !"".equals(launcherStartClass)
+            && !C_UNKNOWN_LAUNCHER.equals(launcherStartClass)) {
             addElement(file, C_EXPORT_TAG_LAUNCHER_START_CLASS, launcherStartClass);
         }
 
@@ -707,13 +706,13 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         Enumeration keys = fileProperties.keys();
 
         // create xml-elements for the properties
-        while(keys.hasMoreElements()) {
+        while (keys.hasMoreElements()) {
             // append the node for a property
             Element property = m_docXml.createElement(C_EXPORT_TAG_PROPERTY);
             properties.appendChild(property);
 
-            String key = (String) keys.nextElement();
-            String value = (String) fileProperties.get(key);
+            String key = (String)keys.nextElement();
+            String value = (String)fileProperties.get(key);
             String propertyType = m_cms.readPropertydefinition(key, type).getType() + "";
 
             addElement(property, C_EXPORT_TAG_NAME, key);
@@ -724,9 +723,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     }
 
     /**
-     * Exports groups with all data.
+     * Exports all groups with all data.<p>
      *
-     * @throws throws a CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     private void exportGroups()
         throws CmsException {
@@ -737,9 +736,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     }
 
     /**
-     * Exports users with all data.
+     * Exports all users with all data.<p>
      *
-     * @throws throws a CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     private void exportUsers()
         throws CmsException {
@@ -750,20 +749,19 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     }
 
     /**
-     * Exports one single group with all its data.
+     * Exports one single group with all it's data.<p>
      *
-     * @param group the group to be exported,
-     * @throws throws a CmsException if something goes wrong.
+     * @param group the group to be exported
+     * @throws CmsException if something goes wrong
      */
-    private void exportGroup(CmsGroup group)
-        throws CmsException {
+    private void exportGroup(CmsGroup group) throws CmsException {
         m_report.print(m_report.key("report.exporting_group"), I_CmsReport.C_FORMAT_NOTE);
         m_report.print(group.getName());
-        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);            
+        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
         try {
             // create the manifest entries
             writeXmlGroupEntrys(group);
-        } catch(Exception e) {
+        } catch (Exception e) {
             m_report.println(e);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }
@@ -771,20 +769,19 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     }
 
     /**
-     * Exports one single user with all its data.
+     * Exports one single user with all its data.<p>
      *
-     * @param user the user to be exported,
-     * @throws throws a CmsException if something goes wrong.
+     * @param user the user to be exported
+     * @throws CmsException if something goes wrong
      */
-    private void exportUser(CmsUser user)
-        throws CmsException {
+    private void exportUser(CmsUser user) throws CmsException {
         m_report.print(m_report.key("report.exporting_user"), I_CmsReport.C_FORMAT_NOTE);
         m_report.print(user.getName());
-        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);            
+        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
         try {
             // create the manifest entries
             writeXmlUserEntrys(user);
-        } catch(Exception e) {
+        } catch (Exception e) {
             m_report.println(e);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }
@@ -792,12 +789,12 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     }
 
     /**
-     * Writes the data for a group to the manifest-xml-file.
-     * @param group The group to get the data from.
-     * @throws throws a CmsException if something goes wrong.
+     * Writes the data for a group to the <code>manifest.xml</code> file.<p>
+     * 
+     * @param group the group to get the data from
+     * @throws CmsException if something goes wrong
      */
-    private void writeXmlGroupEntrys(CmsGroup group)
-        throws CmsException {
+    private void writeXmlGroupEntrys(CmsGroup group) throws CmsException {
         String name, description, flags, parentgroup;
 
         // get all needed information from the group
@@ -822,12 +819,12 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
     }
 
     /**
-     * Writes the data for a user to the manifest-xml-file.
+     * Writes the data for a user to the <code>manifest.xml</code> file.<p>
+     * 
      * @param group The group to get the data from.
      * @throws throws a CmsException if something goes wrong.
      */
-    private void writeXmlUserEntrys(CmsUser user)
-        throws CmsException {
+    private void writeXmlUserEntrys(CmsUser user) throws CmsException {
         String name, password, recoveryPassword, description, firstname;
         String lastname, email, flags, defaultGroup, address, section, type;
         String datfileName = new String();
@@ -875,8 +872,8 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         addElement(userdata, C_EXPORT_TAG_SECTION, section);
         addElement(userdata, C_EXPORT_TAG_TYPE, type);
         // serialize the hashtable and write the info into a file
-        try{
-            datfileName = "/~"+C_EXPORT_TAG_USERINFO+"/"+name+".dat";
+        try {
+            datfileName = "/~" + C_EXPORT_TAG_USERINFO + "/" + name + ".dat";
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             oout = new ObjectOutputStream(bout);
             oout.writeObject(info);
@@ -887,7 +884,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             m_exportZipStream.putNextEntry(entry);
             m_exportZipStream.write(serializedInfo);
             m_exportZipStream.closeEntry();
-        } catch (IOException ioex){
+        } catch (IOException ioex) {
             m_report.println(ioex);
         }
         // create tag for userinfo
@@ -896,7 +893,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         // append the node for groups of user
         Element usergroup = m_docXml.createElement(C_EXPORT_TAG_USERGROUPS);
         userdata.appendChild(usergroup);
-        for (int i = 0; i < userGroups.size(); i++){
+        for (int i = 0; i < userGroups.size(); i++) {
             String groupName = ((CmsGroup)userGroups.elementAt(i)).getName();
             Element group = m_docXml.createElement(C_EXPORT_TAG_GROUPNAME);
             usergroup.appendChild(group);
