@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/16 13:22:26 $
-* Version: $Revision: 1.109 $
+* Date   : $Date: 2003/07/16 13:36:30 $
+* Version: $Revision: 1.110 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.109 $ $Date: 2003/07/16 13:22:26 $
+ * @version $Revision: 1.110 $ $Date: 2003/07/16 13:36:30 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -853,13 +853,16 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             // version is below version 3
             if (m_importVersion < 3) {
                 // only do the conversions if the new resourcetype (CmsResourceTypeNewPage.) is available 
+                CmsResource newpage=null;
                 try {
-                    m_cms.readFileHeader("/system/workplace/restypes/"+CmsResourceTypeNewPage.C_RESOURCE_TYPE_NAME);
+                    newpage=m_cms.readFileHeader("/system/workplace/restypes/"+CmsResourceTypeNewPage.C_RESOURCE_TYPE_NAME);
+                } catch (CmsException e1) {
+                // do nothing, 
+                }
+                if (newpage!=null) {
                     mergePageFiles();
                     removeFolders();
-                } catch (CmsException e) {                  
-                    
-                }
+                } 
             }
 
         } catch (Exception exc) {
