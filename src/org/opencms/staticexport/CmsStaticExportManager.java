@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/04/05 14:23:13 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/04/07 07:40:00 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1159,7 +1159,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     urlcon.setIfModifiedSince(dateLastModified);
 
                     if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("Request for RFS file " + exportFile.getName() + "' If-Modofied-Since' header set to " + (dateLastModified / 1000) * 1000);
+                        OpenCms.getLog(this).debug("Request for RFS file " + exportFile.getName() + "' If-Modified-Since' header set to " + (dateLastModified / 1000) * 1000);
                     }
                 }
 
