@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/09 13:05:26 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2000/06/13 14:22:07 $
+ * Version: $Revision: 1.83 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.82 $ $Date: 2000/06/09 13:05:26 $ 
+ * @version $Revision: 1.83 $ $Date: 2000/06/13 14:22:07 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1309,7 +1309,53 @@ public class CmsObject implements I_CmsConstants {
 							  m_context.currentProject(), 
 							  username) );
 	}
+    
+     /**
+	 * Returns a user in the Cms.
+	 * 
+	 * @param id The id of the user to be returned.
+	 * @return a user in the Cms.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(int id) 
+		throws CmsException { 
+		return( c_rb.readUser(m_context.currentUser(), 
+							  m_context.currentProject(), 
+							  id) );
+	}
 	
+    	/**
+	 * Returns a user in the Cms.
+	 * 
+	 * @param username The name of the user to be returned.
+	 * @param type The type of the user.
+	 * @return a user in the Cms.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(String username,int type) 
+		throws CmsException { 
+		return( c_rb.readUser(m_context.currentUser(), 
+							  m_context.currentProject(), 
+							  username,type) );
+	}
+    
+     /**
+	 * Returns a user in the Cms.
+	 * 
+	 * @param id The id of the user to be returned.
+	 * @param type The type of the user.
+	 * @return a user in the Cms.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(int id,int type) 
+		throws CmsException { 
+		return( c_rb.readUser(m_context.currentUser(), 
+							  m_context.currentProject(), 
+							  id,type) );
+	}
 
 	/**
 	 * Returns a user in the Cms, if the password is correct.

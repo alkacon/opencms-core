@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 13:05:26 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2000/06/13 14:22:07 $
+ * Version: $Revision: 1.81 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.80 $ $Date: 2000/06/09 13:05:26 $
+ * @version $Revision: 1.81 $ $Date: 2000/06/13 14:22:07 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -900,6 +900,56 @@ public interface I_CmsResourceBroker {
 							  String username)
 		throws CmsException;
 	
+        /**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
+							  int id)
+        throws CmsException ;
+    
+     /**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user that is to be read.
+	 * @param type The type of the user.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
+							  String username,int type)
+        throws CmsException ;
+	
+    /**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the user that is to be read.
+	 * @param type The type of the user.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
+							  int id, int type)
+        throws CmsException ;    
+    
 	/**
 	 * Returns a user object if the password for the user is correct.<P/>
 	 * 

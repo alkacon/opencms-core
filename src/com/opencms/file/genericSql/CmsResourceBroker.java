@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/13 10:22:58 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2000/06/13 14:22:07 $
+ * Version: $Revision: 1.48 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2000/06/13 10:22:58 $
+ * @version $Revision: 1.48 $ $Date: 2000/06/13 14:22:07 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -891,10 +891,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_dbAccess.writeProperties(propertyinfos,res.getResourceId(),res.getType());
 		// set the file-state to changed
 		if(res.isFile()){
-            // todo: implement this
+            
 			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
 		} else {
-			//m_dbAccess.writeFolder(currentProject, m_fileRb.readFolder(currentProject, resource), true);			
+			m_dbAccess.writeFolder(currentProject, m_dbAccess.readFolder(currentProject.getId(), resource), true);			
 		}
     }
 
@@ -1599,6 +1599,66 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		return m_dbAccess.readUser(username, C_USER_TYPE_SYSTEMUSER);
     }
 	
+    /**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
+							  int id)
+        throws CmsException {
+		
+		return m_dbAccess.readUser(id, C_USER_TYPE_SYSTEMUSER);
+    }
+    
+     /**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user that is to be read.
+	 * @param type The type of the user.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
+							  String username,int type)
+        throws CmsException {
+		
+		return m_dbAccess.readUser(username, type);
+    }
+	
+    /**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the user that is to be read.
+	 * @param type The type of the user.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
+							  int id, int type)
+        throws CmsException {
+		
+		return m_dbAccess.readUser(id, type);
+    }
+    
+    
 	/**
 	 * Returns a user object if the password for the user is correct.<P/>
 	 * 
@@ -2432,6 +2492,49 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				 CmsException.C_ACCESS_DENIED);
 		}
      }
+     
+     /**
+	 * Reads a file header from the Cms.<BR/>
+	 * The reading excludes the filecontent. <br>
+	 * 
+	 * A file header can be read from an offline project or the online project.
+	 *  
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param id The id of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public CmsResource readFileHeader(CmsUser currentUser, 
+										 CmsProject currentProject, int id)
+         throws CmsException {
+         CmsResource cmsFile;
+		 // read the resource from the currentProject, or the online-project
+		 try {
+			 cmsFile = m_dbAccess.readFileHeader(id);
+		 } catch(CmsException exc) {
+             // the resource was not readable
+             throw exc;
+	     }
+		 
+		 if( accessRead(currentUser, currentProject, cmsFile) ) {
+				
+			// acces to all subfolders was granted - return the file-header.
+			return cmsFile;
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + idx, 
+				 CmsException.C_ACCESS_DENIED);
+		}
+     }
 
      /**
 	 * Reads a file header a previous project of the Cms.<BR/>
@@ -2913,12 +3016,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             CmsFolder folder=m_dbAccess.readFolder(currentProject.getId(),source);
             m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);        
 
-			// copy the properties
-		/*	m_metadefRb.writeMetainformations(m_metadefRb.readAllMetainformations(folder),
-											  currentProject.getId(), 
-											  destination, 
-											  folder.getType());			
-          */  
+			// copy the properties  
+            writeProperties(currentUser,currentProject, destination,
+                            readAllProperties(currentUser,currentProject,folder.getAbsolutePath()));
+			
 			// inform about the file-system-change
 			fileSystemChanged();                      
         } else {
@@ -3105,6 +3206,62 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void lockResource(CmsUser currentUser, CmsProject currentProject,
                              String resourcename, boolean force)
         throws CmsException {
+   
+        CmsResource  cmsResource=null;
+        
+		// read the resource, that shold be locked
+        if (resourcename.endsWith("/")) {  
+              cmsResource = m_dbAccess.readFolder(currentProject.getId(),resourcename);
+             } else {
+              cmsResource = (CmsFile)readFileHeader(currentUser,currentProject,resourcename);
+        }
+		// check, if the user may lock the resource
+		if( accessLock(currentUser, currentProject, cmsResource) ) {
+			
+			if(cmsResource.isLocked()) {
+	            // if the force switch is not set, throw an exception
+                if (force==false) {
+                    throw new CmsException("["+this.getClass().getName()+"] "+resourcename,CmsException.C_LOCKED); 
+                }
+            }    
+            // lock the resouece
+            cmsResource.setLocked(currentUser.getId());
+            //update resource
+            if (resourcename.endsWith("/")) { 
+          
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)cmsResource,false);
+            } else {
+           
+                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
+            }
+
+			
+			// if this resource is a folder -> lock all subresources, too
+			if(cmsResource.isFolder()) {
+				Vector files = getFilesInFolder(currentUser,currentProject, cmsResource.getAbsolutePath());
+				Vector folders = getSubFolders(currentUser,currentProject, cmsResource.getAbsolutePath());
+			    CmsResource currentResource;
+				
+				// lock all files in this folder
+				for(int i = 0; i < files.size(); i++ ) {
+					currentResource = (CmsResource)files.elementAt(i);
+                    if (currentResource.getState() != C_STATE_DELETED) {
+					    lockResource(currentUser, currentProject, currentResource.getAbsolutePath(), true);
+                    }
+				}
+
+				// lock all files in this folder
+				for(int i = 0; i < folders.size(); i++) {
+					currentResource = (CmsResource)folders.elementAt(i);
+                    if (currentResource.getState() != C_STATE_DELETED) {
+					    lockResource(currentUser, currentProject, currentResource.getAbsolutePath(), true);
+                    }
+				}
+			}
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**
@@ -3131,6 +3288,64 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void unlockResource(CmsUser currentUser,CmsProject currentProject,
                                String resourcename)
         throws CmsException {
+        
+        CmsResource  cmsResource=null;
+        
+		// read the resource, that shold be locked
+        if (resourcename.endsWith("/")) {  
+              cmsResource = m_dbAccess.readFolder(currentProject.getId(),resourcename);
+             } else {
+              cmsResource = (CmsFile)readFileHeader(currentUser,currentProject,resourcename);
+        }
+		// check, if the user may lock the resource
+		if( accessUnlock(currentUser, currentProject, cmsResource) ) {
+			
+			// unlock the resource.
+			if (cmsResource.isLocked()){
+           
+                // check if the resource is locked by the actual user
+                if (cmsResource.isLockedBy()==currentUser.getId()) {
+                
+                // unlock the resouece
+                cmsResource.setLocked(C_UNKNOWN_ID);
+                //update resource
+                if (resourcename.endsWith("/")) { 
+                    m_dbAccess.writeFolder(currentProject,(CmsFolder)cmsResource,false);
+                } else {           
+                    m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
+                }
+            } else {
+                 throw new CmsException("[" + this.getClass().getName() + "] " + 
+					resourcename + CmsException.C_NO_ACCESS); 
+            }
+        }
+		
+			// if this resource is a folder -> lock all subresources, too
+			if(cmsResource.isFolder()) {
+				Vector files = getFilesInFolder(currentUser,currentProject, cmsResource.getAbsolutePath());
+				Vector folders = getSubFolders(currentUser,currentProject, cmsResource.getAbsolutePath());
+			    CmsResource currentResource;
+					
+				// lock all files in this folder
+				for(int i = 0; i < files.size(); i++ ) {                    
+					currentResource = (CmsResource)files.elementAt(i);
+                    if (currentResource.getState() != C_STATE_DELETED) {
+					    unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+                    }
+				}
+
+				// lock all files in this folder
+				for(int i = 0; i < folders.size(); i++) {
+					currentResource = (CmsResource)folders.elementAt(i);
+                    if (currentResource.getState() != C_STATE_DELETED) {
+					    unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+                    }
+				}
+			}
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**
@@ -3562,6 +3777,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void moveFile(CmsUser currentUser, CmsProject currentProject,
 						 String source, String destination)
         throws CmsException {
+        	
+		// first copy the file, this may ends with an exception
+		copyFile(currentUser, currentProject, source, destination);
+		
+		// then delete the source-file, this may end with an exception
+		// => the file was only copied, not moved!
+		deleteFile(currentUser, currentProject, source);
+		// inform about the file-system-change
+		fileSystemChanged();
     }
 	
     /**
@@ -3591,6 +3815,37 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void chmod(CmsUser currentUser, CmsProject currentProject,
 					  String filename, int flags)
         throws CmsException {
+        
+        CmsResource resource=null;
+		// read the resource to check the access
+	    if (filename.endsWith("/")) {          
+            resource = m_dbAccess.readFolder(currentProject.getId(),filename);
+             } else {
+            resource = (CmsFile)readFileHeader(currentUser,currentProject,filename);
+        }
+        
+		// has the user write-access?
+		if( accessWrite(currentUser, currentProject, resource) || 
+			(resource.getOwnerId() == currentUser.getId()) ) {
+				
+			// write-acces  was granted - write the file.
+	
+            //set the flags
+            resource.setAccessFlags(flags);
+            //update file
+            if (filename.endsWith("/")) { 
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
+            } else {
+           
+                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,false);
+            }
+
+			// inform about the file-system-change
+			fileSystemChanged();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**
@@ -3620,6 +3875,34 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void chown(CmsUser currentUser, CmsProject currentProject,
 					  String filename, String newOwner)
         throws CmsException {
+   		
+		CmsResource resource=null;
+		// read the resource to check the access
+	    if (filename.endsWith("/")) {          
+            resource = m_dbAccess.readFolder(currentProject.getId(),filename);
+             } else {
+            resource = (CmsFile)readFileHeader(currentUser,currentProject,filename);
+        }
+        
+		// has the user write-access? and is he owner or admin?
+		if( ( (resource.getOwnerId() == currentUser.getId()) || 
+			  isAdmin(currentUser, currentProject))) {
+	        CmsUser owner = readUser(currentUser, currentProject, newOwner);		  
+            resource.setUserId(owner.getId());
+			// write-acces  was granted - write the file.
+			 if (filename.endsWith("/")) { 
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
+            } else {
+           
+                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,false);
+            }
+
+			// inform about the file-system-change
+			fileSystemChanged();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
      /**
@@ -3649,6 +3932,34 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void chgrp(CmsUser currentUser, CmsProject currentProject,
                       String filename, String newGroup)
         throws CmsException {
+        				
+		CmsResource resource=null;
+		// read the resource to check the access
+	    if (filename.endsWith("/")) {          
+            resource = m_dbAccess.readFolder(currentProject.getId(),filename);
+             } else {
+            resource = (CmsFile)readFileHeader(currentUser,currentProject,filename);
+        }
+        
+        // has the user write-access? and is he owner or admin?
+		if( accessWrite(currentUser, currentProject, resource) &&
+			( (resource.getOwnerId() == currentUser.getId()) || 
+			  isAdmin(currentUser, currentProject))) {
+		    CmsGroup group = readGroup(currentUser, currentProject, newGroup);
+            resource.setGroupId(group.getId());
+			// write-acces  was granted - write the file.
+			if (filename.endsWith("/")) { 
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
+            } else {
+           
+                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,false);
+            }
+			// inform about the file-system-change
+			fileSystemChanged();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
      /**
@@ -3678,6 +3989,28 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void chtype(CmsUser currentUser, CmsProject currentProject,
                       String filename, String newType)
         throws CmsException {
+        
+        CmsResourceType type = getResourceType(currentUser, currentProject, newType);
+		
+		// read the resource to check the access
+		CmsResource resource = readFileHeader(currentUser,currentProject, filename);
+		
+		// has the user write-access? and is he owner or admin?
+		if( accessWrite(currentUser, currentProject, resource) &&
+			( (resource.getOwnerId() == currentUser.getId()) || 
+			  isAdmin(currentUser, currentProject))) {
+				
+			// write-acces  was granted - write the file.
+            resource.setType(type.getResourceType());
+			resource.setLauncherType(type.getLauncherType());
+            m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject),(CmsFile)resource,true);    
+
+			// inform about the file-system-change
+			fileSystemChanged();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				CmsException.C_NO_ACCESS);
+		}
     }
     
     
@@ -3803,7 +4136,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public Vector readAllFileHeaders(CmsUser currentUser, CmsProject currentProject, 
 									  String filename)
          throws CmsException {
-      return null;
+         CmsResource cmsFile = readFileHeader(currentUser,currentProject, filename);
+		 if( accessRead(currentUser, currentProject, cmsFile) ) {
+				
+			// acces to all subfolders was granted - return the file-history.
+			return(m_dbAccess.readAllFileHeaders(filename));
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				 CmsException.C_ACCESS_DENIED);
+		}
      }
 
 	/**
@@ -3986,6 +4327,38 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public boolean accessRead(CmsUser currentUser, CmsProject currentProject,
                               CmsResource resource) throws CmsException {
+			
+		// check the access to the project
+		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
+			// no access to the project!
+			return(false);
+		}
+
+		// check the rights.
+		do {
+			if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) || 
+				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) ||
+				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
+				
+				// read next resource in ...
+				if(resource.getParent() != null) {
+					// ... current project
+					try {
+						resource = m_dbAccess.readFolder(currentProject.getId(), resource.getParent());
+					} catch( CmsException exc ) {
+						// ... or in the online-project
+						resource = m_dbAccess.readFolder(onlineProject(currentUser, 
+																	   currentProject).getId(), 
+													   resource.getParent());
+					}
+				}
+			} else {
+				// last check was negative
+				return(false);
+			}
+		} while(resource.getParent() != null);
+		
+		// all checks are done positive
 		return(true);
     }
 
@@ -4000,7 +4373,48 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
                                 CmsResource resource) throws CmsException {
-        return true;
+        	
+		// check, if this is the onlineproject
+		if(onlineProject(currentUser, currentProject).equals(currentProject)){
+			// the online-project is not writeable!
+			return(false);
+		}
+		
+		// check the access to the project
+		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
+			// no access to the project!
+			return(false);
+		}
+		
+        // check if the resource belongs to the current project
+        if(resource.getProjectId() != currentProject.getId()) {
+            return false;
+        }
+        
+		// check the rights and if the resource is not locked
+		do {
+			if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
+				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
+				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
+				
+				// is the resource locked?
+				if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+					// resource locked by anopther user, no creation allowed
+					return(false);					
+				}
+				
+				// read next resource
+				if(resource.getParent() != null) {
+					resource = m_dbAccess.readFolder(currentProject.getId(), resource.getParent());
+				}
+			} else {
+				// last check was negative
+				return(false);
+			}
+		} while(resource.getParent() != null);
+		
+		// all checks are done positive
+		return(true);
     }
 			
 	/**
@@ -4014,7 +4428,70 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
                                CmsResource resource) throws CmsException {
-        return true;
+       // check, if this is the onlineproject
+		if(onlineProject(currentUser, currentProject).equals(currentProject)){
+			// the online-project is not writeable!
+			return(false);
+		}
+		
+  		// check the access to the project
+		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
+			// no access to the project!
+			return(false);
+		}
+
+        // check if the resource belongs to the current project
+        if(resource.getProjectId() != currentProject.getId()) {
+            return false;
+        }
+        
+      	// check, if the resource is locked by the current user
+		if(resource.isLockedBy() != currentUser.getId()) {
+			// resource is not locked by the current user, no writing allowed
+			return(false);					
+		}
+		
+		// check the rights vor the current resource
+        if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
+				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
+				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
+			// no write access to this resource!
+			return false;
+		}
+			
+        // read the parent folder
+		if(resource.getParent() != null) {
+			resource = m_dbAccess.readFolder(currentProject.getId(), resource.getParent());
+		} else {
+			// no parent folder!
+			return true;
+		}
+		
+	
+		// check the rights and if the resource is not locked
+		do {
+           if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
+				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
+				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
+				
+				// is the resource locked?
+				if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+					// resource locked by anopther user, no creation allowed
+					return(false);					
+				}
+				
+				// read next resource
+				if(resource.getParent() != null) {
+					resource = m_dbAccess.readFolder(currentProject.getId(), resource.getParent());
+				}
+			} else {
+				// last check was negative
+				return(false);
+			}
+		} while(resource.getParent() != null);
+		
+		// all checks are done positive
+		return(true);
     }
     	
 	/**
@@ -4028,9 +4505,105 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
                               CmsResource resource) throws CmsException {
-    return true;
+    	// check, if this is the onlineproject
+		if(onlineProject(currentUser, currentProject).equals(currentProject)){
+			// the online-project is not writeable!
+			return(false);
+		}
+		
+		// check the access to the project
+		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
+			// no access to the project!
+			return(false);
+		}
+
+        // check if the resource belongs to the current project
+        if(resource.getProjectId() != currentProject.getId()) {
+            return false;
+        }
+        
+		// read the parent folder
+		if(resource.getParent() != null) {
+			resource = m_dbAccess.readFolder(currentProject.getId(), resource.getParent());
+		} else {
+			// no parent folder!
+			return true;
+		}
+
+		// check the rights and if the resource is not locked
+		do {
+			// is the resource locked?
+			if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+				// resource locked by anopther user, no creation allowed
+				return(false);					
+			}
+				
+			// read next resource
+			if(resource.getParent() != null) {
+				resource = m_dbAccess.readFolder(currentProject.getId(), resource.getParent());
+			}
+		} while(resource.getParent() != null);
+		
+		// all checks are done positive
+		return(true);
     }
 
+    /**
+	 * Checks, if the user may unlock this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user may unlock this resource, or not.
+	 */
+	public boolean accessUnlock(CmsUser currentUser, CmsProject currentProject,
+								CmsResource resource) 
+		throws CmsException	{
+        	// check, if this is the onlineproject
+		if(onlineProject(currentUser, currentProject).equals(currentProject)){
+			// the online-project is not writeable!
+			return(false);
+		}
+		
+		// check the access to the project
+		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
+			// no access to the project!
+			return(false);
+		}
+
+        // check if the resource belongs to the current project
+        if(resource.getProjectId() != currentProject.getId()) {
+            return false;
+        }
+        
+		// read the parent folder
+		if(resource.getParent() != null) {
+			resource = m_dbAccess.readFolder(currentProject.getId(), resource.getParent());
+		} else {
+			// no parent folder!
+			return true;
+		}
+		
+		
+		// check if the resource is not locked
+		do {
+			// is the resource locked?
+			if( resource.isLocked() ) {
+				// resource locked by anopther user, no creation allowed
+				return(false);					
+			}
+				
+			// read next resource
+			if(resource.getParent() != null) {
+				resource = m_dbAccess.readFolder(currentProject.getId(), resource.getParent());
+			}
+		} while(resource.getParent() != null);
+		
+		// all checks are done positive
+		return(true);
+    }
+    
     // Methods working with Tasks
 
 	/**
