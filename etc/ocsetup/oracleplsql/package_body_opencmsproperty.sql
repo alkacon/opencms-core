@@ -120,10 +120,17 @@ PACKAGE BODY opencmsProperty IS
       IF vCount > 0 THEN
         -- update
         BEGIN
-          EXECUTE IMMEDIATE 'update '||vPropertiesTable||
-                          ' set property_value = '''||pValue||
-                          ''' where resource_id = '||pResourceId||
-                          ' and propertydef_id = '||vPropdefId;
+          IF pProjectId = vOnlineProject THEN
+            update cms_online_properties
+            		set property_value = pValue
+                    where resource_id = pResourceId
+                    and propertydef_id = vPropdefId;
+          ELSE
+            update cms_properties
+            		set property_value = pValue
+                    where resource_id = pResourceId
+                    and propertydef_id = vPropdefId;          
+          END IF;
         EXCEPTION
           WHEN OTHERS THEN
             raise_application_error(-20004,'[opencmsproperty.writeProperty] update '||pMeta,true);
@@ -132,9 +139,15 @@ PACKAGE BODY opencmsProperty IS
         -- insert
         vNewPropId := getNextId(vPropertiesTable);
         BEGIN
-          EXECUTE IMMEDIATE 'insert into '||vPropertiesTable||
-                          ' (property_id, propertydef_id, resource_id, property_value)'||
-                          ' values ('||vNewPropId||', '||vPropdefId||', '||pResourceId||', '''||pValue||''')';
+          IF pProjectId = vOnlineProject THEN
+          	insert into cms_online_properties
+                   (property_id, propertydef_id, resource_id, property_value)
+            values (vNewPropId, vPropdefId, pResourceId, pValue);
+          ELSE
+          	insert into cms_properties
+                   (property_id, propertydef_id, resource_id, property_value)
+            values (vNewPropId, vPropdefId, pResourceId, pValue);
+          END IF;
         EXCEPTION
           WHEN OTHERS THEN
             raise_application_error(-20004,'[opencmsproperty.writeProperty] insert '||pMeta,true);
