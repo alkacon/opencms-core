@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/11/07 19:30:43 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2002/11/08 10:22:18 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2002/11/07 19:30:43 $
+ * @version $Revision: 1.36 $ $Date: 2002/11/08 10:22:18 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -118,6 +118,15 @@ public class CmsExport implements I_CmsConstants, Serializable {
 
     /** Minimum file change date for exporting */
     private long m_minFileChangeDate = Long.MIN_VALUE;
+    
+    /** Set to store the names of page files in, required for later page body file export */
+    private Set m_exportedPageFiles = null;
+    
+    /** Set of all exported files, required for later page body file export */
+    private Set m_exportedResources = null;
+    
+    /** Stores the id of the "page" resource type to save lookup time */
+    private int m_pageType;
 
     /**
      * This constructs a new CmsImport-object which imports the resources.
@@ -238,6 +247,13 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
 
         // remove the possible redundancies in the list of paths
         checkRedundancies(folderNames, fileNames);
+        
+        // init sets required for the body file exports 
+        m_exportedPageFiles = new HashSet();
+        m_exportedResources = new HashSet();
+        // set the "page" file resource type id
+        m_pageType = cms.getResourceType("page").getResourceType();
+
         // export the folders
         for (int i=0; i<folderNames.size(); i++) {
             String path = (String) folderNames.elementAt(i);
@@ -245,18 +261,20 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
             addSuperFolders(path);
             exportResources(path);
         }
-
+        
         // export the single files
         addSingleFiles(fileNames);
+
+        // export all body files that have not already been exported
+        addPageBodyFiles();
 
         // export userdata and groupdata if desired
         if(m_exportUserdata){
             exportGroups();
             exportUsers();
         }
-
         // write the document to the zip-file
-        writeXmlConfigFile( );
+        writeXmlConfigFile();
 
         try {
             m_exportZipStream.close();
@@ -288,6 +306,37 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
         Text text = m_docXml.createTextNode(value);
         newElement.appendChild(text);
     }
+
+    /**
+     * Exports all page body files that have not explicityl been
+     * added by the user.
+     */
+    public void addPageBodyFiles() throws CmsException {
+        Iterator i;
+        // add all exported folders to the list of exported resources
+        // this is done here to ensure folders that have been added 
+        // by the call to addSingelFiles() are also included already
+        i = m_superFolders.iterator();
+        while (i.hasNext()) {
+            m_exportedResources.add(i.next());
+        }        
+        
+        Vector bodyFileNames = new Vector();
+        String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"));
+        
+        // check all exported page files if their body has already been exported
+        i = m_exportedPageFiles.iterator();
+        while (i.hasNext()) {
+            String body = bodyPath + (String)i.next();
+            if (! isRedundant(body)) {
+                bodyFileNames.add(body);
+            }
+        }
+        
+        // now export the body files that have not already been exported
+        addSingleFiles(bodyFileNames);
+    }
+
 /**
  * adds all files with names in fileNames to the xml-config file
  * Creation date: (10.08.00 17:12:05)
@@ -302,6 +351,7 @@ public void addSingleFiles(Vector fileNames) throws CmsException {
                 if((file.getState() != C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
                     addSuperFolders(fileName);
                     exportFile(file);
+                    m_exportedResources.add(fileName);
                 }
             } catch(CmsException exc) {
                 if(exc.getType() != exc.C_RESOURCE_DELETED) {
@@ -343,6 +393,24 @@ public void addSuperFolders(String path) throws CmsException {
         }
     }
 }
+
+    /**
+     * Checks if a given resource is already included in the export
+     * or not.
+     * 
+     * @param resourcename the VFS resource name to check
+     * @return <code>true</code> if the resource must not be exported again, <code>false</code> otherwise
+     */
+    private boolean isRedundant(String resourcename) {
+        if (m_exportedResources == null) return false;
+        Iterator i = m_exportedResources.iterator();
+        while (i.hasNext()) {
+            String s = (String)i.next();
+            if (resourcename.startsWith(s)) return true;
+        }
+        return false;
+    }
+
 /** Check whether some of the resources are redundant because a superfolder has also
   *  been selected or a file is included in a folder and change the parameter Vectors
   *
@@ -417,6 +485,10 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             m_report.addString("Error:"+exc.getMessage());
             m_report.addSeperator(0);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
+
+        if (file.getType() == m_pageType) {
+            m_exportedPageFiles.add(file.getAbsolutePath());
         }
 
         m_report.addString("OK");
