@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.33 Chusuk       - xx January 2001
+
+
 OpenCms 4.5.32 Chusuk       - 18 January 2001
 ! The digest-method for encrypting passwords is now available in the CmsObject.
 ! Static export. Only changed or new files are exported. 
