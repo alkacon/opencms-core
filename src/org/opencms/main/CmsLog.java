@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2003/09/16 19:12:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/17 10:58:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,9 +48,9 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
-public class CmsLog {
+public class CmsLog implements Log {
 
     /** Messages of the OpenCms Cron Scheduler */
     public static final String CHANNEL_CRON = "org.opencms.cron";
@@ -89,7 +89,7 @@ public class CmsLog {
     public static final int LEVEL_FATAL = 6;
 
     /** Info log level (2 - between debug and warn) */
-    public static final int LEVEL_INFO  = 3;
+    public static final int LEVEL_INFO = 3;
     
     /** Trace log level (1 - the most verbose level) */
     public static final int LEVEL_TRACE = 1;
@@ -102,14 +102,30 @@ public class CmsLog {
     
     /** The path to the loggers configuration file */
     private String m_configFile;
-
+    
     /**
      * Creates a new OpenCms logger.<p>
+     */
+    protected CmsLog() {
+        // no initialization is required
+    }
+
+    /**
+     * Returns true if the log already has been initialitzed.<p>
+     * 
+     * @return true if the log already has been initialitzed
+     */
+    protected boolean isInitialized() {
+        return (m_loggers != null) && (m_configFile != null); 
+    }
+    
+    /**
+     * Initializes the OpenCms logger.<p>
      * 
      * @param configuration the OpenCms configuration
      * @param configFile the path to the logger configuration file 
-     */
-    public CmsLog(Configurations configuration, String configFile) {
+     */    
+    protected void init(Configurations configuration, String configFile) {
         m_configFile = configFile;
         m_loggers = new HashMap();
         try {
@@ -132,7 +148,7 @@ public class CmsLog {
             }
         } catch (SecurityException e) {
             // ignore, in this case log settings must be provided by environment or servlet context
-        }        
+        }           
     }
     
     /**
@@ -141,7 +157,7 @@ public class CmsLog {
      * @param channel the channel to look up
      * @return the log for the selected channel
      */
-    private Log getLogger(String channel) {
+    protected Log getLogger(String channel) {
         Object log = m_loggers.get(channel);
         if (log == null) {
             synchronized (m_loggers) {
@@ -150,103 +166,147 @@ public class CmsLog {
             }
         }
         return (Log)log;
-    }    
-    
-    /**
-     * Checks if a log channel is active for the selected level.<p>
-     * 
-     * @param channel the channel to log the message on
-     * @param level the log level to use
-     * @return <code>true</code> the given channel with the given level is active, <code>false</code> otherwise.
-     */
-    public boolean isActive(String channel, int level) {
-        Log log = getLogger(channel);
-        if (log == null) { 
-            return false;
-        }
-        switch (level) {
-            case LEVEL_TRACE:
-                return log.isTraceEnabled();
-            case LEVEL_DEBUG:
-                return log.isDebugEnabled();
-            case LEVEL_INFO:
-                return log.isInfoEnabled();
-            case LEVEL_WARN:
-                return log.isWarnEnabled();
-            case LEVEL_ERROR:
-                return log.isErrorEnabled();
-            case LEVEL_FATAL:
-            default:       
-                return log.isFatalEnabled();
-        }                  
     }
 
     /**
-     * Prints a message on the selected channel for the selected level.<p>
-     * 
-     * @param channel the channel to log the message on
-     * @param level the log level to use
-     * @param message the message to log
+     * @see org.apache.commons.logging.Log#isDebugEnabled()
      */
-    public void log(String channel, int level, String message) {
-        Log log = getLogger(channel);
-        if (log == null) { 
-            return;
-        }
-        switch (level) {
-            case LEVEL_TRACE:
-                log.trace(message);
-                break;
-            case LEVEL_DEBUG:
-                log.debug(message);
-                break;
-            case LEVEL_INFO:
-                log.info(message);
-                break;
-            case LEVEL_WARN:
-                log.warn(message);
-                break;
-            case LEVEL_ERROR:
-                log.error(message);
-                break;
-            case LEVEL_FATAL:
-            default:
-                log.fatal(message);
-        } 
+    public boolean isDebugEnabled() {
+        return true;
     }
+
+    /**
+     * @see org.apache.commons.logging.Log#isErrorEnabled()
+     */
+    public boolean isErrorEnabled() {
+        return true;
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#isFatalEnabled()
+     */
+    public boolean isFatalEnabled() {
+        return true;
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#isInfoEnabled()
+     */
+    public boolean isInfoEnabled() {
+        return true;
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#isTraceEnabled()
+     */
+    public boolean isTraceEnabled() {
+        return true;
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#isWarnEnabled()
+     */
+    public boolean isWarnEnabled() {
+        return true;
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#trace(java.lang.Object)
+     */
+    public void trace(Object message) {
+        doLog(message, null);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#trace(java.lang.Object, java.lang.Throwable)
+     */
+    public void trace(Object message, Throwable t) {
+        doLog(message, t);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#debug(java.lang.Object)
+     */
+    public void debug(Object message) {
+        doLog(message, null);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#debug(java.lang.Object, java.lang.Throwable)
+     */
+    public void debug(Object message, Throwable t) {
+        doLog(message, t);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#info(java.lang.Object)
+     */
+    public void info(Object message) {
+        doLog(message, null);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#info(java.lang.Object, java.lang.Throwable)
+     */
+    public void info(Object message, Throwable t) {
+        doLog(message, t);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#warn(java.lang.Object)
+     */
+    public void warn(Object message) {
+        doLog(message, null);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#warn(java.lang.Object, java.lang.Throwable)
+     */
+    public void warn(Object message, Throwable t) {
+        doLog(message, t);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#error(java.lang.Object)
+     */
+    public void error(Object message) {
+        doLog(message, null);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#error(java.lang.Object, java.lang.Throwable)
+     */
+    public void error(Object message, Throwable t) {
+        doLog(message, t);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#fatal(java.lang.Object)
+     */
+    public void fatal(Object message) {
+        doLog(message, null);
+    }
+
+    /**
+     * @see org.apache.commons.logging.Log#fatal(java.lang.Object, java.lang.Throwable)
+     */
+    public void fatal(Object message, Throwable t) {
+        doLog(message, t);
+    }    
     
     /**
-     * Prints a message and a Throwable on the selected channel for the selected level.<p>
+     * Writes a log message and an optional Throwable to System.err.<p>
      * 
-     * @param channel the channel to log the message on
-     * @param level the log level to use
      * @param message the message to log
-     * @param throwable the Throwable to log
+     * @param t the Throwable to log (if null nothing is logged)
      */
-    public void log(String channel, int level, String message, Throwable throwable) {
-        Log log = getLogger(channel);
-        if (log == null) { 
-            return;
-        }
-        switch (level) {
-            case LEVEL_TRACE:
-                log.trace(message, throwable);
-                break;
-            case LEVEL_DEBUG:
-                log.debug(message, throwable);
-                break;
-            case LEVEL_INFO:
-                log.info(message, throwable);
-                break;
-            case LEVEL_WARN:
-                log.warn(message, throwable);
-                break;
-            case LEVEL_ERROR:
-                log.error(message, throwable);
-                break;
-            case LEVEL_FATAL:
-            default:
-                log.fatal(message, throwable);             
-        } 
+    private void doLog(Object message, Throwable t) {
+        System.err.println(message);
+        if (t != null) {
+            System.err.println("<");
+            System.err.println(t.toString());
+            System.err.println(">");
+            t.printStackTrace(System.err);
+        }           
     }
 }

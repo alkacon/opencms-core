@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/17 08:31:30 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/17 10:58:39 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,8 +70,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.SimpleLog;
 
 import source.org.apache.java.util.Configurations;
 import source.org.apache.java.util.ExtendedProperties;
@@ -92,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -165,7 +163,7 @@ public class OpenCmsCore {
 
     /** The filename of the log file */
     private String m_logfile;
-    
+
     /** The OpenCms map of configured mime types */
     private Map m_mimeTypes;
 
@@ -747,6 +745,28 @@ public class OpenCmsCore {
      */
     protected CmsLoaderManager getLoaderManager() {
         return m_loaderManager;
+    }
+    
+    /**
+     * Returns the initialized logger.<p>
+     * 
+     * @return the initialized logger
+     */
+    protected CmsLog getLog() {
+        return m_log;
+    }
+        
+    /**
+     * Returns the log for the selected channel.<p>
+     *  
+     * @param channel the channel to look up
+     * @return the log for the selected channel
+     */        
+    protected Log getLog(String channel) {
+        if (! m_log.isInitialized()) {
+            return m_log;
+        }
+        return m_log.getLogger(channel);
     }
 
     /**
@@ -1419,13 +1439,13 @@ public class OpenCmsCore {
             throwInitException(new CmsInitException(C_ERRORMSG + "Trouble reading property file " + CmsBase.getPropertiesPath(true) + ".\n\n", e));
         }
         
-        // Change path to log file, if given path is not absolute
-        String logFile = (String)extendedProperties.get("log.file");
-        if (logFile != null) {
-            logFile = CmsBase.getAbsolutePath(logFile);
-            extendedProperties.put("log.file", logFile);
+        // set path to log file
+        m_logfile = (String)extendedProperties.get("log.file");
+        if (m_logfile != null) {
+            m_logfile = CmsBase.getAbsolutePath(m_logfile);
+            extendedProperties.put("log.file", m_logfile);
         }
-        
+            
         // read the the OpenCms servlet mapping from the servlet context
         String servletMapping = context.getInitParameter("OpenCmsServlet");
         if (servletMapping == null) {
@@ -1437,7 +1457,7 @@ public class OpenCmsCore {
         }        
         extendedProperties.put("servlet.mapping", servletMapping);
 
-        // Create the configurations object
+        // create the configurations object
         m_configurations = new Configurations(extendedProperties);   
         
         // check if the wizard is enabled, if so stop initialization     
@@ -1446,8 +1466,10 @@ public class OpenCmsCore {
             throw new CmsInitException("OpenCms setup wizard is enabled, unable to start OpenCms context");
         }       
 
-        // Initialize the logging
+        // initialize the logging
         initLogging(m_configurations);
+        
+        // output startup message
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info(".");        
             getLog(CmsLog.CHANNEL_INIT).info(".");        
@@ -1461,7 +1483,7 @@ public class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms servlet path : " + servletMapping);                    
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms base path    : " + getBasePath());        
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms property file: " + CmsBase.getPropertiesPath(true));      
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms logfile      : " + logFile);   
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms logfile      : " + m_logfile);   
             getLog(CmsLog.CHANNEL_INIT).info(". Servlet container    : " + context.getServerInfo());        
         }
 
@@ -1491,16 +1513,14 @@ public class OpenCmsCore {
      * @param config The configurations read from <code>opencms.properties</code>
      */
     private void initLogging(Configurations config) {
-        if (m_loggers == null) {
-            m_loggers = new HashMap();
-        }
-        m_log = new CmsLog(config, CmsBase.getPropertiesPath(true));
+        m_log.init(config, CmsBase.getPropertiesPath(true));
     }
     
     /**
      * Initialize member variables.<p>
      */
     protected void initMembers() {
+        m_log = new CmsLog();
         m_passwordValidatingClass = "";
         m_checkFile = new ArrayList();
         m_defaultEncoding = C_DEFAULT_ENCODING;
@@ -1839,72 +1859,6 @@ public class OpenCmsCore {
         m_versionNumber = props.getProperty("version.number", C_DEFAULT_VERSION_NUMBER);
         m_versionName = m_versionNumber + " " + props.getProperty("version.name", C_DEFAULT_VERSION_NAME);
     }
-
-    /**
-     * Checks if a log channel is active for the selected level.<p>
-     * 
-     * @param channel the channel to log the message on
-     * @param level the log level to use
-     * @return <code>true</code> if the logging is active for the channel, <code>false</code> otherwise.
-     */
-    protected boolean isLogging(String channel, int level) {
-        if (m_log != null) {
-            return m_log.isActive(channel, level);
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Prints a message on the selected channel for the selected level.<p>
-     * 
-     * @param channel the channel to log the message on
-     * @param level the log level to use
-     * @param message the message to log
-     */
-    protected void log(String channel, int level, String message) {
-        if (m_log != null) {
-            m_log.log(channel, level, message);
-        } else {
-            System.out.println(message);
-        }
-    }
-        
-    /** Map that contains the different loggers */
-    private Map m_loggers;
-        
-    /**
-     * Returns the log for the selected channel.<p>
-     *  
-     * @param channel the channel to look up
-     * @return the log for the selected channel
-     */        
-    protected Log getLog(String channel) {
-        if (m_loggers == null) {
-            System.setProperty("org.apache.commons.logging.simplelog.showlogname", "false");
-            System.setProperty("org.apache.commons.logging.simplelog.showShortLogname", "false");
-            System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "false");
-            System.setProperty("org.apache.commons.logging.simplelog.showlogname", "false");
-            return new SimpleLog(CmsLog.CHANNEL_MAIN);
-        }
-        Object log = m_loggers.get(channel);
-        if (log == null) {
-            synchronized (m_loggers) {
-                log = LogFactory.getLog(channel);
-                m_loggers.put(channel, log);
-            }
-        }
-        return (Log)log;
-    }
-    
-    /**
-     * Returns a map with all currently initialized loggers.<p>
-     * 
-     * @return a map with all currently initialized loggers
-     */
-    protected Map getLoggers() {
-        return m_loggers;
-    }
     
     /**
      * Prints the OpenCms copyright information to all log-files.<p>
@@ -2048,7 +2002,7 @@ public class OpenCmsCore {
         m_runLevel = level;
         if (currentInstance != null) {
             m_basePath = currentInstance.getBasePath();
-            m_loggers = currentInstance.getLoggers();
+            m_log = currentInstance.getLog();
         }
         return this;
     }
