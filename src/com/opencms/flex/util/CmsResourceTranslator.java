@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsResourceTranslator.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/08/28 12:53:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator {
@@ -149,8 +149,8 @@ public class CmsResourceTranslator {
             try {
                 if (m_perlUtil.substitute(result, m_translations[i], resourceName) != 0) {
                     // The pattern matched, return the result
-                    if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "["+this.getClass().getName()+"] Resource translation: " + resourceName + " --> " + result);
+                    if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
+                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "["+this.getClass().getName()+"] Resource translation: " + resourceName + " --> " + result);
                     }                    
                     if (DEBUG > 0) {
                         System.out.println("Translation: " + resourceName + "\n        ---> " + result + "\n");
