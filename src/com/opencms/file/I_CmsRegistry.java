@@ -2,11 +2,11 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2001/01/19 16:54:37 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2001/03/23 10:32:21 $
+ * Version: $Revision: 1.21 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -14,15 +14,15 @@ package com.opencms.file;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -33,10 +33,10 @@ import com.opencms.core.*;
 
 /**
  * This interface describes the registry for OpenCms.
- * 
+ *
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2001/01/19 16:54:37 $
- * 
+ * @version $Revision: 1.21 $ $Date: 2001/03/23 10:32:21 $
+ *
  */
 public interface I_CmsRegistry extends Cloneable {
 	public static final int C_ANY_VERSION = -1;
@@ -78,7 +78,7 @@ public I_CmsRegistry clone(CmsObject cms);
 	 */
 	public void createModule(String modulename, String niceModulename, String description, String author, String createDate, int version) throws CmsException;
 /**
- * This method checks which modules need this module. If a module depends on this the name 
+ * This method checks which modules need this module. If a module depends on this the name
  * will be returned in the vector.
  * @param modulename The name of the module to check.
  * @returns a Vector with modulenames that depends on the overgiven module.
@@ -105,7 +105,7 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
 public void deleteModule(String module, Vector exclusion) throws CmsException;
 /**
  * Deletes the view for a module.
- * 
+ *
  * @param String the name of the module.
  */
 public void deleteModuleView(String modulename) throws CmsException;
@@ -157,7 +157,7 @@ public int getModuleDependencies(String modulename, Vector modules, Vector minVe
 public String getModuleDescription(String module);
 /**
  * Gets the url to the documentation of the module.
- * 
+ *
  * @parameter String the name of the module.
  * @return java.lang.String the url to the documentation of the module.
  */
@@ -173,14 +173,14 @@ public String getModuleDocumentPath(String modulename);
 public int getModuleFiles(String modulename, Vector retNames, Vector retCodes);
 /**
  * Returns the class, that receives all maintenance-events for the module.
- * 
+ *
  * @parameter String the name of the module.
  * @return java.lang.Class that receives all maintenance-events for the module.
  */
 public Class getModuleMaintenanceEventClass(String modulname);
 /**
  * Returns the name of the class, that receives all maintenance-events for the module.
- * 
+ *
  * @parameter String the name of the module.
  * @return java.lang.Class that receives all maintenance-events for the module.
  */
@@ -200,7 +200,7 @@ public Enumeration getModuleNames();
 public String getModuleNiceName(String module);
 	/**
 	 * Gets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @return value java.lang.String the value to set for the parameter.
@@ -208,7 +208,7 @@ public String getModuleNiceName(String module);
 	public String getModuleParameter(String modulename, String parameter);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @return boolean the value for the parameter in the module.
@@ -216,7 +216,7 @@ public String getModuleNiceName(String module);
 public boolean getModuleParameterBoolean(String modulname, String parameter);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -225,7 +225,7 @@ public boolean getModuleParameterBoolean(String modulname, String parameter);
 public Boolean getModuleParameterBoolean(String modulname, String parameter, Boolean defaultValue);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -234,7 +234,7 @@ public Boolean getModuleParameterBoolean(String modulname, String parameter, Boo
 public boolean getModuleParameterBoolean(String modulname, String parameter, boolean defaultValue);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -243,7 +243,7 @@ public boolean getModuleParameterBoolean(String modulname, String parameter, boo
 byte getModuleParameterByte(String modulname, String parameter);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -252,7 +252,7 @@ byte getModuleParameterByte(String modulname, String parameter);
 public byte getModuleParameterByte(String modulname, String parameter, byte defaultValue);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -261,7 +261,7 @@ public byte getModuleParameterByte(String modulname, String parameter, byte defa
 public Byte getModuleParameterByte(String modulname, String parameter, Byte defaultValue);
 /**
  * Returns a description for parameter in a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @return String the description for the parameter in the module.
@@ -269,7 +269,7 @@ public Byte getModuleParameterByte(String modulname, String parameter, Byte defa
 public String getModuleParameterDescription(String modulname, String parameter);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @return boolean the value for the parameter in the module.
@@ -277,7 +277,7 @@ public String getModuleParameterDescription(String modulname, String parameter);
 public double getModuleParameterDouble(String modulname, String parameter);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -286,7 +286,7 @@ public double getModuleParameterDouble(String modulname, String parameter);
 public double getModuleParameterDouble(String modulname, String parameter, double defaultValue);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -295,7 +295,7 @@ public double getModuleParameterDouble(String modulname, String parameter, doubl
 public Double getModuleParameterDouble(String modulname, String parameter, Double defaultValue);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -304,7 +304,7 @@ public Double getModuleParameterDouble(String modulname, String parameter, Doubl
 public float getModuleParameterFloat(String modulname, String parameter);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -313,7 +313,7 @@ public float getModuleParameterFloat(String modulname, String parameter);
 public float getModuleParameterFloat(String modulname, String parameter, float defaultValue);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -322,7 +322,7 @@ public float getModuleParameterFloat(String modulname, String parameter, float d
 public Float getModuleParameterFloat(String modulname, String parameter, Float defaultValue);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @return boolean the value for the parameter in the module.
@@ -330,7 +330,7 @@ public Float getModuleParameterFloat(String modulname, String parameter, Float d
 public int getModuleParameterInteger(String modulname, String parameter);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -339,7 +339,7 @@ public int getModuleParameterInteger(String modulname, String parameter);
 public int getModuleParameterInteger(String modulname, String parameter, int defaultValue);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -348,7 +348,7 @@ public int getModuleParameterInteger(String modulname, String parameter, int def
 public Integer getModuleParameterInteger(String modulname, String parameter, Integer defaultValue);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -357,7 +357,7 @@ public Integer getModuleParameterInteger(String modulname, String parameter, Int
 public long getModuleParameterLong(String modulname, String parameter);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -366,7 +366,7 @@ public long getModuleParameterLong(String modulname, String parameter);
 public long getModuleParameterLong(String modulname, String parameter, long defaultValue);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -375,14 +375,14 @@ public long getModuleParameterLong(String modulname, String parameter, long defa
 public Long getModuleParameterLong(String modulname, String parameter, Long defaultValue);
 /**
  * Gets all parameter-names for a module.
- * 
+ *
  * @param modulename String the name of the module.
  * @return value String[] the names of the parameters for a module.
  */
 public String[] getModuleParameterNames(String modulename);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @return boolean the value for the parameter in the module.
@@ -390,7 +390,7 @@ public String[] getModuleParameterNames(String modulename);
 public String getModuleParameterString(String modulname, String parameter);
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -421,7 +421,7 @@ public String[] getModuleRepositories(String modulename);
 public long getModuleUploadDate(String modulename);
 /**
  * Returns the user-name of the user who had uploaded the module.
- * 
+ *
  * @parameter String the name of the module.
  * @return java.lang.String the user-name of the user who had uploaded the module.
  */
@@ -435,21 +435,21 @@ public String getModuleUploadedBy(String module);
 public int getModuleVersion(String modulename);
 /**
  * Returns the name of the view, that is implemented by the module.
- * 
+ *
  * @parameter String the name of the module.
  * @return java.lang.String the name of the view, that is implemented by the module.
  */
 public String getModuleViewName(String modulename);
 /**
- * Returns the url to the view-url for the module within the system. 
- * 
+ * Returns the url to the view-url for the module within the system.
+ *
  * @parameter String the name of the module.
  * @return java.lang.String the view-url to the module.
  */
 public String getModuleViewUrl(String modulename);
 /**
  * Returns all repositories for all modules.
- * 
+ *
  * @return java.lang.String[] the reprositories of all modules.
  */
 public String[] getRepositories();
@@ -515,7 +515,7 @@ public Vector importGetResourcesForProject(String moduleZip) throws CmsException
 public void importModule(String moduleZip, Vector exclusion) throws CmsException;
 /**
  * Checks if the module exists already in the repository.
- * 
+ *
  * @parameter String the name of the module.
  * @return true if the module exists, else false.
  */
@@ -566,14 +566,14 @@ public void setModuleDependencies(String modulename, Vector modules, Vector minV
 public void setModuleDescription(String module, String description) throws CmsException;
 /**
  * Sets the url to the documentation of the module.
- * 
+ *
  * @param String the name of the module.
  * @param java.lang.String the url to the documentation of the module.
  */
 public void setModuleDocumentPath(String modulename, String url) throws CmsException;
 /**
  * Sets the classname, that receives all maintenance-events for the module.
- * 
+ *
  * @param String the name of the module.
  * @param java.lang.Class that receives all maintenance-events for the module.
  */
@@ -587,7 +587,7 @@ public void setModuleMaintenanceEventClass(String modulname, String classname) t
 public void setModuleNiceName(String module, String nicename) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -595,7 +595,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 public void setModuleParameter(String modulename, String parameter, byte value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -603,7 +603,7 @@ public void setModuleParameter(String modulename, String parameter, byte value) 
 public void setModuleParameter(String modulename, String parameter, double value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -611,7 +611,7 @@ public void setModuleParameter(String modulename, String parameter, double value
 public void setModuleParameter(String modulename, String parameter, float value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -619,7 +619,7 @@ public void setModuleParameter(String modulename, String parameter, float value)
 public void setModuleParameter(String modulename, String parameter, int value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -627,7 +627,7 @@ public void setModuleParameter(String modulename, String parameter, int value) t
 public void setModuleParameter(String modulename, String parameter, long value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -635,7 +635,7 @@ public void setModuleParameter(String modulename, String parameter, long value) 
 public void setModuleParameter(String modulename, String parameter, Boolean value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -643,7 +643,7 @@ public void setModuleParameter(String modulename, String parameter, Boolean valu
 public void setModuleParameter(String modulename, String parameter, Byte value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -651,7 +651,7 @@ public void setModuleParameter(String modulename, String parameter, Byte value) 
 public void setModuleParameter(String modulename, String parameter, Double value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -659,7 +659,7 @@ public void setModuleParameter(String modulename, String parameter, Double value
 public void setModuleParameter(String modulename, String parameter, Float value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -667,7 +667,7 @@ public void setModuleParameter(String modulename, String parameter, Float value)
 public void setModuleParameter(String modulename, String parameter, Integer value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -675,7 +675,7 @@ public void setModuleParameter(String modulename, String parameter, Integer valu
 public void setModuleParameter(String modulename, String parameter, Long value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param value java.lang.String the value to set for the parameter.
@@ -683,7 +683,7 @@ public void setModuleParameter(String modulename, String parameter, Long value) 
 public void setModuleParameter(String modulename, String parameter, String value) throws CmsException;
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -715,10 +715,26 @@ public void setModuleRepositories(String modulename, String[] repositories) thro
 public void setModuleVersion(String modulename, int version) throws CmsException;
 /**
  * Sets a view for a module
- * 
+ *
  * @param String the name of the module.
  * @param String the name of the view, that is implemented by the module.
  * @param String the url of the view, that is implemented by the module.
  */
 public void setModuleView(String modulename, String viewname, String viewurl) throws CmsException;
+
+/**
+ * Public method to set system values.
+ *
+ * @param String dataName the name of the tag to set the data for.
+ * @param String the value to be set.
+ */
+public void setSystemValue(String dataName, String value) throws CmsException;
+
+/**
+ * Public method to set system values with hashtable.
+ *
+ * @param String dataName the name of the tag to set the data for.
+ * @param Hashtable the value to be set.
+ */
+public void setSystemValues(String dataName, Hashtable values) throws CmsException;
 }

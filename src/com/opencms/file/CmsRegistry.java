@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2001/02/28 16:42:57 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2001/03/23 10:32:21 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2001/02/28 16:42:57 $
+ * @version $Revision: 1.30 $ $Date: 2001/03/23 10:32:21 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1856,6 +1856,72 @@ public void setModuleView(String modulename, String viewname, String viewurl) th
 		// ignore the exception - reg is not welformed
 	}
 }
+
+/**
+ * Public method to set system values.
+ *
+ * @param String dataName the name of the tag to set the data for.
+ * @param String the value to be set.
+ */
+public void setSystemValue(String dataName, String value) throws CmsException {
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'setSystemValue'", CmsException.C_REGISTRY_ERROR);
+	}
+	try {
+        Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
+        // remove the old tag if it exists and create a new one
+        try{
+            Node oldTag = systemElement.getElementsByTagName(dataName).item(0);
+            oldTag.getParentNode().removeChild(oldTag);
+        } catch (Exception exc){
+        }
+        Element newTag = m_xmlReg.createElement(dataName);
+        systemElement.appendChild(newTag);
+		Node tag = systemElement.getElementsByTagName(dataName).item(0);
+		setTagValue(tag, value);
+		// save the registry
+		saveRegistry();
+	} catch (Exception exc) {
+		// ignore the exception - registry is not wellformed
+	}
+}
+
+/**
+ * Public method to set system values with hashtable.
+ *
+ * @param String dataName the name of the tag to set the data for.
+ * @param Hashtable the value to be set.
+ */
+public void setSystemValues(String dataName, Hashtable values) throws CmsException {
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'setSystemValues'", CmsException.C_REGISTRY_ERROR);
+	}
+	try {
+		Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
+        // remove the old tag if it exists and create a new one
+        try{
+            Node oldTag = systemElement.getElementsByTagName(dataName).item(0);
+            oldTag.getParentNode().removeChild(oldTag);
+        } catch (Exception exc){
+        }
+        Element newTag = m_xmlReg.createElement(dataName);
+        systemElement.appendChild(newTag);
+		Node parentTag = systemElement.getElementsByTagName(dataName).item(0);
+        Enumeration keys = values.keys();
+        while(keys.hasMoreElements()){
+            String key = (String) keys.nextElement();
+            String value = (String) values.get(key);
+            Element keyTag = m_xmlReg.createElement(key);
+            parentTag.appendChild(keyTag);
+            keyTag.appendChild(m_xmlReg.createTextNode(value));
+        }
+		// save the registry
+		saveRegistry();
+	} catch (Exception exc) {
+        // ignore the exception - registry is not wellformed
+	}
+}
+
 /**
  * Creates or replaces a textvalue for a parent node.
  * @param Node to set the textvalue.
