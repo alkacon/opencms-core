@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.61 Arakis - 22 February 2001
+
+* General bugfixing.
+* corrected some errors in Tasks
+
 OpenCms 4.1.60 Arakis - 22 February 2001
 
 * General bugfixing.
