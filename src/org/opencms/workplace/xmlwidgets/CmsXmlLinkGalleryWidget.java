@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlLinkGalleryWidget.java,v $
- * Date   : $Date: 2004/12/10 15:50:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/10 16:27:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.3
  */
 public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
@@ -120,8 +120,8 @@ public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
         result.append(widgetDialog.button("javascript:openLinkSelector('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');", null, "linkgallery", "button.linklist", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
         // create preview button
         String previewClass = "hide";
-        if (CmsStringUtil.isNotEmpty(fieldValue) && fieldValue.startsWith("/")) {
-            // show button if field value is not empty and starts with a "/"
+        if (CmsStringUtil.isNotEmpty(fieldValue) && fieldValue.startsWith("http://")) {
+            // show button if field value is not empty and starts with a "http://"
             previewClass = "show";    
         }
         result.append("<td><div class=\"");
