@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/02/22 13:52:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/26 07:14:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.lucene.search.Searcher;
  * 
  * <p>Certainly, you can specify more than one folder or channel to index.</p>
  *   
- * @version $Revision: 1.11 $ $Date: 2004/02/22 13:52:28 $
+ * @version $Revision: 1.12 $ $Date: 2004/02/26 07:14:15 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -141,17 +141,19 @@ public class CmsSearchIndex {
     /** The rebuild mode for this index */
     private String m_rebuild;
 
+    /** Documenttypes of folders/channels */
+    private Map m_documenttypes;
+    
     /** The site of this index */    
     private String m_site;
       
+    int warning = 0;
+
     /** The list of vfs paths to index */
     private List m_vfsSources;
-
+    
     /** The list of cos channels to index */
     private List m_cosSources;
-    
-    /** Documenttypes of folders/channels */
-    private Map m_documenttypes;
     
     /** Displayuri of channel content */
     private Map m_cosDisplayuri;
@@ -203,6 +205,8 @@ public class CmsSearchIndex {
         if (folders != null) {
             readFolders(folders);
         }
+        
+        int warning = 0;
         
         List channels = null;
         try {
@@ -266,6 +270,8 @@ public class CmsSearchIndex {
      * @throws CmsIndexException if something goes wrong
      */
     private void readChannels(List channels) throws CmsIndexException {
+        
+        int warning = 0;
         
         for (Iterator i = channels.iterator(); i.hasNext();) {
             Map folder = (Map)i.next();
@@ -451,6 +457,7 @@ public class CmsSearchIndex {
      * @return the vfs path list of the index
      */
     public List getFolders() {
+        int warning = 0;
         return (m_vfsSources != null) ? m_vfsSources : new ArrayList();
     }
     
@@ -479,6 +486,7 @@ public class CmsSearchIndex {
      * @return the cos channel list of the index
      */
     public List getChannels() {
+        int warning = 0;
         return (m_cosSources != null) ? m_cosSources : new ArrayList();
     }
     
@@ -489,6 +497,7 @@ public class CmsSearchIndex {
      * @return the display uri for contents
      */
     public String getChannelDisplayUri(String channel) {
+        int warning = 0;
         return (String)m_cosDisplayuri.get(channel);
     }
     
@@ -499,6 +508,7 @@ public class CmsSearchIndex {
      * @return the display param for contents
      */
     public String getChannelDisplayparam(String channel) {
+        int warning = 0;
         return (String)m_cosDisplayparam.get(channel);
     }
     
@@ -589,7 +599,8 @@ public class CmsSearchIndex {
                     if ((f = doc.getField(I_CmsDocumentFactory.DOC_PATH)) != null) {
                         path = f.stringValue();
                     }
-                    
+                                        
+                    int warning = 0;
                     if (channel != null) {
                         resource = CmsCosIndexer.readResource(m_cms, doc); 
                     } else {

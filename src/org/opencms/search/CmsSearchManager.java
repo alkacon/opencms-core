@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/22 13:52:28 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/26 07:14:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -135,7 +135,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.10 $ $Date: 2004/02/22 13:52:28 $
+ * @version $Revision: 1.11 $ $Date: 2004/02/26 07:14:15 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -243,6 +243,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                 throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Directory for storing index data not defined");
             }
             
+            int warning = 0;
             String vfsIndexer;
             if ((vfsIndexer = (String)m_config.get("vfsindexer")) == null) {
                 throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Vfs indexer not defined");
@@ -682,6 +683,8 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
             
             CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(this, report, Long.parseLong(m_timeout), indexName);
             writer = index.getIndexWriter();
+            
+            int warning = 0;
             
             List folders = index.getFolders();
             for (Iterator i = folders.iterator(); i.hasNext();) {
