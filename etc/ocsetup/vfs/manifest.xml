@@ -927,33 +927,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/bt_help_index_off.gif</source>
-            <destination>pics/system/bt_help_index_off.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_help_index_on.gif</source>
-            <destination>pics/system/bt_help_index_on.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_help_index_push.gif</source>
-            <destination>pics/system/bt_help_index_push.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/bt_hilfe_off.gif</source>
             <destination>pics/system/bt_hilfe_off.gif</destination>
             <type>image</type>
@@ -1098,33 +1071,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/bt_info_off.gif</source>
-            <destination>pics/system/bt_info_off.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_info_on.gif</source>
-            <destination>pics/system/bt_info_on.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_info_push.gif</source>
-            <destination>pics/system/bt_info_push.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/bt_italic_off.gif</source>
             <destination>pics/system/bt_italic_off.gif</destination>
             <type>image</type>
@@ -1145,15 +1091,6 @@
         <file>
             <source>pics/system/bt_italic_push.gif</source>
             <destination>pics/system/bt_italic_push.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_link_down.jpg</source>
-            <destination>pics/system/bt_link_down.jpg</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -1190,15 +1127,6 @@
         <file>
             <source>pics/system/bt_link_up.jpg</source>
             <destination>pics/system/bt_link_up.jpg</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_link_up_3.jpg</source>
-            <destination>pics/system/bt_link_up_3.jpg</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -1343,42 +1271,6 @@
         <file>
             <source>pics/system/bt_newdoc_push.gif</source>
             <destination>pics/system/bt_newdoc_push.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_newfolder_in.gif</source>
-            <destination>pics/system/bt_newfolder_in.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_newfolder_off.gif</source>
-            <destination>pics/system/bt_newfolder_off.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_newfolder_on.gif</source>
-            <destination>pics/system/bt_newfolder_on.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_newfolder_push.gif</source>
-            <destination>pics/system/bt_newfolder_push.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -1917,42 +1809,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/bt_upload_in.gif</source>
-            <destination>pics/system/bt_upload_in.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_upload_off.gif</source>
-            <destination>pics/system/bt_upload_off.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_upload_on.gif</source>
-            <destination>pics/system/bt_upload_on.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/bt_upload_push.gif</source>
-            <destination>pics/system/bt_upload_push.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/bt_up_in.gif</source>
             <destination>pics/system/bt_up_in.gif</destination>
             <type>image</type>
@@ -2016,15 +1872,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/framfab_logo1.wbmp</source>
-            <destination>pics/system/framfab_logo1.wbmp</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/gr_line.gif</source>
             <destination>pics/system/gr_line.gif</destination>
             <type>image</type>
@@ -2063,69 +1910,6 @@
         <file>
             <source>pics/system/gr_rr_inaktiv.gif</source>
             <destination>pics/system/gr_rr_inaktiv.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/gr_task.gif</source>
-            <destination>pics/system/gr_task.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/gr_taskdelay_01.gif</source>
-            <destination>pics/system/gr_taskdelay_01.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/gr_taskdelay_02.gif</source>
-            <destination>pics/system/gr_taskdelay_02.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/gr_taskline.gif</source>
-            <destination>pics/system/gr_taskline.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/gr_task_01.gif</source>
-            <destination>pics/system/gr_task_01.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/gr_task_02.gif</source>
-            <destination>pics/system/gr_task_02.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/gr_timer_31.gif</source>
-            <destination>pics/system/gr_timer_31.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -2232,33 +2016,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/ic_admin_newext.gif</source>
-            <destination>pics/system/ic_admin_newext.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_admin_newsarchive.gif</source>
-            <destination>pics/system/ic_admin_newsarchive.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_admin_newsarchive_in.gif</source>
-            <destination>pics/system/ic_admin_newsarchive_in.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/ic_admin_properties.gif</source>
             <destination>pics/system/ic_admin_properties.gif</destination>
             <type>image</type>
@@ -2342,24 +2099,6 @@
         <file>
             <source>pics/system/ic_closeproject.gif</source>
             <destination>pics/system/ic_closeproject.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_computer.gif</source>
-            <destination>pics/system/ic_computer.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_computer_in.gif</source>
-            <destination>pics/system/ic_computer_in.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -2466,42 +2205,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/ic_file_maileditor.gif</source>
-            <destination>pics/system/ic_file_maileditor.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_file_news.gif</source>
-            <destination>pics/system/ic_file_news.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_file_newsarchive.gif</source>
-            <destination>pics/system/ic_file_newsarchive.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_file_newspage.gif</source>
-            <destination>pics/system/ic_file_newspage.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/ic_file_othertype.gif</source>
             <destination>pics/system/ic_file_othertype.gif</destination>
             <type>image</type>
@@ -2601,15 +2304,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/ic_help_content.gif</source>
-            <destination>pics/system/ic_help_content.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/ic_historyproject.gif</source>
             <destination>pics/system/ic_historyproject.gif</destination>
             <type>image</type>
@@ -2700,15 +2394,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/ic_page.gif</source>
-            <destination>pics/system/ic_page.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/ic_picgallery.gif</source>
             <destination>pics/system/ic_picgallery.gif</destination>
             <type>image</type>
@@ -2747,15 +2432,6 @@
         <file>
             <source>pics/system/ic_project_small.gif</source>
             <destination>pics/system/ic_project_small.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_project_smallpublished.gif</source>
-            <destination>pics/system/ic_project_smallpublished.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -2808,26 +2484,8 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/ic_taskdoku_delete.gif</source>
-            <destination>pics/system/ic_taskdoku_delete.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/ic_taskdoku_forward.gif</source>
             <destination>pics/system/ic_taskdoku_forward.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_taskdoku_ok.gif</source>
-            <destination>pics/system/ic_taskdoku_ok.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -2855,24 +2513,6 @@
         <file>
             <source>pics/system/ic_taskdoku_request.gif</source>
             <destination>pics/system/ic_taskdoku_request.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_taskdoku_response.gif</source>
-            <destination>pics/system/ic_taskdoku_response.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_taskdoku_return.gif</source>
-            <destination>pics/system/ic_taskdoku_return.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -2918,24 +2558,6 @@
         <file>
             <source>pics/system/ic_task_alertok.gif</source>
             <destination>pics/system/ic_task_alertok.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_task_auto.gif</source>
-            <destination>pics/system/ic_task_auto.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/ic_task_item.gif</source>
-            <destination>pics/system/ic_task_item.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -3159,15 +2781,6 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/_bg_grau.gif</source>
-            <destination>pics/system/_bg_grau.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/_bg_mitte.gif</source>
             <destination>pics/system/_bg_mitte.gif</destination>
             <type>image</type>
@@ -3179,24 +2792,6 @@
         <file>
             <source>pics/system/_bg_mitte2.gif</source>
             <destination>pics/system/_bg_mitte2.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/_bg_mitte3.gif</source>
-            <destination>pics/system/_bg_mitte3.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/_bg_mitte4.gif</source>
-            <destination>pics/system/_bg_mitte4.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -3231,26 +2826,8 @@
             <properties/>
         </file>
         <file>
-            <source>pics/system/_bg_mitte_rahmen_links.gif</source>
-            <destination>pics/system/_bg_mitte_rahmen_links.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>pics/system/_bg_mitte_rahmen_mitte.gif</source>
             <destination>pics/system/_bg_mitte_rahmen_mitte.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>pics/system/_bg_mitte_rechts.gif</source>
-            <destination>pics/system/_bg_mitte_rechts.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
@@ -10514,69 +10091,6 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/templates/einstellungen_expl.html</source>
-            <destination>system/workplace/templates/einstellungen_expl.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/einstellungen_pers.html</source>
-            <destination>system/workplace/templates/einstellungen_pers.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/einstellungen_pwd.html</source>
-            <destination>system/workplace/templates/einstellungen_pwd.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/einstellungen_pwd_01.html</source>
-            <destination>system/workplace/templates/einstellungen_pwd_01.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/einstellungen_pwd_v01.html</source>
-            <destination>system/workplace/templates/einstellungen_pwd_v01.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/einstellungen_task.html</source>
-            <destination>system/workplace/templates/einstellungen_task.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/einstellungen_user.html</source>
-            <destination>system/workplace/templates/einstellungen_user.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>system/workplace/templates/errorTemplate</source>
             <destination>system/workplace/templates/errorTemplate</destination>
             <type>plain</type>
@@ -10853,15 +10367,6 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/templates/instable.htm</source>
-            <destination>system/workplace/templates/instable.htm</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
             <source>system/workplace/templates/labelTemplate</source>
             <destination>system/workplace/templates/labelTemplate</destination>
             <type>plain</type>
@@ -11086,15 +10591,6 @@
         <file>
             <source>system/workplace/templates/restore_resource</source>
             <destination>system/workplace/templates/restore_resource</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/templates/selcolor.htm</source>
-            <destination>system/workplace/templates/selcolor.htm</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
