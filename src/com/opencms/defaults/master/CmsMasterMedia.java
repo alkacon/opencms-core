@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterMedia.java,v $
- * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/02 14:42:43 $
- * Version: $Revision: 1.1 $
+ * Author : $Author: a.schouten $
+ * Date   : $Date: 2001/11/15 15:29:18 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -33,8 +33,8 @@ import com.opencms.file.CmsObject;
  * It carries a set of data to read and write.
  *
  * @author A. Schouten $
- * $Revision: 1.1 $
- * $Date: 2001/11/02 14:42:43 $
+ * $Revision: 1.2 $
+ * $Date: 2001/11/15 15:29:18 $
  */
 public class CmsMasterMedia {
 
@@ -78,7 +78,7 @@ public class CmsMasterMedia {
     public static final int C_MEDIA_TYPE_IMAGE = 0;
 
     /** Constant fro media type */
-    public static final int C_MEDIA_TYPE_FILE = 0;
+    public static final int C_MEDIA_TYPE_FILE = 1;
 
     /** The default mimetype */
     public static final String C_DEFAULT_MIMETYPE = "application/octet-stream";
