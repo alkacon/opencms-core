@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/02/13 13:40:38 $
-* Version: $Revision: 1.131 $
+* Date   : $Date: 2001/02/19 13:03:40 $
+* Version: $Revision: 1.132 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.131 $ $Date: 2001/02/13 13:40:38 $
+ * @version $Revision: 1.132 $ $Date: 2001/02/19 13:03:40 $
  */
 public interface I_CmsConstants {
 
@@ -909,6 +909,91 @@ public interface I_CmsConstants {
      * A tag in the manifest-file.
      */
     public static String C_EXPORT_TAG_LAUNCHER_START_CLASS = "startclass";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_USERGROUPDATA = "usergroupdata";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_USERDATA = "userdata";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_GROUPDATA = "groupdata";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_DESCRIPTION = "description";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_FLAGS = "flags";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_PARENTGROUP = "parentgroup";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_PASSWORD = "password";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_RECOVERYPASSWORD = "recoverypassword";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_FIRSTNAME = "firstname";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_LASTNAME = "lastname";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_EMAIL = "email";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_DEFAULTGROUP = "defaultgroup";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_ADDRESS = "address";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_SECTION = "section";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_USERINFOS = "userinfos";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_INFO = "info";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_USERGROUPS = "usergroups";
 
     /**
      * A string in the configuration-file.
