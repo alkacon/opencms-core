@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2002/11/11 16:28:21 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/12/17 12:12:37 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -199,17 +199,29 @@ public class CmsSetup {
 		return this.getExtProperty("resourcebroker");
 	}
 
-	/** Returns all resource Broker found in 'dbsetupscripts.properties' */
+	/** Returns all resource Brokers found in 'dbsetup.properties' */
 	public Vector getResourceBrokers() {
 		Vector values = new Vector();
 
 		String value = this.getDbProperty("resourceBrokers");
 		StringTokenizer tokenizer = new StringTokenizer(value, ",");
 		while (tokenizer.hasMoreTokens()) {
-			values.add(tokenizer.nextToken());
+			values.add(tokenizer.nextToken().trim());
 		}
 		return values;
 	}
+    
+    /** Returns "nice display names" for all resource Brokers found in 'dbsetup.properties' */
+    public Vector getResourceBrokerNames() {
+        Vector values = new Vector();
+
+        String value = this.getDbProperty("resourceBrokerNames");
+        StringTokenizer tokenizer = new StringTokenizer(value, ",");
+        while (tokenizer.hasMoreTokens()) {
+            values.add(tokenizer.nextToken().trim());
+        }
+        return values;
+    }    
 
 	/** Sets the connection string to the database to the given value */
 	public void setDbWorkConStr(String dbWorkConStr) {
