@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/06/11 09:39:57 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/06/18 15:02:00 $
+* Version: $Revision: 1.10 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -95,9 +95,11 @@ public class CmsUri implements I_CmsConstants {
         A_CmsElement elem = elementCache.getElementLocator().get(cms, m_startingElement, parameters);
 
         // check the proxistuff and set the response header
-        CmsCacheDirectives proxySettings = new CmsCacheDirectives(false);
+        CmsCacheDirectives proxySettings = new CmsCacheDirectives(true);
         elem.checkProxySettings(cms, proxySettings, parameters);
         I_CmsResponse resp = cms.getRequestContext().getResponse();
+        // set the streaming
+        cms.getRequestContext().setStreaming(cms.getRequestContext().isStreaming() && proxySettings.isStreamable());
         // was there already a cache-control header set?
         if(!resp.containsHeader("Cache-Control")) {
             // only if the resource is cacheable and if the current project is online,

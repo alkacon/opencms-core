@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2001/06/01 08:22:46 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/06/18 15:02:00 $
+* Version: $Revision: 1.9 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -87,7 +87,8 @@ public class CmsElementDump extends A_CmsElement {
         // We really don't want to stream here
         /*boolean streamable = cms.getRequestContext().isStreaming() && cd.isStreamable();
         cms.getRequestContext().setStreaming(streamable);*/
-        boolean streamable = false;
+        //boolean streamable = false;
+        boolean streamable = cms.getRequestContext().isStreaming();
 
         CmsElementVariant variant = null;
 
@@ -121,9 +122,16 @@ public class CmsElementDump extends A_CmsElement {
                 // Clear cache and do logging here
                 throw e;
             }
-            if(streamable) {
-                result = null;
+        }
+        if(streamable) {
+            try {
+                cms.getRequestContext().getResponse().getOutputStream().write(result);
+            }catch(Exception e) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, this.toString() + " Error while streaming!");
+                }
             }
+            result = null;
         }
         return result;
     }
