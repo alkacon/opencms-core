@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/28 16:29:42 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2003/07/19 01:51:37 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/28 16:29:42 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -88,8 +88,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         CmsUUID lastModifiedByUser,
         byte[] fileContent,
         int size,
-        int lockedInProject,
-        int vfsLinkType
+        int lockedInProject
     ) {
         // create the CmsResource.
         super(
@@ -110,13 +109,11 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             dateLastModified, 
             lastModifiedByUser, 
             size, 
-            lockedInProject, 
-            vfsLinkType);
+            lockedInProject);
     
         // set content and size.
         m_fileContent = fileContent;
-    }
- 
+    } 
     /**
     * Clones the CmsFile by creating a new CmsFolder.
     * @return Cloned CmsFile.
@@ -145,8 +142,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             this.getUserLastModified(),
             newContent,
             this.getLength(),
-            this.getLockedInProject(),
-            this.getVfsLinkType());
+            this.getLockedInProject());
             
         return clone;
     }

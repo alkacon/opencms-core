@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/23 08:22:53 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/07/28 16:29:42 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.32 $ $Date: 2003/07/23 08:22:53 $
+ * @version $Revision: 1.33 $ $Date: 2003/07/28 16:29:42 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1440,15 +1440,16 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         if (exc.getType() == CmsException.C_NOT_FOUND) {                        
                             // create a new File
                             currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                            onlineFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, context.currentUser().getId(), currentFile.getParentId(), currentFile.getResourceName(), currentFile.getVfsLinkType());
+                            onlineFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, context.currentUser().getId(), currentFile.getParentId(), currentFile.getResourceName());
                         }
                     }
     
-                    m_driverManager.getVfsDriver().publishResource(onlineFile, currentFile);
+                    // TODO: decide if its neccessary to publish the content
+                    m_driverManager.getVfsDriver().publishResource(onlineFile, currentFile, true);
                     
-                    if (currentFile.isHardLink()) {
-                        m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
-                    }
+                    // if (currentFile.isHardLink()) {
+                    //    m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
+                    //}
                     
                     // copy properties
                     Map props = (Map) new HashMap();
@@ -1501,7 +1502,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     try {
                         newFile = (CmsFile) currentFile.clone();
                         newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentId(), newFile.getResourceName(), newFile.getVfsLinkType());
+                        m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentId(), newFile.getResourceName());
                     } catch (CmsException e) {
                         if (e.getType() == CmsException.C_FILE_EXISTS) {
                             CmsFile onlineFile = null;
@@ -1511,10 +1512,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                                 throw exc;
                             }
     
-                            m_driverManager.getVfsDriver().publishResource(onlineFile, currentFile);
-                            if (currentFile.isHardLink()) {
-                                m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
-                            }
+//                          // TODO: decide if its neccessary to publish the content
+                            m_driverManager.getVfsDriver().publishResource(onlineFile, currentFile, true);
+                            // if (currentFile.isHardLink()) {
+                            //    m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
+                            //}
                         } else {
                             throw e;
                         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2003/07/18 19:03:49 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/07/28 16:29:42 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@
 
 package com.opencms.file;
 
-import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
 import java.io.Serializable;
@@ -36,7 +35,7 @@ import java.io.Serializable;
  * Describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2003/07/18 19:03:49 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/28 16:29:42 $
  */
 public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -98,8 +97,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             dateLastModified,
             lastModifiedByUser,
             -1,
-            lockedInProject,
-            I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+            lockedInProject);
     }
  
     /**

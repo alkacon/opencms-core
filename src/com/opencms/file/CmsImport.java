@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/28 15:03:24 $
-* Version: $Revision: 1.124 $
+* Date   : $Date: 2003/07/28 16:29:42 $
+* Version: $Revision: 1.125 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.124 $ $Date: 2003/07/28 15:03:24 $
+ * @version $Revision: 1.125 $ $Date: 2003/07/28 16:29:42 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -641,8 +641,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                                                  0,I_CmsConstants.C_STATE_NEW,curUser,
                                                  m_cms.getResourceType(resType).getLoaderId(),
                                                  lastmodified,curUser,lastmodified,
-                                                 curUser,size,m_cms.getRequestContext().currentProject().getId(),
-                                                 I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+                                                 curUser,size,m_cms.getRequestContext().currentProject().getId());
             // import this resource in the VFS     
                      
             res = m_cms.importResource(resource, content, properties, m_importPath+destination);   
@@ -779,8 +778,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                                                  0,I_CmsConstants.C_STATE_NEW,curUser,
                                                  m_cms.getResourceType(resType).getLoaderId(),
                                                  datelastmodified,newUserlastmodified,datecreated,
-                                                 newUsercreated,size,m_cms.getRequestContext().currentProject().getId(),
-                                                 I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+                                                 newUsercreated,size,m_cms.getRequestContext().currentProject().getId());
             // import this resource in the VFS   
                       
             res = m_cms.importResource(resource, content, properties, m_importPath+destination);             

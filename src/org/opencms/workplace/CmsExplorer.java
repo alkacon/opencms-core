@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/28 16:18:00 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/07/28 16:29:42 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -388,7 +388,8 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(res.getType());
             content.append(",");
             // position 5: link type
-            content.append(res.isHardLink() ? 0 : 1);
+            // TODO: set depending if more than one ref
+            content.append(/* res.isHardLink() ? 0 : 1 */ 1);
             content.append(",");            
             // position 6: size
             if (res.isFolder() || (!showSize)) {

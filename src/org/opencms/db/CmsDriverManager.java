@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/28 16:06:00 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2003/07/28 16:29:42 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.90 $ $Date: 2003/07/28 16:06:00 $
+ * @version $Revision: 1.91 $ $Date: 2003/07/28 16:29:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1069,7 +1069,7 @@ public class CmsDriverManager extends Object {
         
         // create a copy of the source file in the destination parent folder      
         if (copyAsLink)
-            createVfsLink(context, destination, source, newResourceProps, I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+            createVfsLink(context, destination, source, newResourceProps);
         else {
         newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
 
@@ -1686,12 +1686,8 @@ public class CmsDriverManager extends Object {
             throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
         }
     }
-
-    public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, Map linkProperties) throws CmsException {
-        return createVfsLink(context, linkName, targetName, linkProperties, I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
-    }
     
-    public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, Map linkProperties, int vfsLinkType) throws CmsException {
+    public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, Map linkProperties) throws CmsException {
         CmsResource targetResource = null;
         CmsFile linkResource = null;
         String parentFolderName = null;
@@ -1705,11 +1701,6 @@ public class CmsDriverManager extends Object {
         targetResource = this.readFileHeader(context, targetName);
         // read the parent folder
         parentFolder = this.readFolder(context, parentFolderName, false);
-
-        // if the desired vfsLinkType is master, the target has to be the current master
-        if (vfsLinkType == I_CmsConstants.C_VFS_LINK_TYPE_MASTER && !targetResource.isHardLink()) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + targetName +  " is not hard link", CmsException.C_NO_ACCESS);
-        }
         
         // for the parernt folder is write access required
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
@@ -1738,19 +1729,12 @@ public class CmsDriverManager extends Object {
                 context.currentUser().getId(),
                 new byte[0],
                 0,
-                context.currentProject().getId(),
-                I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
+                context.currentProject().getId());
 
         // write the link
-        linkResource = m_vfsDriver.createFile(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName, vfsLinkType);
+        linkResource = m_vfsDriver.createFile(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName);
         // write its properties
         m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType());
-
-        // if the desired vfsLinkType is master, the target is changed to be a softlink
-        if (vfsLinkType == I_CmsConstants.C_VFS_LINK_TYPE_MASTER) {
-            targetResource.setVfsLinkType(I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile)targetResource, C_UPDATE_STRUCTURE);    
-        }
         
         // if the source
         clearResourceCache();
@@ -1886,72 +1870,59 @@ public class CmsDriverManager extends Object {
         // read the resource to delete/remove
         resource = readFileHeader(context, filename, false);
 
-        if (resource.isHardLink() && deleteOption == I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS) {
-            // try to find soft links pointing to this resource
-            List vfsSoftLinks = getAllVfsSoftLinks(context, filename);
-            
-            if (vfsSoftLinks.size()>0) {
-                // the first soft link that is found will be the new hard link
-                CmsResource softlink = (CmsResource) vfsSoftLinks.get(0);
-                // switch the link type            
-                m_vfsDriver.switchLinkType(context.currentUser(), context.currentProject(), softlink, resource);
-                // clear the cache
-                clearResourceCache();
-                // re-read the resource coz it's link type is now changed
-                resource = readFileHeader(context, filename, false);
-            }
-        } else if (resource.isHardLink() && deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS) {
-            // add all VFS soft links pointing to this resource to the list of resources that get deleted/removed            
-            resources.addAll(getAllVfsSoftLinks(context, filename));
+        // add the resource itself to the list of all resources that get deleted/removed
+        resources.add(resource);
+                
+        // if selected, add all links pointing to this resource to the list of resources that get deleted/removed  
+        if (deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS) {
+            resources.addAll(getAllVfsSoftLinks(context, filename));    
+        }
+        
+        // ensure that each link pointing to the resource is unlocked or locked by the current user
+        i = resources.iterator();
+        while (i.hasNext()) {
+            currentResource = (CmsResource) i.next();
+            currentLock = getLock(context, currentResource);
 
-            // ensure that each VFS link pointing to the resource is unlocked or locked by the current user
-            i = resources.iterator();
-            while (i.hasNext()) {
-                currentResource = (CmsResource) i.next();
-                currentLock = getLock(context, currentResource);
-
-                if (!currentLock.equals(CmsLock.getNullLock()) && !currentLock.getUserId().equals(context.currentUser().getId())) {
-                    // the resource is locked by a user different from the current user
-                    int exceptionType = currentLock.getUserId().equals(context.currentUser().getId()) ? CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER : CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER;
-                    throw new CmsLockException("VFS link " + currentResource.getFullResourceName() + " pointing to " + filename + " is locked by another user!", exceptionType);
-                }
+            if (!currentLock.equals(CmsLock.getNullLock()) && !currentLock.getUserId().equals(context.currentUser().getId())) {
+                // the resource is locked by a user different from the current user
+                int exceptionType = currentLock.getUserId().equals(context.currentUser().getId()) ? CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER : CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER;
+                throw new CmsLockException("VFS link " + currentResource.getFullResourceName() + " pointing to " + filename + " is locked by another user!", exceptionType);
             }
         }
 
-        // add the resource itself to the list of all resources that get deleted/removed
-        resources.add(resource);
-
-        // delete/remove all collected resources...
+        // delete/remove all collected resources
         i = resources.iterator();
         while (i.hasNext()) {
             existsOnline = false;
             currentResource = (CmsResource) i.next();
 
-            // check if the user has write access to the resource
-            checkPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS);
-
-            try {
-                // try to read the corresponding online resource to decide if the resource should be either removed or deleted
-                readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
-                existsOnline = true;
-            } catch (CmsException exc) {
-                existsOnline = false;
-            }
+            // try to delete/remove the resource only if the user has write access to the resource
+            if (hasPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS, false)) {
+           
+                try {
+                    // try to read the corresponding online resource to decide if the resource should be either removed or deleted
+                    readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
+                    existsOnline = true;
+                } catch (CmsException exc) {
+                    existsOnline = false;
+                }
             
-            unlockResource(context, currentResource.getFullResourceName(), true);
+                unlockResource(context, currentResource.getFullResourceName(), true);
 
-            if (!existsOnline) {
-                // remove the properties                
-                deleteAllProperties(context, currentResource.getFullResourceName());
-                // remove the access control entries
-                m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
-                // the resource doesnt exist online => remove the file
-                m_vfsDriver.removeFile(context.currentProject(), currentResource);                
-            } else {
-                // delete the access control entries
-                deleteAllAccessControlEntries(context, currentResource);
-                // the resource exists online => mark the file as deleted
-                m_vfsDriver.deleteFile(context.currentProject(), currentResource);                
+                if (!existsOnline) {
+                    // remove the properties                
+                    deleteAllProperties(context, currentResource.getFullResourceName());
+                    // remove the access control entries
+                    m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
+                    // the resource doesnt exist online => remove the file
+                    m_vfsDriver.removeFile(context.currentProject(), currentResource);                
+                } else {
+                    // delete the access control entries
+                    deleteAllAccessControlEntries(context, currentResource);
+                    // the resource exists online => mark the file as deleted
+                    m_vfsDriver.deleteFile(context.currentProject(), currentResource);                
+                }
             }
         }
 
@@ -2532,7 +2503,8 @@ public class CmsDriverManager extends Object {
     }
     
     public List getAllSiblings(CmsRequestContext context, String resourcename) throws CmsException {
-        List path = readPath(context, resourcename, false);
+        // cw: must be possible for deleted resources, also
+        List path = readPath(context, resourcename, true);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
         List siblings = m_vfsDriver.getAllVfsSoftLinks(context.currentProject(), resource);
 
@@ -6893,8 +6865,7 @@ public class CmsDriverManager extends Object {
                     context.currentUser().getId(),
                     backupFile.getContents(),
                     backupFile.getLength(),
-                    context.currentProject().getId(),
-                    backupFile.getVfsLinkType());
+                    context.currentProject().getId());
             writeFile(context, newFile);
             clearResourceCache();
         }
@@ -7264,9 +7235,9 @@ public class CmsDriverManager extends Object {
         resource.setState(I_CmsConstants.C_STATE_CHANGED);
         resource.setLocked(context.currentUser().getId());
 
-        if (resource.isHardLink())
-            m_vfsDriver.updateResourcestate(resource, C_UPDATE_RESOURCE_STATE);
-        else
+        //if (resource.isHardLink())
+        //    m_vfsDriver.updateResourcestate(resource, C_UPDATE_RESOURCE_STATE);
+        // else
             m_vfsDriver.updateResourcestate(resource, C_UPDATE_STRUCTURE_STATE);
         
         clearResourceCache();
@@ -7360,8 +7331,7 @@ public class CmsDriverManager extends Object {
                     context.currentUser().getId(),
                     onlineFile.getContents(),
                     onlineFile.getLength(),
-                    context.currentProject().getId(),
-                    onlineFile.getVfsLinkType());
+                    context.currentProject().getId());
             // write the file in the offline project
 
             // check if the user has write access 
@@ -8200,7 +8170,8 @@ public class CmsDriverManager extends Object {
     public CmsLock getLock(CmsRequestContext context, CmsResource resource) throws CmsException {
         if (!resource.hasFullResourceName()) {
             try {
-                readPath(context, resource, false);
+                // cw: it must be possible to check if there is a lock set on a resource even if the resource is deleted
+                readPath(context, resource, true);
             } catch (CmsException e) {
                 return CmsLock.getNullLock();
             }

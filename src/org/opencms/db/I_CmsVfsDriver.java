@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/23 10:25:55 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/07/28 16:29:42 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2003/07/23 10:25:55 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/28 16:29:42 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -84,7 +84,7 @@ public interface I_CmsVfsDriver {
      * @throws SQLException in case the result set does not include a requested table attribute
      */
     CmsFolder createCmsFolderFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet) throws SQLException;    
-    CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename, int vfsLinkType) throws CmsException;
+    CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
     
     /**
      * Creates a new file with the given content and resourcetype.<p>
@@ -367,6 +367,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if somethong goes wrong
      */
     void publishResource( CmsResource onlineResource, CmsResource offlineResource) throws CmsException;
+    void publishResource( CmsResource onlineResource, CmsResource offlineResource, boolean publishContent) throws CmsException;
     
     /**
      * Reads the project ID's by matching a given path to all project resources.<p>

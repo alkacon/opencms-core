@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2003/07/22 17:13:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/28 16:29:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -154,11 +154,12 @@ public class CmsDelete extends CmsDialog {
             return false;
         }
         
-        if (sourceRes.isHardLink()) {
+        // TODO: remove check finally
+        //if (sourceRes.isHardLink()) {
             deleteOption = "true".equalsIgnoreCase(getParamDeleteVfsLinks()) ? I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS : I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS;
-        } else {
-            deleteOption = I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS;
-        }
+        //} else {
+        //    deleteOption = I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS;
+        //}
          
         // delete the resource
         getCms().deleteResource(getParamFile(), deleteOption);

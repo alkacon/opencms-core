@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/19 01:51:37 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/07/28 16:29:42 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import com.opencms.file.CmsBackupResource;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.SqlHelper;
@@ -66,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2003/07/19 01:51:37 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/28 16:29:42 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -113,7 +112,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             content = new byte[0];
         }
 
-        return new CmsBackupResource(versionId, structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectID, 0, state, launcherType, dateCreated, userCreated, userCreatedName, dateLastModified, userLastModified, userLastModifiedName, content, resourceSize, lockedInProject, vfsLinkType);
+        return new CmsBackupResource(versionId, structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectID, 0, state, launcherType, dateCreated, userCreated, userCreatedName, dateLastModified, userLastModified, userLastModifiedName, content, resourceSize, lockedInProject);
     }
 
     /**
@@ -574,13 +573,15 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         try {
             conn = m_sqlManager.getConnectionForBackup();           
             
-            if (resource.isHardLink()) {
-                if (resource.getType() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
-    				// write the file content
-    				content = ((CmsFile)resource).getContents();
-    				writeBackupFileContent(backupPkId,resource.getFileId(),content,versionId);               
-                }
-    
+            
+           if (resource.isFile()) {
+                    
+              if (!this.existsBackupResource(resource, versionId)) {
+                
+                // write the file content
+                content = ((CmsFile)resource).getContents();
+                writeBackupFileContent(backupPkId,resource.getFileId(),content,versionId);               
+                
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_BACKUP");
                 stmt.setString(1, resource.getResourceId().toString());
@@ -589,21 +590,19 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 stmt.setString(4, resource.getFileId().toString());
                 stmt.setInt(5, resource.getLoaderId());
                 stmt.setTimestamp(6, new Timestamp(publishDate));
-    			stmt.setString(7, resource.getUserCreated().toString());
+                stmt.setString(7, resource.getUserCreated().toString());
                 stmt.setTimestamp(8, new Timestamp(resource.getDateLastModified()));
-    			stmt.setString(9, resource.getUserLastModified().toString());
-    			stmt.setInt(10, resource.getState());
+                stmt.setString(9, resource.getUserLastModified().toString());
+                stmt.setInt(10, resource.getState());
                 stmt.setInt(11, resource.getLength());
                 stmt.setString(12, resource.isLockedBy().toString());
                 stmt.setInt(13, publishProject.getId());
                 stmt.setInt(14, versionId);
                 stmt.setString(15, backupPkId.toString());
-                stmt.executeUpdate();                
+                stmt.executeUpdate();
+                                
                 m_sqlManager.closeAll(null, stmt, null);
-                
-                vfsLinkType = I_CmsConstants.C_VFS_LINK_TYPE_MASTER;
-            } else {
-                vfsLinkType = I_CmsConstants.C_VFS_LINK_TYPE_SLAVE;
+              }
             }
 
             // write the structure
@@ -769,4 +768,28 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}
 	}
+    
+    private boolean existsBackupResource (CmsResource resource, int versionId) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;           
+        boolean exists = false;
+        
+        try {
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_EXISTS_RESOURCE");
+            stmt.setString(1, resource.getResourceId().toString());
+            stmt.setInt(2, versionId);
+            res = stmt.executeQuery();
+
+            exists = res.next();
+                
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }        
+        
+        return exists;       
+    }
 }

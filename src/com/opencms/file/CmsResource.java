@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/07/28 14:10:43 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2003/07/28 16:29:42 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.72 $ 
+ * @version $Revision: 1.73 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -116,9 +116,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The ID of the structure database record */
     private CmsUUID m_structureId;
 
-    /** The VFS link type {C_VFS_LINK_TYPE_MASTER|C_VFS_LINK_TYPE_SLAVE} */
-    private int m_vfsLinkType;
-
     /**
      * Constructor, creates a new CmsRecource object.<p>
      *
@@ -140,7 +137,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param lastModifiedByUser the user who changed the file
      * @param size the file content size of the resource
      * @param lockedInProject id of the project the resource was last modified in
-     * @param vfsLinkType the link type
      */
     public CmsResource(
         CmsUUID structureId, 
@@ -160,8 +156,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         long dateLastModified, 
         CmsUUID lastModifiedByUser, 
         int size, 
-        int lockedInProject, 
-        int vfsLinkType
+        int lockedInProject
     ) {
         m_structureId = structureId;
         m_resourceId = resourceId;
@@ -182,7 +177,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_size = size;
         m_lockedInProject = lockedInProject;
         m_isTouched = false;
-        m_vfsLinkType = vfsLinkType;
 
         m_fullResourceName = null;
     }
@@ -323,7 +317,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new CmsResource(m_structureId, m_resourceId, m_parentId, m_contentId, m_resourceName, m_resourceType, m_resourceFlags, m_projectId, m_accessFlags, m_state, m_lockedByUserId, m_loaderId, m_dateCreated, m_createdByUser, m_dateLastModified, m_lastModifiedByUser, m_size, m_lockedInProject, m_vfsLinkType);
+        return new CmsResource(m_structureId, m_resourceId, m_parentId, m_contentId, m_resourceName, m_resourceType, m_resourceFlags, m_projectId, m_accessFlags, m_state, m_lockedByUserId, m_loaderId, m_dateCreated, m_createdByUser, m_dateLastModified, m_lastModifiedByUser, m_size, m_lockedInProject);
     }
 
     /**
@@ -583,15 +577,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the VFS link type.<p>
-     * 
-     * @return the VFS link type
-     */
-    public int getVfsLinkType() {
-        return m_vfsLinkType;
-    }
-
-    /**
      * Checks whether the current state of this resource contains the full resource
      * path including the site root or not.<p>
      * 
@@ -637,15 +622,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public boolean isFolder() {
         return this.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
-    }
-
-    /**
-     * Checks whether this resource is a hard VFS link.<p>
-     * 
-     * @return true if this resource is a hard VFS link
-     */
-    public boolean isHardLink() {
-        return getVfsLinkType() == I_CmsConstants.C_VFS_LINK_TYPE_MASTER;
     }
 
     /**
@@ -811,15 +787,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public void setUserLastModified(CmsUUID resourceLastModifiedByUserId) {
         m_lastModifiedByUser = resourceLastModifiedByUserId;
-    }
-
-    /**
-     * Sets the VFS link type.<p>
-     * 
-     * @param newType the VFS link type
-     */
-    public void setVfsLinkType(int newType) {
-        m_vfsLinkType = newType;
     }
 
     /**
