@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2003/09/18 07:24:48 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2003/10/07 14:53:12 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -94,6 +94,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
 
     /** The section of the user */
     private String m_section;
+    
+    /** Boolean flag whether the last-login timestamp of this user was modified.<p> */
+    private boolean m_isTouched;    
 
     /**
      * Defines if the user is a webuser or a systemuser.<p>
@@ -125,7 +128,8 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         m_password = "";
         m_recoveryPassword = "";
         m_section = null;
-        m_type = I_CmsConstants.C_UNKNOWN_INT;                 
+        m_type = I_CmsConstants.C_UNKNOWN_INT;    
+        m_isTouched = false;             
     }
 
     /**
@@ -549,6 +553,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * @param value The new user section.
      */
     public void setLastlogin(long value) {
+        m_isTouched = true;
         m_lastlogin = value;
     }
 
@@ -606,4 +611,14 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         result.append(m_description);
         return result.toString();
     }
+    
+    /**
+     * Returns true if this user was touched, e.g. the last-login timestamp was changed.<p>
+     * 
+     * @return boolean true if this resource was touched
+     */
+    public boolean isTouched() {
+        return m_isTouched;
+    }
+        
 }
