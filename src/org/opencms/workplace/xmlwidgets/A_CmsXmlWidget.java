@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2004/10/18 14:42:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/18 15:37:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -157,7 +157,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
             result.append("\" name=\"img");
             result.append(value);
             result.append("\" src=\"");
-            result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/editors/xmlcontent/images/help.gif"));
+            result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.gif"));
             result.append("\" border=\"0\" onmouseout=\"hideHelp('");                
             result.append(value);
             result.append("');\" onmouseover=\"showHelp('");
