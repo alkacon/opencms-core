@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagFileProperty.java,v $
-* Date   : $Date: 2002/09/03 19:46:40 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/09/18 17:29:54 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import com.opencms.flex.util.CmsPropertyLookup;
  * This Tag provides access to the currently included files OpenCms properties.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport implements I_CmsJspConstants {
     
@@ -107,9 +107,12 @@ public class CmsJspTagFileProperty extends javax.servlet.jsp.tagext.TagSupport i
                 } else if ("this".equals(getFile())) {
                     // Read properties of this file
                     prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsResource(), getName(), false);
-                } else if ("search".equals(getFile())) {
-                    // Try to find property on file and all parent folders
+                } else if ("search-this".equals(getFile())) {
+                    // Try to find property on this file and all parent folders
                     prop = CmsPropertyLookup.lookupProperty(cms, c_req.getCmsResource(), getName(), true);
+                } else if ("search-parent".equals(getFile()) || "search".equals(getFile())) {
+                    // Try to find property on parent file and all parent folders
+                    prop = CmsPropertyLookup.lookupProperty(cms, cms.getRequestContext().getUri(), getName(), true);
                 } else {
                     // Read properties of the file named in the attribute
                     prop = CmsPropertyLookup.lookupProperty(cms, c_req.toAbsolute(getFile()), getName(), false);                  
