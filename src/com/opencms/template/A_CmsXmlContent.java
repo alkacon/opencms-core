@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2002/08/02 12:12:58 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2002/12/09 16:25:39 $
+* Version: $Revision: 1.56.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.56 $ $Date: 2002/08/02 12:12:58 $
+ * @version $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -977,7 +977,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
             //[removed by Gridnine AB, 2002-06-13] String fileContent = new String(file.getContents());
             byte[] fileContent = file.getContents();
             //[removed by Gridnine AB, 2002-06-13] if(fileContent == null || "".equals(fileContent.trim())) {
-            if(fileContent == null || fileContent.length == 0) {
+            //[changed by ednfal, 2002-08-07] if you use Oracle the "empty" fileContent has a blank, so its length is 1 
+            if(fileContent == null || fileContent.length <= 1) {
                 // The file content is empty. Possibly the file object is only
                 // a file header. Re-read the file object and try again
                 file = cms.readFile(filename);
@@ -985,7 +986,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                 fileContent = file.getContents();
             }
             //[removed by Gridnine AB, 2002-06-13] if(fileContent == null || "".equals(fileContent.trim())) {
-            if(fileContent == null || fileContent.length == 0) {
+            //[changed by ednfal, 2002-08-07] if you use Oracle the "empty" fileContent has a blank, so its length is 1 
+            if(fileContent == null || fileContent.length <= 1) {
 
                 // The file content is still emtpy.
                 // Start with an empty XML document.
