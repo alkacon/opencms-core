@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/04/16 08:30:16 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,12 @@ package org.opencms.db.oracle;
 
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.util.CmsUUID;
-
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.28 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.29 $ $Date: 2004/04/16 08:30:16 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -102,8 +102,11 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 stmt3.addBatch();
                 // delete the properties
                 stmt4.setString(1, currentResource.getBackupId().toString());
-                stmt4.setString(2, currentResource.getResourceId().toString());
-                stmt4.setInt(3, currentResource.getTagId());
+                stmt4.setInt(2, currentResource.getTagId());
+                stmt4.setString(3, currentResource.getStructureId().toString());
+                stmt4.setInt(4, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
+                stmt4.setString(5, currentResource.getResourceId().toString());
+                stmt4.setInt(6, CmsProperty.C_RESOURCE_RECORD_MAPPING);
                 stmt4.addBatch();
             }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/04/02 08:46:11 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2004/04/16 08:30:16 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.83 $ $Date: 2004/04/02 08:46:11 $
+ * @version $Revision: 1.84 $ $Date: 2004/04/16 08:30:16 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -764,9 +764,11 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_READALL_BACKUP");
             stmt.setString(1, resource.getStructureId().toString());
-            stmt.setInt(2, resource.getType());
-            stmt.setInt(3, resource.getTagId());
+            stmt.setString(2, resource.getResourceId().toString());
+            stmt.setInt(3, resource.getType());
+            stmt.setInt(4, resource.getTagId());
             res = stmt.executeQuery();
+			
             while (res.next()) {
                 propertyKey = res.getString(1);
                 propertyValue = res.getString(2);

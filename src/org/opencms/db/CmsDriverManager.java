@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/04/13 11:37:16 $
- * Version: $Revision: 1.353 $
+ * Date   : $Date: 2004/04/16 08:30:16 $
+ * Version: $Revision: 1.354 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.353 $ $Date: 2004/04/13 11:37:16 $
+ * @version $Revision: 1.354 $ $Date: 2004/04/16 08:30:16 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2181,7 +2181,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Deletes all propertyinformation for a file or folder.<p>
+     * Deletes all property value (both structure and resource values) of a file or folder.<p>
      *
      * Only the user is granted, who has the right to write the resource.
      *
@@ -2322,6 +2322,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsResource resource = null;
         Iterator i = null;
         boolean existsOnline = false;
+        List properties = null;
+        CmsProperty currentProperty = null;
 
         // TODO set the flag deleteOption in all calling methods correct
 
@@ -2375,8 +2377,19 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 m_lockManager.removeResource(this, context, currentResource.getRootPath(), true);
 
                 if (!existsOnline) {
-                    // remove the properties                
-                    deleteAllProperties(context, currentResource.getRootPath());
+                    if (deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
+                        // siblings get deleted- delete both structure + resource property values
+                        deleteAllProperties(context, currentResource.getRootPath());                        
+                    } else {
+                        // siblings should be preserved- delete only structure property value
+                        properties = readPropertyObjects(context, currentResource.getRootPath(), null, false);
+                        for (int j = 0, n = properties.size(); j < n; j++) {
+                            currentProperty = (CmsProperty)properties.get(j);
+                            currentProperty.setStructureValue(CmsProperty.C_DELETE_VALUE);
+                            currentProperty.setResourceValue(null);
+                        }
+                        writePropertyObjects(context, currentResource.getRootPath(), properties);
+                    }
                     // remove the access control entries
                     m_userDriver.removeAccessControlEntries(context.currentProject(), currentResource.getResourceId());
                     // the resource doesn't exist online => remove the file
@@ -7059,11 +7072,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             }
             CmsFile newFile = new CmsFile(offlineFile.getStructureId(), offlineFile.getResourceId(), offlineFile.getParentStructureId(), offlineFile.getFileId(), offlineFile.getName(), backupFile.getType(), flags, context.currentProject().getId(), state, backupFile.getLoaderId(), offlineFile.getDateCreated(), backupFile.getUserCreated(), offlineFile.getDateLastModified(), context.currentUser().getId(), backupFile.getLength(), backupFile.getLinkCount(), backupFile.getContents());
+            newFile.setFullResourceName(filename);
             writeFile(context, newFile);
 
             // now read the backup properties
             List backupProperties = m_backupDriver.readBackupProperties(backupFile);
-            //and write them to the curent resource
+            // remove all (structure+resource) property value
+            deleteAllProperties(context, newFile.getRootPath());
+            // write them to the restored resource
             writePropertyObjects(context, filename, backupProperties);
 
             clearResourceCache();
