@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/02/26 11:35:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.db.CmsNotImplementedException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -48,10 +49,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.collections.ExtendedProperties;
+
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -688,4 +691,25 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, CmsException.C_BAD_NAME);
         }
     }
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public ExtendedProperties getConfiguration() {
+        // this configuration does not support parameters
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
+        }          
+        return null;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+        // this configuration does not support parameters 
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
+        }            
+    }        
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,15 +35,16 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
-
 import java.util.Map;
+
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Base implementation for resource type classes.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -237,4 +238,25 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         output.append(getLoaderId());
         return output.toString();
     }
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public ExtendedProperties getConfiguration() {
+        // this configuration does not support parameters
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
+        }          
+        return null;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+        // this configuration does not support parameters 
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
+        }            
+    }        
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/03/04 11:33:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,10 +64,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     protected static final String N_RESOURCETYPES = "resourcetypes";    
 
     /** The node name of an individual resource type */
-    protected static final String N_TYPE = "type";    
-    
-    /** The node name for parameters */
-    protected static final String N_PARAM = "param";     
+    protected static final String N_TYPE = "type";       
     
     /** The man configuration node name */
     protected static final String N_VFS = "vfs";
@@ -82,7 +79,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
      * Public constructor, will be called by configuration manager.<p> 
      */
     public CmsVfsConfiguration() {
-        // noop
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Empty constructor called on " + this);
+        }     
     }
     
     /**
@@ -106,9 +105,6 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCELOADERS, CmsLoaderManager.class);
         // add rules for resource loaders
         digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, A_CLASS, CmsConfigurationException.class);
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER + "/" + N_PARAM, "addParameter", 2);
-        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER + "/" + N_PARAM, 0, A_NAME);
-        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER + "/" + N_PARAM, 1);
         digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "initialize");
         digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "addLoader");  
         // loader manager finished

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/03/04 11:33:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -951,14 +951,14 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#addParameter(java.lang.String, java.lang.String)
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
-    public void addParameter(String paramName, String paramValue) {
+    public void addConfigurationParameter(String paramName, String paramValue) {
         m_configuration.addProperty(paramName, paramValue);        
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#getConfiguration()
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     public ExtendedProperties getConfiguration() {
         // return only a copy of the configuration

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/03/04 11:33:54 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -698,16 +698,16 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     public boolean isUsingUriWhenLoadingTemplate() {
         return false;
     }
-
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#addParameter(java.lang.String, java.lang.String)
-     */
-    public void addParameter(String paramName, String paramValue) {
-        m_configuration.addProperty(paramName, paramValue);
-    }      
     
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#getConfiguration()
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+        m_configuration.addProperty(paramName, paramValue);
+    }      
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     public ExtendedProperties getConfiguration() {
         // return only a copy of the configuration

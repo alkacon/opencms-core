@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,26 +59,25 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
      * The public contructor is hidden to prevent generation of instances of this class.<p> 
      */
     public CmsTestConfiguration() {
-        OpenCms.getLog(this).debug("New test configuration created: " + this);
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Empty constructor called on " + this);
+        }  
     }
     
     /**
-     * Test methods to output the content of a node.<p>
+     * Test method to add a value.<p>
      * 
-     * @param arg the content to output
+     * @param name the name of the test
+     * @param value the value of the test
      */
-    public void addContent1(String arg) {
-        m_content1 = arg;
-    }
-    
-    /**
-     * Test methods to output the content of a node.<p>
-     * 
-     * @param arg the content to output
-     */
-    public void addContent2(String arg) {
-        m_content2 = arg;
-    }    
+    public void addTest(String name, String value) {
+        if ("test1".equals(name)) {
+            m_content1 = value;
+        }
+        if ("test2".equals(name)) {
+            m_content2 = value;
+        }        
+    }   
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
@@ -87,8 +86,9 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
         // add factory create method for "real" instance creation
         digester.addFactoryCreate("*/tests", CmsTestConfiguration.class);
         // add action methods
-        digester.addCallMethod("*/tests/test1", "addContent1", 0);
-        digester.addCallMethod("*/tests/test2", "addContent2", 0);
+        digester.addCallMethod("*/tests/test", "addTest", 2);
+        digester.addCallParam("*/tests/test", 0, A_NAME);
+        digester.addCallParam("*/tests/test", 1);
         // add the configured object to the calling configuration after the node has been processed
         digester.addSetNext("*/tests", "addConfiguration");
     }
@@ -98,8 +98,8 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
      */
     public Element generateXml(Element parent) {
         Element testElement = parent.addElement("tests");
-        testElement.addElement("test1").addText(m_content1);
-        testElement.addElement("test2").addText(m_content2);        
+        testElement.addElement("test").addAttribute(A_NAME, "test1").addText(m_content1);
+        testElement.addElement("test").addAttribute(A_NAME, "test2").addText(m_content2);
         return testElement;
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/02/26 11:35:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
  
 package org.opencms.file;
 
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
-
 
 import java.util.Map;
 
@@ -44,7 +44,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
-public interface I_CmsResourceType {
+public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     
      /**
       * Returns the loader type id needed for this resource type.<p>

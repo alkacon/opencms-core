@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.configuration;
 
 import org.opencms.main.OpenCms;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
 
 import org.xml.sax.Attributes;
@@ -50,6 +51,9 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
     /** The "name" attribute */
     protected static final String A_NAME = "name";
+    
+    /** The "param" node name for generic parameters */
+    protected static final String N_PARAM = "param";      
     
     /** The digester instance that was set suring object creation */
     private Digester m_digester;
@@ -94,4 +98,25 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
         }         
         m_digester = digester;
     }
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public ExtendedProperties getConfiguration() {
+        // this configuration does not support parameters
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
+        }          
+        return null;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+        // this configuration does not support parameters 
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
+        }            
+    }    
 }

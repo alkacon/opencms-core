@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3
  */
-public interface I_CmsXmlConfiguration extends ObjectCreationFactory {
+public interface I_CmsXmlConfiguration extends ObjectCreationFactory, I_CmsConfigurationParameterHandler {
     
     /**
      * Digests an XML node and creates an instance of this configurable class.<p>

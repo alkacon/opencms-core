@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,9 @@ import org.apache.commons.digester.Digester;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.dom.DOMDocumentType;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -56,6 +59,9 @@ import org.xml.sax.SAXException;
  * @since 5.3
  */
 public class CmsConfigurationManager {
+    
+    /** The DTD system declaration used for the opencms configuration DTD */
+    public static final String C_CONFIGURATION_DTD = "http://www.opencms.org/opencms-configuration.dtd";
     
     /** The root node of the XML configuration */
     protected static final String N_ROOT = "opencms";
@@ -122,6 +128,13 @@ public class CmsConfigurationManager {
     public Document generateXml() {
         // create a new document
         Document result = DocumentHelper.createDocument();
+        
+        // set the document type        
+        DOMDocumentType docType = new DOMDocumentType();
+        docType.setElementName(N_ROOT);
+        docType.setPublicID(C_CONFIGURATION_DTD);
+        result.setDocType(docType); 
+        
         Element root = result.addElement(N_ROOT);
         // start the XML generation
         // add the <configuration> node
@@ -166,15 +179,21 @@ public class CmsConfigurationManager {
     public void loadXmlConfiguration(URL url) throws SAXException, IOException {        
         // instantiate Digester and disable XML validation
         m_digester = new Digester();
-        m_digester.setValidating(false);
+        m_digester.setValidating(true);
+        m_digester.setEntityResolver(new CmsConfigurationEntitiyResolver());
         m_digester.setRuleNamespaceURI(null);       
 
         // add this class to the Digester
         m_digester.push(this);
         
-        // add rule for <configuration> node
+        // add rule for <configuration> node        
         m_digester.addCallMethod("*/" + N_CONFIGURATION + "/" + N_CONFIG, "addConfiguration", 1);
         m_digester.addCallParam("*/" + N_CONFIGURATION + "/" + N_CONFIG, 0, A_CmsXmlConfiguration.A_CLASS);    
+        
+        // generic <param> parameter rules
+        m_digester.addCallMethod("*/" + A_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
+        m_digester.addCallParam ("*/" +  A_CmsXmlConfiguration.N_PARAM, 0,  A_CmsXmlConfiguration.A_NAME);
+        m_digester.addCallParam ("*/" +  A_CmsXmlConfiguration.N_PARAM, 1);
         
         // start the parsing process        
         m_digester.parse(url.openStream());        
@@ -189,5 +208,30 @@ public class CmsConfigurationManager {
      */    
     public void loadXmlConfiguration(String filename) throws SAXException, IOException {
         loadXmlConfiguration((new File(filename)).toURL());
+    }
+    
+    /**
+     * Allows resolving the DTD "http://www.opencms.org/system/shared/opencms-configuration.dtd";
+     */
+    private class CmsConfigurationEntitiyResolver implements EntityResolver {
+        
+        /**
+         * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+         */
+        public InputSource resolveEntity(String publicId, String systemId) {
+            if (systemId.equals(C_CONFIGURATION_DTD)) {
+                // return our special input source
+                URL url = ClassLoader.getSystemResource("org/opencms/configuration/opencms-configuration.dtd");
+                try {
+                    return new InputSource(url.openStream());
+                } catch (Throwable t) {
+                    OpenCms.getLog(this).error("Could not open opencms-configuration.dtd mapping", t);
+                    return null;
+                }
+            } else {
+                // use the default behaviour
+                return null;
+            }
+        }
     }
 }

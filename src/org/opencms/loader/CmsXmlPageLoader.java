@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/03/04 11:33:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -69,9 +69,9 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     public static final String C_TEMPLATE_ELEMENT = "__element";
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#addParameter(java.lang.String, java.lang.String)
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
-    public void addParameter(String paramName, String paramValue) {
+    public void addConfigurationParameter(String paramName, String paramValue) {
         // this resource loader requires no parameters     
     }
 
@@ -115,7 +115,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
      * Will always return <code>null</code> since this loader does not 
      * need to be cnofigured.<p>
      * 
-     * @see org.opencms.loader.I_CmsResourceLoader#getConfiguration()
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     public ExtendedProperties getConfiguration() {
         return null;

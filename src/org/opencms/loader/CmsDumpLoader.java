@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/03/04 11:33:54 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -75,11 +75,11 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#addParameter(java.lang.String, java.lang.String)
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
-    public void addParameter(String paramName, String paramValue) {
-        // this resource loader requires no parameters        
-    }      
+    public void addConfigurationParameter(String paramName, String paramValue) {
+        // this resource loader requires no parameters     
+    }    
         
     /** 
      * Destroy this ResourceLoder, this is a NOOP so far.<p>
@@ -125,7 +125,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * Will always return <code>null</code> since this loader does not 
      * need to be cnofigured.<p>
      * 
-     * @see org.opencms.loader.I_CmsResourceLoader#getConfiguration()
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     public ExtendedProperties getConfiguration() {
         return null;

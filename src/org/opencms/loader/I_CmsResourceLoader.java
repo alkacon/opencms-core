@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/03/04 11:33:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/03/05 16:51:06 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.loader;
 
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -44,8 +45,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * This interface describes a resource loader for OpenCms, 
@@ -64,28 +63,20 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
  * @see org.opencms.flex.CmsFlexResponse
  * @see org.opencms.flex.CmsFlexRequestDispatcher
  */
-public interface I_CmsResourceLoader {
+public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler {
     
     /** The name of the VFS property that steers the caching */
     String C_LOADER_CACHEPROPERTY = "cache";
     
     /** The name of the VFS property that steers the streaming */
     String C_LOADER_STREAMPROPERTY = "stream";
-        
-    /**
-     * Adds an initialize parameter to this resource loder.<p>
-     * 
-     * @param paramName the name of the parameter 
-     * @param paramValue the value for the parameter
-     */
-    void addParameter(String paramName, String paramValue);
     
     /** 
      * Destroys this ResourceLoder 
@@ -135,22 +126,6 @@ public interface I_CmsResourceLoader {
      */    
     void export(CmsObject cms, CmsResource resource, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException, CmsException;
-
-    /**
-     * Returns the configuration of this resource loader,
-     * or <code>null</code> if the loader does not need to be configured.<p>
-     * 
-     * All elements in the configuration are key, value String pairs,
-     * set using the {@link I_CmsResourceLoader#addParameter(String, String)} method
-     * during initialization of the loader.<p>
-     * 
-     * Implementations will (should) not to return a direct reference to
-     * the internal configuration but just a copy of it, to avoid 
-     * unwanted external manipulation.<p>
-     * 
-     * @return the configuration of this resource loader, or <code>null</code>
-     */
-    ExtendedProperties getConfiguration();
     
     /**
      * Returns the id of the ResourceLoader.<p>
@@ -169,7 +144,7 @@ public interface I_CmsResourceLoader {
     /** 
      * Initialize this ResourceLoader.<p>
      * 
-     * Before calling this method, use {@link #addParameter(String, String)} to 
+     * Before calling this method, use {@link I_CmsResourceLoader#addConfigurationParameter(String, String)} to 
      * add initialization parameters.<p>
      */
     void initialize();
