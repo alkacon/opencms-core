@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2005/02/20 18:33:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/04/06 06:29:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.ServletException;
  * This handler exports all changes immediately after something is published.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */
@@ -117,7 +117,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
             } while (newTemplateLinksFound);
         }
     }
-    
+
     /**
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#isBusy()
      */
@@ -125,7 +125,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
 
         return m_busy;
     }
-    
+
     /**
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#performEventPublishProject(org.opencms.util.CmsUUID, org.opencms.report.I_CmsReport)
      */
@@ -271,9 +271,9 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                     String exportFileName;
                     if (res.isFolder()) {
                         if (res.isDeleted()) {
-                            String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager()
-                                .getExportPath()
-                                + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length() + 1));
+                            String exportFolderName = 
+                                CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
+                                + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length()));
                             try {
                                 File exportFolder = new File(exportFolderName);
                                 // check if export file exists, if so delete it

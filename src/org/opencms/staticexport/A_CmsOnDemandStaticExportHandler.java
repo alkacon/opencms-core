@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/03/13 09:50:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/04/06 06:29:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Set;
  * as optimization for non-dynamic content.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */
@@ -67,7 +67,7 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
 
     /** Indicates if this content handler is busy. */
     protected boolean m_busy;
-        
+
     /**
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#isBusy()
      */
@@ -75,12 +75,12 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
 
         return m_busy;
     }
-    
+
     /**
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#performEventPublishProject(org.opencms.util.CmsUUID, org.opencms.report.I_CmsReport)
      */
     public void performEventPublishProject(CmsUUID publishHistoryId, I_CmsReport report) {
-             
+
         int count = 0;
         // if the handler is still running, we must wait up to 30 secounds until it is finished
         while ((count < CmsStaticExportManager.C_HANDLER_FINISH_TIME) && isBusy()) {
@@ -102,20 +102,20 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                 count = CmsStaticExportManager.C_HANDLER_FINISH_TIME;
             }
         }
-        
+
         if (isBusy()) {
             // if the handler is still busy write a warning to the log and exit
             OpenCms.getLog(this).error(
-                "Unable to perform scrubbing of export folder for publish history id " 
-                    + publishHistoryId 
+                "Unable to perform scrubbing of export folder for publish history id "
+                    + publishHistoryId
                     + " since previous handler call would not terminate after "
                     + CmsStaticExportManager.C_HANDLER_FINISH_TIME
                     + " seconds.");
             return;
         }
-        
+
         final CmsUUID id = publishHistoryId;
-        
+
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // only perform scrubbing if OpenCms is still running
             m_busy = true;
@@ -173,14 +173,14 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
             return;
         }
 
-        Iterator itPubRes = publishedResources.iterator();               
+        Iterator itPubRes = publishedResources.iterator();
         while (itPubRes.hasNext()) {
             CmsPublishedResource res = (CmsPublishedResource)itPubRes.next();
             if (res.isUnChanged() || !res.isVfsResource()) {
                 // unchanged resources and non vfs resources don't need to be deleted
                 continue;
             }
-            
+
             // ensure all siblings are scrubbed if the resource has one
             String resPath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
             List siblings = getSiblingsList(cms, resPath);
@@ -201,9 +201,9 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
 
                     if (res.isFolder()) {
                         if (res.isDeleted()) {
-                            String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager()
-                                .getExportPath()
-                                + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length() + 1));
+                            String exportFolderName = 
+                                CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
+                                + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length()));
                             try {
                                 File exportFolder = new File(exportFolderName);
                                 // check if export folder exists, if so delete it
@@ -237,8 +237,9 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                         }
                     }
 
-                    String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
-                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length() + 1));
+                    String rfsExportFileName = 
+                        CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
+                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length()));
 
                     purgeFile(rfsExportFileName);
                     scrubedFiles.add(rfsName);
@@ -285,9 +286,6 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
     private List getSiblingsList(CmsObject cms, String resPath) {
 
         List siblings = new ArrayList();
-        // add the resource itself. this has to be done, because if the resource was
-        // deleted during publishing, loop below will produce no results
-        siblings.add(resPath);
         try {
             List li = cms.readSiblings(resPath, CmsResourceFilter.ALL);
             for (int i = 0, l = li.size(); i < l; i++) {
@@ -301,10 +299,13 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
         } catch (CmsException e) {
             // ignore, nothing to do about this
             if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(
-                    "Error while getting the siblings for resource vfsName='" + resPath + "'",
-                    e);
+                OpenCms.getLog(this).warn("Error while getting the siblings for resource vfsName='" + resPath + "'", e);
             }
+        }
+        if (!siblings.contains(resPath)) {
+            // always add the resource itself, this has to be done because if the resource was
+            // deleted during publishing, the sibling lookup above will produce no results
+            siblings.add(resPath);
         }
         return siblings;
     }
@@ -317,7 +318,6 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
     private void purgeFile(String exportFileName) {
 
         String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix()
-            + "/"
             + exportFileName.substring(OpenCms.getStaticExportManager().getExportPath().length()));
         rfsName = CmsStringUtil.substitute(rfsName, new String(new char[] {File.separatorChar}), "/");
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2005/03/06 09:26:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/04/06 06:29:15 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -343,7 +343,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         staticexportElement.addElement(N_STATICEXPORT_HANDLER).addText(m_staticExportManager.getHandler().getClass().getName());
         
         // <exportpath> node
-        String exportPathUnmodified = m_staticExportManager.getExportPathUnmodified();
+        String exportPathUnmodified = m_staticExportManager.getExportPathForConfiguration();
         // cut path seperator        
         if (exportPathUnmodified.endsWith(File.separator)) {
            exportPathUnmodified = exportPathUnmodified.substring(0, exportPathUnmodified.length()-1);            
@@ -392,16 +392,16 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         Element rendersettingsElement = staticexportElement.addElement(N_STATICEXPORT_RENDERSETTINGS);
         
         // <rfsPrefix> node
-        rendersettingsElement.addElement(N_STATICEXPORT_RFS_PREFIX).addText(m_staticExportManager.getRfsPrefixUnsubstituted());
+        rendersettingsElement.addElement(N_STATICEXPORT_RFS_PREFIX).addText(m_staticExportManager.getRfsPrefixForConfiguration());
         
         // <vfsPrefix> node
-        rendersettingsElement.addElement(N_STATICEXPORT_VFS_PREFIX).addText(m_staticExportManager.getVfsPrefixUnsubstituted());
+        rendersettingsElement.addElement(N_STATICEXPORT_VFS_PREFIX).addText(m_staticExportManager.getVfsPrefixForConfiguration());
         
         // <userelativelinks> node
         rendersettingsElement.addElement(N_STATICEXPORT_RELATIVELINKS).addText(m_staticExportManager.getRelativeLinks());
         
         // <exporturl> node
-        rendersettingsElement.addElement(N_STATICEXPORT_EXPORTURL).addText(m_staticExportManager.getExportUrlUnsubstituted());
+        rendersettingsElement.addElement(N_STATICEXPORT_EXPORTURL).addText(m_staticExportManager.getExportUrlForConfiguration());
         
         // <plainoptimization> node
         rendersettingsElement.addElement(N_STATICEXPORT_PLAINOPTIMIZATION).addText(m_staticExportManager.getPlainExportOptimization());
