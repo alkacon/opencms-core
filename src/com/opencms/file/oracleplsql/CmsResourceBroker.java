@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/15 17:03:47 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2001/01/04 12:25:11 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.19 $ $Date: 2000/12/15 17:03:47 $
+ * @version $Revision: 1.20 $ $Date: 2001/01/04 12:25:11 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -234,11 +234,11 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
  */
 public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, String username) throws CmsException {
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	//Vector allGroups = dbAccess.getGroupsOfUser(username);
+	//Vector allGroups = dbAccess.getAllGroupsOfUser(username);
 
 	Vector allGroups = (Vector) m_usergroupsCache.get(C_USER + username);
 	if ((allGroups == null) || (allGroups.size() == 0)) {
-		Vector groups = dbAccess.getGroupsOfUser(username);
+		Vector groups = dbAccess.getAllGroupsOfUser(username);
 		m_usergroupsCache.put(C_USER + username, groups);
 		return groups;		
 	}	

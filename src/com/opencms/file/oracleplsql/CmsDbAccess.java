@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/12/15 17:03:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2001/01/04 12:25:10 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.12 $ $Date: 2000/12/15 17:03:47 $ * 
+ * @version $Revision: 1.13 $ $Date: 2001/01/04 12:25:10 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -793,6 +793,50 @@ public Vector getAllAccessibleProjects(CmsUser user) throws CmsException {
 	return (projects);
 }
 /**
+ * Returns a list of groups of a user.<P/>
+ * 
+ * @param name The name of the user.
+ * @return Vector of groups
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public Vector getAllGroupsOfUser(String username) throws CmsException {
+	//	System.out.println("PL/SQL: getGroupsOfUser");
+	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+	CmsUser user = readUser(username, 0);
+	CmsGroup group;
+	Vector groups = new Vector();
+	CallableStatement statement = null;
+	ResultSet res = null;
+	try {
+		//  get all all groups of the user
+		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER_KEY);
+		statement.setInt(2, user.getId());
+		statement.execute();
+		res = (ResultSet) statement.getObject(1);
+		while (res.next()) {
+			group = new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID), res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID), res.getString(m_cq.C_GROUPS_GROUP_NAME), res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION), res.getInt(m_cq.C_GROUPS_GROUP_FLAGS));
+			groups.addElement(group);
+		}
+	} catch (SQLException sqlexc) {
+		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
+		throw cmsException;
+	} catch (Exception e) {
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	} finally {
+		if (statement != null) {
+			pool.putPreparedStatement(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER_KEY, statement);
+		}
+		if (res != null) {
+			try {
+				res.close();
+			} catch (SQLException se) {
+			}
+		}
+	}
+	return groups;
+}
+/**
  * Get the exeption.
  * 
  * @return Exception.
@@ -891,50 +935,6 @@ private CmsException getCmsException(String errorIn, Exception exc) {
 			break;
 	}
 	return cmsException;
-}
-/**
- * Returns a list of groups of a user.<P/>
- * 
- * @param name The name of the user.
- * @return Vector of groups
- * @exception CmsException Throws CmsException if operation was not succesful
- */
-public Vector getGroupsOfUser(String username) throws CmsException {
-	//	System.out.println("PL/SQL: getGroupsOfUser");
-	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	CmsUser user = readUser(username, 0);
-	CmsGroup group;
-	Vector groups = new Vector();
-	CallableStatement statement = null;
-	ResultSet res = null;
-	try {
-		//  get all all groups of the user
-		statement = (CallableStatement) pool.getPreparedStatement(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER_KEY);
-		statement.setInt(2, user.getId());
-		statement.execute();
-		res = (ResultSet) statement.getObject(1);
-		while (res.next()) {
-			group = new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID), res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID), res.getString(m_cq.C_GROUPS_GROUP_NAME), res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION), res.getInt(m_cq.C_GROUPS_GROUP_FLAGS));
-			groups.addElement(group);
-		}
-	} catch (SQLException sqlexc) {
-		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-		throw cmsException;
-	} catch (Exception e) {
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	} finally {
-		if (statement != null) {
-			pool.putPreparedStatement(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER_KEY, statement);
-		}
-		if (res != null) {
-			try {
-				res.close();
-			} catch (SQLException se) {
-			}
-		}
-	}
-	return groups;
 }
 /**
  * retrieve the correct instance of the queries holder.
