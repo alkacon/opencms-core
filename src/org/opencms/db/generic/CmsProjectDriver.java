@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.173 $
+ * Date   : $Date: 2004/06/28 16:27:54 $
+ * Version: $Revision: 1.174 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.173 $ $Date: 2004/06/28 07:47:32 $
+ * @version $Revision: 1.174 $ $Date: 2004/06/28 16:27:54 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -746,6 +746,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         CmsResource onlineFileHeader = null;
         List offlineProperties = null;
         CmsProperty property = null;
+        int propertyDeleteOption = -1;
 
         /*
          * Things to know:
@@ -802,8 +803,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 try {
                     // delete the properties online and offline
-                    m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFileHeader, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
-                    m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), offlineFileHeader, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+                    if (onlineFileHeader.getSiblingCount() > 1) {                    
+                        // there are other siblings- delete only structure property values and keep the resource property values
+                        propertyDeleteOption = CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_VALUES;
+                    } else {
+                        // there are no other siblings- delete both the structure and resource property values
+                        propertyDeleteOption = CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES;
+                    }
+                    
+                    m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFileHeader, propertyDeleteOption);
+                    m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), offlineFileHeader, propertyDeleteOption);
 
                     // if the offline file has a resource ID different from the online file
                     // (probably because a (deleted) file was replaced by a new file with the

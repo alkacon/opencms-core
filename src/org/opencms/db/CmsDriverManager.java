@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/28 16:26:12 $
- * Version: $Revision: 1.388 $
+ * Date   : $Date: 2004/06/28 16:29:03 $
+ * Version: $Revision: 1.389 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.388 $ $Date: 2004/06/28 16:26:12 $
+ * @version $Revision: 1.389 $ $Date: 2004/06/28 16:29:03 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1532,13 +1532,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     // the resource does not exist online => remove the resource
                     // this means the resoruce is "new" (blue) in the offline project                
                     
-                    if (siblingMode == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
-                        // siblings are deleted - delete both structure + resource property values
-                        deleteAllProperties(context, currentResource.getRootPath(), CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);                        
-                    } else {
-                        // siblings are preserved - delete only structure property values
-                        deleteAllProperties(context, currentResource.getRootPath(), CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_VALUES);
-                    }
+                    // delete all properties of this resource
+                    deleteAllProperties(context, currentResource.getRootPath());
        
                     if (currentResource.isFolder()) {
                         m_vfsDriver.removeFolder(context.currentProject(), currentResource);                        
@@ -1920,8 +1915,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             // now read the backup properties
             List backupProperties = m_backupDriver.readBackupProperties(backupFile);
-            // remove all (structure+resource) property values
-            deleteAllProperties(context, newFile.getRootPath(), CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+            // remove all properties
+            deleteAllProperties(context, newFile.getRootPath());
             // write them to the restored resource
             writePropertyObjects(context, newFile, backupProperties);
 
@@ -3374,38 +3369,37 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /**
      * Deletes all property values of a file or folder.<p>
      * 
-     * You may specify which whether just structure or resource property values should
-     * be deleted, or both of them.<p>
-     *
+     * If there are no other siblings than the specified resource,
+     * both the structure and resource property values get deleted.
+     * If the specified resource has siblings, only the structure
+     * property values get deleted.<p>
+     * 
      * @param context the current request context
-     * @param resourceName the name of the resource for which all properties should be deleted.
-     * @param deleteOption determines which property values should be deleted
+     * @param resourcename the name of the resource for which all properties should be deleted.
      * @throws CmsException if operation was not successful
-     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES
-     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_VALUES
-     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_RESOURCE_VALUES
      */    
-    public void deleteAllProperties(CmsRequestContext context, String resourceName, int deleteOption) throws CmsException {
+    public void deleteAllProperties(CmsRequestContext context, String resourcename) throws CmsException {
 
         CmsResource resource = null;
         List resources = new ArrayList();
 
         try {
             // read the resource
-            resource = readResource(context, resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+            resource = readResource(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
 
             // check the security
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.ALL);
 
             // delete the property values
-            m_vfsDriver.deleteProperties(context.currentProject().getId(), resource, deleteOption);
-            
-            // prepare the resources for the event to be fired
-            if (deleteOption == CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES || deleteOption == CmsProperty.C_DELETE_OPTION_DELETE_RESOURCE_VALUES) {
-                resources.addAll(readSiblings(context, resourceName, CmsResourceFilter.ALL));
+            if (resource.getSiblingCount() > 1) {
+                // the resource has siblings- delete only the (structure) properties of this sibling
+                m_vfsDriver.deleteProperties(context.currentProject().getId(), resource, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_VALUES);
+                resources.addAll(readSiblings(context, resourcename, CmsResourceFilter.ALL));
             } else {
-                resources.add(resource);                
-            }
+                // the resource has no other siblings- delete all (structure+resource) properties
+                m_vfsDriver.deleteProperties(context.currentProject().getId(), resource, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+                resources.add(resource);  
+            }            
         } finally {
             // clear the driver manager cache
             m_propertyCache.clear();
