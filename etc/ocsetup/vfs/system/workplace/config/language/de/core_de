@@ -543,6 +543,7 @@
             <active>aktiv</active>
             <author>Autor</author>
             <allfolders>Verzeichnisse</allfolders>
+            <allchannels>Channels</allchannels>
             <articlestate>Artikel-Status</articlestate>
             <changegroup>Gruppe bearbeiten</changegroup>
             <close><![CDATA[Schlie&szlig;en]]></close>

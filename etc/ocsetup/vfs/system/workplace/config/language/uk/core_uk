@@ -542,6 +542,7 @@
         <label>
             <active>active</active>
             <allfolders>Folders</allfolders>
+            <allchannels>Channels</allchannels>
             <author>Author</author>
             <changegroup>Edit Group</changegroup>
             <close>Close</close>
