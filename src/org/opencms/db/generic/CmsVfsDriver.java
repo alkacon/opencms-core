@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/25 10:28:42 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2003/08/26 10:01:42 $
+ * Version: $Revision: 1.103 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.102 $ $Date: 2003/08/25 10:28:42 $
+ * @version $Revision: 1.103 $ $Date: 2003/08/26 10:01:42 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2241,13 +2241,15 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(1, filename);
             stmt.setString(2, parentId.toString());
             //stmt.setInt(3, projectId);
+             
             res = stmt.executeQuery();
-
+ 
             if (res.next()) {
                 file = createCmsFileFromResultSet(res, projectId, false);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
+                 
                 // check if this resource is marked as deleted
                 if ((file.getState() == com.opencms.core.I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
                     throw new CmsException("[" + this.getClass().getName() + ".readFileHeader/3] " + file.getResourceName(), CmsException.C_RESOURCE_DELETED);
@@ -2416,6 +2418,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsFolder readFolder(int projectId, CmsUUID parentId, String foldername) throws CmsException {
+      
         CmsFolder folder = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -2426,7 +2429,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ");
 
             stmt.setString(1, foldername);
-            stmt.setString(2, parentId.toString());          
+            stmt.setString(2, parentId.toString());   
+                      
             res = stmt.executeQuery();
 
             if (res.next()) {
@@ -2434,6 +2438,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
+                  
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".readFolder/2] " + foldername, CmsException.C_NOT_FOUND);
             }
@@ -2446,8 +2451,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
-        
+    
         return folder;
+        
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/25 09:10:42 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2003/08/26 10:01:42 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.65 $ $Date: 2003/08/25 09:10:42 $
+ * @version $Revision: 1.66 $ $Date: 2003/08/26 10:01:42 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1069,8 +1069,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         List sortedFolderList = null;
         CmsResource delOnlineFolder = null;
         byte[] contents = null;
-        int publishHistoryId = nextPublishVersionId();
-        
+        int publishHistoryId = nextPublishVersionId();   
 
         try {
             discAccess = new CmsExportPointDriver(exportpoints);
@@ -1085,8 +1084,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // read the project resources of the project that gets published
             projectResources = m_driverManager.readProjectResources(context.currentProject());
 
+
             // read all changed/new/deleted folders in the offline project
             offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject().getId());
+
 
             // ensure that the folders appear in the correct (DFS) tree order
             sortedFolderMap = (Map) new HashMap();
@@ -1096,8 +1097,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 currentResourceName = m_driverManager.readPath(context, currentFolder, true);
                 sortedFolderMap.put(currentResourceName, currentFolder);
             }
+    
+                 
             sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
             Collections.sort(sortedFolderList);
+
 
             offlineFolders.clear();
             offlineFolders = null;
@@ -1267,13 +1271,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             if (sortedFolderList != null) {
-                sortedFolderList.clear();
-                sortedFolderList = null;
+            sortedFolderList.clear();
+            sortedFolderList = null;
             }
 
             if (sortedFolderMap != null) {
-                sortedFolderMap.clear();
-                sortedFolderMap = null;
+            sortedFolderMap.clear();
+            sortedFolderMap = null;
             }
 
             // now read all changed/new/deleted FILES in offlineProject
@@ -1563,8 +1567,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             if (offlineFiles != null) {
-                offlineFiles.clear();
-                offlineFiles = null;
+            offlineFiles.clear();
+            offlineFiles = null;
             }
 
             // now delete the "deleted" folders       
@@ -1585,8 +1589,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             Collections.reverse(sortedFolderList);
 
             if (deletedFolders != null) {
-                deletedFolders.clear();
-                deletedFolders = null;
+            deletedFolders.clear();
+            deletedFolders = null;
             }
 
             i = sortedFolderList.iterator();
@@ -1632,13 +1636,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             if (sortedFolderList != null) {
-                sortedFolderList.clear();
-                sortedFolderList = null;
+            sortedFolderList.clear();
+            sortedFolderList = null;
             }
 
             if (sortedFolderMap != null) {
-                sortedFolderMap.clear();
-                sortedFolderMap = null;
+            sortedFolderMap.clear();
+            sortedFolderMap = null;            
             }           
         } catch (CmsException e) {
             // these are dummy catch blocks to have a finally block for clearing 
@@ -2354,7 +2358,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         return readSystemProperty(name);
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writePublishHistory(com.opencms.file.CmsProject, int, int, java.lang.String, com.opencms.file.CmsResource)
      */
@@ -2378,8 +2382,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
-        }                 
+        }
     }
+
     
     public int nextPublishVersionId() throws CmsException  {
         PreparedStatement stmt = null;

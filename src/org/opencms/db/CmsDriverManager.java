@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/25 10:28:42 $
- * Version: $Revision: 1.175 $
+ * Date   : $Date: 2003/08/26 10:01:42 $
+ * Version: $Revision: 1.176 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.175 $ $Date: 2003/08/25 10:28:42 $
+ * @version $Revision: 1.176 $ $Date: 2003/08/26 10:01:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1393,6 +1393,8 @@ public class CmsDriverManager extends Object {
 
         //clearResourceCache(newFileName, context.currentProject(), context.currentUser());
         clearResourceCache();
+        //we must ensure that the file contains it full resource name as this is required for the 
+        // property operations
         readPath(context,file,true);
         // write the metainfos
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), file, file.getType());
@@ -1449,6 +1451,8 @@ public class CmsDriverManager extends Object {
 
         //clearResourceCache(newFolderName, context.currentProject(), context.currentUser());
         clearResourceCache();
+        //we must ensure that the file contains it full resource name as this is required for the 
+        // property operations
         readPath(context,newFolder,true);
         // write metainfos for the folder
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newFolder, newFolder.getType());
@@ -1767,6 +1771,8 @@ public class CmsDriverManager extends Object {
 
         // write the link
         linkResource = m_vfsDriver.createVfsLink(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName);
+        //we must ensure that the file contains it full resource name as this is required for the 
+        // property operations
         readPath(context,linkResource,true);
         
         if (linkProperties == null) {
@@ -2221,7 +2227,7 @@ public class CmsDriverManager extends Object {
     public void deleteProperty(CmsRequestContext context, String resource, String property) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-        readPath(context,res,true);
+ 
         // check if the user has write access to the resource
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
 
@@ -3460,7 +3466,7 @@ public class CmsDriverManager extends Object {
 
                 // make sure that we have access to all these
                 Iterator i = resources.iterator();
-                while(i.hasNext()) {
+                while(i.hasNext()) {                
                     CmsResource res = (CmsResource)i.next();
                     if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                         if (res.isFolder() && !res.getResourceName().endsWith("/")) {
@@ -3469,7 +3475,7 @@ public class CmsDriverManager extends Object {
                             res.setFullResourceName(folderRes.getFullResourceName() + res.getResourceName());
                         }
                         retValue.addElement(res);
-                    }
+                    }                   
                 }
 
                 m_resourceListCache.put(cacheKey, retValue);
@@ -3921,7 +3927,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, boolean strongCheck) throws CmsException {
-                       
+                      
         StringBuffer cacheBuffer = new StringBuffer(64);
         cacheBuffer.append(context.currentUser().getName());
         cacheBuffer.append(context.currentProject().isOnlineProject()?"_0_":"_1_");
@@ -3934,10 +3940,12 @@ public class CmsDriverManager extends Object {
         String cacheKey = cacheBuffer.toString();
         Boolean cacheResult = (Boolean)m_permissionCache.get(cacheKey);
         if (cacheResult != null) {
+             
             return cacheResult.booleanValue();
         }
-        
+       
         CmsLock lock = getLock(context, resource);
+           
         CmsPermissionSet permissions = null;
         int denied = 0;
 
@@ -3948,7 +3956,7 @@ public class CmsDriverManager extends Object {
 
         // check if the current user is admin
         boolean isAdmin = isAdmin(context);
-
+            
         // if the resource type is jsp or xml template
         // write is only allowed for administrators
         if (!isAdmin && ((resource.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID) || (resource.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID))) {            
@@ -3981,6 +3989,7 @@ public class CmsDriverManager extends Object {
             result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) > 0;
     }
         m_permissionCache.put(cacheKey, new Boolean(result));
+       
         return result;
     }
 
@@ -4078,6 +4087,8 @@ public class CmsDriverManager extends Object {
 
          //clearResourceCache(newResourceName, context.currentProject(), context.currentUser());
          clearResourceCache();
+         //we must ensure that the file contains it full resource name as this is required for the 
+         // property operations
          readPath(context, newResource, true);
          // write metainfos for the folder
          m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newResource, newResource.getType(), true);
@@ -5937,8 +5948,10 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if something goes wrong
      */        
     public String readPathInProject(CmsRequestContext context, int projectId, CmsResource resource, boolean includeDeleted) throws CmsException {
+
         if (resource.hasFullResourceName()) {
             // we did already what we want to do- no further operations required here!
+         
             return resource.getFullResourceName();
         }
 
@@ -5972,7 +5985,7 @@ public class CmsDriverManager extends Object {
             // see if we can find a cached parent-resource for the current parent-ID
             resourceCacheKey = getCacheKey("parent", context.currentUser(), projectId, currentParentId.toString());
             if ((currentResource = (CmsResource) m_resourceCache.get(resourceCacheKey)) == null) {
-                currentResource = m_vfsDriver.readFileHeader(projectId, currentParentId, includeDeleted);
+                currentResource = m_vfsDriver.readFileHeader(projectId, currentParentId, includeDeleted);                  
                 m_resourceCache.put(resourceCacheKey, currentResource);
             }
 
@@ -5983,6 +5996,7 @@ public class CmsDriverManager extends Object {
                 // add the root folder
                 path = currentResource.getResourceName() + path;
             }
+        
         }
 
         // cache the calculated path
@@ -5997,7 +6011,7 @@ public class CmsDriverManager extends Object {
 
         // set the calculated path in the calling resource
         resource.setFullResourceName(resourceName);
-
+        
         return resourceName;
     }
 
@@ -6034,7 +6048,7 @@ public class CmsDriverManager extends Object {
      * @return List of CmsResource's
      * @throws CmsException if something goes wrong
      */    
-    public List readPathInProject(CmsRequestContext context, int projectId, String path, boolean includeDeleted) throws CmsException {
+    public List readPathInProject(CmsRequestContext context, int projectId, String path, boolean includeDeleted) throws CmsException {    
         // splits the path into folder and filename tokens
         StringTokenizer tokens = null;
         // # of folders in the path
@@ -6126,7 +6140,7 @@ public class CmsDriverManager extends Object {
 
             pathList.add(i, currentResource);
         }
-
+      
         return pathList;
     }
 
@@ -6456,7 +6470,6 @@ public class CmsDriverManager extends Object {
     public Map readProperties(CmsRequestContext context, String resource, String siteRoot, boolean search) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-        readPath(context,res,true);
     
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
@@ -6520,8 +6533,7 @@ public class CmsDriverManager extends Object {
     public String readProperty(CmsRequestContext context, String resource, String siteRoot, String property, boolean search) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-        readPath(context,res,true);
-        
+           
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
     
@@ -7595,6 +7607,8 @@ public class CmsDriverManager extends Object {
 
             // read the resource from the online project
             CmsFolder onlineFolder = readFolderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, resourceName);
+            //we must ensure that the resource contains it full resource name as this is required for the 
+            // property operations
             readPath(context,onlineFolder,true);
             
             CmsFolder restoredFolder =
@@ -8131,7 +8145,6 @@ public class CmsDriverManager extends Object {
 
         // check if the user has write access 
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
-        readPath(context,res,true);
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), res, res.getType());
         m_propertyCache.clear();
 
@@ -8167,7 +8180,7 @@ public class CmsDriverManager extends Object {
 
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-        readPath(context,res,true);
+
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
 
@@ -8239,7 +8252,6 @@ public class CmsDriverManager extends Object {
      */
     public void writeResource(CmsRequestContext context, String resourcename, Map properties, String username, int resourceType, byte[] filecontent) throws CmsException {
         CmsResource resource = readFileHeader(context, resourcename, true);
-        readPath(context,resource,true);
         // check if the user has write access 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
