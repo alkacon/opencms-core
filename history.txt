@@ -13,6 +13,9 @@ OpenCms 4.5.17 Chusuk       - xx November 2001
   a picture in the picturegallery.
 ! Webusers can be added with an additional group by everybody.
 - The password of a user can be changed by everybody who knows the username and the old password.
+- Added some methods to the generic CmsDbAccess so it is easier to select the correct pool 
+  and statement for online or offline projects.
+- Added some fileds to the mastermodule.
 
 OpenCms 4.5.16 Chusuk       - 06 November 2001
 * Completing the generic master for modules in projectcycle.
