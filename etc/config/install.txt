@@ -60,7 +60,7 @@ mysqladmin create opencms41
 
 Finally run
 
-mysql opencms41 < databasesetup.txt
+mysql opencms41 < mysql.sql
 
 This will create all required database tables.
 Make sure all tables are created properly by calling the mySQL monitor again

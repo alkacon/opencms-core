@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.36 Arakis - 29 September 2000
+
+! added workplace-interface for module-maintenace
+! added first developer-version of oracleplsql ressource-broker
+
 OpenCms 4.1.35 Arakis - 31 August 2000
 
 ! added a registry to maintain informations about modules
