@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2000/05/12 08:45:02 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/05/22 12:17:39 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/05/12 08:45:02 $
+ * @version $Revision: 1.18 $ $Date: 2000/05/22 12:17:39 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -88,14 +88,12 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
      */        
      public CmsXmlWpConfigFile(A_CmsObject cms) throws CmsException {
         super();
-        CmsFile configFile = null;
         try {
-           configFile = cms.readFile(C_WORKPLACE_INI);
-        } catch(Exception e) {
+            init(cms, C_WORKPLACE_INI);
+        }catch(Exception e) {
             e.printStackTrace();
-            throwException("Configuration file \"workplace.ini\" missing.", CmsException.C_NOT_FOUND);
+            throwException("Could not read configuration file \"workplace.ini\".", CmsException.C_NOT_FOUND);
         }        
-        init(cms, configFile);
     }
     
     /**

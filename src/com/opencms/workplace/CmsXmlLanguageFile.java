@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/04/11 13:38:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/05/22 12:17:39 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,15 +39,17 @@ import java.util.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/04/11 13:38:09 $
+ * @version $Revision: 1.9 $ $Date: 2000/05/22 12:17:39 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,
                                                                    I_CmsWpConstants,
                                                                    I_CmsConstants{
-
     
     /** Name of the class specific language section. */
     private String m_localSection = null;
+
+    /** Name of the class specific language section. */
+    private static String m_languagePath = null;
     
     /**
      * Default constructor.
@@ -92,9 +94,11 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
      */        
     public CmsXmlLanguageFile(A_CmsObject cms) throws CmsException {
         super();
-        CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
         
-        String languagePath = configFile.getLanguagePath();
+        if(m_languagePath == null) {
+            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);        
+            m_languagePath = configFile.getLanguagePath();
+        }
         
         // select the right language to use
         String currentLanguage=null;
@@ -109,16 +113,12 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
             currentLanguage = C_DEFAULT_LANGUAGE;
         }
      
-        
-        CmsFile languageFile = null;
         try {
-            languageFile = cms.readFile(languagePath + currentLanguage);
+            init(cms, m_languagePath + currentLanguage);
         } catch(Exception e) {
             e.printStackTrace();
-            throwException("Could not load language file " + languagePath + currentLanguage + ".", CmsException.C_NOT_FOUND);
+            throwException("Could not load language file " + m_languagePath + currentLanguage + ".");
         }
-        
-        init(cms, languageFile);
     }        
 
     
