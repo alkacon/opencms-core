@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/11/10 16:55:31 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.opencms.threads.CmsAdminHistoryClearThread;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -260,7 +260,7 @@ public class CmsAdminHistoryClear extends CmsReport {
         } catch (NumberFormatException e) {
             // no int value submitted, check date fields
             try {
-                timeStamp = getCalendarDate(paramDate);
+                timeStamp = getCalendarDate(paramDate, false);
             } catch (ParseException ex) {
                 // no date values submitted, throw exception
                 throw new CmsException("Invalid arguments. Check the date field of the dialog", CmsException.C_BAD_NAME, ex);

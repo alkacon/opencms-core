@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/11/07 13:17:33 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/11/10 16:55:31 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,13 @@ import com.opencms.core.CmsException;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -48,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -60,12 +67,10 @@ public class CmsTouch extends CmsDialog {
     public static final String DIALOG_TYPE = "touch";
     
     public static final String PARAM_NEWTIMESTAMP = "newtimestamp";
-    public static final String PARAM_NEWTIMESTAMPMILLIS = "newtimestampmillis";
     public static final String PARAM_RECURSIVE = "recursive";
     
     private String m_paramRecursive;
     private String m_paramNewtimestamp;
-    private String m_paramNewtimestampmillis;
     
     /**
      * Public constructor.<p>
@@ -130,28 +135,7 @@ public class CmsTouch extends CmsDialog {
     public void setParamNewtimestamp(String value) {
         m_paramNewtimestamp = value;
     }  
-    
-    /**
-     * Returns the value of the new timestamp parameter, 
-     * or null if this parameter was not provided.<p>
-     * 
-     * The timestamp parameter stores the new timestamp as String.<p>
-     * 
-     * @return the value of the new timestamp parameter
-     */    
-    public String getParamNewtimestampmillis() {
-        return m_paramNewtimestampmillis;
-    }
-
-    /**
-     * Sets the value of the new timestamp parameter.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamNewtimestampmillis(String value) {
-        m_paramNewtimestampmillis = value;
-    }      
-    
+       
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
@@ -190,11 +174,27 @@ public class CmsTouch extends CmsDialog {
         
         // show the checkbox only for folders
         if (res.isFolder()) {
-            retValue.append("<tr>\n\t<td colspan=\"2\" style=\"white-space: nowrap;\" unselectable=\"on\">");
+            retValue.append("<tr>\n\t<td colspan=\"3\" style=\"white-space: nowrap;\" unselectable=\"on\">");
             retValue.append("<input type=\"checkbox\" name=\""+PARAM_RECURSIVE+"\" value=\"true\">&nbsp;"+key("input.changesubresources"));
             retValue.append("</td>\n</tr>\n");
         }
         return retValue.toString();
+    }
+    
+    /**
+     * Returns the current date and time as String formatted in localized pattern.<p>
+     * 
+     * @return the current date and time as String formatted in localized pattern
+     */
+    public String getCurrentDateTime() {
+        // get the current date & time 
+        Locale locale = new Locale(getSettings().getLanguage());
+        TimeZone zone = TimeZone.getDefault();
+        GregorianCalendar cal = new GregorianCalendar(zone, locale);
+        cal.setTimeInMillis(System.currentTimeMillis());
+        // format it nicely according to the localized pattern
+        DateFormat df = new SimpleDateFormat(getCalendarJavaDateFormat(key("calendar.dateformat") + " " + key("calendar.timeformat")));
+        return df.format(cal.getTime());
     }
         
     /**
@@ -248,11 +248,11 @@ public class CmsTouch extends CmsDialog {
         // get the new timestamp for the resource(s) from request parameter
         long timeStamp;
         try {
-            timeStamp = Long.parseLong(getParamNewtimestampmillis());
-        } catch (Exception e) {
-            timeStamp = -1;
+            timeStamp = getCalendarDate(getParamNewtimestamp(), true);
+        } catch (ParseException e) {
+            throw new CmsException("Error in date/time String \"" + getParamNewtimestamp() + "\", cannot parse correct date value", CmsException.C_BAD_NAME, e);
         }
-
+        
         // get the flag if the touch is recursive from request parameter
         boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());     
   
