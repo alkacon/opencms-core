@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/02/12 12:05:11 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import com.opencms.util.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -65,7 +66,9 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
     private final String C_DATE = "date";
     private final String C_SESSION_DATA = "module_create_data";
     private final String C_MODULE_TYPE = "moduletype";
-
+    private final String C_EXPORTCLASSES = "exportclasses";
+    private final String C_EXPORTLIB = "exportlib";
+        
     /**
      *  Checks if the name is correct.
      *  @param name the name to check..
@@ -118,6 +121,8 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
             templateDocument.setData(C_AUTHOR, "");
             templateDocument.setData(C_EMAIL, "");
             templateDocument.setData(C_MODULE_TYPE, "checked");
+            templateDocument.setData(C_EXPORTCLASSES, "checked");
+            templateDocument.setData(C_EXPORTLIB, "checked");                        
             //  set the current date:
             templateDocument.setData(C_DATE, dateFormat.format(new Date()));
         }else {
@@ -134,6 +139,12 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                 String email = (String)parameters.get(C_EMAIL);
                 String createDate = (String)parameters.get(C_DATE);
                 String moduleType = (String)parameters.get(C_MODULE_TYPE);
+                String exportClasses = (String)parameters.get(C_EXPORTCLASSES);
+                String exportLib = (String)parameters.get(C_EXPORTLIB);
+                    
+                boolean isSimpleModule = ((moduleType != null) && moduleType.equals("checked"));
+                boolean mustExportClasses = ((exportClasses != null) && exportClasses.equals("checked"));
+                boolean mustExportLib = ((exportLib != null) && exportLib.equals("checked"));
                 
                 boolean moduleExists = reg.moduleExists(packagename);
                 int v = -1;
@@ -186,47 +197,50 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     }catch(Exception exc) {
                         createDateLong = (new Date()).getTime();
                     }
-                    reg.createModule(packagename, getStringValue(modulename), getStringValue(description), getStringValue(author), createDateLong, v);
+                    
+                    String type = isSimpleModule?CmsRegistry.C_MODULE_TYPE_SIMPLE:CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+
+                    HashMap exportPoints = new HashMap();
+                    if (mustExportClasses) {
+                        exportPoints.put(I_CmsWpConstants.C_VFS_PATH_MODULES + packagename +"/classes/", "WEB-INF/classes/");                        
+                    }
+                    if (mustExportLib) {
+                        exportPoints.put(I_CmsWpConstants.C_VFS_PATH_MODULES + packagename +"/lib/", "WEB-INF/lib/");                                                
+                    }
+                                        
+                    reg.createModule(packagename, getStringValue(modulename), getStringValue(description), getStringValue(author), type, exportPoints, createDateLong, v);
                     reg.setModuleAuthorEmail(packagename, getStringValue(email));
                     reg.setModuleMaintenanceEventClass(packagename, getStringValue(maintenance));
-                    reg.setModulePublishClass(packagename, getStringValue(publishclass));
-                    
-                    boolean isSimpleModule = false;
-                    if (moduleType!=null && moduleType.equals("checked")) {
-                        reg.setModuleType( packagename, CmsRegistry.C_MODULE_TYPE_SIMPLE );
-                        isSimpleModule = true;
-                    } else {
-                        reg.setModuleType( packagename, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
-                    }
-
-                    /*
-                    // Moduldemo folder is deprecated since 5.0 beta 2
-                    tryToCreateFolder(cms, "/", "moduledemos");
-                    tryToCreateFolder(cms, "/moduledemos/", packetname);
-                    */
-                    
+                    reg.setModulePublishClass(packagename, getStringValue(publishclass));                                      
+             
                     String modulePath = C_VFS_PATH_MODULES + packagename + "/";
                     
-                    // as default dont export any module data                    
+                    // as default don't export any module data                
                     cms.writeProperty(modulePath, C_PROPERTY_EXPORT, "false");
                     
-                    // create the class folder:
-                    tryToCreateFolder(cms, modulePath, "classes");
-                    // create all package folders beneth class folder
-                    Vector cFolders = new Vector();
-                    String workString = packagename;
-                    while(workString.lastIndexOf('.') > -1) {
-                        cFolders.addElement(workString.substring(workString.lastIndexOf('.') + 1));
-                        workString = workString.substring(0, workString.lastIndexOf('.'));
+                    if (mustExportClasses) {
+                        // create the class folder, will get exportet to the "real" file system
+                        tryToCreateFolder(cms, modulePath, "classes");
+                        // create all package folders beneth class folder
+                        Vector cFolders = new Vector();
+                        String workString = packagename;
+                        while(workString.lastIndexOf('.') > -1) {
+                            cFolders.addElement(workString.substring(workString.lastIndexOf('.') + 1));
+                            workString = workString.substring(0, workString.lastIndexOf('.'));
+                        }
+                        tryToCreateFolder(cms, modulePath+"classes/", workString);
+                        workString = modulePath + "classes/" + workString + "/";
+                        for(int i = cFolders.size() - 1;i >= 0;i--) {
+                            tryToCreateFolder(cms, workString, (String)cFolders.elementAt(i));
+                            workString = workString + (String)cFolders.elementAt(i) + "/";
+                        }                    
                     }
-                    tryToCreateFolder(cms, modulePath+"classes/", workString);
-                    workString = modulePath + "classes/" + workString + "/";
-                    for(int i = cFolders.size() - 1;i >= 0;i--) {
-                        tryToCreateFolder(cms, workString, (String)cFolders.elementAt(i));
-                        workString = workString + (String)cFolders.elementAt(i) + "/";
-                    }                    
-                    // create the lib folder, will get exportet to the "real" file system
-                    tryToCreateFolder(cms, modulePath, "lib");
+                    
+                    if (mustExportLib) {
+                        // create the lib folder, will get exportet to the "real" file system
+                        tryToCreateFolder(cms, modulePath, "lib");
+                    }
+                    
                     // create the templates folder
                     tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_VFS_DIR_TEMPLATES);
                     // create the "default_bodies" folder 
@@ -234,10 +248,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     // crate "elements" folder
                     tryToCreateFolder(cms, modulePath, "elements");
 
-                    if (isSimpleModule) {
-                        // simple module type 
-                        reg.setModuleDocumentPath(packagename, modulePath + "index.html");                        
-                    } else {
+                    if (! isSimpleModule) {
                         // traditional module type, create more directories
                         tryToCreateFolder(cms, modulePath, "contenttemplates");
                         tryToCreateFolder(cms, modulePath, "frametemplates");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/02/01 20:41:06 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/02/12 12:05:11 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,6 +49,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -64,7 +66,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.62 $ $Date: 2003/02/01 20:41:06 $
+ * @version $Revision: 1.63 $ $Date: 2003/02/12 12:05:11 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -261,32 +263,38 @@ private Vector checkDependencies(Element module) throws CmsException {
 public I_CmsRegistry clone(CmsObject cms) {
     return new CmsRegistry(this, cms);
 }
-/**
- * This method creates a new module in the repository.
- *
- * @param String modulename the name of the module.
- * @param String niceModulename another name of the module.
- * @param String description the description of the module.
- * @param String author the name of the author.
- * @param long createDate the creation date of the module
- * @param int version the version number of the module.
- * @throws CmsException if the user has no right to create a new module.
- */
-public void createModule(String modulename, String niceModulename, String description, String author, long createDate, int version) throws CmsException {
-    createModule(modulename, niceModulename, description, author, m_dateFormat.format(new Date(createDate)), version);
-}
-/**
- * This method creates a new module in the repository.
- *
- * @param String modulename the name of the module.
- * @param String niceModulename another name of the module.
- * @param String description the description of the module.
- * @param String author the name of the author.
- * @param String createDate the creation date of the module in the format: mm.dd.yyyy
- * @param int version the version number of the module.
- * @throws CmsException if the user has no right to create a new module.
- */
-public void createModule(String modulename, String niceModulename, String description, String author, String createDate, int version) throws CmsException {
+
+    /**
+     * This method creates a new module in the repository.
+     *
+     * @param modulename the name of the module
+     * @param niceModulename another name of the module
+     * @param description the description of the module
+     * @param author the name of the author
+     * @param type the type of the module
+     * @param exportPoints a map of all export points of the module 
+     * @param createDate the creation date of the module
+     * @param version the version number of the module
+     * @throws CmsException if the user has no right to create a new module
+     */
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, long createDate, int version) throws CmsException {
+            createModule(modulename, niceModulename, description, author, type, exportPoints, m_dateFormat.format(new Date(createDate)), version);
+    }
+    
+    /**
+     * This method creates a new module in the repository.
+     *
+     * @param modulename the name of the module
+     * @param niceModulename another name of the module
+     * @param description the description of the module
+     * @param author the name of the author
+     * @param type the type of the module
+     * @param exportPoints a map of all export points of the module 
+     * @param createDate the creation date of the module in the format: mm.dd.yyyy
+     * @param version the version number of the module
+     * @throws CmsException if the user has no right to create a new module
+     */
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, String createDate, int version) throws CmsException {
 
     // find out if the module exists already
     if (moduleExists(modulename)) {
@@ -296,19 +304,12 @@ public void createModule(String modulename, String niceModulename, String descri
     // check if the user is allowed to perform this action
     if (!hasAccess()) {
         throw new CmsException("No access to perform the action 'createModule'", CmsException.C_REGISTRY_ERROR);
-    }
-    
-    String moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
-    
-    // due to the fact that there is no GUI element to set the module type in
-    // the module creating backoffice dialoge, we module type is currently per
-    // default a "traditional" module. as a hack, the module type is set when
-    // the module is updated....
+    };
 
     // create the new module in the registry
     StringBuffer moduleString = new StringBuffer();
     
-    moduleString.append( C_EMPTY_MODULE[0] + moduleType );
+    moduleString.append( C_EMPTY_MODULE[0] + type );
     moduleString.append( C_EMPTY_MODULE[1] + modulename );
     moduleString.append( C_EMPTY_MODULE[2] + niceModulename );
     moduleString.append( C_EMPTY_MODULE[3] + version );
@@ -316,10 +317,17 @@ public void createModule(String modulename, String niceModulename, String descri
     moduleString.append( C_EMPTY_MODULE[5] + author );
     moduleString.append( C_EMPTY_MODULE[6] + createDate );
     moduleString.append( C_EMPTY_MODULE[7] );
-    moduleString.append( C_EXPORTPOINT[0] + I_CmsWpConstants.C_VFS_PATH_MODULES + modulename +"/classes/" );
-    moduleString.append( C_EXPORTPOINT[1] + "WEB-INF/classes/" + C_EXPORTPOINT[2] );
-    moduleString.append( C_EXPORTPOINT[0] + I_CmsWpConstants.C_VFS_PATH_MODULES + modulename +"/lib/" );
-    moduleString.append( C_EXPORTPOINT[1] + "WEB-INF/lib/" + C_EXPORTPOINT[2] );
+    
+    Iterator i = exportPoints.keySet().iterator();
+    while (i.hasNext()) {
+        String key = (String)i.next();
+        String value = (String)exportPoints.get(key);
+        moduleString.append( C_EXPORTPOINT[0] );
+        moduleString.append( key );
+        moduleString.append( C_EXPORTPOINT[1] );
+        moduleString.append( value );
+        moduleString.append( C_EXPORTPOINT[2] );        
+    }
     moduleString.append( C_EMPTY_MODULE[8] );
 
     // encoding project:
@@ -665,9 +673,18 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
         if (!hasAccess()) {
             throw new CmsException("No access to perform the action 'exportModule'", CmsException.C_REGISTRY_ERROR);
         }
-        // export the module using the standard export
-        // CHECK: CmsExport exp = new CmsExport(fileName, resources, m_cms, false, false, getModuleElement(moduleName), false, 0, report);
-        new CmsExport(fileName, resources, m_cms, false, false, getModuleElement(moduleName), false, 0, report);
+        // remove all "uploaddate" and "uploadby" nodes
+        Element module = getModuleElement(moduleName);
+        Element moduleCopy = (Element)module.cloneNode(true);
+        NodeList list = moduleCopy.getChildNodes();
+        for (int i=(list.getLength()-1); i>0; i--) {
+            Element e = (Element)list.item(i);
+            if ("uploaddate".equals(e.getNodeName()) || "uploadedby".equals(e.getNodeName())) {
+                moduleCopy.removeChild(e);
+            }
+        }                      
+        // export the module using the standard export        
+        new CmsExport(fileName, resources, m_cms, false, false, moduleCopy, false, 0, report);
     }
     
     /**

@@ -78,16 +78,16 @@
                                         <table border="0" width="100%">
                                         <tr>
                                             <td class=formular>
-                                                <input type="checkbox" name="view" id="view" ]]><PROCESS>view</PROCESS><![CDATA[ value="checked">
-                                                ]]><LABEL value="label.view"/><![CDATA[
+                                                <input type="checkbox" name="moduletype" id="moduletype" ]]><PROCESS>moduletype</PROCESS><![CDATA[ value="checked" disabled>
+                                                ]]><LABEL value="module.lable.moduletype"/><![CDATA[
                                             </td>
                                             <td class=formular>
                                                 <input type="checkbox" name="adminpoint" id="adminpoint" ]]><PROCESS>adminpoint</PROCESS><![CDATA[ value="checked">
                                                 ]]><LABEL value="module.lable.adminpoint"/><![CDATA[
-                                            </td>
+                                            </td>                                                                                    
                                             <td class=formular>
-                                                <input type="checkbox" name="moduletype" id="moduletype" ]]><PROCESS>moduletype</PROCESS><![CDATA[ value="checked">
-                                                ]]><LABEL value="module.lable.moduletype"/><![CDATA[
+                                                <input type="checkbox" name="view" id="view" ]]><PROCESS>view</PROCESS><![CDATA[ value="checked">
+                                                ]]><LABEL value="label.view"/><![CDATA[
                                             </td>
                                         </tr>
                                         <tr>

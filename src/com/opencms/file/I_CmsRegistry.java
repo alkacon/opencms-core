@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2003/02/01 19:14:45 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/02/12 12:05:11 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.report.I_CmsReport;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.35 $ $Date: 2003/02/01 19:14:45 $
+ * @version $Revision: 1.36 $ $Date: 2003/02/12 12:05:11 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -56,30 +56,37 @@ public interface I_CmsRegistry extends Cloneable {
      * @return the cloned registry.
      */
     public I_CmsRegistry clone(CmsObject cms);
+    
     /**
      * This method creates a new module in the repository.
      *
-     * @param String modulename the name of the module.
-     * @param String niceModulename another name of the module.
-     * @param String description the description of the module.
-     * @param String author the name of the author.
-     * @param long createDate the creation date of the module
-     * @param int version the version number of the module.
-     * @throws CmsException if the user has no right to create a new module.
+     * @param modulename the name of the module
+     * @param niceModulename another name of the module
+     * @param description the description of the module
+     * @param author the name of the author
+     * @param type the type of the module
+     * @param exportPoints a map of all export points of the module 
+     * @param createDate the creation date of the module
+     * @param version the version number of the module
+     * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(String modulename, String niceModulename, String description, String author, long createDate, int version) throws CmsException;
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, long createDate, int version) throws CmsException;
+    
     /**
      * This method creates a new module in the repository.
      *
-     * @param String modulename the name of the module.
-     * @param String niceModulename another name of the module.
-     * @param String description the description of the module.
-     * @param String author the name of the author.
-     * @param String createDate the creation date of the module in the format: mm.dd.yyyy
-     * @param int version the version number of the module.
-     * @throws CmsException if the user has no right to create a new module.
+     * @param modulename the name of the module
+     * @param niceModulename another name of the module
+     * @param description the description of the module
+     * @param author the name of the author
+     * @param type the type of the module
+     * @param exportPoints a map of all export points of the module 
+     * @param createDate the creation date of the module in the format: mm.dd.yyyy
+     * @param version the version number of the module
+     * @throws CmsException if the user has no right to create a new module
      */
-    public void createModule(String modulename, String niceModulename, String description, String author, String createDate, int version) throws CmsException;
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, Map exportPoints, String createDate, int version) throws CmsException;
+
 /**
  * This method checks which modules need this module. If a module depends on this the name
  * will be returned in the vector.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/02/01 19:14:45 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/02/12 12:05:12 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import java.io.FileInputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -47,7 +48,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.60 $ $Date: 2003/02/01 19:14:45 $
+ * @version $Revision: 1.61 $ $Date: 2003/02/12 12:05:12 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -555,14 +556,14 @@ class CmsShellCommands implements I_CmsConstants {
      * @param String createDate the creation date of the module
      * @param String version the version number of the module.
      */
-    public void createModule(String modulename, String niceModulename, String description, String author, String createDate, String version) {
+    public void createModule(String modulename, String niceModulename, String description, String author, String type, String createDate, String version) {
 
         // create the module
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
             int ver = Integer.parseInt(version);
             long date = Long.parseLong(createDate);
-            reg.createModule(modulename, niceModulename, description, author, date, ver);
+            reg.createModule(modulename, niceModulename, description, author, type, new HashMap(), date, ver);
         }
         catch(Exception exc) {
             CmsShell.printException(exc);

@@ -75,19 +75,29 @@
                                     <td colspan="4">
                                         <table border="0" width="100%">
                                         <tr>
-                                            <td class=formular>
-                                                <input type="checkbox" name="view" id="view" ]]><PROCESS>view</PROCESS><![CDATA[ value="checked">
-                                                ]]><LABEL value="label.view"/><![CDATA[
-                                            </td>
-                                            <td class=formular>
+                                            <td class="formular" nowrap>
+                                                <input type="checkbox" name="moduletype" id="moduletype" ]]><PROCESS>moduletype</PROCESS><![CDATA[ value="checked">
+                                                ]]><LABEL value="module.lable.moduletype"/><![CDATA[
+                                            </td>                                        
+                                            <td class="formular" nowrap>
                                                 <input type="checkbox" name="adminpoint" id="adminpoint" ]]><PROCESS>adminpoint</PROCESS><![CDATA[ value="checked">
                                                 ]]><LABEL value="module.lable.adminpoint"/><![CDATA[
                                             </td>
-                                            <td class=formular>
-                                                <input type="checkbox" name="moduletype" id="moduletype" ]]><PROCESS>moduletype</PROCESS><![CDATA[ value="checked">
-                                                ]]><LABEL value="module.lable.moduletype"/><![CDATA[
+                                            <td class="formular" nowrap>
+                                                <input type="checkbox" name="view" id="view" ]]><PROCESS>view</PROCESS><![CDATA[ value="checked">
+                                                ]]><LABEL value="label.view"/><![CDATA[
+                                            </td>                                            
+                                        </tr>     
+                                        <tr>
+                                            <td class="formular" nowrap>
+                                                <input type="checkbox" name="exportclasses" id="exportclasses" ]]><PROCESS>exportclasses</PROCESS><![CDATA[ value="checked">
+                                                ]]><LABEL value="module.lable.exportclasses"/><![CDATA[
+                                            </td>                                        
+                                            <td class="formular" nowrap>
+                                                <input type="checkbox" name="exportlib" id="exportlib" ]]><PROCESS>exportlib</PROCESS><![CDATA[ value="checked">
+                                                ]]><LABEL value="module.lable.exportlib"/><![CDATA[
                                             </td>
-                                        </tr>                                    
+                                        </tr>                                                                        
                                         <tr>
                                             <td class=formular nowrap>]]><LABEL value="module.lable.maintenance"/><![CDATA[</td>
                                             <td class="dialogtxt" colspan="2">
