@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2003/10/02 08:43:53 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/10/02 12:10:21 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeLink;
+import com.opencms.file.CmsResourceTypePointer;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.CmsLinkCheck;
 import com.opencms.util.Encoder;
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2003/10/02 08:43:53 $
+ * @version $Revision: 1.2 $ $Date: 2003/10/02 12:10:21 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -239,7 +239,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                             
                             // TODO VFS links: creates an external HTTP link following the new linking paradigm
                             //linkResource = cms.createVfsLink(foldername + filename, targetName, targetProperties);
-                            linkResource = cms.createResource(foldername + filename, CmsResourceTypeLink.C_RESOURCE_TYPE_ID, prop, targetName.getBytes(), targetProperties);
+                            linkResource = cms.createResource(foldername + filename, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, prop, targetName.getBytes(), targetProperties);
                         }
                         
                  

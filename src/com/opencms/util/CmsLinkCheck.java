@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2003/09/01 09:09:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/10/02 12:10:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.I_CmsCronJob;
 import com.opencms.defaults.CmsMail;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResourceTypePointer;
+import com.opencms.file.CmsResourceTypeLink;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -300,7 +300,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
         StringBuffer mailContent = new StringBuffer(template.getProcessedDataValue("single_message"));
 
         // get all links from the database
-        linkList = cms.readFilesByType(I_CmsConstants.C_UNKNOWN_INT, CmsResourceTypePointer.C_RESOURCE_TYPE_ID);
+        linkList = cms.readFilesByType(I_CmsConstants.C_UNKNOWN_INT, CmsResourceTypeLink.C_RESOURCE_TYPE_ID);
         for (int i = 0; i < linkList.size(); i++) {
             CmsFile linkElement = (CmsFile)linkList.elementAt(i);
             String linkName = cms.readAbsolutePath(linkElement);
