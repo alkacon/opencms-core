@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-importexport.dtd">
+
+<opencms>
+	<importexport>
+		<importexporthandlers>
+			<importexporthandler class="com.opencms.legacy.CmsCosImportExportHandler"/>
+			<importexporthandler class="org.opencms.importexport.CmsVfsImportExportHandler"/>
+			<importexporthandler class="org.opencms.importexport.CmsModuleImportExportHandler"/>
+		</importexporthandlers>
+		<import>
+			<overwrite>true</overwrite>
+			<convert>true</convert>
+			<importversions>
+				<importversion class="com.opencms.legacy.CmsImportVersion1"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion2"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion3"/>
+				<importversion class="org.opencms.importexport.CmsImportVersion4"/>
+			</importversions>
+			<immutables>
+				<resource uri="/system/"/>
+				<resource uri="/system/bodies/"/>
+				<resource uri="/system/galleries/"/>
+				<resource uri="/system/galleries/download/"/>
+				<resource uri="/system/galleries/externallinks/"/>
+				<resource uri="/system/galleries/htmlgalleries/"/>
+				<resource uri="/system/galleries/pics/"/>
+				<resource uri="/system/login/"/>
+				<resource uri="/system/modules/"/>
+				<resource uri="/system/shared/"/>
+				<resource uri="/system/workplace/"/>
+				<resource uri="/system/workplace/action/"/>
+				<resource uri="/system/workplace/administration/"/>
+				<resource uri="/system/workplace/help/"/>
+				<resource uri="/system/workplace/locales/"/>
+				<resource uri="/system/workplace/resources/"/>
+				<resource uri="/system/workplace/restypes/"/>
+				<resource uri="/system/workplace/scripts/"/>
+				<resource uri="/system/workplace/templates/"/>
+				<resource uri="/channels/"/>
+				<resource uri="/sites/"/>
+			</immutables>
+			<principaltranslations/>
+			<ignoredproperties/>
+		</import>
+	</importexport>
+</opencms>

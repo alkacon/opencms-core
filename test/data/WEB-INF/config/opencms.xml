@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-configuration.dtd">
+
+<opencms>
+	<configuration>
+        <config class="org.opencms.configuration.CmsSystemConfiguration"/>	
+		<config class="org.opencms.configuration.CmsVfsConfiguration"/>
+		<config class="org.opencms.configuration.CmsWorkplaceConfiguration"/>
+		<config class="org.opencms.configuration.CmsImportExportConfiguration"/>
+	</configuration>
+</opencms>
