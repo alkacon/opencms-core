@@ -124,7 +124,9 @@
                         <%
                             if(red) {
                                 out.println("<p><b>Attention:</b> Your system does not have the necessary components to use OpenCms. It is assumed that OpenCms will not run on your system.</p>");
-                                out.println("<p>"+unsEngMessages[unsupportedServletEngine]+"</p>");
+                                if (unsupportedServletEngine > -1) {
+                                    out.println("<p>"+unsEngMessages[unsupportedServletEngine]+"</p>");
+                                }
                             }
                             else if (yellow)    {
                                 out.print("<b>Attention:</b> Your system uses components which have not been tested to work with OpenCms. It is possible that OpenCms will not run on your system.");

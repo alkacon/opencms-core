@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.4 Ecaz - ?? April 2002
+* BUG#7 fixed: ArrayIndexOutOfBoundsException happening during ocsetup (4.6.0)
+
 OpenCms 4.7.4 Ecaz - 10 April 2002
 ! A new property (pool.mysql.testQuery) for the OpenCms SQL Connection pool:
   The following is an example property - it can be used for all pools. It defines
