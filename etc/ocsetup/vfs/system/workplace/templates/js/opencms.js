@@ -40,7 +40,7 @@ var imgEndOn = "_on.gif";
 var imgEndOff = "_off.gif";
 var imgEndPush = "_push.gif";
 var imgEndInakitv = "_in.gif";
-var pfad="../pics/";
+//var pfad="../pics/";
 
 
 function ChOn(imgID) //changes a imageobject on mouseover
