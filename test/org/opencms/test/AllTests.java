@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/Attic/AllTests.java,v $
- * Date   : $Date: 2004/05/25 11:26:22 $
- * Version: $Revision: 1.16 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/AllTests.java,v $
+ * Date   : $Date: 2004/05/27 17:51:45 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,13 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+package org.opencms.test;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.0
  */
