@@ -8,6 +8,14 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.59 Arakis - 21 February 2001
+
+* General bugfixing.
+
+OpenCms 4.1.58 Arakis - 21 February 2001
+
+* The classloader is now able to load ressources (like properties) from repositories.
+
 OpenCms 4.1.57 Arakis - 13 February 2001
 
 - ATTENTION! On a win32 System with jdk1.3 you have to unzipp the .jar and .zip 
