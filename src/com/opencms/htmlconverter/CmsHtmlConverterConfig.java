@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterConfig.java,v $
-* Date   : $Date: 2002/02/21 16:15:40 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/09/02 07:50:40 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -173,7 +173,7 @@ final class CmsHtmlConverterConfig {
      * creates configuration from String
      * @param confString String with XML configuration
      */
-    protected void CmsHtmlConverterConfig(String confString) {
+    protected CmsHtmlConverterConfig(String confString) {
         init(confString);
     }
 
@@ -181,7 +181,7 @@ final class CmsHtmlConverterConfig {
      * creates configuration from InputStream
      * @param in InputStream with XML configuration
      */
-    protected void CmsHtmlConverterConfig(InputStream in) {
+    protected CmsHtmlConverterConfig(InputStream in) {
         init(in);
     }
 
