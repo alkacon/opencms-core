@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/06 13:47:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/07 14:27:49 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -415,24 +415,22 @@ public class CmsDialog extends CmsWorkplace {
     }
     
     /**
-     * Builds a block with 3D border and optional subheadline in the dialog content area.<p>
+     * Builds the end HTML for a block with 3D border in the dialog content area.<p>
      * 
-     * @param segment the HTML segment (START / END)
      * @return 3D block start / end segment
      */
-    public String dialogBlock(int segment) {
-        return dialogBlock(segment, null, false);
+    public String dialogBlockEnd() {
+        return dialogBlock(HTML_END, null, false);
     }
     
     /**
-     * Builds a block with 3D border and optional subheadline in the dialog content area.<p>
+     * Builds the start HTML for a block with 3D border and optional subheadline in the dialog content area.<p>
      * 
-     * @param segment the HTML segment (START / END)
      * @param headline the headline String for the block
      * @return 3D block start / end segment
      */
-    public String dialogBlock(int segment, String headline) {
-        return dialogBlock(segment, headline, false);
+    public String dialogBlockStart(String headline) {
+        return dialogBlock(HTML_START, headline, false);
     }
     
     /**
@@ -465,6 +463,24 @@ public class CmsDialog extends CmsWorkplace {
     }
     
     /**
+     * Builds the start of a white box in the dialog content area.<p>
+     * 
+     * @return the white box start segment
+     */
+    public String dialogWhiteBoxStart() {
+        return dialogWhiteBox(HTML_START);
+    }
+    
+    /**
+     * Builds the end of a white box in the dialog content area.<p>
+     * 
+     * @return the white box end segment
+     */
+    public String dialogWhiteBoxEnd() {
+        return dialogWhiteBox(HTML_END);
+    }
+    
+    /**
      * Builds a white box in the dialog content area.<p>
      * 
      * @param segment the HTML segment (START / END)
@@ -478,6 +494,24 @@ public class CmsDialog extends CmsWorkplace {
         } else {
             return "</div>\n</div>\n<!-- white box end -->\n";
         }        
+    }
+    
+    /**
+     * Builds the start of the button row under the dialog content area without the buttons.<p>
+     * 
+     * @return the button row start segment
+     */
+    public String dialogButtonRowStart() {
+        return dialogButtonRow(HTML_START);
+    }
+    
+    /**
+     * Builds the end of the button row under the dialog content area without the buttons.<p>
+     * 
+     * @return the button row end segment
+     */
+    public String dialogButtonRowEnd() {
+        return dialogButtonRow(HTML_END);
     }
     
     /**
@@ -593,6 +627,24 @@ public class CmsDialog extends CmsWorkplace {
      */
     public String dialogSeparator() {
         return "<div class=\"dialogseparator\" unselectable=\"on\"></div>";
+    }
+    
+    /**
+     * Builds the start of a dialog line without break (display: block).<p>
+     * 
+     * @return the row start segment
+     */
+    public String dialogRowStart() {
+        return dialogRow(HTML_START);
+    }
+    
+    /**
+     * Builds the end of a dialog line without break (display: block).<p>
+     * 
+     * @return the row end segment
+     */
+    public String dialogRowEnd() {
+        return dialogRow(HTML_END);
     }
     
     /**
