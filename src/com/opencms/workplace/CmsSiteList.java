@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSiteList.java,v $
- * Date   : $Date: 2000/09/19 14:36:20 $
+ * Date   : $Date: 2000/09/20 07:49:55 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -69,7 +69,7 @@ throws CmsException
 		xmlTemplateDocument.setData("name", site.getName());
 		xmlTemplateDocument.setData("description", site.getDescription());
 			
-		list.append(xmlTemplateDocument.getProcessedData("row"));
+		list.append(xmlTemplateDocument.getProcessedDataValue("row"));
 	}
 	
 	xmlTemplateDocument.setData("list", list.toString())	;

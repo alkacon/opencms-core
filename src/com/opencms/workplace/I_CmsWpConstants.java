@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/09/19 07:45:27 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2000/09/20 07:49:55 $
+ * Version: $Revision: 1.98 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.97 $ $Date: 2000/09/19 07:45:27 $
+ * @version $Revision: 1.98 $ $Date: 2000/09/20 07:49:55 $
  */
 public interface I_CmsWpConstants {
 
@@ -362,7 +362,7 @@ public interface I_CmsWpConstants {
    /** Name of the (select) selected option tag in the input definiton template */
    public static final String C_TAG_SELECTBOX_SELOPTION="selectbox.seloption";
 	  
-   /** Name of the error´page tag in the error definiton template */
+   /** Name of the error?page tag in the error definiton template */
    public static final String C_TAG_ERRORPAGE="errorpagedefinition";
 
    /** Panel bar starting sequence tag in the panel bar definiton template */
@@ -655,8 +655,8 @@ public interface I_CmsWpConstants {
 
 	/** option values for font select boxes */
 	public static final String[] C_SELECTBOX_FONTSTYLES = 
-			{ "Normal", "Überschrift 1", "Überschrift 2", "Überschrift 3", "Überschrift 4", 
-			  "Überschrift 5", "Überschrift 6" };
+			{ "Normal", "?berschrift 1", "?berschrift 2", "?berschrift 3", "?berschrift 4", 
+			  "?berschrift 5", "?berschrift 6" };
 
 	/** option values for font select boxes */
 	public static final String[] C_SELECTBOX_FONTSIZES = 
