@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/01/21 09:11:38 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/01/23 15:16:21 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.9 $ $Date: 2002/01/21 09:11:38 $
+ * @version $Revision: 1.10 $ $Date: 2002/01/23 15:16:21 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -63,7 +63,7 @@ public class CmsStaticExport implements I_CmsConstants{
      * If called after publish project this vector contains all resouces that
      * are part of the project. We only export links if they are in the project.
      */
-    private Vector m_projectResources = null;
+//    private Vector m_projectResources = null;
 
     private static Perl5Util c_perlUtil = null;
 
@@ -107,7 +107,7 @@ public class CmsStaticExport implements I_CmsConstants{
      * @param cms the cms-object to work with.
      * @param startpoints. The resources to export (Vector of Strings)
      * @param doTheExport. must be set to true to export something, otherwise only the linkrules are generated.
-     * @param projectResources. Contains the resources belonging to the project, if started after publishProject.
+     * @param changedResources. Contains the changed resources belonging to the project, if started after publishProject.
      *
      * @exception CmsException the CmsException is thrown if something goes wrong.
      */
@@ -142,7 +142,7 @@ public class CmsStaticExport implements I_CmsConstants{
             }else{
                 exportLinks = getStartLinks();
             }
-            // we only need the names of the projectResources
+/*            // we only need the names of the projectResources
             if(projectResources != null){
                 m_projectResources = new Vector(projectResources.size());
                 for(int i=0; i<projectResources.size(); i++){
@@ -150,7 +150,7 @@ public class CmsStaticExport implements I_CmsConstants{
                         ((CmsResource)projectResources.elementAt(i)).getAbsolutePath());
                 }
             }
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+*/            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                         "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
             }
@@ -166,7 +166,7 @@ public class CmsStaticExport implements I_CmsConstants{
      * publish project.
      *
      * @param link The link.
-     */
+     * /
     private boolean linkIsInProject(String link){
         if(m_projectResources == null){
             // we want to export all
@@ -503,13 +503,21 @@ public class CmsStaticExport implements I_CmsConstants{
             try{
                 if("*dynamicRules*".equals(rules[i])){
                     // here we go trough our dynamic rules
-                    retValue = handleDynamicRules(m_cms, link, C_MODUS_EXTERN);
+                    Vector booleanReplace = new Vector();
+                    retValue = handleDynamicRules(m_cms, link, C_MODUS_EXTERN, booleanReplace);
+                    Boolean goOn =(Boolean)booleanReplace.firstElement();
+                    if(goOn.booleanValue()){
+                        link = retValue;
+                    }else{
+                        // found the match
+                        return retValue;
+                    }
                 }else{
                     retValue = c_perlUtil.substitute(rules[i], link);
-                }
-                if(!link.equals(retValue)){
-                    // found the match
-                    return retValue;
+                    if(!link.equals(retValue)){
+                        // found the match
+                        return retValue;
+                    }
                 }
             }catch(Exception e){
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
@@ -607,10 +615,13 @@ public class CmsStaticExport implements I_CmsConstants{
      * this method handles the dynamic rules created by opencms
      * in using the properties of resources.
      *
+     * @param cms. The cms-object. used for the parameter replace.
      * @param link The link that has to be replaced.
      * @param modus The modus OpenCms runs in.
+     * @param parameterOnly is set to true if only the parameters are replaced
+     *          and no other rules
      */
-    public static String handleDynamicRules(CmsObject cms, String link, int modus){
+    public static String handleDynamicRules(CmsObject cms, String link, int modus, Vector paramterOnly){
 
         // first get the ruleset
         Vector dynRules = null;
@@ -627,6 +638,7 @@ public class CmsStaticExport implements I_CmsConstants{
             for(int i=0; i<dynRules.size(); i++){
                 retValue = c_perlUtil.substitute((String)dynRules.elementAt(i), link);
                 if(!retValue.equals(link)) {
+                    paramterOnly.add(new Boolean(false));
                     return retValue;
                 }
             }
@@ -640,11 +652,13 @@ public class CmsStaticExport implements I_CmsConstants{
             for(int i=0; i<nameRules.size(); i++){
                 retValue = c_perlUtil.substitute((String)nameRules.elementAt(i), link);
                 if(!retValue.equals(link)){
+                    paramterOnly.add(new Boolean(false));
                     return retValue;
                 }
             }
         }
         // nothing changed
+        paramterOnly.add(new Boolean(true));
         return retValue;
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/01/21 09:11:38 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2002/01/23 15:16:21 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.76 $ $Date: 2002/01/21 09:11:38 $
+ * @version $Revision: 1.77 $ $Date: 2002/01/23 15:16:21 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -335,13 +335,16 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             c_linkRuleStart = null; // temporary out of order: conf.getString("exportfirstrule");
 
             // now the startpoints for the static export
-            String[] buffer = conf.getStringArray(C_STATICEXPORT_START);
+/*            String[] buffer = conf.getStringArray(C_STATICEXPORT_START);
             if(buffer != null){
                 c_staticExportStart = new Vector();
                 for(int i=0; i<buffer.length; i++){
                     c_staticExportStart.add(buffer[i]);
                 }
-            }
+            }*/
+            c_staticExportStart=new Vector();
+            c_staticExportStart.add("/");
+
             // at last the target for the export
             m_staticExportPath = com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(conf.getString(C_STATICEXPORT_PATH)));
 
