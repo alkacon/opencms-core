@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2004/11/11 16:04:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/11/12 14:57:40 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator {
@@ -108,7 +108,7 @@ public class CmsResourceTranslator {
         super();
         m_translations = translations;
         m_continueMatching = continueMatching;
-        // Pre-cache the patterns 
+        // pre-cache the patterns 
         m_perlPatternCache = new PatternCacheFIFO(m_translations.length + 1);
         for (int i = 0; i < m_translations.length; i++) {
             try {
@@ -119,10 +119,10 @@ public class CmsResourceTranslator {
                 }
             }
         }
-        // Initialize the Perl5Util
+        // initialize the Perl5Util
         m_perlUtil = new Perl5Util(m_perlPatternCache);
-        if (OpenCms.getLog(this).isDebugEnabled()) {            
-            OpenCms.getLog(this).debug(". Resource translation : " + translations.length + " rules initialized");
+        if (OpenCms.getLog(this).isInfoEnabled()) {            
+            OpenCms.getLog(this).info(". Resource translation : " + translations.length + " rules initialized");
         }
     }
 
@@ -155,29 +155,27 @@ public class CmsResourceTranslator {
         if (resourceName == null) {
             return null;
         }
-        // check all translations in the list
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Resource translation checking: " + resourceName);
-        }   
+        
         StringBuffer result;
-        for (int i = 0; i < m_translations.length; i++) {
-            result = new StringBuffer(resourceName.length() * 2);
+        String current = resourceName;
+        int size = current.length() * 2;
+        
+        for (int i = 0; i < m_translations.length; i++) {   
+            result = new StringBuffer(size);
             try {
-                if (m_perlUtil.substitute(result, m_translations[i], resourceName) != 0) {
-                    if (m_continueMatching) {
-                        
-                        // Continue matching
-                        resourceName = result.toString();
-                        
+                if (m_perlUtil.substitute(result, m_translations[i], current) != 0) {
+
+                    if (m_continueMatching) {                        
+                        // continue matching
+                        current = result.toString();                        
                     } else {                        
-                        // the pattern matched, return the result
+                        // first pattern matched, return the result
                         if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug("Resource translation: " + resourceName + " --> " + result);
+                            OpenCms.getLog(this).debug("Resource translation (first match): " + resourceName + " --> " + result);
                         }                        
                         // Return first match result
                         return result.toString();
                     }
-
                 }
             } catch (MalformedPerl5PatternException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -188,9 +186,9 @@ public class CmsResourceTranslator {
         
         // the pattern matched, return the result
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Resource translation result: " + resourceName);
-        }      
+            OpenCms.getLog(this).debug("Resource translation (after loop): " + resourceName + " --> " + current);
+        }         
         // return last translation (or original if no matching translation found)
-        return resourceName;
+        return current;
     }
 }
