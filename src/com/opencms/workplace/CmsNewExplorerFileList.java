@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/08/02 13:29:50 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2001/09/12 13:11:59 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.34 $ $Date: 2001/08/02 13:29:50 $
+ * @version $Revision: 1.35 $ $Date: 2001/09/12 13:11:59 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -185,86 +185,112 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         content.append("function initialize() {\n");
 
         if(listonly) {
-            content.append(" top.openfolderMethod='openthisfolderflat';\n");
+            content.append("top.openfolderMethod='openthisfolderflat';\n");
         } else {
-            content.append(" top.openfolderMethod='openthisfolder';\n");
+            content.append("top.openfolderMethod='openthisfolder';\n");
         }
         if(projectView) {
-            content.append(" top.projectView=true;\n");
+            content.append("top.projectView=true;\n");
         } else {
-            content.append(" top.projectView=false;\n");
+            content.append("top.projectView=false;\n");
         }
 
         // the flaturl
         if(flaturl != null) {
-            content.append(" top.flaturl='" + flaturl + "';\n");
+            content.append("top.flaturl='" + flaturl + "';\n");
         } else if (!listonly){
-            content.append(" top.flaturl='';\n");
+            content.append("top.flaturl='';\n");
         }
 
         // the help_url
-        content.append(" top.help_url='ExplorerAnsicht/index.html';\n");
+        content.append("top.help_url='ExplorerAnsicht/index.html';\n");
         // the project
-        content.append(" top.setProject(" + cms.getRequestContext().currentProject().getId() + ");\n");
+        content.append("top.setProject(" + cms.getRequestContext().currentProject().getId() + ");\n");
         // the onlineProject
-        content.append(" top.setOnlineProject(" + cms.onlineProject().getId() + ");\n");
+        content.append("top.setOnlineProject(" + cms.onlineProject().getId() + ");\n");
         // set the checksum for the tree
-        content.append(" top.setChecksum(" + check + ");\n");
+        content.append("top.setChecksum(" + check + ");\n");
         // set the writeAccess for the current Folder
         CmsFolder test = cms.readFolder(currentFolder);
         boolean writeAccess = test.getProjectId() == cms.getRequestContext().currentProject().getId();
-        content.append(" top.enableNewButton(" + writeAccess + ");\n");
+        content.append("top.enableNewButton(" + writeAccess + ");\n");
         // the folder
-        content.append(" top.setDirectory(" + currentFolderId + ",\"" + currentFolder + "\");\n");
-        content.append(" top.rD();\n\n");
+        content.append("top.setDirectory(" + currentFolderId + ",\"" + currentFolder + "\");\n");
+        content.append("top.rD();\n\n");
+
+        // now look which filelist colums we want to show
+        int filelist = getDefaultPreferences(cms);
+        boolean showTitle = (filelist & C_FILELIST_TITLE) > 0;
+        boolean showDateChanged = (filelist & C_FILELIST_CHANGED) > 0;
+        boolean showOwner = (filelist & C_FILELIST_OWNER) > 0;
+        boolean showGroup = (filelist & C_FILELIST_GROUP) > 0;
+        boolean showSize = (filelist & C_FILELIST_SIZE) > 0;
+
         // now the entries for the filelist
         Vector resources = getRessources(cms, currentFolder, projectView);
         for(int i = 0;i < resources.size();i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
-            content.append(" top.aF(");
+            content.append("top.aF(");
             // the name
-            content.append("\"" + res.getName() + "\", ");
+            content.append("\"" + res.getName() + "\",");
             // the path
-            content.append("\"" + res.getPath() + "\", ");
+            //content.append("\"" + res.getPath() + "\","); is now taken from top.setDirectory
             // the title
-            String title = "";
-            try {
-                title = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE);
-            }catch(CmsException e) {
+            if(showTitle){
+                String title = "";
+                try {
+                    title = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE);
+                }catch(CmsException e) {
+                }
+                if(title == null) {
+                    title = "";
+                }
+                content.append("\"" + getChars(title) + "\",");
+            }else{
+                content.append("\"" + "\",");
             }
-            if(title == null) {
-                title = "";
-            }
-            content.append("\"" + getChars(title) + "\", ");
             // the type
-            content.append("\"" + res.getType() + "\", ");
+            content.append(res.getType() + ",");
             // date of last change
-            content.append("\"" + Utils.getNiceDate(res.getDateLastModified()) + "\", ");
-            // TODO:user who changed it
-            content.append("\"" + "TODO" + "\", ");
+            if(showDateChanged){
+                content.append("\"" + Utils.getNiceDate(res.getDateLastModified()) + "\",");
+            }else{
+                content.append("\"\",");
+            }
+            // TODO:user who changed it: content.append("\"" + "TODO" + "\",");
+            content.append("\"\",");
             // date
-            content.append("\"" + Utils.getNiceDate(res.getDateCreated()) + "\", ");
+            // not yet used: content.append("\"" + Utils.getNiceDate(res.getDateCreated()) + "\",");
+            content.append("\"\",");
             // size
-            if(res.isFolder()) {
-                content.append("\"" + "" + "\", ");
+            if(res.isFolder() || (!showSize)) {
+                content.append("\"\",");
             }else {
-                content.append("\"" + res.getLength() + "\", ");
+                content.append( res.getLength() + ",");
             }
             // state
-            content.append("" + res.getState() + ", ");
+            content.append(res.getState() + ",");
             // project
-            content.append("\"" + res.getProjectId() + "\", ");
+            content.append(res.getProjectId() + ",");
             // owner
-            content.append("\"" + cms.readUser(res.getOwnerId()).getName() + "\", ");
+            if(showOwner){
+                content.append("\"" + cms.readUser(res.getOwnerId()).getName() + "\",");
+            }else{
+                content.append("\"\",");
+            }
             // group
-            content.append("\"" + cms.readGroup(res).getName() + "\", ");
+            if(showGroup){
+                content.append("\"" + cms.readGroup(res).getName() + "\",");
+            }else{
+                content.append("\"\",");
+            }
             // accessFlags
-            content.append("\"" + res.getAccessFlags() + "\", ");
+            content.append(res.getAccessFlags() + ",");
             // locked by
             if(res.isLockedBy() == C_UNKNOWN_ID) {
-                content.append("\"" + "" + "\", ");
+                content.append("\"\",");
             }else {
-                content.append("\"" + cms.lockedBy(res).getName() + "\", ");
+                content.append("\"" + cms.lockedBy(res).getName() + "\",");
             }
             // locked in project
             int lockedInProject = res.getLockedInProject();
@@ -274,7 +300,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             } catch(CmsException exc) {
                 // ignore the exception - this is an old project so ignore it
             }
-            content.append("\"" + lockedInProjectName + "\", " + lockedInProject + ");\n");
+            content.append("\"" + lockedInProjectName + "\"," + lockedInProject + ");\n");
         }
 
         //  now the tree, only if changed
@@ -367,7 +393,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         }
         content.append("}\n");
         content.append("</script>\n</head> \n<BODY onLoad=\"initialize()\"></BODY> \n</html>\n");
-
         return (content.toString()).getBytes();
     }
 
@@ -400,8 +425,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         String explorerSettings = (String)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS);
         if(explorerSettings != null) {
             filelist = new Integer(explorerSettings).intValue();
-        }
-        else {
+        }else {
             filelist = C_FILELIST_NAME + C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_CHANGED;
         }
         return filelist;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2001/08/02 13:29:50 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2001/09/12 13:10:48 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -926,8 +926,8 @@ function enableNewButton(showit){
  /**
   *  add a file to filelist
   */
- function aF(name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy, lockedInProjectName, lockedInProjectId){
-    vi.liste[vi.liste.length] = new file( name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy, lockedInProjectName, lockedInProjectId);
+ function aF(name, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy, lockedInProjectName, lockedInProjectId){
+    vi.liste[vi.liste.length] = new file( name, vr.actDirectory, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy, lockedInProjectName, lockedInProjectId);
  }
 
 
