@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2003/08/21 09:19:22 $
+ * Version: $Revision: 1.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.97 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.98 $ $Date: 2003/08/21 09:19:22 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -87,7 +87,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * for publishing the resource directly
      *
      * @param newProjectId The new project-id
-     * @param resourcename The name of the resource to change
+     * @param resourceId The id of the resource to change
      * @throws CmsException if an error occurs
      */
     public void changeLockedInProject(int newProjectId, CmsUUID resourceId) throws CmsException {
@@ -952,15 +952,15 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         return readPropertydefinition(name, projectId, resourcetype);
     }
 
-    /**
+  /**
    * Creates a new resource from an given CmsResource object.
    *
    * @param project The project in which the resource will be used.
-   * @param onlineProject The online project of the OpenCms.
    * @param newResource The resource to be written to the Cms.
    * @param filecontent The filecontent if the resource is a file
    * @param userId The ID of the current user.
    * @param parentId The parentId of the resource.
+   * @param isFolder true to create a new folder
    *
    * @return resource The created resource.
    *
@@ -1094,7 +1094,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * delete all projectResource from an given CmsProject object.
      *
-     * @param project The project in which the resource is used.
+     * @param projectId The project in which the resource is used.
      *
      *
      * @throws CmsException Throws CmsException if operation was not succesful
@@ -1117,7 +1117,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * Deletes all properties for a file or folder.
      *
-     * @param resourceId The id of the resource.
+     * @param projectId the id of the project
+     * @param resource the resource
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
@@ -1206,7 +1207,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      *
      * Only empty folders can be deleted yet.
      *
-     * @param project The project in which the resource will be used.
+     * @param currentProject The project in which the resource will be used.
      * @param orgFolder The folder that will be deleted.
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -1248,8 +1249,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * delete a projectResource from an given CmsResource object.
      *
-     * @param project The project in which the resource is used.
-     * @param resource The resource to be deleted from the Cms.
+     * @param projectId The project in which the resource is used.
+     * @param resourceName The resource to be deleted from the Cms.
      *
      *
      * @throws CmsException Throws CmsException if operation was not succesful
@@ -1312,7 +1313,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * Deletes a property for a file or folder.
      *
      * @param meta The property-name of which the property has to be read.
-     * @param resourceId The id of the resource.
+     * @param projectId the id of the project
+     * @param resource The resource.
      * @param resourceType The Type of the resource.
      *
      * @throws CmsException Throws CmsException if operation was not succesful
@@ -1405,6 +1407,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
     }    
 
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#fetchDateFromResource(int, int, long)
+     */
+    // TODO: should this be renamed to getDateFromResource ???
     public long fetchDateFromResource(int theProjectId, int theResourceId, long theDefaultDate) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1445,6 +1451,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @throws CmsException
      */
     // TODO: check this !!!!!
+    // TODO: should this be renamed to getResourceFlags ???
     public int fetchResourceFlags(CmsProject theProject, String theResourceName) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1506,6 +1513,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#getAllSoftVfsLinks(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
      */
+    // TODO: neccessary / should be renamed
     public List getAllVfsSoftLinks(CmsProject currentProject, CmsResource resource) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1580,6 +1588,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
         return resources;
     }
+    
     /**
      * checks a project for broken links that would appear if the project is published.
      *
@@ -1664,10 +1673,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * Returns a Vector with all resource-names that have set the given property to the given value.
      *
-     * @param projectid, the id of the project to test.
-     * @param propertydef, the name of the propertydefinition to check.
-     * @param property, the value of the property for the resource.
-     *
+     * @param projectId the id of the project to test.
+     * @param propertyDefinition the name of the propertydefinition to check.
+     * @param propertyValue the value of the property for the resource.
      * @return Vector with all names of resources.
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -1743,6 +1751,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * This method reads all resource names from the table CmsOnlineResources
      *
      * @return A Vector (of Strings) with the resource names (like from getAbsolutePath())
+     * @throws CmsException if something goes wrong
      */
     public Vector getOnlineResourceNames() throws CmsException {
     
@@ -1773,12 +1782,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * Reads all resources (including the folders) residing in a folder<BR>
      *
-     * @param onlineResource the parent resource id of the online resoure.
+     * @param projectId the id of the project
      * @param offlineResource the parent resource id of the offline resoure.
      *
      * @return A Vecor of resources.
      *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not succesful
      */
     public Vector getResourcesInFolder(int projectId, CmsFolder offlineResource) throws CmsException {
         Vector resources = new Vector();
@@ -1837,12 +1846,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * that have set the given property. For the start it is
      * only used by the static export so it reads the online project only.
      *
-     * @param projectid, the id of the project to test.
-     * @param propertyDefinition, the name of the propertydefinition to check.
+     * @param projectId the id of the project to test.
+     * @param propertyDefName the name of the propertydefinition to check.
      *
      * @return Vector with all resources.
      *
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException if operation was not succesful.
      */
     public Vector getResourcesWithProperty(int projectId, String propertyDefName) throws CmsException {
         Vector resources = new Vector();
@@ -1875,10 +1884,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * Returns a Vector with all resources of the given type
      * that have set the given property to the given value.
      *
-     * @param projectid, the id of the project to test.
-     * @param propertyDefinition, the name of the propertydefinition to check.
-     * @param propertyValue, the value of the property for the resource.
-     * @param resourceType, the value of the resourcetype.
+     * @param projectId the id of the project to test.
+     * @param propertyDefinition the name of the propertydefinition to check.
+     * @param propertyValue the value of the property for the resource.
+     * @param resourceType the value of the resourcetype.
      *
      * @return Vector with all resources.
      *
@@ -1987,6 +1996,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * Reads all propertydefinitions for the given resource type.
      *
+     * @param projectId the id of the project
      * @param resourcetype The resource type to read the propertydefinitions for.
      *
      * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
@@ -2001,6 +2011,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * Reads all propertydefinitions for the given resource type.
      *
+     * @param projectId the id of the project
      * @param resourcetype The resource type to read the propertydefinitions for.
      *
      * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
@@ -2034,11 +2045,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * select a projectResource from an given project and resourcename
+     * Reads resources with a given version id.<p>
      *
-     * @param project The project in which the resource is used.
-     * @param resource The resource to be read from the Cms.
-     *
+     * @param versionId the version id to lookup
+     * @return the list of resources with the given version id
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */

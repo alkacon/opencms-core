@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2003/08/21 09:19:49 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.62 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.63 $ $Date: 2003/08/21 09:19:49 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1035,8 +1035,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * Publishes a specified project to the online project.<p>
      *
-     * @param currentUser the current user
-     * @param context.currentProject() the project to be published
+     * @param context the context
      * @param onlineProject the online project of the OpenCms
      * @param backupEnabled flag if the backup is enabled
      * @param report a report object to provide the loggin messages
