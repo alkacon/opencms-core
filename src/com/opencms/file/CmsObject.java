@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/07 18:47:27 $
-* Version: $Revision: 1.368 $
+* Date   : $Date: 2003/08/08 12:50:39 $
+* Version: $Revision: 1.369 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.368 $
+ * @version $Revision: 1.369 $
  */
 public class CmsObject {
 
@@ -1368,6 +1368,20 @@ public class CmsObject {
     }
 
     /**
+    * Moves a resource to the lost and found folder
+    *
+    * @param resourcename the complete path of the sourcefile.
+    *
+    * @throws CmsException if the user has not the rights to move this resource,
+    * or if the file couldn't be moved.
+    */
+    protected void doMoveToLostAndFound(String resourcename) throws CmsException {
+        m_driverManager.moveToLostAndFound(m_context, addSiteRoot(resourcename));
+    }
+       
+
+
+    /**
      * Renames the resource to the new name.
      *
      * @param oldname the complete path to the file which will be renamed.
@@ -1489,6 +1503,19 @@ public class CmsObject {
     public void endTask(int taskid) throws CmsException {
         m_driverManager.endTask(m_context, taskid);
     }
+
+
+    /**
+     * Tests if a resource with the given resourceId does already exist in the Database.<p>
+     * 
+     * @param resourceId the resource id to test for
+     * @return true if a resource with the given id was found, false otherweise
+     * @throws CmsException if something goes wrong
+     */
+      public boolean existsResourceId (CmsUUID resourceId) throws CmsException {
+          return m_driverManager.existsResourceId(m_context, resourceId);          
+      }
+
 
     /**
      * Exports channels and moduledata to zip.
@@ -2622,6 +2649,19 @@ public class CmsObject {
      */
     public void moveResource(String source, String destination) throws CmsException {
         getResourceType(readFileHeader(source).getType()).moveResource(this, source, destination);
+    }
+
+
+    /**
+     * Moves a resource to the lost and found folder
+     *
+     * @param source the complete path of the sourcefile.
+     *
+     * @throws CmsException if the user has not the rights to move this resource,
+     * or if the file couldn't be moved.
+     */
+    public void moveToLostAndFound(String source) throws CmsException {
+        getResourceType(readFileHeader(source).getType()).moveToLostAndFound(this, source);
     }
 
     /**

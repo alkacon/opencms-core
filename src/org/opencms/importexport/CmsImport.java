@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2003/08/07 09:04:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/08/08 12:50:40 $
+* Version: $Revision: 1.3 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $ $Date: 2003/08/07 09:04:32 $
+ * @version $Revision: 1.3 $ $Date: 2003/08/08 12:50:40 $
  */
 public class CmsImport implements Serializable {
 
@@ -173,6 +173,7 @@ public class CmsImport implements Serializable {
      */
     public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
         // initialize the import
+        boolean run=false;
         openImportFile();              
         try {
             // now find the correct import implementation         
@@ -183,9 +184,13 @@ public class CmsImport implements Serializable {
                         // this is the correct import version, so call it for the import process
                         imp.importResources(m_cms, m_importPath, m_report, 
                                             m_digest, m_importResource, m_importZip, m_docXml, excludeList, writtenFilenames, fileCodes, propertyName, propertyValue);
+                        run=true;
                         break;                    
                     }
             }   
+            if (!run) {
+                m_report.println(m_report.key("report.import_db_noclass"), I_CmsReport.C_FORMAT_WARNING);               
+            }
         } catch (CmsException e) {
             throw e;
         } finally {
@@ -195,7 +200,7 @@ public class CmsImport implements Serializable {
     }
 
     /**
-     * Initilizes the import.<p>
+     * Initalizes the import.<p>
      * 
      * @throws CmsException if something goes wrong
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/06 09:53:01 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/08/08 12:50:40 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.31 $ $Date: 2003/08/06 09:53:01 $
+ * @version $Revision: 1.32 $ $Date: 2003/08/08 12:50:40 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -158,6 +158,17 @@ public interface I_CmsVfsDriver {
      * @throws Throwable if something goes wrong
      */      
     void destroy() throws Throwable;
+    
+    
+    /**
+     * Tests if a resource with the given resourceId does already exist in the Database.<p>
+     * 
+     * @param projectId the project id
+     * @param resourceId the resource id to test for
+     * @return true if a resource with the given id was found, false otherweise
+     * @throws CmsException if something goes wrong
+     */
+    public boolean existsResourceId (int projectId, CmsUUID resourceId) throws CmsException;    
     
     long fetchDateFromResource(int theProjectId, int theResourceId, long theDefaultDate) throws CmsException;
     int fetchResourceFlags(CmsProject theProject, String theResourceName) throws CmsException;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/04 10:48:42 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/08/08 12:50:40 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -92,6 +92,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public void moveResource(CmsObject cms, String resourcename, String destination) throws CmsException {
         cms.doMoveResource(resourcename, destination);
+    }
+
+    /**
+     * @see com.opencms.file.I_CmsResourceType#moveToLoastAndFound(com.opencms.file.CmsObject, java.lang.String)
+     */
+    public void moveToLostAndFound(CmsObject cms, String resourcename) throws CmsException {
+        cms.doMoveToLostAndFound(resourcename);
     }
 
     /**
@@ -182,17 +189,29 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         try {
             importedResource = cms.doImportResource(resource, content, properties, destination);
+            cms.lockResource(destination);
             changed = (importedResource == null);
         } catch (CmsException e) {
             // an exception is thrown if the resource already exists
         }
 
         if (changed) {
-            // if the resource already exists it must be updated
-            lockResource(cms, destination, true);
-            cms.doWriteResource(destination, properties, null, getResourceType(), content);
-            importedResource = cms.readFileHeader(destination);
-            cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
+            // the resource already exists.
+            // check if the resource uuids are the same, if so, update the content
+            CmsResource existingResource=cms.readFileHeader(destination);
+            if (existingResource.getResourceId().equals(resource.getResourceId())) {
+                cms.lockResource(destination);
+                cms.doWriteResource(destination, properties, null, getResourceType(), content);
+                importedResource = cms.readFileHeader(destination);
+                cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
+            } else {
+                // a resource with the same name but different uuid does exist, so
+                // move the existing resource to the lost&found folder and import the new one
+                cms.moveToLostAndFound(destination); 
+                importedResource = cms.doImportResource(resource, content, properties, destination);
+                cms.lockResource(destination);  
+                     
+            }       
         }
 
         return importedResource;

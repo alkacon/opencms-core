@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.147 $
+ * Date   : $Date: 2003/08/08 12:50:40 $
+ * Version: $Revision: 1.148 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.db;
 
-import org.opencms.importexport.*;
+import org.opencms.importexport.CmsExport;
+import org.opencms.importexport.CmsExportModuledata;
+import org.opencms.importexport.CmsImport;
+import org.opencms.importexport.CmsImportModuledata;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockDispatcher;
 import org.opencms.lock.CmsLockException;
@@ -40,7 +43,8 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.staticexport.*;
+import org.opencms.staticexport.CmsStaticExport;
+import org.opencms.staticexport.CmsStaticExportLink;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
@@ -77,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.147 $ $Date: 2003/08/07 18:47:27 $
+ * @version $Revision: 1.148 $ $Date: 2003/08/08 12:50:40 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2098,8 +2102,8 @@ public class CmsDriverManager extends Object {
         CmsProject deleteProject = readProject(context, projectId);
 
         if ((isAdmin(context) || isManagerOfProject(context)) && (projectId != I_CmsConstants.C_PROJECT_ONLINE_ID)) {
-            //List allFiles = m_vfsDriver.readFiles(deleteProject.getId(), false, true);
-            //List allFolders = m_vfsDriver.readFolders(deleteProject, false, true);
+//            List allFiles = m_vfsDriver.readFiles(deleteProject.getId(), false, true);
+//            List allFolders = m_vfsDriver.readFolders(deleteProject, false, true);
             
             List allFiles = readChangedResourcesInsideProject(context, projectId, 1);
             List allFolders = readChangedResourcesInsideProject(context, projectId, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
@@ -2147,7 +2151,6 @@ public class CmsDriverManager extends Object {
                     undoChanges(context, currentResourceName);
                 }
             }
-            
             // now delete folders or undo changes in folders
             for (int i = 0; i < allFolders.size(); i++) {
                 CmsFolder currentFolder = (CmsFolder) allFolders.get(i);
@@ -2522,6 +2525,20 @@ public class CmsDriverManager extends Object {
         }
         return result;
     }
+    
+    
+    /**
+     * Tests if a resource with the given resourceId does already exist in the Database.<p>
+     * 
+     * @param context the current request context
+     * @param resourceId the resource id to test for
+     * @return true if a resource with the given id was found, false otherweise
+     * @throws CmsException if something goes wrong
+     */
+      public boolean existsResourceId (CmsRequestContext context, CmsUUID resourceId) throws CmsException {
+          return m_vfsDriver.existsResourceId(context.currentProject().getId(), resourceId);          
+      }
+    
 
     /**
      * Gets a list of all hard and soft links pointing to the content of a resource.<p>
@@ -4614,6 +4631,52 @@ public class CmsDriverManager extends Object {
         // lock the new resource
         lockResource(context,destinationName);
     }
+    
+    
+    /**
+    * Moves a resource to the lost and found folder.<p>
+    *
+    * @param context the current request context
+    * @param resourcename the complete path of the sourcefile.
+    *
+    * @throws CmsException if the user has not the rights to move this resource,
+    * or if the file couldn't be moved.
+    */
+    public void moveToLostAndFound(CmsRequestContext context, String resourcename) throws CmsException {
+
+        String siteRoot=context.getSiteRoot();
+        Stack storage=new Stack();
+        context.setSiteRoot("/");
+        String destination=I_CmsConstants.C_VFS_LOST_AND_FOUND+resourcename;
+        // create the require folders if nescessary
+        String des=destination;
+        // collect all folders...
+        try {
+            while (des.indexOf("/")==0) {
+                des=des.substring(0, des.lastIndexOf("/"));          
+                storage.push(des+"/");
+            }
+            // ...now create them....
+            while (storage.size()!=0) {
+                des=(String)storage.pop();
+                try {
+                    readFolder(context, des);
+                } catch (Exception e1) {
+                    // the folder is not existing, so create it
+                    createFolder(context, des, new HashMap());            
+                }                    
+            }
+            // now move the resource
+            moveResource(context, resourcename, destination);
+        } catch (CmsException e2) {
+            throw e2;           
+        } finally {
+            // set the site root to the old value again
+            context.setSiteRoot(siteRoot);
+        }            
+    }
+       
+        
 
     /**
      * Method to create a new instance of a driver.<p>
@@ -6257,7 +6320,7 @@ public class CmsDriverManager extends Object {
                     resources.addAll(readAllSubResourcesInDfs(context, currentProjectResource, resourceType));
                 } else {
                     resources.add(currentResource);
-                }
+        }
             } catch (CmsException e) {
                 // the project resource probably doesnt exist (anymore)...
                 if (e.getType() != CmsException.C_NOT_FOUND) {
@@ -6336,8 +6399,8 @@ public class CmsDriverManager extends Object {
                 
                 if (isFirst) {
                     isFirst = false;
-                }
             }
+        }
         }
         
         // TODO the calculated resource list should be cached
@@ -7068,7 +7131,7 @@ public class CmsDriverManager extends Object {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
         }
         resource.setUserLastModified(context.currentUser().getId());
-        
+
         m_vfsDriver.updateResourceState(context.currentProject(), resource, C_UPDATE_RESOURCE);        
 
         // clear the cache
@@ -7661,10 +7724,10 @@ public class CmsDriverManager extends Object {
      */
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
-        clearResourceCache();
-
-        return oldLock;
-    }
+        clearResourceCache();   
+        
+        return oldLock;     
+        }
         
     /**
      * When a project is published this method aktualises the online link table.

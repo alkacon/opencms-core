@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/07 09:18:16 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2003/08/08 12:50:40 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.86 $ $Date: 2003/08/07 09:18:16 $
+ * @version $Revision: 1.87 $ $Date: 2003/08/08 12:50:40 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -417,7 +417,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
             m_sqlManager.closeAll(null, stmt, null);
             
-            if (!existsResource(project.getId(), file)) { 
+            if (!existsResourceId(project.getId(), file.getResourceId())) { 
             
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");
@@ -505,7 +505,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
         
         // check if the resource already exists
-        if (!existsResource(project.getId(), resource))
+        if (!existsResourceId(project.getId(), resource.getResourceId()))
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_NOT_FOUND);
 
         // write a new structure referring to the resource
@@ -538,7 +538,15 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         return this.readFileHeader(project.getId(), resource.getId(), false); 
     }
         
-    private boolean existsResource (int projectId, CmsResource resource) throws CmsException {
+    /**
+     * Tests if a resource with the given resourceId does already exist in the Database.<p>
+     * 
+     * @param projectId the project id
+     * @param resourceId the resource id to test for
+     * @return true if a resource with the given id was found, false otherweise
+     * @throws CmsException if something goes wrong
+     */
+    public boolean existsResourceId (int projectId, CmsUUID resourceId) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;           
@@ -547,7 +555,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_RESOURCE_STATE");
-            stmt.setString(1, resource.getResourceId().toString());
+            stmt.setString(1, resourceId.toString());
             res = stmt.executeQuery();
 
             exists = res.next();
@@ -742,7 +750,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             
             m_sqlManager.closeAll(null, stmt, null);
             
-            if (!existsResource(project.getId(), folder)) { 
+            if (!existsResourceId(project.getId(), folder.getResourceId())) { 
                             
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");
@@ -1015,7 +1023,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
           stmt.setInt(5, state);              
           stmt.executeUpdate();  
           
-          if (!existsResource(project.getId(), newResource)) {
+          if (!existsResourceId(project.getId(), newResource.getResourceId())) {
                                        
             // write the resource
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");           
@@ -3582,7 +3590,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
             //savepoint = conn.setSavepoint("before_update");
                     
-            if (existsResource(I_CmsConstants.C_PROJECT_ONLINE_ID, offlineResource)) {
+            if (existsResourceId(I_CmsConstants.C_PROJECT_ONLINE_ID, offlineResource.getResourceId())) {
                 
                 // the resource/file records are already available - overwrite the contents
                 

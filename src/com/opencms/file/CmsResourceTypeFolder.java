@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/08/07 13:17:31 $
-* Version: $Revision: 1.85 $
+* Date   : $Date: 2003/08/08 12:50:39 $
+* Version: $Revision: 1.86 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.85 $
+ * @version $Revision: 1.86 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -361,6 +361,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         // nothing to do here, because there couldn´t be any Linkmanagement-Tags inside a folder-resource
         return file;
     }
+
+    /**
+     * @see com.opencms.file.I_CmsResourceType#moveToLoastAndFound(com.opencms.file.CmsObject, java.lang.String)
+     */
+    public void moveToLostAndFound(CmsObject cms, String resourcename) throws CmsException {
+        // nothing to do here,
+    }
+
 
     /**
      * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, com.opencms.file.CmsResource, byte[], java.util.Map, java.lang.String)

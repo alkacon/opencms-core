@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/07 18:47:27 $
-* Version: $Revision: 1.257 $
+* Date   : $Date: 2003/08/08 12:50:40 $
+* Version: $Revision: 1.258 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.257 $ $Date: 2003/08/07 18:47:27 $
+ * @version $Revision: 1.258 $ $Date: 2003/08/08 12:50:40 $
  */
 public interface I_CmsConstants {
 
@@ -902,7 +902,7 @@ public interface I_CmsConstants {
     /**
      * The version of the opencms export (appears in the export manifest-file).
      */
-    String C_EXPORT_VERSION = "3"; 
+    String C_EXPORT_VERSION = "4"; 
 
     /**
      * A tag in the export manifest-file.
@@ -1378,6 +1378,11 @@ public interface I_CmsConstants {
     
     //* copy mode to preserve links during copy */
     int C_COPY_PRESERVE_LINK = 3;
+     
+    /**
+     * The vfs path of the default site
+     */
+     String C_VFS_LOST_AND_FOUND = "/system/lost-found";
      
 
 }
