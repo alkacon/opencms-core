@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/04/03 10:48:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/06 08:21:41 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/04/03 10:48:32 $
+ * @version $Revision: 1.13 $ $Date: 2000/04/06 08:21:41 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -143,9 +143,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 
         StringBuffer result = new StringBuffer();
 
-		// TODO:check, if this is needed: String folder = (String)parameters.get(C_PARA_FOLDER);
         String pageText = (String)parameters.get(C_PARA_PAGE);
-        String filter = (String)parameters.get(C_PARA_FILTER);
 
         // Filter the pics
         Vector filteredPics = (Vector)parameters.get("_PICLIST_");
@@ -158,57 +156,108 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         
         String picsUrl = getConfigFile(cms).getCommonPictureUrl();
         HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
-        // TODO:check, if this is needed: HttpServletResponse resp = (HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse());
         String hostName = req.getScheme() + "://" + req.getHeader("HOST");
-                           
              
-        // Generate the picture list
+        // Generate the picture list for all pictures on the selected page
         for(int i=from; i<to; i++) {
             CmsFile file = (CmsFile)filteredPics.elementAt(i);
-            String filename = file.getName();
-            if(inFilter(filename, filter) && isImage(filename)) {
-                String title = cms.readProperty(file.getAbsolutePath(), "Title");
-                int dotIndex = filename.lastIndexOf(".");
-                if(title == null) {                
-                    if(dotIndex > 0) {
-                        title = filename.substring(0, dotIndex);
-                    } else {
-                        title = filename;
-                    }                        
-                }
-                
-                String type;
+            String filename = file.getName();            
+            String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+            
+            // If no "Title" property is given, the title will be set to the filename
+            // without its postfix
+            int dotIndex = filename.lastIndexOf(".");
+            if(title == null) {                
                 if(dotIndex > 0) {
-                    type = filename.substring(filename.lastIndexOf(".")+1).toUpperCase() + "-Bild";                
+                    title = filename.substring(0, dotIndex);
                 } else {
-                    type = "unbekannt";
-                }
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("picstartseq", this, userObj));
-                result.append(hostName + picsUrl + file.getName());
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("picendseq", this, userObj));
-                //result.append(xmlTemplateDocument.getProcessedXmlDataValue("textstartseq", this, userObj));
-                //result.append(file.getName() + " (" + file.getLength() + " Bytes)\n");
-                //result.append(xmlTemplateDocument.getProcessedXmlDataValue("textendseq", this, userObj));
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("titlestartseq", this, userObj));
-                result.append(title);            
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("titleendseq", this, userObj));
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("namestartseq", this, userObj));
-                result.append(filename);            
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("nameendseq", this, userObj));
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("sizestartseq", this, userObj));
-                result.append(file.getLength() + " Byte");            
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("sizeendseq", this, userObj));
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("typestartseq", this, userObj));
-                result.append(type);            
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("typeendseq", this, userObj));
-                if(i<(to-1)) {
-                    result.append(xmlTemplateDocument.getProcessedXmlDataValue("part", this, userObj));
-                }
+                    title = filename;
+                }                        
+            }
+                
+            // The displayed type will be generated from the filename postfix
+            String type;
+            if(dotIndex > 0) {
+                type = filename.substring(filename.lastIndexOf(".")+1).toUpperCase() + "-Bild";                
+            } else {
+                type = "unbekannt";
+            }
+                
+            // Set all datablocks for the current picture list entry
+            xmlTemplateDocument.setData("picsource", hostName + picsUrl + file.getName());
+            xmlTemplateDocument.setData("title", title);                
+            xmlTemplateDocument.setData("filename", filename);
+            xmlTemplateDocument.setData("size", file.getLength() + " Byte");
+            xmlTemplateDocument.setData("type", type);
+            result.append(xmlTemplateDocument.getProcessedDataValue("piclistentry", this, userObj));
+                
+            // if this is not the last entry on the current page,
+            // append a separator
+            if(i<(to-1)) {
+                result.append(xmlTemplateDocument.getProcessedXmlDataValue("part", this, userObj));
             }
         }
         return result.toString();
     }
 
+    /**
+     * Used by the workplace "back" button to decide whether the icon should 
+     * be activated or not. A button will use this method if the attribute <code>method="showBackButton"</code>
+     * is defined in the <code>&lt;BUTTON&gt;</code> tag.
+     * <P>
+     * This method returns <code>false</code> if the currently displayed page is
+     * the first page.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param lang reference to the currently valid language file <em>(not used here)</em>.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return <code>true</code> if the button should be enabled, <code>false</code> otherwise.
+     */
+    public Boolean showBackButton(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
+        
+        // Get the current page number
+        String pageText = (String)parameters.get(C_PARA_PAGE);
+        int page = new Integer(pageText).intValue();
+        return new Boolean(page > 1);
+    }    
+
+
+    /**
+     * Used by the workplace "next" button to decide whether the icon should 
+     * be activated or not. A button will use this method if the attribute <code>method="showNextButton"</code>
+     * is defined in the <code>&lt;BUTTON&gt;</code> tag.
+     * <P>
+     * This method returns <code>false</code> if the currently displayed page is
+     * the last page.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param lang reference to the currently valid language file <em>(not used here)</em>.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return <code>true</code> if the button should be enabled, <code>false</code> otherwise.
+     */
+    public Boolean showNextButton(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
+        
+        // Get the current page number
+        String pageText = (String)parameters.get(C_PARA_PAGE);
+        int page = new Integer(pageText).intValue();
+
+        // get the number of pics
+        Vector filteredPics = (Vector)parameters.get("_PICLIST_");
+        int numPics = filteredPics.size();
+        
+        // Get the maximum page number
+        int maxpage = ((numPics - 1) / C_PICBROWSER_MAXIMAGES) + 1;        
+        return new Boolean(numPics == 0 || (page < maxpage));
+    }    
+    
+    /**
+     * Internal method for getting a vector of all pictures using
+     * a given filter.
+     * @param cms Cms object for accessing system resources.
+     * @param folder Folder to look for pictures.
+     * @param filter Search pattern that should be used.
+     * @return Vector of CmsFile objects.
+     */
     private Vector getFilteredPicList(A_CmsObject cms, String folder, String filter)  throws CmsException {
         // Get all pictures in the given folder using the cms object
         Vector allPics = cms.getFilesInFolder(folder);
@@ -218,7 +267,10 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         for(int i=0; i< allPics.size(); i++) {
             CmsFile file = (CmsFile)allPics.elementAt(i);
             String filename = file.getName();
-            if(inFilter(filename, filter) && isImage(filename)) {
+            String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE); 
+            boolean filenameFilter = inFilter(filename, filter);
+            boolean titleFilter = ((title == null) || ("".equals(title)))? false : inFilter(title, filter);
+            if((filenameFilter || titleFilter) && isImage(filename)) {
                 filteredPics.addElement(file);
             }
         }
@@ -231,8 +283,10 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
      * @param filter filter to be checked.
      * @return <code>true</code> if the filename matches the filter, <code>false</code> otherwise.
      */
-    private boolean inFilter(String filename, String filter) {
-        if("*".equals(filter) || (filename.indexOf(filter) != -1)) {
+    private boolean inFilter(String name, String filter) {
+        String compareName = name.toLowerCase();
+        String compareFilter = filter.toLowerCase();
+        if("*".equals(compareFilter) || "".equals(compareFilter) || (compareName.indexOf(compareFilter) != -1)) {
             return true;
         } else {
             return false;
