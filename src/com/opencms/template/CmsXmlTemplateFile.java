@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/01/24 20:37:21 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/01/31 17:03:50 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.59 $ $Date: 2003/01/24 20:37:21 $
+ * @version $Revision: 1.60 $ $Date: 2003/01/31 17:03:50 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -1000,10 +1000,11 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         String copyOfContent = content;
         if(html) {
             
-            int startIndex = content.toUpperCase().indexOf("<BODY");
+            int startIndex = content.indexOf("<body");
+            if (startIndex < 0) startIndex = content.indexOf("<BODY");
             startIndex = content.indexOf(">", startIndex + 1) + 1;
-            int endIndex = content.toUpperCase().lastIndexOf("</BODY>");
-            
+            int endIndex = content.lastIndexOf("</body>");
+            if (endIndex < 0) endIndex = content.lastIndexOf("</BODY>");
             if(startIndex > 0) {
                 content = content.substring(startIndex, endIndex);
             }
@@ -1035,7 +1036,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
         // now the parsed content for the templatemechanism
         String datablockName = this.getTemplateDatablockName(templateSelector);
-        // CHECK: String parsedContent = null;
         if(!html){
             // we have to prepare the content for the tidy
             copyOfContent = "<HTML><HEAD></HEAD><body>" + copyOfContent.substring(9, copyOfContent.lastIndexOf("]]>")) + "</body></HTML>";
