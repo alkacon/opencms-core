@@ -15,6 +15,7 @@
     addMenuEntry(resource_id, "language_key(explorer.context.rename)",          "rename.html?initial=true",             "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.move)",            "move.html?initial=true",               "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.delete)",          "delete.html?initial=true",             "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
+    addMenuEntry(resource_id, "language_key(explorer.context.replace)",         "replace.html?initial=true&overwrite=yes&mode=replace",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.touch)",           "touch.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.undochanges)",     "undochanges.html?initial=true",        "''",   "rules_key(d d iiid iaid dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.undelete)",        "undelete.html?initial=true",           "''",   "rules_key(d d ddda dddi dddd dddd dddd)");
