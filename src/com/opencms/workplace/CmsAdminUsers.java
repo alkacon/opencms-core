@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/08/25 10:40:34 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.30 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.31 $ $Date: 2003/08/25 10:40:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -844,6 +844,18 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
         return new Integer(retValue);
 
 
+    }
+    
+    /**
+     * Determines if the user icon is shown in the administration view depending on the property value of the key "workplace.administration.showusergroupicon".<p>
+     * 
+     * @param cms the CmsObject
+     * @param lang the workplace language file
+     * @param parameters the parameters
+     * @return Boolean to determine if user icon is shown in the administration view
+     */
+    public Boolean isVisible(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
+        return (Boolean)OpenCms.getRuntimeProperty("workplace.administration.showusergroupicon");
     }
 
     /**

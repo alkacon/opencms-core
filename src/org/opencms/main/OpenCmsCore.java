@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/08/19 12:06:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/25 10:40:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1237,6 +1237,13 @@ public class OpenCmsCore {
         setRuntimeProperty("workplace.file.maxuploadsize", fileMaxUploadSize);
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". File max. upload size: " + (fileMaxUploadSize.intValue() > 0 ? (fileMaxUploadSize + " KB") : "unlimited"));
+        }
+        
+        // read old (proprietary XML-style) locale backward compatibily support flag
+        Boolean showUserGroupIcon = conf.getBoolean("workplace.administration.showusergroupicon", new Boolean(true));
+        setRuntimeProperty("workplace.administration.showusergroupicon", showUserGroupIcon);
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Show user/group icon : " + (showUserGroupIcon.booleanValue() ? "yes" : "no"));
         }
         
         // initialize "resourceinit" registry classes
