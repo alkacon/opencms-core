@@ -32,6 +32,7 @@
     <property name="opencms.inputlib.logging"     		location="${opencms.input.libs}/commons-logging.jar" /> 
     <property name="opencms.inputlib.collections"     	location="${opencms.input.libs}/commons-collections.jar" />
     <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j.jar" />
+    <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser.jar" />
     <property name="opencms.inputlib.oracle"      		location="${opencms.input.externlibs}/ojdbc14.jar" /> 
  
 	<property name="drivers.vfs"						value="db" />
@@ -61,6 +62,7 @@
                 <available file="${opencms.inputlib.logging}"/>
                 <available file="${opencms.inputlib.collections}"/> 
                 <available file="${opencms.inputlib.dom4j}"/> 
+                <available file="${opencms.inputlib.htmlparser}"/>
                 <available file="${opencms.inputlib.dbcp}"/> 
             </and>
         </condition>
@@ -120,6 +122,7 @@ ${opencms.inputlib.pool}
 ${opencms.inputlib.logging}
 ${opencms.inputlib.collections}
 ${opencms.inputlib.dom4j}
+${opencms.inputlib.htmlparser}
 ${opencms.inputlib.dbcp}
 
         </fail>
@@ -164,6 +167,7 @@ ${opencms.inputlib.dbcp}
                        ${opencms.inputlib.logging}:
                        ${opencms.inputlib.collections}:
                        ${opencms.inputlib.dom4j}:
+                       ${opencms.inputlib.htmlparser}:
                        ${opencms.inputlib.uuid}"
             debug="on"
             optimize="on"
