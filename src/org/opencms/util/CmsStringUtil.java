@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2004/11/08 15:06:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/08 15:08:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,17 +47,17 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.0
  */
 public final class CmsStringUtil {
-    
+
     /** Regular expression that matches the HTML body end tag. */
     public static final String C_BODY_END_REGEX = "<\\s*/\\s*body[^>]*>";
 
     /** Regular expression that matches the HTML body start tag. */
     public static final String C_BODY_START_REGEX = "<\\s*body[^>]*>";
-    
+
     /** Regex pattern that matches an end body tag. */
     private static final Pattern C_BODY_END_PATTERN = Pattern.compile(C_BODY_END_REGEX, Pattern.CASE_INSENSITIVE);
 
@@ -362,6 +362,21 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Splits a String into substrings along the provided char delimiter and returns
+     * the result as an Array of Substrings.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     *
+     * @return the Array of splitted Substrings
+     */
+    public static String[] splitAsArray(String source, char delimiter) {
+
+        List result = splitAsList(source, delimiter);
+        return (String[])result.toArray(new String[result.size()]);
+    }
+
+    /**
      * Splits a String into substrings along the provided String delimiter and returns
      * the result as an Array of Substrings.<p>
      *
@@ -371,40 +386,11 @@ public final class CmsStringUtil {
      * @return the Array of splitted Substrings
      */
     public static String[] splitAsArray(String source, String delimiter) {
-        
-        List result = splitAsList(source, delimiter);        
+
+        List result = splitAsList(source, delimiter);
         return (String[])result.toArray(new String[result.size()]);
     }
-    
-    /**
-     * Splits a String into substrings along the provided String delimiter and returns
-     * the result as List of Substrings.<p>
-     *
-     * @param source the String to split
-     * @param delimiter the delimiter to split at
-     *
-     * @return the Array of splitted Substrings
-     */    
-    public static List splitAsList(String source, String delimiter) {
-        
-        int len = delimiter.length();    
-        if (len == 1) {
-            // optimize for short strings
-            return splitAsList(source, delimiter.charAt(0));
-        }
-        
-        List result = new ArrayList();
-        int index = 0;
-        int next = source.indexOf(delimiter);
-        while (next != -1) {
-            result.add(source.substring(index, next));
-            index = next + len;
-            next = source.indexOf(delimiter, index);
-        }
-        result.add(source.substring(index));
-        return result;
-    }
-    
+
     /**
      * Splits a String into substrings along the provided char delimiter and returns
      * the result as a List of Substrings.<p>
@@ -413,9 +399,9 @@ public final class CmsStringUtil {
      * @param delimiter the delimiter to split at
      *
      * @return the List of splitted Substrings
-     */    
+     */
     public static List splitAsList(String source, char delimiter) {
-        
+
         List result = new ArrayList();
         int index = 0;
         int next = source.indexOf(delimiter);
@@ -427,22 +413,35 @@ public final class CmsStringUtil {
         result.add(source.substring(index));
         return result;
     }
-    
+
     /**
-     * Splits a String into substrings along the provided char delimiter and returns
-     * the result as an Array of Substrings.<p>
+     * Splits a String into substrings along the provided String delimiter and returns
+     * the result as List of Substrings.<p>
      *
      * @param source the String to split
      * @param delimiter the delimiter to split at
      *
      * @return the Array of splitted Substrings
-     */       
-    public static String[] splitAsArray(String source, char delimiter) {
-        
-        List result = splitAsList(source, delimiter);
-        return (String[])result.toArray(new String[result.size()]);
+     */
+    public static List splitAsList(String source, String delimiter) {
+
+        int len = delimiter.length();
+        if (len == 1) {
+            // optimize for short strings
+            return splitAsList(source, delimiter.charAt(0));
+        }
+
+        List result = new ArrayList();
+        int index = 0;
+        int next = source.indexOf(delimiter);
+        while (next != -1) {
+            result.add(source.substring(index, next));
+            index = next + len;
+            next = source.indexOf(delimiter, index);
+        }
+        result.add(source.substring(index));
+        return result;
     }
-    
 
     /**
      * Substitutes searchString in content with replaceItem.<p>
