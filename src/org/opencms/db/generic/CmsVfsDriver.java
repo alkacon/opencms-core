@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/09 14:28:34 $
- * Version: $Revision: 1.118 $
+ * Date   : $Date: 2003/09/10 15:00:16 $
+ * Version: $Revision: 1.119 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.118 $ $Date: 2003/09/09 14:28:34 $
+ * @version $Revision: 1.119 $ $Date: 2003/09/10 15:00:16 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -696,46 +696,34 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @return The created folder.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public CmsFolder createFolder(CmsUser user, CmsProject project, CmsFolder folder, CmsUUID parentId, String foldername) throws CmsException {
-        if (foldername.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
-            throw new CmsException("The resource name '" + foldername + "' is too long! (max. allowed length must be <= " + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + " chars.!)", CmsException.C_BAD_NAME);
-        } 
+    public CmsFolder createFolder(CmsProject project, CmsFolder folder, CmsUUID parentId) throws CmsException {
+        int state = 0;        
+        
+        // validate the resource name
+        if (folder.getResourceName().length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
+            throw new CmsException("The resource name '" + folder.getResourceName() + "' is too long! (max. allowed length must be <= " + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + " chars.!)", CmsException.C_BAD_NAME);
+        }
 
-        CmsFolder oldFolder = null;
-        int state = 0;
-                         
-        CmsUUID modifiedByUserId = user.getId();
-        if (folder.getUserLastModified().equals(CmsUUID.getNullUUID())) {
-            modifiedByUserId=folder.getUserLastModified();   
-        }
-        CmsUUID userCreatedId = user.getId();
-        if (folder.getUserCreated().equals(CmsUUID.getNullUUID())) {
-            userCreatedId =folder.getUserCreated();   
-        }
+        // adjust the last-modified/creation dates
         long dateModified = folder.getDateLastModified();
-        if (dateModified==0) {
-            dateModified=System.currentTimeMillis();
+        if (dateModified == 0) {
+            dateModified = System.currentTimeMillis();
         }
-        // check if the creation date is set. if not, set it to the current system time        
-        long dateCreated= folder.getDateCreated();
-        if (dateCreated==0) {
-            dateCreated=System.currentTimeMillis();
+
+        long dateCreated = folder.getDateCreated();
+        if (dateCreated == 0) {
+            dateCreated = System.currentTimeMillis();
         }
 
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             state = folder.getState();
-            modifiedByUserId = folder.getUserLastModified();
-            dateModified = folder.getDateLastModified();
         } else {
             state = I_CmsConstants.C_STATE_NEW;
-
         }
 
-        // Test if the file is already there and marked as deleted.
-        // If so, delete it
-        // No, dont delete it, throw exception (h.riege, 04.01.01)
+        // prove if a deleted folder with the same name inside the same folder exists
         try {
-            oldFolder = readFolder(project.getId(), parentId, foldername);
+            CmsFolder oldFolder = readFolder(project.getId(), parentId, folder.getResourceName());
             if (oldFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
                 throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
             } else {
@@ -760,7 +748,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(1, folder.getId().toString());
             stmt.setString(2, parentId.toString());
             stmt.setString(3, folder.getResourceId().toString());
-            stmt.setString(4, foldername);
+            stmt.setString(4, folder.getResourceName());
             stmt.setInt(5, state);          
             stmt.executeUpdate(); 
             
@@ -776,9 +764,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.setString(4, CmsUUID.getNullUUID().toString());           
                 stmt.setInt(5, folder.getLoaderId());
                 stmt.setTimestamp(6, new Timestamp(dateCreated));
-                stmt.setString(7, userCreatedId.toString());
+                stmt.setString(7, folder.getUserCreated().toString());
                 stmt.setTimestamp(8, new Timestamp(dateModified));
-                stmt.setString(9, modifiedByUserId.toString());
+                stmt.setString(9, folder.getUserLastModified().toString());
                 stmt.setInt(10, state);
                 stmt.setInt(11, folder.getLength());
                 stmt.setString(12, CmsUUID.getNullUUID().toString());
@@ -820,7 +808,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 }
 
                 if (rootFolder == null) {
-                    createProjectResource(project.getId(), foldername);
+                    createProjectResource(project.getId(), folder.getResourceName());
                 }
 
                 //createProjectResource(project.getId(), foldername);
@@ -851,18 +839,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
       * @return The created folder.
       * @throws CmsException Throws CmsException if operation was not succesful.
       */
-    public CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags, long dateLastModified, CmsUUID userLastModified, long dateCreated, CmsUUID userCreated) throws CmsException {
-        
-        
-        // check if the overwrite user & timestamp are given
-        if (userLastModified.equals(CmsUUID.getNullUUID())) {
-            userLastModified=user.getId();
-        }
-        
-        if (userCreated.equals(CmsUUID.getNullUUID())) {
-            userCreated=user.getId();
-        }
-                
+    public CmsFolder createFolder(CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags, long dateLastModified, CmsUUID userLastModified, long dateCreated, CmsUUID userCreated) throws CmsException {      
+                       
         CmsFolder newFolder = new CmsFolder(
             new CmsUUID(),
             new CmsUUID(),
@@ -873,13 +851,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             flags,
             project.getId(),
             com.opencms.core.I_CmsConstants.C_STATE_NEW,
-            dateLastModified,
-            userLastModified, 
             dateCreated,
-            userCreated, 
+            userCreated,
+            dateLastModified,
+            userLastModified,              
             1);
     
-        return createFolder(user, project, newFolder, parentId, folderName);        
+        return createFolder(project, newFolder, parentId);        
+        
     }
 
     /**

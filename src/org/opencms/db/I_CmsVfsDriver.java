@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/08 11:37:51 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2003/09/10 15:00:16 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.49 $ $Date: 2003/09/08 11:37:51 $
+ * @version $Revision: 1.50 $ $Date: 2003/09/10 15:00:16 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -168,7 +168,7 @@ public interface I_CmsVfsDriver {
      * @return The created folder.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */    
-    CmsFolder createFolder(CmsUser user, CmsProject project, CmsFolder folder, CmsUUID parentId, String foldername) throws CmsException;
+    CmsFolder createFolder(CmsProject project, CmsFolder folder, CmsUUID parentId) throws CmsException;
 
     /**
       * Creates a new folder
@@ -187,7 +187,7 @@ public interface I_CmsVfsDriver {
       * @return The created folder.
       * @throws CmsException Throws CmsException if operation was not succesful.
       */
-    CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags, long dateLastModified, CmsUUID userLastModified, long dateCreated, CmsUUID userCreated) throws CmsException;
+    CmsFolder createFolder(CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags, long dateLastModified, CmsUUID userLastModified, long dateCreated, CmsUUID userCreated) throws CmsException;
 
     /**
      * Creates a new projectResource from a given CmsResource object.

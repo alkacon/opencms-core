@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/10 12:53:27 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2003/09/10 15:00:16 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.86 $ $Date: 2003/09/10 12:53:27 $
+ * @version $Revision: 1.87 $ $Date: 2003/09/10 15:00:16 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -663,7 +663,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         CmsProject online = createProject(admin, users /* guests */, projectmanager, task, I_CmsConstants.C_PROJECT_ONLINE, "the online-project", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
 
         // create the root-folder for the online project
-        CmsFolder onlineRootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "/", 0, 0, admin.getId(), 0, admin.getId());
+        CmsFolder onlineRootFolder = m_driverManager.getVfsDriver().createFolder(online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "/", 0, 0, admin.getId(), 0, admin.getId());
         onlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, onlineRootFolder, CmsDriverManager.C_UPDATE_ALL);        		
            
@@ -676,7 +676,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         CmsProject setup = createProject(admin, administrators, administrators, task, "_setupProject", "Initial site import", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
 
         // create the root-folder for the offline project
-        CmsFolder setupRootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineRootFolder, CmsUUID.getNullUUID(), "/");        
+        CmsFolder setupRootFolder = m_driverManager.getVfsDriver().createFolder(setup, onlineRootFolder, CmsUUID.getNullUUID());        
         setupRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, setupRootFolder, CmsDriverManager.C_UPDATE_ALL);
 
@@ -1167,7 +1167,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         newFolder = (CmsFolder) currentFolder.clone();
                         newFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
                         newFolder.setFullResourceName(currentResourceName);
-                        m_driverManager.getVfsDriver().createFolder(context.currentUser(), onlineProject, newFolder, newFolder.getParentId(), newFolder.getResourceName());
+                        m_driverManager.getVfsDriver().createFolder(onlineProject, newFolder, newFolder.getParentId());
                     } catch (CmsException e) {
                         if (e.getType() == CmsException.C_FILE_EXISTS) {
                             try {
@@ -1221,7 +1221,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         // if folder does not exist online
                         if (exc.getType() == CmsException.C_NOT_FOUND) {
                             // create the new folder
-                            onlineFolder = m_driverManager.getVfsDriver().createFolder(context.currentUser(), onlineProject, currentFolder, currentFolder.getParentId(), currentFolder.getResourceName());
+                            onlineFolder = m_driverManager.getVfsDriver().createFolder(onlineProject, currentFolder, currentFolder.getParentId());
                             onlineFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
                             onlineFolder.setFullResourceName(currentResourceName);
                             m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), onlineFolder, CmsDriverManager.C_UPDATE_ALL);
@@ -1591,9 +1591,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         newFile.setFullResourceName(currentResourceName);
                         m_driverManager.getVfsDriver().createFile(onlineProject, newFile, context.currentUser().getId(), newFile.getParentId(), newFile.getResourceName());
                         m_driverManager.getVfsDriver().publishResource(newFile,currentFile);
-
                     } catch (CmsException e) {
-                        
                         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                             OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()] error re-creating resource online, type: " + e.getTypeText() + ",  " + newFile.toString());
                         }

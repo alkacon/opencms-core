@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/09/02 13:50:28 $
-* Version: $Revision: 1.90 $
+* Date   : $Date: 2003/09/10 15:00:16 $
+* Version: $Revision: 1.91 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -452,7 +452,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#moveResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
-        //cms.doMoveResource(source, destination);
         this.copyResource(cms, source, destination, true, true, I_CmsConstants.C_COPY_AS_LINK);
         this.deleteResource(cms, source, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);        
     }
