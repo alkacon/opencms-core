@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/12/10 15:50:27 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2004/12/15 15:50:15 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.80 $
+ * @version $Revision: 1.81 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1780,7 +1780,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 return getVfsName(cms, rfsName);
             }
         }
-        return vfsName;
+        if (match) {
+            return vfsName;
+        } else {
+            return null;
+        }
     }
     
     
