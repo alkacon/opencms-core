@@ -2,7 +2,7 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="5.3.5" />    
+    <property name="version.number"             		value="pre5.3.6dev" />    
     <property name="version.name"               		value="Ix" />
     
 	<property name="app.name" 							value="opencms" />
