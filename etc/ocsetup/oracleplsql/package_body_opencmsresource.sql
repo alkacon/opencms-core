@@ -14,11 +14,10 @@ PACKAGE BODY opencmsresource IS
 -- which is needed to update the resource-cache
 --------------------------------------------------------------------------------------------------------------
   PROCEDURE lockResource(pUserId IN NUMBER, pProjectId IN NUMBER, pFolderName IN VARCHAR2, pForce IN VARCHAR2, pResource OUT userTypes.anyCursor) IS
-    vOnlineProject NUMBER;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
   BEGIN
     bResourceList := '';
-    vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
     -- first lock the resources
     lockResource(pUserId, pProjectId, vOnlineProject, pFolderName, pForce);
     -- now build the cursor which contains the locked resources to return the resultset
@@ -131,11 +130,10 @@ PACKAGE BODY opencmsresource IS
 -- which is needed to update the resource-cache
 --------------------------------------------------------------------------------------------------------------
   PROCEDURE unlockResource(pUserId IN NUMBER, pProjectId IN NUMBER, pFolderName IN VARCHAR2, pResource OUT userTypes.anyCursor) IS
-    vOnlineProject NUMBER;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
   BEGIN
     bResourceList := '';
-    vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
     -- first unlock the resources
     unlockResource(pUserId, pProjectId, vOnlineProject, pFolderName);
     -- now build the cursor which contains the unlocked resources to return the resultset
@@ -260,11 +258,9 @@ PACKAGE BODY opencmsresource IS
 -- for project with project_id = pProjectId or for online-project
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFolder(pUserId NUMBER, pProjectID NUMBER, pFolderName VARCHAR2) RETURN userTypes.anyCursor IS
-    curOnlineProject userTypes.anyCursor;
-    vOnlineProject NUMBER;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     curFolder userTypes.anyCursor;
   BEGIN
-    vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
     -- read the resource from offline project or the online project, the first resource is used
     IF pProjectID = vOnlineProject THEN
       OPEN curFolder FOR select * from cms_online_resources
@@ -292,12 +288,10 @@ PACKAGE BODY opencmsresource IS
 -- for the project with project_id = pProjectId or for online-projekt
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFileHeader(pUserId NUMBER, pProjectID NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor IS
-    curOnlineProject userTypes.anyCursor;
-    vOnlineProject NUMBER;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     curResource userTypes.anyCursor;
     recFile cms_resources%ROWTYPE;
   BEGIN
-    vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
     -- is pFileName a folder? => readFolder
     IF substr(pFileName, -1) = '/' THEN
       curResource := readFolder(pUserId, pProjectId, pFileName);
@@ -403,12 +397,10 @@ PACKAGE BODY opencmsresource IS
   FUNCTION readFile(pUserId NUMBER, pProjectID NUMBER, pFileName VARCHAR2) RETURN userTypes.anyCursor IS
     curResource userTypes.anyCursor;
     recFile userTypes.fileRecord;
-    curOnlineProject userTypes.anyCursor;
-    recOnlineProject cms_projects%ROWTYPE;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
   BEGIN
-    recOnlineProject := opencmsProject.onlineProject(pProjectId);
     -- first read the file
-    curResource := readFileNoAccess(pUserId, pProjectId, recOnlineProject.project_id, pFileName);
+    curResource := readFileNoAccess(pUserId, pProjectId, vOnlineProject, pFileName);
     FETCH curResource INTO recFile;
     CLOSE curResource;
     -- check the access for the existing file
@@ -423,7 +415,7 @@ PACKAGE BODY opencmsresource IS
       END IF;
     END IF;
     -- because the cursor was fetched it has to be read again
-    curResource := readFileNoAccess(pUserId, pProjectId, recOnlineProject.project_id, pFileName);
+    curResource := readFileNoAccess(pUserId, pProjectId, vOnlineProject, pFileName);
     RETURN curResource;
   END readFile;
 ----------------------------------------------------------------------------------------------
@@ -436,11 +428,10 @@ PACKAGE BODY opencmsresource IS
     vState NUMBER := opencmsConstants.C_STATE_NEW;
     vUserGroupId NUMBER;
     vNewResourceId NUMBER;
-    vOnlineProject NUMBER;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
     vRootFolder NUMBER;
   BEGIN
-    vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
     IF pProjectId = vOnlineProject THEN
       vTableName := 'CMS_ONLINE_RESOURCES';
     ELSE
@@ -648,10 +639,9 @@ PACKAGE BODY opencmsresource IS
     curSubResource userTypes.anyCursor;
     recSubResource cms_resources%ROWTYPE;
     tableResource userTypes.resourceTable;
-    vOnlineProject NUMBER;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
   BEGIN
-    vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
     IF pProjectId = vOnlineProject THEN
       vTableName := 'CMS_ONLINE_RESOURCES';
     ELSE
@@ -688,10 +678,9 @@ PACKAGE BODY opencmsresource IS
 ----------------------------------------------------------------------------------------------
   PROCEDURE writeFolder(pProjectID IN NUMBER, pResource IN cms_resources%ROWTYPE, pChange IN VARCHAR2) IS
     vState NUMBER;
-    vOnlineProject NUMBER;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
   BEGIN
-    vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
     IF pProjectID = vOnlineProject THEN
       vTableName := 'CMS_ONLINE_RESOURCES';
     ELSE
@@ -734,10 +723,9 @@ PACKAGE BODY opencmsresource IS
   PROCEDURE writeFileHeader(pProjectID IN NUMBER, pResource IN cms_resources%ROWTYPE, pChange IN VARCHAR2) IS
     vState NUMBER := pResource.state;
     vNewFileId NUMBER := pResource.file_id;
-    vOnlineProject NUMBER;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
   BEGIN
-    vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
     IF pProjectId = vOnlineProject THEN
       vTableName := 'CMS_ONLINE_RESOURCES';
     ELSE
@@ -780,9 +768,8 @@ PACKAGE BODY opencmsresource IS
   PROCEDURE writeFile(pProjectID IN NUMBER, pResource IN userTypes.fileRecord, pChange IN VARCHAR2) IS
     curFileHeader userTypes.anyCursor;
     recFileHeader cms_resources%ROWTYPE;
-    vOnlineProject NUMBER;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
   BEGIN
-    vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
     recFileHeader.resource_id := pResource.resource_id;
     recFileHeader.parent_id := pResource.parent_id;
     recFileHeader.resource_name := pResource.resource_name;
@@ -817,11 +804,9 @@ PACKAGE BODY opencmsresource IS
 -- Copy the file
 --------------------------------------------------------------------------------------------------
   PROCEDURE copyFile(pProjectId NUMBER, pUserId NUMBER, pSource VARCHAR2, pDestination VARCHAR2) IS
-    curOnlineProject userTypes.anyCursor;
     curFileHeader userTypes.anyCursor;
     curFolder userTypes.anyCursor;
     curFile userTypes.anyCursor;
-    recOnlineProject cms_projects%ROWTYPE;
     recFileHeader cms_resources%ROWTYPE;
     recFolder cms_resources%ROWTYPE;
     recFile userTypes.fileRecord;
@@ -829,8 +814,8 @@ PACKAGE BODY opencmsresource IS
     vFileName VARCHAR2(100) := '';
     curNewResource userTypes.anyCursor;
     recNewResource userTypes.fileRecord;
+    vOnlineProjectId NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
   BEGIN
-    recOnlineProject := opencmsProject.onlineProject(pProjectId);
 	-- read the source-file, to check readaccess
 	curFileHeader := readFileHeader(pUserId, pProjectId, pSource);
 	FETCH curFileHeader INTO recFileHeader;
@@ -849,15 +834,15 @@ PACKAGE BODY opencmsresource IS
 	IF recFolder.resource_id IS NOT NULL THEN
 	  IF opencmsAccess.accessCreate(pUserId, pProjectId, recFolder.resource_id) = 1 THEN
 	    -- write-access was granted - copy the file and the metainfos
-	    curFile := readFile(pUserId, pProjectId, recOnlineProject.project_id, pSource);
+	    curFile := readFile(pUserId, pProjectId, vOnlineProjectId, pSource);
         FETCH curFile INTO recFile;
         CLOSE curFile;
         IF recFile.resource_id IS NOT NULL THEN
-          createFile(pProjectId, recOnlineProject.project_id, recFile, pUserId, recFolder.resource_id, vFolderName||vFileName, 'TRUE', curNewResource);
+          createFile(pProjectId, vOnlineProjectId, recFile, pUserId, recFolder.resource_id, vFolderName||vFileName, 'TRUE', curNewResource);
           FETCH curNewResource INTO recNewResource;
           CLOSE curNewResource;
 	      -- copy the metainfos
-	      lockResource(pUserId, pProjectId, recOnlineProject.project_id, recNewResource.resource_name, 'TRUE');
+	      lockResource(pUserId, pProjectId, vOnlineProjectId, recNewResource.resource_name, 'TRUE');
 	      opencmsProperty.writeProperties(pUserId, pProjectId, recNewResource.resource_id, recNewResource.resource_type,
 	                                      opencmsProperty.readAllProperties(pUserId, pProjectId, recFile.resource_name));
         ELSE
@@ -871,9 +856,6 @@ PACKAGE BODY opencmsresource IS
     END IF;
   EXCEPTION
     WHEN OTHERS THEN
-      IF curOnlineProject%ISOPEN THEN
-        CLOSE curOnlineProject;
-      END IF;
       IF curFileHeader%ISOPEN THEN
         CLOSE curFileHeader;
       END IF;
@@ -924,7 +906,7 @@ PACKAGE BODY opencmsresource IS
     vQueryString VARCHAR2(32767) := '';
     retResources userTypes.resourceTable;
     newIndex NUMBER;
-    vOnlineProject NUMBER := opencmsProject.onlineProject(pProjectID).project_id;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
   BEGIN
     bAnyList := '';
     curResource := readFolder(pUserId, pProjectId, pResourceName);
@@ -1003,7 +985,7 @@ PACKAGE BODY opencmsresource IS
     recResource cms_resources%ROWTYPE;
     recFiles    cms_resources%ROWTYPE;
     vQueryString VARCHAR2(32767) := '';
-    vOnlineProject NUMBER := opencmsProject.onlineProject(pProjectId).project_id;
+    vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     vTableName VARCHAR2(20);
   BEGIN
     bAnyList := '';
@@ -1191,7 +1173,7 @@ PACKAGE BODY opencmsresource IS
 -------------------------------------------------------------------------
     FUNCTION getParentId(pProjectID NUMBER, pResourceId NUMBER) RETURN NUMBER IS
       vParentId NUMBER;
-      vOnlineProject NUMBER := opencmsProject.onlineProject(pProjectId).project_id;
+      vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
     BEGIN
       IF pProjectId = vOnlineProject THEN
         select decode(parent_id, -1, NULL, parent_id) into vParentId
