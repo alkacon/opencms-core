@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/15 11:22:11 $
- * Version: $Revision: 1.129 $
+ * Date   : $Date: 2000/09/15 16:28:14 $
+ * Version: $Revision: 1.130 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.129 $ $Date: 2000/09/15 11:22:11 $ * 
+ * @version $Revision: 1.130 $ $Date: 2000/09/15 16:28:14 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -63,7 +63,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
 	 * The maximum amount of tables.
 	 */
-	protected static int C_MAX_TABLES = 12;
+	protected static int C_MAX_TABLES = 14;
 	
 	/**
 	 * Table-key for max-id
@@ -2402,7 +2402,7 @@ public CmsSite getSite(String siteName) throws CmsException
 	{
 		statement = m_pool.getPreparedStatement(m_cq.C_PROJECTS_GETSITEFROMNAME_KEY);
 		statement.setString(1, siteName);
-		ResultSet res = statement.executeQuery();
+		ResultSet res = statement.executeQuery(); 
 		if (res.next())
 		{
 			site = new CmsSite(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"), res.getInt("ONLINEPROJECT_ID"));

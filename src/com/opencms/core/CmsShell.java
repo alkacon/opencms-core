@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/15 13:28:22 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/09/15 16:28:14 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.27 $ $Date: 2000/09/15 13:28:22 $
+ * @version $Revision: 1.28 $ $Date: 2000/09/15 16:28:14 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -1074,9 +1074,12 @@ private void init(String[] args) throws Exception
 		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
 		CmsSite site = m_cms.getSite(args[1]);
 		System.out.println("Multisite name: " + site.getName() + ", Description: " + site.getDescription());
-		m_openCms.initUser(m_cms, null, null, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
+		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, site.getOnlineProjectId());
 	}
-	m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+	else
+	{
+		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+	}
 }
 	/**
 	 * Determines, if the user is Admin.
@@ -1140,8 +1143,8 @@ private void init(String[] args) throws Exception
 		
 		try {
 			//expect a multisite on the commandline or not.
-			int nargs = CmsConstants.USE_MULTISITE?2:1;
-			if (args.length != nargs) {
+			int nargs = ((CmsConstants.USE_MULTISITE)?2:1);
+			if (args.length < nargs) {
 				// print out usage-information.
 				shell.usage();
 			} else {

@@ -3,8 +3,8 @@ package com.opencms.file.mySql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/09/15 13:28:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/09/15 16:28:17 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -143,7 +143,7 @@ public class CmsDbPool implements I_CmsDbPool {
 		PreparedStatement pstmt = null;
 		int num;
 		//synchronized ( m_prepStatements) {
-		Vector temp = (Vector) m_prepStatements.get(key);
+		Vector temp = (Vector) m_prepStatements.get(key); 
 		
 		synchronized (temp) {
 			if (temp.size() > 0) {
