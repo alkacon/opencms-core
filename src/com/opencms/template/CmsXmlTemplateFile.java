@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/03/16 13:40:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/03/27 09:17:10 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2000/03/16 13:40:06 $
+ * @version $Revision: 1.17 $ $Date: 2000/03/27 09:17:10 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -75,7 +75,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         super();
         registerMyTags();
         init(cms, file);
-    }        
+    }         
     
     /**
      * Registers the special tag <CODE>&lt;ELEMENT&gt;</CODE> for processing with
@@ -460,7 +460,152 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getProcessedTemplateContent(Object callingObject, Hashtable parameters) throws CmsException {
         return getProcessedTemplateContent(callingObject, parameters, null);
     }        
+     
+    /**
+     * Checks if this Template owns a datablock with the given key.
+     * @param key Datablock key to be checked.
+     * @return true if a datablock is found, false otherwise.
+     */
+    public boolean hasData(String key) {
+        return super.hasData(key);
+    }    
+                    
+	/**
+	 * Gets a complete datablock from the datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @return Complete DOM element of the datablock for the given key 
+	 * or null if no datablock is found for this key.
+	 */
+	public Element getData(String tag) throws CmsException {
+        return super.getData(tag);
+    }
+
+	/**
+	 * Gets the text and CDATA content of a datablock from the 
+	 * datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @return Datablock content for the given key or null if no datablock
+	 * is found for this key.
+	 */
+    public String getDataValue(String tag) throws CmsException {
+        return super.getDataValue(tag);
+    }    
+    
+  	/**
+	 * Gets a processed datablock from the datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
+	 */
+	public Element getProcessedData(String tag) throws CmsException {
+        return super.getProcessedData(tag);
+    }
+   
+  	/**
+	 * Gets a processed datablock from the datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @param callingObject Object that should be used to look up user methods.
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
+	 */
+    public Element getProcessedData(String tag, Object callingObject) throws CmsException {
+        return super.getProcessedData(tag, callingObject);
+    }
+    
+  	/**
+	 * Gets a processed datablock from the datablock hashtable.
+	 * <P>
+	 * The userObj Object is passed to all called user methods.
+	 * By using this, the initiating class can pass customized data to its methods.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @param callingObject Object that should be used to look up user methods.
+	 * @param userObj any object that should be passed to user methods
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
+	 */
+	public Element getProcessedData(String tag, Object callingObject, Object userObj) 
+            throws CmsException {
+        return super.getProcessedData(tag, callingObject, userObj);
+    }
+
+  	/**
+	 * Gets the text and CDATA content of a processed datablock from the 
+	 * datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
+	 */
+	public String getProcessedDataValue(String tag) throws CmsException {
+        return super.getProcessedDataValue(tag);
+    }
+
+  	/**
+	 * Gets the text and CDATA content of a processed datablock from the 
+	 * datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @param callingObject Object that should be used to look up user methods.
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
+	 */
+    public String getProcessedDataValue(String tag, Object callingObject) throws CmsException {
+        return super.getProcessedDataValue(tag, callingObject);
+    }
+
+  	/**
+	 * Gets the text and CDATA content of a processed datablock from the 
+	 * datablock hashtable.
+	 * <P>
+	 * The userObj Object is passed to all called user methods.
+	 * By using this, the initiating class can pass customized data to its methods.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @param callingObject Object that should be used to look up user methods.
+	 * @param userObj any object that should be passed to user methods
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
+	 */
+	public String getProcessedDataValue(String tag, Object callingObject, Object userObj) 
+            throws CmsException {
+        return super.getProcessedDataValue(tag, callingObject, userObj);
+	}    
+
+   /**
+    * Creates a datablock consisting of a single TextNode containing 
+    * data and stores this block into the datablock-hashtable.
+    * 
+    * @param tag Key for this datablock.
+    * @param data String to be put in the datablock.
+    */
+    public void setData(String tag, String data) {
+        super.setData(tag, data);
+    }
+
+    /**
+     * Stores a given datablock element in the datablock hashtable.
+     * 
+     * @param tag Key for this datablock.
+     * @param data DOM element node for this datablock.
+     */
+    public void setData(String tag, Element data) { 
+        super.setData(tag, data);
+    }
         
+    /**
+     * Remove a datablock from the internal hashtable and
+     * from the XML document
+     * @param tag Key of the datablock to delete.
+     */    
+    public void removeData(String tag) {
+        super.removeData(tag);
+    }    
+    
     /**
      * Utility method to get the correct datablock name for a given selector.<BR>
      * If no selector is given or the selected section is not found, the template section
