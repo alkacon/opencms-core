@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/06/18 15:15:36 $
- * Version: $Revision: 1.554 $
+ * Date   : $Date: 2004/07/05 15:43:19 $
+ * Version: $Revision: 1.555 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,18 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.3.6 Ix - mm dd, 2004
+! Improved core search configuration by adding configurable "input sources" for the 
+  search indexer
+* Removed legacy dependency on search configuration
+! Added first version of new scheduler based on OpenSymphony Quatz
+- Removed "package path" configuration option
+- Moved "file upload extension mappings" from DB table to XML configuration
+! New API for resource types
+! Default resource types now are located in package org.opencms.file.types
+- Refactored several methods in CmsObject and DriverManager to improve code quality
+! Added several Junit test cases for CmsObject/DriverManager methods
 
 OpenCms 5.3.5 Ix - June 16, 2004
 - Important: This version contains changes to the OpenCms VFS database schema
