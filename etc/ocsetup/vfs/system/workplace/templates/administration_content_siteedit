@@ -109,14 +109,14 @@
 
 
 
-<TEMPLATE name="errornewsite">
+<TEMPLATE name="erroreditsite">
 <![CDATA[
 ]]><ERRORPAGE title="sitemanagement.error.title.editsite" message="sitemanagement.error.message.editsite" reason="sitemanagement.error.reason.editsite" suggestion="sitemanagement.error.suggestion.editsite" ref="administration_content_editnew.html"><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 
 <TEMPLATE name="datamissing">
-<ERRORPAGE title="sitemanagement.error.title.editsite" message="sitemanagement.error.message.datamissing" reason="sitemanagement.error.reason.datamissing" suggestion="error.suggestion.none" ref="administration_content_siteedit.html"></ERRORPAGE>
+<ERRORPAGE title="sitemanagement.error.title.editsite" message="sitemanagement.error.message.editsite" reason="sitemanagement.error.reason.datamissing" suggestion="error.suggestion.none" ref="administration_content_siteedit.html"></ERRORPAGE>
 </TEMPLATE>
 
 <TEMPLATE name="done">
@@ -156,7 +156,7 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 </HEAD>
 <!--
-<BODY onload="updateFrame('body.admin_content', 'administration_content_sitenew.html?action=start');">
+<BODY onload="updateFrame('body.admin_content', 'administration_content_siteedit.html?action=start');">
 -->
 <BODY onload="document.location='administration_content_siteedit.html?action=start'">
 <CENTER>
