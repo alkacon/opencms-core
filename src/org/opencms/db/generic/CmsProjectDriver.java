@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/29 13:00:59 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/07/29 15:58:46 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.34 $ $Date: 2003/07/29 13:00:59 $
+ * @version $Revision: 1.35 $ $Date: 2003/07/29 15:58:46 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1595,8 +1595,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
             }
 
-            m_driverManager.getVfsDriver().removeFolder(onlineProject, currentFolder.getId());
-            m_driverManager.getVfsDriver().removeFolder(context.currentProject(), currentFolder.getId());
+            m_driverManager.getVfsDriver().removeFolder(onlineProject, currentFolder);
+            m_driverManager.getVfsDriver().removeFolder(context.currentProject(), currentFolder);
 
             // delete both online and offline access control entries applied to this folder
             m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, delOnlineFolder.getResourceAceId());

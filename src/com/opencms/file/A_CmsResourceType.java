@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/23 09:46:18 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/07/29 15:58:47 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -99,9 +99,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#renameResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public void renameResource(CmsObject cms, String resourcename, String destination) throws CmsException {
-        // cms.doRenameResource(resourcename, destination);
-        cms.copyResource(resourcename, destination, true, true);
-        cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+        cms.doRenameResource(resourcename, destination);
     }
 
     /**

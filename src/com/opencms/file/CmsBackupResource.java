@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
-* Date   : $Date: 2003/07/28 16:29:42 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/07/29 15:58:47 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  * Describes a backup resource in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.15 $ $Date: 2003/07/28 16:29:42 $
+ * @version $Revision: 1.16 $ $Date: 2003/07/29 15:58:47 $
  */
 public class CmsBackupResource extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -115,7 +115,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
               projectId,accessFlags,state,
               CmsUUID.getNullUUID(),launcherType,
               dateCreated, resourceLastModifiedByUserId /* !!! */,
-              dateLastModified,resourceLastModifiedByUserId, size, lockedInProject);
+              dateLastModified,resourceLastModifiedByUserId, size, lockedInProject, 0);
 
         // set content and size.
         m_fileContent=fileContent;
@@ -165,7 +165,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
            projectId,accessFlags,state,
            CmsUUID.getNullUUID(),launcherType,
            dateCreated, resourceCreatedByUserId, 
-           dateLastModified,resourceLastModifiedByUserId, size, lockedInProject);
+           dateLastModified,resourceLastModifiedByUserId, size, lockedInProject, 0);
 
      // set content and size.
      m_fileContent=fileContent;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/29 13:00:59 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/07/29 15:58:47 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2003/07/29 13:00:59 $
+ * @version $Revision: 1.23 $ $Date: 2003/07/29 15:58:47 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -316,7 +316,7 @@ public interface I_CmsVfsDriver {
      * @param structureId the structure id of the folder
      * @throws CmsException if something goes wrong
      */
-    void removeFolder(CmsProject currentProject, CmsUUID structureId) throws CmsException;
+    void removeResource(CmsProject currentProject, CmsResource resource) throws CmsException;
     
     void removeTemporaryFile(CmsFile file) throws CmsException;
     int renameResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, String newResourceName) throws CmsException;

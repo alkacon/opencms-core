@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/29 13:00:59 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2003/07/29 15:58:46 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.59 $ $Date: 2003/07/29 13:00:59 $
+ * @version $Revision: 1.60 $ $Date: 2003/07/29 15:58:46 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -222,8 +222,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
-        // TODO: add link count
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject);
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, linkCount);
     }
 
     /**
@@ -264,9 +263,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }        
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
-        
-        // TODO: add linkCount       
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject);
+               
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, linkCount);
     }
 
     /**
@@ -302,8 +300,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             resProjectId = lockedInProject = projectId;
         } 
 
-        // TODO: add linkCount
-        return new CmsFolder(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, structureState, lockedBy, dateCreated, userCreated, dateLastModified, userLastModified, lockedInProject);
+        return new CmsFolder(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, structureState, lockedBy, dateCreated, userCreated, dateLastModified, userLastModified, lockedInProject, linkCount);
     }
 
     /**
@@ -344,7 +341,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
                      
-        CmsResource newResource = new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resourceProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, resourceSize, lockedInProject);
+        CmsResource newResource = new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resourceProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, resourceSize, lockedInProject, linkCount);
         
         return newResource;
     }
@@ -369,7 +366,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         long dateModified = 0, dateCreated = 0;
         Connection conn = null;
         PreparedStatement stmt = null;
-        boolean contentExistsAlready = false;
 
         // validate the resource name
         if (filename.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
@@ -412,8 +408,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
 
         try {
+            
             conn = m_sqlManager.getConnection(project);
-
+            
             // write the structure
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
             stmt.setString(1, file.getId().toString());
@@ -422,10 +419,10 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(4, filename);
             stmt.setInt(5, newState);
             stmt.executeUpdate(); 
-
-            if (!existsResource(project, file)) { 
+        
+            m_sqlManager.closeAll(null, stmt, null);
             
-                m_sqlManager.closeAll(null, stmt, null);
+            if (!existsResource(project, file)) { 
                 
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");
@@ -442,15 +439,21 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setInt(11, file.getLength());
                 stmt.setString(12, file.isLockedBy().toString());
                 stmt.setInt(13, project.getId());
-                stmt.setInt(14, 0);
-                stmt.executeUpdate();
-                
+                stmt.setInt(14, 1);
+                stmt.executeUpdate();               
+            
                 // write the content
                 createFileContent(file.getFileId(), file.getContents(), 0, project.getId(), false);
+                
             } else {
-
-                // update the resource and content records
-                updateResourcestate(file, CmsDriverManager.C_UPDATE_RESOURCE);        
+                
+                // update the link Count
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_LINK_COUNT");
+                stmt.setInt(1, this.countVfsLinks(project.getId(), file.getResourceId()));
+                stmt.setString(2, file.getResourceId().toString());
+                stmt.executeUpdate();
+                
+                //updateResourcestate(file, CmsDriverManager.C_UPDATE_RESOURCE);        
                 writeFileContent(file.getFileId(), file.getContents(), project.getId(), false);
             }                        
         } catch (SQLException e) {
@@ -461,7 +464,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         return readFile(project.getId(), false, file.getId());
     }
-    
+
     private boolean existsResource (CmsProject project, CmsResource resource) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -485,16 +488,16 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         return exists;       
     }
     
-    private int countVfsLinks (CmsProject project, CmsResource resource) throws CmsException {
+    private int countVfsLinks (int projectId, CmsUUID resourceId) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null; 
         int count = 0;
         
         try {
-            conn = m_sqlManager.getConnection(project);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_COUNTLINKS"); 
-            stmt.setString(1, resource.getResourceId().toString());
+            conn = m_sqlManager.getConnection(projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_COUNTLINKS"); 
+            stmt.setString(1, resourceId.toString());
             res = stmt.executeQuery();
             
             if (res.next())
@@ -549,7 +552,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             user.getId(),
             contents,
             contents.length, 
-            project.getId());
+            project.getId(),
+            1);
     
         return createFile(project, newFile, user.getId(), parentId, filename);          
     }
@@ -672,7 +676,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(11, folder.getLength());
             stmt.setString(12, folder.isLockedBy().toString());
             stmt.setInt(13, project.getId());
-            stmt.setInt(14,0);
+            stmt.setInt(14, 1);
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
             
@@ -756,7 +760,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             user.getId(), 
             0,
             user.getId(), 
-            project.getId());
+            project.getId(),
+            1);
     
         return createFolder(user, project, newFolder, parentId, folderName);        
     }
@@ -949,7 +954,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
           stmt.setInt(11, newResource.getLength());
           stmt.setString(12, newResource.isLockedBy().toString());
           stmt.setInt(13, project.getId());
-          stmt.setInt(14,0);
+          stmt.setInt(14, 1);
           stmt.executeUpdate();
           m_sqlManager.closeAll(null, stmt, null);
             
@@ -2632,6 +2637,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     public void removeFile(CmsProject currentProject, CmsResource resource) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
+        int linkCount = 0;
 
         try {
             conn = m_sqlManager.getConnection(currentProject);
@@ -2641,13 +2647,22 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setString(1, resource.getId().toString());
                 stmt.executeUpdate();
 
-            // if not referenced any longer, also delete the resource and the content record
-            // todo: check this based on ref count later
-            if (this.countVfsLinks(currentProject, resource) == 0) { 
-           
-                m_sqlManager.closeAll(null, stmt, null);
+            m_sqlManager.closeAll(null, stmt, null);
+            
+            // count the references to the resource
+            linkCount = countVfsLinks(currentProject.getId(), resource.getResourceId());
 
-                // delete the resource record
+            if (linkCount > 0) { 
+                
+                // update the link Count
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_LINK_COUNT");
+                stmt.setInt(1, this.countVfsLinks(currentProject.getId(), resource.getResourceId()));
+                stmt.setString(2, resource.getResourceId().toString());
+                stmt.executeUpdate();
+                
+            } else {
+            
+                // if not referenced any longer, also delete the resource and the content record
                 stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE_BY_RESOURCEID");
                 stmt.setString(1, resource.getResourceId().toString());
                 stmt.executeUpdate();
@@ -2708,7 +2723,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 //} finally {
                 //    m_sqlManager.closeAll(conn, stmt, null);
                 // }
-                removeFolder(currentProject, folder.getId());
+                removeResource(currentProject, folder);
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] " + folder.getResourceName(), CmsException.C_NOT_EMPTY);
             }
@@ -2725,25 +2740,39 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 	 * @param structureId the structure id of the folder
 	 * @throws CmsException if something goes wrong
      */
-    public void removeFolder(CmsProject currentProject, CmsUUID structureId) throws CmsException {
+    public void removeResource(CmsProject currentProject, CmsResource resource) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
+        int linkCount = 0;
+        
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            // stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE");
-            // delete the folder
-            // stmt.setString(1, folderId.toString());
-            // stmt.executeUpdate();
             
-			stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE_BY_STRUCTUREID");
-			stmt.setString(1, structureId.toString());
+            // delete the structure record            
+			stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_STRUCTURE_DELETE_BY_STRUCTUREID");
+			stmt.setString(1, resource.getId().toString());
             stmt.executeUpdate();
             
 			m_sqlManager.closeAll(null, stmt, null);
-			
-			stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_STRUCTURE_DELETE_BY_STRUCTUREID");
-			stmt.setString(1, structureId.toString());
-			stmt.executeUpdate();
+
+            // count the references to the resource
+            linkCount = countVfsLinks(currentProject.getId(), resource.getResourceId());
+
+            if (linkCount > 0) { 
+                
+                // update the link Count
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_LINK_COUNT");
+                stmt.setInt(1, this.countVfsLinks(currentProject.getId(), resource.getResourceId()));
+                stmt.setString(2, resource.getResourceId().toString());
+                stmt.executeUpdate();
+            
+            } else {			
+            
+                // if not referenced any longer, delete the resource record
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE_BY_RESOURCEID");
+                stmt.setString(1, resource.getResourceId().toString());
+                stmt.executeUpdate();
+            }
 			
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -3061,7 +3090,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(8, file.getFileId().toString());
             stmt.setString(9, file.isLockedBy().toString());
             stmt.setInt(10, file.getProjectId());
-            stmt.setString(11, file.getResourceId().toString());
+            stmt.setInt(11, this.countVfsLinks(project.getId(), file.getResourceId()));
+            stmt.setString(12, file.getResourceId().toString());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
             
@@ -3141,7 +3171,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(8, CmsUUID.getNullUUID().toString());
             stmt.setString(9, folder.isLockedBy().toString());
             stmt.setInt(10, folder.getProjectId());
-            stmt.setString(11, folder.getResourceId().toString());
+            stmt.setInt(11, this.countVfsLinks(project.getId(), folder.getResourceId()));
+            stmt.setString(12, folder.getResourceId().toString());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
             
@@ -3365,7 +3396,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(8, resource.getFileId().toString());
             stmt.setString(9, resource.isLockedBy().toString());
             stmt.setInt(10, resource.getProjectId());
-            stmt.setString(11, resource.getResourceId().toString());
+            stmt.setInt(11, this.countVfsLinks(project.getId(), resource.getResourceId()));
+            stmt.setString(12, resource.getResourceId().toString());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
             
@@ -3413,7 +3445,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 
                 if (writeContent) {
                     writeFileContent(onlineResource.getFileId(), ((CmsFile)offlineResource).getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);    
-            }
+            	}
             }
 
             // update the online structure record with the corresponding offline structure record
@@ -3427,20 +3459,21 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             m_sqlManager.closeAll(null, stmt, null);
             
             // update the online resource record with the corresponding offline resource record
-                stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE_RESOURCES");                
-                stmt.setInt(1, offlineResource.getType());
-                stmt.setInt(2, offlineResource.getFlags());
-                stmt.setInt(3, offlineResource.getLoaderId());
-                stmt.setTimestamp(4, new Timestamp(offlineResource.getDateLastModified()));
-    			stmt.setString(5, offlineResource.getUserLastModified().toString());
-    			stmt.setInt(6, I_CmsConstants.C_STATE_UNCHANGED);
-                stmt.setInt(7, resourceSize);
-                stmt.setString(8, offlineResource.getFileId().toString());
-                stmt.setString(9, CmsUUID.getNullUUID().toString());
-                stmt.setInt(10, offlineResource.getProjectId());
-                stmt.setString(11, offlineResource.getResourceId().toString());
-                stmt.executeUpdate();                
-        
+            stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE_RESOURCES");                
+            stmt.setInt(1, offlineResource.getType());
+            stmt.setInt(2, offlineResource.getFlags());
+            stmt.setInt(3, offlineResource.getLoaderId());
+            stmt.setTimestamp(4, new Timestamp(offlineResource.getDateLastModified()));
+            stmt.setString(5, offlineResource.getUserLastModified().toString());
+            stmt.setInt(6, I_CmsConstants.C_STATE_UNCHANGED);
+            stmt.setInt(7, resourceSize);
+            stmt.setString(8, offlineResource.getFileId().toString());
+            stmt.setString(9, CmsUUID.getNullUUID().toString());
+            stmt.setInt(10, offlineResource.getProjectId());
+            stmt.setInt(11, this.countVfsLinks(I_CmsConstants.C_PROJECT_ONLINE_ID, onlineResource.getResourceId()));
+            stmt.setString(12, offlineResource.getResourceId().toString());
+            stmt.executeUpdate(); 
+                     
             //m_sqlManager.commit(conn);
         } catch (SQLException e) {
             //m_sqlManager.rollback(conn, savepoint);

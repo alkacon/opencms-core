@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2003/07/28 16:29:42 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/07/29 15:58:47 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import java.io.Serializable;
  * Describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2003/07/28 16:29:42 $
+ * @version $Revision: 1.25 $ $Date: 2003/07/29 15:58:47 $
  */
 public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -75,7 +75,8 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         CmsUUID createdByUser,
         long dateLastModified,
         CmsUUID lastModifiedByUser,
-        int lockedInProject
+        int lockedInProject,
+        int linkCount
     ) {
     
         // TODO VFS links: refactor all upper methods to support the VFS link type param
@@ -97,7 +98,8 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             dateLastModified,
             lastModifiedByUser,
             -1,
-            lockedInProject);
+            lockedInProject,
+            linkCount);
     }
  
     /**
@@ -121,6 +123,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             this.getUserCreated(),
             this.getDateLastModified(),
             this.getUserLastModified(),
-            this.getLockedInProject());
+            this.getLockedInProject(),
+            this.getLinkCount());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/29 11:35:35 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/07/29 15:58:46 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2003/07/29 11:35:35 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/29 15:58:46 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -557,7 +557,6 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         String createdName = null;
         CmsUUID backupPkId = new CmsUUID();
         byte[] content = null;
-        int vfsLinkType = I_CmsConstants.C_UNKNOWN_ID;
 
         try {
             CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getUserLastModified());
@@ -597,7 +596,8 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 stmt.setInt(11, resource.getLength());
                 stmt.setString(12, resource.isLockedBy().toString());
                 stmt.setInt(13, publishProject.getId());
-                stmt.setInt(14, 0);
+                // TODO: link count is set to 1 for the moment
+                stmt.setInt(14, 1);
                 stmt.setInt(15, versionId);
                 stmt.setString(16, backupPkId.toString());
                 // TODO: write the user names instead the user id !

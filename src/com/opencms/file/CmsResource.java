@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/07/28 16:29:42 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2003/07/29 15:58:47 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.73 $ 
+ * @version $Revision: 1.74 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -100,6 +100,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     
     /** The size of the content */
     protected int m_size;
+    
+    /** The number of references */
+    protected int m_linkCount;
 
     /**
      * The state of this resource.<p>
@@ -137,6 +140,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param lastModifiedByUser the user who changed the file
      * @param size the file content size of the resource
      * @param lockedInProject id of the project the resource was last modified in
+     * @param linkCount the number of references
      */
     public CmsResource(
         CmsUUID structureId, 
@@ -156,7 +160,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         long dateLastModified, 
         CmsUUID lastModifiedByUser, 
         int size, 
-        int lockedInProject
+        int lockedInProject,
+        int linkCount
     ) {
         m_structureId = structureId;
         m_resourceId = resourceId;
@@ -176,8 +181,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_lastModifiedByUser = lastModifiedByUser;
         m_size = size;
         m_lockedInProject = lockedInProject;
+        m_linkCount = linkCount;
+        
         m_isTouched = false;
-
         m_fullResourceName = null;
     }
 
@@ -317,7 +323,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new CmsResource(m_structureId, m_resourceId, m_parentId, m_contentId, m_resourceName, m_resourceType, m_resourceFlags, m_projectId, m_accessFlags, m_state, m_lockedByUserId, m_loaderId, m_dateCreated, m_createdByUser, m_dateLastModified, m_lastModifiedByUser, m_size, m_lockedInProject);
+        return new CmsResource(m_structureId, m_resourceId, m_parentId, m_contentId, m_resourceName, m_resourceType, m_resourceFlags, m_projectId, m_accessFlags, m_state, m_lockedByUserId, m_loaderId, m_dateCreated, m_createdByUser, m_dateLastModified, m_lastModifiedByUser, m_size, m_lockedInProject, m_linkCount);
     }
 
     /**
@@ -433,6 +439,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         return m_size;
     }
 
+
+    /**
+     * Gets the number of references to the resource.<p>
+     * 
+     * @return the number of links
+     */
+    public int getLinkCount() {
+        return m_linkCount;
+    }
+    
     /**
      * Gets the loader id of this resource.<p>
      *
@@ -818,6 +834,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         output.append(new java.util.Date(getDateLastModified()));
         output.append(" : User lastmodified=");
         output.append(getUserLastModified());
+        output.append(" : Link count=");
+        output.append(getLinkCount());
         return output.toString();
     }
 }

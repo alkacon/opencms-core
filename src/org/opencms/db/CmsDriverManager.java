@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/29 13:34:46 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2003/07/29 15:58:47 $
+ * Version: $Revision: 1.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.97 $ $Date: 2003/07/29 13:34:46 $
+ * @version $Revision: 1.98 $ $Date: 2003/07/29 15:58:47 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1071,18 +1071,18 @@ public class CmsDriverManager extends Object {
         if (copyAsLink)
             createVfsLink(context, destination, source, newResourceProps);
         else {
-        newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
+            newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, sourceFile.getFlags(), destinationFolder.getId(), sourceFile.getContents(), getResourceType(sourceFile.getType()));
 
             // copy the properties
-        writeProperties(context, destination, newResourceProps);
+            writeProperties(context, destination, newResourceProps);
 
-        // copy the access control entries
-        ListIterator aceList = m_userDriver.getAccessControlEntries(context.currentProject(), sourceFile.getResourceAceId(), false).listIterator();
-        while (aceList.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
-            m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
+            // copy the access control entries
+            ListIterator aceList = m_userDriver.getAccessControlEntries(context.currentProject(), sourceFile.getResourceAceId(), false).listIterator();
+            while (aceList.hasNext()) {
+                CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
+                m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
-        }
+            }
         }
         
         if (lockCopy) {
@@ -1729,7 +1729,8 @@ public class CmsDriverManager extends Object {
                 context.currentUser().getId(),
                 new byte[0],
                 0,
-                context.currentProject().getId());
+                context.currentProject().getId(),
+                targetResource.getLinkCount()+1);
 
         // write the link
         linkResource = m_vfsDriver.createFile(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName);
@@ -1901,30 +1902,30 @@ public class CmsDriverManager extends Object {
             // try to delete/remove the resource only if the user has write access to the resource
             if (hasPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS, false)) {
 
-            try {
-                // try to read the corresponding online resource to decide if the resource should be either removed or deleted
-                readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
-                existsOnline = true;
-            } catch (CmsException exc) {
-                existsOnline = false;
-            }
+                try {
+                    // try to read the corresponding online resource to decide if the resource should be either removed or deleted
+                    readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
+                    existsOnline = true;
+                } catch (CmsException exc) {
+                    existsOnline = false;
+                }
             
-            unlockResource(context, currentResource.getFullResourceName(), true);
-
-            if (!existsOnline) {
-                // remove the properties                
-                deleteAllProperties(context, currentResource.getFullResourceName());
-                // remove the access control entries
-                m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
-                // the resource doesnt exist online => remove the file
-                m_vfsDriver.removeFile(context.currentProject(), currentResource);                
-            } else {
-                // delete the access control entries
-                deleteAllAccessControlEntries(context, currentResource);
-                // the resource exists online => mark the file as deleted
-                m_vfsDriver.deleteFile(context.currentProject(), currentResource);                
+                unlockResource(context, currentResource.getFullResourceName(), true);
+    
+                if (!existsOnline) {
+                    // remove the properties                
+                    deleteAllProperties(context, currentResource.getFullResourceName());
+                    // remove the access control entries
+                    m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
+                    // the resource doesnt exist online => remove the file
+                    m_vfsDriver.removeFile(context.currentProject(), currentResource);                
+                } else {
+                    // delete the access control entries
+                    deleteAllAccessControlEntries(context, currentResource);
+                    // the resource exists online => mark the file as deleted
+                    m_vfsDriver.deleteFile(context.currentProject(), currentResource);                
+                }
             }
-        }
         }
 
         // flush all caches
@@ -6769,6 +6770,10 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void renameResource(CmsRequestContext context, String oldname, String newname) throws CmsException {
+        
+        String destination = oldname.substring(0, oldname.lastIndexOf("/")+1);
+        this.moveResource(context, oldname, destination + newname);
+        /*
         // read the old file
         CmsResource resource = readFileHeader(context, oldname);
 
@@ -6780,7 +6785,8 @@ public class CmsDriverManager extends Object {
 
         m_vfsDriver.renameResource(context.currentUser(), context.currentProject(), resource, newname);
         clearResourceCache();
-    }
+        */
+        }
 
     /**
      * Replaces the content and properties of an existing resource.<p>
@@ -6873,7 +6879,8 @@ public class CmsDriverManager extends Object {
                     context.currentUser().getId(),
                     backupFile.getContents(),
                     backupFile.getLength(),
-                    context.currentProject().getId());
+                    context.currentProject().getId(),
+                    backupFile.getLinkCount());
             writeFile(context, newFile);
             clearResourceCache();
         }
@@ -7297,7 +7304,8 @@ public class CmsDriverManager extends Object {
                     context.currentUser().getId(),
                     offlineFolder.getDateLastModified(),
                     context.currentUser().getId(),
-                    context.currentProject().getId());
+                    context.currentProject().getId(),
+                    offlineFolder.getLinkCount());
             // write the file in the offline project
 
             // check if the user has write access
@@ -7342,7 +7350,8 @@ public class CmsDriverManager extends Object {
                     context.currentUser().getId(),
                     onlineFile.getContents(),
                     onlineFile.getLength(),
-                    context.currentProject().getId());
+                    context.currentProject().getId(),
+                    offlineFile.getLinkCount());
             // write the file in the offline project
 
             // check if the user has write access 
