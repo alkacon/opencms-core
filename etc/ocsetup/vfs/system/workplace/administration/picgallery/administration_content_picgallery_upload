@@ -38,7 +38,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
 	<tr>
 		<td class=formular width=10%>]]><LABEL value="input.name" /><![CDATA[:</td>
-		<td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id="DATEINAME" name="DATEINAME" onfocus="UPLOAD.WEITER.disabled=false"></td>
+		<td class=dialogtxt align=left><INPUT size="30" class="textfeld3" type="file" id="DATEINAME" name="DATEINAME" onfocus="UPLOAD.WEITER.disabled=false"></td>
 	</tr>
 	<tr>
 		<td class=formular colspan=2><input type=checkbox name="unzip" name="unzip">&nbsp;]]><LABEL value="button.unzip" /><![CDATA[</td>
