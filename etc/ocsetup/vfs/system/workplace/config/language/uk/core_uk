@@ -500,6 +500,7 @@
 			<preferencestasks>Tasks</preferencestasks>
 			<preferencesuser>Personal Data</preferencesuser>
 			<project>Project</project>
+			<site>Site</site>
 			<projectdescription>Description</projectdescription>
 			<projectname>Project Name</projectname>
 			<publishedat>Published</publishedat>
@@ -676,7 +677,7 @@
 			<admin>Administration</admin>
 			<explorer>Explorer</explorer>
 			<tasks>Tasks</tasks>
-			<sitematrix>Site Matrix</sitematrix>
+			<sitematrix>Site Administration</sitematrix>
 		</select>
 		
 		<task>
@@ -744,6 +745,7 @@ A new task was reactivated for you or your role.</content>
 				<due>Date due</due>
 				<from>Date created</from>
 				<project>Project</project>
+				<site>Site</site>
 				<allroles>all roles</allroles>
 				<emptyrole>Please select Role...</emptyrole>
 				<emptyuser>Please select User...</emptyuser>

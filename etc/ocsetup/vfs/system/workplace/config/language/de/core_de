@@ -502,6 +502,7 @@
 			<preferencestasks>Aufgabenfilter</preferencestasks>
 			<preferencesuser>Persönliche Daten</preferencesuser>
 			<project>Projekt</project>
+			<site>Site</site>
 			<projectdescription>Beschreibung</projectdescription>
 			<projectname>Projektname</projectname>
 			<publishedat>Veröffentlicht am</publishedat>
@@ -680,7 +681,7 @@
 			<admin>Administration</admin>
 			<explorer>Explorer</explorer>
 			<tasks>Aufgaben</tasks>
-			<sitematrix>Site Matrix</sitematrix>
+			<sitematrix>Site Administration</sitematrix>
 		</select>
 		
 		<task>

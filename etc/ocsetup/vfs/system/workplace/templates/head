@@ -32,6 +32,10 @@
 	<table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu><img src="]]><METHOD name="picsUrl">logokunde.gif</METHOD><![CDATA[" border=0 width=109 height=32></td>
+		<td class=menubold><p class=einzug>]]><LABEL value="label.site" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
+		<td class=dialogtxt>
+			]]><SELECT class="textfeld" name="site" width="150" method="getSites" onchange="javascript:document.form1.submit()"/><![CDATA[
+		</td>
 		<td class=menubold><p class=einzug>]]><LABEL value="label.project" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt>
 			]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.form1.submit()"/><![CDATA[

@@ -17,7 +17,7 @@
 <!--ksjfdlskjdf-->
 <table cellspacing=0 cellpadding=0 border=0>
 	<tr valign=center>
-		<td class=menu valign=middle> ]]><BACKBUTTON> </BACKBUTTON><![CDATA[</td>
+		<td class=menu valign=middle> ]]><BACKBUTTON> </BACKBUTTON><![CDATA[ <a href="administration_content_sitenew.html?initial=true" target="sitematrix"><img src="]]><METHOD name="picsUrl">bt_new_on.gif</METHOD><![CDATA[" border="0"></a></td>
 	</tr>
 </table>
 </body>
