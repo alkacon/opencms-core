@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/09/28 09:13:51 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -628,7 +628,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         Element currentElement, currentGroup;
         Vector userGroups;
         Hashtable userInfo = new Hashtable();
-        String  name, description, flags, password, firstname, lastname, email, address, type, pwd, infoNode;
+        String  name, description, flags, password, firstname, lastname, email, address, type, pwd, infoNode, defaultGroup;
         // try to get the import resource
         //getImportResource();
         try {
@@ -649,6 +649,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 email = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_EMAIL);
                 address = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_ADDRESS);
                 type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
+                defaultGroup = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DEFAULTGROUP);
                 // get the userinfo and put it into the hashtable
                 infoNode = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERINFO);
                 try {
@@ -671,6 +672,11 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);  
                     userGroups.addElement(userInGroup);
                 }
+                
+                if (defaultGroup != null && !"".equalsIgnoreCase(defaultGroup)) {
+                    userInfo.put(I_CmsConstants.C_ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
+                }
+                
                 // import this user
                 importUser(name, description, flags, password, firstname, lastname, email, address, type, userInfo, userGroups);
             }
