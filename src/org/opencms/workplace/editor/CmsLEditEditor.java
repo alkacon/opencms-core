@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsLEditEditor.java,v $
- * Date   : $Date: 2003/11/24 16:40:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/12/08 11:37:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,13 @@ import com.opencms.flex.jsp.CmsJspActionElement;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
 public class CmsLEditEditor extends CmsSimpleEditor {
+    
+    public static final String EDITOR_TYPE = "ledit";
     
     /**
      * Public constructor.<p>

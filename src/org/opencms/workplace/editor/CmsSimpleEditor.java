@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2003/12/05 16:15:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/12/08 11:37:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,13 +56,13 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.12
  */
 public class CmsSimpleEditor extends CmsEditor {
     
-    public static final String EDITOR_TYPE = "simple";
+    private static final String EDITOR_TYPE = "simple";
 
     /**
      * Public constructor.<p>

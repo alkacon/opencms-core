@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2003/12/05 16:15:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/12/08 11:37:43 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
@@ -114,7 +114,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @return the edit as text parameter
      */
-    public String getParamEditastext() {
+    public final String getParamEditastext() {
         return m_paramEditAsText;
     }
     
@@ -123,7 +123,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @param editAsText "true" if the resource should be handled like a text file
      */
-    public void setParamEditastext(String editAsText) {
+    public final void setParamEditastext(String editAsText) {
         m_paramEditAsText = editAsText;
     }
     
@@ -132,7 +132,7 @@ public abstract class CmsEditor extends CmsDialog {
      *  
      * @return the editor mode parameter
      */
-    public String getParamEditormode() {
+    public final String getParamEditormode() {
         return m_paramEditormode;
     }
 
@@ -141,7 +141,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @param mode the editor mode parameter
      */
-    public void setParamEditormode(String mode) {
+    public final void setParamEditormode(String mode) {
         m_paramEditormode = mode;
     }
 
@@ -150,7 +150,7 @@ public abstract class CmsEditor extends CmsDialog {
      *  
      * @return the direct edit flag parameter
      */
-    public String getParamDirectedit() {
+    public final String getParamDirectedit() {
         return m_paramDirectedit;
     }
 
@@ -159,7 +159,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @param direct the direct edit flag parameter
      */
-    public void setParamDirectedit(String direct) {
+    public final void setParamDirectedit(String direct) {
         m_paramDirectedit = direct;
     }
     
@@ -168,7 +168,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @return the page title
      */
-    public String getParamPagetitle() {
+    public final String getParamPagetitle() {
         if (m_paramPageTitle == null) {
             m_paramPageTitle = "";
         }
@@ -180,7 +180,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @param pageTitle the page title
      */
-    public void setParamPagetitle(String pageTitle) {
+    public final void setParamPagetitle(String pageTitle) {
         m_paramPageTitle = pageTitle;
     }
     
@@ -189,7 +189,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @return the name of the temporary file
      */
-    public String getParamTempfile() {
+    public final String getParamTempfile() {
         return m_paramTempFile;
     }
     
@@ -198,7 +198,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @param fileName the name of the temporary file
      */
-    public void setParamTempfile(String fileName) {
+    public final void setParamTempfile(String fileName) {
         m_paramTempFile = fileName;
     }
     
@@ -206,7 +206,7 @@ public abstract class CmsEditor extends CmsDialog {
      * Returns the content of the editor.<p>
      * @return the content of the editor
      */
-    public String getParamContent() {
+    public final String getParamContent() {
         if (m_paramContent == null) {
             m_paramContent = "";
         }
@@ -218,7 +218,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @param content the content of the editor
      */
-    public void setParamContent(String content) {
+    public final void setParamContent(String content) {
         if (content == null) {
             content = "";
         }
@@ -230,7 +230,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @return the "no ActiveX" parameter
      */
-    public String getParamNoactivex() {
+    public final String getParamNoactivex() {
         return m_paramNoActiveX;
     }
     
@@ -239,7 +239,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @param noActiveX the "no ActiveX" parameter
      */
-    public void setParamNoactivex(String noActiveX) {
+    public final void setParamNoactivex(String noActiveX) {
         m_paramNoActiveX = noActiveX;
     }
     
@@ -263,7 +263,7 @@ public abstract class CmsEditor extends CmsDialog {
      * @throws CmsException if something goes wrong
      */
     protected void commitTempFile() throws CmsException {
-        //      get the current project id
+        // get the current project id
         int curProject = getSettings().getProject();
         // get the temporary file project id
         int tempProject = 0;
@@ -427,7 +427,7 @@ public abstract class CmsEditor extends CmsDialog {
      * @param keySuffix the suffix for the localized error messages, e.g. "save" for key "error.message.editorsave"
      * @throws JspException if inclusion of the error page fails
      */
-    public void showErrorPage(Object theClass, CmsException cmsException, String keySuffix) throws JspException {
+    protected void showErrorPage(Object theClass, CmsException cmsException, String keySuffix) throws JspException {
         // save initialized instance of the editor class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, theClass);
         // reading of file contents failed, show error dialog
