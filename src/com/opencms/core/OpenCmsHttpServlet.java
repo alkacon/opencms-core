@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/07/01 11:07:02 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/08/02 12:12:57 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2002/07/01 11:07:02 $
+ * @version $Revision: 1.27 $ $Date: 2002/08/02 12:12:57 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -745,6 +745,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         }
     }
 
+
     /**
      * Get the value for the property entry
      *
@@ -767,4 +768,6 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         String value = props.getProperty(part);
         return value;
     }
+
 }
+

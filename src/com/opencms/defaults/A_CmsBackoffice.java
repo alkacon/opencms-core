@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/07/24 13:21:17 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2002/08/02 12:12:57 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -3235,10 +3235,15 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
     // the same or save&exit button were pressed, so save the content definition to the
     // database
     if (((action.equals("save")) || (action.equals("saveexit"))) && (error.equals(""))){
+
+
+
+
       try {
         // first check if all plausibilization was ok
 
         cd.check(true);
+
 
         // unlock resource if save&exit was selected
         /* if (action.equals("saveexit")) {
@@ -3261,12 +3266,14 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
 
 
       } catch (CmsPlausibilizationException plex) {
+
         // there was an error during plausibilization, so create an error text
         errorCodes=plex.getErrorCodes();
 
         //loop through all errors
         for (int i=0;i<errorCodes.size();i++) {
           errorCode=(String)errorCodes.elementAt(i);
+
           // try to get an error message that fits thos this error code exactly
           if (template.hasData(C_ERRPREFIX+errorCode)) {
             error+=template.getProcessedDataValue(C_ERRPREFIX+errorCode);
@@ -3286,6 +3293,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
               }
             }
           }
+
         }
 
         //check if there is an introtext for the errors
@@ -3507,13 +3515,14 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
           // there was no method found with this name. So try the name "setXYZString" as an alternative.
           if (m==null) {
             m=(Method)setMethods.get("set"+key+"string");
-
           }
           // there was a method found
           if (m!=null) {
             //now call the method to set the value
             try {
+
               m.invoke(contentDefinition,new Object[] {value});
+
               // this parameter was the name of an uploaded file. Now try to set the file content
               // too.
               if (isFile) {
