@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<XMLTEMPLATE>
+<WORKPLACE>
 <TEMPLATE>
 <![CDATA[
 <html>
@@ -14,4 +14,4 @@
    <TEMPLATE>/system/workplace/help/de/nav</TEMPLATE>
 </ELEMENTDEF>
 
-</XMLTEMPLATE>
+</WORKPLACE>

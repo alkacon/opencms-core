@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/07/10 16:05:47 $
+* Date   : $Date: 2001/07/16 18:24:16 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.16 $ $Date: 2001/07/10 16:05:47 $
+ * @version $Revision: 1.17 $ $Date: 2001/07/16 18:24:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -296,8 +296,8 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
     public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate,
             CmsResource res, CmsXmlLanguageFile lang) throws CmsException {
         CmsXmlWpConfigFile config = this.getConfigFile(cms);
-        filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE, cms.getManagedLink(config.getWpPicturePath()
-                + "ic_file_picgallery.gif" ));
+        filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE,  cms.getRequestContext().getRequest().getServletUrl() + config.getWpPicturePath()
+                + "ic_file_picgallery.gif" );
         filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getName());
         filelistTemplate.setData(C_FILELIST_TITLE_VALUE, cms.readProperty(res.getAbsolutePath(),
                 C_PROPERTY_TITLE));

@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/06/27 18:04:46 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/07/16 18:24:16 $
+* Version: $Revision: 1.8 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -69,7 +69,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsCo
         }
         CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
-        String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
+        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
         StringBuffer jsOutput = new StringBuffer();
 
         // function vars_resources

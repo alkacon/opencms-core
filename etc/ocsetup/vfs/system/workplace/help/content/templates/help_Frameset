@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<XMLTEMPLATE>
+<WORKPLACE>
  
 <TEMPLATE><![CDATA[
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -58,4 +58,4 @@ function updateContent() {
 </TEMPLATE>
 
 
-</XMLTEMPLATE>
+</WORKPLACE>

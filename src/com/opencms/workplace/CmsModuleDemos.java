@@ -1,11 +1,11 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/07/16 18:24:16 $
+* Version: $Revision: 1.7 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -43,11 +43,11 @@ import javax.servlet.http.*;
  * @author: Hanjo Riege
  */
 public class CmsModuleDemos extends CmsWorkplaceDefault implements I_CmsConstants {
-    
+
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
+     * with the given parameters.
+     *
      * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
@@ -67,7 +67,7 @@ public class CmsModuleDemos extends CmsWorkplaceDefault implements I_CmsConstant
         String currentname;
         Enumeration modules = reg.getModuleNames();
         String completeList = "";
-        String servPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
+        String servPath = cms.getRequestContext().getRequest().getServletUrl();
         while(modules.hasMoreElements()) {
             String name = (String)modules.nextElement();
             String nicename = reg.getModuleNiceName(name);
@@ -85,16 +85,16 @@ public class CmsModuleDemos extends CmsWorkplaceDefault implements I_CmsConstant
             completeList += templateDocument.getProcessedDataValue("doc_entry");
         }
         templateDocument.setData("list", completeList);
-        
+
         // Now load the template file and start the processing
         return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/07/10 16:05:47 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2001/07/16 18:24:16 $
+* Version: $Revision: 1.45 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.44 $ $Date: 2001/07/10 16:05:47 $
+ * @version $Revision: 1.45 $ $Date: 2001/07/16 18:24:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -689,8 +689,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     }
 
     protected void preview(String previewPath, CmsRequestContext reqCont) throws CmsException {
-        HttpServletRequest srvReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
-        String servletPath = srvReq.getServletPath();
+        String servletPath = reqCont.getRequest().getServletUrl();
         try {
             reqCont.getResponse().sendCmsRedirect(previewPath);
         }
@@ -715,8 +714,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      */
 
     public Object previewUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        CmsRequestContext reqCont = cms.getRequestContext();
-        String servletPath = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getServletPath();
+        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String tempPath = (String)session.getValue("te_temppagefile");
         String result = servletPath + tempPath;

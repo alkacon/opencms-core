@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/07/16 18:24:16 $
+* Version: $Revision: 1.27 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.26 $ $Date: 2001/05/17 14:10:32 $
+ * @version $Revision: 1.27 $ $Date: 2001/07/16 18:24:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -306,7 +306,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         //String picsUrl = getConfigFile(cms).getCommonPictureUrl();
         HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
         String hostName = req.getScheme() + "://" + req.getHeader("HOST");
-        String picsUrl = req.getServletPath() + folder;
+        String picsUrl = cms.getRequestContext().getRequest().getServletUrl() + folder;
 
         // Generate the picture list for all pictures on the selected page
         for(int i = from;i < to;i++) {

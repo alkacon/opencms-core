@@ -2,8 +2,8 @@ package com.opencms.defaults;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2001/04/05 15:18:17 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2001/07/16 18:24:16 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.30 $ $Date: 2001/04/05 15:18:17 $
+ * @version $Revision: 1.31 $ $Date: 2001/07/16 18:24:16 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -78,7 +78,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         // get uri, currentfolder,servletpath and template file
 		String requestedUri = cms.getRequestContext().getUri();
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
+		String servletPath = cms.getRequestContext().getRequest().getServletUrl();
 		CmsXmlTemplateFile template=(CmsXmlTemplateFile)doc;
 		StringBuffer result = new StringBuffer();
 
@@ -421,7 +421,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			throws CmsException {
 
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-		currentFolder=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + currentFolder;
+		currentFolder=cms.getRequestContext().getRequest().getServletUrl() + currentFolder;
 		return currentFolder.getBytes();
 	}
 	/**
@@ -458,7 +458,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			// positive number determines the level starting ftom root folder.
 			currentFolder=extractFolder(cms,((-1)*level));
 		}
-   		String parentFolder=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + currentFolder;
+   		String parentFolder=cms.getRequestContext().getRequest().getServletUrl() + currentFolder;
 		return parentFolder.getBytes();
 	}
 	/**
@@ -490,7 +490,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		} else {
 			currentFolder=extractFolder(cms,level);
 		}
-   		String rootFolder=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + currentFolder;
+   		String rootFolder=cms.getRequestContext().getRequest().getServletUrl() + currentFolder;
 		return rootFolder.getBytes();
 	}
 	/**
@@ -568,7 +568,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         // get uri, current folder, servletpath
 		String requestedUri = cms.getRequestContext().getUri();
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
+		String servletPath = cms.getRequestContext().getRequest().getServletUrl();
 		// get all resources
 		Vector resources=cms.getSubFolders(folder);
 		Vector allFile=cms.getFilesInFolder(folder);
@@ -762,7 +762,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         // get the uri,servletpath and current folder
 		String requestedUri = cms.getRequestContext().getUri();
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
+		String servletPath = cms.getRequestContext().getRequest().getServletUrl();
 
 		String result="";
 		// check whether xml data blocks are defined.

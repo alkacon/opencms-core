@@ -7,7 +7,7 @@
     <ELEMENTDEF name="frametemplate">
         <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
         <TEMPLATE>/content/frametemplates/empty</TEMPLATE>
-    </ELEMENTDEF>	
+    </ELEMENTDEF>   
 <TEMPLATE>
 <ELEMENT name="frametemplate"/>
 </TEMPLATE>

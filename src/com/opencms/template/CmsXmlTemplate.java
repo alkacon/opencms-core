@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/07/10 16:05:47 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2001/07/16 18:24:16 $
+* Version: $Revision: 1.69 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.68 $ $Date: 2001/07/10 16:05:47 $
+ * @version $Revision: 1.69 $ $Date: 2001/07/16 18:24:16 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -387,7 +387,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public Object getPathUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String path = cms.getRequestContext().getUri();
         path = path.substring(0, path.lastIndexOf("/") + 1);
-        path = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + path;
+        path = cms.getRequestContext().getRequest().getServletUrl() + path;
         return path.getBytes();
     }
 
@@ -443,7 +443,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @exception CmsException
      */
     public Object getServletPath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        return cms.getManagedLink("/");
+        return cms.getRequestContext().getRequest().getServletUrl() + "/";
     }
 
     /**
@@ -648,7 +648,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @exception CmsException
      */
     public Object getUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        return (((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + cms.getRequestContext().getUri()).getBytes();
+        return (cms.getRequestContext().getRequest().getServletUrl() + cms.getRequestContext().getUri()).getBytes();
     }
 
     /**

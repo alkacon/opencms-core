@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2001/07/10 16:05:47 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/07/16 18:24:16 $
+* Version: $Revision: 1.36 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import java.util.*;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2001/07/10 16:05:47 $
+ * @version $Revision: 1.36 $ $Date: 2001/07/16 18:24:16 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -480,7 +480,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 else {
                     I_CmsResourceType type = cms.getResourceType(res.getType());
                     String icon = getIcon(cms, type, configFile);
-                    template.setData("icon", cms.getManagedLink(configFile.getWpPicturePath() + icon));
+                    template.setData("icon", cms.getRequestContext().getRequest().getServletUrl() + configFile.getWpPicturePath() + icon);
                     folderimg = template.getProcessedDataValue("TREEIMG_FILE", this);
                 }
 

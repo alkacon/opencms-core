@@ -31,33 +31,33 @@
 //
 // dynamic timer
 //
-// author:			m.schleich
-// company:			mindfact interaktive medien ag
-// date:			24.01.2000
-// update:		
-// update author:	
+// author:          m.schleich
+// company:         mindfact interaktive medien ag
+// date:            24.01.2000
+// update:      
+// update author:   
 // ===============================================
 
 // global varibles and objects
 var mday=0;
 
 // get date
-	aktDat = new Date;
-	aktTag= aktDat.getDate();
-	aktMonat= aktDat.getMonth()+1;
-	aktJahr= aktDat.getFullYear();
+    aktDat = new Date;
+    aktTag= aktDat.getDate();
+    aktMonat= aktDat.getMonth()+1;
+    aktJahr= aktDat.getFullYear();
 
 //to remeber the Date, which is slected by user
-	userDat = new Date;
-	userDay= userDat.getDate();
-	userMonth= userDat.getMonth()+1;
-	userYear= userDat.getFullYear();
-	wday = 0;
-	
+    userDat = new Date;
+    userDay= userDat.getDate();
+    userMonth= userDat.getMonth()+1;
+    userYear= userDat.getFullYear();
+    wday = 0;
+    
 // Object for month entry
 function MonthEntry(sText, sValue)
    {
-	  this.sText = sText;
+      this.sText = sText;
       this.sValue = sValue;
    }
 // Object for year entry
@@ -71,8 +71,8 @@ var aYear = new Array();
 
 for(var j=0; j<11; j++)
 {
-	help=aktJahr+j;
-	aYear[j] = new YearEntry(help,help);
+    help=aktJahr+j;
+    aYear[j] = new YearEntry(help,help);
 }
 
 txt1='<tr><td align=right>1</td><td align=right>2</td><td align=right>3</td><td align=right>4</td><td align=right>5</td><td align=right>6</td><td align=right>7</td></tr>';
@@ -147,278 +147,278 @@ txt76b='<tr><td align=right>30</td><td align=right>31</td><td align=right>&nbsp;
 function writeSel() // fill the year and month selectbox
    {
       var SelHtml = '';
-	  var MoHtml = '';
-	  if(ns)
-	  {
-     	 SelHtml = '<select name="YEAR" width="50" STYLE="WIDTH:50px">';
-	 	 SelHtml += '<select name="YEAR" width="50" STYLE="WIDTH:50px" onChange="selectDays(1,TIMER.MONTH.options[TIMER.MONTH.selectedIndex].value,this.options[this.selectedIndex].value);">';
-	  }
-	  else
-	  {
-	  	SelHtml = '<select name="YEAR" width="100" STYLE="WIDTH:50px" onChange="selectDays(1,TIMER.MONTH.options[TIMER.MONTH.selectedIndex].value,this.options[this.selectedIndex].value);">';
-	  }
+      var MoHtml = '';
+      if(ns)
+      {
+         SelHtml = '<select name="YEAR" width="50" STYLE="WIDTH:50px">';
+         SelHtml += '<select name="YEAR" width="50" STYLE="WIDTH:50px" onChange="selectDays(1,TIMER.MONTH.options[TIMER.MONTH.selectedIndex].value,this.options[this.selectedIndex].value);">';
+      }
+      else
+      {
+        SelHtml = '<select name="YEAR" width="100" STYLE="WIDTH:50px" onChange="selectDays(1,TIMER.MONTH.options[TIMER.MONTH.selectedIndex].value,this.options[this.selectedIndex].value);">';
+      }
       for(var j=0; j<11; j++)
       {
-	 	SelHtml += '<OPTION VALUE=""></OPTION>';
+        SelHtml += '<OPTION VALUE=""></OPTION>';
       }
       SelHtml += '</SELECT>';
-	  
-	  
-	  MoHtml = '</td><td><select name="MONTH" width="100" STYLE="WIDTH:100px" onChange="selectDays(1,this.options[this.selectedIndex].value,TIMER.YEAR.options[TIMER.YEAR.selectedIndex].value);">';
-	  for(var j=0; j<12; j++)
-	  {
-	  	 	if((j+1)==aktMonat)
-	  		{
-	  			MoHtml += '<OPTION VALUE="" selected></OPTION>';
-	  		}
-	  		else
-	  		{
-	  			MoHtml += '<OPTION VALUE=""></OPTION>';
-	  		}
-		}
-	    MoHtml += '</SELECT></td>';
-			
-	  
-	  SelHtml=  new String( SelHtml+MoHtml );
-	  
-	  document.open();
-	  document.clear();
-	  document.write(SelHtml);
+      
+      
+      MoHtml = '</td><td><select name="MONTH" width="100" STYLE="WIDTH:100px" onChange="selectDays(1,this.options[this.selectedIndex].value,TIMER.YEAR.options[TIMER.YEAR.selectedIndex].value);">';
+      for(var j=0; j<12; j++)
+      {
+            if((j+1)==aktMonat)
+            {
+                MoHtml += '<OPTION VALUE="" selected></OPTION>';
+            }
+            else
+            {
+                MoHtml += '<OPTION VALUE=""></OPTION>';
+            }
+        }
+        MoHtml += '</SELECT></td>';
+            
+      
+      SelHtml=  new String( SelHtml+MoHtml );
+      
+      document.open();
+      document.clear();
+      document.write(SelHtml);
       document.close();
    }
 
 // fills the two selctboxes for year and month
 function fillBox(objSel, array, length)
 {
-	for(i=0; i<length; i++)
-		{
-			objSel.options[i].text = array[i].sText;
-			objSel.options[i].value = array[i].sValue;
-		}
+    for(i=0; i<length; i++)
+        {
+            objSel.options[i].text = array[i].sText;
+            objSel.options[i].value = array[i].sValue;
+        }
 }
 
 // decides which layer with days is shown
 function selectDays(day, month, year)
 {
-	mday = checkTimerDate(month, year);
-	userDat.setFullYear(year);
-	userDat.setMonth(month-1);
-	userDat.setDate(1);
-	wday = userDat.getUTCDay();
-	if (wday==0){wday=7;}    //sunday is 0 in Javasicrtpt
-	
-	hidelyr('days');	
-	
-		switch (mday)
-		{
-			case 31:
-			{
-				switch (wday)
-				{
-					case 1:
-					{
-						txt=txt1+txt12+txt13+txt14+txt15c;
-						break;
-					}
-					case 2:
-					{
-						txt=txt2+txt22+txt23+txt24+txt25d;
-						break;
-					}
-					case 3:
-					{
-						txt=txt3+txt32+txt33+txt34+txt35d;
-						break;
-					}
-					case 4:
-					{
-						txt=txt4+txt42+txt43+txt44+txt45d;
-						break;
-					}
-					case 5:
-					{
-						txt=txt5+txt52+txt53+txt54+txt55d;
-						break;
-					}
-					case 6:
-					{
-						txt=txt6+txt62+txt63+txt64+txt65c+txt66;
-						break;
-					}
-					case 7:
-					{
-						txt=txt7+txt72+txt73+txt74+txt75b+txt76b;
-						break;
-					}
-				}
-				break;
-			}
-			case 30:
-			{
-				switch (wday)
-				{
-					case 1:
-					{
-						txt=txt1+txt12+txt13+txt14+txt15b;
-						break;
-					}
-					case 2:
-					{
-						txt=txt2+txt22+txt23+txt24+txt25c;
-						break;
-					}
-					case 3:
-					{
-						txt=txt3+txt32+txt33+txt34+txt35c;
-						break;
-					}
-					case 4:
-					{
-						txt=txt4+txt42+txt43+txt44+txt45c;
-						break;
-					}
-					case 5:
-					{
-						txt=txt5+txt52+txt53+txt54+txt55c;
-						break;
-					}
-					case 6:
-					{
-						txt=txt6+txt62+txt63+txt64+txt65c;
-						break;
-					}
-					case 7:
-					{
-						txt=txt7+txt72+txt73+txt74+txt75b+txt76a;
-						break;
-					}
-				}
-				break;
-			}
-			case 29:
-			{
-				switch (wday)
-				{
-					case 1:
-					{
-						txt=txt1+txt12+txt13+txt14+txt15a;
-						break;
-					}
-					case 2:
-					{
-						txt=txt2+txt22+txt23+txt24+txt25b;
-						break;
-					}
-					case 3:
-					{
-						txt=txt3+txt32+txt33+txt34+txt35b;
-						break;
-					}
-					case 4:
-					{
-						txt=txt4+txt42+txt43+txt44+txt45b;
-						break;
-					}
-					case 5:
-					{
-						txt=txt5+txt52+txt53+txt54+txt55b;
-						break;
-					}
-					case 6:
-					{
-						txt=txt6+txt62+txt63+txt64+txt65b;
-						break;
-					}
-					case 7:
-					{
-						txt=txt7+txt72+txt73+txt74+txt75b;
-						break;
-					}
-				}
-				break;
-			}
-			case 28:
-			{
-				switch (wday)
-				{
-					case 1:
-					{
-						txt=txt1+txt12+txt13+txt14;
-						break;
-					}
-					case 2:
-					{
-						txt=txt2+txt22+txt23+txt24+txt25a;
-						break;
-					}
-					case 3:
-					{
-						txt=txt3+txt32+txt33+txt34+txt35a;
-						break;
-					}
-					case 4:
-					{
-						txt=txt4+txt42+txt43+txt44+txt45a;
-						break;
-					}
-					case 5:
-					{
-						txt=txt5+txt52+txt53+txt54+txt55a;
-						break;
-					}
-					case 6:
-					{
-						txt=txt6+txt62+txt63+txt64+txt65a;
-						break;
-					}
-					case 7:
-					{
-						txt=txt7+txt72+txt73+txt74+txt75a;
-						break;
-					}
-				}
-				break;
-			}
-	}
-	txt = '<table border=0 cellspacing=1 cellpadding=4><tr><td align=center>'+aWeekday[0]+'</td><td align=center>'+aWeekday[1]+'</td><td align=center>'+aWeekday[2]+'</td><td align=center>'+aWeekday[3]+'</td><td align=center>'+aWeekday[4]+'</td><td align=center>'+aWeekday[5]+'</td><td align=center>'+aWeekday[6]+'</td></tr><tr><td colspan=7><hr></td></tr>'+txt+'</table>';
-	eval(lyrtxt);
-	eval(layerzeigen_01+'days'+layerzeigen_02);
-	userYear=year;
-	if(month<10)
-	{
-		userMonth='0'+month;
-	}
-	else
-	{
-		userMonth=month;
-	}
-	changeDay(wday);
+    mday = checkTimerDate(month, year);
+    userDat.setFullYear(year);
+    userDat.setMonth(month-1);
+    userDat.setDate(1);
+    wday = userDat.getUTCDay();
+    if (wday==0){wday=7;}    //sunday is 0 in Javasicrtpt
+    
+    hidelyr('days');    
+    
+        switch (mday)
+        {
+            case 31:
+            {
+                switch (wday)
+                {
+                    case 1:
+                    {
+                        txt=txt1+txt12+txt13+txt14+txt15c;
+                        break;
+                    }
+                    case 2:
+                    {
+                        txt=txt2+txt22+txt23+txt24+txt25d;
+                        break;
+                    }
+                    case 3:
+                    {
+                        txt=txt3+txt32+txt33+txt34+txt35d;
+                        break;
+                    }
+                    case 4:
+                    {
+                        txt=txt4+txt42+txt43+txt44+txt45d;
+                        break;
+                    }
+                    case 5:
+                    {
+                        txt=txt5+txt52+txt53+txt54+txt55d;
+                        break;
+                    }
+                    case 6:
+                    {
+                        txt=txt6+txt62+txt63+txt64+txt65c+txt66;
+                        break;
+                    }
+                    case 7:
+                    {
+                        txt=txt7+txt72+txt73+txt74+txt75b+txt76b;
+                        break;
+                    }
+                }
+                break;
+            }
+            case 30:
+            {
+                switch (wday)
+                {
+                    case 1:
+                    {
+                        txt=txt1+txt12+txt13+txt14+txt15b;
+                        break;
+                    }
+                    case 2:
+                    {
+                        txt=txt2+txt22+txt23+txt24+txt25c;
+                        break;
+                    }
+                    case 3:
+                    {
+                        txt=txt3+txt32+txt33+txt34+txt35c;
+                        break;
+                    }
+                    case 4:
+                    {
+                        txt=txt4+txt42+txt43+txt44+txt45c;
+                        break;
+                    }
+                    case 5:
+                    {
+                        txt=txt5+txt52+txt53+txt54+txt55c;
+                        break;
+                    }
+                    case 6:
+                    {
+                        txt=txt6+txt62+txt63+txt64+txt65c;
+                        break;
+                    }
+                    case 7:
+                    {
+                        txt=txt7+txt72+txt73+txt74+txt75b+txt76a;
+                        break;
+                    }
+                }
+                break;
+            }
+            case 29:
+            {
+                switch (wday)
+                {
+                    case 1:
+                    {
+                        txt=txt1+txt12+txt13+txt14+txt15a;
+                        break;
+                    }
+                    case 2:
+                    {
+                        txt=txt2+txt22+txt23+txt24+txt25b;
+                        break;
+                    }
+                    case 3:
+                    {
+                        txt=txt3+txt32+txt33+txt34+txt35b;
+                        break;
+                    }
+                    case 4:
+                    {
+                        txt=txt4+txt42+txt43+txt44+txt45b;
+                        break;
+                    }
+                    case 5:
+                    {
+                        txt=txt5+txt52+txt53+txt54+txt55b;
+                        break;
+                    }
+                    case 6:
+                    {
+                        txt=txt6+txt62+txt63+txt64+txt65b;
+                        break;
+                    }
+                    case 7:
+                    {
+                        txt=txt7+txt72+txt73+txt74+txt75b;
+                        break;
+                    }
+                }
+                break;
+            }
+            case 28:
+            {
+                switch (wday)
+                {
+                    case 1:
+                    {
+                        txt=txt1+txt12+txt13+txt14;
+                        break;
+                    }
+                    case 2:
+                    {
+                        txt=txt2+txt22+txt23+txt24+txt25a;
+                        break;
+                    }
+                    case 3:
+                    {
+                        txt=txt3+txt32+txt33+txt34+txt35a;
+                        break;
+                    }
+                    case 4:
+                    {
+                        txt=txt4+txt42+txt43+txt44+txt45a;
+                        break;
+                    }
+                    case 5:
+                    {
+                        txt=txt5+txt52+txt53+txt54+txt55a;
+                        break;
+                    }
+                    case 6:
+                    {
+                        txt=txt6+txt62+txt63+txt64+txt65a;
+                        break;
+                    }
+                    case 7:
+                    {
+                        txt=txt7+txt72+txt73+txt74+txt75a;
+                        break;
+                    }
+                }
+                break;
+            }
+    }
+    txt = '<table border=0 cellspacing=1 cellpadding=4><tr><td align=center>'+aWeekday[0]+'</td><td align=center>'+aWeekday[1]+'</td><td align=center>'+aWeekday[2]+'</td><td align=center>'+aWeekday[3]+'</td><td align=center>'+aWeekday[4]+'</td><td align=center>'+aWeekday[5]+'</td><td align=center>'+aWeekday[6]+'</td></tr><tr><td colspan=7><hr></td></tr>'+txt+'</table>';
+    eval(lyrtxt);
+    eval(layerzeigen_01+'days'+layerzeigen_02);
+    userYear=year;
+    if(month<10)
+    {
+        userMonth='0'+month;
+    }
+    else
+    {
+        userMonth=month;
+    }
+    changeDay(wday);
 
 }
 
 // changes the selected day
 function changeDay(day)
 {
-	hilf=wday-1;
-	hilf2=day-1;
-	
-	if(day>=wday && day<(mday+wday))
-	{
-		for(i=0; i<37; i++)
-		{
-			eval(imgonlyr+'images[i].src = "/pics/system/empty.gif"');
-		}
-		eval(imgonlyr+'images[hilf2].src = "/pics/system/circle.gif"');
-		if((day-hilf)<10)
-			{
-				userDay='0'+new String(day-hilf);
-			}
-		else
-		{
-			userDay=day-hilf;
-		}
-		
-	}
+    hilf=wday-1;
+    hilf2=day-1;
+    
+    if(day>=wday && day<(mday+wday))
+    {
+        for(i=0; i<37; i++)
+        {
+            eval(imgonlyr+'images[i].src = "/opencms/pics/system/empty.gif"');
+        }
+        eval(imgonlyr+'images[hilf2].src = "/opencms/pics/system/circle.gif"');
+        if((day-hilf)<10)
+            {
+                userDay='0'+new String(day-hilf);
+            }
+        else
+        {
+            userDay=day-hilf;
+        }
+        
+    }
 }
   
 
@@ -426,10 +426,10 @@ function changeDay(day)
 //------------------------------------------------------------------------------------
 // ceck days
 // 
-// author:	Michaela Schleich
-// company:	mindfact interaktive medien ag
-// date:	25.01.2000
-// update:	
+// author:  Michaela Schleich
+// company: mindfact interaktive medien ag
+// date:    25.01.2000
+// update:  
 //
 // input date (int month, int year)
 //
@@ -437,44 +437,44 @@ function changeDay(day)
 //------------------------------------------------------------------------------------
 function checkTimerDate(month, year)
 {
-	var schaltjahr=false;
-	
-				if(month == 2)
-				{
-					sj = year%4;
-					if(sj==0)
-					schaltjahr=true;
+    var schaltjahr=false;
+    
+                if(month == 2)
+                {
+                    sj = year%4;
+                    if(sj==0)
+                    schaltjahr=true;
 
-					sj = year%100;
-					if(sj==0)
-					schaltjahr=false;
-		
-					sj = year%400;
-					if(sj==0)
-					schaltjahr=true;
-				}
+                    sj = year%100;
+                    if(sj==0)
+                    schaltjahr=false;
+        
+                    sj = year%400;
+                    if(sj==0)
+                    schaltjahr=true;
+                }
 
-				if(schaltjahr)
-				{
-					return 29;
-				}
-				else
-				{
-					if(month==1 || month==3	|| month==5 || month==7 || month==8 || month==10 || month==12)
-					{
-						return 31;
-					}
-					else
-					{
-						if(month == 2)
-						{
-							return 28;
-						}
-						else
-						{
-							return 30;
-						}
-					}
-				}
+                if(schaltjahr)
+                {
+                    return 29;
+                }
+                else
+                {
+                    if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12)
+                    {
+                        return 31;
+                    }
+                    else
+                    {
+                        if(month == 2)
+                        {
+                            return 28;
+                        }
+                        else
+                        {
+                            return 30;
+                        }
+                    }
+                }
 
 }

@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/07/06 07:13:43 $
-  * Version: $Revision: 1.27 $
+  * Date   : $Date: 2001/07/16 18:23:27 $
+  * Version: $Revision: 1.28 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -160,7 +160,7 @@
          brcfg.distanceLeft = '.style.left=';
          brcfg.distanceTop = '.style.top=';
  //onload=top.preloadPics(document) 
-         brcfg.bodyString = "<body background='/pics/system/bg_weiss.gif' bgproperties=fixed onclick=javascript:top.hideLastone(document);>";
+         brcfg.bodyString = "<body background='/opencms/pics/system/bg_weiss.gif' bgproperties=fixed onclick=javascript:top.hideLastone(document);>";
          brcfg.showKontext = "<a style=\"cursor:hand;\" onClick=\"javascript:top.showKontext(document,'";
          brcfg.showKontextEnd = ",window.event.x,window.event.y);\">";
  
@@ -183,7 +183,7 @@
  
         brcfg.xOffset = '+3';
             brcfg.yOffset = '+3';
-         brcfg.bodyString="<body background='/pics/system/bg_weiss.gif' "+
+         brcfg.bodyString="<body background='/opencms/pics/system/bg_weiss.gif' "+
                  "onLoad='captureEvents(Event.CLICK);top.whichdoc(document); "+
                  "onClick = top.mouseClickedNs;' "+
                  "onResize=javascript:top.resized(document);> ";

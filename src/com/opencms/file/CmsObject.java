@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/16 14:10:18 $
- * Version: $Revision: 1.166 $
+ * Date   : $Date: 2001/07/16 18:24:16 $
+ * Version: $Revision: 1.167 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.166 $ $Date: 2001/07/16 14:10:18 $
+ * @version $Revision: 1.167 $ $Date: 2001/07/16 18:24:16 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3376,22 +3376,4 @@ public void writeWebUser(CmsUser user) throws CmsException {
     m_rb.writeWebUser(m_context.currentUser(), m_context.currentProject(), user);
 }
 
-    /**
-     * Returns a managed link. All Classes and modules should use this mehtod
-     * to create a valid link or url to a ressource.
-     *
-     * E.g: /pics/opencms.gif -&gt; http://www.opencms.com/servlets/opencms/pics/opencms.gif
-     *
-     * In the future OpenCms will manage these links and maybe rewrite to another server.
-     *
-     * @param linkInOpenCms the link within OpenCms starting with the root-
-     * folder.
-     * @returns The absolute URL to the ressource depending on the current System.
-     */
-    public String getManagedLink(String linkInOpenCms) throws CmsException {
-        if(! linkInOpenCms.startsWith("/")) {
-            throw new CmsException("Incorrect OpenCms-Link: " + linkInOpenCms);
-        }
-        return getRequestContext().getRequest().getServletUrl() + linkInOpenCms;
-    }
 }

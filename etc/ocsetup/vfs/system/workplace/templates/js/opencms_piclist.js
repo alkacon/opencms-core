@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_piclist.js,v $
- * Date   : $Date: 2000/04/06 08:31:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/07/16 18:23:27 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,26 +32,26 @@
 // Invokes servlet calls in Picture Browser:
 // based on script from old cms version
 //
-// author:			m.schreiber
-// company:			mindfact interaktive medien ag
-// date:			08.02.2000
-// update:		
-// update author:	
+// author:          m.schreiber
+// company:         mindfact interaktive medien ag
+// date:            08.02.2000
+// update:      
+// update author:   
 // ===============================================
 
 
 function updateSelection()
 {
-	if(document.form1.galerie.options[document.form1.galerie.selectedIndex].value)
-	{
-		top.selectedGallery = document.form1.galerie.selectedIndex;
-		parent.frames[1].location.href=document.form1.galerie.options[document.form1.galerie.selectedIndex].value;
-	}
+    if(document.form1.galerie.options[document.form1.galerie.selectedIndex].value)
+    {
+        top.selectedGallery = document.form1.galerie.selectedIndex;
+        parent.frames[1].location.href=document.form1.galerie.options[document.form1.galerie.selectedIndex].value;
+    }
 }
 
 function getSelection()
 {
-	//document.form1.galerie.selectedIndex = top.selectedGallery;
+    //document.form1.galerie.selectedIndex = top.selectedGallery;
 }
 
 
@@ -81,7 +81,7 @@ function doEdit(para)
   case 1: // next page
   {
     //if (parent.frames[0].document.EOL !=true)  // no more pages available? Get this information from the picture list frame.
-	if (page < maxpage)
+    if (page < maxpage)
      {
       page++; // increase page number
       filter=document.form1.FilterInput.value;
@@ -102,7 +102,7 @@ function doEdit(para)
      }
     else
      {
-	  filter=document.form1.FilterInput.value;
+      filter=document.form1.FilterInput.value;
       //alert("Servlet: Vorhergehende Seite der Galerie laden");
       parent.location.href = "picturebrowser.html?page="+page+"&filter="+filter; //reload complete picture browser
      }
@@ -117,15 +117,12 @@ function doEdit(para)
    }
    case 4: // upload image, open the upload dialog.
    {
-	 alert('Not implemented!');
-//     filter=document.form1.FilterInput.value;
-//     parent.frames[1].location.href = "edit_html_piclist_upload.html";
-     //openwin("/servlets/mht/system/def/action/upload?FOLDER=/pics/&BROWSER=1&filter="+filter);
+     alert('Not implemented!');
      break;
    }
    default:
    {
-		alert("Unknown Exception");
+        alert("Unknown Exception");
    }
  }
 }

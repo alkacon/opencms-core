@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2001/07/16 18:24:16 $
+* Version: $Revision: 1.15 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.14 $ $Date: 2001/05/17 14:10:32 $
+ * @version $Name:  $ $Revision: 1.15 $ $Date: 2001/07/16 18:24:16 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -75,7 +75,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
         if(sender.startsWith("/system/modules")) {
 
             // change the iconPicPath if the point is from a module
-            iconPicPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + sender.substring(0, sender.indexOf("administration/")) + "pics/";
+            iconPicPath = cms.getRequestContext().getRequest().getServletUrl() + sender.substring(0, sender.indexOf("administration/")) + "pics/";
         }
 
         // call the method for activation decision
