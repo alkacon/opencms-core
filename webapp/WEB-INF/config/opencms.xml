@@ -60,7 +60,7 @@
 		<labeledfolders/>
 		<explorertypes>
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
-				<newresource uri="new_resource_xmlpage.jsp" order="10"/>
+				<newresource uri="explorer_files_new_xmlpage.html?initial=true" order="10"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
@@ -101,7 +101,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
-				<newresource uri="new_resource_folder.jsp" order="20"/>
+				<newresource uri="explorer_files_new_folder.html?initial=true" order="20"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
@@ -134,7 +134,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="plain" key="fileicon.plain" icon="plain.gif">
-				<newresource uri="new_resource_plain.jsp" order="30"/>
+				<newresource uri="explorer_files_new_othertype.html?initial=true&amp;type=plain" order="30"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
@@ -172,7 +172,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="image" key="fileicon.image" icon="image.gif">
-				<newresource uri="new_resource_image.jsp" order="40"/>
+				<newresource uri="" order="40"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
@@ -210,7 +210,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
-				<newresource uri="new_resource_jsp.jsp" order="50"/>
+				<newresource uri="explorer_files_new_othertype.html?initial=true&amp;type=jsp" order="50"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
@@ -249,7 +249,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="binary" key="fileicon.binary" icon="binary.gif">
-				<newresource uri="new_resource_binary.jsp" order="60"/>
+				<newresource uri="" order="60"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
@@ -287,7 +287,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif">
-				<newresource uri="new_resource_pointer.jsp" order="70"/>
+				<newresource uri="explorer_files_new_externallink.html?initial=true" order="70"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
@@ -323,7 +323,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="XMLTemplate" key="fileicon.XMLTemplate" icon="xmltemplate.gif">
-				<newresource uri="new_resource_xmltemplate.jsp" order="80"/>
+				<newresource uri="" order="80"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
