@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/12/21 08:51:42 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2001/01/22 16:55:05 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Anders Fugmann
  *
- * @version $Revision: 1.31 $ $Date: 2000/12/21 08:51:42 $
+ * @version $Revision: 1.32 $ $Date: 2001/01/22 16:55:05 $
  * 
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -157,7 +157,12 @@ public CmsFolder currentFolder() throws CmsException {
 	 * 
 	 */
 	public I_CmsSession getSession(boolean value) {
-			return (I_CmsSession) new CmsSession(((HttpServletRequest)m_req.getOriginalRequest()).getSession(value));
+		HttpSession session = ((HttpServletRequest)m_req.getOriginalRequest()).getSession(value);
+		if(session != null) {
+			return (I_CmsSession) new CmsSession(session);
+		} else {
+			return null;
+		}
 	}
 	/**
 	 * Gets the uri for the requested resource.
