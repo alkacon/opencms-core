@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/08/08 09:42:38 $
-* Version: $Revision: 1.252 $
+* Date   : $Date: 2002/08/13 07:45:46 $
+* Version: $Revision: 1.253 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.252 $ $Date: 2002/08/08 09:42:38 $ *
+ * @version $Revision: 1.253 $ $Date: 2002/08/13 07:45:46 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -896,23 +896,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             con = DriverManager.getConnection(usedPool);
             // first write the file content
             try {
+                createFileContent(newFileId, file.getContents(), 0, usedPool, usedStatement);
+                /*
                 statement = con.prepareStatement(m_cq.get("C_FILES_WRITE"+usedStatement));
                 statement.setInt(1, newFileId);
                 // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2, file.getContents());
                 m_doSetBytes(statement,2,file.getContents());
                 statement.executeUpdate();
                 statement.close();
-            } catch (SQLException se) {
+                */
+            } catch (CmsException se) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsAccessFileMySql] " + se.getMessage());
-                }
-            } finally {
-                if(statement != null) {
-                    try {
-                        statement.close();
-                    } catch(SQLException exc) {
-                        // nothing to do here
-                    }
                 }
             }
             // now write the file header
@@ -1042,11 +1037,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.executeUpdate();
             statement.close();
             // write the file content
+            createFileContent(fileId, contents, 0, usedPool, usedStatement);
+            /*
             statementFileWrite = con.prepareStatement(m_cq.get("C_FILES_WRITE"+usedStatement));
             statementFileWrite.setInt(1, fileId);
             // TESTFIX (mfoley@iee.org) Old Code: statementFileWrite.setBytes(2, contents);
             m_doSetBytes(statementFileWrite,2,contents);
-            statementFileWrite.executeUpdate();
+            statementFileWrite.executeUpdate(); */
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
         } finally {
@@ -4266,7 +4263,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             // create new Cms user objects
             while( res.next() ) {
                 // read the additional infos.
-                byte[] value = res.getBytes(m_cq.get("C_USERS_USER_INFO"));
+                byte[] value = getBytesFromResultset(res, m_cq.get("C_USERS_USER_INFO"));
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -4350,7 +4347,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             // create new Cms user objects
             while( res.next() ) {
                 // read the additional infos.
-                byte[] value = res.getBytes(m_cq.get("C_USERS_USER_INFO"));
+                byte[] value = getBytesFromResultset(res,m_cq.get("C_USERS_USER_INFO"));
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -4438,7 +4435,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
             while( res.next() ) {
                 // read the additional infos.
-                byte[] value = res.getBytes(m_cq.get("C_USERS_USER_INFO"));
+                byte[] value = getBytesFromResultset(res, m_cq.get("C_USERS_USER_INFO"));
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -4544,7 +4541,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             // create new Cms user objects
             while( res.next() && (i++ < nMax)) {
                 // read the additional infos.
-                byte[] value = res.getBytes(m_cq.get("C_USERS_USER_INFO"));
+                byte[] value = getBytesFromResultset(res, m_cq.get("C_USERS_USER_INFO"));
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -5027,12 +5024,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     statement.setInt(15, onlineFile.getResourceId());
                     statement.executeUpdate();
                     statement.close();
+                    writeFileContent(onlineFile.getFileId(), currentFile.getContents(), m_poolNameOnline, "_ONLINE");
+                    /*
                     statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE_ONLINE"));
                     // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1, currentFile.getContents());
                     m_doSetBytes(statement,1,currentFile.getContents());
                     statement.setInt(2, onlineFile.getFileId());
                     statement.executeUpdate();
-                    statement.close();
+                    statement.close();*/
                 }catch (SQLException e){
                     throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
                 }finally{
@@ -5119,12 +5118,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                             statement.setInt(14, onlineFile.getFileId());
                             statement.setInt(15, onlineFile.getResourceId());
                             statement.executeUpdate();
+                            writeFileContent(onlineFile.getFileId(), currentFile.getContents(), m_poolNameOnline, "_ONLINE");
+                            /*
                             statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE_ONLINE"));
                             // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1, currentFile.getContents());
                             m_doSetBytes(statement,1,currentFile.getContents());
                             statement.setInt(2, onlineFile.getFileId());
                             statement.executeUpdate();
-                            statement.close();
+                            statement.close();*/
                             newFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
                         } catch (SQLException sqle) {
                             throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
@@ -5393,13 +5394,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             if (resource.getType() != C_TYPE_FOLDER){
                 fileId = nextId(m_cq.get("C_TABLE_FILES_BACKUP"));
                 // write new resource to the database
+                createFileContent(fileId, content, versionId, m_poolNameBackup, "_BACKUP");
+                /*
                 statement = con.prepareStatement(m_cq.get("C_FILES_WRITE_BACKUP"));
                 statement.setInt(1, fileId);
                 // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2, content);
                 m_doSetBytes(statement,2,content);
                 statement.setInt(3, versionId);
                 statement.executeUpdate();
-                statement.close();
+                statement.close();*/
             }
             statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE_BACKUP"));
             statement.setInt(1, resourceId);
@@ -5892,7 +5895,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                byte[] content=res.getBytes(m_cq.get("C_RESOURCES_FILE_CONTENT"));
+                byte[] content=getBytesFromResultset(res, m_cq.get("C_RESOURCES_FILE_CONTENT"));
                 int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
@@ -5959,7 +5962,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setInt(1, pageId);
             statement.executeQuery();
         } catch (SQLException e){
-           throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+           throw new CmsException("["+this.getClass().getName()+"] deleteLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         }finally {
             if(statement != null) {
                  try {
@@ -6005,7 +6008,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
             }
         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+             throw new CmsException("[" + this.getClass().getName() + "] createLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } finally {
             if(statement != null) {
                  try {
@@ -6045,9 +6048,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
             return result;
         }catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] readLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         }catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
+            throw new CmsException("["+this.getClass().getName()+"] readLinkEntrys ", e);
         } finally {
             // close all db-resources
             if(res != null) {
@@ -6089,7 +6092,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setInt(1, pageId);
             statement.executeQuery();
         } catch (SQLException e){
-           throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+           throw new CmsException("["+this.getClass().getName()+"] deleteOnlineLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         }finally {
             if(statement != null) {
                  try {
@@ -6135,7 +6138,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
             }
         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+             throw new CmsException("[" + this.getClass().getName() + "] createOnlineLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } finally {
             if(statement != null) {
                  try {
@@ -6175,9 +6178,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
             return result;
         }catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] readOnlineLinkEntrys "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         }catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
+            throw new CmsException("["+this.getClass().getName()+"] readOnlineLinkEntrys ", e);
         } finally {
             // close all db-resources
             if(res != null) {
@@ -6245,9 +6248,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
             return result;
         }catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] getOnlineBrokenLinks "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         }catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
+            throw new CmsException("["+this.getClass().getName()+"] getOnlineBrokenLinks ", e);
         } finally {
             // close all db-resources
             if(res != null) {
@@ -6384,9 +6387,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
             }
         } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] getAllOnlineReferencesForLink "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } catch (Exception ex) {
-            throw new CmsException("["+this.getClass().getName()+"]", ex);
+            throw new CmsException("["+this.getClass().getName()+"] getAllOnlineReferencesForLink ", ex);
         } finally {
             // close all db-resources
             if(res != null) {
@@ -6435,9 +6438,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 resources.add(resName);
             }
         } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] getOnlineResourceNames "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } catch (Exception ex) {
-            throw new CmsException("["+this.getClass().getName()+"]", ex);
+            throw new CmsException("["+this.getClass().getName()+"] getOnlineResourceNames ", ex);
         } finally {
             // close all db-resources
             if(res != null) {
@@ -6534,7 +6537,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
             }
         } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] readOnlineId "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } catch( Exception exc ) {
             throw new CmsException("readOnlineId "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
@@ -6609,10 +6612,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             return link;
          }
         catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] readExportLink "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         }
         catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
+            throw new CmsException("["+this.getClass().getName()+"] readExportLink ", e);
         } finally {
             // close all db-resources
             if(res != null) {
@@ -6671,10 +6674,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             return link;
          }
         catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] readExportLinkHeader "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         }
         catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
+            throw new CmsException("["+this.getClass().getName()+"] readExportLinkHeader ", e);
         } finally {
             // close all db-resources
             if(res != null) {
@@ -6728,7 +6731,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setInt(2, linkId);
             statement.executeUpdate();
         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+             throw new CmsException("[" + this.getClass().getName() + "] writeExportLinkProcessedState "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } finally {
             if(statement != null) {
                  try {
@@ -6796,7 +6799,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setInt(1, deleteId);
             statement.executeUpdate();
         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+             throw new CmsException("[" + this.getClass().getName() + "] deleteExportLink "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } finally {
             if(statement != null) {
                  try {
@@ -6859,7 +6862,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
             }
         } catch (SQLException e){
-             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+             throw new CmsException("[" + this.getClass().getName() + "] writeExportLink "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } finally {
             if(statement != null) {
                  try {
@@ -6924,10 +6927,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             return retValue;
          }
         catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] getDependingExportLinks "+e.getMessage(), CmsException.C_SQL_ERROR, e);
         }
         catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
+            throw new CmsException("["+this.getClass().getName()+"] getDependingExportLinks ", e);
         } finally {
             // close all db-resources
             if(res != null) {
@@ -6974,10 +6977,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             return retValue;
          }
         catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] getAllExportLinks "+e.getMessage(), CmsException.C_SQL_ERROR, e);
         }
         catch (Exception e) {
-            throw new CmsException("["+this.getClass().getName()+"]", e);
+            throw new CmsException("["+this.getClass().getName()+"] getAllExportLinks ", e);
         } finally {
             // close all db-resources
             if(res != null) {
@@ -7057,7 +7060,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                byte[] content=res.getBytes(m_cq.get("C_RESOURCES_FILE_CONTENT"));
+                byte[] content=getBytesFromResultset(res,m_cq.get("C_RESOURCES_FILE_CONTENT"));
                 int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
@@ -7075,7 +7078,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
             }
         } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+            throw new CmsException("["+this.getClass().getName()+"] readFile "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } catch (CmsException ex) {
             throw ex;
         } catch( Exception exc ) {
@@ -7161,7 +7164,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                byte[] content=res.getBytes(m_cq.get("C_RESOURCES_FILE_CONTENT"));
+                byte[] content=getBytesFromResultset(res,m_cq.get("C_RESOURCES_FILE_CONTENT"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
                                    groupId,projectId,accessFlags,state,lockedBy,
@@ -7821,7 +7824,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 String modifiedByName = res.getString(m_cq.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
-                byte[] content=res.getBytes(m_cq.get("C_RESOURCES_FILE_CONTENT"));
+                byte[] content=getBytesFromResultset(res,m_cq.get("C_RESOURCES_FILE_CONTENT"));
                 int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 file = new CmsBackupResource(versionId,resId,parentId,fileId,filename,resType,
@@ -8047,7 +8050,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                byte[] fileContent = res.getBytes(m_cq.get("C_FILE_CONTENT"));
+                byte[] fileContent = getBytesFromResultset(res,m_cq.get("C_FILE_CONTENT"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 //byte[] fileContent = new byte[0];
                 file = new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
@@ -9441,7 +9444,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             // create new Cms user object
             if(res.next()) {
                 // read the additional infos.
-                byte[] value = res.getBytes(1);
+                byte[] value = getBytesFromResultset(res,"SESSION_DATA");
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -9518,7 +9521,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
           statement.setString(1,name);
           res = statement.executeQuery();
           if(res.next()) {
-                value = res.getBytes(m_cq.get("C_SYSTEMPROPERTY_VALUE"));
+                value = getBytesFromResultset(res,m_cq.get("C_SYSTEMPROPERTY_VALUE"));
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -9934,7 +9937,7 @@ public CmsTask readTask(int id) throws CmsException {
             // create new Cms user object
             if(res.next()) {
                  // read the additional infos.
-                byte[] value = res.getBytes(m_cq.get("C_USERS_USER_INFO"));
+                byte[] value = getBytesFromResultset(res,m_cq.get("C_USERS_USER_INFO"));
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -10027,7 +10030,7 @@ public CmsTask readTask(int id) throws CmsException {
             // create new Cms user object
             if(res.next()) {
                 // read the additional infos.
-                byte[] value = res.getBytes(m_cq.get("C_USERS_USER_INFO"));
+                byte[] value = getBytesFromResultset(res,m_cq.get("C_USERS_USER_INFO"));
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -10123,7 +10126,7 @@ public CmsTask readTask(int id) throws CmsException {
             // create new Cms user object
             if(res.next()) {
                 // read the additional infos.
-                byte[] value = res.getBytes(m_cq.get("C_USERS_USER_INFO"));
+                byte[] value = getBytesFromResultset(res,m_cq.get("C_USERS_USER_INFO"));
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -11186,8 +11189,6 @@ public CmsTask readTask(int id) throws CmsException {
                            CmsProject onlineProject,
                            CmsFile file, boolean changed, int userId)
         throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
         String usedPool;
         String usedStatement;
         int modifiedBy = userId;
@@ -11199,35 +11200,8 @@ public CmsTask readTask(int id) throws CmsException {
             usedPool = m_poolName;
             usedStatement = "";
         }
-        try {
-            con = DriverManager.getConnection(usedPool);
-            // update the file header in the RESOURCE database.
-            writeFileHeader(project, file, changed, userId);
-            // update the file content in the FILES database.
-            statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE"+usedStatement));
-            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1,file.getContents());
-            m_doSetBytes(statement,1,file.getContents());
-            statement.setInt(2,file.getFileId());
-            statement.executeUpdate();
-
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } finally {
-            if(statement != null) {
-                try {
-                    statement.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-            if(con != null) {
-                try {
-                    con.close();
-                } catch(SQLException exc) {
-                    // nothing to do here
-                }
-            }
-        }
+        writeFileHeader(project, file, changed, userId);
+        writeFileContent(file.getFileId(), file.getContents(), usedPool, usedStatement);
     }
 
      /**
@@ -12219,7 +12193,7 @@ public CmsTask readTask(int id) throws CmsException {
                 long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
                 int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
                 int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-                byte[] fileContent = res.getBytes(m_cq.get("C_FILE_CONTENT"));
+                byte[] fileContent = getBytesFromResultset(res,m_cq.get("C_FILE_CONTENT"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 file = new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
                                 groupId,projectID,accessFlags,state,lockedBy,
@@ -12357,4 +12331,110 @@ public CmsTask readTask(int id) throws CmsException {
     protected com.opencms.file.genericSql.CmsQueries getQueries() {
         return new com.opencms.file.genericSql.CmsQueries();
     }
+    
+    /**
+     * Returns the bytes from a result set
+     * 
+     * @param res The ResultSet to read from
+     * @param columnName The name of the column to read from
+     * 
+     * @return The byte value from the column
+     */
+    protected byte[] getBytesFromResultset(ResultSet res, String columnName) throws SQLException{
+        return res.getBytes(columnName);
+    }
+    
+    /**
+     * Creates the content entry for a file
+     * 
+     * @param fileId The ID of the new file
+     * @param fileContent The content of the new file
+     * @param versionId For the content of a backup file you need to insert the versionId of the backup
+     * @param usedPool The name of the databasepool to use
+     * @param usedStatement Specifies which tables must be used: offline, online or backup
+     * 
+     */
+    protected void createFileContent(int fileId, byte[] fileContent, int versionId,String usedPool, String usedStatement) throws CmsException{
+        Connection con = null;
+        PreparedStatement statement = null;
+        try{
+            con = DriverManager.getConnection(usedPool);
+            statement = con.prepareStatement(m_cq.get("C_FILES_WRITE"+usedStatement));
+            statement.setInt(1, fileId);
+            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(2, file.getContents());
+            if(fileContent.length < 2000) {
+                statement.setBytes(2,fileContent);
+            } else {
+                statement.setBinaryStream(2, new ByteArrayInputStream(fileContent), fileContent.length);
+            }
+            if("_BACKUP".equals(usedStatement)){
+                statement.setInt(3, versionId);
+            }
+            statement.executeUpdate();
+            statement.close();
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+         } finally {
+            // close all db-resources
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(con != null) {
+                try {
+                    con.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+        }
+    }
+    
+        /**
+     * Writes the file content of an existing file
+     * 
+     * @param fileId The ID of the file to update
+     * @param fileContent The new content of the file
+     * @param usedPool The name of the database pool to use
+     * @param usedStatement Specifies which tables must be used: offline, online or backup
+     */
+    protected void writeFileContent(int fileId, byte[] fileContent, String usedPool, String usedStatement) throws CmsException{
+        Connection con = null;
+        PreparedStatement statement = null;
+        try {
+            con = DriverManager.getConnection(usedPool);
+            // update the file content in the FILES database.
+            statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE"+usedStatement));
+            // TESTFIX (mfoley@iee.org) Old Code: statement.setBytes(1,file.getContents());
+            if(fileContent.length < 2000) {
+                statement.setBytes(1,fileContent);
+            } else {
+                statement.setBinaryStream(1, new ByteArrayInputStream(fileContent), fileContent.length);
+            }
+
+            statement.setInt(2,fileId);
+            statement.executeUpdate();
+
+        } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(con != null) {
+                try {
+                    con.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+        }
+    }  
 }
