@@ -9,6 +9,9 @@ Legend:
 - General comment
 
 
+OpenCms 4.3.9 Bela Tegeuse - 30 April 2001
+! Selecting a default-body for an new page is possible now. Thanks to Jeroen Habets.
+
 OpenCms 4.3.8 Bela Tegeuse - 26 April 2001
 ! added static export. It is now possible to export static resources to the filesystem.
 - Changed multipart-request. Now it is possible to get the name of the uploaded file.
