@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/08/30 13:50:01 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2001/08/31 12:50:49 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.75 $ $Date: 2001/08/30 13:50:01 $
+ * @version $Revision: 1.76 $ $Date: 2001/08/31 12:50:49 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -487,7 +487,16 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @exception CmsException
      */
     public String getStylesheet(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
+        CmsXmlTemplateFile tempTemplateFile = (CmsXmlTemplateFile)doc;
+
+        // Get the XML parsed content of the frametemplate file.
+        // This can be done by calling the getOwnTemplateFile() method of the
+        // mastertemplate class.
+        // The content is needed to determine the HTML style of the body element.
+        Object tempObj = CmsTemplateClassManager.getClassInstance(cms, tempTemplateFile.getSubtemplateClass("frametemplate"));
+        CmsXmlTemplate frameTemplateClassObject = (CmsXmlTemplate)tempObj;
+        CmsXmlTemplateFile templateFile = frameTemplateClassObject.getOwnTemplateFile(cms, tempTemplateFile.getSubtemplateFilename("frametemplate"), null, null, null);
+
 
         // Get the styles from the parameter hashtable
         String styleIE = null;
@@ -515,7 +524,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         }
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-        String servletPath = orgReq.getServletPath() + "/";
+        String servletPath = cms.getRequestContext().getRequest().getServletUrl() + "/";
 
         // Get the user's browser
         String browser = orgReq.getHeader("user-agent");
