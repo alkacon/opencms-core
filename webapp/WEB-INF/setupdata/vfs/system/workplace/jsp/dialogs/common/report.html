@@ -229,6 +229,7 @@ function stop() {
     document.getElementById("ok").disabled = false;
 	document.getElementById("details").disabled = false;  
 	
+	updateReport();	
 	updateReportImage();
 }
 
@@ -281,7 +282,11 @@ function update() {
 // this function gets also invoked when the report output format is toggled
 function updateReport() {
     if (reportType == "<%= CmsReport.REPORT_TYPE_SIMPLE %>") {
-    	pageBody = pageStartSimple + lastHeadline + pageEndSimple;
+    	if (!isRunning && hasError) {
+    		pageBody = pageStartSimple + lastHeadline + "<br>" + lastError + pageEndSimple;
+    	} else {
+	    	pageBody = pageStartSimple + lastHeadline + pageEndSimple;
+    	}	
     } else {
     	pageBody = pageStartExtended + htmlText + pageEndExtended;
     }
