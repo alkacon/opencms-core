@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/11/10 08:12:57 $
-* Version: $Revision: 1.431 $
+* Date   : $Date: 2003/11/10 17:10:08 $
+* Version: $Revision: 1.432 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.431 $
+ * @version $Revision: 1.432 $
  */
 public class CmsObject {
 
@@ -345,13 +345,13 @@ public class CmsObject {
     /**
      * Changes the access control for a given resource and a given principal(user/group).
      * 
-     * @param resourceName			name of the resource
-     * @param principalType			the type of the principal (currently group or user)
-     * @param principalName			name of the principal
-     * @param allowedPermissions	bitset of allowed permissions
-     * @param deniedPermissions		bitset of denied permissions
-     * @param flags					flags
-     * @throws CmsException			if something goes wrong
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (currently group or user)
+     * @param principalName name of the principal
+     * @param allowedPermissions bitset of allowed permissions
+     * @param deniedPermissions bitset of denied permissions
+     * @param flags flags
+     * @throws CmsException if something goes wrong
      */
     // TODO: find a better mechanism to select the principalType
     public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
@@ -375,11 +375,11 @@ public class CmsObject {
     /**
      * Changes the access control for a given resource and a given principal(user/group).
      * 
-     * @param resourceName	name 	of the resource
-     * @param principalType			the type of the principal (group or user)
-     * @param principalName	name 	of the principal
-     * @param permissionString		the permissions in the format ((+|-)(r|w|v|c|i))*
-     * @throws CmsException			if something goes wrong
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (group or user)
+     * @param principalName name of the principal
+     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
+     * @throws CmsException if something goes wrong
      */
     // TODO: find a better mechanism to select the principalType
     public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
@@ -402,11 +402,11 @@ public class CmsObject {
 
     /**
      * Changes the project-id of a resource to the new project
-    	 * for publishing the resource directly.<p>
+     * for publishing the resource directly.<p>
      *
-    	 * @param projectId The new project-id
+     * @param projectId The new project-id
      * @param resourcename The name of the resource to change
-    	 * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
     public void changeLockedInProject(int projectId, String resourcename) throws CmsException {
         // must include files marked as deleted when publishing
@@ -443,7 +443,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      * @deprecated the VFS now uses ACL's instead of user/group/permissions
      */
-    public void chgrp(String filename, String newGroup) throws CmsException {}
+    public void chgrp(String filename, String newGroup) throws CmsException { }
 
     /**
      * Does nothing.<p>
@@ -454,35 +454,35 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      * @deprecated the VFS now uses ACL's instead of user/group/permissions
      */
-    public void chgrp(String filename, String newGroup, boolean chRekursive) throws CmsException {}
+    public void chgrp(String filename, String newGroup, boolean chRekursive) throws CmsException { }
 
     /**
      * Does nothing.<p>
      *
      * @deprecated the VFS now uses ACL's instead of user/group/permissions
      */
-    public void chmod(String filename, int flags) throws CmsException {}
+    public void chmod(String filename, int flags) throws CmsException { }
 
     /**
      * Does nothing.<p>
      *
      * @deprecated the VFS now uses ACL's instead of user/group/permissions
      */
-    public void chmod(String filename, int flags, boolean chRekursive) throws CmsException {}
+    public void chmod(String filename, int flags, boolean chRekursive) throws CmsException { }
 
     /**
      * Does nothing.<p>
      *
      * @deprecated the VFS now uses ACL's instead of user/group/permissions
      */
-    public void chown(String filename, String newOwner) throws CmsException {}
+    public void chown(String filename, String newOwner) throws CmsException { }
 
     /**
      * Does nothing.<p>
      *
      * @deprecated the VFS now uses ACL's instead of user/group/permissions
      */
-    public void chown(String filename, String newOwner, boolean chRekursive) throws CmsException {}
+    public void chown(String filename, String newOwner, boolean chRekursive) throws CmsException { }
 
     /**
      * Changes the resourcetype of a resource.
@@ -563,7 +563,7 @@ public class CmsObject {
      * has not the appropriate rights to copy the file.
      */
     public void copyResource(String source, String destination) throws CmsException {
-        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, false, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
+        getResourceType(readFileHeader(source).getType()).copyResource(this, source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
     }
 
     /**
@@ -573,6 +573,7 @@ public class CmsObject {
      * @param destination the complete path of the destinationfolder.
      * @param keepFlags <code>true</code> if the copy should keep the source file's flags,
      *        <code>false</code> if the copy should get the user's default flags.
+     * @param lockCopy indicates if the copy should left locked after operation
      * @param copyMode mode of the copy operation, described how to handle linked resourced during copy.
      * Possible values are: 
      * <ul>
@@ -612,14 +613,24 @@ public class CmsObject {
         return m_driverManager.countLockedResources(m_context, id);
     }
 
+    /**
+     * Counts the locked resources within a folder.<p>
+     *
+     * @param foldername the name of the folder
+     * @return the number of locked resources in this folder
+     *
+     * @throws CmsException if operation was not successful.
+     */
     public int countLockedResources(String foldername) throws CmsException {
         return m_driverManager.countLockedResources(m_context, addSiteRoot(foldername));
     }
 
     /**
-     * @param sourceName	the name of the resource of which the access control entries are copied
-     * @param destName		the name of the resource to which the access control entries are applied
-     * @throws CmsException	if something goes wrong
+     * Copies access control entries of a given resource to another resource.<p>
+     * 
+     * @param sourceName the name of the resource of which the access control entries are copied
+     * @param destName the name of the resource to which the access control entries are applied
+     * @throws CmsException if something goes wrong
      */
     public void cpacc(String sourceName, String destName) throws CmsException {
         CmsResource source = readFileHeader(sourceName);
@@ -663,7 +674,7 @@ public class CmsObject {
      *
      * @return file a <code>CmsFile</code> object representing the newly created file.
      *
-     * @throws if the resourcetype is set to folder. The CmsException is also thrown, if the
+     * @throws CmsException if the resourcetype is set to folder. The CmsException is also thrown, if the
      * filename is not valid or if the user has not the appropriate rights to create a new file.
      *
      * @deprecated Use createResource instead.
@@ -736,12 +747,12 @@ public class CmsObject {
      * <b>Security:</b>
      * Only members of the group administrators are allowed to add a new group.
      * 
-     * @param id			the id of the group
-     * @param name			the name of the new group
-     * @param description	the description of the new group
-     * @param flags			the flags for the new group
-     * @param parent		the parent group
-     * @return				a <code>CmsGroup</code> object representing the newly created group.
+     * @param id the id of the group
+     * @param name the name of the new group
+     * @param description the description of the new group
+     * @param flags the flags for the new group
+     * @param parent the parent group
+     * @return a <code>CmsGroup</code> object representing the newly created group.
      * @throws CmsException if something goes wrong
      */
     public CmsGroup createGroup(String id, String name, String description, int flags, String parent) throws CmsException {
@@ -751,8 +762,9 @@ public class CmsObject {
     /**
      * creates a link entry for each of the link targets in the linktable.
      *
-     * @param pageId The resourceId (offline) of the page whose liks should be traced.
-     * @param linkTarget A vector of strings (the linkdestinations).
+     * @param pageId The resourceId (offline) of the page whose liks should be traced
+     * @param linkTargets A vector of strings (the linkdestinations)
+     * @throws CmsException if something goes wrong
      */
     public void createLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException {
         m_driverManager.createLinkEntrys(pageId, linkTargets);
@@ -762,7 +774,7 @@ public class CmsObject {
       *
       * @param projectname the name of the project
       * @param projectType the type of the Project
-      * @param role a Usergroup for the project
+      * @param roleName a Usergroup for the project
       * @param timeout the time when the Project must finished
       * @param priority  a Priority for the Project
       *
@@ -808,27 +820,69 @@ public class CmsObject {
     /**
      * Creates the property-definition for a resource type.
      *
-     * @param name the name of the property-definition to overwrite.
-     * @param resourcetype the name of the resource-type for the property-definition.
-     *
+     * @param name the name of the property-definition to overwrite
+     * @param resourcetype the name of the resource-type for the property-definition
+     * @return the new property definition
+     * 
      * @throws CmsException if operation was not successful.
      */
     public CmsPropertydefinition createPropertydefinition(String name, int resourcetype) throws CmsException {
         return (m_driverManager.createPropertydefinition(m_context, name, resourcetype));
     }
 
+    /**
+     * Creates a new resource.<p>
+     * 
+     * @param newResourceName name of the resource
+     * @param type type of the resource
+     * @param properties properties of the resource
+     * @param contents content of the resource
+     * @param parameter additional parameter
+     * @return the new resource
+     * @throws CmsException if something goes wrong
+     */
     public CmsResource createResource(String newResourceName, int type, Map properties, byte[] contents, Object parameter) throws CmsException {
         return getResourceType(type).createResource(this, newResourceName, properties, contents, parameter);
     }
 
+    /**
+     * Creates a new resource.<p>
+     * 
+     * @param folder name of the parent folder
+     * @param name name of the resource
+     * @param type type of the resource
+     * @return the new resource
+     * @throws CmsException if something goes wrong
+     */
     public CmsResource createResource(String folder, String name, int type) throws CmsException {
         return createResource(folder + name, type, new HashMap(), new byte[0], null);
     }
 
+    /**
+     * Creates a new resource.<p>
+     * 
+     * @param folder name of the parent folder
+     * @param name name of the resource
+     * @param type type of the resource
+     * @param properties properties of the resource
+     * @return the new resource
+     * @throws CmsException if something goes wrong
+     */
     public CmsResource createResource(String folder, String name, int type, Map properties) throws CmsException {
         return createResource(folder + name, type, properties, new byte[0], null);
     }
 
+    /**
+     * Creates a new resource.<p>
+     * 
+     * @param folder name of the parent folder
+     * @param name name of the resource
+     * @param type type of the resource
+     * @param properties properties of the resource
+     * @param contents content of the resource
+     * @return the new resource
+     * @throws CmsException if something goes wrong
+     */
     public CmsResource createResource(String folder, String name, int type, Map properties, byte[] contents) throws CmsException {
         return createResource(folder + name, type, properties, contents, null);
     }
@@ -840,8 +894,8 @@ public class CmsObject {
       * All users can create a new task.
       *
       * @param projectid the Id of the current project task of the user.
-      * @param agentname the User who will edit the task.
-      * @param rolename a Usergroup for the task.
+      * @param agentName the User who will edit the task.
+      * @param roleName a Usergroup for the task.
       * @param taskname a Name of the task.
       * @param tasktype the type of the task.
       * @param taskcomment a description of the task.
@@ -861,8 +915,8 @@ public class CmsObject {
       * <p>
       * <B>Security:</B>
       * All users can create a new task.
-      * @param agent the User who will edit the task.
-      * @param role a Usergroup for the task.
+      * @param agentName the User who will edit the task.
+      * @param roleName a Usergroup for the task.
       * @param taskname the name of the task.
       * @param taskcomment a description of the task.
       * @param timeout the time when the task must finished.
@@ -879,6 +933,7 @@ public class CmsObject {
     /**
      * Creates a new project for the temporary files.
      *
+     * @return the new project for temporary files
      * @throws CmsException if operation was not successful.
      */
     public CmsProject createTempfileProject() throws CmsException {
@@ -886,9 +941,19 @@ public class CmsObject {
         return (newProject);
     }
 
+    /**
+     * Creates a new link to a target resource.<p>
+     * 
+     * @param linkName name of the new link
+     * @param targetName name of the target
+     * @param linkProperties additional properties of the link resource
+     * @return the new link resource
+     * @throws CmsException if something goes wrong
+     */
     public CmsResource createVfsLink(String linkName, String targetName, Map linkProperties) throws CmsException {
         return m_driverManager.createVfsLink(m_context, addSiteRoot(linkName), addSiteRoot(targetName), linkProperties, true);
     }
+    
     /**
      * Deletes all properties for a file or folder.
      *
@@ -908,8 +973,10 @@ public class CmsObject {
      * Deletion will delete file header, content and properties.
      * 
      * @param timestamp timestamp which defines the date after which backup resources must be deleted
-     * @param the number of versions per file which should kept in the system.
+     * @param versions the number of versions per file which should kept in the system.
      * @param report the report for output logging
+     * 
+     * @throws CmsException if something goes wrong
      */
     public void deleteBackups(long timestamp, int versions, I_CmsReport report) throws CmsException {
        m_driverManager.deleteBackups(m_context, timestamp, versions, report);
@@ -981,6 +1048,7 @@ public class CmsObject {
      * deletes all entrys in the link table that belong to the pageId
      *
      * @param pageId The resourceId (offline) of the page whose links should be deleted
+     * @throws CmsException if something goes wrong
      */
     public void deleteLinkEntrys(CmsUUID pageId) throws CmsException {
         m_driverManager.deleteLinkEntrys(pageId);
@@ -1040,7 +1108,7 @@ public class CmsObject {
      * <b>Security:</b>
      * Only a admin user is allowed to delete a user.
      *
-     * @param name the Id of the user to be deleted.
+     * @param userId the Id of the user to be deleted.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -1054,7 +1122,7 @@ public class CmsObject {
      * <b>Security:</b>
      * Only a admin user is allowed to delete a user.
      *
-     * @param name the name of the user to be deleted.
+     * @param username the name of the user to be deleted.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -1065,7 +1133,7 @@ public class CmsObject {
     /**
      * Deletes a web user from the Cms.
      *
-     * @param name the id of the user to be deleted.
+     * @param userId the id of the user to be deleted.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -1085,11 +1153,11 @@ public class CmsObject {
 
     /**
      * Changes the project-id of a resource to the new project
-    	 * for publishing the resource directly.<p>
+     * for publishing the resource directly.<p>
      *
-    	 * @param projectId The new project-id
+     * @param projectId The new project-id
      * @param resourcename The name of the resource to change
-    	 * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
     protected void doChangeLockedInProject(int projectId, String resourcename) throws CmsException {
         m_driverManager.changeLockedInProject(m_context, addSiteRoot(resourcename));
@@ -1146,6 +1214,7 @@ public class CmsObject {
      *
      * @param source the complete path of the sourcefolder.
      * @param destination the complete path of the destinationfolder.
+     * @param lockCopy indicates if the copy of the folder should remain locked after operation
      * @param preserveTimestamps true if the timestamps and users of the folder should be kept
      * @throws CmsException if the folder couldn't be copied, or if the
      * user has not the appropriate rights to copy the folder.
@@ -1170,8 +1239,7 @@ public class CmsObject {
     /**
      * Creates a new file with the given content and resourcetype.<br>
      *
-     * @param folder the complete path to the folder in which the file will be created.
-     * @param filename the name of the new file.
+     * @param newFileName the name of the new file.
      * @param contents the contents of the new file.
      * @param type the resourcetype of the new file.
      *
@@ -1188,8 +1256,7 @@ public class CmsObject {
     /**
      * Creates a new file with the given content and resourcetype.
      *
-     * @param folder the complete path to the folder in which the file will be created.
-     * @param filename the name of the new file.
+     * @param newFileName the name of the new file.
      * @param contents the contents of the new file.
      * @param type the resourcetype of the new file.
      * @param properties A Hashtable of properties, that should be set for this file.
@@ -1214,8 +1281,6 @@ public class CmsObject {
     /**
      * Creates a new folder.
      *
-     * @param folder the complete path to the folder in which the new folder will
-     * be created.
      * @param newFolderName the name of the new folder.
      * @param properties A Hashtable of properties, that should be set for this folder.
      * The keys for this Hashtable are the names for property-definitions, the values are
@@ -1254,7 +1319,7 @@ public class CmsObject {
      * 
      * @param theResourceName the name of the resource for which the link count is decremented
      * @return the current link count of the specified resource
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public int doDecrementLinkCountForResource(String theResourceName) throws CmsException {
         //System.err.println( this.getClass().getName() + " decrementing link count of: " + theResourceName );
@@ -1268,7 +1333,8 @@ public class CmsObject {
     /**
      * Deletes a file.
      *
-     * @param filename the complete path of the file.
+     * @param filename the complete path of the file
+     * @param deleteOption flag to delete siblings as well
      *
      * @throws CmsException if the file couldn't be deleted, or if the user
      * has not the appropriate rights to delete the file.
@@ -1295,17 +1361,12 @@ public class CmsObject {
     /**
      * Creates a new resource.<p>
      *
-     * @param newResourceName the name of the new resource
-     * @param uuid  the structure uuid of the resource
-     * @param uuidfile  the file uuid of the resource
-     * @param uuidresource  the resource uuid of the resource
-     * @param resourceType The resourcetype of the new resource
+     * @param resource the resource to be imported
+     * @param content the content of the resource if it is of type file
      * @param properties A Hashtable of propertyinfos, that should be set for this folder
      * The keys for this Hashtable are the names for propertydefinitions, the values are
      * the values for the propertyinfos
-     * @param accessFlags The accessFlags of the new resource
-     * @param lastmodified the last modification date of the resource
-     * @param filecontent The content of the resource if it is of type file 
+     * @param destination  the name of the new resource 
      *
      * @return a <code>CmsFolder</code> object representing the newly created folder
      * @throws CmsException if the resourcename is not valid, or if the user has not the appropriate rights to create
@@ -1313,18 +1374,18 @@ public class CmsObject {
      *
      */
     protected CmsResource doImportResource(CmsResource resource, byte content[], Map properties, String destination)
-        throws CmsException
-    {
+        throws CmsException {
         CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(destination), resource, content, properties);
         return cmsResource;
     }
+    
     /**
      * Increment the VFS link counter for a resource. 
      * The link counter is saved in the RESOURCE_FLAGS table attribute.
      * 
      * @param theResourceName the name of the resource for which the link count is incremented
      * @return the current link count of the specified resource
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public int doIncrementLinkCountForResource(String theResourceName) throws CmsException {
         //System.err.println( this.getClass().getName() + " incrementing link count of: " + theResourceName );
@@ -1392,6 +1453,16 @@ public class CmsObject {
         m_driverManager.renameResource(m_context, addSiteRoot(oldname), newname);
     }
 
+    /**
+     * Replaces an already existing resource with new resource data.<p>
+     * 
+     * @param resName name of the resource
+     * @param newResContent new content of the resource
+     * @param newResType new type of the resource
+     * @param newResProps new properties
+     * @return the replaced resource
+     * @throws CmsException if something goes wrong
+     */
     protected CmsResource doReplaceResource(String resName, byte[] newResContent, int newResType, Map newResProps) throws CmsException {
         CmsResource res = null;
 
@@ -1416,7 +1487,8 @@ public class CmsObject {
      * 
      * @param resourceName the name of the resource to change
      * @param timestamp timestamp the new timestamp of the changed resource
-     * @param user the user who is inserted as userladtmodified 
+     * @param user the user who is inserted as userladtmodified
+     * @throws CmsException if something goes wrong
      */
     protected void doTouch(String resourceName, long timestamp, CmsUUID user) throws CmsException {
         m_driverManager.touch(m_context, addSiteRoot(resourceName), timestamp, user);
@@ -1521,14 +1593,12 @@ public class CmsObject {
      * <B>Security:</B>
      * only Administrators can do this;
      *
-     * @param currentUser user who requestd themethod
-     * @param currentProject current project of the user
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param exportChannels the names (absolute Path) of channels from which should be exported
      * @param exportModules the names of modules from which should be exported
-     * @param cms the cms-object to use for the export.
+     * @param report the report to write out progress information
      *
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public void exportModuledata(String exportFile, String[] exportChannels, String[] exportModules, I_CmsReport report) throws CmsException {
         m_driverManager.exportModuledata(this, m_context, exportFile, exportChannels, exportModules, report);
@@ -1536,6 +1606,10 @@ public class CmsObject {
 
     /**
      * Exports a resource.
+     * 
+     * @param file the resource to export
+     * @return the resource that was exported
+     * @throws CmsException if something goes wrong
      */
     public CmsFile exportResource(CmsFile file) throws CmsException {
         return getResourceType(file.getType()).exportResource(this, file);
@@ -1545,7 +1619,7 @@ public class CmsObject {
      * Exports cms-resources to a zip-file.
      *
      * @param exportFile the name (absolute Path) of the export resource (zip-file).
-     * @param exportPath the name (absolute Path) of folder from which should be exported.
+     * @param exportPaths the names (absolute Path) of files and folders which should be exported.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -1558,7 +1632,7 @@ public class CmsObject {
      * Exports cms-resources to a zip-file.
      *
      * @param exportFile the name (absolute Path) of the export resource (zip-file).
-     * @param exportPath the name (absolute Path) of folder from which should be exported.
+     * @param exportPaths the names (absolute Path) of files and folders which should be exported.
      * @param includeSystem indicates if the system resources will be included in the export.
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
      *
@@ -1573,9 +1647,10 @@ public class CmsObject {
      * Exports cms-resources to a zip-file.
      *
      * @param exportFile the name (absolute Path) of the export resource (zip-file).
-     * @param exportPath the name (absolute Path) of folder from which should be exported.
+     * @param exportPaths the names (absolute Path) of files and folders which should be exported.
      * @param includeSystem indicates if the system resources will be included in the export.
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+     * @param exportUserdata <code>true</code>, if user data should be exported
      *
      * @throws CmsException if operation was not successful.
      */
@@ -1588,9 +1663,11 @@ public class CmsObject {
      * Exports cms-resources to a zip-file.
      *
      * @param exportFile the name (absolute Path) of the export resource (zip-file).
-     * @param exportPath the name (absolute Path) of folder from which should be exported.
+     * @param exportPaths the name (absolute Path) of files and folders which should be exported.
      * @param includeSystem indicates if the system resources will be included in the export.
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+     * @param exportUserdata <code>true</code>, if user data should be exported
+     * @param contentAge max age of content to be exported (timestamp)
      * @param report the cmsReport to handle the log messages.
      *
      * @throws CmsException if operation was not successful.
@@ -1602,6 +1679,10 @@ public class CmsObject {
 
     /**
      * Reads all siblings that point to the resource record of a specified resource name.<p>
+     * 
+     * @param resourcename name of a resource
+     * @return List of siblings of the resource
+     * @throws CmsException if something goes wrong
      */
     public List getAllVfsLinks(String resourcename) throws CmsException {
         return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), true, false);
@@ -1610,6 +1691,10 @@ public class CmsObject {
     /**
      * Reads all siblings that point to the resource record of a specified resource name,
      * excluding the specified resource from the result.<p>
+     * 
+     * @param resourcename name of a resource
+     * @return List of siblings of the resource
+     * @throws CmsException if something goes wrong 
      */
     public List getAllVfsSoftLinks(String resourcename) throws CmsException {       
         return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), false, false);
@@ -1629,8 +1714,8 @@ public class CmsObject {
      * Forwards a task to a new user.
      *
      * @param taskid the id of the task which will be forwarded.
-     * @param newRole the new group for the task.
-     * @param newUser the new user who gets the task.
+     * @param newRoleName the new group for the task.
+     * @param newUserName the new user who gets the task.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -1641,9 +1726,9 @@ public class CmsObject {
     /**
      * Returns the vector of access control entries of a resource.
      * 
-     * @param resourceName	the name of the resource.
-     * @return				a vector of access control entries
-     * @throws CmsException	if something goes wrong
+     * @param resourceName the name of the resource.
+     * @return a vector of access control entries
+     * @throws CmsException if something goes wrong
      */
     public Vector getAccessControlEntries(String resourceName) throws CmsException {
         return getAccessControlEntries(resourceName, true);
@@ -1652,10 +1737,10 @@ public class CmsObject {
     /**
      * Returns the vector of access control entries of a resource.
      * 
-     * @param resourceName	the name of the resource.
-     * @param getInherited	true, if inherited access control entries should be returned, too
-     * @return				a vector of access control entries
-     * @throws CmsException	if something goes wrong
+     * @param resourceName the name of the resource.
+     * @param getInherited true, if inherited access control entries should be returned, too
+     * @return a vector of access control entries
+     * @throws CmsException if something goes wrong
      */
     public Vector getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
         CmsResource res = readFileHeader(resourceName);
@@ -1665,9 +1750,9 @@ public class CmsObject {
     /**
      * Returns the access control list (summarized access control entries) of a given resource.
      * 
-     * @param resourceName	the name of the resource
-     * @return				the access control list of the resource
-     * @throws CmsException	if something goes wrong
+     * @param resourceName the name of the resource
+     * @return the access control list of the resource
+     * @throws CmsException if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
         return getAccessControlList(resourceName, false);
@@ -1676,10 +1761,10 @@ public class CmsObject {
     /**
      * Returns the access control list (summarized access control entries) of a given resource.
      * 
-     * @param resourceName	the name of the resource
-     * @param inheritedOnly	if set, the non-inherited entries are skipped
-     * @return				the access control list of the resource
-     * @throws CmsException	if something goes wrong
+     * @param resourceName the name of the resource
+     * @param inheritedOnly if set, the non-inherited entries are skipped
+     * @return the access control list of the resource
+     * @throws CmsException if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(String resourceName, boolean inheritedOnly) throws CmsException {
         CmsResource res = readFileHeader(resourceName);
@@ -1740,10 +1825,13 @@ public class CmsObject {
     public List getAllResourceTypes() throws CmsException {
         I_CmsResourceType resourceTypes[] = m_driverManager.getAllResourceTypes();
         List result = new ArrayList(resourceTypes.length);
-        for (int i = 0; i < resourceTypes.length; i++)
-            if (resourceTypes[i] != null)
+        
+        for (int i = 0; i < resourceTypes.length; i++) {
+            if (resourceTypes[i] != null) {
                 result.add(resourceTypes[i]);
-
+            }
+        }
+        
         return result;
     }
 
@@ -1803,7 +1891,9 @@ public class CmsObject {
     /**
      * Creates a special CmsObject for the static export.
      *
-     * @param .
+     * @param dReq dummy request for the cms object
+     * @param dRes dummy response for the cms object
+     * @return the cms object for the static export
      * @throws CmsException if operation was not successful.
      */
     public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportResponse dRes) throws CmsException {
@@ -1823,9 +1913,10 @@ public class CmsObject {
 
     /**
      * Reads all export links that depend on the resource.
-     * @param res. The resourceName() of the resources that has changed (or the String
-     *              that describes a contentdefinition).
-     * @return a Vector(of Strings) with the linkrequest names.
+     * @param res the resourceName() of the resources that has changed (or the String
+     * that describes a contentdefinition).
+     * @return a Vector(of Strings) with the linkrequest names
+     * @throws CmsException if something goes wrong
      */
     public Vector getDependings(Vector res) throws CmsException {
         return m_driverManager.getDependingExportLinks(res);
@@ -1893,8 +1984,8 @@ public class CmsObject {
     /**
      * Returns a Vector with all resource-names of the resources that have set the given property to the given value.
      *
-     * @param propertydef the name of the property-definition to check.
-     * @param property the value of the property for the resource.
+     * @param propertyDefinition the name of the property-definition to check.
+     * @param propertyValue the value of the property for the resource.
      *
      * @return a Vector with all names of the resources.
      *
@@ -1953,6 +2044,9 @@ public class CmsObject {
     /**
      * Returns a list of all currently logged in users.
      * This method is only allowed for administrators.
+     * 
+     * @return a vector of users that are currently logged in
+     * @throws CmsException if something goes wrong
      */
     public Vector getLoggedInUsers() throws CmsException {
         if (isAdmin()) {
@@ -1989,6 +2083,7 @@ public class CmsObject {
      *
      * @return A Vector with a CmsPageLinks object for each page containing broken links
      *          this CmsPageLinks object contains all links on the page withouth a valid target.
+     * @throws CmsException if something goes wrong
      */
     public Vector getOnlineBrokenLinks() throws CmsException {
         return m_driverManager.getOnlineBrokenLinks();
@@ -1997,8 +2092,9 @@ public class CmsObject {
     /**
      * extracts the links of the page and returns them in a CmsPageLinks object.
      *
-     * @param page. The page to process.
-     * @return CmsPageLinks The link destinations on the page.
+     * @param page The page to process.
+     * @return CmsPageLinks The link destinations on the page
+     * @throws CmsException if something goes wrong
      */
     public CmsPageLinks getPageLinks(String page) throws CmsException {
         return m_linkChecker.extractLinks(this, page);
@@ -2018,9 +2114,9 @@ public class CmsObject {
     /**
      * Returns the set set of permissions of the current user for a given resource. 
      * 
-     * @param resourceName		the name of the resource
-     * @return					the set of the permissions of the current user
-     * @throws CmsException		if something goes wrong
+     * @param resourceName the name of the resource
+     * @return the set of the permissions of the current user
+     * @throws CmsException if something goes wrong
      */
     public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
         // reading permissions is allowed even if the resource is marked as deleted
@@ -2033,10 +2129,10 @@ public class CmsObject {
     /**
      * Returns the set set of permissions of a given user for a given resource.
      * 
-     * @param resourceName	the name of the resource
-     * @param userName		the name of the user
-     * @return				the current permissions on this resource
-     * @throws CmsException	if something goes wrong
+     * @param resourceName the name of the resource
+     * @param userName the name of the user
+     * @return the current permissions on this resource
+     * @throws CmsException if something goes wrong
      */
     public CmsPermissionSet getPermissions(String resourceName, String userName) throws CmsException {
         CmsAccessControlList acList = getAccessControlList(resourceName);
@@ -2101,13 +2197,11 @@ public class CmsObject {
       * <B>Security:</B>
       * All users are granted.
       *
-      * @param propertyDefinition, the name of the propertydefinition to check.
-      * @param propertyValue, the value of the property for the resource.
-      * @param resourceType The resource type of the resource
+      * @param propertyDefinition the name of the propertydefinition to check.
       *
       * @return Vector with all resources.
       *
-      * @throws CmsException Throws CmsException if operation was not succesful.
+      * @throws CmsException if operation was not succesful.
       */
     public Vector getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
         return m_driverManager.getResourcesWithPropertyDefinition(m_context, propertyDefinition);
@@ -2150,8 +2244,8 @@ public class CmsObject {
       * <B>Security:</B>
       * All users are granted.
       *
-      * @param propertyDefinition, the name of the propertydefinition to check.
-      * @param propertyValue, the value of the property for the resource.
+      * @param propertyDefinition the name of the propertydefinition to check.
+      * @param propertyValue the value of the property for the resource.
       * @param resourceType The resource type of the resource
       *
       * @return Vector with all resources.
@@ -2317,11 +2411,9 @@ public class CmsObject {
      * <B>Security:</B>
      * All users that have read and view access are granted.
      *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param propertyDefinition, the name of the propertydefinition to check.
-     * @param propertyValue, the value of the property for the resource.
-     * @param resourceType The resource type of the resource
+     * @param propertyDefinition the name of the propertydefinition to check.
+     * @param propertyValue the value of the property for the resource.
+     * @param resourceType the resource type of the resource
      *
      * @return Vector with all resources.
      *
@@ -2334,11 +2426,11 @@ public class CmsObject {
     /**
      * Checks if the current user has required permissions to access a given resource in a given project.
      * 
-     * @param project				the project 
-     * @param resource				the resource that will be accessed
-     * @param requiredPermissions	the set of required permissions
-     * @return						true if the required permissions are satisfied
-     * @throws CmsException			if something goes wrong
+     * @param project the project 
+     * @param resource the resource that will be accessed
+     * @param requiredPermissions the set of required permissions
+     * @return true if the required permissions are satisfied
+     * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsProject project, CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
         // TODO: Check if this method still works after inserting the context instead of the project
@@ -2348,10 +2440,10 @@ public class CmsObject {
     /**
      * Checks if the current user has required permissions to access a given resource.
      * 
-     * @param resource				the resource that will be accessed
-     * @param requiredPermissions	the set of required permissions
-     * @return						true if the required permissions are satisfied
-     * @throws CmsException			if something goes wrong
+     * @param resource the resource that will be accessed
+     * @param requiredPermissions the set of required permissions
+     * @return true if the required permissions are satisfied
+     * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
         return m_driverManager.hasPermissions(m_context, resource, requiredPermissions, false);
@@ -2360,10 +2452,10 @@ public class CmsObject {
     /**
      * Checks if the current user has required permissions to access a given resource
      * 
-     * @param resourceName			the name of the resource that will be accessed
-     * @param requiredPermissions	the set of required permissions
-     * @return						true if the required permissions are satisfied
-     * @throws CmsException			if something goes wrong
+     * @param resourceName the name of the resource that will be accessed
+     * @param requiredPermissions the set of required permissions
+     * @return true if the required permissions are satisfied
+     * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(String resourceName, CmsPermissionSet requiredPermissions) throws CmsException {
         CmsResource resource = readFileHeader(resourceName);
@@ -2531,6 +2623,12 @@ public class CmsObject {
         getResourceType(readFileHeader(resource).getType()).lockResource(this, resource, force);
     }
     
+    /**
+     * Changes the lock of a resource.<p>
+     * 
+     * @param resourcename name of the resource
+     * @throws CmsException if something goes wrong
+     */
     public void changeLock(String resourcename) throws CmsException {
         m_driverManager.changeLock(m_context, addSiteRoot(resourcename));
     }
@@ -2590,21 +2688,21 @@ public class CmsObject {
     /**
      * Lookup and reads the user or group with the given UUID.<p>
      *   
-     * @param principalId
+     * @param principalId the uuid of a user or group
      * @return the user or group with the given UUID
      */
-    public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) throws CmsException {
+    public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) {
         return m_driverManager.lookupPrincipal(principalId);
     }
 
     /**
      * Lookup and reads the user or group with the given name.<p>
      * 
-     * @param principalName
+     * @param principalName the name of the user or group
      * @return the user or group with the given name
-     * @throws CmsException	if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    public I_CmsPrincipal lookupPrincipal(String principalName) throws CmsException {
+    public I_CmsPrincipal lookupPrincipal(String principalName) {
         return m_driverManager.lookupPrincipal(principalName);
     }
 
@@ -2734,7 +2832,7 @@ public class CmsObject {
     /**
      * Publishes a single resource.
      *
-     * @param resoucename the name (getAbsolutePath()) of the resource to be published.
+     * @param resourcename the name (getAbsolutePath()) of the resource to be published.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -2745,11 +2843,10 @@ public class CmsObject {
     /**
      * Publishes a single resource.
      *
-     * @param id the id of the project to be published.
-     * @param justPrepear, if true this method dont publish the temp project that is created.
+     * @param resourcename the name of the resource to be published.
+     * @param justPrepare if true this method dont publish the temp project that is created.
      *          This is used for the workplace view were the temp-projcet is checkt for broken
      *          links before publish.
-     * @return the project id of the created project.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -2757,6 +2854,15 @@ public class CmsObject {
         publishResource(resourcename, justPrepare, false, justPrepare ? null : new CmsShellReport());
     }
 
+    /**
+     * Publishes a single resource.
+     * 
+     * @param resourcename the name of the resource to be published
+     * @param justPrepare if true this method dont publish the temp project that is created
+     * @param directPublishSiblings if a CmsResource that should get published directly is provided as an argument, all eventual siblings of this resource get publish too, if this flag is true
+     * @param report the report to write out progress information
+     * @throws CmsException if something goes wrong
+     */
     public void publishResource(String resourcename, boolean justPrepare, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
         int oldProjectType = m_context.currentProject().getType();
         CmsResource resource = resource = readFileHeader(resourcename, true);
@@ -2826,10 +2932,25 @@ public class CmsObject {
         */
     }
 
+    /**
+     * Returns the absolute path of a given resource.<p>
+     * The absolute path is the root path without the site information.
+     * 
+     * @param resource the resource
+     * @return the absolute path
+     */
     public String readAbsolutePath(CmsResource resource) {
         return readAbsolutePath(resource, false);
     }
 
+    /**
+     * Returns the absolute path of a given resource.<p>
+     * The absolute path is the root path without the site information.
+     * 
+     * @param resource the resource
+     * @param includeDeleted include resources that are marked as deleted
+     * @return the absolute path
+     */
     public String readAbsolutePath(CmsResource resource, boolean includeDeleted) {
         try {
             if (!resource.hasFullResourceName()) {
@@ -2848,10 +2969,10 @@ public class CmsObject {
      *
      * @param task the task to read the agent from.
      * @return the owner of a task.
-     *
+	 *
      * @throws CmsException if operation was not successful.
      */
-    public CmsUser readAgent(CmsTask task) throws CmsException {
+    public CmsUser readAgent(CmsTask task) throws CmsException  {
         return (m_driverManager.readAgent(task));
     }
 
@@ -2876,8 +2997,8 @@ public class CmsObject {
     /**
      * select all projectResources from an given project
      *
-     * @param project The project in which the resource is used.
-     *
+     * @param projectId id of the project in which the resource is used.
+     * @return vector of all resources belonging to the given project
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
@@ -2888,7 +3009,7 @@ public class CmsObject {
     /**
      * Returns a list of all properties of a file or folder.
      *
-     * @param name the name of the resource for which the property has to be read
+     * @param filename the name of the resource for which the property has to be read
      *
      * @return a Vector of Strings
      *
@@ -2898,15 +3019,18 @@ public class CmsObject {
     public Map readAllProperties(String filename) throws CmsException {
         Map result = (Map)new HashMap();
         Map properties = readProperties(filename, false);
-        if (properties != null)
+        
+        if (properties != null) {
             result.putAll(properties);
+        }
+        
         return result;
     }
 
     /**
      * Reads all property-definitions for the given resource type.
      *
-     * @param id the id of the resource type to read the property-definitions for.
+     * @param resourceType the resource type to read the property-definitions for.
      *
      * @return a Vector with property-defenitions for the resource type.
      * The Vector may be empty.
@@ -2995,6 +3119,7 @@ public class CmsObject {
      * All users are garnted<BR/>
      *
      * @return the crontable.
+     * @throws CmsException if something goes wrong
      */
     public String readCronTable() throws CmsException {
         return m_driverManager.readCronTable();
@@ -3108,7 +3233,8 @@ public class CmsObject {
      *
      * @param filename the complete path of the file to be read.
      * @param projectId the id of the project where the resource should belong to
-     *
+     * @param includeDeleted include resources that are marked as deleted
+     * 
      * @return file the read file.
      *
      * @throws CmsException , if the user has not the rights
@@ -3152,7 +3278,7 @@ public class CmsObject {
     /**
      * Reads a folder from the Cms.
      *
-     * @param folderid the id of the folder to be read
+     * @param folderId the id of the folder to be read
      * @param includeDeleted Include the folder if it is marked as deleted
      *
      * @return folder the read folder
@@ -3167,8 +3293,7 @@ public class CmsObject {
     /**
      * Reads a folder from the Cms.
      *
-     * @param folder the complete path to the folder from which the folder will be read
-     * @param foldername the name of the folder to be read
+     * @param folderName the name of the folder to be read
      *
      * @return The read folder
      *
@@ -3198,10 +3323,12 @@ public class CmsObject {
       * Reads all given tasks from a user for a project.
       *
       * @param projectId the id of the project in which the tasks are defined.
-      * @param owner the owner of the task.
-      * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+      * @param ownerName the owner of the task.
+      * @param taskType the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
       * @param orderBy specifies how to order the tasks.
-      *
+      * @param sort sorting of the tasks
+      * @return vector of given tasks for a user for a project 
+      * 
       * @throws CmsException if operation was not successful.
       */
     public Vector readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort) throws CmsException {
@@ -3211,11 +3338,12 @@ public class CmsObject {
     /**
      * Reads the group of a project from the OpenCms.
      *
+     * @param project the project
      * @return the group of the given project.
      *
      * @throws CmsException if operation was not successful.
      */
-    public CmsGroup readGroup(CmsProject project) throws CmsException {
+    public CmsGroup readGroup(CmsProject project)  throws CmsException {
         return (m_driverManager.readGroup(project));
     }
 
@@ -3245,7 +3373,7 @@ public class CmsObject {
     /**
      * Reads a group of the Cms.
      *
-     * @param groupid the id of the group to be returned.
+     * @param groupId the id of the group to be returned.
      * @return a group in the Cms.
      *
      * @throws CmsException if operation was not successful.
@@ -3257,7 +3385,7 @@ public class CmsObject {
     /**
      * Reads a group of the Cms.
      *
-     * @param groupname the name of the group to be returned.
+     * @param groupName the name of the group to be returned.
      * @return a group in the Cms.
      *
      * @throws CmsException if operation was not successful.
@@ -3270,12 +3398,11 @@ public class CmsObject {
      * Gets the Linkchecktable.
      *
      * <B>Security:</B>
-     * All users are garnted<BR/>
+     * All users are granted<BR/>
      *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     *
-     * @return the linkchecktable.
+     * @return the linkchecktable
+     * 
+     * @throws CmsException if something goes wrong 
      */
     public Hashtable readLinkCheckTable() throws CmsException {
         return m_driverManager.readLinkCheckTable();
@@ -3285,7 +3412,10 @@ public class CmsObject {
      * returns a Vector (Strings) with the link destinations of all links on the page with
      * the pageId.
      *
-     * @param pageId The resourceId (offline) of the page whose liks should be read.
+     * @param pageId The resourceId (offline) of the page whose liks should be read
+     * @return vector of link destinations
+     * 
+     * @throws CmsException if something goes wrong
      */
     public Vector readLinkEntrys(CmsUUID pageId) throws CmsException {
         return m_driverManager.readLinkEntrys(pageId);
@@ -3294,11 +3424,12 @@ public class CmsObject {
     /**
      * Reads the managergroup of a project from the Cms.
      *
+     * @param project the project 
      * @return the managergroup of a project.
      *
      * @throws CmsException if operation was not successful.
      */
-    public CmsGroup readManagerGroup(CmsProject project) throws CmsException {
+    public CmsGroup readManagerGroup(CmsProject project) throws CmsException  {
         return (m_driverManager.readManagerGroup(project));
     }
 
@@ -3309,15 +3440,18 @@ public class CmsObject {
      *
      * @throws CmsException if operation was not successful.
      */
-    public Hashtable readMimeTypes() throws CmsException {
+    public Hashtable readMimeTypes() throws CmsException  {
         return m_driverManager.readMimeTypes();
     }
 
     /**
-     * returns a Vector (Strings) with the link destinations of all links on the page with
+     * Returns a Vector (Strings) with the link destinations of all links on the page with
      * the pageId.
      *
      * @param pageId The resourceId (online) of the page whose liks should be read.
+     * @return vector of link destinations
+     * 
+     * @throws CmsException if something goes wrong
      */
     public Vector readOnlineLinkEntrys(CmsUUID pageId) throws CmsException {
         return m_driverManager.readOnlineLinkEntrys(pageId);
@@ -3329,14 +3463,15 @@ public class CmsObject {
      * @param task the task to read the original agent from.
      * @return the owner of a task.
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if operation was not successful
      */
-    public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
+    public CmsUser readOriginalAgent(CmsTask task)  throws CmsException {
         return (m_driverManager.readOriginalAgent(task));
     }
     /**
      * Reads the owner of a project from the Cms.
      *
+     * @param project the project
      * @return the owner of the given project.
      *
      * @throws CmsException if operation was not successful.
@@ -3348,6 +3483,7 @@ public class CmsObject {
     /**
      * Reads the owner of a resource from the Cms.
      *
+     * @param resource the resource
      * @return the owner of a resource.
      *
      * @throws CmsException if operation was not successful.
@@ -3359,18 +3495,19 @@ public class CmsObject {
     /**
      * Reads the owner (initiator) of a task from the Cms.
      *
-     * @param tasktThe task to read the owner from.
+     * @param task The task to read the owner from.
      * @return the owner of a task.
      *
      * @throws CmsException if operation was not successful.
      */
-    public CmsUser readOwner(CmsTask task) throws CmsException {
+    public CmsUser readOwner(CmsTask task)  throws CmsException {
         return (m_driverManager.readOwner(task));
     }
 
     /**
      * Reads the owner of a tasklog from the Cms.
      *
+     * @param log the task log
      * @return the owner of a resource.
      *
      * @throws CmsException if operation was not successful.
@@ -3397,9 +3534,10 @@ public class CmsObject {
     }
 
     /**
-     * Reads a project from the Cms.
+     * Reads the project in which a resource was last modified.
      *
-     * @param id the id of the project to read.
+     * @param res the resource
+     * @return the project in which the resource was last modified
      *
      * @throws CmsException if operation was not successful.
      */
@@ -3408,10 +3546,11 @@ public class CmsObject {
     }
 
     /**
-     * Reads a project from the Cms.
+     * Reads a project of a given task from the Cms.
      *
-     * @param name the resource for which the project will be read.
-     *
+     * @param task the task for which the project will be read.
+     * @return the project of the task
+     * 
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(CmsTask task) throws CmsException {
@@ -3421,7 +3560,8 @@ public class CmsObject {
     /**
      * Reads a project from the Cms.
      *
-     * @param task the task for which the project will be read.
+     * @param id the id of the project
+     * @return the project with the given id
      *
      * @throws CmsException if operation was not successful.
      */
@@ -3447,6 +3587,8 @@ public class CmsObject {
      * @param filter The filter for the resources (all, new, changed, deleted, locked)
      *
      * @return a Vector (of CmsResources objects) of resources.
+     * 
+     * @throws CmsException if something goes wrong
      *
      */
     public Vector readProjectView(int projectId, String filter) throws CmsException {
@@ -3540,6 +3682,7 @@ public class CmsObject {
      * Reads the task with the given id.
      *
      * @param id the id of the task to be read.
+     * @return the task with the given id
      *
      * @throws CmsException if operation was not successful.
      */
@@ -3565,7 +3708,8 @@ public class CmsObject {
      * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
      * @param orderBy specifies how to order the tasks.
      * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null.
-     *
+     * @return vector of tasks for the project
+     * 
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
@@ -3576,10 +3720,12 @@ public class CmsObject {
      * Reads all tasks for a role in a project.
      *
      * @param projectId the id of the Project in which the tasks are defined.
-     * @param user the user who has to process the task.
+     * @param roleName the role who has to process the task.
      * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
      * @param orderBy specifies how to order the tasks.
      * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
+     * @return vector of tasks for the role
+     * 
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort) throws CmsException {
@@ -3590,10 +3736,12 @@ public class CmsObject {
      * Reads all tasks for a user in a project.
      *
      * @param projectId the id of the Project in which the tasks are defined.
-     * @param role the user who has to process the task.
+     * @param userName the user who has to process the task.
      * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
      * @param orderBy specifies how to order the tasks.
      * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
+     * @return vector of tasks for the user 
+     * 
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort) throws CmsException {
@@ -3603,7 +3751,7 @@ public class CmsObject {
     /**
      * Returns a user in the Cms.
      *
-     * @param id the id of the user to be returned.
+     * @param userId the id of the user to be returned.
      * @return a user in the Cms.
      *
      * @throws CmsException if operation was not successful
@@ -3656,8 +3804,6 @@ public class CmsObject {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
      * @param username The username of the user that is to be read.
      * @return User
      *
