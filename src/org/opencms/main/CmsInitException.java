@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsInitException.java,v $
- * Date   : $Date: 2004/06/14 14:25:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/05 15:37:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.main;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1.4
  */
 public class CmsInitException extends CmsException {
@@ -48,7 +48,10 @@ public class CmsInitException extends CmsException {
     
     /** Wizard still enabled error. */
     public static final int C_INIT_WIZARD_ENABLED = 401; 
-        
+
+    /** Admin permissions required. */
+    public static final int C_INIT_NO_ADMIN_PERMISSIONS = 402;
+    
     /**
      * Default constructor for a CmsInitException.<p>
      */
@@ -104,6 +107,8 @@ public class CmsInitException extends CmsException {
         switch (type) {
             case C_INIT_UNSPECIFIED_ERROR:
                 return "OpenCms init error";
+            case C_INIT_NO_ADMIN_PERMISSIONS:
+                return "Admin permissions required to perform this operation";
             default:
                 return super.getErrorDescription(type);
         }
