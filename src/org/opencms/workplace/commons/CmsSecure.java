@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/03/31 12:50:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/31 13:25:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0
  */
@@ -268,9 +268,9 @@ public class CmsSecure extends CmsDialog {
         String secureResource = "";
         String exportedResource = "";
         try {
-            secureResource = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_SECURE, false)
+            secureResource = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_SECURE, true)
                 .getValue();
-            exportedResource = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_EXPORT, false)
+            exportedResource = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_EXPORT, true)
                 .getValue();
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isInfoEnabled()) {
@@ -332,46 +332,27 @@ public class CmsSecure extends CmsDialog {
     }
 
     /**
-     * Returns the parent folder name where the property is inherited from.<p>
+     * Returns the information from which the property is inherited.<p>
      * 
      * @param propName the name of the property
-     * @param propVal the value of the property
-     * @return the name of the parent folderwhere the property is inherited from or null 
-     * if the property is directly attached to the file or not inherited
+     * @return a String containing the information from which the property is inherited and inherited value
      * @throws CmsException if the reading of the Property fails 
      */
-    public String propertyInheritedFrom(String propName, String propVal) throws CmsException {
+    public String getPropertyInheritanceInfo(String propName) throws CmsException {
 
-        // property is set for the resource and therefore not inherited
-        if (!getCms().readPropertyObject(getParamResource(), propName, false).isNullProperty()) {
-            return null;
-        }
         String folderName = CmsResource.getParentFolder(getParamResource());
+        String folderPropVal = null;
         while (CmsStringUtil.isNotEmpty(folderName)) {
             CmsProperty prop = getCms().readPropertyObject(folderName, propName, false);
-            String folderPropVal = prop.getValue();
-            if (propVal.equals(folderPropVal)) {
-                return folderName;
+            folderPropVal = prop.getValue();
+            if (CmsStringUtil.isNotEmpty(folderPropVal)) {
+                break;
             }
             folderName = CmsResource.getParentFolder(folderName);
         }
-        // property is not inherited
-        return null;
-    }
 
-    /**
-     * Returns the information from which the property is inherited or an empty String if the property is not inherited.<p>
-     * 
-     * @param propName the name of the property
-     * @param propVal the value of the property
-     * @return the name of the parent folderwhere the property is inherited from or null if the
-     * @throws CmsException if the reading of the Property fails 
-     */
-    public String getPropertyInheritanceInfo(String propName, String propVal) throws CmsException {
-
-        String folderName = propertyInheritedFrom(propName, propVal);
-        if (CmsStringUtil.isNotEmpty(folderName)) {
-            return new StringBuffer(key("label.inherit")).append(' ').append(propVal).append(' ').append(
+        if (CmsStringUtil.isNotEmpty(folderPropVal)) {
+            return new StringBuffer(key("label.inherit")).append(' ').append(folderPropVal).append(' ').append(
                 key("label.from")).append(' ').append(folderName).toString();
         } else {
             return key("label.notset");
@@ -465,7 +446,7 @@ public class CmsSecure extends CmsDialog {
                 "/></td><td id=\"tablelabel\">").append(key("label.false")).append("</td>");
         result.append("<td><input type=\"radio\" value=\"\" onClick=\"checkNoIntern()\" name=\"").append(propName)
             .append("\" ").append(CmsStringUtil.isEmpty(propVal) ? "checked=\"checked\"" : "").append(
-                "/></td><td id=\"tablelabel\">").append(getPropertyInheritanceInfo(propName, propVal)).append(
+                "/></td><td id=\"tablelabel\">").append(getPropertyInheritanceInfo(propName)).append(
                 "</td></tr></table>");
         return result.toString();
     }
