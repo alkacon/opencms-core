@@ -367,7 +367,7 @@ function setText()
 // Submitts the Document to the OpenCms System
 function doSubmit() 
 {
-	document.EDITOR.CONTENT.value = escape(document.EDITOR.EDIT_HTML.DocumentHTML);
+   document.EDITOR.CONTENT.value = escape(document.EDITOR.EDIT_HTML.DocumentHTML);
 }
 
 

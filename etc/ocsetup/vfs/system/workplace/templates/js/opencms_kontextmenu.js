@@ -193,10 +193,7 @@ function doAction(action) {
 		} case 4: {
 			location.href='copy.html?file='+ kontextparam;
 			break;
-		}
-		case 5:
-		{
-			//location.href='explorer_files_move.html';
+		} case 5: {
 			location.href='move.html?file='+ kontextparam;
 			break;
 		} case 6: {
@@ -205,16 +202,11 @@ function doAction(action) {
 		} case 7: {
 			location.href='delete.html?file='+ kontextparam;
 			break;
-		}
-		
-		case 8:
-		{
-			location.href='explorer_files_owner.html';
+		} case 8: {
+			location.href='chown.html?file='+ kontextparam;
 			break;
-		}
-		case 9:
-		{
-			location.href='explorer_files_group.html';
+		} case 9: {
+			location.href='chgrp.html?file='+ kontextparam;
 			break;
 		}
 		case 10:

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/03/08 08:59:28 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/03/08 10:07:21 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.24 $ $Date: 2000/03/08 08:59:28 $  
+* @version $Revision: 1.25 $ $Date: 2000/03/08 10:07:21 $  
 * 
 */
 
@@ -510,7 +510,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
          output.append("WIDTH: 100px}\n");        
          output.append("</style>\n");
          output.append("</HEAD>\n");
-         output.append("<BODY bgcolor=\"#ffffff\"  background=\"/picssystem/bg_weiss.gif\"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>\n");	
+         output.append("<BODY bgcolor=\"#ffffff\"  background=\"/pics/system/bg_weiss.gif\"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>\n");	
          output.append("<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>\n");
          output.append("<tr><td align=middle valign=center>\n");
          output.append("<table cellspacing=0 cellpadding=0 border=2 width=300>\n");
