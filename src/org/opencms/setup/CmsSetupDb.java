@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/02/17 16:38:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/17 16:52:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -47,12 +46,9 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/17 16:38:37 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/17 16:52:24 $
  */
 public class CmsSetupDb extends Object {
-
-    /** The database properties */
-    private static final String C_DB_PROPERTIES = "org/opencms/setup/dbsetup.properties";
     
     /** The folder where to read the setup data from */
     public static String C_SETUP_DATA_FOLDER = "WEB-INF/setupdata/";
