@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/05/08 15:03:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/05/12 10:07:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -365,14 +365,12 @@ public class CmsJspNavBuilder {
             }
         }
         
-        // create the List of navigation elements     
+        // create the list of navigation elements     
         for (int i=startlevel; i<=endlevel; i++) {
             String navFolder = CmsResource.getPathPart(folder, i);
             CmsJspNavElement e = getNavigationForResource(navFolder);
-            // only add element if navigation properties are present
-            if (e.isInNavigation()) {
-                result.add(e);
-            }
+            // add element to list
+            result.add(e);
         }
         
         return result;
