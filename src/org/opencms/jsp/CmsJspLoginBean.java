@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/09/20 05:39:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3
  */
@@ -178,7 +178,13 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         HttpSession session = null;
         m_loginException = null;
         try {
-            getCmsObject().loginUser(username, password, getRequestContext().getRemoteAddress(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER);        
+            // login the user and create a new session
+            getCmsObject().loginUser(username, password, getRequestContext().getRemoteAddress(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+            // make sure we have a new session after login for security reasons
+            session = getRequest().getSession(false);
+            if (session != null) {
+                session.invalidate();       
+            }
             session = getRequest().getSession(true);
             if (login_project != null) {
                 getCmsObject().getRequestContext().setCurrentProject(getCmsObject().readProject(login_project));
