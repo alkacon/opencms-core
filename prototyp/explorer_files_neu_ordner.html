@@ -40,7 +40,7 @@ function show_help()
 		<td class=dialogtxt><INPUT type="text" size=40 class="textfeld2" id=NEUTITEL name=NEUTITEL size="20"></td>
 	</tr>
 	<tr>
-		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData('NEU','LINK','NEWWITHOUTLINK','NEWLINK');if(LINK.NEUNAME.value != '') LINK.FERTIG.disabled=false; else LINK.FERTIG.disabled=true;this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> in Navigation mit aufnehmen</td>
+		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData('NEU','LINK','NEWWITHOUTLINK','NEWLINK');this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> in Navigation mit aufnehmen</td>
 	</tr>
 	
 	<tr><td colspan=2 class="leerzeile"><img src="pics/empty.gif" border=0 width=1 height=70px></td></tr>
@@ -87,7 +87,7 @@ function show_help()
 		<td class=dialogtxt><INPUT type="text" size=40 class="textfeld2" id=NEUTITEL name=NEUTITEL size=20></td>
 	</tr>
 	<tr>
-		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');if(NEU.NEUNAME.value != '') NEU.FERTIG.disabled=false; else NEU.FERTIG.disabled=true;switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> in Navigation mit aufnehmen</td>
+		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> in Navigation mit aufnehmen</td>
 	</tr>
 	<tr><td colspan=2 class=leerzeile><img src="pics/empty.gif" border=0 width=1 height=10px</td></tr>
 	<tr>
