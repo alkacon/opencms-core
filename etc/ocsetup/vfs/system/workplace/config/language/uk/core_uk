@@ -144,6 +144,7 @@
                 <badcharacter>invalid character : </badcharacter>
                 <chgrp>Sorry, the group could not be changed.</chgrp>
                 <chmod>Sorry, the permission could not be changed.</chmod>
+                <chnav>Sorry, the position could not be changed.</chnav>
                 <chown>Sorry, the owner could not be changed.</chown>
                 <chpwd>Sorry, the password could not be changed.</chpwd>
                 <chtype>Sorry, the file type could not be changed.</chtype>
@@ -195,6 +196,7 @@
                 <channelsmissing>Please select at least one channel.</channelsmissing>
                 <chgrp>You don't have the needed permissions.</chgrp>
                 <chmod>You don't have the needed permissions.</chmod>
+                <chnav>Maybe you don't have the needed permissions.</chnav>
                 <chown>You don't have the needed permissions.</chown>
                 <chpwd>The passwords don't match.</chpwd>
                 <chpwd2>The old password is not correct.</chpwd2>
@@ -307,6 +309,7 @@
                 <changeuser>Change User</changeuser>
                 <chgrp>Change Group</chgrp>
                 <chmod>Change Permissions</chmod>
+                <chnav>Change Position</chnav>
                 <chown>Change Owner</chown>
                 <chpwd>Change Password</chpwd>
                 <chtype>Change File Type</chtype>
@@ -419,6 +422,7 @@
                 <access>Change Permissions</access>
                 <chgrp>Change Group</chgrp>
                 <chown>Change Owner</chown>
+                <chnav>Change Position</chnav>
                 <copy>Copy</copy>
                 <copytoproject>Copy To Project</copytoproject>
                 <delete>Delete</delete>
@@ -512,6 +516,7 @@
             <page>Page:</page>
             <promptgroup>Please choose group ...</promptgroup>
             <propertydef>Select Property</propertydef>
+            <newposition>New Position</newposition>
             <newpropertydefvalue>Enter Property Value</newpropertydefvalue>
             <newpropertydef>New Property</newpropertydef>
             <name>Name</name>

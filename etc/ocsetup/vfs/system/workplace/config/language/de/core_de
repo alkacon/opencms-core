@@ -142,6 +142,7 @@
                 <badcharacter>Unerlaubtes Zeichen in Eingabefeld: </badcharacter>
                 <chgrp>Leider konnte die Gruppe nicht geändert werden.</chgrp>
                 <chmod>Leider konnte die Berechtigung nicht geändert werden.</chmod>
+                <chnav>Leider konnte die Position nicht geändert werden.</chnav>
                 <chown>Leider konnte der Eigentümer nicht geändert werden.</chown>
                 <chpwd>Leider konnte das Kennwort nicht geändert werden.</chpwd>
                 <chtype>Leider konnte der Dateityp nicht geändert werden.</chtype>
@@ -193,6 +194,7 @@
                 <channelsmissing>Sie müssen mindestens einen Channel angeben.</channelsmissing>
                 <chgrp>Sie haben dazu keine Berechtigung.</chgrp>
                 <chmod>Sie haben dazu keine Berechtigung.</chmod>
+                <chnav>Eventuell haben Sie nicht die Berechtigung für diese Aktion.</chnav>
                 <chown>Sie haben dazu keine Berechtigung.</chown>
                 <chpwd>Die eingegeben Kennwörter stimmen nicht überein.</chpwd>
                 <chpwd2>Das alte Kennwort ist nicht korrekt.</chpwd2>
@@ -305,6 +307,7 @@
                 <changeuser>Benutzer ändern</changeuser>
                 <chgrp>Gruppe ändern</chgrp>
                 <chmod>Zugriff ändern</chmod>
+                <chnav>Position ändern</chnav>
                 <chown>Eigentümer ändern</chown>
                 <chpwd>Kennwort ändern</chpwd>
                 <chtype>Dateityp ändern</chtype>
@@ -417,6 +420,7 @@
                 <access>Zugriff ändern</access>
                 <chgrp>Gruppe ändern</chgrp>
                 <chown>Eigentümer ändern</chown>
+                <chnav>Position ändern</chnav>
                 <copy>Kopieren</copy>
                 <copytoproject>In Projekt übernehmen</copytoproject>
                 <delete>Löschen</delete>
@@ -510,6 +514,7 @@
             <moveto>Verschieben nach</moveto>
             <promptgroup>Bitte Verwalter wählen ...</promptgroup>
             <propertydef>Eigenschaft wählen</propertydef>
+            <newposition>Neue Position</newposition>
             <newpropertydefvalue>Wert der Eigenschaft eingeben</newpropertydefvalue>
             <newpropertydef>Neue Eigenschaft</newpropertydef>
             <name>Name</name>
