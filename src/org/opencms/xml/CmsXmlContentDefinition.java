@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/12/01 12:01:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/12/01 14:39:46 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -230,8 +230,9 @@ public class CmsXmlContentDefinition implements Cloneable {
     public static CmsXmlContentDefinition unmarshal(Document document, String schemaLocation) throws CmsXmlException {
 
         // TODO: why not use a XML schmema for the validation?
-        int todo = 0; // TODO: create cache with "finished" content definitions 
 
+        document.hashCode();
+        
         // now analyze the document and generate the XML content type definition        
         Element root = document.getRootElement();
         if (!XSD_NODE_SCHEMA.equals(root.getQName())) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/12/01 13:39:18 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/12/01 14:39:46 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -70,7 +71,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -442,17 +443,35 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         if (schema == null) {
             throw new RuntimeException("No XML schema set for content definition");
         }
-        InputSource source;
-        try {
-            source = resolver.resolveEntity(null, schema);
-            return CmsXmlContentDefinition.unmarshal(source, schema, resolver);
-        } catch (SAXException e) {
-            throw new RuntimeException("Could not parse XML content definition schema", e);
-        } catch (IOException e) {
-            throw new RuntimeException("IO error resolving XML content definition schema", e);
-        } catch (CmsXmlException e) {
-            throw new RuntimeException("Unable to unmarshal XML content definition schema", e);
+        
+        CmsXmlContentDefinition result = null; 
+        CmsXmlEntityResolver cmsResolver = null;
+        if (resolver instanceof CmsXmlEntityResolver) {
+            // check for a cached version of this content definition
+            cmsResolver = (CmsXmlEntityResolver)resolver;
+            result = cmsResolver.getCachedContentDefinition(schema);
         }
+        
+        if (result == null) {
+            // result was not already cached
+            InputSource source;
+            try {
+                source = resolver.resolveEntity(null, schema);
+                result = CmsXmlContentDefinition.unmarshal(source, schema, resolver);
+                if (cmsResolver != null) {
+                    // cache the result content definition
+                    cmsResolver.cacheContentDefinition(schema, result);
+                }
+            } catch (SAXException e) {
+                throw new RuntimeException("Could not parse XML content definition schema", e);
+            } catch (IOException e) {
+                throw new RuntimeException("IO error resolving XML content definition schema", e);
+            } catch (CmsXmlException e) {
+                throw new RuntimeException("Unable to unmarshal XML content definition schema", e);
+            }
+        }
+        
+        return result;
     }
 
     /**
