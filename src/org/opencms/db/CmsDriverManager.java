@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/09 19:14:32 $
- * Version: $Revision: 1.271 $
+ * Date   : $Date: 2003/10/10 11:58:37 $
+ * Version: $Revision: 1.272 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.271 $ $Date: 2003/10/09 19:14:32 $
+ * @version $Revision: 1.272 $ $Date: 2003/10/10 11:58:37 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2143,23 +2143,24 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             List allBackupFiles = m_backupDriver.readBackupFileHeaders();
             // get the tagId of the oldest Backupproject which will be kept in the database
             int maxTag = m_backupDriver.readBackupProjectTag(timestamp);
-            Iterator i = allBackupFiles.iterator();        
+            Iterator i = allBackupFiles.iterator();
             while (i.hasNext()) {
                 // now check get a single backup resource
-                CmsBackupResource res = (CmsBackupResource)i.next();
+                CmsBackupResource res = (CmsBackupResource) i.next();
                 // now delete all versions of this resource that have more than the maximun number
                 // of allowed versions and which are older then the maximum backup date
                 int resVersions = m_backupDriver.readBackupMaxVersion(res.getResourceId());
                 int versionsToDelete = resVersions - versions;
                 // now we know which backup versions must be deleted, so remove them now
                 if (versionsToDelete > 0) {
-                    m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);           
+                    m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);
                 }
-                
+
                 //TODO: delete the old backup projects as well
-                
             }
-        }       
+            
+            m_projectDriver.deletePublishHistory(context.currentProject().getId(), maxTag);
+        }
     }
 
     /**

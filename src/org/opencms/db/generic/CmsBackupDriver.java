@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/10/09 19:19:51 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2003/10/10 11:58:37 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.69 $ $Date: 2003/10/09 19:19:51 $
+ * @version $Revision: 1.70 $ $Date: 2003/10/10 11:58:37 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -1082,5 +1082,33 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
     }
 
+    /**
+     * @see org.opencms.db.I_CmsBackupDriver#readMaxTagId(com.opencms.file.CmsResource)
+     */
+    public int readMaxTagId(CmsResource resource) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        int result = 0;
+
+        try {
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_MAX_TAG_ID");
+            stmt.setString(1, resource.getResourceId().toString());
+            res = stmt.executeQuery();
+            
+            if (res.next()) {
+                result = res.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw new CmsException("readMaxTagId " + e.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, e);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }
+
+        return result;        
+    }
 
 }

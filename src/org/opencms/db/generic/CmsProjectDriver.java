@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/08 18:11:13 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2003/10/10 11:58:37 $
+ * Version: $Revision: 1.124 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.123 $ $Date: 2003/10/08 18:11:13 $
+ * @version $Revision: 1.124 $ $Date: 2003/10/10 11:58:37 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -2246,7 +2246,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         List publishedResources = (List) new ArrayList();
         int siblingCount = I_CmsConstants.C_UNKNOWN_ID;  
         CmsUUID masterId = CmsUUID.getNullUUID();
-        String contentDefinitionName = null;     
+        String contentDefinitionName = null;   
+        int backupTagId = I_CmsConstants.C_UNKNOWN_ID;  
 
         try {
             conn = m_sqlManager.getConnection(projectId);
@@ -2264,9 +2265,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 siblingCount = res.getInt(7);
                 masterId = new CmsUUID(res.getString(8));
                 contentDefinitionName = res.getString(9);
+                backupTagId = res.getInt(10);
                 
                 if (masterId.equals(CmsUUID.getNullUUID())) {
-                    publishedResources.add(new CmsPublishedResource(structureId, resourceId, contentId, rootPath, resourceType, resourceState, siblingCount));
+                    publishedResources.add(new CmsPublishedResource(structureId, resourceId, contentId, backupTagId, rootPath, resourceType, resourceState, siblingCount));
                 } else {
                     publishedResources.add(new CmsPublishedResource(contentDefinitionName, masterId, resourceType, resourceState));
                 }
@@ -2468,5 +2470,24 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      */
     public CmsSqlManager getSqlManager() {
         return m_sqlManager;
-}
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#deletePublishHistory(int, int)
+     */
+    public void deletePublishHistory(int projectId, int maxBackupTagId) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_DELETE_PUBLISH_HISTORY");
+            stmt.setInt(1, maxBackupTagId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }        
+    }
 }

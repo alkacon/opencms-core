@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/10/10 11:58:37 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Vector;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.29 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.30 $ $Date: 2003/10/10 11:58:37 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -275,8 +275,6 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if something goes wrong
      */
     void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, Map properties, int tagId, long publishDate, int maxVersions) throws CmsException;
-
-
     
     /**
      * Writes a resource content to the backup.<p>
@@ -288,4 +286,13 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if something goes wrong
      */
     void writeBackupResourceContent(int projectId, CmsResource resource, CmsBackupResource backupResource) throws CmsException;
+    
+    /**
+     * Reads the max. backup tag ID for a specified resource.<p>
+     * 
+     * @param resource the Cms resource
+     * @return the max. backup tag ID
+     * @throws CmsException if something goes wrong
+     */
+    int readMaxTagId(CmsResource resource) throws CmsException;
 }

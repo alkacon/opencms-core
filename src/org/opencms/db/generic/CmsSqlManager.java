@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/29 07:59:40 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/10/10 11:58:37 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.26 $ $Date: 2003/09/29 07:59:40 $
+ * @version $Revision: 1.27 $ $Date: 2003/10/10 11:58:37 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -604,7 +604,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Generates a new primary key for a given database table.<p>
+     * Generates a new primary key for a given database table name.<p>
      * 
      * This method makes only sense for old-style tables where the primary key is NOT a CmsUUID!
      * 
@@ -615,6 +615,30 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     public synchronized int nextId(String tableName) throws CmsException {
         return org.opencms.db.CmsDbUtil.nextId(getPoolUrlOffline(), tableName);
     }
+    
+    /**
+     * Generates a new primary key for a given database table ID and table name.<p>
+     * 
+     * This method makes only sense for old-style tables where the primary key is NOT a CmsUUID!<p>
+     * 
+     * @param id is matched to the a JDBC pool URL to obtain a connection from the DriverManager
+     * @param tableName the table for which a new primary key should be generated.
+     * @return int the new primary key
+     * @throws CmsException if an error occurs
+     */
+    public synchronized int nextId(int id, String tableName) throws CmsException {
+        String poolUrl = null;
+        
+        if (id >= 0) {
+            // match the ID to the JDBC pool URL of the OpenCms JDBC offline pool
+            poolUrl = getPoolUrlOffline();
+        } else {
+            // match the ID to a JDBC pool URL of the OpenCms "reserved" JDBC pools
+            poolUrl = getReservedPoolUrl(id);
+        }        
+        
+        return org.opencms.db.CmsDbUtil.nextId(poolUrl, tableName);
+    }   
 
     /**
      * Replaces patterns ${XXX} by another property value, if XXX is a property key with a value.<p>

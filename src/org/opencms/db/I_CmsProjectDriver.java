@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/07 13:16:39 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/10/10 11:58:37 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.35 $ $Date: 2003/10/07 13:16:39 $
+ * @version $Revision: 1.36 $ $Date: 2003/10/10 11:58:37 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -494,5 +494,13 @@ public interface I_CmsProjectDriver {
      * @return the SqlManager of this driver
      */
     CmsSqlManager getSqlManager();    
-
+    
+    /**
+     * Deletes all publish history entries with backup tag IDs >=0 and < the specified max. backup tag ID.<p>
+     * 
+     * @param projectId the ID of the current project
+     * @param maxBackupTagId entries with backup tag IDs >=0 and < this max. backup tag ID get deleted
+     * @throws CmsException if something goes wrong
+     */
+    void deletePublishHistory(int projectId, int maxBackupTagId) throws CmsException;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/10/09 19:14:32 $
- * Version: $Revision: 1.148 $
+ * Date   : $Date: 2003/10/10 11:58:37 $
+ * Version: $Revision: 1.149 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.148 $ $Date: 2003/10/09 19:14:32 $
+ * @version $Revision: 1.149 $ $Date: 2003/10/10 11:58:37 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -501,52 +501,21 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     public CmsPropertydefinition createPropertyDefinition(String name, int projectId, int resourcetype) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
+        
+        // TODO switch the property def. PK into a CmsUUID PK
 
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTYDEF_CREATE");
-            stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTYDEF")));
+            stmt.setInt(1, m_sqlManager.nextId(projectId, m_sqlManager.readQuery("C_TABLE_PROPERTYDEF")));
             stmt.setString(2, name);
             stmt.setInt(3, resourcetype);
             stmt.executeUpdate();         
-                          
-            /*
-            for (int i = 0; i < 3; i++) {
-                if (i == 0) {
-                    // create the offline property definition
-                    conn = m_sqlManager.getConnection();
-                    stmt = m_sqlManager.getPreparedStatement(conn, Integer.MAX_VALUE, "C_PROPERTYDEF_CREATE");
-                    stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTYDEF")));
-                } else if (i == 1) {
-                    // create the online property definition
-                    conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-                    stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_PROPERTYDEF_CREATE");
-                    stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTYDEF_ONLINE")));
-                } else {
-                    // create the backup property definition
-                    conn = m_sqlManager.getConnectionForBackup();
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_CREATE_BACKUP");
-                    stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery("C_TABLE_PROPERTYDEF_BACKUP")));
-                }
-                stmt.setString(2, name);
-                stmt.setInt(3, resourcetype);
-                stmt.executeUpdate();
-                m_sqlManager.closeAll(conn, stmt, null);
-            }
-            */
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
-        
-        // now try to write the backup propertydefinition as well
-        /*try {
-            m_driverManager.getBackupDriver().createBackupPropertyDefinition(name, resourcetype);         
-        } catch (CmsException ex) {
-            // do nothing here
-            // an error is thrown if the propertydefnition is already existing in the backup tables
-        }*/
 
         return readPropertyDefinition(name, projectId, resourcetype);
     }
@@ -2284,12 +2253,15 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException {
         CmsPropertydefinition propdef = null;
 
+        // TODO switch the property PK into a CmsUUID PK
+
         try {
             // test if the definition for the property exists
             propdef = readPropertyDefinition(meta, projectId, resourceType);
         } catch (CmsException ex) {
             if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Could not read propertydefinition " + meta+" projectId: "+projectId+" resourceType: "+resourceType, ex);                           }
+                OpenCms.getLog(this).debug("Could not read property definition " + meta + " projectId: " + projectId + " resourceType: " + resourceType, ex);
+            }
             propdef = null;
         }
 
@@ -2302,40 +2274,39 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         if (propdef == null) {
             // create the definition of the property optionally if it is missing
             if (addDefinition) {
-                propdef = createPropertyDefinition(meta, projectId, resourceType); 
-                if (projectId >= 0) try {
-                    m_driverManager.getBackupDriver().createBackupPropertyDefinition(meta, resourceType);
-                } catch (Exception ex) {
-                 
-                    // nothing has to be done here
-                }               
+                propdef = createPropertyDefinition(meta, projectId, resourceType);
+                if (projectId >= 0) {
+                    try {
+                        m_driverManager.getBackupDriver().createBackupPropertyDefinition(meta, resourceType);
+                    } catch (Exception ex) {
+                        // nothing has to be done here
+                    }
+                }
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".writeProperty/1] " + meta, CmsException.C_NOT_FOUND);
             }
         }
-        
+
         PreparedStatement stmt = null;
         Connection conn = null;
-        
+
         try {
             conn = m_sqlManager.getConnection(projectId);
             if (readProperty(propdef.getName(), projectId, resource, resourceType) != null) {
-                // property exists already - use update.
-                // create statement
+                // property already exists - use update statement
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_UPDATE");
                 stmt.setString(1, m_sqlManager.validateNull(value));
                 stmt.setString(2, resource.getResourceId().toString());
-                    stmt.setString(3, resource.getStructureId().toString() /* resourceName */);
+                stmt.setString(3, resource.getStructureId().toString());
                 stmt.setInt(4, propdef.getId());
                 stmt.executeUpdate();
             } else {
-                // property dosen't exist - use create.
-                // create statement
+                // property doesen't exist - use create statement
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_CREATE");
-                stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery(projectId, "C_TABLE_PROPERTIES")));
+                stmt.setInt(1, m_sqlManager.nextId(projectId, m_sqlManager.readQuery(projectId, "C_TABLE_PROPERTIES")));
                 stmt.setInt(2, propdef.getId());
                 stmt.setString(3, resource.getResourceId().toString());
-                    stmt.setString(4, resource.getStructureId().toString() /* resourceName */);
+                stmt.setString(4, resource.getStructureId().toString());
                 stmt.setString(5, m_sqlManager.validateNull(value));
                 stmt.executeUpdate();
             }

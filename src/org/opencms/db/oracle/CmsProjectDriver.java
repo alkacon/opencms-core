@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/02 14:47:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/10/10 11:58:37 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import source.org.apache.java.util.Configurations;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.12 $ $Date: 2003/10/02 14:47:24 $
+ * @version $Revision: 1.13 $ $Date: 2003/10/10 11:58:37 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -195,8 +195,9 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
         Connection conn = null;
         ResultSet res = null;
 
-        if (!m_enableServerCopy)
+        if (!m_enableServerCopy || onlineProject.getId() < 0) {
             return super.publishFileContent(offlineProject, onlineProject, offlineFileHeader, publishedContentIds);
+        }
                             
         try {
             // binary content gets only published once while a project is published
