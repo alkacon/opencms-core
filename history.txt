@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/05/13 13:18:20 $
- * Version: $Revision: 1.472.2.1 $
+ * Date   : $Date: 2003/05/22 08:04:47 $
+ * Version: $Revision: 1.472.2.2 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms (next 5.0 update version)
+* Applied fix to bug #15 contributed by ulrich.rueth@gmx.de
 ! Added "getNavigationBreadCrumb()" methods to com.opencms.flex.jsp.CmsJspNavBuilder
 - Refactored JSP integration to be more standards compliant
 
