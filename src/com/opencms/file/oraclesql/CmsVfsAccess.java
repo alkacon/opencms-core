@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/15 12:39:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/19 13:30:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.3 $ $Date: 2003/05/19 13:30:07 $
  */
 public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -76,27 +76,33 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      * @param usedStatement Specifies which tables must be used: offline, online or backup
      * 
      */
-    public void createFileContent(CmsUUID fileId, byte[] fileContent, int versionId, String usedPool, String usedStatement) throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
+    public void createFileContent(CmsUUID fileId, byte[] fileContent, int versionId, int projectId, boolean writeBackup) throws CmsException {
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(usedPool);
+            if (writeBackup) {
+                conn = m_SqlQueries.getConnectionForBackup();
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_FILESFORINSERT_BACKUP");
+            }
+            else {
+                conn = m_SqlQueries.getConnection(projectId);
+                stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_ORACLE_FILESFORINSERT");
+            }
             // first insert new file without file_content, then update the file_content
             // these two steps are necessary because of using BLOBs in the Oracle DB
-            statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_FILESFORINSERT" + usedStatement));
-            statement.setString(1, fileId.toString());
-            if ("_BACKUP".equals(usedStatement)) {
-                statement.setInt(2, versionId);
+            stmt.setString(1, fileId.toString());
+            if (writeBackup) {
+                stmt.setInt(2, versionId);
             }
-            statement.executeUpdate();
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         // now update the file content
-        writeFileContent(fileId, fileContent, usedPool, usedStatement);
+        writeFileContent(fileId, fileContent, projectId, writeBackup);
     }
 
     public com.opencms.file.genericSql.CmsQueries initQueries(Configurations config) {
@@ -158,25 +164,33 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
      * @param usedPool The name of the database pool to use
      * @param usedStatement Specifies which tables must be used: offline, online or backup
      */
-    public void writeFileContent(CmsUUID fileId, byte[] fileContent, String usedPool, String usedStatement) throws CmsException {
-        PreparedStatement statement = null;
+    public void writeFileContent(CmsUUID fileId, byte[] fileContent, int projectId, boolean writeBackup) throws CmsException {
+        PreparedStatement stmt = null;
         PreparedStatement nextStatement = null;
         PreparedStatement trimStatement = null;
-        Connection con = null;
+        Connection conn = null;
         ResultSet res = null;
         try {
+            if (writeBackup) {
+                conn = m_SqlQueries.getConnectionForBackup();
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_FILESFORUPDATE_BACKUP");
+            }
+            else {
+                conn = m_SqlQueries.getConnection(projectId);
+                stmt = m_SqlQueries.getPreparedStatement(conn, projectId, "C_ORACLE_FILESFORUPDATE");
+            }
+            
+            
             // update the file content in the FILES database.
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_FILESFORUPDATE" + usedStatement));
-            statement.setString(1, fileId.toString());
-            con.setAutoCommit(false);
-            res = statement.executeQuery();
+            stmt.setString(1, fileId.toString());
+            conn.setAutoCommit(false);
+            res = stmt.executeQuery();
             try {
                 while (res.next()) {
                     oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("FILE_CONTENT");
                     // first trim the blob to 0 bytes, otherwise there could be left some bytes
                     // of the old content
-                    trimStatement = con.prepareStatement(m_SqlQueries.get("C_TRIMBLOB"));
+                    trimStatement = conn.prepareStatement(m_SqlQueries.get("C_TRIMBLOB"));
                     trimStatement.setBlob(1, blobnew);
                     trimStatement.setInt(2, 0);
                     trimStatement.execute();
@@ -192,17 +206,17 @@ public class CmsVfsAccess extends com.opencms.file.genericSql.CmsVfsAccess imple
                 }
                 // for the oracle-driver commit or rollback must be executed manually
                 // because setAutoCommit = false in CmsDbPool.CmsDbPool
-                nextStatement = con.prepareStatement(m_SqlQueries.get("C_COMMIT"));
+                nextStatement = conn.prepareStatement(m_SqlQueries.get("C_COMMIT"));
                 nextStatement.execute();
                 nextStatement.close();
-                con.setAutoCommit(true);
+                conn.setAutoCommit(true);
             } catch (IOException e) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
             }
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
             m_SqlQueries.closeAll(null, nextStatement, null);
             m_SqlQueries.closeAll(null, trimStatement, null);
         }

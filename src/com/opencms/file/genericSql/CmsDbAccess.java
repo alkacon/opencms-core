@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/15 15:18:35 $
-* Version: $Revision: 1.282 $
+* Date   : $Date: 2003/05/19 13:30:07 $
+* Version: $Revision: 1.283 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.282 $ $Date: 2003/05/15 15:18:35 $ *
+ * @version $Revision: 1.283 $ $Date: 2003/05/19 13:30:07 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -308,8 +308,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
          throws CmsException {
 
         byte[] value;
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
          try    {
             // serialize the object
             ByteArrayOutputStream bout= new ByteArrayOutputStream();
@@ -319,28 +319,28 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             value=bout.toByteArray();
 
             // create the object
-            con = DriverManager.getConnection(m_poolName);
-            statement=  con.prepareStatement(m_SqlQueries.get("C_SYSTEMPROPERTIES_WRITE"));
-            statement.setInt(1,nextId(C_TABLE_SYSTEMPROPERTIES));
-            statement.setString(2,name);
-            m_doSetBytes(statement,3,value);
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_SYSTEMPROPERTIES_WRITE");
+            stmt.setInt(1,nextId(C_TABLE_SYSTEMPROPERTIES));
+            stmt.setString(2,name);
+            m_doSetBytes(stmt,3,value);
+            stmt.executeUpdate();
         } catch (SQLException e){
             throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(),CmsException.C_SQL_ERROR, e);
         } catch (IOException e){
             throw new CmsException("[" + this.getClass().getName() + "]"+CmsException. C_SERIALIZATION, e);
         }finally {
              // close all db-resources
-             if(statement != null) {
+             if(stmt != null) {
                  try {
-                     statement.close();
+                     stmt.close();
                  } catch(SQLException exc) {
                      // nothing to do here
                  }
              }
-             if(con != null) {
+             if(conn != null) {
                  try {
-                     con.close();
+                     conn.close();
                  } catch(SQLException exc) {
                      // nothing to do here
                  }
@@ -2442,7 +2442,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     statement.setString(15, onlineFile.getResourceId().toString());
                     statement.executeUpdate();
                     statement.close();
-                    m_ResourceBroker.getVfsAccess().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), m_poolNameOnline, "_ONLINE");
+                    m_ResourceBroker.getVfsAccess().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                 } catch (SQLException e) {
                     throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
                 } finally {
@@ -2541,7 +2541,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                             statement.setString(14, onlineFile.getFileId().toString());
                             statement.setString(15, onlineFile.getResourceId().toString());
                             statement.executeUpdate();
-                            m_ResourceBroker.getVfsAccess().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), m_poolNameOnline, "_ONLINE");
+                            m_ResourceBroker.getVfsAccess().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                             newFile = m_ResourceBroker.getVfsAccess().readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
                         } catch (SQLException sqle) {
                             throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
@@ -2810,7 +2810,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 if (resource.getType() != C_TYPE_FOLDER){
                     // write new resource to the database
                     fileId = new CmsUUID();
-                    m_ResourceBroker.getVfsAccess().createFileContent(fileId, content, versionId, m_poolNameBackup, "_BACKUP");
+                    m_ResourceBroker.getVfsAccess().createFileContent(fileId, content, versionId, projectId, true);
                 }
                 statement = con.prepareStatement(m_SqlQueries.get("C_RESOURCES_WRITE_BACKUP"));
                 statement.setString(1, resourceId.toString());

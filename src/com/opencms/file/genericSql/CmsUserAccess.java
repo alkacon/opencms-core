@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/15 16:26:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/05/19 13:30:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -65,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/05/15 16:26:43 $
+ * @version $Revision: 1.7 $ $Date: 2003/05/19 13:30:07 $
  */
 public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogChannels, I_CmsUserAccess {
 
@@ -185,9 +184,8 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
             value = serializeAdditionalUserInfo(additionalInfos);
 
             // write data to database
-            conn = DriverManager.getConnection(m_poolName);
-
-            stmt = conn.prepareStatement(m_SqlQueries.get("C_USERS_ADD"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_ADD");
 
             stmt.setString(1, id.toString());
             stmt.setString(2, name);
@@ -207,9 +205,9 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
             stmt.setInt(16, type);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, null);
         }
@@ -902,7 +900,7 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
             if (res.next()) {
                 group = createCmsGroupFromResultSet(res, true);
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + groupId, CmsException.C_NO_GROUP);
+                throw m_SqlQueries.getCmsException(this, null, CmsException.C_NO_GROUP, new Exception());
             }
 
         } catch (SQLException e) {
@@ -987,9 +985,9 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         // a.lucas: catch CmsException here and throw it again.
         // Don't wrap another CmsException around it, since this may cause problems during login.
         catch (CmsException e) {
-            throw e;
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "]", e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -1029,12 +1027,10 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         } catch (SQLException e) {
             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }
-        // a.lucas: catch CmsException here and throw it again.
-        // Don't wrap another CmsException around it, since this may cause problems during login.
         catch (CmsException e) {
-            throw e;
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "]", e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }
@@ -1075,12 +1071,10 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         } catch (SQLException e) {
             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }
-        // a.lucas: catch CmsException here and throw it again.
-        // Don't wrap another CmsException around it, since this may cause problems during login.
         catch (CmsException e) {
-            throw e;
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "]", e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
             m_SqlQueries.closeAll(conn, stmt, res);
         }

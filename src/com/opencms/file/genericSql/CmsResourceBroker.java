@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/16 14:49:37 $
-* Version: $Revision: 1.380 $
+* Date   : $Date: 2003/05/19 13:30:07 $
+* Version: $Revision: 1.381 $
 
 *
 * This library is part of OpenCms -
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.380 $ $Date: 2003/05/16 14:49:37 $
+ * @version $Revision: 1.381 $ $Date: 2003/05/19 13:30:07 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {

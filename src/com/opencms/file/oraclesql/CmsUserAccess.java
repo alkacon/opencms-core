@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/15 16:26:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/05/19 13:30:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -57,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/05/15 16:26:43 $
+ * @version $Revision: 1.6 $ $Date: 2003/05/19 13:30:07 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -165,9 +164,9 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
             nextStmt.close();
             conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
         } finally {
             if (res != null) {
                 try {
@@ -187,7 +186,7 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
                 } catch (SQLException exc) {
                 }
                 try {
-                    nextStmt = conn.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
+                    nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_ROLLBACK");
                     nextStmt.execute();
                 } catch (SQLException se) {
                 }
@@ -300,9 +299,9 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
             nextStmt.close();
             conn.setAutoCommit(true);
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
         } finally {
             if (res != null) {
                 try {
@@ -375,7 +374,7 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
             value = serializeAdditionalUserInfo( user.getAdditionalInfo() );
 
             // write data to database
-            conn = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
             stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_USERSWRITE");
             stmt.setString(1, m_SqlQueries.validateNull(user.getDescription()));
             stmt.setString(2, m_SqlQueries.validateNull(user.getFirstname()));
@@ -423,14 +422,14 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
                 nextStmt.close();
                 conn.setAutoCommit(true);
             } catch (IOException e) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
+                throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
             }
             stmt2.close();
             res.close();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
         } finally {
             if (stmt != null) {
                 try {
