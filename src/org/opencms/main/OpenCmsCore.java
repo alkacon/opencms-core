@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/06/08 08:46:54 $
- * Version: $Revision: 1.117 $
+ * Date   : $Date: 2004/06/11 19:20:03 $
+ * Version: $Revision: 1.118 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.117 $
+ * @version $Revision: 1.118 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1774,8 +1774,8 @@ public final class OpenCmsCore {
 
         if (canWrite) {
             res.setContentType("text/HTML");
-            res.setHeader("Cache-Control", "no-cache");
-            res.setHeader("Pragma", "no-cache");
+            res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_NO_CACHE);
+            res.setHeader(I_CmsConstants.C_HEADER_PRAGMA, I_CmsConstants.C_HEADER_VALUE_NO_CACHE);
             if (isNotGuest && cms != null) {
                 try {
                     res.getWriter().print(createErrorBox(t, req, cms));
@@ -1905,7 +1905,7 @@ public final class OpenCmsCore {
 
         if (m_useBasicAuthentication) {
             // HTTP basic authentication is used
-            res.setHeader("WWW-Authenticate", "BASIC realm=\"" + getSystemInfo().getOpenCmsContext() + "\"");
+            res.setHeader(I_CmsConstants.C_HEADER_WWW_AUTHENTICATE, "BASIC realm=\"" + getSystemInfo().getOpenCmsContext() + "\"");
             res.setStatus(401);
         } else {
             // form based authentication is used, redirect the user to

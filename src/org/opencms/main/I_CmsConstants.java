@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/11 19:20:03 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public interface I_CmsConstants {
 
@@ -1269,18 +1269,42 @@ public interface I_CmsConstants {
 
     /** identifier for x-forwarded-for (i.e. proxied) request headers */
     String C_HEADER_X_FORWARDED_FOR = "x-forwarded-for";
+
+    /** HTTP Header "Pragma" */
+    String C_HEADER_PRAGMA = "Pragma";
+
+    /** HTTP Header "Server" */
+    String C_HEADER_SERVER = "Server";
     
-    /** The response http header for the "expires" value */
+    /** HTTP Header "Expires" */
     String C_HEADER_EXPIRES = "Expires";
 
-    /** The response http header for the "last modified" value */
+    /** HTTP Header "Last-Modified" */
     String C_HEADER_LAST_MODIFIED = "Last-Modified";
 
-    /** The request http header for "last modified" requests */
+    /** HTTP Header "If-Modified-Since" */
     String C_HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
     
     /** HTTP Header for internal requests used during static export */
     String C_HEADER_OPENCMS_EXPORT =  "OpenCms-Export";
+    
+    /** HTTP Header "Cache-Control" */    
+    String C_HEADER_CACHE_CONTROL = "Cache-Control";
+
+    /** HTTP Header "WWW-Authenticate" */    
+    String C_HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
+
+    /** HTTP Header value "must-revalidate" (for "Cache-Control") */
+    String C_HEADER_VALUE_MUST_REVALIDATE = "must-revalidate";
+    
+    /** HTTP Header value "max-age=" (for "Cache-Control") */
+    String C_HEADER_VALUE_MAX_AGE = "max-age=";
+
+    /** HTTP Header value "no-cache" (for "Cache-Control") */
+    String C_HEADER_VALUE_NO_CACHE = "no-cache";
+    
+    
+
 
     /** Request parameter to force locale selection */
     String C_PARAMETER_LOCALE = "__locale";
