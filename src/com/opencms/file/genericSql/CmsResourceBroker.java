@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/06 16:59:58 $
- * Version: $Revision: 1.207 $
+ * Date   : $Date: 2000/12/07 10:20:41 $
+ * Version: $Revision: 1.208 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.207 $ $Date: 2000/12/06 16:59:58 $
+ * @version $Revision: 1.208 $ $Date: 2000/12/07 10:20:41 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1219,6 +1219,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 		String filename;
 		// the name of the folder.
 		String foldername;
+
 		
 		// read the source-file, to check readaccess
 		CmsResource file = readFileHeader(currentUser, currentProject, source);
@@ -1282,6 +1283,9 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 		
 		// read the sourcefolder to check readaccess
 		//CmsFolder folder=(CmsFolder)readFolder(currentUser, currentProject, source);
+
+		// checks, if the destinateion is valid, if not it throws a exception
+		validFilename(destination.replace('/', 'a'));
 		
 		foldername = destination.substring(0, destination.substring(0,destination.length()-1).lastIndexOf("/")+1);
 					
@@ -5320,6 +5324,9 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 	// read the old file
 	CmsResource file = readFileHeader(currentUser, currentProject, oldname);
 
+	// checks, if the newname is valid, if not it throws a exception
+	validFilename(newname);
+
 	// has the user write-access?
 	if (accessWrite(currentUser, currentProject, file)) {
 		String path = oldname.substring(0, oldname.lastIndexOf("/") + 1);
@@ -5794,7 +5801,6 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 	 */	
 	protected void validFilename( String filename ) 
 		throws CmsException {
-		
 		if (filename == null) {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				CmsException.C_BAD_NAME);
