@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/staging/Attic/CmsElementVariant.java,v $
-* Date   : $Date: 2001/04/26 07:34:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/30 15:19:36 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -40,4 +40,51 @@ import com.opencms.file.*;
  */
 public class CmsElementVariant {
 
+    /**
+     * The content of this variant. In this vector object of type String
+     * and of CmsElementLink can be stored.
+     */
+    Vector m_content;
+
+    /**
+     * Creates a new empty variant for an element.
+     */
+    public CmsElementVariant() {
+        m_content = new Vector();
+    }
+
+    /**
+     * Adds static content to this variant.
+     * @param staticContent - part of the variant. A peace static content of
+     * type string.
+     */
+    public void add(String staticContent) {
+        m_content.add(staticContent);
+    }
+
+    /**
+     * Adds static content to this variant.
+     * @param staticContent - part of the variant. A peace static content of
+     * type byte-array.
+     */
+    public void add(byte[] staticContent) {
+        m_content.add(staticContent);
+    }
+
+    /**
+     * Adds an element-link to this variant.
+     * @param elementLink - part of the variant. A link to another element.
+     */
+    public void add(CmsElementLink elementLink) {
+        m_content.add(elementLink);
+    }
+
+    /**
+     * Returns a peace of this variant. It can be of the type String, byte[] or
+     * CmsElementLink.
+     * @param i - the index to the vector of variant-pieces.
+     */
+    public Object get(int i) {
+        return m_content.get(i);
+    }
 }
