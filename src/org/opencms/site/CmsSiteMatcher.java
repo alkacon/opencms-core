@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2003/12/17 17:46:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/28 17:18:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.site;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public final class CmsSiteMatcher implements Cloneable {   
@@ -93,7 +93,12 @@ public final class CmsSiteMatcher implements Cloneable {
         if (pos >= 0) {
             serverName = serverString.substring(0, pos);
             try { 
-                serverPort = Integer.valueOf(serverString.substring(pos+1)).intValue();
+                String port = serverString.substring(pos+1);
+                pos =  port.indexOf("/");
+                if (pos >= 0) {
+                    port = port.substring(0, pos);
+                }
+                serverPort = Integer.valueOf(port).intValue();
             } catch (NumberFormatException e) {
                 serverPort = 80;
             }            
