@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsConnectionGuard.java,v $
- * Date   : $Date: 2000/06/08 17:57:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/07/03 14:54:02 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,9 +42,9 @@ import java.sql.*;
  * 
  * @author Alexander Lucas
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/06/08 17:57:47 $
+ * @version $Revision: 1.2 $ $Date: 2000/07/03 14:54:02 $
  */
-public class CmsConnectionGuard extends Thread implements I_CmsLogChannels {
+ class CmsConnectionGuard extends Thread implements I_CmsLogChannels {
 	/** The keep-alive statement */
 	private static String C_KEEP_ALIVE_STATEMENT = "select 1";
 	

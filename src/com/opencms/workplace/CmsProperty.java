@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/06/23 12:59:22 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/07/03 14:54:02 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/06/23 12:59:22 $
+ * @version $Revision: 1.15 $ $Date: 2000/07/03 14:54:02 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -242,8 +242,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
 		xmlTemplateDocument.setData("FILENAME",file.getName());
 		xmlTemplateDocument.setData("lasturl", lasturl);
-   
-        
+
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     }
