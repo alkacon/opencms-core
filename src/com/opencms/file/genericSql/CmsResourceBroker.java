@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 09:40:46 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/06/09 10:03:40 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,10 +46,16 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2000/06/09 09:40:46 $
+ * @version $Revision: 1.35 $ $Date: 2000/06/09 10:03:40 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
+	
+	/**
+	 * Constant to count the file-system changes.
+	 */
+	private long m_fileSystemChanges = 0;
+
 	
 	/**
 	 * The configuration of the property-file.
@@ -3292,10 +3298,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return the number of file-system-changes.
 	 */
     public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject) {
-     return 0;
+		return this.m_fileSystemChanges;
     }
-
-    
         
 	/**
 	 * Checks, if the user may read this resource.
@@ -3861,4 +3865,16 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				 CmsException.C_NO_ACCESS);
 		}
     }
+	
+	// now private stuff
+	
+	/**
+	 * This method is called, when a resource was changed. Currently it counts the
+	 * changes.
+	 */
+	private void fileSystemChanged() {
+		// count only the changes - do nothing else!
+		// in the future here will maybe a event-story be added
+		m_fileSystemChanges++;
+	}
 }
