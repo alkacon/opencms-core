@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2003/06/23 12:31:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/24 15:45:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,14 @@ package org.opencms.security;
 
 import com.opencms.core.I_CmsConstants;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
  * A permission set contains both allowed and denied permissions as bitsets.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2003/06/23 12:31:40 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/24 15:45:28 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
@@ -47,7 +47,7 @@ public class CmsPermissionSet {
 	/*
 	 * hashtable of all available permissions
 	 */
-	static Hashtable m_permissions = null;
+	static HashMap m_permissions = null;
 	
 	/*
 	 * the set of allowed permissions
@@ -64,8 +64,8 @@ public class CmsPermissionSet {
 	 * 
 	 * @return Enumeration of message keys
 	 */
-	public static Enumeration getPermissionKeys() {
-		return permissions().keys();	
+	public static Set getPermissionKeys() {
+		return permissions().keySet();	
 	}
 	
 	/**
@@ -83,9 +83,9 @@ public class CmsPermissionSet {
 	 * 
 	 * @return hastable with permission keys and values
 	 */
-	private static Hashtable permissions() {
+	private static HashMap permissions() {
 		if (m_permissions == null) {
-			m_permissions = new Hashtable();
+			m_permissions = new HashMap();
 			m_permissions.put("security.permission.read", new Integer(I_CmsConstants.C_PERMISSION_READ));
 			m_permissions.put("security.permission.write", new Integer(I_CmsConstants.C_PERMISSION_WRITE));
 			m_permissions.put("security.permission.view", new Integer(I_CmsConstants.C_PERMISSION_VIEW));
@@ -163,6 +163,13 @@ public class CmsPermissionSet {
 					break;
 			}
 		}
+	}
+	
+	/**
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() {
+		return new CmsPermissionSet(m_allowed, m_denied);	
 	}
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2003/06/23 16:34:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/24 15:45:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,16 +32,17 @@ package org.opencms.security;
 
 import com.opencms.file.CmsUser;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Set;
 import java.util.Vector;
 
 /**
  * An access control list contains the permission sets of all principals for a distinct resource
  * that are calculated on the permissions given by various access control entries.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2003/06/23 16:34:59 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/24 15:45:10 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -49,7 +50,7 @@ public class CmsAccessControlList {
 	/*
 	 * Permissions of a principal on this resource 
 	 */
-	private Hashtable m_permissions;
+	private HashMap m_permissions;
 	
 	/**
 	 * Constructor to create an empty access control list for a given resource
@@ -57,7 +58,23 @@ public class CmsAccessControlList {
 	 */
 	public CmsAccessControlList() {
 		
-		m_permissions = new Hashtable();
+		m_permissions = new HashMap();
+	}
+
+	/**
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() {
+		
+		CmsAccessControlList acl = new CmsAccessControlList();
+		Iterator i = m_permissions.keySet().iterator();
+ 
+		while (i.hasNext()) {
+			Object key = i.next();
+			acl.m_permissions.put(key, ((CmsPermissionSet)m_permissions.get(key)).clone());
+		}
+
+		return acl;	
 	}
 	
 	/**
@@ -166,8 +183,8 @@ public class CmsAccessControlList {
 	 * 
 	 * @return enumeration of principals (each group or user)
 	 */
-	public Enumeration getPrincipals() {
+	public Set getPrincipals() {
 		
-		return m_permissions.keys();
+		return m_permissions.keySet();
 	}
 }
