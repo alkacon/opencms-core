@@ -59,7 +59,7 @@ for the website.
 The contenttemplate is included as an element in the frametemplate.
 It defines the layout of the content part of the HTML-page.
 It contains one or more body-Elements which hold the content generated
-with the HTML editor included in OpenCms and optional other user-defined elements.
+with the HTML editor and optional other user-defined elements.
 Figure~\ref{frametemplatepicture} shows what parts of a page are defined by the
 frametemplate and the contenttemplate.
 
@@ -241,7 +241,7 @@ of the page is the title that was defined in the frametemplate.
 \subsection{Using methods in XML templates}
 %============================================================================
 
-We will now create a new frametemplate that uses a method of the OpenCms system 
+We will now create a new frametemplate that uses a method 
 to set the title in the template. This way the title will be set dynamically and
 is not the same for all pages created with our template.
 To create the new frametemplate you have to create a new
@@ -297,7 +297,7 @@ as described in the first example:
 
 You can now create a new page with this mastertemplate and see
 that the title of the generated HTML page is exactly the one you typed
-in when creating the page. OpenCms provides a number
+in when creating the page. There are a number
 of standard methods that can be used when creating
 a template. The methods are defined in the 
 \textit{com.opencms.template.CmsXmlTemplate} class which is
@@ -402,7 +402,7 @@ is made in the page-control file.
 \subsection{Defining the layout in the frametemplate}
 %============================================================================
 
-We will now go a little step further and come closer to the recommended layout of an OpenCms
+We will now go a little step further and come closer to the recommended layout of a XML template generated
 website. Normally, a website is more or less designed like in figure~\ref{MasterAndElems}.
 
 \begin{figure}[hbt]
@@ -509,15 +509,16 @@ frametemplate and contenttemplate.
 
 \index{XML}
 XML is a markup language, which is just like HTML defined by SGML and is used to store content
-in a structured way.  The main difference, and this is the part which is important when using
-XML in OpenCms, is that one is able to define his own tags. By that, it is possible to achieve
+in a structured way.  The main difference,is that one is able to 
+define his own tags. By that, it is possible to achieve
 a separation between content and layout.
 While HTML allows to define how something should be displayed XML allows to define items that
 belong logically together.
 For example, it is possible to define blocks of surnames, adresses etc..
 XML is a powerfull markup language, but you don´t need to know much about it for understanding
-the template mechanism, and there are only a few XML-tags which are used by OpenCms. OpenCms
-uses XML to deposit HTML fragments single and structured. These fragments can then be fetched
+the XML template mechanism.
+The XML template mechanism uses XML to deposit HTML fragments single and structured. 
+These fragments can then be fetched
 specifically and used dynamically.
 From the technical side of view, there is no difference between the master and the body (sub)
 templates. Both are XML-files with the same syntax. The difference is more a logical one. The
@@ -560,7 +561,7 @@ or element definitions.
 \subsection{Directory structure}
 
 The templates, body templates and element templates etc. are 
-stored in different standard directories of OpenCms. 
+stored in different standard directories of the VFS. 
 If you create a new file of the type {\name Page}
 within a project, a page-control file is created in the
 current directory. Also a body-template is created with the same name as the page
@@ -753,7 +754,7 @@ our new template. The new class will be derived from the {\class com.opencms.tem
 class. This class provides the basic functionality and methods to control template
 files. In the new class we will override the {\meth getContent()} method. This
 method creates the output of the template and is invoked
-automatically by the OpenCms system. 
+automatically by the system. 
 
 This is the source code for our new class:
 
@@ -868,7 +869,7 @@ a new user-defined method {\meth getHello()}.
 \subsection{The relationship between templates, page-control files, and
 Java classes}
 
-For every new page that is created with OpenCms the system
+For every new page that is created with an XML template the system
 automatically creates a {\name page-control} file. This page-control file
 determines the mastertemplate that is used by the new page and contains
 the element definition of the body element. Examples for page-control files
@@ -893,7 +894,7 @@ Java class that controls the mastertemplate. This class is the  generic
 {\class com.opencms.template.CmsXmlTemplate} class and is  always used to
 control the mastertemplate. The {\tag <ELEMENTDEF>} tag defines the class and template 
 used for the body element. The body element is the one that contains
-the HTML-code generated with the WYSIWYG editor of OpenCms. 
+the HTML-code generated with the WYSIWYG editor. 
 An element definition must be provided for every subelement. 
 The body element can be placed inside a template with the element tag as
 follows:
@@ -1044,7 +1045,7 @@ be fetched with {\meth getDataValue(linkTarget)}. Because the variable
 defined with the content of data block {\name "Link1"} or{\name  "Link2"}.
 To ensure that the link is refreshed every time the page is requested,
 the class overrides the method {\meth getCacheDirectives()}. This method controls
-the way elements are cached in OpenCms. The implementation in the superclass
+the way XMl template elements are cached. The implementation in the superclass
 {\class com.opencms.template.CmsXmlTemplate} uses the caching mechanism and would prevent the element
 from being refreshed every time it is requested. The details of the element caching mechanism 
 are explained in section \ref{element cache}(page \pageref{element cache}).
@@ -1601,7 +1602,7 @@ selected on a case-by-case basis.
 %============================================================================
 \index{Stylesheets}
 
-Stylesheets can be used in OpenCms just like in standard HTML.
+Stylesheets can be used in XML templates just like in standard HTML.
 There is only one point concerning stylesheets which is worth to
 be mentioned here in the documentation. This is that stylesheet
 information can be used in the WYSIWYG editor as well. This way
@@ -1644,7 +1645,7 @@ This specification makes the stylesheet information useable in the HTML-page.
 %============================================================================
 
 \index{Javascript}
-With OpenCms, Javascript code is easily inserted in templates, in
+With XMl templates, Javascript code is easily inserted in templates, in
 particular in the frametemplate. Although one shouldn't rely on
 Javascript when creating a website, it is useful to know how it can be
 inserted in documents. Javascript blocks are inserted in the frametemplate 
@@ -1652,7 +1653,7 @@ by defining a template with the key name {\name script.} This
 template can be inserted as an element in the header section of the
 frametemplate. The element definition of the Javascript element just
 specifies the templateselector to use (the name of the template).
-The OpenCms system uses the body element's class and template
+The XML templates use the body element's class and template
 file if they are not specified in the element definition. The next
 example template will show how to insert Javascript code in a frametemplate:
 
@@ -1702,7 +1703,7 @@ methods that can be used when creating a template. The following
 section describes the functionality they provide and how 
 these methods are implemented.
 
-All standard methods of OpenCms have a common signature (sequence and types of the method's
+All methods of the XML template mechanism have a common signature (sequence and types of the method's
 parameters). The methods common signature is:
 
 \begin{java}
@@ -1714,7 +1715,7 @@ public Object methodName(CmsObject cms, String tagcontent,\\
 \end{java}
 
 The parameters that are passed to the method provide access to
-essential OpenCms resources:
+essential XML template resources:
 
 \begin{itemize}
 \item[-] cms (type {\class com.opencms.file.CmsObject})\\
@@ -1852,7 +1853,7 @@ the version that does not use frames.
 {\bf Note:} this method is only useful if you are creating both a frames and a non-frames version of a website.\\ 
 \hline
 \end{tabular}
-\caption[standard OpenCms methods] {standard OpenCms methods}
+\caption[XML template methods] {XML template methods}
 \label{StandMeth}
 \end{table}
 
@@ -1887,16 +1888,16 @@ Starts creating the content of a template file.\\ \hline
 \end{center}
 
 
-\subsection{Using the element cache of OpenCms}
+\subsection{Using the element cache for XML templates}
 %============================================================================
 
 \label{element cache}
 \index{element cache}
 \index{caching}
 
-The creation of dynamic content in OpenCms is a relatively performance and
+The creation of dynamic content with XML templates is a relatively performance and
 time consuming task (especially because the medicore runtime performance of the XML template mechanism). 
-Therefore OpenCms provides an element caching mechanism 
+Therefore the is an element caching mechanism provided
 to speed up the delivery of pages created with the XML templates.
 
 {\em Please note:} The element cache is only required if you use XML templates, in case you use 
@@ -1924,7 +1925,7 @@ These entries activate the element cache and specify how many uris and elements
 will be cached. If the maximum number of objects in the cache is reached, 
 the oldest objects in the cache will be removed. 
 The content of an element can depend on different parameters like the current user 
-or url parameters passed with the request. OpenCms is able to cache these variants 
+or url parameters passed with the request. The element cache is able to cache these variants 
 of an element. The parameter variants specifies a maximum number of variants of an element 
 that will be cached. Normally an element has only few variants, but in cases when many variants of
 an element can be generated, the variants parameter prevents the creation of too many objects 
@@ -1953,7 +1954,7 @@ operation.
 
 \subsubsection{Using the element caching in your own template classes}
 The class {\class CmsCacheDirectives} \index{CmsCacheDirectives} provides the opportunity for 
-the module developer to specify how pages in OpenCms will be cached. 
+the module developer to specify how pages will be cached with the element cache. 
 Every template class has to implement the method {\meth getCacheDirectives()}. Here is
 a sourcecode example how this could be done:
 
@@ -1973,8 +1974,8 @@ public  CmsCacheDirectives getCacheDirectives(CmsObjet cms,\\
 \end{java}
 
 (The methods {\meth isCacheable()} \index{isCacheable()} 
-and {\meth getKey()} that were used to control the caching in 
-the "old" OpenCms caching mechanism are no longer necessary and will not be supported.) 
+and {\meth getKey()} that were used to control the caching for
+a pre-eliminary version of the element cache are no longer necessary and will not be supported in future releases.) 
 Inside this method an object of type {\class CmsCacheDirectives} is created and returned. 
 This object contains information how the element should be cached.
 So far the class {\class CmsCacheDirectives} has been used to store informations about server 
@@ -1992,7 +1993,7 @@ CmsCacheDirectives(boolean internal, boolean proxyPriv,\\
 
 This constructor sets the values for:
 \begin{itemize}
-\item internal: the element can be cached in the element cache of OpenCms
+\item internal: the element can be cached in the element cache
 \item proxyPriv: the proxy private flag in the http-response header can be set
 \item proxyPub: the proxy public flag in the http-response header can be set
 \item export: the element can be exported (static export)
@@ -2040,7 +2041,7 @@ The way elements are cached can be controlled by using several methods of the
 class \\
 {\class CmsCacheDirectives}. Essential are the methods that affect the way the cache 
 key is generated. If an element is internal cacheable and the caching properties in the\\
-{\class CmsCacheDirectives} object have not been adjusted OpenCms generates a variant of this 
+{\class CmsCacheDirectives} object have not been adjusted the XML template mechanism generates a variant of this 
 element when it is requested for the first time and every following request will 
 result in an delivery of this variant from the cache. If someone wants several
 variants of an element to be cached he has to specify which variants should be cached. 
