@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.138 $
+* Date   : $Date: 2004/06/21 11:43:01 $
+* Version: $Revision: 1.139 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.138 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.139 $ $Date: 2004/06/21 11:43:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -369,7 +369,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         // If there is no content parameter this seems to be
         // a new request of the page editor.
         // So we have to read all files and set some initial values.
-        parameters.put("root.pagetype", OpenCms.getLoaderManager().getResourceType(cms.readFileHeader(file).getTypeId()).getTypeName());
+        parameters.put("root.pagetype", OpenCms.getResourceManager().getResourceType(cms.readFileHeader(file).getTypeId()).getTypeName());
         parameters.put("filename_for_relative_template", file);
         
         // Simple page support

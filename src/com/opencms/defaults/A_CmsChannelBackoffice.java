@@ -266,7 +266,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
                         if (!filename.equals("unknown")) {
                             mediafile = CmsXmlTemplateLoader.getRequest(reqCont).getFile(filename);
                             //set the media_mimetype
-                            media_mimetype = OpenCms.getLoaderManager().getMimeType(filename, null);
+                            media_mimetype = OpenCms.getResourceManager().getMimeType(filename, null);
                             //set the type
                             if (!media_mimetype.startsWith("image")) {
                                 media_type=1;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/06/21 09:59:03 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/06/21 11:45:41 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 5.1
  */
@@ -110,15 +110,13 @@ public class CmsFrameset extends CmsWorkplace {
     public String buildContextMenues() {
         StringBuffer result = new StringBuffer();  
         // get all available resource types
-        I_CmsResourceType[] allResTypes = OpenCms.getLoaderManager().getAllResourceTypes();
-        for (int i=0; i<allResTypes.length; i++) {
+        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
+        for (int i=0; i<allResTypes.size(); i++) {
             // loop through all types
-            if (allResTypes[i] == null) {
-                continue;
-            }
-            int resTypeId = allResTypes[i].getTypeId();
+            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
+            int resTypeId = type.getTypeId();
             // get explorer type settings for current resource type
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(allResTypes[i].getTypeName());
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
             if (settings != null) {
                 // append the context menu of the current resource type 
                 result.append(settings.getContextMenu().getJSEntries(getCms(), settings, resTypeId, getSettings().getUserSettings().getLocale()));

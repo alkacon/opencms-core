@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/06/21 09:56:59 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2004/06/21 11:45:12 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -141,9 +141,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
     /**
      * The constructor of the class is empty, the initial instance will be 
-     * created by the loader manager upon startup of OpenCms.<p>
+     * created by the resource manager upon startup of OpenCms.<p>
      * 
-     * @see org.opencms.loader.CmsLoaderManager
+     * @see org.opencms.loader.CmsResourceManager
      */
     public CmsJspLoader() {
 

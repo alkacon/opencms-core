@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/06/21 09:57:23 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/06/21 11:45:21 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -873,7 +873,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @throws Exception if something goes wrong
      */
     public CmsResource uploadFile(String localfile, String folder, String filename, String type) throws Exception {
-        int t = OpenCms.getLoaderManager().getResourceType(type).getTypeId();
+        int t = OpenCms.getResourceManager().getResourceType(type).getTypeId();
         return m_cms.createResource(folder + filename, t, importFile(localfile), null);
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/06/21 09:56:23 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/06/21 11:43:43 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -341,7 +341,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 } else if (C_RESOURCE_TYPE_LINK_NAME.equals(type)) {
                     resType = C_RESOURCE_TYPE_LINK_ID;
                 } else {
-                    I_CmsResourceType rt = OpenCms.getLoaderManager().getResourceType(type);
+                    I_CmsResourceType rt = OpenCms.getResourceManager().getResourceType(type);
                     resType = rt.getTypeId();
                     loaderId = rt.getLoaderId();
                 }
@@ -644,7 +644,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                     content = xmlPage.marshal();
                 }
                 resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
-                loaderId = OpenCms.getLoaderManager().getResourceType(resType).getLoaderId();
+                loaderId = OpenCms.getResourceManager().getResourceType(resType).getLoaderId();
             }
             
             // create a new CmsResource                         

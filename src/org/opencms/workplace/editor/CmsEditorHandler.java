@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/06/21 10:01:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/21 11:45:59 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editor.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.1
  */
@@ -96,7 +96,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         
         try {
             // get the resource type name
-            resourceType = OpenCms.getLoaderManager().getResourceType(resTypeId).getTypeName();
+            resourceType = OpenCms.getResourceManager().getResourceType(resTypeId).getTypeName();
         } catch (CmsException e) {
             // resource type name can not be determined, show error dialog
             return showErrorDialog(jsp, e);

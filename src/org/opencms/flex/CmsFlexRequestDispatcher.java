@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/06/21 09:56:15 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/06/21 11:43:33 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
     
@@ -231,7 +231,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                             cacheProperty = cms.readPropertyObject(m_vfsTarget, I_CmsResourceLoader.C_LOADER_CACHEPROPERTY, false).getValue();
                             if (cacheProperty == null) {
                                 // caching property not set, use default for resource type
-                                cacheProperty = OpenCms.getLoaderManager().getResourceType(resource.getTypeId()).getCachePropertyDefault();
+                                cacheProperty = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getCachePropertyDefault();
                             }
                             cache.putKey(w_res.setCmsCacheKey(cms.getRequestContext().addSiteRoot(m_vfsTarget), cacheProperty, f_req.isOnline(), f_req.isWorkplace()));                                            
                         } catch (CmsException e) {
@@ -275,7 +275,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                     if (DEBUG > 0) {
                         System.err.println("FlexDispatcher: Loading resource type " + type);
                     }
-                    loader = OpenCms.getLoaderManager().getLoader(type);
+                    loader = OpenCms.getResourceManager().getLoader(type);
                 } catch (ClassCastException e) {
                     controller.setThrowable(e, m_vfsTarget);
                     throw new ServletException("FlexDispatcher: CmsResourceLoader interface not implemented for cms resource " + m_vfsTarget + "\n" + e, e);

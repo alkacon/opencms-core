@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/06/21 10:01:23 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/06/21 11:45:59 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.3.0
  */
@@ -162,7 +162,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             if (currentProject == I_CmsConstants.C_PROJECT_ONLINE_ID) {
                 // don't render direct edit button in online project
                 return null;
-            } else if (!OpenCms.getLoaderManager().getResourceType(resource.getTypeId()).isDirectEditable()) {
+            } else if (!OpenCms.getResourceManager().getResourceType(resource.getTypeId()).isDirectEditable()) {
                 // don't render direct edit button for non-editable resources 
                 return null;
             } else if (CmsResource.getName(filename).startsWith(org.opencms.main.I_CmsConstants.C_TEMP_PREFIX)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/21 09:55:24 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/06/21 11:43:20 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  */
 public class CmsObject {
 
@@ -675,11 +675,11 @@ public class CmsObject {
      * @return the initialized resource type instance for the given id
      * @throws CmsException if something goes wrong
      * 
-     * @see org.opencms.loader.CmsLoaderManager#getResourceType(int)
+     * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
      */
     private I_CmsResourceType getResourceType(int resourceType) throws CmsException {
         
-        return OpenCms.getLoaderManager().getResourceType(resourceType);
+        return OpenCms.getResourceManager().getResourceType(resourceType);
     }
 
     /**
@@ -2395,7 +2395,7 @@ public class CmsObject {
         }
         
         // look up and return the resource type
-        return OpenCms.getLoaderManager().getResourceType(typeName);
+        return OpenCms.getResourceManager().getResourceType(typeName);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/06/21 09:59:03 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2004/06/21 11:45:41 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.82 $
+ * @version $Revision: 1.83 $
  * 
  * @since 5.1
  */
@@ -331,15 +331,13 @@ public abstract class CmsWorkplace {
      */
     private static Map initWorkplaceResourceTypes(CmsObject cms) {
         Map resourceTypes = new HashMap();
-        I_CmsResourceType[] allResTypes = OpenCms.getLoaderManager().getAllResourceTypes();
-        for (int i=0; i<allResTypes.length; i++) {
+        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
+        for (int i=0; i<allResTypes.size(); i++) {
+            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
             // loop through all types and check which types can be displayed for the user
-            if (allResTypes[i] == null) {
-                continue;
-            }
             try {                
-                cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + allResTypes[i].getTypeName());
-                resourceTypes.put(new Integer(allResTypes[i].getTypeId()), allResTypes[i]);               
+                cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + type.getTypeName());
+                resourceTypes.put(new Integer(type.getTypeId()), type);               
             } catch (CmsException e) {
                 // ignore
             }                    

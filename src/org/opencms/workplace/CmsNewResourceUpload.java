@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/06/21 09:59:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/21 11:45:41 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.3.3
  */
@@ -164,10 +164,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public void actionUpdateFile() throws JspException {
         try {
             CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
-            I_CmsResourceType oldType = OpenCms.getLoaderManager().getResourceType(res.getTypeId()); 
+            I_CmsResourceType oldType = OpenCms.getResourceManager().getResourceType(res.getTypeId()); 
             if (!oldType.getTypeName().equals(getParamNewResourceType())) {
                 // change the type of the uploaded resource
-                int newType = OpenCms.getLoaderManager().getResourceType(getParamNewResourceType()).getTypeId();
+                int newType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType()).getTypeId();
                 getCms().chtype(getParamResource(), newType);
             }
             if (getParamNewResourceName() != null && !getParamResource().endsWith(getParamNewResourceName())) {
@@ -299,7 +299,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
             currentResTypeId = res.getTypeId();
          
             for (int i=0; i<ALLOWED_RESOURCETYPES.length; i++) {
-                int resTypeId = OpenCms.getLoaderManager().getResourceType(ALLOWED_RESOURCETYPES[i]).getTypeId();                
+                int resTypeId = OpenCms.getResourceManager().getResourceType(ALLOWED_RESOURCETYPES[i]).getTypeId();                
                 // get explorer type settings for current resource type
                 CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(ALLOWED_RESOURCETYPES[i]);
                 if (settings != null) {

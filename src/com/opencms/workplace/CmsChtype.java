@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2004/06/21 09:53:52 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/06/21 11:43:01 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.37 $ $Date: 2004/06/21 11:43:01 $
  */
 public class CmsChtype extends CmsWorkplaceDefault {
 
@@ -108,7 +108,7 @@ public class CmsChtype extends CmsWorkplaceDefault {
 
             // get the new resource type
             
-            int type = OpenCms.getLoaderManager().getResourceType(newtype).getTypeId(); 
+            int type = OpenCms.getResourceManager().getResourceType(newtype).getTypeId(); 
             
             // check the autolock resource setting and lock the resource if necessary
             if (OpenCms.getWorkplaceManager().autoLockResources()) {

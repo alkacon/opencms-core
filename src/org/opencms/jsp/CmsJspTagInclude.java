@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/06/21 11:43:53 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -350,7 +350,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         
         try {
             // now resolve additional include extensions that might be required for special loader implementations
-            target = OpenCms.getLoaderManager().resolveIncludeExtensions(target, element, editable, paramMap, req, res);
+            target = OpenCms.getResourceManager().resolveIncludeExtensions(target, element, editable, paramMap, req, res);
         } catch (CmsException e) {
             controller.setThrowable(e, target);
             throw new JspException(e);

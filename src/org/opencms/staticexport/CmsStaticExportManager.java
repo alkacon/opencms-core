@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/06/21 09:58:21 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2004/06/21 11:45:41 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -465,7 +465,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         // check loader id for resource
         int loaderId = file.getLoaderId();
-        I_CmsResourceLoader loader = OpenCms.getLoaderManager().getLoader(loaderId);
+        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(loaderId);
         if ((loader == null) || (!loader.isStaticExportEnabled())) {
             throw new CmsException("Unable to export VFS file "
                 + vfsName
@@ -494,7 +494,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // ensure we have exactly the same setup as if called "the usual way"
         // we only have to do this in case of the static export on demand
         if (exportOnDemand) {
-            String mimetype = OpenCms.getLoaderManager().getMimeType(
+            String mimetype = OpenCms.getResourceManager().getMimeType(
                 file.getName(),
                 cms.getRequestContext().getEncoding());
             res.setContentType(mimetype);
@@ -1078,7 +1078,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
                     if (exportData != null) {
                         // check loader for current resource if it must be processed before exported
-                        I_CmsResourceLoader loader = OpenCms.getLoaderManager().getLoader(
+                        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(
                             exportData.getResource().getLoaderId());
                         if (!loader.isStaticExportProcessable()) {
                             // this resource must not be process, so export it if its not marked as deleted

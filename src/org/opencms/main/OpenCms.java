@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/06/13 23:38:58 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/21 11:45:21 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
-import org.opencms.loader.CmsLoaderManager;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.search.CmsSearchManager;
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public final class OpenCms {
     
@@ -164,12 +164,12 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the loader manager used for loading individual resources.<p>
+     * Returns the resource manager.<p>
      * 
-     * @return the loader manager used for loading individual resources
+     * @return the resource manager
      */
-    public static CmsLoaderManager getLoaderManager() {
-        return OpenCmsCore.getInstance().getLoaderManager();
+    public static CmsResourceManager getResourceManager() {
+        return OpenCmsCore.getInstance().getResourceManager();
     }
 
     /**

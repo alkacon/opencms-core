@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/06/21 11:43:01 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.35 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.36 $ $Date: 2004/06/21 11:43:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -173,15 +173,12 @@ public class CmsAdminProperties extends CmsWorkplaceDefault {
         StringBuffer result = new StringBuffer();
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
                    
-        // get all available resource types
-        I_CmsResourceType[] allResTypes = OpenCms.getLoaderManager().getAllResourceTypes();
-        for (int i=0; i<allResTypes.length; i++) {
+        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
+        for (int i=0; i<allResTypes.size(); i++) {
             // loop through all types
-            if (allResTypes[i] == null) {
-                continue;
-            }
-            result.append(getResourceEntry(cms, doc, lang, parameters, callingObj, allResTypes[i]));
-            if(i < (allResTypes.length - 1)) {
+            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
+            result.append(getResourceEntry(cms, doc, lang, parameters, callingObj, type));
+            if(i < (allResTypes.size() - 1)) {
                 result.append(templateFile.getProcessedDataValue(C_TAG_SEPARATORENTRY,
                         callingObj));
             }

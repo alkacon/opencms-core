@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/06/21 09:57:23 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2004/06/21 11:45:21 $
+ * Version: $Revision: 1.124 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsImportExportManager;
-import org.opencms.loader.CmsLoaderManager;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.search.CmsSearchManager;
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.123 $
+ * @version $Revision: 1.124 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -160,8 +160,8 @@ public final class OpenCmsCore {
     /** The link manager to resolve links in &lt;link&gt; tags. */
     private CmsLinkManager m_linkManager;
 
-    /** The loader manager used for loading individual resources. */
-    private CmsLoaderManager m_loaderManager;
+    /** The resource manager. */
+    private CmsResourceManager m_resourceManager;
 
     /** The locale manager used for obtaining the current locale. */
     private CmsLocaleManager m_localeManager;
@@ -586,12 +586,12 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns the loader manager used for loading individual resources.<p>
+     * Returns the resource manager.<p>
      * 
-     * @return the loader manager used for loading individual resources
+     * @return the resource manager
      */
-    protected CmsLoaderManager getLoaderManager() {
-        return m_loaderManager;
+    protected CmsResourceManager getResourceManager() {
+        return m_resourceManager;
     }
 
     /**
@@ -1064,7 +1064,7 @@ public final class OpenCmsCore {
         
         // get the VFS configuration
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(CmsVfsConfiguration.class);
-        m_loaderManager = vfsConfiguation.getLoaderManager();        
+        m_resourceManager = vfsConfiguation.getResourceManager();        
 
         // get the import/export configuration
         CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)m_configurationManager.getConfiguration(CmsImportExportConfiguration.class);
@@ -1470,7 +1470,7 @@ public final class OpenCmsCore {
             CmsResource resource = initResource(cms, cms.getRequestContext().getUri(), req, res);
             if (resource != null) {
                 // a file was read, go on process it
-                m_loaderManager.loadResource(cms, resource, req, res);
+                m_resourceManager.loadResource(cms, resource, req, res);
                 updateUser(cms, req);
             }
 

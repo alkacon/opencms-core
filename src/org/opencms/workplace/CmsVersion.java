@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsVersion.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/21 11:45:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -135,7 +135,7 @@ public class CmsVersion {
             }
             byte[] result = res.getContents();
             result = CmsEncoder.changeEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding(), m_cms.getRequestContext().getEncoding());
-            m_response.setContentType(OpenCms.getLoaderManager().getMimeType(res.getName(), m_cms.getRequestContext().getEncoding()) + ":cms");
+            m_response.setContentType(OpenCms.getResourceManager().getMimeType(res.getName(), m_cms.getRequestContext().getEncoding()) + ":cms");
             m_response.setContentLength(result.length);
             try {
                 m_response.getOutputStream().write(result);

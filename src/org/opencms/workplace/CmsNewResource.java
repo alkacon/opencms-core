@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2004/06/21 09:59:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/21 11:45:41 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.3.3
  */
@@ -200,7 +200,7 @@ public class CmsNewResource extends CmsDialog {
             // create the folder            
             getCms().createResource(
                 fullResourceName, 
-                OpenCms.getLoaderManager().getResourceType(getParamNewResourceType()).getTypeId());           
+                OpenCms.getResourceManager().getResourceType(getParamNewResourceType()).getTypeId());           
             setParamResource(fullResourceName);          
         } catch (CmsException e) {
             // error creating file, show error dialog

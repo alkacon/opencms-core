@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2004/06/21 11:43:01 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.38 $ $Date: 2004/06/21 11:43:01 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault {
@@ -457,7 +457,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
                     }
                 }
                 else {
-                    I_CmsResourceType type = OpenCms.getLoaderManager().getResourceType(res.getTypeId());
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
                     String icon = getIcon(cms, type, configFile);
                     template.setData("icon", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + configFile.getWpPicturePath() + icon);
                     folderimg = template.getProcessedDataValue("TREEIMG_FILE", this);

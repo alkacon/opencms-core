@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/06/14 14:25:56 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/06/21 11:45:21 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -202,7 +202,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             return;
         }
         try {
-            OpenCms.getLoaderManager().loadResource(cms, file, req, res);
+            OpenCms.getResourceManager().loadResource(cms, file, req, res);
         } catch (CmsException e) {
             throw new ServletException("Error showing error handler resource in " + errorCode + " URI handler for '" + handlerUri + "'", e);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/21 09:56:23 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/06/21 11:43:43 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -376,17 +376,17 @@ public class CmsImportVersion2 extends A_CmsImport {
                 resourceTypeName = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                 if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(resourceTypeName)) {
                     resourceTypeId = C_RESOURCE_TYPE_NEWPAGE_ID;
-                    resourceTypeLoaderId = (OpenCms.getLoaderManager().getResourceType(resourceTypeId)).getLoaderId();
+                    resourceTypeLoaderId = (OpenCms.getResourceManager().getResourceType(resourceTypeId)).getLoaderId();
                 } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(resourceTypeName)) {
                     // resource with a "legacy" resource type are imported using the "plain" resource
                     // type because you cannot import a resource without having the resource type object
                     resourceTypeId = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
-                    resourceTypeLoaderId = (OpenCms.getLoaderManager().getResourceType(resourceTypeId)).getLoaderId();
+                    resourceTypeLoaderId = (OpenCms.getResourceManager().getResourceType(resourceTypeId)).getLoaderId();
                 } else if (C_RESOURCE_TYPE_LINK_NAME.equals(resourceTypeName)) {
                     // set resource type of legacy "link" which is converted later
                     resourceTypeId = C_RESOURCE_TYPE_LINK_ID;
                 } else {
-                    I_CmsResourceType type = OpenCms.getLoaderManager().getResourceType(resourceTypeName);
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resourceTypeName);
                     resourceTypeId = type.getTypeId();
                     resourceTypeLoaderId = type.getLoaderId();
                 }

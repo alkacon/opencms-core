@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/06/21 09:59:03 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/21 11:45:41 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.1
  */
@@ -128,14 +128,12 @@ public class CmsTree extends CmsWorkplace {
         retValue.append("\tinitResources(\"" + encoding + "\", \"" + C_PATH_WORKPLACE + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");
         
         // get all available resource types
-        I_CmsResourceType[] allResTypes = OpenCms.getLoaderManager().getAllResourceTypes();
-        for (int i=0; i<allResTypes.length; i++) {
+        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
+        for (int i=0; i<allResTypes.size(); i++) {
             // loop through all types
-            if (allResTypes[i] == null) {
-                continue;
-            }
-            int curTypeId = allResTypes[i].getTypeId();
-            String curTypeName = allResTypes[i].getTypeName();
+            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
+            int curTypeId = type.getTypeId();
+            String curTypeName = type.getTypeName();
             String curTypeLocalName = messages.key("fileicon."+curTypeName);
             try {
                 cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + curTypeName);

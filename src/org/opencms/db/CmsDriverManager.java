@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/21 09:54:49 $
- * Version: $Revision: 1.383 $
+ * Date   : $Date: 2004/06/21 11:43:20 $
+ * Version: $Revision: 1.384 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.383 $ $Date: 2004/06/21 09:54:49 $
+ * @version $Revision: 1.384 $ $Date: 2004/06/21 11:43:20 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1008,7 +1008,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public void chtype(CmsRequestContext context, String resourcename, int type) throws CmsException {
 
-        I_CmsResourceType resourceType = OpenCms.getLoaderManager().getResourceType(type);
+        I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(type);
 
         // read the resource to check the access
         CmsResource resource = readFileHeader(context, resourcename);
@@ -6261,7 +6261,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             resource,
             content,
             type,
-            OpenCms.getLoaderManager().getResourceType(type).getLoaderId());
+            OpenCms.getResourceManager().getResourceType(type).getLoaderId());
 
         if ((properties != null) && (properties != Collections.EMPTY_LIST)) {
             // write the properties
@@ -7995,7 +7995,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             flags, 
             destinationFolder, 
             sourceFile.getContents(), 
-            OpenCms.getLoaderManager().getResourceType(sourceFile.getTypeId()), 
+            OpenCms.getResourceManager().getResourceType(sourceFile.getTypeId()), 
             sourceFile.getDateReleased(), 
             sourceFile.getDateExpired());
         
@@ -8160,7 +8160,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             0,
             parentFolder,
             content,
-            OpenCms.getLoaderManager().getResourceType(type),
+            OpenCms.getResourceManager().getResourceType(type),
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT);
         

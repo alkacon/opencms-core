@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.85 $
+* Date   : $Date: 2004/06/21 11:43:01 $
+* Version: $Revision: 1.86 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.85 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.86 $ $Date: 2004/06/21 11:43:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -318,7 +318,7 @@ public class CmsFileList extends A_CmsWpElement {
             else {
 
                 // get the type of the resource
-                I_CmsResourceType type = OpenCms.getLoaderManager().getResourceType(res.getTypeId());
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
 
                 // get the context menu
                 contextMenu = type.getTypeName();
@@ -438,7 +438,7 @@ public class CmsFileList extends A_CmsWpElement {
                     template.fastSetXmlData(C_CONTEXT_LINK, cms.readAbsolutePath(res));
                     template.fastSetXmlData(C_CONTEXT_MENU, getContextMenue(cms, res, template));
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
-                    I_CmsResourceType type = OpenCms.getLoaderManager().getResourceType(res.getTypeId());
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
                     String icon = getIcon(cms, type, config);
                     template.fastSetXmlData(C_FILELIST_ICON_VALUE, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + config.getWpPicturePath() + icon);
 
@@ -549,7 +549,7 @@ public class CmsFileList extends A_CmsWpElement {
                     template.fastSetXmlData(C_CONTEXT_LINK, cms.readAbsolutePath(res));
                     template.fastSetXmlData(C_CONTEXT_MENU, getContextMenue(cms, res, template));
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
-                    I_CmsResourceType type = OpenCms.getLoaderManager().getResourceType(file.getTypeId());
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(file.getTypeId());
                     String icon = getIcon(cms, type, config);
                     template.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPicturePath() + icon);
 

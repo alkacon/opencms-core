@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2004/06/21 11:43:01 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.25 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.26 $ $Date: 2004/06/21 11:43:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -219,7 +219,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
                         properties = Collections.EMPTY_LIST;
                     }                    
 
-                    int t = OpenCms.getLoaderManager().getResourceType(type).getTypeId();                     
+                    int t = OpenCms.getResourceManager().getResourceType(type).getTypeId();                     
 					cms.createResource(foldername + filename, t, new byte[0], properties);
 				}
 			}

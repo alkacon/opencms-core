@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/06/21 09:56:59 $
- * Version: $Revision: 1.27 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
+ * Date   : $Date: 2004/06/21 11:45:12 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.loader;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
@@ -40,6 +41,7 @@ import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -59,36 +61,51 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.1 $
  * @since 5.1
  */
-public class CmsLoaderManager {
+public class CmsResourceManager {
 
     /** The default mimetype. */
     private static final String C_DEFAULT_MIMETYPE = "text/html";
 
+    /** Indicates if the configuration is finalized (frozen). */
+    private boolean m_frozen;
+
     /** Contains all loader extensions to the include process. */
     private List m_includeExtensions;
+    
+    /** A list that contains all initialized resource loaders. */
+    private List m_loaderList;
 
-    /** All initialized resource loaders, mapped to their ID. */
+    /** All initialized resource loaders, mapped to their id. */
     private I_CmsResourceLoader[] m_loaders;
 
     /** The OpenCms map of configured mime types. */
     private Map m_mimeTypes;
+    
+    /** A list that contains all initialized resource types. */
+    private List m_resourceTypeList;
 
     /** Hashtable with resource types. */
     private I_CmsResourceType[] m_resourceTypes;
-
+    
     /**
-     * Creates a new instance for the loader manager, will be called by the vfs configuration manager.<p>
+     * Creates a new instance for the resource manager, 
+     * will be called by the vfs configuration manager.<p>
      */
-    public CmsLoaderManager() {
+    public CmsResourceManager() {
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : starting");
         }
+        
         m_loaders = new I_CmsResourceLoader[16];
         m_resourceTypes = new I_CmsResourceType[100];
+        m_resourceTypeList = new ArrayList();
+        m_loaderList = new ArrayList();
+        m_includeExtensions = new ArrayList();
+
         Properties mimeTypes = new Properties();
         try {
             // first try: read mime types from default package
@@ -123,9 +140,15 @@ public class CmsLoaderManager {
      * Adds a new loader to the internal list of loaded loaders.<p>
      *
      * @param loader the loader to add
+     * @throws CmsConfigurationException in case the resource manager configuration is already initialized
      */
-    public void addLoader(I_CmsResourceLoader loader) {
+    public void addLoader(I_CmsResourceLoader loader) throws CmsConfigurationException {
 
+        // check if new loaders can still be added
+        if (m_frozen) {
+            throw new CmsConfigurationException("Resource manager configuration only possibule during system startup!");
+        }
+        
         // add the loader to the internal list of loaders
         int pos = loader.getLoaderId();
         if (pos > m_loaders.length) {
@@ -136,11 +159,9 @@ public class CmsLoaderManager {
         m_loaders[pos] = loader;
         if (loader instanceof I_CmsLoaderIncludeExtension) {
             // this loader requires special processing during the include process
-            if (m_includeExtensions == null) {
-                m_includeExtensions = new ArrayList();
-            }
             m_includeExtensions.add(loader);
         }
+        m_loaderList.add(loader);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                 ". Loader init          : Adding " + loader.getClass().getName() + " with id " + pos);
@@ -151,9 +172,15 @@ public class CmsLoaderManager {
      * Adds a new resource type to the internal list of loaded resource types.<p>
      *
      * @param resourceType the resource type to add
+     * @throws CmsConfigurationException in case the resource manager configuration is already initialized
      */
-    public void addResourceType(I_CmsResourceType resourceType) {
+    public void addResourceType(I_CmsResourceType resourceType) throws CmsConfigurationException {
 
+        // check if new resource types can still be added
+        if (m_frozen) {
+            throw new CmsConfigurationException("Resource manager configuration only possibule during system startup!");
+        }
+        
         // add the loader to the internal list of loaders
         int pos = resourceType.getTypeId();
         if (pos > m_resourceTypes.length) {
@@ -162,21 +189,11 @@ public class CmsLoaderManager {
             m_resourceTypes = buffer;
         }
         m_resourceTypes[pos] = resourceType;
+        m_resourceTypeList.add(resourceType);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                 ". Resource type init   : Adding " + resourceType.getClass().getName() + " with id " + pos);
         }
-    }
-
-    /**
-     * Returns an array with all all initialized resource types.<p>
-     * 
-     * @return array with all initialized resource types
-     */
-    public I_CmsResourceType[] getAllResourceTypes() {
-
-        // return the resource types
-        return m_resourceTypes;
     }
 
     /**
@@ -191,14 +208,13 @@ public class CmsLoaderManager {
     }
 
     /**
-     * Returns all configured loader instances.<p>
+     * Returns the (unmodifyable array) list with all initialized resource loaders.<p>
      * 
-     * @return all configured loader instances
-     */
-    public I_CmsResourceLoader[] getLoaders() {
+     * @return the (unmodifyable array) list with all initialized resource loaders
+     */    
+    public List getLoaders() {
 
-        // ensure only a clone is returned so that the original array can not be modified
-        return m_loaders;
+        return m_loaderList;
     }
 
     /**
@@ -233,41 +249,52 @@ public class CmsLoaderManager {
     /**
      * Returns the initialized resource type instance for the given id.<p>
      * 
-     * @param resourceType the id of the resource type to get
+     * @param typeId the id of the resource type to get
      * @return the initialized resource type instance for the given id
      * @throws CmsException if no resource type is vaialble for the given id
      */
-    public I_CmsResourceType getResourceType(int resourceType) throws CmsException {
+    public I_CmsResourceType getResourceType(int typeId) throws CmsException {
 
         try {
-            return getAllResourceTypes()[resourceType];
+            return m_resourceTypes[typeId];
         } catch (Exception e) {
             throw new CmsException("["
                 + this.getClass().getName()
                 + "] Unknown resource type id requested: "
-                + resourceType, CmsException.C_NOT_FOUND);
+                + typeId, CmsException.C_NOT_FOUND);
         }
     }
 
     /**
      * Returns the initialized resource type instance for the given resource type name.<p>
      * 
-     * @param resourceType the name of the resource type to get
+     * @param typeName the name of the resource type to get
      * @return the initialized resource type instance for the given name
      * @throws CmsException if no resource type is vaialble for the given name
      */
-    public I_CmsResourceType getResourceType(String resourceType) throws CmsException {
+    public I_CmsResourceType getResourceType(String typeName) throws CmsException {
 
-        for (int i = 0; i < m_resourceTypes.length; i++) {
-            I_CmsResourceType t = m_resourceTypes[i];
-            if ((t != null) && (t.getTypeName().equals(resourceType))) {
-                return t;
+        for (int i = 0; i < m_resourceTypeList.size(); i++) {
+            I_CmsResourceType type = (I_CmsResourceType)m_resourceTypeList.get(i);
+            if (type.getTypeName().equals(typeName)) {
+                return type;
             }
         }
         throw new CmsException("["
             + this.getClass().getName()
             + "] Unknown resource type name requested: "
-            + resourceType, CmsException.C_NOT_FOUND);
+            + typeName, CmsException.C_NOT_FOUND);
+    }
+    
+    /**
+     * Returns the (unmodifyable array) list with all initialized resource types.<p>
+     * 
+     * @return the (unmodifyable array) list with all initialized resource types
+     */    
+    public List getResourceTypes() {
+        
+        // return the list of resource types
+        return m_resourceTypeList;
     }
 
     /**
@@ -297,6 +324,21 @@ public class CmsLoaderManager {
         CmsResource template = cms.readFile(templateProp);
         return new CmsTemplateLoaderFacade(getLoader(template.getLoaderId()), resource, template);
     }
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public void initConfiguration() {
+        
+        // freeze the current configuration
+        m_frozen = true;
+        m_resourceTypeList = Collections.unmodifiableList(m_resourceTypeList);
+        m_loaderList = Collections.unmodifiableList(m_loaderList);
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
+        }  
+    }       
 
     /**    
      * Loads the requested resource and writes the contents to the response stream.<p>
@@ -349,10 +391,9 @@ public class CmsLoaderManager {
             return target;
         }
         String result = target;
-        Iterator i = m_includeExtensions.iterator();
-        while (i.hasNext()) {
+        for (int i=0; i<m_includeExtensions.size(); i++) {
             // offer the element to every include extension
-            I_CmsLoaderIncludeExtension loader = (I_CmsLoaderIncludeExtension)i.next();
+            I_CmsLoaderIncludeExtension loader = (I_CmsLoaderIncludeExtension)m_includeExtensions.get(i);
             result = loader.includeExtension(target, element, editable, paramMap, req, res);
         }
         return result;

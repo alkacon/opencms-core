@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/06/21 09:58:42 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/21 11:45:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2004/06/21 09:58:42 $
+ * @version $Revision: 1.18 $ $Date: 2004/06/21 11:45:41 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -141,7 +141,7 @@ public class CmsHtmlLinkValidator extends Object {
             offlineFilesLookup.put(resource.getRootPath(), resource);
 
             try {
-                if ((resourceType = OpenCms.getLoaderManager().getResourceType(resource.getTypeId())) instanceof I_CmsHtmlLinkValidatable) {
+                if ((resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId())) instanceof I_CmsHtmlLinkValidatable) {
                     if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
                         // don't validate links on deleted resources
                         validatableResources.add(resource);
@@ -160,7 +160,7 @@ public class CmsHtmlLinkValidator extends Object {
                 brokenLinks = null;
                 resource = (CmsResource) validatableResources.get(i);
                 resourceName = resource.getRootPath();
-                resourceType = OpenCms.getLoaderManager().getResourceType(resource.getTypeId());
+                resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
 
                 report.print("( " + (i + 1) + " / " + j + " ) " + report.key("report.htmllink_validator.validating"), I_CmsReport.C_FORMAT_NOTE);
                 report.print(cms.getRequestContext().removeSiteRoot(resourceName));
