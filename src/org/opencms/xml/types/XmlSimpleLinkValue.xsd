@@ -1,0 +1,3 @@
+<xsd:simpleType name="OpenCmsSimpleLink">
+	<xsd:restriction base="xsd:string" />
+</xsd:simpleType>

@@ -105,6 +105,7 @@
 			<xmlcontent class="org.opencms.xml.types.CmsXmlSimpleHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlStringValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlVfsFileValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
+			<xmlcontent class="org.opencms.xml.types.CmsXmlSimpleLinkValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
 		</xmlcontents>
 	</vfs>
 </opencms>
