@@ -8,22 +8,24 @@
     value at the commandline.
     Set it like this: ant all -Dversion.number=4.3.28     
     You can also uncomment the line below. -->
-    <property name="version.number"             value="5.0_beta_1"/>    
-
+    <property name="version.number"             value="5.0_beta_1"/>
+    
     <property name="version.name"               value="Kaitain"/>
     <property name="app.name"                   value="opencms"/>
-    <property name="zip.home"                   value="../zip"/>
-    <property name="pdf.home"                   value="../pdf"/>
-    <property name="build.home"                 value="../build"/>
+
+    <property name="destdir"                    location="../"/>
+        
+    <property name="zip.home"                   location="${destdir}/zip"/>
+    <property name="pdf.home"                   location="${destdir}/pdf"/>
+    <property name="build.home"                 location="${destdir}/build"/>
     
-    <property name="build.classes"              value="${build.home}/classes"/>
-    <property name="build.inputlib"             value="../ExternalComponents"/>
-    <property name="build.web"                  value="${build.home}/${app.name}"/>
-    <property name="build.webinf"               value="${build.web}/WEB-INF"/>
-    <property name="build.metainf"              value="${build.web}/META-INF"/>
-    <property name="build.lib"                  value="${build.webinf}/lib"/>
-    <property name="build.local"                value="$../local"/>
-    <property name="build.excludes"             value=""/>
+    <property name="build.classes"              location="${build.home}/classes"/>
+    <property name="build.inputlib"             location="${destdir}/ExternalComponents"/>
+    <property name="build.web"                  location="${build.home}/${app.name}"/>
+    <property name="build.webinf"               location="${build.web}/WEB-INF"/>
+    <property name="build.metainf"              location="${build.web}/META-INF"/>
+    <property name="build.lib"                  location="${build.webinf}/lib"/>
+    <property name="build.local"                location="${destdir}/local"/>
 
     <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>
     <property name="build.inputlib.activation"  value="${build.inputlib}/activation.jar"/>
@@ -46,6 +48,8 @@
     <property name="db.password"                value=""/>
     <property name="db.driver"                  value="org.gjt.mm.mysql.Driver"/>
 
+    <property name="build.excludes"             value=""/>
+    <property name="excludes"                   value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath"/>
 
     <target name="init" description="Checks if all needed libaries are available">
         <condition property="libsAvailable">
@@ -79,6 +83,19 @@
         <condition property="tomcat.home" value="${env.CATALINA_HOME}">
             <available file="${env.CATALINA_HOME}" type="dir"/>
         </condition>
+
+        <tstamp>
+            <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
+        </tstamp>
+        <property name="version.number" value="${env.USERNAME}_${timestamp}_current"/>
+        
+        <echo message="Building OpenCms ${version.number} (${version.name})" />
+        <echo message=" " />
+        <echo message="Working directory is: ${basedir}" />
+        <echo message="Destination directory is: ${destdir}" />
+        <echo message="Local additions in: ${build.local}" />
+        <echo message="Excluding from build: ${build.excludes}" />
+        <echo message=" " />
     </target>
     
     
@@ -135,14 +152,10 @@ ${build.inputlib.tidy}
             deprecation="off"
             />
 
-       <copy todir="${build.classes}">
-            <fileset dir="src" includes="**/*.properties,**/*.txt"/>
-       </copy>
-       <!-- generate version infos-->
-        <tstamp>
-            <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
-        </tstamp>
-        <property name="version.number" value="${env.USERNAME}_${timestamp}"/>
+        <copy todir="${build.classes}">
+            <fileset dir="src" includes="**/*.properties,**/*.txt" excludes="${excludes}"/>
+        </copy>
+        <!-- generate version infos-->
         <echo file="${build.version.propertyfile}">version.number=${version.number}
 </echo>
         <echo file="${build.version.propertyfile}" append="on">version.name=${version.name}</echo>
@@ -163,7 +176,7 @@ ${build.inputlib.tidy}
 
     <target name="copy" depends="jar" description="Creates WAR file structure and copies needed files to it">
        <copy todir="${build.home}">
-            <fileset dir="." includes="*.*" excludes="build.xml,build_flex.xml,**/.nbattrs*"/>
+            <fileset dir="." includes="*.*" excludes="build.xml,build_flex.xml,${excludes}"/>
        </copy>
 
         <copy todir="${build.lib}">
@@ -172,25 +185,26 @@ ${build.inputlib.tidy}
                 <include name="**/*.zip"/>
                 <exclude name="servlet.jar"/>
                 <exclude name="classes12.zip"/>
+                <exclude name="${excludes}" />
             </fileset>
         </copy>
 
        <copy todir="${build.webinf}">
-            <fileset dir="etc" excludes="*/CVS/*,MANIFEST.MF,**/.nbattrs"/>
+            <fileset dir="etc" excludes="MANIFEST.MF,${excludes}"/>
        </copy>
 
        <copy file="etc/MANIFEST.MF" todir="${build.metainf}"/>
 
        <copy todir="${build.web}">
-            <fileset dir="web" excludes="*/CVS/*,**/.nbattrs"/>
+            <fileset dir="web" excludes="${excludes}"/>
        </copy>
        
        <touch>
             <fileset dir="${build.local}"/>
        </touch>
        
-       <copy todir="${build.web}">
-            <fileset dir="${build.local}" excludes="*/CVS/*,**/.nbattrs"/>
+       <copy todir="${build.web}" includeEmptyDirs="true" verbose="false">
+            <fileset dir="${build.local}" excludes="${excludes}"/>
        </copy>       
 
        <!-- create version-info for the workplace-->
@@ -213,9 +227,9 @@ ${build.inputlib.tidy}
 
     <target name="zip" depends="war" description="Creates a distribution ZIP">
         <zip
-            zipfile="${zip.home}/opencms_${version.number}_current.zip"
+            zipfile="${zip.home}/opencms_${version.number}.zip"
             basedir="${build.home}"
-            excludes="**/classes/,**/opencms/" />
+            excludes="**/classes/,**/opencms/,${excludes}" />
     </target>
 
 
@@ -298,25 +312,35 @@ ${build.inputlib.tidy}
     
     <target name="tex" depends="prepare" description="Creates the documentation from the TeX sources">
         <exec dir="doc/documentation" executable="pdflatex">
-          <arg line="OpenCmsDoc"/>
+            <arg line="OpenCmsDoc"/>
         </exec>
         <exec dir="doc/documentation" executable="makeindex">
-          <arg line="OpenCmsDoc"/>
+            <arg line="OpenCmsDoc"/>
         </exec>
         <exec dir="doc/documentation" executable="pdflatex">
-          <arg line="OpenCmsDoc"/>
+            <arg line="OpenCmsDoc"/>
         </exec>
         <tstamp>
             <format property="timestamp" pattern="yyyyMMdd"/>
         </tstamp>
-        <move file="doc/documentation/OpenCmsDoc.pdf" tofile="${pdf.home}/OpenCmsDoc${timestamp}.pdf">        
-        </move>
-        <move file="doc/documentation/OpenCmsDoc.log" tofile="${pdf.home}/OpenCmsDoc${timestamp}.log">        
-        </move>
+        <move file="doc/documentation/OpenCmsDoc.pdf" tofile="${pdf.home}/OpenCmsDoc${timestamp}.pdf" />        
+        <move file="doc/documentation/OpenCmsDoc.log" tofile="${pdf.home}/OpenCmsDoc${timestamp}.log" />        
     </target>
     
     
     <target name="srcdist" depends="clean" description="Creates a source distribution ZIP including the required libaries">
+        <tstamp>
+            <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
+        </tstamp>
+        <property name="version.number" value="${env.USERNAME}_${timestamp}_current"/>
+        
+        <echo message="Building OpenCms ${version.number} (${version.name})  source distribution " />
+        <echo message=" " />
+        <echo message="Working directory is: ${basedir}" />
+        <echo message="Destination directory is: ${destdir}" />
+        <echo message="Local additions in: ${build.local}" />
+        <echo message=" " />
+
         <property name="build.srcdist"              value="${build.home}/srcdist"/>
         <property name="build.srcdist.main"         value="${build.srcdist}/opencms"/>
         <property name="build.srcdist.src"          value="${build.srcdist.main}/src"/>
@@ -339,38 +363,34 @@ ${build.inputlib.tidy}
                 <include name="**/*.jar"/>
                 <include name="**/*.zip"/>
                 <exclude name="classes12.zip"/>
+                <exclude name="${excludes}"/>
             </fileset>
         </copy>
 
         <copy todir="${build.srcdist.src}">
-            <fileset dir="src" excludes="*/CVS/*,**/.nbattrs"/>
+            <fileset dir="src" excludes="${excludes}"/>
         </copy>
         
         <copy todir="${build.srcdist.etc}">
-            <fileset dir="etc" excludes="*/CVS/*,**/.nbattrs"/>
+            <fileset dir="etc" excludes="${excludes}"/>
         </copy>
 
         <copy todir="${build.srcdist.web}">
-            <fileset dir="web" excludes="*/CVS/*,**/.nbattrs"/>
+            <fileset dir="web" excludes="${excludes}"/>
         </copy>         
 
         <copy todir="${build.srcdist.main}">
-            <fileset dir="." includes="*.*" excludes="*/CVS/*,**/.nbattrs"/>
+            <fileset dir="." includes="*.*" excludes="${excludes}"/>
         </copy>
        
         <touch>
             <fileset dir="${build.local}"/>
         </touch>
        
-        <copy todir="${build.srcdist.local}">
-            <fileset dir="${build.local}" excludes="*/CVS/*,**/.nbattrs"/>
+        <copy todir="${build.srcdist.local}" includeEmptyDirs="true" verbose="false">
+            <fileset dir="${build.local}" excludes="${excludes}"/>
         </copy>  
        
-        <tstamp>
-            <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
-        </tstamp>
-        <property name="version.number" value="${env.USERNAME}_${timestamp}"/>
-        
         <zip
             zipfile="${zip.home}/opencms_src_${version.number}.zip"
             basedir="${build.srcdist}"/>
