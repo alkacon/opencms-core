@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2005/03/29 16:05:34 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2005/03/30 08:50:31 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.master.*;
@@ -72,7 +71,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.16 $ $Date: 2005/03/29 16:05:34 $
+ * @version $Revision: 1.17 $ $Date: 2005/03/30 08:50:31 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
