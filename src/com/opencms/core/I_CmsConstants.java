@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/09/29 15:59:19 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2000/10/09 13:12:45 $
+ * Version: $Revision: 1.104 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.103 $ $Date: 2000/09/29 15:59:19 $
+ * @version $Revision: 1.104 $ $Date: 2000/10/09 13:12:45 $
  */
 public interface I_CmsConstants
 {
@@ -776,6 +776,9 @@ public interface I_CmsConstants
 	
 	/** Start preferenses Project */
 	public static final String  C_START_PROJECT = "StartProject";
+
+	/** Constant for parent id in root project. */
+	public static final int C_PROJECT_ROOT = -1;
 	
 	/** Start preferenses View */
 	public static final String  C_START_VIEW = "StartView";

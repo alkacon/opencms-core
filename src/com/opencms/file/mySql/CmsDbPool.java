@@ -3,8 +3,8 @@ package com.opencms.file.mySql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/09/15 16:28:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/10/09 13:12:47 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -137,7 +137,7 @@ public class CmsDbPool implements I_CmsDbPool {
 	 * @param key - the hashtable key
 	 * @return a prepared statement matching the key
 	 */
-	public PreparedStatement getPreparedStatement(Integer key) throws CmsException {
+	public PreparedStatement getPreparedStatement(Integer key) throws SQLException {
 	
 		
 		PreparedStatement pstmt = null;
@@ -159,13 +159,8 @@ public class CmsDbPool implements I_CmsDbPool {
 				Connection conn = (Connection) m_connections.elementAt(count);
 				count++;
 				
-				try {
-					pstmt = conn.prepareStatement(sql);
-					pstmt.clearParameters();
-				}
-				catch (SQLException e) {
-					throw new CmsException(CmsException.C_SQL_ERROR, e);
-				} 
+				pstmt = conn.prepareStatement(sql);
+				pstmt.clearParameters();
 			}
 			temp.notify();
 			//m_prepStatements.notify();

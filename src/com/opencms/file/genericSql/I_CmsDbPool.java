@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsDbPool.java,v $
- * Date   : $Date: 2000/09/08 12:19:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/10/09 13:12:47 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -31,6 +31,8 @@ package com.opencms.file.genericSql;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import com.opencms.core.CmsException;
+import java.sql.SQLException;
+
 
 /**
  * Interface for CmsDBPool.
@@ -46,7 +48,7 @@ public interface I_CmsDbPool {
 	 * @param key - the hashtable key
 	 * @return a prepared statement matching the key
 	 */	
-  public PreparedStatement getPreparedStatement(Integer key) throws CmsException;  
+  public PreparedStatement getPreparedStatement(Integer key) throws SQLException;      
 	/**
 	 * Gets a (Simple)Statement object and remove it from the list of available statements.
 	 * 

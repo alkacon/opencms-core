@@ -3,8 +3,8 @@ package com.opencms.file.genericSql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/09/18 12:52:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/10/09 13:12:46 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -93,48 +93,6 @@ public class CmsDbPool implements I_CmsDbPool {
 	protected Vector m_connections;
 	
 	/**
-	 * Init the pool with a specified number of connections.
-	 * 
-	 * @param driver - driver for the database
-	 * @param url - the URL of the database to which to connect
-	 * @param user - the username to connect to the db.
-	 * @param passwd - the passwd of the user to connect to the db.
-	 * @param maxConn - maximum connections
-	 */
-	public CmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws CmsException {
-		this.m_driver = driver;
-		this.m_url = url;
-		this.m_user = user;
-		this.m_passwd = passwd;
-		this.m_maxConn = maxConn;
-		
-		// register the driver for the database
-		try {
-			Class.forName(m_driver);
-		}
-		catch (ClassNotFoundException e) {
-		   	throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
-		}
-		// init the hashtables and vector(s)
-		m_prepStatements = new Stack();
-		m_connections = new Vector(m_maxConn+1);
-		
-		// init connections
-		for (int i = 0; i < m_maxConn; i++) {
-			Connection conn = null;
-	
-			try {
-	  			conn = DriverManager.getConnection(m_url, m_user, m_passwd);
-   				m_connections.addElement(conn);
-			}
-			catch (SQLException e) {
-				throw new CmsException(CmsException.C_SQL_ERROR, e);
-			}
-			m_prepStatements.push(new Hashtable());
-		}
-		initStatement();
-	}
-	/**
 	 * Destroys this db-pool.
 	 */
 	public void destroy() {
@@ -188,7 +146,7 @@ public class CmsDbPool implements I_CmsDbPool {
 	 * @param key - the hashtable key
 	 * @return a prepared statement matching the key
 	 */
-	public PreparedStatement getPreparedStatement(Integer key) throws CmsException {
+	public PreparedStatement getPreparedStatement(Integer key) {
 		
 		PreparedStatement pstmt = null;
 		synchronized(m_prepStatements) {
@@ -292,6 +250,48 @@ public class CmsDbPool implements I_CmsDbPool {
 				}
 			}
 		}		
+	}
+	/**
+	 * Init the pool with a specified number of connections.
+	 * 
+	 * @param driver - driver for the database
+	 * @param url - the URL of the database to which to connect
+	 * @param user - the username to connect to the db.
+	 * @param passwd - the passwd of the user to connect to the db.
+	 * @param maxConn - maximum connections
+	 */
+	public CmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws CmsException {
+		this.m_driver = driver;
+		this.m_url = url;
+		this.m_user = user;
+		this.m_passwd = passwd;
+		this.m_maxConn = maxConn;
+		
+		// register the driver for the database
+		try {
+			Class.forName(m_driver);
+		}
+		catch (ClassNotFoundException e) {
+		   	throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+		}
+		// init the hashtables and vector(s)
+		m_prepStatements = new Stack();
+		m_connections = new Vector(m_maxConn+1);
+		
+		// init connections
+		for (int i = 0; i < m_maxConn; i++) {
+			Connection conn = null;
+	
+			try {
+	  			conn = DriverManager.getConnection(m_url, m_user, m_passwd);
+   				m_connections.addElement(conn);
+			}
+			catch (SQLException e) {
+				throw new CmsException(CmsException.C_SQL_ERROR, e);
+			}
+			m_prepStatements.push(new Hashtable());
+		}
+		initStatement();
 	}
 	/**
 	 * Add the given statement to the list of available statements.

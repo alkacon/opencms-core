@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/08/08 14:08:23 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/10/09 13:12:46 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,6 +30,7 @@ package com.opencms.file;
 
 import com.opencms.core.*;
 import java.sql.*;
+import com.opencms.util.SqlHelper;
 
 /**
  * This class describes a project. A project is used to handle versions of 
@@ -37,10 +38,11 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/08/08 14:08:23 $
+ * @author Anders Fugmann
+ * @author Jan Krag
+ * @version $Revision: 1.25 $ $Date: 2000/10/09 13:12:46 $
  */
-public class CmsProject implements I_CmsConstants,
-														Cloneable{
+public class CmsProject implements I_CmsConstants, Cloneable{
 	
 	/**
 	 * The id of this project.
@@ -106,36 +108,15 @@ public class CmsProject implements I_CmsConstants,
 	 * The project type
 	 */
 	private int m_type = C_UNKNOWN_ID;
+
+	/**
+	 * The parent project, -1 if none.
+	 */
+	private int parentId;
+	 
+	 
 	
 
-	public CmsProject(int projectId, String name, String description, int taskId, 
-					  int ownerId, int group, int managerGroup, int flags, 
-					  Timestamp createdate, Timestamp publishingdate, int publishedBy, 
-					  int type) {
-		
-		m_id = projectId;
-		m_name = name;
-		m_description = description;
-		m_taskId = taskId;
-		m_ownerId = ownerId;
-		m_groupId = group;
-		m_groupId=group;
-		m_managergroupId = managerGroup;
-		m_managerGroupId=managerGroup;
-		m_flags = flags;
-		m_publishedBy = publishedBy;
-		m_type = type;
-		if( createdate != null) {
-			m_createdate = createdate.getTime();
-		} else {
-			m_createdate = C_UNKNOWN_LONG;
-		}
-		if( publishingdate != null) {
-			m_publishingdate = publishingdate.getTime();
-		} else {
-			m_publishingdate = C_UNKNOWN_LONG;
-		}
-	}
 	/** 
 	* Clones the CmsProject by creating a new CmsProject Object.
 	* @return Cloned CmsProject.
@@ -146,7 +127,7 @@ public class CmsProject implements I_CmsConstants,
 									   this.m_ownerId,this.m_groupId,this.m_managerGroupId,
 									   this.m_flags,new Timestamp(this.m_createdate),
 									   new Timestamp(this.m_publishingdate),this.m_publishedBy,
-									   this.m_type);
+									   this.m_type,this.parentId);
 		return project;    
 	}
 	/**
@@ -235,6 +216,14 @@ public class CmsProject implements I_CmsConstants,
 	public int getOwnerId() {
 		return(m_ownerId);
 	}
+/**
+ * return the id of the parent project.
+ * Creation date: (10/02/00)
+ * @return int the id of the parent project, -1 if none.
+ */
+public int getParentId() {
+	return parentId;
+}
 	/**
 	 * Gets the published-by value.
 	 * 
@@ -267,6 +256,55 @@ public class CmsProject implements I_CmsConstants,
 	int getType() {
 		return m_type;
 	}
+	public CmsProject(int projectId, String name, String description, int taskId, 
+					  int ownerId, int group, int managerGroup, int flags, 
+					  Timestamp createdate, Timestamp publishingdate, int publishedBy, 
+					  int type, int parentId) {
+		
+		m_id = projectId;
+		m_name = name;
+		m_description = description;
+		m_taskId = taskId;
+		m_ownerId = ownerId;
+		m_groupId = group;
+		m_groupId=group;
+		m_managergroupId = managerGroup;
+		m_managerGroupId=managerGroup;
+		m_flags = flags;
+		m_publishedBy = publishedBy;
+		m_type = type;
+		this.parentId = parentId;
+		if( createdate != null) {
+			m_createdate = createdate.getTime();
+		} else {
+			m_createdate = C_UNKNOWN_LONG;
+		}
+		if( publishingdate != null) {
+			m_publishingdate = publishingdate.getTime();
+		} else {
+			m_publishingdate = C_UNKNOWN_LONG;
+		}
+	}
+/**
+ * Construct a new CmsProject, from a ResultSet.
+ * Creation date: (10/02/00)
+ * @param rs java.sql.ResultSet
+ */
+public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) throws SQLException {
+				 this(res.getInt(m_cq.C_PROJECTS_PROJECT_ID),
+							res.getString(m_cq.C_PROJECTS_PROJECT_NAME),
+							res.getString(m_cq.C_PROJECTS_PROJECT_DESCRIPTION),
+							res.getInt(m_cq.C_PROJECTS_TASK_ID),
+							res.getInt(m_cq.C_PROJECTS_USER_ID),
+							res.getInt(m_cq.C_PROJECTS_GROUP_ID),
+							res.getInt(m_cq.C_PROJECTS_MANAGERGROUP_ID),
+							res.getInt(m_cq.C_PROJECTS_PROJECT_FLAGS),
+							SqlHelper.getTimestamp(res,m_cq.C_PROJECTS_PROJECT_CREATEDATE),
+							SqlHelper.getTimestamp(res,m_cq.C_PROJECTS_PROJECT_PUBLISHDATE),
+							res.getInt(m_cq.C_PROJECTS_PROJECT_PUBLISHED_BY),
+							res.getInt(m_cq.C_PROJECTS_PROJECT_TYPE),
+							res.getInt(m_cq.C_PROJECTS_PARENT_ID) );
+}
 	/**
 	 * Sets the description of this project.
 	 * 
@@ -285,6 +323,14 @@ public class CmsProject implements I_CmsConstants,
 	public void setFlags(int flags) {
 		m_flags = flags;
 	}
+/**
+ * Set the parent Id.
+ * Creation date: (10/02/00)
+ * @param newParentId int the parent Id.
+ */
+private void setParentId(int newParentId) {
+	parentId = newParentId;
+}
 	/**
 	 * Sets the published-by value.
 	 * 

@@ -2,8 +2,8 @@ package com.opencms.util;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/SqlHelper.java,v $
- * Date   : $Date: 2000/08/08 14:08:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/10/31 13:11:28 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.sql.*;
  * This is a helper class for sql queries.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/08/08 14:08:29 $
+ * @version $Revision: 1.9 $ $Date: 2000/10/31 13:11:28 $
  */
 public class SqlHelper {
 	
@@ -54,12 +54,12 @@ public class SqlHelper {
 	 * @exception Throws Exception, if something goes wrong.
 	 */
 	public static final Timestamp getTimestamp( ResultSet result, String column ) 
-		throws Exception {
+		throws SQLException {
 		int i = 0;
 		for( ; ; ) {
 			try {
 				return(result.getTimestamp(column));
-			} catch(Exception exc) {
+			} catch(SQLException exc) {
 				i++;
 				if( i >= C_MAX_RETRIES ) {
 					throw exc;
