@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/11/26 12:42:50 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/11/26 14:27:05 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 5.3.5
  */
@@ -129,8 +129,8 @@ public class OpenCmsTestCase extends TestCase {
 
     /** The list of paths to the additional test data files. */
     private static List m_testDataPath;
-    
-    /** The additional connection name */
+
+    /** The additional connection name. */
     private static String m_additionalConnectionName = "additional";
 
     /** Class to bundle the connection information. */
@@ -138,32 +138,32 @@ public class OpenCmsTestCase extends TestCase {
 
         /** The name of the database. */
         public String m_dbName;
-        
+
         /** The database driver. */
         public String m_jdbcDriver;
 
         /** The database url. */
         public String m_jdbcUrl;
-        
+
         /** Additional database params. */
         public String m_jdbcUrlParams;
-        
+
         /** The name of the user. */
         public String m_userName;
-        
+
         /** The password of the user. */
         public String m_userPassword;
     }
-    
+
     /** The setup connection data. */
     protected static ConnectionData m_setupConnection;
-    
+
     /** The user connection data. */
     protected static ConnectionData m_defaultConnection;
-    
+
     /** Additional connection data. */
     protected static ConnectionData m_additionalConnection;
-    
+
     /** The current resource storage. */
     public OpenCmsTestResourceStorage m_currentResourceStrorage;
 
@@ -174,16 +174,16 @@ public class OpenCmsTestCase extends TestCase {
 
         /** Unequal node1. */
         public Node m_node1 = null;
-        
+
         /** Unequal node2. */
         public Node m_node2 = null;
-        
+
         /** 
-        /**
+         /**
          * @see org.dom4j.util.NodeComparator#compare(org.dom4j.Node, org.dom4j.Node)
          */
         public int compare(Node n1, Node n2) {
-            
+
             int result = super.compare(n1, n2);
             if (result != 0 && m_node1 == null) {
                 m_node1 = n1;
@@ -192,7 +192,7 @@ public class OpenCmsTestCase extends TestCase {
             return result;
         }
     }
-    
+
     /**
      * Default JUnit constructor.<p>
      * 
@@ -202,7 +202,7 @@ public class OpenCmsTestCase extends TestCase {
 
         this(arg0, true);
     }
-    
+
     /**
      * JUnit constructor.<p>
      * @param arg0 JUnit parameters
@@ -217,16 +217,16 @@ public class OpenCmsTestCase extends TestCase {
                 m_resourceStorages = new HashMap();
             }
             m_testClassName = this.getClass().getName();
-    
+
             // initialize configuration
             initConfiguration();
-    
+
             // set "OpenCmsLog" system property to enable the logger
             System.setProperty(CmsLog.SYSPROP_LOGFILE, "opencms_test.log");
             OpenCmsTestLogAppender.setBreakOnError(true);
         } else {
             // set "OpenCmsLog" system property to enable the logger
-            System.setProperty(CmsLog.SYSPROP_LOGFILE, "opencms_test.log");            
+            System.setProperty(CmsLog.SYSPROP_LOGFILE, "opencms_test.log");
         }
     }
 
@@ -236,20 +236,20 @@ public class OpenCmsTestCase extends TestCase {
      * @return he currently used database/configuration
      */
     public static String getDbProduct() {
-        
+
         return m_dbProduct;
     }
-    
+
     /**
      * Sets the additional connection name.<p>
      * 
      * @param additionalConnectionName the additional connection name
      */
     public static void setConnectionName(String additionalConnectionName) {
-        
+
         m_additionalConnectionName = additionalConnectionName;
     }
-    
+
     /**
      * Removes the initialized OpenCms database and all 
      * temporary files created during the test run.<p>
@@ -290,7 +290,7 @@ public class OpenCmsTestCase extends TestCase {
         path = getTestDataPath("export/");
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
-        }        
+        }
     }
 
     /**
@@ -484,7 +484,7 @@ public class OpenCmsTestCase extends TestCase {
         // return the path name
         return m_setupDataPath;
     }
-    
+
     /**
      * Returns an initialized DB setup object.<p>
      * 
@@ -493,22 +493,25 @@ public class OpenCmsTestCase extends TestCase {
      * @return the initialized setup DB object
      */
     protected static CmsSetupDb getSetupDb(ConnectionData connection) {
-     
+
         // create setup DB instance
         CmsSetupDb setupDb = new CmsSetupDb(getSetupDataPath());
-        
+
         // connect to the DB
-        setupDb.setConnection(connection.m_jdbcDriver, connection.m_jdbcUrl, connection.m_jdbcUrlParams, connection.m_userName, connection.m_userPassword);
-        
+        setupDb.setConnection(
+            connection.m_jdbcDriver,
+            connection.m_jdbcUrl,
+            connection.m_jdbcUrlParams,
+            connection.m_userName,
+            connection.m_userPassword);
+
         // check for errors 
         if (!C_DB_ORACLE.equals(m_dbProduct)) {
             checkErrors(setupDb);
         }
-        
+
         return setupDb;
     }
-                
-        
 
     /**
      * Returns the path to a file in the test data configuration, 
@@ -573,6 +576,7 @@ public class OpenCmsTestCase extends TestCase {
      * Removes the OpenCms database test instance.<p>
      */
     protected static void removeDatabase() {
+
         if (m_defaultConnection != null) {
             removeDatabase(m_setupConnection, m_defaultConnection, false);
         }
@@ -580,7 +584,7 @@ public class OpenCmsTestCase extends TestCase {
             removeDatabase(m_setupConnection, m_additionalConnection, false);
         }
     }
-    
+
     /**
      * Removes the OpenCms database test instance.<p>
      * 
@@ -588,11 +592,14 @@ public class OpenCmsTestCase extends TestCase {
      * @param defaultConnection the default connection
      * @param handleErrors flag to indicate if errors should be handled/checked
      */
-    protected static void removeDatabase(ConnectionData setupConnection, ConnectionData defaultConnection, boolean handleErrors) {
+    protected static void removeDatabase(
+        ConnectionData setupConnection,
+        ConnectionData defaultConnection,
+        boolean handleErrors) {
 
         CmsSetupDb setupDb = null;
         boolean noErrors = true;
-        
+
         try {
             setupDb = getSetupDb(defaultConnection);
             setupDb.dropTables(m_dbProduct, getReplacer(defaultConnection), handleErrors);
@@ -604,7 +611,7 @@ public class OpenCmsTestCase extends TestCase {
                 setupDb.closeConnection();
             }
         }
-        
+
         if (!handleErrors || noErrors) {
             try {
                 setupDb = getSetupDb(setupConnection);
@@ -618,7 +625,7 @@ public class OpenCmsTestCase extends TestCase {
                 }
             }
         }
-        
+
         if (handleErrors) {
             checkErrors(setupDb);
         }
@@ -630,6 +637,7 @@ public class OpenCmsTestCase extends TestCase {
      * Any existing instance of the test database is forcefully removed first.<p>
      */
     protected static void setupDatabase() {
+
         if (m_defaultConnection != null) {
             setupDatabase(m_setupConnection, m_defaultConnection, true);
         }
@@ -637,7 +645,7 @@ public class OpenCmsTestCase extends TestCase {
             setupDatabase(m_setupConnection, m_additionalConnection, true);
         }
     }
-    
+
     /**
      * Creates a new OpenCms test database including the tables.<p>
      * 
@@ -645,11 +653,14 @@ public class OpenCmsTestCase extends TestCase {
      * @param defaultConnection the default connection
      * @param handleErrors flag to indicate if errors should be handled/checked
      */
-    protected static void setupDatabase(ConnectionData setupConnection, ConnectionData defaultConnection, boolean handleErrors) {
+    protected static void setupDatabase(
+        ConnectionData setupConnection,
+        ConnectionData defaultConnection,
+        boolean handleErrors) {
 
         CmsSetupDb setupDb = null;
         boolean noErrors = true;
-        
+
         try {
             setupDb = getSetupDb(setupConnection);
             setupDb.createDatabase(m_dbProduct, getReplacer(defaultConnection), handleErrors);
@@ -677,7 +688,7 @@ public class OpenCmsTestCase extends TestCase {
                 }
             }
         }
-        
+
         if (noErrors) {
             return;
         } else if (handleErrors) {
@@ -685,7 +696,7 @@ public class OpenCmsTestCase extends TestCase {
             setupDatabase(setupConnection, defaultConnection, false);
         } else {
             checkErrors(setupDb);
-        }   
+        }
     }
 
     /**
@@ -1142,16 +1153,21 @@ public class OpenCmsTestCase extends TestCase {
         if ((d1 == null && d2 != null) || (d1 != null && d2 == null)) {
             fail("Documents not equal (not both null)");
         }
-        
+
         InternalNodeComparator comparator = new InternalNodeComparator();
         if (comparator.compare(d1, d2) != 0) {
             fail("Comparison of documents failed: "
-                + "name = " + d1.getName() + ", " 
-                + "path = " + comparator.m_node1.getPath() + ", "
-                + "node = " + comparator.m_node1.toString()); 
+                + "name = "
+                + d1.getName()
+                + ", "
+                + "path = "
+                + comparator.m_node1.getPath()
+                + ", "
+                + "node = "
+                + comparator.m_node1.toString());
         }
     }
-    
+
     /**
      * Compares a given resource to its stored version containing the state before a CmsObject
      * method was called.<p>
@@ -2074,8 +2090,7 @@ public class OpenCmsTestCase extends TestCase {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
         }
     }
-    
-    
+
     /**
      * Compares the user who created a resource with a given user.<p>
      * 
@@ -2486,8 +2501,7 @@ public class OpenCmsTestCase extends TestCase {
         Iterator i = source.iterator();
         while (i.hasNext()) {
             CmsPropertydefinition prop = (CmsPropertydefinition)i.next();
-            if ((!target.contains(prop))
-                && (!prop.getName().equals(exclude.getName()))) {
+            if ((!target.contains(prop)) && (!prop.getName().equals(exclude.getName()))) {
                 noMatches += "[" + prop + "]";
             }
         }
@@ -2526,11 +2540,12 @@ public class OpenCmsTestCase extends TestCase {
      * by reading the appropriate values from opencms.properties.<p>
      */
     private void initConfiguration() {
+
         String basePath = OpenCmsTestProperties.getInstance().getBasePath();
         if (m_configuration == null) {
             try {
                 initTestDataPath();
-                String propertyFile = basePath+"test.properties";
+                String propertyFile = basePath + "test.properties";
                 m_configuration = CmsPropertyUtils.loadProperties(propertyFile);
                 m_dbProduct = m_configuration.getString("db.product");
             } catch (IOException e) {
@@ -2558,39 +2573,120 @@ public class OpenCmsTestCase extends TestCase {
 
             String key = "setup";
             m_setupConnection = new ConnectionData();
-            m_setupConnection.m_dbName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + "dbName");
-            m_setupConnection.m_jdbcUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "."  + key + "." + "jdbcUrl");
-            m_setupConnection.m_userName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "."  + key + "." + "user");
-            m_setupConnection.m_userPassword = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "."  + key + "." + "password");
-            m_setupConnection.m_jdbcDriver = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_DRIVER);
-            m_setupConnection.m_jdbcUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL);
-            m_setupConnection.m_jdbcUrlParams = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL_PARAMS);
+            m_setupConnection.m_dbName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + "dbName");
+            m_setupConnection.m_jdbcUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + "jdbcUrl");
+            m_setupConnection.m_userName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + "user");
+            m_setupConnection.m_userPassword = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + "password");
+            m_setupConnection.m_jdbcDriver = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + CmsDbPool.C_KEY_JDBC_DRIVER);
+            m_setupConnection.m_jdbcUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + CmsDbPool.C_KEY_JDBC_URL);
+            m_setupConnection.m_jdbcUrlParams = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + CmsDbPool.C_KEY_JDBC_URL_PARAMS);
 
             key = "default";
             m_defaultConnection = new ConnectionData();
-            m_defaultConnection.m_dbName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + "dbName");
-            m_defaultConnection.m_userName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_USERNAME);
-            m_defaultConnection.m_userPassword = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_PASSWORD);
-            m_defaultConnection.m_jdbcDriver = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_DRIVER);
-            m_defaultConnection.m_jdbcUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL);
-            m_defaultConnection.m_jdbcUrlParams = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL_PARAMS);
+            m_defaultConnection.m_dbName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + "dbName");
+            m_defaultConnection.m_userName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + CmsDbPool.C_KEY_USERNAME);
+            m_defaultConnection.m_userPassword = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + CmsDbPool.C_KEY_PASSWORD);
+            m_defaultConnection.m_jdbcDriver = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + CmsDbPool.C_KEY_JDBC_DRIVER);
+            m_defaultConnection.m_jdbcUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + CmsDbPool.C_KEY_JDBC_URL);
+            m_defaultConnection.m_jdbcUrlParams = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                + "."
+                + key
+                + "."
+                + CmsDbPool.C_KEY_JDBC_URL_PARAMS);
 
             key = m_additionalConnectionName;
             if (m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + "dbName") != null) {
                 m_additionalConnection = new ConnectionData();
-                m_additionalConnection.m_dbName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + "dbName");
-                m_additionalConnection.m_userName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_USERNAME);
-                m_additionalConnection.m_userPassword = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_PASSWORD);
-                m_additionalConnection.m_jdbcDriver = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_DRIVER);
-                m_additionalConnection.m_jdbcUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL);
-                m_additionalConnection.m_jdbcUrlParams = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL_PARAMS);
+                m_additionalConnection.m_dbName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                    + "."
+                    + key
+                    + "."
+                    + "dbName");
+                m_additionalConnection.m_userName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                    + "."
+                    + key
+                    + "."
+                    + CmsDbPool.C_KEY_USERNAME);
+                m_additionalConnection.m_userPassword = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                    + "."
+                    + key
+                    + "."
+                    + CmsDbPool.C_KEY_PASSWORD);
+                m_additionalConnection.m_jdbcDriver = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                    + "."
+                    + key
+                    + "."
+                    + CmsDbPool.C_KEY_JDBC_DRIVER);
+                m_additionalConnection.m_jdbcUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                    + "."
+                    + key
+                    + "."
+                    + CmsDbPool.C_KEY_JDBC_URL);
+                m_additionalConnection.m_jdbcUrlParams = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL
+                    + "."
+                    + key
+                    + "."
+                    + CmsDbPool.C_KEY_JDBC_URL_PARAMS);
             }
-            
+
             m_defaultTablespace = m_configuration.getString("db.oracle.defaultTablespace");
             m_indexTablespace = m_configuration.getString("db.oracle.indexTablespace");
             m_tempTablespace = m_configuration.getString("db.oracle.temporaryTablespace");
 
-            System.out.println("----- Starting tests on database " + m_dbProduct + " (" + m_setupConnection.m_jdbcUrl + ") " + "-----");
+            System.out.println("----- Starting tests on database "
+                + m_dbProduct
+                + " ("
+                + m_setupConnection.m_jdbcUrl
+                + ") "
+                + "-----");
         }
     }
 }
