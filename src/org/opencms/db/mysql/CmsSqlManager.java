@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/13 14:48:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $ 
+ * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -59,18 +59,29 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         
         if (c_queries == null) {
             c_queries = loadProperties(C_PROPERTY_FILENAME);
+            precalculateQueries(c_queries);
         }
     }
+    
+    /**
+     * @see java.lang.Object#finalize()
+     */
+    protected void finalize() throws Throwable {
+        if (c_queries != null) {
+            c_queries.clear();
+        }
+        c_queries = null;
+        
+        super.finalize();
+    }    
 
     /**
-     * Get the value for the query name
-     *
-     * @param queryName the name of the property
-     * @return The value of the property
+     * @see org.opencms.db.generic.CmsSqlManager#get(java.lang.String)
      */
     public String get(String queryName) {
         if (c_queries == null) {
             c_queries = loadProperties(C_PROPERTY_FILENAME);
+            precalculateQueries(c_queries);
         }
         
         String value = c_queries.getProperty(queryName);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/13 14:48:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,10 +46,10 @@ import java.util.Vector;
  * Oracle/OCI implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
  * @since 5.1
  */
-public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
+public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {   
 
     /**
      * @see org.opencms.db.I_CmsBackupDriver#getAllBackupProjects()

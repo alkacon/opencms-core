@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/13 14:48:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -821,6 +821,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
         m_driverManager = null;        
     }
     
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#destroy()
+     */
     public void destroy() throws Throwable {
         finalize();
                 
@@ -830,7 +833,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
     }    
 	    
     public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) {
-        m_sqlManager = initQueries(dbPoolUrl);        
+        m_sqlManager = this.initQueries(dbPoolUrl);        
         m_driverManager = driverManager;
 
         String digest = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");

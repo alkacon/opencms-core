@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/13 14:48:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -93,7 +93,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         m_dbPoolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
         
         if (c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);            
+            c_queries = loadProperties(C_PROPERTY_FILENAME);  
+            precalculateQueries(c_queries);          
         }
         
         m_cachedQueries = (Map) new HashMap();
@@ -109,7 +110,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         m_dbPoolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
     
         if (loadQueries && c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);            
+            c_queries = loadProperties(C_PROPERTY_FILENAME);   
+            precalculateQueries(c_queries);         
         }
     }
 
@@ -155,15 +157,15 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         if (c_queries != null) {
             c_queries.clear();
         }
-        
-        if (m_cachedQueries!=null) {
+
+        if (m_cachedQueries != null) {
             m_cachedQueries.clear();
         }
 
         c_queries = null;
         m_cachedQueries = null;
         m_dbPoolUrl = null;
-        
+
         super.finalize();
     }
 
@@ -230,6 +232,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     public String get(String queryKey) {              
         if (c_queries == null) {
             c_queries = loadProperties(C_PROPERTY_FILENAME);
+            precalculateQueries(c_queries);
         }      
 
         String value = null;
@@ -439,7 +442,6 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
             properties = null;
         }
 
-        precalculateQueries(properties);
         return properties;
     }
     
@@ -560,7 +562,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
                 if ((endIndex = currentValue.indexOf('}', startIndex)) != -1) {
                     String replaceKey = currentValue.substring(startIndex + 2, endIndex);
                     String searchPattern = currentValue.substring(startIndex, endIndex + 1);
-                    String replacePattern = (String) properties.get(replaceKey);
+                    String replacePattern = (String) this.get(replaceKey);
 
                     if (replacePattern != null) {
                         currentValue = CmsStringSubstitution.substitute(currentValue, searchPattern, replacePattern);
