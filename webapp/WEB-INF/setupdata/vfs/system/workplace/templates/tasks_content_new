@@ -219,7 +219,7 @@ iMaxOpts = iMaxOpts + 1;
 <HEAD>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 </HEAD>
-<BODY onload="updateFrame('head', 'head.html');">
+<BODY onload="updateFrame('head', '../views/top_head.jsp');">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
