@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2004/07/08 15:21:05 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2004/09/27 13:21:59 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2004/07/08 15:21:05 $
+ * @version $Revision: 1.48 $ $Date: 2004/09/27 13:21:59 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -127,7 +127,7 @@ public class CmsHistory extends CmsWorkplaceDefault {
                 // This is an offline project, show all buttons if the resource is locked to the current user or auto lock is enabled
                 CmsLock lock =cms.getLock(filename); 
                 
-                if ((!lock.isNullLock() && lock.getUserId() == cms.getRequestContext().currentUser().getId()) 
+                if ((!lock.isNullLock() && lock.getUserId().equals(cms.getRequestContext().currentUser().getId()))
                         || (lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources())) {
                     // show the button for restore the version
                     xmlTemplateDocument.setData("BUTTONRESTORE", xmlTemplateDocument.getProcessedDataValue("ENABLERESTORE", this));

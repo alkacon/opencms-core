@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/09/08 14:55:12 $
-* Version: $Revision: 1.91 $
+* Date   : $Date: 2004/09/27 13:21:59 $
+* Version: $Revision: 1.92 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.91 $
+ * @version $Revision: 1.92 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -1151,7 +1151,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     template.setData("histdescription", projectDescription);
                     CmsUUID curUser = cms.getRequestContext().currentUser().getId();
                     int curProject = cms.getRequestContext().currentProject().getId();
-                    if (((A_CmsContentDefinition)o).getLockstate() == curUser && ((I_CmsExtendedContentDefinition)o).getLockedInProject() == curProject) {
+                    if (((A_CmsContentDefinition)o).getLockstate().equals(curUser) && ((I_CmsExtendedContentDefinition)o).getLockedInProject() == curProject) {
                         // enable restore button
                         template.setData("BUTTONRESTORE", template.getProcessedDataValue("ENABLERESTORE", this));
                         template.setData("setaction", "restore");
@@ -1244,8 +1244,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             try {
                 cdHistory = ((I_CmsExtendedContentDefinition)o).getHistory(cms);
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("History method caused an exception", e);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("History reading history for class " + cdClass.getName(), e);
                 }
             }
             // fill the names and values
@@ -1259,8 +1259,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     names.addElement(output);
                     values.addElement(curCd.getVersionId() + "");
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("History method caused an exception", e);
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error(e);
                     }
                 }
             }

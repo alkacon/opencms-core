@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/08/27 08:57:22 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2004/09/27 13:21:59 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,8 +59,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.65 $
- * $Date: 2004/08/27 08:57:22 $
+ * $Revision: 1.66 $
+ * $Date: 2004/09/27 13:21:59 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -550,22 +550,22 @@ public abstract class CmsMasterContent
      * @return String of access rights
      */
     public String getAccessFlagsAsString() {
-//        int accessFlags = getAccessFlags();
-        String str = "NOT YET";
-        // TODO: reimplement using acl
-        /*
-        str += ((accessFlags & I_CmsConstants.C_PERMISSION_READ)>0?"r":"-");
-        str += ((accessFlags & I_CmsConstants.C_PERMISSION_WRITE)>0?"w":"-");
-        str += ((accessFlags & I_CmsConstants.C_PERMISSION_VIEW)>0?"v":"-");
-        str += ((accessFlags & I_CmsConstants.C_ACCESS_GROUP_READ)>0?"r":"-");
-        str += ((accessFlags & I_CmsConstants.C_ACCESS_GROUP_WRITE)>0?"w":"-");
-        str += ((accessFlags & I_CmsConstants.C_ACCESS_GROUP_VISIBLE)>0?"v":"-");
-        str += ((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_READ)>0?"r":"-");
-        str += ((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_WRITE)>0?"w":"-");
-        str += ((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE)>0?"v":"-");
-        str += ((accessFlags & I_CmsConstants.C_ACCESS_INTERNAL_READ)>0?"i":"-");
-        */
-        return str;
+
+        int accessFlags = getAccessFlags();
+        StringBuffer buf = new StringBuffer();
+
+        buf.append(((accessFlags & I_CmsExtendedContentDefinition.C_PERMISSION_READ) > 0 ? "r" : "-"));
+        buf.append(((accessFlags & I_CmsExtendedContentDefinition.C_PERMISSION_WRITE) > 0 ? "w" : "-"));
+        buf.append(((accessFlags & I_CmsExtendedContentDefinition.C_PERMISSION_VIEW) > 0 ? "v" : "-"));
+        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_GROUP_READ) > 0 ? "r" : "-"));
+        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_GROUP_WRITE) > 0 ? "w" : "-"));
+        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_GROUP_VISIBLE) > 0 ? "v" : "-"));
+        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_READ) > 0 ? "r" : "-"));
+        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_WRITE) > 0 ? "w" : "-"));
+        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE) > 0 ? "v" : "-"));
+        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0 ? "i" : "-"));
+
+        return buf.toString();
     }
 
     /**

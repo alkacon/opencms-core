@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/08/27 08:57:22 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2004/09/27 13:21:59 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1370,7 +1370,7 @@ public class CmsDbAccess {
             while (res.next()) {
                 CmsMasterDataSet dataset = new CmsMasterDataSet();
                 sqlFillValues(res, cms, dataset);
-                dataset.m_versionId = res.getInt("VERSION_ID");
+                dataset.m_versionId = res.getInt("TAG_ID");
                 dataset.m_userName = res.getString("USER_NAME");
                 dataset.m_groupName = res.getString("GROUP_NAME");
                 dataset.m_lastModifiedByName = res.getString("LASTMODIFIED_BY_NAME");
@@ -1445,7 +1445,7 @@ public class CmsDbAccess {
             res = stmt.executeQuery();
             if (res.next()) {
                 sqlFillValues(res, cms, dataset);
-                dataset.m_versionId = res.getInt("VERSION_ID");
+                dataset.m_versionId = res.getInt("TAG_ID");
                 dataset.m_userName = res.getString("USER_NAME");
                 dataset.m_groupName = res.getString("GROUP_NAME");
                 dataset.m_lastModifiedByName = res.getString("LASTMODIFIED_BY_NAME");

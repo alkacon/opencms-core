@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2004/07/08 15:21:14 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2004/09/27 13:21:59 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,21 @@ import java.util.Vector;
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public interface I_CmsExtendedContentDefinition {
+    
+    /**
+     * The permission to read a resource
+     */
+    int C_PERMISSION_READ = 1;
+
+    /**
+     * The permission to write a resource
+     */
+    int C_PERMISSION_WRITE = 2;
+
+    /**
+     * The permission to view a resource
+     */
+    int C_PERMISSION_VIEW = 4;    
 
     /**
      * Returns the unique id of the content definition
