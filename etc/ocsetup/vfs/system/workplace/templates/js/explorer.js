@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2001/09/13 09:05:23 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2001/10/16 09:12:43 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -381,7 +381,7 @@
      if(theParent != null) {
          theParent.childs[theParent.childs.length] = tree.nodes[nodeName];
      }
-     if (parent == -1) {
+     if (theParent == null) {
          tree.root = tree.nodes[nodeName];
      }
  }
