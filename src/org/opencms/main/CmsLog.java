@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2004/08/10 15:46:17 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/12/09 11:28:35 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.main;
 
+import org.opencms.util.CmsStringUtil;
+
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,7 +47,7 @@ import org.apache.log4j.PropertyConfigurator;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsLog implements Log {
 
@@ -259,7 +261,7 @@ public class CmsLog implements Log {
                 System.setProperty("log4j.debug", log4jDebug);
             }
             String log4jPath = configuration.getString("log.log4j.configuration");
-            if (log4jPath != null) {
+            if (CmsStringUtil.isNotEmpty(log4jPath)) {
                 // set the log4j configuration path
                 log4jPath = log4jPath.trim();
                 if ("this".equalsIgnoreCase(log4jPath)) {

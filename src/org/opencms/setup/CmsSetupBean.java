@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/10/22 14:37:40 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/12/09 11:28:35 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -917,6 +917,11 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             return;
         }
         
+        if ((m_workplaceImportThread != null) && (m_workplaceImportThread.isFinished())) {
+            // setup is already finished, just wait for client to collect final data
+            return;
+        }
+        
         if (m_workplaceImportThread == null) {
             m_workplaceImportThread = new CmsSetupWorkplaceImportThread(this);
         }
@@ -930,24 +935,39 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * Generates the output for step 8b of the setup wizard.<p>
      * 
      * @param out the JSP print stream
-     * @return true if more data is available and thread is running
      * @throws IOException in case errors occur while writing to "out"
      */
-    public boolean prepareStep8bOutput(JspWriter out) throws IOException {
-        m_oldLoggingOffset = m_newLoggingOffset;         
-        m_newLoggingOffset = m_workplaceImportThread.getLoggingThread().getMessages().size();  
+    public void prepareStep8bOutput(JspWriter out) throws IOException {
+
+        m_oldLoggingOffset = m_newLoggingOffset;
+        m_newLoggingOffset = m_workplaceImportThread.getLoggingThread().getMessages().size();
         if (isInitialized()) {
             for (int i = m_oldLoggingOffset; i < m_newLoggingOffset; i++) {
-                String str = m_workplaceImportThread.getLoggingThread().getMessages().elementAt(i).toString();        
+                String str = m_workplaceImportThread.getLoggingThread().getMessages().elementAt(i).toString();
                 str = CmsEncoder.escapeWBlanks(str, "UTF-8");
-                out.println("output[" + (i-m_oldLoggingOffset) + "] = \"" + str + "\";");
+                out.println("output[" + (i - m_oldLoggingOffset) + "] = \"" + str + "\";");
             }
         } else {
             out.println("output[0] = 'ERROR';");
         }
+        
         boolean threadFinished = m_workplaceImportThread.isFinished();
         boolean allWritten = m_oldLoggingOffset >= m_workplaceImportThread.getLoggingThread().getMessages().size();
-        return  threadFinished && allWritten;
+
+        out.println("function initThread() {");
+        if (isInitialized()) {
+            out.print("send();");
+            if (threadFinished && allWritten) {
+                out.println("setTimeout('top.display.finish()', 500);");
+            } else {
+                int timeout = 5000;
+                if (getWorkplaceImportThread().getLoggingThread().getMessages().size() < 20) {
+                    timeout = 1000;
+                }
+                out.println("setTimeout('location.reload()', " + timeout + ");");
+            }
+        }
+        out.println("}");
     }
     
     /**

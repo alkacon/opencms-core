@@ -131,7 +131,8 @@
         <echo message="OpenCms input directory is: ${opencms.input}" />
         <echo message="OpenCms output directory is: ${opencms.output}" />
         <echo message="Java version detected: ${ant.java.version}"/>
-        <echo message="Tomcat home is: ${tomcat.home}" />        
+        <echo message="Java home is: ${env.JAVA_HOME}"/>
+    	<echo message="Tomcat home is: ${tomcat.home}" />        
         <echo message="Excluding from build: ${build.excludes}" />
     </target>
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/12/05 17:29:34 $
- * Version: $Revision: 1.597 $
+ * Date   : $Date: 2004/12/09 11:28:34 $
+ * Version: $Revision: 1.598 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,8 @@ OpenCms 5.x.x Caladan - xxx, 2004
 ! XML content editor can now handle multiple elements (max occurs > 1) from the XML schema
 ! XML content now allows validation and error handling in editor with customizable validation rules
 ! Widgets for XML contents can now be configured independent from schema types
+* Fixed issue with setup wizard in JDK 5.0
+! OpenCms now installs and runs with JDK 5.0 (please note: no exhaustive tests have been done so far)
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
 ! Added 'templateone' default module as an extended template demo
