@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/05/15 16:08:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/05/23 12:50:59 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.15 $ $Date: 2000/05/15 16:08:38 $
+ * @version $Revision: 1.16 $ $Date: 2000/05/23 12:50:59 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 	
@@ -77,6 +77,7 @@ public class CmsXmlNav extends A_CmsNavBase {
             throws CmsException {
 			
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+		currentFolder=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + currentFolder;
 		return currentFolder.getBytes();
 	}
 	
@@ -93,9 +94,64 @@ public class CmsXmlNav extends A_CmsNavBase {
      */
     public Object getFolderRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-		  
-   		String rootFolder=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath()+"/";
+		
+		int level=0;
+		// tagcontent determines the folder starting from root folder.
+		// if tagcontent is null, then the navigation of root folder must be showed.
+		if (!tagcontent.equals("")) {
+			try {
+				level=Integer.parseInt(tagcontent);
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
+		}
+		String currentFolder="";
+		if (level<=0) {
+			currentFolder=cms.rootFolder().getAbsolutePath();
+		} else {
+			currentFolder=extractFolder(cms,level);
+		}		
+   		String rootFolder=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + currentFolder;
 		return rootFolder.getBytes();
+	}
+	
+	
+	/** 
+	 * gets the parent folder.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getFolderParent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+		
+		int level=0;
+		// tagcontent determines the folder starting from parent folder.
+		// if tagcontent is null, zero or negative, then the navigation of current
+		// folder must be showed.
+		if (!tagcontent.equals("")) {
+			try {
+				level=Integer.parseInt(tagcontent);
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
+		}
+		String currentFolder="";
+		if (level<=0) {
+			currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+		} else {
+			// level is converted to negative number, so I can use the method 
+			// "extractFolder" for positive and negative numbers. Negative number
+			// determines the parent folder level starting from current folder and
+			// positive number determines the level starting ftom root folder.
+			currentFolder=extractFolder(cms,((-1)*level));
+		}
+   		String parentFolder=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + currentFolder;
+		return parentFolder.getBytes();
 	}
 	
 	
@@ -198,7 +254,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		}
 		String currentFolder="";
 		if (level<=0) {
-			currentFolder=currentFolder=cms.rootFolder().getAbsolutePath();
+			currentFolder=cms.rootFolder().getAbsolutePath();
 		} else {
 			currentFolder=extractFolder(cms,level);
 		}		

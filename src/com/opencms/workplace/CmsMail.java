@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/05/12 08:44:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/23 12:51:29 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,8 +43,8 @@ import java.io.*;
 /**
  * This class is used to send a mail, it uses Threads to send it.
  *
- * @author $Author: a.lucas $
- * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/05/12 08:44:41 $
+ * @author $Author: w.babachan $
+ * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/05/23 12:51:29 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -55,6 +55,8 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	private final String c_MAILSERVER;
 	private final String c_SUBJECT;
 	private final String c_CONTENT;	
+	private final String c_FILE;
+	private final String c_TYPE;	
     
     private String m_defaultSender = null;
 	
@@ -67,7 +69,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	 * @param subject Subject of email.
 	 * @param content Content of email.
 	 */	
-	public CmsMail(A_CmsObject cms,String from, String[] to, String subject, String content)
+	public CmsMail(A_CmsObject cms,String from, String[] to, String subject, String content, String type)
 		throws CmsException{
 		// check sender email address
 		if (from==null) {
@@ -106,6 +108,8 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		c_CONTENT=(content==null?"":content);
 		CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);		
 		c_MAILSERVER=conf.getMailServer();
+		c_TYPE=type;
+		c_FILE="";
 	}
 	
 	/**
@@ -117,7 +121,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	 * @param subject Subject of email.
 	 * @param content Content of email.
 	 */	
-	public CmsMail(A_CmsObject cms,A_CmsUser from, A_CmsUser[] to, String subject, String content)
+	public CmsMail(A_CmsObject cms,A_CmsUser from, A_CmsUser[] to, String subject, String content, String type)
 		throws CmsException{
         // Get WORKPLACE.INI
         CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);		
@@ -161,6 +165,8 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		c_SUBJECT=(subject==null?"":subject);
 		c_CONTENT=(content==null?"":content);
 		c_MAILSERVER=conf.getMailServer();
+		c_TYPE=type;
+		c_FILE="";
 		
 	}
 	
@@ -174,7 +180,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	 * @param subject Subject of email.
 	 * @param content Content of email.	
 	 */	
-	public CmsMail(A_CmsObject cms,A_CmsUser from, A_CmsGroup to, String subject, String content)
+	public CmsMail(A_CmsObject cms,A_CmsUser from, A_CmsGroup to, String subject, String content, String type)
 		throws CmsException{
 
         // Get WORKPLACE.INI
@@ -221,6 +227,8 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		c_SUBJECT=(subject==null?"":subject);
 		c_CONTENT=(content==null?"":content);
 		c_MAILSERVER=conf.getMailServer();
+		c_TYPE=type;
+		c_FILE="";
 	}
 	
 	
@@ -243,7 +251,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 			msg.setFrom(new InternetAddress(c_FROM));
 			msg.setRecipients(Message.RecipientType.TO,to);
 			msg.setSubject(c_SUBJECT,"ISO-8859-1");
-			msg.setContent(c_CONTENT,"text/plain");
+			msg.setContent(c_CONTENT,c_TYPE);
 			msg.setSentDate(new Date());
 			Transport.send(msg);			
 		} catch(Exception e) {

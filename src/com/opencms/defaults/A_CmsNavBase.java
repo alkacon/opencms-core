@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsNavBase.java,v $
- * Date   : $Date: 2000/05/02 14:21:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/05/23 12:50:59 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.8 $ $Date: 2000/05/02 14:21:15 $
+ * @version $Revision: 1.9 $ $Date: 2000/05/23 12:50:59 $
  */
 public abstract class A_CmsNavBase extends CmsXmlTemplate {	
 	
@@ -73,6 +73,19 @@ public abstract class A_CmsNavBase extends CmsXmlTemplate {
      * @exception CmsException
      */
     protected abstract Object getFolderCurrent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException;
+	
+	/** 
+	 * gets the parent folder.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getFolderParent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException;
 	
 	

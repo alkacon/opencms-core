@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/05/18 12:43:23 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/05/23 12:51:14 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2000/05/18 12:43:23 $
+ * @version $Revision: 1.36 $ $Date: 2000/05/23 12:51:14 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -507,6 +507,25 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
+    public Object getPathUri(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+		
+		String path=cms.getRequestContext().getUri();
+		path=path.substring(0,path.lastIndexOf("/")+1);
+		path=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath()+path;
+		
+      	return path.getBytes();
+	}
+	
+	
+	/** 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
     public Object getFileUri(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 
@@ -524,7 +543,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
     public Object getUri(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 		
-      	return cms.getRequestContext().getUri().substring(1).getBytes();
+      	return (((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + cms.getRequestContext().getUri()).getBytes();
 	}
 
 	
