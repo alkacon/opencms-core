@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2003/09/08 09:28:27 $
+ * Version: $Revision: 1.116 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -50,7 +51,6 @@ import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
-import org.opencms.report.I_CmsReport;
 import com.opencms.util.SqlHelper;
 
 import java.io.ByteArrayInputStream;
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.115 $ $Date: 2003/09/05 12:22:25 $
+ * @version $Revision: 1.116 $ $Date: 2003/09/08 09:28:27 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -379,8 +379,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // if an existing resource is deleted, it will be finally removed now
                 // but we have to reuse its id in order to avoid orphanes in the online project
                 newStructureId = res.getId();
+                newState = I_CmsConstants.C_STATE_CHANGED;
+                
+                // remove the existing file
                 removeFile(project, res);
-                newState = I_CmsConstants.C_STATE_CHANGED;                
+                // the properties of the removed file are deleted 
+                // during the next publishing process!                           
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
             }
@@ -615,10 +619,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
         
         // TODO VFS links: refactor all upper methods to support the VFS link type param
-        
-        
-        
-        
+           
         CmsFile newFile = new CmsFile(
             new CmsUUID(),
             new CmsUUID(),
@@ -1150,13 +1151,19 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      */
     public void deleteAllProperties(int projectId, CmsResource resource) throws CmsException {
         Connection conn = null;
-        PreparedStatement stmt = null;
+        PreparedStatement stmt = null;  
+        String resourceName = resource.getFullResourceName();
+        
+        // add folder separator to folder name if it is not present
+        if (resource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID  && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        }
     
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETEALL");
             stmt.setString(1, resource.getResourceId().toString());
-            stmt.setString(2, resource.getFullResourceName());
+            stmt.setString(2, resourceName);
             stmt.executeUpdate();
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -2909,10 +2916,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             // delete the structure recourd
             stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_STRUCTURE_DELETE_BY_STRUCTUREID");
-                stmt.setString(1, resource.getId().toString());
-                stmt.executeUpdate();
+            stmt.setString(1, resource.getId().toString());
+            stmt.executeUpdate();
 
-                m_sqlManager.closeAll(null, stmt, null);
+            m_sqlManager.closeAll(null, stmt, null);
 
             // count the references to the resource
             linkCount = countVfsLinks(currentProject.getId(), resource.getResourceId());
@@ -3798,26 +3805,15 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.executeUpdate();
 
                 m_sqlManager.closeAll(null, stmt, null);
-
-                if (offlineResource.getState() == I_CmsConstants.C_STATE_CHANGED && existsStructureId(I_CmsConstants.C_PROJECT_ONLINE_ID, offlineResource.getId())) {
-                    // update the online structure record
-                    stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE_STRUCTURE");
-                    stmt.setString(1, offlineResource.getParentId().toString());
-                    stmt.setString(2, offlineResource.getResourceId().toString());
-                    stmt.setString(3, offlineResource.getResourceName());
-                    stmt.setInt(4, I_CmsConstants.C_STATE_UNCHANGED);
-                    stmt.setString(5, offlineResource.getId().toString());
-                    stmt.executeUpdate();
-                } else {
-                    // create the structure record online
-                    stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_STRUCTURE_WRITE");
-                    stmt.setString(1, offlineResource.getId().toString());
-                    stmt.setString(2, offlineResource.getParentId().toString());
-                    stmt.setString(3, offlineResource.getResourceId().toString());
-                    stmt.setString(4, offlineResource.getResourceName());
-                    stmt.setInt(5, I_CmsConstants.C_STATE_UNCHANGED);
-                    stmt.executeUpdate();
-                }
+                
+                // create the structure record online
+                stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_STRUCTURE_WRITE");
+                stmt.setString(1, offlineResource.getId().toString());
+                stmt.setString(2, offlineResource.getParentId().toString());
+                stmt.setString(3, offlineResource.getResourceId().toString());
+                stmt.setString(4, offlineResource.getResourceName());
+                stmt.setInt(5, I_CmsConstants.C_STATE_UNCHANGED);
+                stmt.executeUpdate();                
 
             }
         } catch (SQLException e) {
