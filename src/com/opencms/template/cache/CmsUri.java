@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/05/07 16:22:56 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/05/08 13:04:00 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -59,7 +59,7 @@ public class CmsUri {
      * A Vector with Element Definitions. For normal URI's this Vector contains
      * only a definition for the body-element.
      */
-    private Vector m_elementDefinitions = new Vector();
+    private CmsElementDefinitionCollection m_elementDefinitions = null;
 
     //private CmsCacheDirectives m_mergedCacheDirectives();
 
@@ -72,7 +72,7 @@ public class CmsUri {
      */
     public CmsUri(CmsElementDescriptor startingElement, String readAccessGroup,
         CmsElementDefinition def){
-        this(startingElement, readAccessGroup, new Vector());
+        this(startingElement, readAccessGroup, new CmsElementDefinitionCollection());
         m_elementDefinitions.add(def);
     }
 
@@ -84,7 +84,7 @@ public class CmsUri {
      * @param definitions a vector of definitions for elements.
      */
     public CmsUri(CmsElementDescriptor startingElement, String readAccessGroup,
-        Vector definitions) {
+        CmsElementDefinitionCollection definitions) {
         m_startingElement = startingElement;
         m_readAccessGroup = readAccessGroup;
         m_elementDefinitions = definitions;
@@ -93,7 +93,7 @@ public class CmsUri {
     public byte[] callCanonicalRoot(CmsStaging staging, CmsObject cms, Hashtable parameters) throws CmsException  {
         System.err.println("*** CANONICAL ROOT REQUESTED for " + m_startingElement.getClassName() + "/" + m_startingElement.getTemplateName());
         A_CmsElement elem = staging.getElementLocator().get(cms, m_startingElement, parameters);
-        return elem.getContent(staging, cms, parameters);
+        return elem.getContent(staging, cms, m_elementDefinitions, parameters);
     }
 
 }

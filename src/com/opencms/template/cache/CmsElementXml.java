@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/05/07 16:22:56 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/05/08 13:04:00 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -61,14 +61,17 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
      * @param name the name of this element-definition.
      * @param className the classname of this element-definition.
      * @param cd Cache directives for this element
-     * @param defs Vector with ElementDefinitions for this element.
+     * @param defs CmsElementDefinitionCollection for this element.
      */
-    public CmsElementXml(String className, String templateName, CmsCacheDirectives cd, Vector defs) {
+    public CmsElementXml(String className, String templateName, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
         init(className, templateName, cd, defs);
     }
 
-    public byte[] getContent(CmsStaging staging, CmsObject cms, Hashtable parameters) throws CmsException  {
+    public byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection elDefs, Hashtable parameters) throws CmsException  {
         byte[] result = null;
+
+        // Merge own element definitions with our parent's definitions
+        CmsElementDefinitionCollection mergedElDefs = new CmsElementDefinitionCollection(elDefs, m_elementDefinitions);
 
         // Get template class.
         // In classic mode, this is donw by the launcher.
@@ -102,7 +105,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
             //variant = getVariant(templateClass.getKey(cms, m_templateName, parameters, null));
             variant = getVariant(cd.getCacheKey(cms, parameters));
             if(variant != null) {
-                result = resolveVariant(cms, variant, staging, parameters);
+                result = resolveVariant(cms, variant, staging, mergedElDefs, parameters);
             }
         }
         if(variant == null) {
@@ -115,8 +118,9 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                     System.err.println(toString() + " ### Element not cacheable. Generating variant temporarily.");
                 }
                 result = templateClass.getContent(cms, m_templateName, m_elementName, parameters);
-                if(result == null) {
-                    System.err.println(toString() + " ########## WARNING! RESULT IST NULL!");
+                variant = getVariant(cd.getCacheKey(cms, parameters));
+                if(variant != null) {
+                    result = resolveVariant(cms, variant, staging, mergedElDefs, parameters);
                 }
             }
             catch(CmsException e) {

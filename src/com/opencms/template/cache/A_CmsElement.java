@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/05/07 16:22:56 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/05/08 13:04:00 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -66,7 +66,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /**
      * A Vector with definitions declared in this element.
      */
-    protected Vector m_elementDefinitions;
+    protected CmsElementDefinitionCollection m_elementDefinitions;
 
 
     /** Hashtable for element variant cache */
@@ -79,7 +79,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         m_className = className;
         m_templateName = templateName;
         m_cacheDirectives = cd;
-        m_elementDefinitions = new Vector();
+        m_elementDefinitions = new CmsElementDefinitionCollection();
         m_variants = new Hashtable();
     }
 
@@ -91,7 +91,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @param cd Cache directives for this element
      * @param defs Vector with ElementDefinitions for this element.
      */
-    protected void init(String className, String templateName, CmsCacheDirectives cd, Vector defs) {
+    protected void init(String className, String templateName, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
         m_className = className;
         m_templateName = templateName;
         m_cacheDirectives = cd;
@@ -139,7 +139,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * Returns a Vector with all ElementDefinitions
      * @returns a Vector with all ElementDefinitions.
      */
-    public Vector getAllDefinitions() {
+    public CmsElementDefinitionCollection getAllDefinitions() {
         return m_elementDefinitions;
     }
 
@@ -149,7 +149,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @return Element definition of <em>name</em>
      */
     public CmsElementDefinition getElementDefinition(String name) {
-        CmsElementDefinition result = null;
+        /*CmsElementDefinition result = null;
         int numDefs = m_elementDefinitions.size();
         for(int i = 0; i < numDefs; i++) {
             CmsElementDefinition loop = (CmsElementDefinition)m_elementDefinitions.elementAt(i);
@@ -158,13 +158,14 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                 result = loop;
             }
         }
-        return result;
+        return result;*/
+        return (CmsElementDefinition)m_elementDefinitions.get(name);
     }
 
     public CmsCacheDirectives getCacheDirectives() {
         return m_cacheDirectives;
     }
-    public abstract byte[] getContent(CmsStaging staging, CmsObject cms, Hashtable parameters) throws CmsException;
+    public abstract byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection efDefs, Hashtable parameters) throws CmsException;
 
     protected I_CmsTemplate getTemplateClass(CmsObject cms, String classname) throws CmsException {
         Object o = CmsTemplateClassManager.getClassInstance(cms, classname);
@@ -175,7 +176,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     }
 
 
-    public byte[] resolveVariant(CmsObject cms, CmsElementVariant variant, CmsStaging staging, Hashtable parameters) {
+    public byte[] resolveVariant(CmsObject cms, CmsElementVariant variant, CmsStaging staging, CmsElementDefinitionCollection elDefs, Hashtable parameters) {
         if(C_DEBUG) System.err.println("= Start resolving variant " + variant);
         int len = variant.size();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -194,7 +195,9 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                     // we have to resolve the element link right NOW!
                     String lookupName = ((CmsElementLink)o).getElementName();
                     if(C_DEBUG) System.err.println("= Trying to resolve link \"" + lookupName +"\".");
-                    CmsElementDefinition elDef = getElementDefinition(lookupName);
+                    System.err.println("*+*+*+ ELEMENTDEFS");
+                    System.err.println(elDefs.toString());
+                    CmsElementDefinition elDef = elDefs.get(lookupName);
                     if(elDef != null) {
                         A_CmsElement subEl = staging.getElementLocator().get(cms, elDef.getDescriptor(), parameters);
                         if(C_DEBUG) System.err.println("= Element defintion for \"" + lookupName +"\" says: ");
@@ -202,7 +205,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                         if(C_DEBUG) System.err.println("= -> Template : " + elDef.getTemplateName());
                         if(subEl != null) {
                             if(C_DEBUG) System.err.println("= Element object found for \"" + lookupName +"\". Calling getContent on this object. ");
-                            byte[] buffer = subEl.getContent(staging, cms, parameters);
+                            byte[] buffer = subEl.getContent(staging, cms, elDefs, parameters);
                             if(buffer != null) {
                                 baos.write(buffer);
                             }

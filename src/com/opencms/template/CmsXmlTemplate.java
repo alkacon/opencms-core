@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/05/07 16:22:29 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2001/05/08 13:03:51 $
+* Version: $Revision: 1.55 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.54 $ $Date: 2001/05/07 16:22:29 $
+ * @version $Revision: 1.55 $ $Date: 2001/05/08 13:03:51 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -877,7 +877,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 //currElem.addVariant(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector), variant);
                 currElem.addVariant(currElem.getCacheDirectives().getCacheKey(cms, parameters), variant);
             }
-            return ((CmsElementXml)currElem).resolveVariant(cms, variant, staging, parameters);
+            //return ((CmsElementXml)currElem).resolveVariant(cms, variant, staging, parameters);
+            return null;
         } else {
             // Classic way. Staging is not activated, so let's genereate the template as usual
             // Try to process the template file
@@ -1122,7 +1123,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     }
 
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
-        Vector subtemplateDefinitions = new Vector();
+        CmsElementDefinitionCollection subtemplateDefinitions = new CmsElementDefinitionCollection();
 
         try {
             CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, null, parameters, null);
@@ -1139,17 +1140,24 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 String elName = (String)subtemplates.elementAt(i);
                 String className = null;
                 String templateName = null;
+                String templateSelector = null;
 
-                className = getTemplateClassName(elName, xmlTemplateDocument, parameters);
-                templateName = getTemplateFileName(elName, xmlTemplateDocument, parameters);
+                if(xmlTemplateDocument.hasSubtemplateClass(elName)) {
+                    className = xmlTemplateDocument.getSubtemplateClass(elName);
+                }
 
-                if(className != null && templateName != null) {
-                    CmsElementDefinition elDef = new CmsElementDefinition(elName, className, templateName);
-                    subtemplateDefinitions.addElement(elDef);
-                } else {
-                    // This template file includes a subelement not exactly defined.
-                    // The name of it's template class is missing at the moment.
-                    // TODO: What shall we to here?
+                if(xmlTemplateDocument.hasSubtemplateFilename(elName)) {
+                    templateName = xmlTemplateDocument.getSubtemplateFilename(elName);
+                }
+
+                if(xmlTemplateDocument.hasSubtemplateSelector(elName)) {
+                    templateSelector = xmlTemplateDocument.getSubtemplateSelector(elName);
+                }
+                Hashtable templateParameters = xmlTemplateDocument.getParameters(elName);
+
+                if(className != null || templateName != null || templateSelector != null || templateParameters.size() > 0) {
+                    CmsElementDefinition elDef = new CmsElementDefinition(elName, className, templateName, templateSelector, templateParameters);
+                    subtemplateDefinitions.add(elDef);
                 }
             }
         } catch(Exception e) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDefinition.java,v $
-* Date   : $Date: 2001/05/03 16:00:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/08 13:04:00 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import com.opencms.file.*;
  *
  * @author: Andreas Schouten
  */
-public class CmsElementDefinition {
+public class CmsElementDefinition implements Cloneable {
 
     /**
      * The name of this element.
@@ -108,6 +108,48 @@ public class CmsElementDefinition {
     }
 
     /**
+     * Join constructor.
+     * @param primary Original object 1 with primary rights
+     * @param secondary Original object 2 with primary rights
+     */
+    public CmsElementDefinition(CmsElementDefinition primary, CmsElementDefinition secondary) {
+
+        m_elements = new Hashtable();
+
+        if(primary != null) {
+            m_name = primary.m_name;
+            m_className = primary.m_className;
+            m_templateName = primary.m_templateName;
+            m_templateSelector = primary.m_templateSelector;
+        }
+
+        if(secondary != null) {
+            if(m_name == null) {
+                m_name = secondary.m_name;
+            }
+
+            if(m_className == null) {
+                m_className = secondary.m_className;
+            }
+
+            if(m_templateName == null) {
+                m_templateName = secondary.m_templateName;
+            }
+
+            if(m_templateSelector == null) {
+                m_templateSelector = secondary.m_templateSelector;
+            }
+
+            m_elements.putAll(secondary.m_elements);
+        }
+
+        // Join parameters
+        if(primary != null) {
+            m_elements.putAll(primary.m_elements);
+        }
+    }
+
+    /**
      * Get an element descriptor for looking up the
      * corresponding element of this definition using the element locator
      * @return Element descriptor for this definition
@@ -140,4 +182,27 @@ public class CmsElementDefinition {
         return m_templateName;
     }
 
+    public String toString() {
+        StringBuffer result = new StringBuffer();
+
+        result.append("DEF: " + m_name + " ");
+
+        String part1 = m_className==null?"":m_className.substring(m_className.lastIndexOf(".") + 1);
+        String part2 = m_templateName==null?"":m_templateName.substring(m_templateName.lastIndexOf("/") + 1);
+        String part3 = m_templateSelector==null?"":m_templateSelector.substring(m_templateSelector.lastIndexOf("/") + 1);
+
+        result.append(part1 + "/" + part2 + "/" + part3 + " (");
+
+        if(m_elements != null) {
+            Enumeration params = m_elements.keys();
+            while(params.hasMoreElements()) {
+                String name = (String)params.nextElement();
+                String value = (String)m_elements.get(name);
+                result.append(name + "=" + value);
+                if(params.hasMoreElements()) result.append(", ");
+            }
+            result.append(")");
+        }
+        return result.toString();
+    }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2001/05/07 16:22:56 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/05/08 13:04:00 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -60,14 +60,14 @@ public class CmsElementDump extends A_CmsElement {
      * @param name the name of this element-definition.
      * @param className the classname of this element-definition.
      * @param cd Cache directives for this element     *
-     * @param defs Vector with ElementDefinitions for this element.
+     * @param defs CmsElementDefinitionCollection for this element.
      */
-    public CmsElementDump(String className, String templateName, CmsCacheDirectives cd, Vector defs) {
+    public CmsElementDump(String className, String templateName, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
         init(className, templateName, cd, defs);
     }
 
 
-    public byte[] getContent(CmsStaging staging, CmsObject cms, Hashtable parameters) throws CmsException  {
+    public byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection elDefs, Hashtable parameters) throws CmsException  {
         byte[] result = null;
 
         // Get template class.
@@ -95,7 +95,7 @@ public class CmsElementDump extends A_CmsElement {
         }
 
         if(variant != null) {
-            result = resolveVariant(cms, variant, staging, parameters);
+            result = resolveVariant(cms, variant, staging, elDefs, parameters);
         } else {
             // This element was not found in the variant cache.
             // We have to generate it.

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/05/03 16:00:51 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/05/08 13:03:51 $
+* Version: $Revision: 1.36 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2001/05/03 16:00:51 $
+ * @version $Revision: 1.36 $ $Date: 2001/05/08 13:03:51 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -310,6 +310,30 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         else {
             return null;
         }
+    }
+
+    /**
+     * Get a hashtable containing all parameters and thies values of a given subelement definition.
+     * @param elementName Name of the subelement.
+     * @return Enumeration of all names.
+     * @exception CmsException
+     */
+    public Hashtable getParameters(String elementName) throws CmsException {
+        Hashtable result = new Hashtable();
+        Element elementDefinition = getData("elementdef." + elementName);
+        NodeList parameterTags = elementDefinition.getChildNodes();
+
+        int numElements = parameterTags.getLength();
+        for(int i = 0;i < numElements;i++) {
+            Node n = (Node)parameterTags.item(i);
+            if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
+                String name = ((Element)n).getAttribute("name");
+                if(name != null && !"".equals(name)) {
+                    result.put(name, getTagValue((Element)n));
+                }
+            }
+        }
+        return result;
     }
 
     /**
