@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/05/21 15:18:54 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1.12
  */
@@ -152,13 +152,13 @@ public class CmsSimpleEditor extends CmsEditor {
      * 
      * @see org.opencms.workplace.editor.CmsEditor#actionExit()
      */
-    public void actionExit() throws IOException {    
+    public void actionExit() throws IOException, JspException {    
         if (getAction() == ACTION_CANCEL) {
             // save and exit was canceled
             return;
         }
-        // redirect to the workplace explorer view
-        getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));
+        // close the editor
+        actionClose();
     }
 
     /**
@@ -197,4 +197,30 @@ public class CmsSimpleEditor extends CmsEditor {
            setAction(ACTION_SAVE);
         }
     }
+    
+    /**
+     * Closes the editor and redirects to the workplace or the resource depending on the editor mode.<p>
+     * 
+     * @throws IOException if a redirection fails
+     * @throws JspException if including a JSP fails
+     */
+    protected void actionClose() throws IOException, JspException {
+        if ("true".equals(getParamDirectedit())) {
+            // editor is in direct edit mode
+            if (!"".equals(getParamBacklink())) {
+                // set link to the specified back link target
+                setParamCloseLink(getJsp().link(getParamBacklink()));
+            } else {
+                // set link to the edited resource
+                setParamCloseLink(getJsp().link(getParamResource()));
+            }
+            // save initialized instance of this class in request attribute for included sub-elements
+            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+            // load the common JSP close dialog
+            getJsp().include(C_FILE_DIALOG_CLOSE);
+        } else {
+            // redirect to the workplace explorer view 
+            sendCmsRedirect(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+        }
+    }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/05/21 15:18:54 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editor.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.1
  */
@@ -75,8 +75,8 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
      */
     public String getEditorUri(String resource, CmsJspActionElement jsp) {
         // first try to get the "edit as text" and "load default" parameters from the request
-        boolean editAsText = "true".equals(jsp.getRequest().getParameter(CmsEditor.PARAM_EDITASTEXT));
-        boolean loadDefault = "true".equals(jsp.getRequest().getParameter(CmsEditor.PARAM_LOADDEFAULT));
+        boolean editAsText = Boolean.valueOf(jsp.getRequest().getParameter(CmsEditor.PARAM_EDITASTEXT)).booleanValue();
+        boolean loadDefault = Boolean.valueOf(jsp.getRequest().getParameter(CmsEditor.PARAM_LOADDEFAULT)).booleanValue();
         // initialize resource type with -1 (unknown resource type)
         int resTypeId = -1;
         String resourceType = "";
@@ -119,7 +119,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         try {
             // check the presence of the editor
             jsp.getCmsObject().readFileHeader(editorUri);
-        } catch (CmsException e) {
+        } catch (Throwable t) {
             // preferred or selected editor not found, try default editor
             editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getDefaultEditorUri(jsp.getRequestContext(), resourceType, userAgent);
         }

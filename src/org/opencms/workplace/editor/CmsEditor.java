@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/05/21 15:18:54 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.1.12
  */
@@ -204,9 +204,22 @@ public abstract class CmsEditor extends CmsDialog {
      * @return the default action for a "cancel" button
      */
     public String buttonActionCancel() {
-        String target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
-        return "onClick=\"top.location.href='" + target + "';\"";
-    }
+        String target = null;
+        if ("true".equals(getParamDirectedit())) {
+            // editor is in direct edit mode
+            if (!"".equals(getParamBacklink())) {
+                // set link to the specified back link target
+                target = getParamBacklink();
+            } else {
+                // set link to the edited resource
+                target = getParamResource();
+            }
+        } else {
+            // in workplace mode, show explorer view
+            target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+        }
+        return "onclick=\"top.location.href='" + getJsp().link(target) + "';\"";
+    }    
     
     /**
      * Returns the URI to the editor resource folder where button images and javascripts are located.<p>

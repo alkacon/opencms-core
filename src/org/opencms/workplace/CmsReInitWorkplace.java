@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsReInitWorkplace.java,v $
- * Date   : $Date: 2004/05/06 08:06:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/21 15:19:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
  * Provides an output window for reinitializind of the CmsWorkplace<p> 
  *
  * @author  Michael Emmerich(m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.10
  */
@@ -79,10 +78,8 @@ public class CmsReInitWorkplace extends CmsReport {
         
     /**
      * Performs the move report, will be called by the JSP page.<p>
-     * 
-     * @throws JspException if problems including sub-elements occur
      */
-    public void actionReport() throws JspException {
+    public void actionReport() {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/05/13 11:09:35 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2004/05/21 15:18:54 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 5.1.12
  */
@@ -330,33 +330,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             names.add(value);
         }        
         return buildSelect(attributes, names, names, -1, false);
-    }
-    
-    /**
-     * Returns the editor action for a "cancel" button.<p>
-     * 
-     * This overwrites the cancel method of the CmsDialog class.<p>
-     * 
-     * Always use this value, do not write anything directly in the html page.<p>
-     * 
-     * @return the default action for a "cancel" button
-     */
-    public String buttonActionCancel() {
-        String target = null;
-        if ("true".equals(getParamDirectedit())) {
-            // editor is in direct edit mode
-            if (!"".equals(getParamBacklink())) {
-                // set link to the specified back link target
-                target = getParamBacklink();
-            } else {
-                // set link to the edited resource
-                target = getParamResource();
-            }
-        } else {
-            // in workplace mode, show explorer view
-            target = CmsWorkplaceAction.C_JSP_WORKPLACE_URI;
-        }
-        return "onclick=\"top.location.href='" + getJsp().link(target) + "';\"";
     }
     
     /**
