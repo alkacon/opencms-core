@@ -321,7 +321,7 @@ public abstract class A\_CmsContentDefinition implements I\_CmsContent\{\\
 \}
 \end{java}
 
-The five methods showed in this code snippet are used to provide some data required by
+The five methods shown in this code snippet are used to provide some data required by
 the Backoffice module for generating the output. Lets consider
 the news example: a Backoffice tool would be necessary to add, edit or
 delete news entries. Therefore a list of available news entries must be
@@ -332,7 +332,7 @@ Since this kind of display is very common for many different kinds of
 content types (news, guestbooks etc.) OpenCms provides some general
 classes for generating Backoffice modules. Those classes depend on
 information given by Content Definition, like which filters are available
-or which labels the columns in the list should have. These information are
+or which labels the columns in the list should have. This information is
 provided by the methods that override those of the abstract class:
 
 \begin{itemize}
@@ -462,7 +462,7 @@ this way:
 
 The {\meth getFieldMethods} method returns a Vector of {\class java.lang.reflect.Method} objects.
 These objects are used by the Backoffice class to invoke the get methods that return
-the values for the columns. The catched {\class NoSuchMethodException} will only 
+the values for the columns. The caught {\class NoSuchMethodException} will only 
 be thrown if one of the method's names is not typed correctly.\\
 
 As stated before a Content Definition should provide filter-methods that show a 

@@ -1,0 +1,116 @@
+\chapter{Static Export}
+
+\section{Introduction}
+
+Since version 4.6 OpenCms has the feature "Static Export". With this feature it is possible to export the static resources to a docroot in the server filesystem. During this export all links to this static resources and back to dynamic resources will be adjusted automatically. In this scenario it is possible that a traditional web server like Apache (\rqhttp{http://httpd.apache.org}{http://httpd.apache.org}) serves all static resources and OpenCms delivers all dynamic resources (like forms or personalized sites). This splits up the work to each software that can handle the specific request in a better way.
+
+\section{Setting up Static Export}
+
+The static export is already preset for a tomcat standalone installation, so you don't have to modify anything if you use tomcat in standalone-mode and can jump to the next section.
+
+In the file opencms.properties (located in \texttt{webapps/opencms/WEB-INF/config/}) you can enable static export:
+
+\texttt{staticexport.enabled = true}
+
+Note: If you enable the static export your publishing cycle will slow down because of the additional work of exporting the resources to the server filesystem.
+
+After this you have to define the export path on your server. This path should be the http-servers docroot or a subdirectory of it. If you define a relative path it is relative to your webapplication.
+
+\texttt{staticexport.path = export/}
+
+Now you have to define some url\_prefixes so the static export can adjust all links to the correct location (http-server or OpenCms).
+
+\begin{verbatim}
+url_prefix_export = /${WEB_APP_NAME}/export
+url_prefix_http   = /${WEB_APP_NAME}/opencms
+\end{verbatim}
+
+The string \texttt{\${WEB\_APP\_NAME}} will be replaced by the current name of the webapplication. In normal installations this would be opencms.
+
+Now you can define resource(s) the static export should start with. This can be a single or multiple file(s) or folder(s).
+
+\texttt{staticexport.start = /}
+
+All the other properties for static export are advanced properties. In normal installations you will never need to adjust them on your own. If you are interested in them you should have a look into the comments of the opencms.properties file.
+
+\section{How to use static export}
+
+To get used to the static export you should create two pages like \texttt{/index.html} and \texttt{/page1.html}. You should add some content to this pages and create a link from each page to the other with the HTML edit control. Now you can publish your project. If static export is enabled all changed resources will be exported to the server filesystem into the folder you have specified. The two links will be adjusted, so they will refer to each other even after the export. You can browse the two resources by pointing your explorer or navigator to the following location:
+
+\texttt{http://yourserver.com:8080/opencms/export/index.html}
+
+This is the static copy of the resource you can reach with:
+
+\texttt{http://yourserver.com:8080/opencms/opencms/index.html}
+
+\section{What have I to do?}
+
+OpenCms needs your help to adjust all links between resources. Therefore you have to mark all links in the templates (mastertemplates, frametemplates, contenttemplates and elements) with the tag \texttt{<link>}. In this link tag you define the link to another resource within the OpenCms system (No scheme, server name, port or webapplication name is allowed). You can add url parameters to the link, if you need:
+
+\begin{quote}
+\begin{verbatim}
+href="]]><link>/index.html</link><![CDATA["
+href="]]><link>/news.html?newsid=7</link><![CDATA["
+src="]]><link>/pics/logo.gif</link><![CDATA["
+\end{verbatim}
+\end{quote}
+
+An editor can use the HTML edit control. OpenCms will take care about links added with the control. Therefore it uses the JTidy library to find all "a href" and "img src" tags and inserts the needed OpenCms link tag.
+
+A module developer has to call the method getLinkSubstitution to get adjusted links:
+
+\texttt{String adjustedLink = cms.getLinkSubstitution(String link);}
+
+You need to call this method for dynamic creation of pages. E.g. a navigation element that creates a list of links dynamically should call \texttt{getLinkSubstitution} for each navigation entry.
+
+\section{How does static export work?}
+
+After the publishing to the online project is done OpenCms starts to export all static resources. It starts with the resource(s) you have defined in the \texttt{opencms.properties} file. After the export of this resource(s) it will follow all links defined in the link tags or substituted with the \texttt{getLinkSubstitution } method. These resources will be exported, too. This cycle will end if all resources are exported.
+
+A next run of the static export will only export the changed resources. A resource is marked as changed, if one of the resources this resource depends on was changed. OpenCms will find the "normal" dependencies like mastertemplate, frametemplate, contenttemplate and elements. Additional dependencies like dependencies for dynamic navigation templates or displaying content definitions you have to register yourself. How to register these dependencies you have learned in the chapter about using the element cache.
+
+\section{How to control what is exported?}
+
+You can control the export behaviour of resources by adding properties to that resource. The property "\texttt{export}" controls if and how the resource will be exported. The following values are possible:
+
+\begin{itemize}
+\item false:\\
+The resource will never be touched by the export (not exported and no link adjustment)
+
+\item dynamic:\\
+The resource is dynamic. It will not be exported. All requests will be delivered by OpenCms. A link to this resource will be adjusted to a link into the OpenCms system.
+
+\item https:\\
+The resource is dynamic. A link to this resource will be adjusted to a link into the OpenCms system. Additionally the scheme will be set to https. You need to configure OpenCms and the web server to handle https requests.
+
+\item true, or no property:\\
+This is a static resource. The resource will be exported to the docroot of the web server.
+\end{itemize}
+
+You can control the name of an exported resource with the property "\texttt{exportname}". This is useful for modules which reside in the folder 
+
+\texttt{/system/modules/YOURMODULENAME/YOURMODULEFILES}. 
+
+If you want to reach the resource with a shorter and nicer URL you can define the "\texttt{exportname}" property. You should add it to the folder \texttt{YOURMODULENAME} and set it to a nice short path (e.g. \texttt{/YOURSHORTMODULENAME/}). After the export was done, you can reach your module with the URL:
+
+\texttt{/opencms/export/YOURSHORTMODULENAME/YOURMODULEFILES}
+
+instead of
+
+\texttt{/opencms/export/system/modules/YOURMODULENAME/YOURMODULEFILES}.
+
+Note: You can control single resources or complete folders with all sub resources by adding the property "\texttt{export}" and "\texttt{exportname}".
+
+\section{How to export resources with parameters?}
+
+OpenCms will even export static resource with parameters:
+
+\begin{quote}
+\begin{verbatim}
+/news.html?newsid=7&channelid=25 -> /news_1.html
+/news.html?newsid=44&channelid=3 -> /news_2.html
+...
+\end{verbatim}
+\end{quote}
+
+The parameters will be substituted to a consecutive number. There is no relationship between the consecutive number and the URL parameters.

@@ -16,7 +16,7 @@ workplace template class and then point out the special needs that are
 required to use the predefined Backoffice super class.
 
 \section {Workplace Classes in general}
-In principle, workplace template classes are written the same way than
+In principle, workplace template classes are written the same way as
 normal template classes, they contain a getContent method that is used
 to generate the output of this class which is done with the same three
 steps:
@@ -59,12 +59,6 @@ picsUrl()&
 User method to generate an URL for the system pics folder. \\ \hline
 userName()&
 User method to get the name of the user.\\ \hline
-getFonts()&
-Used for creating a select box. Gets all fonts available in the workplace screens. \\ \hline
-getFontSizes()&
-Used for creating a select box. Gets all fonts available in the workplace screens. \\ \hline
-getFontStyles()&
-Used for creating a select box. Gets all fonts available in the workplace screens. \\ \hline
 \end{tabular}
 \caption[Methods]{Methods}
 \label{CmsWPClass}
@@ -82,8 +76,8 @@ method for a workplace class would start like this:
 public byte[] getContent(CmsObject cms, String templateFile,\\
 \jtabd  String elementName, Hashtable parameters,\\
 \jtabd  String templateSelector) throws CmsException \{\\
-\jtabe 		CmsXmlWpTemplateFile xmlTemplateDocument =\\
-\jtabe 		new CmsXmlWpTemplateFile(cms,templateFile);\\
+\jtabe      CmsXmlWpTemplateFile xmlTemplateDocument =\\
+\jtabe      new CmsXmlWpTemplateFile(cms,templateFile);\\
 ....\\
 \}\\
 \end{java}
@@ -181,7 +175,7 @@ generated with the predefined classes looks like figure~\ref{AbstactBO}.
 \includegraphics[clip,width=\sgw]{pics/backOffice/list}
 \end{center}
 \caption[List view in the Abstract Backoffice]
-	{List view in the Abstract Backoffice}
+    {List view in the Abstract Backoffice}
 \label{AbstactBO}\jtabd
 \end{figure}
 
@@ -261,7 +255,7 @@ the URL-Parameter ?id=value .
 the data object.
 \end{itemize}
 
-It is important that the template classes for those dialogs is able to
+It is important that the template classes for those dialogs are able to
 check the entered data for correct inputs before storing the values in
 the Content Definition. For example, it should be checked  if a given
 date is correct or an email address is formed after the correct syntax.
@@ -282,7 +276,7 @@ if all data values are non empty,  to create a new Content Definition
 object with the given data and finally to store it in the data storage.
 
 %====================================================================
-\section{Changes to the Abstract Backoffice class in OpenCms 4.4}
+\section{Changes to the Abstract Backoffice class since OpenCms 4.4}
 OpenCms uses the abstract backoffice class {\name A\_CmsBackOffice} from the
 package  \\
 {\name com.opencms.defaults} to make the writing of new backoffice 
@@ -317,15 +311,15 @@ The modifications to the existing version are highlighted.
 
 \begin{itemize}
 \item A\_CmsContentDefinition cd: gives the correct instance of the Content Definition
-	to the method. This mehtod is either a new (empty) CD or a CD which includes
-	an existing dataset.This way you can always access the correct CD, without 
-	fetching it with your own programm code.
+    to the method. This method is either a new (empty) CD or a CD which includes
+    an existing dataset.This way you can always access the correct CD, without 
+    fetching it with your own programm code.
 \item Enumeration keys: Inherits the names of all data which comes from the form
-	(URL and form-paramter). It can be used to determine which parameters had 
-	been on a certain page, when working with forms over multiple pages.
+    (URL and form-paramter). It can be used to determine which parameters had 
+    been on a certain page, when working with forms over multiple pages.
 \item return-value String: The method returns a String. An empty String signals that
-	no error has occured while processing the form. If an error has occured, the 
-	String contains the error-message which will be displayed in the template.
+    no error has occured while processing the form. If an error has occured, the 
+    String contains the error-message which will be displayed in the template.
 \end{itemize}
 
 \subsection{Additional method getSetupUrl}
@@ -394,7 +388,7 @@ and '-1' in case of an integer.
 \subsection{Filling the CD from the template's fields automatically}
 Just like filling the datablocks before, the assignment of the data from the 
 templateform to the CD takes place automatically. The naming scheme for this 
-ist the same as before (Table~\ref{nameConv2}).
+is the same as before (Table~\ref{nameConv2}).
 
 \begin{table}
 \begin{center}
@@ -497,16 +491,16 @@ This way it is possible to have different graduations of the error messages.
 
 \begin{itemize}
 \item <errfieldname\_error>errorcode<errfieldname\_error>: This datablock 
-	defines an error text which is issued when the error code
-	'fieldname\_error' appears.
+    defines an error text which is issued when the error code
+    'fieldname\_error' appears.
 \item <errfieldname>errorcode<errfieldname> This datablock defines
-	an error for the inputfield 'fieldname'. It is used if the 
-	datablock \\
-	'<errfieldname\_error>errorcode<errfieldname\_error>' could
-	not be found.
+    an error for the inputfield 'fieldname'. It is used if the 
+    datablock \\
+    '<errfieldname\_error>errorcode<errfieldname\_error>' could
+    not be found.
 \item <errerror>errorcode<errerror>: This datablock defines an error text for
-	a kind of error. It is used if the datablock 
-	'<errfieldname>errorcode<errfieldname>' could not be found.
+    a kind of error. It is used if the datablock 
+    '<errfieldname>errorcode<errfieldname>' could not be found.
 \end{itemize}
 
 If no error text can be found for the error code, the error code is given 
