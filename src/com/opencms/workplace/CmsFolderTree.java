@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2001/01/24 09:43:27 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2001/01/26 14:41:19 $
+* Version: $Revision: 1.30 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2001/01/24 09:43:27 $
+ * @version $Revision: 1.30 $ $Date: 2001/01/26 14:41:19 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -157,6 +157,9 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
     
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
         boolean access = false;
+        if(res.getState() == C_STATE_DELETED){
+			return false;
+		}
         int accessflags = res.getAccessFlags();
         
         // First check if the user may have access by one of his groups.
