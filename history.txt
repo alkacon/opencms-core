@@ -12,6 +12,7 @@ OpenCms 4.1.48 Arakis - 04 January 2001
 
 * Removed a bug in the mysql and generic driver. 
   Now the projecthandling is correct again.
+* Fixed some window focus problems in HTML edit control.
 
 OpenCms 4.1.47 Arakis - 03 January 2001
 
