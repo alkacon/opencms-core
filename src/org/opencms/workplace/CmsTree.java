@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/08/27 08:58:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/27 11:59:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -73,6 +73,9 @@ public class CmsTree extends CmsWorkplace {
     
     /** The name of the target folder to be loaded */
     private String m_targetFolder;
+    
+    /** The type of the tree (e.g. "copy", "project" etc.) */
+    private String m_treeType;
 
     /**
      * Public constructor.<p>
@@ -81,6 +84,34 @@ public class CmsTree extends CmsWorkplace {
      */
     public CmsTree(CmsJspActionElement jsp) {
         super(jsp);
+    }
+    
+    /**
+     * Returns the HTML for the tree initialization.<p>
+     * 
+     * @param cms the CmsObject
+     * @param encoding the current encoding
+     * @param skinUri the current skin URI
+     * @return the HTML for the tree initialization
+     */
+    public static String initTree(CmsObject cms, String encoding, String skinUri) {
+        StringBuffer retValue = new StringBuffer(512);
+        String servletUrl = cms.getRequestContext().getRequest().getServletUrl();
+        retValue.append("function initTreeResources() {\n");
+        retValue.append("\tinitResources(\"" + encoding + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");
+
+        retValue.append("\taddResourceType(0, \"folder\",\t\"Folder\",\t\"filetypes/folder.gif\");\n");
+        retValue.append("\taddResourceType(2, \"link\",\t\"Link\",\t\"filetypes/link.gif\");\n");
+        retValue.append("\taddResourceType(3, \"plain\",\t\"Text\",\t\"filetypes/plain.gif\");\n");
+        retValue.append("\taddResourceType(4, \"XMLTemplate\",\t\"XML Template\",\t\"filetypes/xmltemplate.gif\");\n");
+        retValue.append("\taddResourceType(5, \"binary\",\t\"Binary\",\t\"filetypes/binary.gif\");\n");
+        retValue.append("\taddResourceType(6, \"image\",\t\"Image\",\t\"filetypes/image.gif\");\n");
+        retValue.append("\taddResourceType(8, \"jsp\",\t\"JSP\",\t\"filetypes/jsp.gif\");\n");
+        retValue.append("\taddResourceType(9, \"page\",\t\"Page\",\t\"filetypes/page.gif\");\n");
+        retValue.append("}\n\n");
+        
+        retValue.append("initTreeResources();\n");
+        return retValue.toString();
     }
     
     /**
@@ -159,10 +190,6 @@ public class CmsTree extends CmsWorkplace {
      * @return the html for the explorer tree
      */
     public String getTree() {
-        // TODO: 
-        // 1. Do variation that also loads resources, not only folders
-        // 2. Ensure "tree window" javascript is modified everywhere the tree is used
-
         String targetFolder = getTargetFolder();
         String startFolder = getStartFolder();
 
@@ -242,7 +269,13 @@ public class CmsTree extends CmsWorkplace {
         }
     
         if (includeFiles()) {
-            result.append("parent.setIncludeFiles(true);");
+            result.append("parent.setIncludeFiles(true);\n");
+        }
+        if (getTreeType() != null) {
+            // this is a popup window tree
+            result.append("parent.setTreeType(\"");
+            result.append(getTreeType());
+            result.append("\");\n");            
         }
         if (newTree()) {
             // new tree 
@@ -265,6 +298,16 @@ public class CmsTree extends CmsWorkplace {
         result.append("}\n");
         return result.toString();
     }
+
+    /**
+     * Returns the type of this tree (e.g. "copy", "project" etc.),
+     * if null this is the default explorer version.<p>
+     * 
+     * @return the current type of the tree (e.g. "copy", "project" etc.)
+     */
+    public String getTreeType() {
+        return m_treeType;
+    }
     
     /**
      * Indicates if only folders or files and folders should be included in the tree.<p>
@@ -273,43 +316,6 @@ public class CmsTree extends CmsWorkplace {
      */
     public boolean includeFiles() {
         return m_includeFiles;
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        setIncludeFiles("true".equals(request.getParameter("includefiles")));
-        boolean rootloaded = "true".equals(request.getParameter("rootloaded"));
-        String resource = request.getParameter("resource");
-        String lastknown = request.getParameter("lastknown");
-        // both "resource" and "lastknown" must be folders
-        if (resource != null) {
-            if (! resource.endsWith("/")) {
-                resource += "/";
-            }
-            if (resource.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (! resource.startsWith(getSettings().getSite()))) {
-                // restrict access to /system/ 
-                resource = "/";   
-            }         
-        }       
-        if ((lastknown != null) && (! lastknown.endsWith("/"))) {
-            lastknown += "/";
-        }
-        if ("/".equals(resource) && !"/".equals(getSettings().getExplorerResource()) && (lastknown == null) && !rootloaded) {
-            // direct load of a new tree with subtree (e.g. when returning from an editor)
-            lastknown = "/";
-            resource = getSettings().getExplorerResource();
-            setNewTree(true);
-        } else if ("/".equals(resource)) {
-            // load new tree if not already loaded
-            setNewTree(! rootloaded);
-        } else {
-            setNewTree(false);
-        } 
-        
-        setTargetFolder(resource);
-        setStartFolder(lastknown);
     }
     
     /**
@@ -322,31 +328,49 @@ public class CmsTree extends CmsWorkplace {
     }
     
     /**
-     * Returns the HTML for the tree initialization.<p>
-     * 
-     * @param cms the CmsObject
-     * @param encoding the current encoding
-     * @param skinUri the current skin URI
-     * @return the HTML for the tree initialization
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
-    public static String initTree(CmsObject cms, String encoding, String skinUri) {
-        StringBuffer retValue = new StringBuffer(512);
-        String servletUrl = cms.getRequestContext().getRequest().getServletUrl();
-        retValue.append("function initTreeResources() {\n");
-        retValue.append("\tinitResources(\"" + encoding + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");
-
-        retValue.append("\taddResourceType(0, \"folder\",\t\"Folder\",\t\"filetypes/folder.gif\");\n");
-        retValue.append("\taddResourceType(2, \"link\",\t\"Link\",\t\"filetypes/link.gif\");\n");
-        retValue.append("\taddResourceType(3, \"plain\",\t\"Text\",\t\"filetypes/plain.gif\");\n");
-        retValue.append("\taddResourceType(4, \"XMLTemplate\",\t\"XML Template\",\t\"filetypes/xmltemplate.gif\");\n");
-        retValue.append("\taddResourceType(5, \"binary\",\t\"Binary\",\t\"filetypes/binary.gif\");\n");
-        retValue.append("\taddResourceType(6, \"image\",\t\"Image\",\t\"filetypes/image.gif\");\n");
-        retValue.append("\taddResourceType(8, \"jsp\",\t\"JSP\",\t\"filetypes/jsp.gif\");\n");
-        retValue.append("\taddResourceType(9, \"page\",\t\"Page\",\t\"filetypes/page.gif\");\n");
-        retValue.append("}\n\n");
+    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        setIncludeFiles("true".equals(request.getParameter("includefiles")));
+        boolean rootloaded = "true".equals(request.getParameter("rootloaded"));
+        String resource = request.getParameter("resource");
+        setTreeType(request.getParameter("type"));
+        String currentResource;
+        if (getTreeType() == null) {
+            currentResource = getSettings().getExplorerResource();
+        } else {
+            currentResource = getSettings().getTreeResource(getTreeType());
+        }
+        String lastknown = request.getParameter("lastknown");
+        // both "resource" and "lastknown" must be folders
+        if (resource != null) {
+            resource = CmsResource.getPath(resource);
+            if (resource.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (! resource.startsWith(getSettings().getSite()))) {
+                // restrict access to /system/ 
+                resource = "/";   
+            }         
+        }       
+        if ((lastknown != null) && (! lastknown.endsWith("/"))) {
+            lastknown += "/";
+        }
+        if ("/".equals(resource) && !"/".equals(currentResource) && (lastknown == null) && !rootloaded) {
+            // direct load of a new tree with subtree (e.g. when returning from an editor)
+            lastknown = "/";
+            resource = currentResource;
+            setNewTree(true);
+        } else if ("/".equals(resource)) {
+            // load new tree if not already loaded
+            setNewTree(! rootloaded);
+        } else {
+            setNewTree(false);
+        } 
         
-        retValue.append("initTreeResources();\n");
-        return retValue.toString();
+        if (getTreeType() != null) {
+            getSettings().setTreeResource(getTreeType(), resource);
+        }
+        
+        setTargetFolder(resource);
+        setStartFolder(lastknown);
     }
 
     /**
@@ -367,9 +391,9 @@ public class CmsTree extends CmsWorkplace {
      */
     private String printError(Throwable t) {
         StringBuffer result = new StringBuffer(1024);
-        result.append("<!--\n");
+        result.append("/*\n");
         result.append(t.getMessage());
-        result.append("-->");        
+        result.append("\n*/\n");        
         result.append("function init() {\n");      
         result.append("}\n");      
         return result.toString();
@@ -380,7 +404,7 @@ public class CmsTree extends CmsWorkplace {
      * 
      * @param includeFiles if true if files and folders should be included in the tree
      */
-    public void setIncludeFiles(boolean includeFiles) {
+    private void setIncludeFiles(boolean includeFiles) {
         m_includeFiles = includeFiles;
     }
     
@@ -409,5 +433,14 @@ public class CmsTree extends CmsWorkplace {
      */
     private void setTargetFolder(String targetFolder) {
         m_targetFolder = targetFolder;
+    }
+
+    /**
+     * Sets the type of this tree.<p>
+     * 
+     * @param type the type of this tree
+     */
+    private void setTreeType(String type) {
+        m_treeType = type;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/08/25 10:28:42 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/08/27 11:59:01 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,13 +35,16 @@ import org.opencms.main.OpenCms;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsUser;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Object to conveniently access and modify the state of the workplace for a user,
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1
  */
@@ -62,12 +65,14 @@ public class CmsWorkplaceSettings {
     private String m_explorerFlaturl;
     private String m_permissionDetailView;
     private String m_currentSite;
+    private Map m_treeType;
         
     /**
      * Constructor, only package visible.<p>
      */
     CmsWorkplaceSettings() { 
         m_explorerPage = 1;
+        m_treeType = new HashMap();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot(); 
     }
     
@@ -142,7 +147,10 @@ public class CmsWorkplaceSettings {
      * @param value the current site for the user
      */
     public synchronized void setSite(String value) {
-        m_currentSite = value;
+        if ((value != null) && !value.equals(m_currentSite)) {
+            m_currentSite = value;
+            m_treeType = new HashMap();
+        }
     }
 
     /**
@@ -338,5 +346,34 @@ public class CmsWorkplaceSettings {
     public void setExplorerShowLinks(boolean b) {
         m_explorerShowLinks = b;
     }
+    
+    /**
+     * Sets the tree resource uri for the specified tree type.<p>
+     * 
+     * @param type the type of the tree
+     * @param value the resource uri to set for the type
+     */
+    public synchronized void setTreeResource(String type, String value) {
+        if (value == null) return;
+        if (value.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (! value.startsWith(m_currentSite))) {
+            // restrict access to /system/ 
+            value = "/";   
+        }
+        m_treeType.put(type, value);
+    }
+    
+    /**
+     * Returns the tree resource uri for the specified tree type
+     * 
+     * @param type the type of the tree
+     * @return the tree resource uri for the specified tree type
+     */
+    public synchronized String getTreeResource(String type) {
+        String result = (String)m_treeType.get(type);
+        if (result == null) {
+            result = "/";
+        }
+        return result;
+    } 
 
 }
