@@ -35,7 +35,16 @@
 			<input class="localstyle" type="text" size="30" name="channelName" id="channelName" value="]]><PROCESS>channelName</PROCESS><![CDATA[">
 		</td>
 	</tr>
-	
+
+	<tr>
+		<td width="15%" class="formular" height="25">
+			&nbsp;&nbsp;]]><LABEL value="com_opencms_defaults_master_CmsChannelBackoffice.label.title" /><![CDATA[:
+		</td>
+		<td width="85%" class="dialogtxt" >
+			<input class="localstyle" type="text" size="30" name="title" id="title" value="">
+		</td>
+	</tr>
+		
 	<tr>
 		<td class="formular" height="10" colspan="2">
 			&nbsp;
@@ -102,8 +111,6 @@
 					<td class="formular" colspan="3" align="center">Group</td>
 					<td class="formular" align="center">&nbsp;&nbsp;&nbsp;</td>
 					<td class="formular" colspan="3" align="center">Others</td>
-					<!-- <td class="formular" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
-					<!-- <td class="formular">Visible</td> -->
 				</tr>
 				<tr>
 					<td class="formular" align="center">r</td>
@@ -117,8 +124,6 @@
 					<td class="formular" align="center">r</td>
 					<td class="formular" align="center">w</td>
 					<td class="formular" align="center">v</td>
-					<!-- <td class="formular" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
-					<!-- <td class="formular" align="center">v</td> -->
 				</tr>
 				<tr>
 					<td class="formular"><input type="checkbox" name="permissions0" ]]><process>permissions_check_0</process><![CDATA[></td>
@@ -132,30 +137,11 @@
 					<td class="formular"><input type="checkbox" name="permissions6" ]]><process>permissions_check_6</process><![CDATA[></td>
 				    <td class="formular"><input type="checkbox" name="permissions7" ]]><process>permissions_check_7</process><![CDATA[></td>
 					<td class="formular"><input type="checkbox" name="permissions8" ]]><process>permissions_check_8</process><![CDATA[></td>
-					<!-- <td class="formular" align="right">&nbsp;&nbsp;&nbsp;&nbsp;</td> --> 
-					<!-- <td class="formular" align="center"><input type="checkbox" name="permissions9" ]]><process>permissions_check_9</process><![CDATA[></td> -->
 				</tr>
 			</table>
 		</td>
 	</tr>			
 
-</table>
-</center>
-]]>
-<PROCESS>TEMPLATE_END</PROCESS>
-</template>
-
-
-<template name="Seite 2">
-<PROCESS>TEMPLATE_START</PROCESS>
-<![CDATA[ 
-<center>
-<table border="0" width="100%" cellspacing=0 cellpadding=0>
-	<tr>
-		<td class="formular" height="10">
-			Keine zweite Seite!
-		</td>
-	</tr>		
 </table>
 </center>
 ]]>
@@ -250,8 +236,17 @@
 <![CDATA[
 <html>
 ]]><PROCESS>BOHEAD</PROCESS><![CDATA[
+<script language=JavaScript>
+<!--
+function setValues() {
+    var theTitle = unescape(']]><PROCESS>title</PROCESS><![CDATA[');
+        
+    document.Editor.title.value=theTitle;
+}
+//-->
+</script>
 <body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed scroll=auto marginwidth="5" marginheight="5" leftmargin=5 topmargin=5
-onLoad="javascript:(window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head_backoffice.html');"
+onLoad="javascript:(window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head_backoffice.html');setValues();"
 onUnload="if(treewin!=null)treewin.close();">
 
 <form name=Editor id=Editor method=post ENCTYPE="multipart/form-data">
