@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/12/20 17:04:25 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/02/04 16:56:46 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.db.CmsDefaultUsers;
+import org.opencms.db.CmsSqlManager;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 public final class OpenCms {
 
@@ -113,10 +114,30 @@ public final class OpenCms {
      * @param data event data
      */
     public static void fireCmsEvent(int type, Map data) {
-
+        
         OpenCms.fireCmsEvent(new CmsEvent(type, data));
     }
+    
+    /**
+     * Returns a list of available database pool names.<p>
+     * 
+     * @return a list of database pool names
+     */
+    public static List getDbPoolNames() {
+    
+        return OpenCmsCore.getInstance().getDbPoolNames();
+    }
 
+    /**
+     * Returns the name of the default pool.<p>
+     * 
+     * @return the name of the default pool
+     */
+    public static String getDefaultDbPoolName() {
+        
+        return OpenCmsCore.getInstance().getDefaultDbPoolName();
+    }
+    
     /**
      * Returns the configured list of default directory file names.<p>
      *  
@@ -321,6 +342,16 @@ public final class OpenCms {
         return OpenCmsCore.getInstance().getSiteManager();
     }
 
+    /**
+     * Returns an instance of the common sql manager.<p>
+     * 
+     * @return an instance of the common sql manager
+     */
+    public CmsSqlManager getSqlManager() {
+        
+        return OpenCmsCore.getInstance().getSqlManager();
+    }
+    
     /**
      * Returns the properties for the static export.<p>
      * 

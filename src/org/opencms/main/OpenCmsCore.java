@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/02/02 12:54:12 $
- * Version: $Revision: 1.158 $
+ * Date   : $Date: 2005/02/04 16:56:45 $
+ * Version: $Revision: 1.159 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,10 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
+import org.opencms.db.CmsDbPool;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsSecurityManager;
+import org.opencms.db.CmsSqlManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -110,7 +112,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.158 $
+ * @version $Revision: 1.159 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -222,7 +224,7 @@ public final class OpenCmsCore {
     
     /** The XML contnet type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
-    
+        
     /**
      * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
      * @throws CmsInitException in case of errors during the initialization
@@ -512,6 +514,26 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns a list of available database pool names.<p>
+     * 
+     * @return a list of database pool names
+     */
+    protected List getDbPoolNames() {
+        
+        return CmsDbPool.getDbPoolNames(m_securityManager.getConfigurations());
+    }
+    
+    /**
+     * Returns the name of the default pool.<p>
+     * 
+     * @return the name of the default pool
+     */
+    protected String getDefaultDbPoolName() {
+
+        return CmsDbPool.getDefaultDbPoolName();
+    }
+    
+    /**
      * Returns the configured list of default directory file names.<p>
      *  
      * Caution: This list can not be modified.<p>
@@ -730,6 +752,16 @@ public final class OpenCmsCore {
         return m_siteManager;
     }
 
+    /**
+     * Returns an instance of the common sql manager.<p>
+     * 
+     * @return an instance of the common sql manager
+     */
+    public CmsSqlManager getSqlManager() {
+        
+        return m_securityManager.getSqlManager();
+    }
+    
     /**
      * Returns the properties for the static export.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/01/04 17:34:07 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/02/04 16:56:45 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -1929,6 +1929,16 @@ public final class CmsSecurityManager {
         return result;
     }
 
+    /**
+     * Returns an instance of the common sql manager.<p>
+     * 
+     * @return an instance of the common sql manager
+     */
+    public CmsSqlManager getSqlManager() {
+        
+        return m_driverManager.getSqlManager();
+    }
+    
     /**
      * Returns the value of the given parameter for the given task.<p>
      *

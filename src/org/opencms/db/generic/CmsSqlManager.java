@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/01/04 17:34:08 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/02/04 16:56:45 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import org.opencms.util.CmsStringUtil;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -60,10 +59,10 @@ import java.util.Properties;
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.48 $ $Date: 2005/01/04 17:34:08 $
+ * @version $Revision: 1.49 $ $Date: 2005/02/04 16:56:45 $
  * @since 5.1
  */
-public class CmsSqlManager implements Serializable, Cloneable {
+public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
 
     /** A pattern being replaced in SQL queries to generate SQL queries to access online/offline tables. */
     protected static final String C_QUERY_PROJECT_SEARCH_PATTERN = "_${PROJECT}_";
@@ -356,7 +355,7 @@ public class CmsSqlManager implements Serializable, Cloneable {
         }
         
         // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
-        return DriverManager.getConnection(m_poolUrl);
+        return getConnectionByUrl(m_poolUrl);
     }
 
     /**

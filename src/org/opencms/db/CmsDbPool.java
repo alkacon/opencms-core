@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2004/11/22 20:45:49 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/02/04 16:56:45 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,11 @@
 package org.opencms.db;
 
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.dbcp.ConnectionFactory;
@@ -50,13 +54,19 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2004/11/22 20:45:49 $
+ * @version $Revision: 1.25 $ $Date: 2005/02/04 16:56:45 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
 
     /** This prefix is required to make the JDBC DriverManager return pooled DBCP connections. */
     public static final String C_DBCP_JDBC_URL_PREFIX = "jdbc:apache:commons:dbcp:";
+    
+    /** The prefix used for opencms JDBC pools. */
+    public static final String C_OPENCMS_URL_PREFIX = "opencms:";
+    
+    /** The name of the opencms default pool. */
+    public static final String C_OPENCMS_DEFAULT_POOL_NAME = "default";
     
     /** The default OpenCms JDBC pool URL. */
     public static final String C_OPENCMS_DEFAULT_POOL_URL = "opencms:default";
@@ -170,6 +180,51 @@ public final class CmsDbPool extends Object {
         super();
     }
 
+    /**
+     * Returns a list of available database pool names.<p>
+     * 
+     * @param configuration the configuration
+     * @return a list of database pool names
+     */
+    public static List getDbPoolNames(ExtendedProperties configuration) {
+        
+        List dbPoolNames = new ArrayList();
+        String driverPoolNames[] = configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
+
+        for (int i = 0; i < driverPoolNames.length; i++) { 
+            dbPoolNames.add(getDbPoolName(configuration, driverPoolNames[i]));
+        }
+        
+        return dbPoolNames;
+    }
+    
+    /**
+     * Returns the database pool name for a given configuration key.<p>
+     * 
+     * @param configuration the configuration 
+     * @param key a db pool configuration key
+     * @return the database pool name
+     */
+    public static String getDbPoolName(ExtendedProperties configuration, String key) {
+    
+        String jdbcUrl = configuration.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_URL);
+        if (jdbcUrl.startsWith(C_OPENCMS_URL_PREFIX)) {
+            return jdbcUrl.substring(jdbcUrl.indexOf(':'));
+        } else {
+            return jdbcUrl;
+        }
+    }
+    
+    /**
+     * Returns the default database pool name.<p>
+     * 
+     * @return the default pool name
+     */
+    public static String getDefaultDbPoolName() {
+
+        return C_OPENCMS_DEFAULT_POOL_NAME;
+    }
+    
     /**
      * Creates a JDBC DriverManager based DBCP connection pool.<p>
      * 

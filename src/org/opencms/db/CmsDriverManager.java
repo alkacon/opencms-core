@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/02/01 13:51:22 $
- * Version: $Revision: 1.472 $
+ * Date   : $Date: 2005/02/04 16:56:45 $
+ * Version: $Revision: 1.473 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.472 $ $Date: 2005/02/01 13:51:22 $
+ * @version $Revision: 1.473 $ $Date: 2005/02/04 16:56:45 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -290,6 +290,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /** The security manager (for access checks). */
     private CmsSecurityManager m_securityManager;
 
+    /** The sql manager. */
+    private CmsSqlManager m_sqlManager;
+    
     /** Cache for user data. */
     private Map m_userCache;
 
@@ -375,6 +378,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // set the security manager
         driverManager.m_securityManager = securityManager;
 
+        // set the sql manager
+        driverManager.m_sqlManager = new CmsSqlManager();
+            
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 2 - initializing pools");
         }
@@ -3639,6 +3645,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_READMODE_INCLUDE_TREE);
     }
 
+    /**
+     * Returns an instance of the common sql manager.<p>
+     * 
+     * @return an instance of the common sql manager
+     */
+    public CmsSqlManager getSqlManager() {
+        
+        return m_sqlManager;
+    }
+    
     /**
      * Returns the value of the given parameter for the given task.<p>
      *
