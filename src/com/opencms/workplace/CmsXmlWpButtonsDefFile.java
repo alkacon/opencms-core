@@ -14,7 +14,7 @@ import java.util.*;
  * Content definition for the workplace button element definition file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/26 09:16:28 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/26 10:15:05 $
  */
 public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent 
         implements I_CmsLogChannels, I_CmsWpConstants {
@@ -71,10 +71,11 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent
      * @return Processed button.
      * @exception CmsException
      */
-    public String getButton(String name, String action, String alt) throws CmsException {
+    public String getButton(String name, String action, String alt, String href) throws CmsException {
         setData("name", name);
         setData("action", action);
         setData("alt", alt);
+        setData("href", href);
         return getProcessedDataValue("defaultbutton");                
     }        
     

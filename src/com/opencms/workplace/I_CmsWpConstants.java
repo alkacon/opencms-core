@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/01/26 09:55:48 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/26 10:15:05 $
  */
 public interface I_CmsWpConstants {
 
@@ -47,6 +47,9 @@ public interface I_CmsWpConstants {
     
     /** Alt text of the button */
     public static final String C_BUTTON_ALT = "alt";
+    
+    /** href text of the button */
+    public static final String C_BUTTON_HREF = "href";
 
     
     // Parameters for labels

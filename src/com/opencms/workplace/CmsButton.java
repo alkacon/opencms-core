@@ -14,7 +14,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/26 09:16:28 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/26 10:15:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsButton extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -40,13 +40,17 @@ public class CmsButton extends A_CmsWpElement implements I_CmsWpElement, I_CmsWp
         String buttonName = n.getAttribute(C_BUTTON_NAME);
         String buttonAction = n.getAttribute(C_BUTTON_ACTION);
         String buttonAlt = n.getAttribute(C_BUTTON_ALT);
+        String buttonHref = n.getAttribute(C_BUTTON_HREF);
+        if(buttonHref == null || "".equals(buttonHref)) {
+            buttonHref = "";
+        }
         
         // Get button definition and language values
         CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
         buttonAlt = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonAlt);
         
         // get the processed button.
-        String result = buttondef.getButton(buttonName, buttonAction, buttonAlt);
+        String result = buttondef.getButton(buttonName, buttonAction, buttonAlt, buttonHref);
         return result; 
     }           
 }
