@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2005/03/06 09:26:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/06 11:28:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.Buffer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class CmsSessionManager {
@@ -89,16 +89,6 @@ public class CmsSessionManager {
         super();
         // create a map for all sessions, these will be mapped using their session id
         m_sessions = Collections.synchronizedMap(new HashMap());
-    }
-
-    /**
-     * Adds a new session info into the session storage.<p>
-     *
-     * @param sessionInfo the session info to store for the id
-     */
-    public void addSessionInfo(CmsSessionInfo sessionInfo) {
-
-        m_sessions.put(sessionInfo.getSession().getId(), sessionInfo);
     }
 
     /**
@@ -309,6 +299,16 @@ public class CmsSessionManager {
     }
 
     /**
+     * Adds a new session info into the session storage.<p>
+     *
+     * @param sessionInfo the session info to store for the id
+     */
+    protected void addSessionInfo(CmsSessionInfo sessionInfo) {
+
+        m_sessions.put(sessionInfo.getSessionId(), sessionInfo);
+    }
+
+    /**
      * Called by the {@link OpenCmsListener} when a http session is created.<p>
      * 
      * @param event the http session event
@@ -378,10 +378,7 @@ public class CmsSessionManager {
                 CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
                 if (sessionInfo != null) {
                     // may be the case in case of concurrent modification
-                    try {
-                        // access the session, this will lead to an exception for invalid sessions
-                        sessionInfo.getSession().getLastAccessedTime();
-                    } catch (java.lang.IllegalStateException e) {
+                    if (sessionInfo.isExpired()) {
                         // session is invalid, try to remove it
                         try {
                             m_sessions.remove(sessionId);

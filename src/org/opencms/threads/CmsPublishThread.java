@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2005/03/06 09:26:11 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/03/06 11:28:39 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
@@ -137,12 +137,12 @@ public class CmsPublishThread extends A_CmsReportThread {
             CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();
             // check is the project stored in this session is not existing anymore
             // if so, set it to the online project
-            Integer projectId = sessionInfo.getProject();
+            int projectId = sessionInfo.getProject();
             try {
-                m_cms.readProject(projectId.intValue());
+                m_cms.readProject(projectId);
             } catch (CmsException e) {
                 // the project does not longer exist, update the project information with the online project
-                sessionInfo.setProject(new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID));
+                sessionInfo.setProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
                 // update the workplace settings as well
                 m_settings.setProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
                 getReport().println(getReport().key("report.publish_resource_switch_project")+  m_cms.getRequestContext().currentProject().getName(), I_CmsReport.C_FORMAT_DEFAULT);

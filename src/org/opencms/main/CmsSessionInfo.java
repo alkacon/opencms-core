@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2005/03/06 09:26:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/06 11:28:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,6 @@ package org.opencms.main;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
 import org.apache.commons.collections.buffer.BoundedFifoBuffer;
@@ -53,7 +51,7 @@ import org.apache.commons.collections.buffer.BoundedFifoBuffer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.0
  */
@@ -65,14 +63,17 @@ public class CmsSessionInfo implements Comparable {
     /** The broadcast queue buffer for the user of this session info. */
     private Buffer m_broadcastQueue;
 
-    /** The current site of the user. */
-    private String m_currentSiteRoot;
+    /** The maximum time, in seconds, this session info is allowed to be inactive. */
+    private int m_maxInactiveInterval;
 
     /** The current project id of the user. */
-    private Integer m_project;
+    private int m_projectId;
 
-    /** The session of the user. */
-    private HttpSession m_session;
+    /** The id of the (http) session this session info belongs to. */
+    private String m_sessionId;
+
+    /** The current site of the user. */
+    private String m_siteRoot;
 
     /** The time this session info was created. */
     private long m_timeCreated;
@@ -87,13 +88,16 @@ public class CmsSessionInfo implements Comparable {
      * Creates a new CmsSessionInfo object.<p>
      * 
      * @param context the user context to create this session info for
-     * @param session the http session used by the user
+     * @param sessionId id of the (http) session this session info belongs to
+     * @param maxInactiveInterval the maximum time, in seconds, this session info is allowed to be inactive
      */
-    public CmsSessionInfo(CmsRequestContext context, HttpSession session) {
+    public CmsSessionInfo(CmsRequestContext context, String sessionId, int maxInactiveInterval) {
 
         m_timeCreated = System.currentTimeMillis();
+        m_sessionId = sessionId;
+        m_maxInactiveInterval = maxInactiveInterval;
+        m_user = context.currentUser();
         update(context);
-        m_session = session;
         m_broadcastQueue = BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(C_QUEUE_SIZE));
     }
 
@@ -125,13 +129,19 @@ public class CmsSessionInfo implements Comparable {
     }
 
     /**
-     * Returns the current site root of the user.<p>
+     * Returns the maximum time, in seconds, this session info is allowed to be inactive.<p>
+     *
+     * The inactive time is the time since the last call to the {@link #update(CmsRequestContext)} 
+     * method. If the inactive time is greater then the maximum allowed time, this
+     * session info will be removed from the session manager.<p>
+     *
+     * @return the maximum time, in seconds, this session info is allowed to be inactive
      * 
-     * @return the current site root of the user
+     * @see javax.servlet.http.HttpSession#getMaxInactiveInterval()
      */
-    public String getCurrentSiteRoot() {
+    public int getMaxInactiveInterval() {
 
-        return m_currentSiteRoot;
+        return m_maxInactiveInterval;
     }
 
     /**
@@ -139,26 +149,38 @@ public class CmsSessionInfo implements Comparable {
      * 
      * @return the id of the project
      */
-    public Integer getProject() {
+    public int getProject() {
 
-        return m_project;
+        return m_projectId;
     }
 
     /**
-     * Returns the session of the user.<p>
+     * Returns the id of the (http) session this session info belongs to.<p>
+     *
+     * @return the id of the (http) session this session info belongs to
      * 
-     * @return the session
+     * @see javax.servlet.http.HttpSession#getId()
      */
-    public HttpSession getSession() {
+    public String getSessionId() {
 
-        return m_session;
+        return m_sessionId;
     }
 
     /**
-     * Returns the time this session has been active,
+     * Returns the current site root of the user.<p>
+     * 
+     * @return the current site root of the user
+     */
+    public String getSiteRoot() {
+
+        return m_siteRoot;
+    }
+
+    /**
+     * Returns the time, in miliseconds, this session has been active,
      * that is the time of the last update minus the creation time.<p> 
      * 
-     * @return the time this session has been active
+     * @return the time, in miliseconds, this session has been active
      */
     public long getTimeActive() {
 
@@ -196,43 +218,24 @@ public class CmsSessionInfo implements Comparable {
     }
 
     /**
-     * Sets the current site root of the user.<p>
-     * 
-     * @param site the site root path to set
+     * Returns <code>true</code> if this session info has expired, that 
+     * is it has not been updated in the time set by the maximum inactivitiy interval.<p>
+     *  
+     * @return <code>true</code> if this session info has expired
      */
-    public void setCurrentSiteRoot(String site) {
+    public boolean isExpired() {
 
-        m_currentSiteRoot = site;
+        return ((System.currentTimeMillis() - m_timeUpdated) / 1000) > m_maxInactiveInterval;
     }
 
     /**
-     * Sets the id of the project of the user.<p>
+     * Sets the id of the current project of the user of this session info.<p>
      * 
-     * @param project the project id to set
+     * @param projectId the project id to set
      */
-    public void setProject(Integer project) {
+    public void setProject(int projectId) {
 
-        this.m_project = project;
-    }
-
-    /**
-     * Sets the session of the user.<p>
-     * 
-     * @param session the session to set
-     */
-    public void setSession(HttpSession session) {
-
-        m_session = session;
-    }
-
-    /**
-     * Sets the user.<p>
-     * 
-     * @param user the user to set
-     */
-    public void setUser(CmsUser user) {
-
-        m_user = user;
+        m_projectId = projectId;
     }
 
     /**
@@ -243,9 +246,8 @@ public class CmsSessionInfo implements Comparable {
      */
     public void update(CmsRequestContext context) {
 
-        setUser(context.currentUser());
-        setProject(new Integer(context.currentProject().getId()));
-        setCurrentSiteRoot(context.getSiteRoot());
         m_timeUpdated = System.currentTimeMillis();
+        m_siteRoot = context.getSiteRoot();
+        setProject(context.currentProject().getId());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/03/06 09:26:10 $
- * Version: $Revision: 1.164 $
+ * Date   : $Date: 2005/03/06 11:28:39 $
+ * Version: $Revision: 1.165 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.164 $
+ * @version $Revision: 1.165 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1812,7 +1812,7 @@ public final class OpenCmsCore {
 
         if (sessionInfo != null) {
             // a user name is found in the session manager, reuse this user information
-            int project = sessionInfo.getProject().intValue();
+            int project = sessionInfo.getProject();
 
             // initialize site root from request
             String siteroot = null;
@@ -1820,7 +1820,7 @@ public final class OpenCmsCore {
             if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
                 // if no dedicated workplace site is configured, 
                 // or for the dedicated workplace site, use the site root from the session attribute
-                siteroot = sessionInfo.getCurrentSiteRoot();
+                siteroot = sessionInfo.getSiteRoot();
             }
             if (siteroot == null) {
                 siteroot = site.getSiteRoot();
@@ -2061,7 +2061,7 @@ public final class OpenCmsCore {
      * @param req the current request
      */
     private void updateUser(CmsObject cms, HttpServletRequest req) {
-        
+
         if (!cms.getRequestContext().isUpdateSessionEnabled()) {
             // this request must not update the user session info
             // this is true for long running "thread" requests, e.g. during project publish
@@ -2074,13 +2074,16 @@ public final class OpenCmsCore {
         if (session != null) {
             if (!cms.getRequestContext().currentUser().isGuestUser()) {
                 // get the session info object for the user
-                CmsSessionInfo sessionInfo= m_sessionManager.getSessionInfo(session.getId());                
+                CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(session.getId());
                 if (sessionInfo != null) {
                     // update the users session information
-                    sessionInfo.update(cms.getRequestContext());                    
-                } else {                
+                    sessionInfo.update(cms.getRequestContext());
+                } else {
                     // create a new session info for the user
-                    sessionInfo = new CmsSessionInfo(cms.getRequestContext(), session);
+                    sessionInfo = new CmsSessionInfo(
+                        cms.getRequestContext(), 
+                        session.getId(), 
+                        session.getMaxInactiveInterval());
                     // update the session info user data
                     m_sessionManager.addSessionInfo(sessionInfo);
                 }

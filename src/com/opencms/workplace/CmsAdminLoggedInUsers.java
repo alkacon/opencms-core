@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLoggedInUsers.java,v $
-* Date   : $Date: 2005/03/06 09:26:11 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2005/03/06 11:28:39 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.14 $ $Date: 2005/03/06 09:26:11 $
+ * @version $Revision: 1.15 $ $Date: 2005/03/06 11:28:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -93,7 +93,7 @@ public class CmsAdminLoggedInUsers extends CmsWorkplaceDefault  {
             try {
                 CmsSessionInfo info = (CmsSessionInfo)i.next();
                 CmsUser cmsUser = info.getUser();
-                CmsProject cmsProject = cms.readProject(info.getProject().intValue());
+                CmsProject cmsProject = cms.readProject(info.getProject());
                 xmlTemplateDocument.setData("username", cmsUser.getName());
                 xmlTemplateDocument.setData("firstname", cmsUser.getFirstname());
                 xmlTemplateDocument.setData("lastname", cmsUser.getLastname());
@@ -110,7 +110,7 @@ public class CmsAdminLoggedInUsers extends CmsWorkplaceDefault  {
                 xmlTemplateDocument.setData("currentproject", 
                     cmsProject.getName()
                     + " - "
-                    + info.getCurrentSiteRoot());
+                    + info.getSiteRoot());
                 ret.append(xmlTemplateDocument.getProcessedDataValue("line"));
                 count++;
             } catch (Exception exc) {
