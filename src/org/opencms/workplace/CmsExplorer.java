@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/08/04 15:59:09 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/08/07 16:27:53 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 5.1
  */
@@ -112,19 +112,26 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showLinks = "true".equals(request.getParameter("showlinks"));
         
         if (showLinks) {
+            // "showlinks" parameter found, set resource name
             settings.setExplorerResource(currentResource);
         } else {
+            // "showlinks" parameter not found 
             if (currentResource != null && currentResource.startsWith("vfslink:")) {
+                // given resource starts with "vfslink:", list of links is shown
                 showLinks = true;
                 settings.setExplorerResource(currentResource.substring(8));
             } else {
                 if ((currentResource != null) && (!"".equals(currentResource)) && folderExists(getCms(), currentResource)) {
+                    // resource is a folder, set resource name
                     settings.setExplorerResource(currentResource);
                 } else {
+                    // other cases (resource null, no folder), first get the resource name from settings
+                    showLinks = settings.getExplorerShowLinks();
                     currentResource = settings.getExplorerResource();
-                    if ((currentResource == null) || (!folderExists(getCms(), currentResource))) {
+                    if ((currentResource == null) || (!resourceExists(getCms(), currentResource))) {
                         currentResource = "/";
                         settings.setExplorerResource(currentResource);
+                        showLinks = false;
                     }
                 }
             }
@@ -172,6 +179,22 @@ public class CmsExplorer extends CmsWorkplace {
             if (test.isFile()) {
                 return false;
             }
+            return true;            
+        } catch (Exception e) {
+            return false;
+        }
+    }    
+    
+    /**
+     * Checks if a resource with a given name exits in the VFS.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource to check for
+     * @return true if the resource exists in the VFS
+     */
+    private boolean resourceExists(CmsObject cms, String resource) {
+        try {
+            cms.readFileHeader(resource);
             return true;            
         } catch (Exception e) {
             return false;
@@ -308,14 +331,13 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.setDirectory(\"");
         content.append(currentFolderId.hashCode());
         content.append("\",\"");
-        content.append(CmsResource.getPath(getSettings().getExplorerResource()));
-        content.append("\");\n");
         if (showVfsLinks) {
-            content.append("top.addHist('");
+            content.append("vfslink:");
+            content.append(getSettings().getExplorerResource());
+        } else {
             content.append(CmsResource.getPath(getSettings().getExplorerResource()));
-            content.append("')\n");
-            
         }
+        content.append("\");\n");
         content.append("top.rD();\n\n");
 
         // now check which filelist colums we want to show
@@ -342,7 +364,7 @@ public class CmsExplorer extends CmsWorkplace {
         if (!(galleryView || projectView || showVfsLinks)) {
             selectedPage = getSettings().getExplorerPage();
             if (stopat > maxEntrys) {
-                // we have to splitt
+                // we have to split
                 numberOfPages = (stopat / maxEntrys) + 1;
                 if (selectedPage > numberOfPages) {
                     // the user has changed the folder and then selected a page for the old folder
@@ -552,7 +574,7 @@ public class CmsExplorer extends CmsWorkplace {
         }
 
         // now the tree, only if changed
-        if (newTreePlease && (!(galleryView || projectView || showVfsLinks))) {
+        if (newTreePlease && (!(galleryView || projectView))) {
             content.append("\ntop.rT();\n");
             List tree = null;
             try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/08/04 10:39:53 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/08/07 16:27:53 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -334,7 +334,7 @@ public class CmsWorkplaceSettings {
     }
         
     /**
-     * Returns if the explorer should display VFS links.<p>
+     * Returns if the explorer should show VFS links of a resource.<p>
      * 
      * @return true, if VFS links should be shown, otherwise false
      */
@@ -343,7 +343,7 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Sets the explorer view to show VFS links.<p>
+     * Sets the explorer view to show VFS links of a resource.<p>
      * 
      * @param b true, if VFS links should be shown, otherwise false
      */
