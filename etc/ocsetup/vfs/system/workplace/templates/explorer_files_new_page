@@ -98,6 +98,7 @@
         var temp3=document.getElementById("newKeyWords"+from).value;
         var temp4=document.getElementById("newDescription"+from).value;
         var temp5=document.getElementById("useTemplate"+from).selectedIndex;
+		var temp6=document.getElementById("defaultBody"+from).selectedIndex;
 
 
         document.getElementById("name"+to).value=temp1;
@@ -105,6 +106,7 @@
         document.getElementById("newKeyWords"+to).value=temp3;
         document.getElementById("newDescription"+to).value=temp4;
         document.getElementById("useTemplate"+to).selectedIndex=temp5;
+		document.getElementById("defaultBody"+to).selectedIndex=temp6;
 
     }
 
