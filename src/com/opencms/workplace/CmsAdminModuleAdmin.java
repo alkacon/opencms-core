@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2004/06/07 12:44:05 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
-import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -320,7 +320,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
      */
     private void tryToCreateFolder(CmsObject cms, String folder, String newFolder) {
         try {
-            cms.createResource(folder, newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+            cms.createResource(folder + newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
         }catch(Exception e) {
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2004/02/22 13:52:26 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/21 09:53:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public final class CmsReplace extends CmsWorkplaceDefault {
 
@@ -98,7 +98,8 @@ public final class CmsReplace extends CmsWorkplaceDefault {
             }
             
             // the type of the new resource was selected, so replace the old with the new resource
-            cms.replaceResource(m_OldResourceName, cms.getResourceTypeId(m_UploadResourceType), null, m_UploadResourceContent);
+            int type = OpenCms.getLoaderManager().getResourceType(m_UploadResourceType).getTypeId();
+            cms.replaceResource(m_OldResourceName, type, m_UploadResourceContent, null);
             //cms.unlockResource( m_OldResourceName ); 
 
             // leave the session clean

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.file.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -51,7 +51,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.54 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.55 $ $Date: 2004/06/21 09:53:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -168,7 +168,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
 
                     // get the path from the workplace.ini
                     String superfolder = getConfigFile(cms).getPicGalleryPath();
-                    CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                    CmsFolder folder = (CmsFolder)cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     if(title != null) {
                         cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                     }
@@ -312,7 +312,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                 filename = newname;
                             }
                             try {
-                                CmsFile file = (CmsFile)cms.createResource(foldername, filename, CmsResourceTypeImage.C_RESOURCE_TYPE_ID, null, filecontent);
+                                CmsFile file = (CmsFile)cms.createResource(foldername + filename, CmsResourceTypeImage.C_RESOURCE_TYPE_ID, filecontent, null);
                                 if(title != null) {
                                     String filepath = cms.readAbsolutePath(file);
                                     cms.writeProperty(filepath, C_PROPERTY_TITLE, title);

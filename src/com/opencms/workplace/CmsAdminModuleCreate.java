@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
-import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -175,7 +175,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     tryToCreateFolder(cms, C_VFS_PATH_SYSTEM, "modules");
                     // create the module (first test if we are in a project including /system/
                     try {
-                        cms.createResource(C_VFS_PATH_MODULES, packagename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                        cms.createResource(C_VFS_PATH_MODULES + packagename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     }catch(CmsException e) {
                         if(e.getType() != CmsException.C_FILE_EXISTS) {
                             // couldn't create Module
@@ -343,7 +343,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
      */
     private void tryToCreateFolder(CmsObject cms, String folder, String newFolder) {
         try {
-            cms.createResource(folder, newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+            cms.createResource(folder + newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
         }catch(Exception e) {
         }
     }

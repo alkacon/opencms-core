@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2004/06/09 15:53:29 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,8 @@ import org.opencms.main.OpenCms;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertydefinition;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
+
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -49,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.34 $ $Date: 2004/06/09 15:53:29 $
+ * @version $Revision: 1.35 $ $Date: 2004/06/21 09:53:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -168,20 +169,23 @@ public class CmsAdminProperties extends CmsWorkplaceDefault {
 
     public String getDatatypes(CmsObject cms, A_CmsXmlContent doc, CmsXmlLanguageFile lang,
             Hashtable parameters, Object callingObj) throws CmsException {
+        
         StringBuffer result = new StringBuffer();
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
-        List allResTypes = cms.getAllResourceTypes();
-        Iterator i = allResTypes.iterator();
-
-        // Loop through all resource types
-        while(i.hasNext()) {
-            I_CmsResourceType currResType = (I_CmsResourceType)i.next();
-            result.append(getResourceEntry(cms, doc, lang, parameters, callingObj, currResType));
-            if(i.hasNext()) {
+                   
+        // get all available resource types
+        I_CmsResourceType[] allResTypes = OpenCms.getLoaderManager().getAllResourceTypes();
+        for (int i=0; i<allResTypes.length; i++) {
+            // loop through all types
+            if (allResTypes[i] == null) {
+                continue;
+            }
+            result.append(getResourceEntry(cms, doc, lang, parameters, callingObj, allResTypes[i]));
+            if(i < (allResTypes.length - 1)) {
                 result.append(templateFile.getProcessedDataValue(C_TAG_SEPARATORENTRY,
                         callingObj));
             }
-        }
+        } 
         templateFile.setData(C_TAG_ALLENTRIES, result.toString());
         return templateFile.getProcessedDataValue(C_TAG_SCROLLERCONTENT, callingObj);
     }
@@ -206,10 +210,10 @@ public class CmsAdminProperties extends CmsWorkplaceDefault {
         StringBuffer output = new StringBuffer();
         CmsXmlWpTemplateFile templateFile = (CmsXmlWpTemplateFile)doc;
         List properties = cms.readAllPropertydefinitions();
-        templateFile.setData(C_TAG_RESTYPE, resType.getResourceTypeName());
+        templateFile.setData(C_TAG_RESTYPE, resType.getTypeName());
 
         templateFile.setData(C_TAG_RESTYPE + "_esc",
-                CmsEncoder.escapeWBlanks(resType.getResourceTypeName(),
+                CmsEncoder.escapeWBlanks(resType.getTypeName(),
                 cms.getRequestContext().getEncoding()));
         output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject));
         Iterator i = properties.iterator();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2004/06/04 10:48:52 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,10 +32,11 @@ import org.opencms.db.CmsImportFolder;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.file.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -54,7 +55,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.49 $ $Date: 2004/06/04 10:48:52 $
+ * @version $Revision: 1.50 $ $Date: 2004/06/21 09:53:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -170,7 +171,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
 
                 // get the path from the workplace.ini
                 String superfolder = getConfigFile(cms).getDownGalleryPath();
-                CmsFolder folder = (CmsFolder)cms.createResource(superfolder, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                CmsFolder folder = (CmsFolder)cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                 cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                 // TODO: check how to set the appropriate access using acl 
                 /*
@@ -291,7 +292,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                         if("2".equals(step)) {
 
                             // get the selected resource and check if it is an image
-                            int type = cms.getResourceTypeId(newtype);
+                            int type = OpenCms.getLoaderManager().getResourceType(newtype).getTypeId(); 
                             if(newtype.equals(CmsResourceTypeImage.C_RESOURCE_TYPE_NAME)) {
 
                                 // the file type is an image
@@ -306,7 +307,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                 // todo: error handling if file already exits
 
                                 try{
-                                    cms.createResource(foldername, filename, type, Collections.EMPTY_LIST, filecontent);
+                                    cms.createResource(foldername + filename, type, filecontent, Collections.EMPTY_LIST);
                                 }catch(CmsException e){
                                     // remove the values form the session
                                     session.removeValue(C_PARA_RESOURCE);
@@ -351,7 +352,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                 // create the new file.
 
                                 // todo: error handling if file already exits
-                                int type = cms.getResourceTypeId(newtype);
+                                int type = OpenCms.getLoaderManager().getResourceType(newtype).getTypeId(); 
 
                                 List properties = null;
                                 if (title != null) {
@@ -361,7 +362,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                     properties = Collections.EMPTY_LIST;
                                 }
                                 
-                                cms.createResource(foldername, filename, type, properties, filecontent);
+                                cms.createResource(foldername + filename, type, filecontent, properties);
 
                                 // remove the values form the session
                                 session.removeValue(C_PARA_RESOURCE);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2004/06/06 08:58:53 $
-* Version: $Revision: 1.137 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.138 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.137 $ $Date: 2004/06/06 08:58:53 $
+ * @version $Revision: 1.138 $ $Date: 2004/06/21 09:53:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -100,14 +100,14 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
         
         try {
-            cms.copyResource(cms.readAbsolutePath(file), temporaryFilename, false, true, I_CmsConstants.C_COPY_AS_NEW);
+            cms.copyResource(cms.readAbsolutePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
             // cms.chmod(temporaryFilename, 91);
         } catch (CmsException e) {
             if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
                 try {
                     // try to re-use the old temporary file
-                    cms.changeLockedInProject(tempProject, temporaryFilename);
-                    cms.lockResource(temporaryFilename, true);
+                    cms.changeLastModifiedProjectId(temporaryFilename);
+                    cms.lockResource(temporaryFilename);
                     // cms.chmod(temporaryFilename, 91);
                 } catch (Exception ex) {
                     ok = false;
@@ -369,7 +369,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         // If there is no content parameter this seems to be
         // a new request of the page editor.
         // So we have to read all files and set some initial values.
-        parameters.put("root.pagetype", cms.getResourceType(cms.readFileHeader(file).getType()).getResourceTypeName());
+        parameters.put("root.pagetype", OpenCms.getLoaderManager().getResourceType(cms.readFileHeader(file).getTypeId()).getTypeName());
         parameters.put("filename_for_relative_template", file);
         
         // Simple page support

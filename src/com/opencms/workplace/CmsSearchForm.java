@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSearchForm.java,v $
-* Date   : $Date: 2004/06/09 15:53:29 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsRegistry;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 
 import com.opencms.core.I_CmsSession;
@@ -50,7 +50,7 @@ import java.util.Vector;
  * editing news.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.10 $ $Date: 2004/06/09 15:53:29 $
+ * @version $Revision: 1.11 $ $Date: 2004/06/21 09:53:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -253,54 +253,13 @@ public class CmsSearchForm extends CmsWorkplaceDefault {
      */
     public Integer getResourceTypes(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
             Hashtable parameters) throws CmsException {
-        Integer retValue = new Integer(0);
-System.err.println("getResourceTypes");
-        String resourcetype = (String)parameters.get("restype");
-System.err.println("cur resourcetype: "+resourcetype);
-        names.add("---");
-        values.add("");
-        int i = 1;
-        List restypes = cms.getAllResourceTypes();
-        Iterator j = restypes.iterator(); 
-        while(j.hasNext()){
-            String type = ((I_CmsResourceType)j.next()).getResourceTypeName();
-System.err.println("add restype: "+type);
-            names.add(type);
-            values.add(type);
-            if(type.equals(resourcetype!=null?resourcetype:"")){
-System.err.println("cur restype: "+i);
-                retValue = new Integer(i);
-            }
-            i++;
-        }
-        return retValue;
+        return new Integer(0);
     }
 
     /**
      *
      */
     private void getResourceTypes(CmsObject cms, CmsXmlWpTemplateFile template, String restype) throws CmsException{
-        StringBuffer typeOptions = new StringBuffer();
-        template.setData("name","---");
-        template.setData("value","");
-        template.setData("check","");
-        typeOptions.append(template.getProcessedDataValue("selectoption",this));
-        List allResTypes = cms.getAllResourceTypes();
-        Iterator i = allResTypes.iterator();
-        while(i.hasNext()) {
-            I_CmsResourceType curType = (I_CmsResourceType)i.next();
-            String type = curType.getResourceTypeName();
-            int typeId = curType.getResourceType();
-            template.setData("name",type);
-            template.setData("value",""+typeId);
-            if((""+typeId).equals(restype!=null?restype:"")){
-                template.setData("check","selected");
-            }else{
-                template.setData("check","");
-            }
-            typeOptions.append(template.getProcessedDataValue("selectoption",this));
-        }
-        template.setData("restypes",typeOptions.toString());
     }
 
     /**

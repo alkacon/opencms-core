@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2004/06/04 10:48:52 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,9 +31,10 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
@@ -49,7 +50,7 @@ import java.util.List;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.24 $ $Date: 2004/06/04 10:48:52 $
+ * @version $Revision: 1.25 $ $Date: 2004/06/21 09:53:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -142,7 +143,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 
                     // get the path from the workplace.ini
                     String superfolder = getConfigFile(cms).getHtmlGalleryPath();
-                    CmsResource folder = cms.createResource(superfolder, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                    CmsResource folder = cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     if(title != null) {
                         cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                     }
@@ -217,8 +218,9 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
                     } else {
                         properties = Collections.EMPTY_LIST;
                     }                    
-                    
-					cms.createResource(foldername, filename, cms.getResourceTypeId(type), properties, new byte[0]);
+
+                    int t = OpenCms.getLoaderManager().getResourceType(type).getTypeId();                     
+					cms.createResource(foldername + filename, t, new byte[0], properties);
 				}
 			}
 		}

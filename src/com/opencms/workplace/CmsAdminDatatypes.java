@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2004/06/15 10:15:45 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
+
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -48,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.34 $ $Date: 2004/06/15 10:15:45 $
+ * @version $Revision: 1.35 $ $Date: 2004/06/21 09:53:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -222,16 +223,18 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
         Hashtable extensions = cms.readFileExtensions();
         Hashtable extByFiletypes = turnAround(extensions);
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
-        List allResTypes = cms.getAllResourceTypes();
-        Iterator i = allResTypes.iterator();
-
-        // Loop through all resource types
-        while(i.hasNext()) {
-            I_CmsResourceType currResType = (I_CmsResourceType)i.next();
-            String resTypeName = currResType.getResourceTypeName();
+        
+        // get all available resource types
+        I_CmsResourceType[] allResTypes = OpenCms.getLoaderManager().getAllResourceTypes();
+        for (int i=0; i<allResTypes.length; i++) {
+            // loop through all types
+            if (allResTypes[i] == null) {
+                continue;
+            }         
+            String resTypeName = allResTypes[i].getTypeName();
             Vector suffList = (Vector)extByFiletypes.get(resTypeName);
             result.append(getResourceEntry(cms, doc, lang, parameters, callingObj, resTypeName, suffList));
-            if(i.hasNext()) {
+            if(i < (allResTypes.length - 1)) {
                 result.append(templateFile.getProcessedDataValue(C_TAG_SEPARATORENTRY, callingObj));
             }
         }

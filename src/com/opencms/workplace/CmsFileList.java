@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2004/06/15 10:15:03 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,11 +31,12 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -64,7 +65,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.84 $ $Date: 2004/06/15 10:15:03 $
+ * @version $Revision: 1.85 $ $Date: 2004/06/21 09:53:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -317,10 +318,10 @@ public class CmsFileList extends A_CmsWpElement {
             else {
 
                 // get the type of the resource
-                I_CmsResourceType type = cms.getResourceType(res.getType());
+                I_CmsResourceType type = OpenCms.getLoaderManager().getResourceType(res.getTypeId());
 
                 // get the context menu
-                contextMenu = type.getResourceTypeName();
+                contextMenu = type.getTypeName();
                 
                 CmsLock lock = cms.getLock(res);
 
@@ -437,7 +438,7 @@ public class CmsFileList extends A_CmsWpElement {
                     template.fastSetXmlData(C_CONTEXT_LINK, cms.readAbsolutePath(res));
                     template.fastSetXmlData(C_CONTEXT_MENU, getContextMenue(cms, res, template));
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
-                    I_CmsResourceType type = cms.getResourceType(res.getType());
+                    I_CmsResourceType type = OpenCms.getLoaderManager().getResourceType(res.getTypeId());
                     String icon = getIcon(cms, type, config);
                     template.fastSetXmlData(C_FILELIST_ICON_VALUE, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + config.getWpPicturePath() + icon);
 
@@ -473,7 +474,7 @@ public class CmsFileList extends A_CmsWpElement {
                         template.fastSetXmlData(C_FILELIST_TITLE_VALUE, title);
                     }
                     if((filelist & C_FILELIST_TYPE) != 0) {
-                        String typename = type.getResourceTypeName();
+                        String typename = type.getTypeName();
                         typename = lang.getLanguageValue("fileicon." + typename);
                         template.fastSetXmlData(C_FILELIST_TYPE_VALUE, typename);
                     }
@@ -525,10 +526,10 @@ public class CmsFileList extends A_CmsWpElement {
                         // get the locked by
                         CmsLock lock = cms.getLock(res);
                         if(lock.isNullLock()) {
-                            template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, "");
-                        }
+                        template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, "");
+                    }
                         else {
-                            template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, cms.lockedBy(res).getName());
+                            template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, cms.readUser(lock.getUserId()).getName());
                         }
                     }
 
@@ -548,7 +549,7 @@ public class CmsFileList extends A_CmsWpElement {
                     template.fastSetXmlData(C_CONTEXT_LINK, cms.readAbsolutePath(res));
                     template.fastSetXmlData(C_CONTEXT_MENU, getContextMenue(cms, res, template));
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
-                    I_CmsResourceType type = cms.getResourceType(file.getType());
+                    I_CmsResourceType type = OpenCms.getLoaderManager().getResourceType(file.getTypeId());
                     String icon = getIcon(cms, type, config);
                     template.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPicturePath() + icon);
 
@@ -585,7 +586,7 @@ public class CmsFileList extends A_CmsWpElement {
                     if((filelist & C_FILELIST_TYPE) != 0) {
 
                         // set the file type
-                        String typename = type.getResourceTypeName();
+                        String typename = type.getTypeName();
                         typename = lang.getLanguageValue("fileicon." + typename);
                         template.fastSetXmlData(C_FILELIST_TYPE_VALUE, typename);
                     }
@@ -637,10 +638,10 @@ public class CmsFileList extends A_CmsWpElement {
                         // get the locked by
                         CmsLock lock = cms.getLock(file);
                         if(lock.isNullLock()) {
-                            template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, "");
-                        }
+                        template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, "");
+                    }
                         else {
-                            template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, cms.lockedBy(file).getName());
+                            template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, cms.readUser(lock.getUserId()).getName());
                         }
                     }
 
@@ -666,21 +667,21 @@ public class CmsFileList extends A_CmsWpElement {
      */
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
         // check if this icon is in the cache already
-        String icon = (String)m_iconCache.get(type.getResourceTypeName());
+        String icon = (String)m_iconCache.get(type.getTypeName());
         // no icon was found, so check if there is a icon file in the filesystem
         if(icon == null) {
-            String filename = C_ICON_PREFIX + type.getResourceTypeName().toLowerCase() + C_ICON_EXTENSION;
+            String filename = C_ICON_PREFIX + type.getTypeName().toLowerCase() + C_ICON_EXTENSION;
             try {
                 // read the icon file
                 cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + filename);
                 // add the icon to the cache
                 icon = filename;
-                m_iconCache.put(type.getResourceTypeName(), icon);
+                m_iconCache.put(type.getTypeName(), icon);
             }
             catch(CmsException e) {
                 // no icon was found, so use the default
                 icon = C_ICON_DEFAULT;
-                m_iconCache.put(type.getResourceTypeName(), icon);
+                m_iconCache.put(type.getTypeName(), icon);
             }
         }
         return icon;
@@ -709,7 +710,7 @@ public class CmsFileList extends A_CmsWpElement {
                 output.append(C_LOCKED_VALUE_OWN);
             }
             else {
-                template.fastSetXmlData(C_LOCKEDBY, lang.getLanguageValue("explorer.lockedby") + cms.lockedBy(cms.readAbsolutePath(file)).getName());
+                template.fastSetXmlData(C_LOCKEDBY, lang.getLanguageValue("explorer.lockedby") + cms.readUser(lock.getUserId()).getName());
                 output.append(C_LOCKED_VALUE_USER);
             }
         }

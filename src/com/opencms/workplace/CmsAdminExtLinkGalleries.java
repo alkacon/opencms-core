@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2004/06/04 10:48:52 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.file.CmsResourceTypePointer;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -45,14 +45,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Template Class for administration of picture galleries
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.31 $ $Date: 2004/06/04 10:48:52 $
+ * @version $Revision: 1.32 $ $Date: 2004/06/21 09:53:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -147,7 +146,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                 try {
 
                     // create the folder
-                    CmsResource folder = cms.createResource(C_VFS_GALLERY_EXTERNALLINKS, galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                    CmsResource folder = cms.createResource(C_VFS_GALLERY_EXTERNALLINKS + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     if(title != null) {
                         cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
                     }
@@ -255,7 +254,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                                 //checkurl = CmsLinkCheck.checkUrl(link);
                             }
                             if(checkurl){
-                                cms.createResource(foldername+filename, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, properties, link.getBytes(), null);
+                                cms.createResource(foldername+filename, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, link.getBytes(), properties);
                             }
                         } catch (CmsException e){
                             error = e.getShortException();

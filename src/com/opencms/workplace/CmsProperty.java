@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2004/06/09 15:53:29 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2004/06/21 09:53:52 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Vector;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 
@@ -52,7 +52,7 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2004/06/09 15:53:29 $
+ * @version $Revision: 1.54 $ $Date: 2004/06/21 09:53:52 $
  */
 public class CmsProperty extends CmsWorkplaceDefault {
 
@@ -252,7 +252,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
 
                         // todo: add an error message that this key is already exisitng
                         StringBuffer errmesg = new StringBuffer();
-                        errmesg.append(lang.getLanguageValue("error.reason.newprop1") + " '" + newValue + "' " + lang.getLanguageValue("error.reason.newprop2") + " '" + file.getType() + "' " + lang.getLanguageValue("error.reason.newprop3") + "\n\n");
+                        errmesg.append(lang.getLanguageValue("error.reason.newprop1") + " '" + newValue + "' " + lang.getLanguageValue("error.reason.newprop2") + " '" + file.getTypeId() + "' " + lang.getLanguageValue("error.reason.newprop3") + "\n\n");
                         errmesg.append(CmsException.getStackTraceAsString(e));
                         xmlTemplateDocument.setData("NEWDETAILS", errmesg.toString());
                         template = "newerror";
