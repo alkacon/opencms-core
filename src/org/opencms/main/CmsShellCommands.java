@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $ $Date: 2004/02/11 15:01:01 $ 
+ * @version $Revision: 1.30 $ $Date: 2004/02/11 16:12:04 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -3142,7 +3142,7 @@ class CmsShellCommands {
      * Returns a version-string for this OpenCms.
      */
     public void version() {
-        System.out.println(OpenCms.getVersionName());
+        System.out.println(OpenCms.getSystemInfo().getVersionName());
     }
 
     /**

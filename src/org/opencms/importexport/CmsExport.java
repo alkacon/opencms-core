@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/02/09 14:16:35 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.26 $ $Date: 2004/02/09 14:16:35 $
+ * @version $Revision: 1.27 $ $Date: 2004/02/11 16:12:04 $
  */
 public class CmsExport implements Serializable {
 
@@ -473,7 +473,7 @@ public class CmsExport implements Serializable {
         getExportZipStream().putNextEntry(entry);
 
         // write the XML to the zip stream
-        getExportZipStream().write(xmlSaxWriter.getWriter().toString().getBytes(OpenCms.getDefaultEncoding()));
+        getExportZipStream().write(xmlSaxWriter.getWriter().toString().getBytes(OpenCms.getSystemInfo().getDefaultEncoding()));
 
         // close the zip entry for the manifest XML document
         getExportZipStream().closeEntry();
@@ -893,7 +893,7 @@ public class CmsExport implements Serializable {
         // create the export-zipstream
         setExportZipStream(new ZipOutputStream(new FileOutputStream(getExportFileName())));
         // generate the SAX XML writer 
-        CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new StringWriter(4096), OpenCms.getDefaultEncoding());
+        CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new StringWriter(4096), OpenCms.getSystemInfo().getDefaultEncoding());
         // initialize the dom4j writer object as member variable
         setSaxWriter(new SAXWriter(saxHandler, saxHandler));
         // the XML document to write the XMl to
@@ -917,7 +917,7 @@ public class CmsExport implements Serializable {
         // add the info element. it contains all infos for this export
         Element info = exportNode.addElement(I_CmsConstants.C_EXPORT_TAG_INFO);
         info.addElement(I_CmsConstants.C_EXPORT_TAG_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_OC_VERSION).addText(OpenCms.getVersionName());
+        info.addElement(I_CmsConstants.C_EXPORT_TAG_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionName());
         info.addElement(I_CmsConstants.C_EXPORT_TAG_DATE).addText(CmsMessages.getDateTimeShort(System.currentTimeMillis()));
         info.addElement(I_CmsConstants.C_EXPORT_TAG_PROJECT).addText(getCms().getRequestContext().currentProject().getName());
         info.addElement(I_CmsConstants.C_EXPORT_TAG_VERSION).addText(I_CmsConstants.C_EXPORT_VERSION);

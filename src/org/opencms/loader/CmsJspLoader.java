@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -206,7 +206,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             if (!res.isCommitted() || m_errorPagesAreNotCommited) {
                 // If a JSP errorpage was triggered the response will be already committed here
                 result = f_res.getWriterBytes();
-                result = CmsEncoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                
+                result = CmsEncoder.changeEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding(), cms.getRequestContext().getEncoding());                
                 // Process headers and write output                                          
                 res.setContentLength(result.length);
                 CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
@@ -247,7 +247,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @param configuration the OpenCms configuration 
      */
     public void init(ExtendedProperties configuration) {
-        m_jspRepository = OpenCms.getBasePath();
+        m_jspRepository = OpenCms.getSystemInfo().getBasePath();
         if (m_jspRepository.indexOf("WEB-INF") >= 0) {
             // Should always be true, just make sure we don't generate an exception in untested environments
             m_jspRepository = m_jspRepository.substring(0, m_jspRepository.indexOf("WEB-INF")-1);
@@ -371,7 +371,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         // default encoding. In case another encoding is set 
                         // in the 'content-encoding' property of the file, 
                         // we need to re-encode the output here. 
-                        result = CmsEncoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());
+                        result = CmsEncoder.changeEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding(), cms.getRequestContext().getEncoding());
 
                         // Process headers and write output                                          
                         res.setContentLength(result.length);
@@ -473,7 +473,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     // default encoding. In case another encoding is set
                     // in the 'content-encoding' property of the file,
                     // we need to re-encode the output here
-                    result = CmsEncoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                                              
+                    result = CmsEncoder.changeEncoding(result, OpenCms.getSystemInfo().getDefaultEncoding(), cms.getRequestContext().getEncoding());                                              
                 }
             } catch (IllegalStateException e) {
                 // Uncritical, might happen if JSP error page was used
@@ -618,7 +618,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 // corectly. Internally a JSP will always be stored in the 
                 // system default encoding since they are just a variation of
                 // the "plain" resource type.
-                String page = new String(contents, OpenCms.getDefaultEncoding());
+                String page = new String(contents, OpenCms.getSystemInfo().getDefaultEncoding());
                 StringBuffer buf = new StringBuffer(contents.length);
 
                 int p0 = 0, i2 = 0, slen = C_DIRECTIVE_START.length(), elen = C_DIRECTIVE_END.length();
@@ -727,7 +727,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     // Encoding project:
                     // Contents of original file where not modified,
                     // just translate to the required JSP encoding (if necessary)
-                    contents = CmsEncoder.changeEncoding(contents, OpenCms.getDefaultEncoding(), jspEncoding);   
+                    contents = CmsEncoder.changeEncoding(contents, OpenCms.getSystemInfo().getDefaultEncoding(), jspEncoding);   
                 }                                         
                 fs.write(contents);                
                 fs.close();

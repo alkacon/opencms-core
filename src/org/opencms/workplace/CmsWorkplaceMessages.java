@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -174,18 +174,18 @@ public class CmsWorkplaceMessages {
             result = m_messages.getString(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
         } catch (MissingResourceException e) {
             // exception - just use the default encoding
-            result = OpenCms.getDefaultEncoding();
+            result = OpenCms.getSystemInfo().getDefaultEncoding();
         }
         if (result.startsWith("{")) {
             // this is a "supported set" - try to figure out the encoding to use
-            if (result.indexOf(OpenCms.getDefaultEncoding()) >= 0) {
+            if (result.indexOf(OpenCms.getSystemInfo().getDefaultEncoding()) >= 0) {
                 // the current default encoding is supported, so we use this
-                result = OpenCms.getDefaultEncoding();
+                result = OpenCms.getSystemInfo().getDefaultEncoding();
             } else {
                 // default encoding is not supported, so we use the first given encoding in the set       
                 int index = result.indexOf(";");
                 if (index <= 1) {
-                    result = OpenCms.getDefaultEncoding();
+                    result = OpenCms.getSystemInfo().getDefaultEncoding();
                 } else { 
                     result = result.substring(1, index);   
                 }             

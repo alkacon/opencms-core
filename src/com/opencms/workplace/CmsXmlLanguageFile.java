@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2004/02/06 20:52:42 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2004/02/11 16:12:04 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.56 $ $Date: 2004/02/06 20:52:42 $
+ * @version $Revision: 1.57 $ $Date: 2004/02/11 16:12:04 $
  */
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
@@ -176,18 +176,18 @@ public class CmsXmlLanguageFile {
             result = m_messages.getString(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
         } catch (MissingResourceException e) {
             // exception - just use the default encoding
-            result = OpenCms.getDefaultEncoding();
+            result = OpenCms.getSystemInfo().getDefaultEncoding();
         }
         if (result.startsWith("{")) {
             // this is a "supported set" - try to figure out the encoding to use
-            if (result.indexOf(OpenCms.getDefaultEncoding()) >= 0) {
+            if (result.indexOf(OpenCms.getSystemInfo().getDefaultEncoding()) >= 0) {
                 // the current default encoding is supported, so we use this
-                result = OpenCms.getDefaultEncoding();
+                result = OpenCms.getSystemInfo().getDefaultEncoding();
             } else {
                 // default encoding is not supported, so we use the first given encoding in the set       
                 int index = result.indexOf(";");
                 if (index <= 1) {
-                    result = OpenCms.getDefaultEncoding();
+                    result = OpenCms.getSystemInfo().getDefaultEncoding();
                 } else { 
                     result = result.substring(1, index);   
                 }             

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2004/02/05 22:27:14 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/11 16:12:04 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public final class CmsXmlPageConverter {
@@ -101,7 +101,7 @@ public final class CmsXmlPageConverter {
                             continue;
                         } else if (n.getNodeType() == Node.ELEMENT_NODE) {
                             if ("LINK".equals(n.getName())) {
-                                contentBuffer.append(OpenCms.getOpenCmsContext());
+                                contentBuffer.append(OpenCms.getSystemInfo().getOpenCmsContext());
                                 contentBuffer.append(n.getText());
                                 continue;
                             } 
@@ -120,7 +120,7 @@ public final class CmsXmlPageConverter {
                 throw new Exception("Body content not found");
             }
             
-            bodyContent = CmsStringSubstitution.substitute(bodyContent, I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT, OpenCms.getOpenCmsContext());
+            bodyContent = CmsStringSubstitution.substitute(bodyContent, I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT, OpenCms.getSystemInfo().getOpenCmsContext());
             
             xmlPage.addElement(body, locale);
             xmlPage.setContent(cms, body, locale, bodyContent);

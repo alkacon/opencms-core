@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2004/02/06 20:52:42 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.112 $
+ * @version $Revision: 1.113 $
  */
 public class CmsRequestContext {
 
@@ -455,9 +455,9 @@ public class CmsRequestContext {
         if (m_encoding == null || "".equals(m_encoding)) {
             // no encoding found - use default one
             if (OpenCms.getLog(this).isDebugEnabled()) {                                
-                OpenCms.getLog(this).debug("No encoding found - using default: " + OpenCms.getDefaultEncoding());
+                OpenCms.getLog(this).debug("No encoding found - using default: " + OpenCms.getSystemInfo().getDefaultEncoding());
             }                  
-            m_encoding = OpenCms.getDefaultEncoding();
+            m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
         }
     }
     

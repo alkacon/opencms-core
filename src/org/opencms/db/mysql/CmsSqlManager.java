@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2004/02/05 08:28:08 $ 
+ * @version $Revision: 1.12 $ $Date: 2004/02/11 16:12:04 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -120,7 +120,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      */
     public static boolean singleByteEncoding() {
         if (c_escapeStrings == null) {
-            String encoding = OpenCms.getDefaultEncoding();
+            String encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             c_escapeStrings = new Boolean("ISO-8859-1".equalsIgnoreCase(encoding) || "ISO-8859-15".equalsIgnoreCase(encoding) || "US-ASCII".equalsIgnoreCase(encoding) || "Cp1252".equalsIgnoreCase(encoding));
         }
         return c_escapeStrings.booleanValue();

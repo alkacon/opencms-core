@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2004/02/06 16:44:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.1
  */
@@ -213,9 +213,9 @@ public final class CmsWorkplaceEditorManager {
      */
     private String getConfigurationFileEncoding(CmsObject cms, CmsFile configFile) {
         try { 
-            return cms.readProperty(cms.readAbsolutePath(configFile), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false, OpenCms.getDefaultEncoding());
+            return cms.readProperty(cms.readAbsolutePath(configFile), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false, OpenCms.getSystemInfo().getDefaultEncoding());
         } catch (CmsException e) {
-            return OpenCms.getDefaultEncoding();
+            return OpenCms.getSystemInfo().getDefaultEncoding();
         }
     }
     

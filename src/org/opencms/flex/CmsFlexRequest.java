@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -256,7 +256,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
             return m_requestUri;
         }
         StringBuffer buf = new StringBuffer(128);
-        buf.append(OpenCms.getOpenCmsContext());
+        buf.append(OpenCms.getSystemInfo().getOpenCmsContext());
         buf.append(getElementUri());
         m_requestUri = buf.toString();
         return m_requestUri;

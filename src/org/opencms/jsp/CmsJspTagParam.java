@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -179,7 +179,7 @@ public class CmsJspTagParam extends BodyTagSupport {
             }
         }
         if (m_encode) {
-            parent.addParameter(CmsEncoder.encode(m_name, OpenCms.getDefaultEncoding()), CmsEncoder.encode(value, OpenCms.getDefaultEncoding()));
+            parent.addParameter(CmsEncoder.encode(m_name, OpenCms.getSystemInfo().getDefaultEncoding()), CmsEncoder.encode(value, OpenCms.getSystemInfo().getDefaultEncoding()));
         } else {
             parent.addParameter(m_name, value);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/02/11 15:58:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/02/11 15:58:55 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/11 16:12:04 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsSearchIndex {
@@ -186,7 +186,7 @@ public class CmsSearchIndex {
 
         m_path = path + "/" + m_name;
         if (!(new File(m_path)).isAbsolute()) {
-            m_path = OpenCms.getBasePath() + m_path;
+            m_path = OpenCms.getSystemInfo().getBasePath() + m_path;
         }
     }   
 

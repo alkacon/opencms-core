@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsBase.java,v $
- * Date   : $Date: 2004/02/03 10:59:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.io.File;
  * and helper functions, e.g. OpenCms logging oder OpenCms base path.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public final class CmsBase extends Object {
     
@@ -56,7 +56,7 @@ public final class CmsBase extends Object {
      * @return the current web base path
      */
     public static String getWebBasePath() {
-        File basePath = new File(OpenCms.getBasePath());
+        File basePath = new File(OpenCms.getSystemInfo().getBasePath());
         String webBasePath = basePath.getParent();
         if (!webBasePath.endsWith(File.separatorChar+"")) {
             webBasePath += File.separatorChar;
@@ -70,7 +70,7 @@ public final class CmsBase extends Object {
      * @return the web application name
      */
     public static String getWebAppName() {
-        File basePath = new File(OpenCms.getBasePath());
+        File basePath = new File(OpenCms.getSystemInfo().getBasePath());
         String webAppName = basePath.getParentFile().getName();
         return webAppName;
     }
@@ -88,7 +88,7 @@ public final class CmsBase extends Object {
 
         File f = new File(s);
         if (! f.isAbsolute()) {
-            if (OpenCms.getBasePath() == null) {
+            if (OpenCms.getSystemInfo().getBasePath() == null) {
                 return null;
             } else {
                 return getWebBasePath() + s;
@@ -113,10 +113,10 @@ public final class CmsBase extends Object {
 
         File f = new File(s);
         if (! f.isAbsolute()) {
-            if (OpenCms.getBasePath() == null) {
+            if (OpenCms.getSystemInfo().getBasePath() == null) {
                 return null;
             } else {
-                return (OpenCms.getBasePath() + s).replace(m_replaceSep, File.separatorChar);
+                return (OpenCms.getSystemInfo().getBasePath() + s).replace(m_replaceSep, File.separatorChar);
             }
         } else {
             return s.replace(m_replaceSep, File.separatorChar);
@@ -132,10 +132,10 @@ public final class CmsBase extends Object {
     public static String getPropertiesPath(boolean absolute) {
         String result = "config/opencms.properties".replace('/', File.separatorChar);
         if (absolute) {
-            if (OpenCms.getBasePath() == null) {
+            if (OpenCms.getSystemInfo().getBasePath() == null) {
                 result = null;
             } else {
-                result = OpenCms.getBasePath() + result;
+                result = OpenCms.getSystemInfo().getBasePath() + result;
             }
         }
         return result;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -694,7 +694,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             byte[] result = null;
             com.opencms.file.CmsFile fx = cms.readFile(cms.readAbsolutePath(file));            
             // care about encoding issues
-            String dnc = OpenCms.getDefaultEncoding().trim();
+            String dnc = OpenCms.getSystemInfo().getDefaultEncoding().trim();
             String enc = cms.readProperty(cms.readAbsolutePath(fx), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
             // fake the called URI (otherwise XMLTemplate / ElementCache would not work)
             // cms.getRequestContext().setUri(cms.readAbsolutePath(fx));            

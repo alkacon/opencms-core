@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/02/08 20:13:41 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.1.12
  */
@@ -109,7 +109,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
                 stylesheet = getJsp().link(stylesheet);
                 head.append("<link href=\"" + server + stylesheet + "\" rel=\"stylesheet\" type=\"text/css\">");
             }            
-            head.append("<base href=\"" + server + OpenCms.getOpenCmsContext() + "\"></base></head><body>");
+            head.append("<base href=\"" + server + OpenCms.getSystemInfo().getOpenCmsContext() + "\"></base></head><body>");
             content =  head + content + "</body></html>";             
         }
         if (!save) {

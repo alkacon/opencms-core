@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/02/11 15:01:00 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsXmlPage {
     
@@ -189,9 +189,9 @@ public class CmsXmlPage {
             // content is initialized
             String encoding;
             try { 
-                encoding = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false, OpenCms.getDefaultEncoding());
+                encoding = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false, OpenCms.getSystemInfo().getDefaultEncoding());
             } catch (CmsException e) {
-                encoding = OpenCms.getDefaultEncoding();
+                encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             }
             
             String xmlData;
@@ -632,7 +632,7 @@ public class CmsXmlPage {
      * @throws CmsPageException if something goes wrong
      */
     public CmsFile write() throws CmsPageException {        
-        return write(m_file, OpenCms.getDefaultEncoding());
+        return write(m_file, OpenCms.getSystemInfo().getDefaultEncoding());
     }
     
     /**
@@ -644,7 +644,7 @@ public class CmsXmlPage {
      * @throws CmsPageException if something goes wrong
      */
     public CmsFile write(CmsFile file) throws CmsPageException {        
-        return write(file, OpenCms.getDefaultEncoding());
+        return write(file, OpenCms.getSystemInfo().getDefaultEncoding());
     }
     
     /**

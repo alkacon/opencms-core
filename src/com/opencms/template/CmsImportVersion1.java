@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2004/02/11 14:23:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -122,7 +122,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
             if (DEBUG > 0) {
                 System.err.println("[" + this.getClass().getName() + ".convertFile()]: Encoding not set, using default encoding and setting it in <?xml...?>.");
             }
-            encoding = OpenCms.getDefaultEncoding();
+            encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             fileContent = setEncoding(fileContent, encoding);
         }
         // check the frametemplates

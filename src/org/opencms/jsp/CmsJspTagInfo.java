@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagInfo extends TagSupport {
     
@@ -173,7 +173,7 @@ public class CmsJspTagInfo extends TagSupport {
         String result = null;
         switch (m_userProperty.indexOf(property)) {
             case 0 : // opencms.version
-                result = OpenCms.getVersionName();
+                result = OpenCms.getSystemInfo().getVersionName();
                 break;
             case 1 : // opencms.url
                 result = req.getRequestURL().toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -393,6 +393,6 @@ public final class CmsEncoder {
        if (input == null) {
            return input;
        }
-       return new String(changeEncoding(input.getBytes(), C_UTF8_ENCODING, OpenCms.getDefaultEncoding())); 
+       return new String(changeEncoding(input.getBytes(), C_UTF8_ENCODING, OpenCms.getSystemInfo().getDefaultEncoding())); 
     }
 }

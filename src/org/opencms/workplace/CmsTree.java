@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/02/11 08:38:17 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
@@ -553,7 +553,7 @@ public class CmsTree extends CmsWorkplace {
                 // stored site is not selected site, create complete URL as prefix
                 CmsSite site = CmsSiteManager.getSite(prefix);
                 prefix = getCms().getRequestContext().removeSiteRoot(prefix);
-                prefix = site.getUrl() + OpenCms.getOpenCmsContext() + prefix;
+                prefix = site.getUrl() + OpenCms.getSystemInfo().getOpenCmsContext() + prefix;
             } else {
                 // stored site is selected site, don't show prefix at all
                 prefix = "";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/02/11 15:01:00 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public final class OpenCms {
     
@@ -112,28 +112,6 @@ public final class OpenCms {
      */
     public static void fireCmsEvent(CmsObject cms, int type, java.util.Map data) {
         OpenCms.fireCmsEvent(new CmsEvent(cms, type, data));
-    }
-    
-    /**
-     * Returns the OpenCms application base path.<p>
-     * 
-     * @return the OpenCms application base path
-     */
-    public static String getBasePath() {
-        return OpenCmsCore.getInstance().getBasePath();
-    }
-
-    /**
-     * Return the OpenCms default character encoding.<p>
-     * 
-     * The default is set in the "opencms.properties" file.
-     * If this is not set in "opencms.properties" the default 
-     * is "ISO-8859-1".<p>
-     * 
-     * @return the default encoding, e.g. "UTF-8" or "ISO-8859-1"
-     */
-    public static String getDefaultEncoding() {
-        return OpenCmsCore.getInstance().getDefaultEncoding();
     }
     
     /**
@@ -218,15 +196,6 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the filename of the logfile.<p>
-     * 
-     * @return The filename of the logfile.
-     */
-    public static String getLogFileName() {
-        return OpenCmsCore.getInstance().getLogFileName();
-    }
-
-    /**
      * Returns the memory monitor.<p>
      * 
      * @return the memory monitor
@@ -244,17 +213,6 @@ public final class OpenCms {
      */
     public static String getMimeType(String filename, String encoding) {        
         return OpenCmsCore.getInstance().getMimeType(filename, encoding);              
-    }
-
-    /**
-     * Returns the OpenCms request context, e.g. /opencms/opencms.<p>
-     * 
-     * The context will always start with a "/" and never have a trailing "/".<p>
-     * 
-     * @return String the OpenCms request context, e.g. /opencms/opencms
-     */
-    public static String getOpenCmsContext() {
-        return OpenCmsCore.getInstance().getOpenCmsContext();
     }
 
     /**
@@ -287,16 +245,7 @@ public final class OpenCms {
     public static Object getRuntimeProperty(Object key) {
         return OpenCmsCore.getInstance().getRuntimeProperty(key);
     }
-    
-    /**
-     * Returns the name of the OpenCms server.<p>
-     * 
-     * @return the name of the OpenCms server
-     */
-    public static String getServerName() {
-        return OpenCmsCore.getInstance().getServerName();        
-    } 
-    
+
     /**
      * Returns the session info storage for all active users.<p>
      * 
@@ -373,26 +322,6 @@ public final class OpenCms {
     public static String getUserDefaultLanguage() {
         return OpenCmsCore.getInstance().getUserDefaultLanguage();
     }
-
-    /**
-     * Returns a String containing the version information (version name and version number) 
-     * of this OpenCms system.<p>
-     *
-     * @return version a String containing the version information
-     */
-    public static String getVersionName() {
-        return OpenCmsCore.getInstance().getVersionName();
-    }
-
-    /**
-     * Returns a String containing the version number 
-     * of this OpenCms system.<p>
-     *
-     * @return version a String containing the version number
-     */
-    public static String getVersionNumber() {
-        return OpenCmsCore.getInstance().getVersionNumber();
-    }
     
     /**
      * Returns the initialized workplace manager, 
@@ -442,5 +371,14 @@ public final class OpenCms {
      */
     public static void setRuntimeProperty(Object key, Object value) {
         OpenCmsCore.getInstance().setRuntimeProperty(key, value);
-    }
+    }    
+    
+    /**
+     * Returns the system information storage.<p> 
+     * 
+     * @return the system information storage
+     */
+    public static CmsSystemInfo getSystemInfo() {
+        return OpenCmsCore.getInstance().getSystemInfo();
+    }    
 }

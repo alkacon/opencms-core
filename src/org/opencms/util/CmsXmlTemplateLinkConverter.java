@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsXmlTemplateLinkConverter.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
  * This class is mostly required for database imports of OpenCms versions &lt; 5.0.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * @since 5.3.2
  */
 public final class CmsXmlTemplateLinkConverter {
@@ -125,7 +125,7 @@ public final class CmsXmlTemplateLinkConverter {
             // configure the converter
             converter.setConverterConfString(m_converterConfiguration);
             URL url = new URL(webappUrl + fileName);
-            converter.setServletPrefix(OpenCms.getOpenCmsContext(), null);
+            converter.setServletPrefix(OpenCms.getSystemInfo().getOpenCmsContext(), null);
             converter.setOriginalUrl(url);
             // convert html code
             body = converter.convertHTML(body);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/03 10:59:17 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $ $Date: 2004/02/03 10:59:17 $
+ * @version $Revision: 1.11 $ $Date: 2004/02/11 16:12:04 $
  */
 public class CmsShell {
 
@@ -97,9 +97,9 @@ public class CmsShell {
     public CmsShell(String basePath) {
         try {
             
-            // first initialize runlevel 1 to set all path information
+            // first initialize runlevel 1 and set all path information
             m_openCms = OpenCmsCore.getInstance();
-            basePath = m_openCms.setBasePath(basePath);
+            m_openCms.getSystemInfo().setBasePath(basePath);
             
             String propsPath = CmsBase.getPropertiesPath(true);
             System.out.println("[OpenCms] Property path: " + propsPath);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2003/09/25 14:39:00 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2004/02/11 16:12:05 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2003/09/25 14:39:00 $
+ * @version $Revision: 1.29 $ $Date: 2004/02/11 16:12:05 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser {
     
@@ -67,7 +67,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
      * @return Empty document.
      */
     public Document createEmptyDocument(String docNod) throws Exception {
-        String docXml = new String("<?xml version=\"1.0\" encoding=\"" + OpenCms.getDefaultEncoding() + "\"?>");
+        String docXml = new String("<?xml version=\"1.0\" encoding=\"" + OpenCms.getSystemInfo().getDefaultEncoding() + "\"?>");
         docXml = docXml + "<" + docNod + ">" + "</" + docNod + ">";
         StringReader reader = new StringReader(docXml);
         return parse(reader);
@@ -192,6 +192,6 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             }
         }
         // in other cases we just return default encoding
-        return OpenCms.getDefaultEncoding();
+        return OpenCms.getSystemInfo().getDefaultEncoding();
     }
 }

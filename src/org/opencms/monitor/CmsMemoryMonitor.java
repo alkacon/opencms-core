@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/02/09 14:16:35 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.22 $ $Date: 2004/02/09 14:16:35 $
+ * @version $Revision: 1.23 $ $Date: 2004/02/11 16:12:05 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -589,13 +589,13 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         if (warning) {
             m_warningSendSinceLastStatus = true;
             m_lastEmailWarning = System.currentTimeMillis(); 
-            subject = "OpenCms Memory W A R N I N G [" + OpenCms.getServerName().toUpperCase() + "/" + date + "]";
-            content += "W A R N I N G !\nOpenCms memory consumption on server " + OpenCms.getServerName().toUpperCase() + " has reached a critical level !\n\n"
+            subject = "OpenCms Memory W A R N I N G [" + OpenCms.getSystemInfo().getServerName().toUpperCase() + "/" + date + "]";
+            content += "W A R N I N G !\nOpenCms memory consumption on server " + OpenCms.getSystemInfo().getServerName().toUpperCase() + " has reached a critical level !\n\n"
                     + "The configured limit is " + m_maxUsagePercent + "%\n\n";
         } else {
             m_warningSendSinceLastStatus = false;
             m_lastEmailStatus = System.currentTimeMillis();
-            subject = "OpenCms Memory Status [" + OpenCms.getServerName().toUpperCase() + "/" + date + "]";
+            subject = "OpenCms Memory Status [" + OpenCms.getSystemInfo().getServerName().toUpperCase() + "/" + date + "]";
         }
         
         long maxMemory = Runtime.getRuntime().maxMemory() / 1048576;
@@ -604,7 +604,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         long freeMemory = maxMemory - usedMemory;
         long usage = usedMemory * 100 / maxMemory;
         
-        content += "Memory usage report of OpenCms server " + OpenCms.getServerName().toUpperCase() + " at " + date + "\n\n" 
+        content += "Memory usage report of OpenCms server " + OpenCms.getSystemInfo().getServerName().toUpperCase() + " at " + date + "\n\n" 
             + "Memory maximum heap size: " + maxMemory + " mb\n" 
             + "Memory current heap size: " + totalMemory + " mb\n\n" 
             + "Memory currently used   : " + usedMemory + " mb (" + usage + "%)\n"
@@ -712,7 +712,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             OpenCms.getLog(this).warn(memStatus);
         } else {            
             
-            OpenCms.getLog(this).debug(", Memory monitor log for server " + OpenCms.getServerName().toUpperCase());
+            OpenCms.getLog(this).debug(", Memory monitor log for server " + OpenCms.getSystemInfo().getServerName().toUpperCase());
             
             List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
             Collections.sort(keyList);

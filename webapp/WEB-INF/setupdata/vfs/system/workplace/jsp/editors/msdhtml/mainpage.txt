@@ -44,7 +44,7 @@ var USE_FONTSIZE = <%= options.showElement("font.size") %>;
 var loadSimple = false;
 
 // OpenCms context prefix, required for page editor because no link replacement is done here
-var linkEditorPrefix = "<%= org.opencms.main.OpenCms.getOpenCmsContext() %>";
+var linkEditorPrefix = "<%= org.opencms.main.OpenCms.getSystemInfo().getOpenCmsContext() %>";
 
 // Sets the Document Source-Code for later including into the editor
 var text="<%= wp.getParamContent() %>";

@@ -40,16 +40,16 @@ createPropertydefinition jsp cache
 createPropertydefinition jsp stream
 createPropertydefinition jsp content-encoding
 createPropertydefinition jsp internal
-createPropertydefinition newpage Title
-createPropertydefinition newpage Description
-createPropertydefinition newpage Keywords
-createPropertydefinition newpage NavText
-createPropertydefinition newpage NavPos
-createPropertydefinition newpage export
-createPropertydefinition newpage template
-createPropertydefinition newpage exportname
-createPropertydefinition newpage content-encoding
-createPropertydefinition newpage internal
+createPropertydefinition xmlpage Title
+createPropertydefinition xmlpage Description
+createPropertydefinition xmlpage Keywords
+createPropertydefinition xmlpage NavText
+createPropertydefinition xmlpage NavPos
+createPropertydefinition xmlpage export
+createPropertydefinition xmlpage template
+createPropertydefinition xmlpage exportname
+createPropertydefinition xmlpage content-encoding
+createPropertydefinition xmlpage internal
 createPropertydefinition page Title
 createPropertydefinition page Description
 createPropertydefinition page Keywords
@@ -89,8 +89,6 @@ createPropertydefinition image Title
 createPropertydefinition image Description
 createPropertydefinition image Keywords
 createPropertydefinition image internal
-createPropertydefinition xmlpage Title
-createPropertydefinition xmlpage template
 
 # Initialize the default file extensions
 addFileExtension binary doc

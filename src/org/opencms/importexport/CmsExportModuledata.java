@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2004/02/09 14:16:35 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/02/11 16:12:04 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.18 $ $Date: 2004/02/09 14:16:35 $
+ * @version $Revision: 1.19 $ $Date: 2004/02/11 16:12:04 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
@@ -502,7 +502,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             ZipEntry entry = new ZipEntry(filename);
             getExportZipStream().putNextEntry(entry);
             // generate the SAX XML writer 
-            CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new OutputStreamWriter(getExportZipStream()), OpenCms.getDefaultEncoding());                    
+            CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new OutputStreamWriter(getExportZipStream()), OpenCms.getSystemInfo().getDefaultEncoding());                    
             // write the document
             (new SAXWriter(saxHandler, saxHandler)).write(doc);
             // close zip entry
@@ -558,7 +558,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             ZipEntry entry = new ZipEntry(filename);
             getExportZipStream().putNextEntry(entry);
             // generate the SAX XML writer 
-            CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new OutputStreamWriter(getExportZipStream()), OpenCms.getDefaultEncoding());                     
+            CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new OutputStreamWriter(getExportZipStream()), OpenCms.getSystemInfo().getDefaultEncoding());                     
             // write the document
             (new SAXWriter(saxHandler, saxHandler)).write(doc);
             // close zip entry

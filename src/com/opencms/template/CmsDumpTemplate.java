@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2004/02/05 08:28:08 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/02/11 16:12:05 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.54 $ $Date: 2004/02/05 08:28:08 $
+ * @version $Revision: 1.55 $ $Date: 2004/02/11 16:12:05 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -99,7 +99,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
                 // Here we suppose that in Cms non-xml files are stored in default content encoding
                 // (that's why we need to force this encoding for all workplace
                 // files - they need to operate with Cms files in this encoding)
-                s = CmsEncoder.changeEncoding(file.getContents(), OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());
+                s = CmsEncoder.changeEncoding(file.getContents(), OpenCms.getSystemInfo().getDefaultEncoding(), cms.getRequestContext().getEncoding());
             } else {
                 // we got a binary file - so just push it into result as it is
                 s = file.getContents();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2004/02/11 16:12:05 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.7 $ $Date: 2004/02/11 16:12:05 $
  */
 public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 
@@ -256,7 +256,7 @@ public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
             if (doc == null) return result;
             // create a byte array encoded in the default from the Document
             ByteArrayOutputStream out = new ByteArrayOutputStream(result.length + 32);
-            A_CmsXmlContent.getXmlParser().getXmlText(doc, out, OpenCms.getDefaultEncoding());
+            A_CmsXmlContent.getXmlParser().getXmlText(doc, out, OpenCms.getSystemInfo().getDefaultEncoding());
             result =  out.toByteArray();
         }               
         return result;

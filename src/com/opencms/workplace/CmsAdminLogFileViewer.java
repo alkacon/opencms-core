@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLogFileViewer.java,v $
-* Date   : $Date: 2004/02/09 14:16:34 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2004/02/11 16:12:04 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ public class CmsAdminLogFileViewer extends CmsWorkplaceDefault {
             templateSelector = "done";
         } else {
             StringBuffer logfilecontent = new StringBuffer();
-            String logfilename = OpenCms.getLogFileName();
+            String logfilename = OpenCms.getSystemInfo().getLogFileName();
             try {
                 File file = new File(logfilename);
                 length = file.length();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.116 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.115 $
+ * @version $Revision: 1.116 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -382,7 +382,7 @@ public class CmsRegistry extends A_CmsXmlContent {
         // encoding project:
         Document doc;
         try {
-            doc = parse(moduleString.toString().getBytes(OpenCms.getDefaultEncoding()));
+            doc = parse(moduleString.toString().getBytes(OpenCms.getSystemInfo().getDefaultEncoding()));
         } catch (UnsupportedEncodingException uee) {
             // use default system encoding
             doc = parse(moduleString.toString().getBytes());
@@ -2095,7 +2095,7 @@ public class CmsRegistry extends A_CmsXmlContent {
             // get the file
             File xmlFile = new File(m_regFileName);
             BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(xmlFile));
-            A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os, OpenCms.getDefaultEncoding());
+            A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os, OpenCms.getSystemInfo().getDefaultEncoding());
             // reinit the modules-hashtable
             init(false);
             if (OpenCms.getLog(this).isInfoEnabled()) {

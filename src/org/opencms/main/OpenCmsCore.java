@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2004/02/11 16:12:04 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,22 +100,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * @since 5.1
  */
 public final class OpenCmsCore {
     
-    /** Default encoding */
-    private static final String C_DEFAULT_ENCODING = "ISO-8859-1";
-  
     /** The default mimetype */
     private static final String C_DEFAULT_MIMETYPE = "text/html";
-
-    /** Static version name to use if version.properties can not be read */
-    private static final String C_DEFAULT_VERSION_NAME = "Ix";
-
-    /** Static version number to use if version.properties can not be read */
-    private static final String C_DEFAULT_VERSION_NUMBER = "5.3.x";
     
     /** Prefix for error messages for initialization errors */
     private static final String C_ERRORMSG = "OpenCms initialization error!\n\n";     
@@ -132,17 +123,11 @@ public final class OpenCmsCore {
     /** URI of the authentication form (read from properties) in case of form based authentication */
     private String m_authenticationFormURI;    
 
-    /** The OpenCms application base path */
-    private String m_basePath;
-
     /** Member variable to store instances to modify resources */
     private List m_checkFile;
 
     /** The OpenCms configuration read from <code>opencms.properties</code> */
     private ExtendedProperties m_configuration;
-    
-    /** Default encoding, can be overwritten in "opencms.properties" */
-    private String m_defaultEncoding;
     
     /** Array of configured default file names (for faster access) */
     private String[] m_defaultFilenames;
@@ -157,7 +142,7 @@ public final class OpenCmsCore {
     private CmsDriverManager m_driverManager;
 
     /** The static export manager */
-    private CmsStaticExportManager m_exportProperties;
+    private CmsStaticExportManager m_staticExportManager;
     
     /** The cron manager */
     // TODO enable the cron manager
@@ -170,7 +155,7 @@ public final class OpenCmsCore {
     private CmsLinkManager m_linkManager;    
 
     /** List to save the event listeners in */
-    private Map m_listeners;
+    private Map m_eventListeners;
 
     /** The loader manager used for loading individual resources */
     private CmsLoaderManager m_loaderManager;
@@ -184,17 +169,11 @@ public final class OpenCmsCore {
     /** The OpenCms log to write all log messages to */
     private CmsLog m_log;
 
-    /** The filename of the log file */
-    private String m_logfile;
-
     /** The memory monitor for collection memory statistics */
     private CmsMemoryMonitor m_memoryMonitor;
     
     /** The OpenCms map of configured mime types */
     private Map m_mimeTypes;
-
-    /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code> */
-    private String m_openCmsContext;
 
     /** The name of the class used to validate a new password */
     private String m_passwordValidatingClass;
@@ -210,9 +189,6 @@ public final class OpenCmsCore {
 
     /**  The cron scheduler to schedule the cronjobs */
     private CmsCronScheduler m_scheduler;
-    
-    /** The name of the OpenCms server */
-    private String m_serverName;
     
     /** The session info storage for all active users */
     private CmsSessionInfoManager m_sessionInfoManager;
@@ -244,15 +220,12 @@ public final class OpenCmsCore {
     /** The additional http headers */
     private String[] m_exportHeaders;
     
-    /** The version name (including version number) of this OpenCms installation */
-    private String m_versionName;
-
-    /** The version number of this OpenCms installation */
-    private String m_versionNumber;
-    
     /** The workplace manager contains information about the global workplace settings */
     private CmsWorkplaceManager m_workplaceManager;
 
+    /** The system information container for "read only" system settings */
+    private CmsSystemInfo m_systemInfo;    
+    
     /**
      * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
      * @throws CmsInitException in case of errors during the initialization
@@ -302,16 +275,16 @@ public final class OpenCmsCore {
      * @param eventTypes the events to listen for
      */
     protected void addCmsEventListener(I_CmsEventListener listener, int[] eventTypes) {
-        synchronized (m_listeners) {
+        synchronized (m_eventListeners) {
             if (eventTypes == null) {
                 eventTypes = new int[] {I_CmsEventListener.LISTENERS_FOR_ALL_EVENTS.intValue()};                
             }
             for (int i = 0; i < eventTypes.length; i++) {
                 Integer eventType = new Integer(eventTypes[i]);
-                List listeners = (List)m_listeners.get(eventType);
+                List listeners = (List)m_eventListeners.get(eventType);
                 if (listeners == null) {
                     listeners = new ArrayList();
-                    m_listeners.put(eventType, listeners);
+                    m_eventListeners.put(eventType, listeners);
                 }
                 listeners.add(listener);
             }
@@ -577,8 +550,8 @@ public final class OpenCmsCore {
      * @param event a CmsEvent
      */
     protected void fireCmsEvent(CmsEvent event) {
-        fireCmsEventHandler((List)m_listeners.get(event.getTypeInteger()), event);
-        fireCmsEventHandler((List)m_listeners.get(I_CmsEventListener.LISTENERS_FOR_ALL_EVENTS), event);    
+        fireCmsEventHandler((List)m_eventListeners.get(event.getTypeInteger()), event);
+        fireCmsEventHandler((List)m_eventListeners.get(I_CmsEventListener.LISTENERS_FOR_ALL_EVENTS), event);    
     }
 
     /**
@@ -615,15 +588,6 @@ public final class OpenCmsCore {
         }      
     }
 
-    /** 
-     * Returns the OpenCms application base path.<p>
-     *
-     * @return the OpenCms application base path
-     */
-    protected String getBasePath() {
-        return m_basePath;
-    }
-
     /**
      * This method returns the runtime configuration.
      * 
@@ -631,19 +595,6 @@ public final class OpenCmsCore {
      */
     protected ExtendedProperties getConfiguration() {
         return m_configuration;
-    }
-    
-    /**
-     * Return the OpenCms default character encoding.<p>
-     * 
-     * The default is set in the "opencms.properties" file.
-     * If this is not set in "opencms.properties" the default 
-     * is "ISO-8859-1".<p>
-     * 
-     * @return the default encoding, e.g. "UTF-8" or "ISO-8859-1"
-     */
-    protected String getDefaultEncoding() {
-        return m_defaultEncoding;
     }
     
     /**
@@ -779,15 +730,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns the filename of the logfile.<p>
-     * 
-     * @return The filename of the logfile.
-     */
-    protected String getLogFileName() {
-        return m_logfile;
-    }
-
-    /**
      * Returns the memory monitor.<p>
      * 
      * @return the memory monitor
@@ -825,17 +767,6 @@ public final class OpenCmsCore {
         }
         
         return mimetype;                
-    }
-
-    /**
-     * Returns the OpenCms request context, e.g. /opencms/opencms.<p>
-     * 
-     * The context will always start with a "/" and never have a trailing "/".<p>
-     * 
-     * @return String the OpenCms request context, e.g. /opencms/opencms
-     */
-    protected String getOpenCmsContext() {
-        return m_openCmsContext;
     }
 
     /**
@@ -903,15 +834,6 @@ public final class OpenCmsCore {
     protected Map getRuntimePropertyMap() {
         return m_runtimeProperties;
     }
-
-    /**
-     * Returns the OpenCms server name.<p>
-     * 
-     * @return the OpenCms server name
-     */
-    protected String getServerName() {
-        return m_serverName;
-    }
     
     /**
      * Returns the session info storage for all active users.<p>
@@ -957,7 +879,7 @@ public final class OpenCmsCore {
      * @return the properties for the static export
      */
     protected CmsStaticExportManager getStaticExportManager() {
-        return m_exportProperties;
+        return m_staticExportManager;
     }
     
     /**
@@ -987,26 +909,6 @@ public final class OpenCmsCore {
         // TODO: Move this into new workplace manager
         // TODO: Use a Locale instead of a String
         return m_userDefaultLanguage;
-    }
-
-    /**
-     * Returns a String containing the version information (version name and version number) 
-     * of this OpenCms system.<p>
-     *
-     * @return version a String containing the version information
-     */
-    protected String getVersionName() {
-        return m_versionName;
-    }
-
-    /**
-     * Returns a String containing the version number 
-     * of this OpenCms system.<p>
-     *
-     * @return version a String containing the version number
-     */
-    protected String getVersionNumber() {
-        return m_versionNumber;
     }
     
     /**
@@ -1221,12 +1123,12 @@ public final class OpenCmsCore {
      * @throws Exception in case of problems initializing OpenCms, this is usually fatal 
      */
     protected void initConfiguration(ExtendedProperties configuration) throws Exception {
-        // this will initialize the encoding with some default from the A_OpenCms
-        m_defaultEncoding = getDefaultEncoding();
+        // this will initialize the encoding with the default
+        String defaultEncoding = m_systemInfo.getDefaultEncoding();
         // check the opencms.properties for a different setting
-        m_defaultEncoding = configuration.getString("defaultContentEncoding", m_defaultEncoding);
+        defaultEncoding = configuration.getString("defaultContentEncoding", defaultEncoding);
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms encoding     : " + m_defaultEncoding);
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms encoding     : " + defaultEncoding);
         }
         String systemEncoding = null;
         try {
@@ -1237,8 +1139,8 @@ public final class OpenCmsCore {
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info(". System file.encoding : " + systemEncoding);
         }
-        if (!m_defaultEncoding.equals(systemEncoding)) {
-            String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + "' not equal to OpenCms encoding '" + m_defaultEncoding + "'";
+        if (!defaultEncoding.equals(systemEncoding)) {
+            String msg = "OpenCms startup failure: System file.encoding '" + systemEncoding + "' not equal to OpenCms encoding '" + defaultEncoding + "'";
             if (getLog(this).isFatalEnabled()) {
                 getLog(this).fatal(OpenCmsCore.C_MSG_CRITICAL_ERROR + "1: " + msg);
             }
@@ -1247,17 +1149,15 @@ public final class OpenCmsCore {
         try {
             // check if the found encoding is supported 
             // this will work with Java 1.4+ only
-            if (!java.nio.charset.Charset.isSupported(m_defaultEncoding)) {
-                m_defaultEncoding = OpenCms.getDefaultEncoding();
+            if (!java.nio.charset.Charset.isSupported(defaultEncoding)) {
+                defaultEncoding = m_systemInfo.getDefaultEncoding();
             }
         } catch (Throwable t) {
             // will be thrown in Java < 1.4 (NoSuchMethodException etc.)
             // in Java < 1.4 there is no easy way to check if encoding is supported,
             // so you must make sure your setting in "opencms.properties" is correct.             
         }
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Encoding set to      : " + m_defaultEncoding);
-        }
+        m_systemInfo.setDefaultEncoding(defaultEncoding);
         
         // read server ethernet address (MAC) and init UUID generator
         String ethernetAddress = configuration.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
@@ -1266,7 +1166,9 @@ public final class OpenCmsCore {
         }
         CmsUUID.init(ethernetAddress);
         
-        m_serverName = configuration.getString("server.name", "OpenCmsServer");
+        // set the server name
+        String serverName = configuration.getString("server.name", "OpenCmsServer");
+        m_systemInfo.setServerName(serverName);
         
         // initialize the lock manager
         m_lockManager = CmsLockManager.getInstance();
@@ -1632,9 +1534,7 @@ public final class OpenCmsCore {
      * @param context configuration of OpenCms from <code>web.xml</code>
      * @throws CmsInitException if initalization fails
      */
-    protected synchronized void initContext(ServletContext context) throws CmsInitException {        
-        initVersion(this);
-                
+    protected synchronized void initContext(ServletContext context) throws CmsInitException {                        
         // Check for OpenCms home (base) directory path
         String base = context.getInitParameter("opencms.home");
         if (base == null || "".equals(base)) {
@@ -1643,7 +1543,7 @@ public final class OpenCmsCore {
                 throwInitException(new CmsInitException(C_ERRORMSG + "OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.\n\n"));
             }
         }
-        base = setBasePath(base);  
+        m_systemInfo.setBasePath(base);
         
         // Collect the configurations 
         ExtendedProperties configuration = null;       
@@ -1654,11 +1554,12 @@ public final class OpenCmsCore {
         }
         
         // set path to log file
-        m_logfile = (String)configuration.get("log.file");
-        if (m_logfile != null) {
-            m_logfile = CmsBase.getAbsolutePath(m_logfile);
-            configuration.put("log.file", m_logfile);
+        String logfile = (String)configuration.get("log.file");
+        if (logfile != null) {
+            logfile = CmsBase.getAbsolutePath(logfile);
+            configuration.put("log.file", logfile);
         }
+        m_systemInfo.setLogFileName(logfile);
             
         // read the the OpenCms servlet mapping from the servlet context
         String servletMapping = context.getInitParameter("OpenCmsServlet");
@@ -1689,12 +1590,12 @@ public final class OpenCmsCore {
             printCopyrightInformation();       
             getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");        
             getLog(CmsLog.CHANNEL_INIT).info(". Startup time         : " + (new Date(System.currentTimeMillis())));        
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms version      : " + OpenCms.getVersionName()); 
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms version      : " + getSystemInfo().getVersionName()); 
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms context path : /" + CmsBase.getWebAppName());                    
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms servlet path : " + servletMapping);                    
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms base path    : " + getBasePath());        
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms base path    : " + getSystemInfo().getBasePath());        
             getLog(CmsLog.CHANNEL_INIT).info(". OpenCms property file: " + CmsBase.getPropertiesPath(true));      
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms logfile      : " + m_logfile);   
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms logfile      : " + getSystemInfo().getLogFileName());   
             getLog(CmsLog.CHANNEL_INIT).info(". Servlet container    : " + context.getServerInfo());        
         }
 
@@ -1710,23 +1611,23 @@ public final class OpenCmsCore {
         }
         
         // initialize static export variables
-        m_exportProperties = new CmsStaticExportManager();
+        m_staticExportManager = new CmsStaticExportManager();
         
         // set if the static export is enabled or not
-        m_exportProperties.setStaticExportEnabled("true".equalsIgnoreCase(configuration.getString("staticexport.enabled", "false")));
+        m_staticExportManager.setStaticExportEnabled("true".equalsIgnoreCase(configuration.getString("staticexport.enabled", "false")));
 
         // set the default value for the "export" property
-        m_exportProperties.setExportPropertyDefault("true".equalsIgnoreCase(configuration.getString("staticexport.export_default", "false")));
+        m_staticExportManager.setExportPropertyDefault("true".equalsIgnoreCase(configuration.getString("staticexport.export_default", "false")));
                 
         // set the export suffixes
         String[] exportSuffixes = configuration.getStringArray("staticexport.export_suffixes");
         if (exportSuffixes == null) {
             exportSuffixes = new String[0];
         }
-        m_exportProperties.setExportSuffixes(exportSuffixes);
+        m_staticExportManager.setExportSuffixes(exportSuffixes);
                 
         // set the path for the export
-        m_exportProperties.setExportPath(org.opencms.setup.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(configuration.getString("staticexport.export_path"))));
+        m_staticExportManager.setExportPath(org.opencms.setup.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(configuration.getString("staticexport.export_path"))));
 
         // replace the "magic" names                 
         String servletName = configuration.getString("servlet.mapping"); 
@@ -1744,23 +1645,23 @@ public final class OpenCmsCore {
         String vfsPrefix = configuration.getString("staticexport.prefix_vfs", contextName + servletName);
                                         
         // set the export prefix variables for rfs and vfs
-        m_exportProperties.setRfsPrefix(rfsPrefix);
-        m_exportProperties.setVfsPrefix(vfsPrefix);    
+        m_staticExportManager.setRfsPrefix(rfsPrefix);
+        m_staticExportManager.setVfsPrefix(vfsPrefix);    
                         
         // set if links in the export should be relative or not
-        m_exportProperties.setExportRelativeLinks(configuration.getBoolean("staticexport.relative_links", false)); 
+        m_staticExportManager.setExportRelativeLinks(configuration.getBoolean("staticexport.relative_links", false)); 
 
         // initialize "exportname" folders
-        m_exportProperties.setExportnames();
+        m_staticExportManager.setExportnames();
         
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Static export        : " + (m_exportProperties.isStaticExportEnabled()?"enabled":"disabled"));
-            if (m_exportProperties.isStaticExportEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Export default       : " + m_exportProperties.getExportPropertyDefault());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export path          : " + m_exportProperties.getExportPath());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export rfs prefix    : " + m_exportProperties.getRfsPrefix());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + m_exportProperties.getVfsPrefix());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export link style    : " + (m_exportProperties.relativLinksInExport()?"relative":"absolute"));                
+            getLog(CmsLog.CHANNEL_INIT).info(". Static export        : " + (m_staticExportManager.isStaticExportEnabled()?"enabled":"disabled"));
+            if (m_staticExportManager.isStaticExportEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Export default       : " + m_staticExportManager.getExportPropertyDefault());
+                getLog(CmsLog.CHANNEL_INIT).info(". Export path          : " + m_staticExportManager.getExportPath());
+                getLog(CmsLog.CHANNEL_INIT).info(". Export rfs prefix    : " + m_staticExportManager.getRfsPrefix());
+                getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + m_staticExportManager.getVfsPrefix());
+                getLog(CmsLog.CHANNEL_INIT).info(". Export link style    : " + (m_staticExportManager.relativLinksInExport()?"relative":"absolute"));                
             }
         }                       
 
@@ -1824,13 +1725,11 @@ public final class OpenCmsCore {
         m_log = new CmsLog();
         m_passwordValidatingClass = "";
         m_checkFile = new ArrayList();
-        m_defaultEncoding = C_DEFAULT_ENCODING;
-        m_listeners = new HashMap();
+        m_eventListeners = new HashMap();
         m_requestHandlers = new HashMap();
+        m_systemInfo = new CmsSystemInfo();
         m_startupClassesInitialized = false;
-        m_userDefaultaccessFlags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
-        m_versionName = C_DEFAULT_VERSION_NUMBER + " " + C_DEFAULT_VERSION_NAME;
-        m_versionNumber = C_DEFAULT_VERSION_NUMBER;        
+        m_userDefaultaccessFlags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;      
     }
 
     /**
@@ -1986,10 +1885,8 @@ public final class OpenCmsCore {
             if (context.endsWith("/")) {
                 context = context.substring(0, context.lastIndexOf('/'));
             }
-            setOpenCmsContext(context);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". OpenCms context      : " + context);
-            }
+            m_systemInfo.setOpenCmsContext(context);
+
 
             // check for old webapp names and extend with context
             ArrayList webAppNames = (ArrayList)OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
@@ -2032,25 +1929,6 @@ public final class OpenCmsCore {
             }
         }
     }
-
-    /**
-     * Initializes the version for this OpenCms, will be called by 
-     * CmsHttpServlet or CmsShell upon system startup.<p>
-     * 
-     * @param o instance of calling object
-     */
-    protected void initVersion(Object o) {
-        // read the version-informations from properties, if not done
-        Properties props = new Properties();
-        try {
-            props.load(o.getClass().getClassLoader().getResourceAsStream("com/opencms/core/version.properties"));
-        } catch (Throwable t) {
-            // ignore this exception - no properties found
-            return;
-        }
-        m_versionNumber = props.getProperty("version.number", C_DEFAULT_VERSION_NUMBER);
-        m_versionName = m_versionNumber + " " + props.getProperty("version.name", C_DEFAULT_VERSION_NAME);
-    }
     
     /**
      * Prints the OpenCms copyright information to all log-files.<p>
@@ -2059,14 +1937,14 @@ public final class OpenCmsCore {
         String copy[] = I_CmsConstants.C_COPYRIGHT;
 
         // log to error-stream
-        System.err.println("\n\nStarting OpenCms, version " + OpenCms.getVersionName() + " in context " + CmsBase.getWebAppName());
+        System.err.println("\n\nStarting OpenCms, version " + OpenCms.getSystemInfo().getVersionName() + " in context " + CmsBase.getWebAppName());
         for (int i = 0; i<copy.length; i++) {
             System.err.println(copy[i]);
         }
 
         // log with opencms-logger
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms version " + OpenCms.getVersionName());
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms version " + OpenCms.getSystemInfo().getVersionName());
             for (int i = 0; i<copy.length; i++) {
                 getLog(CmsLog.CHANNEL_INIT).info(". " + copy[i]);
             }
@@ -2079,8 +1957,8 @@ public final class OpenCmsCore {
      * @param listener the listener to remove
      */
     protected void removeCmsEventListener(I_CmsEventListener listener) {
-        synchronized (m_listeners) {
-            m_listeners.remove(listener);
+        synchronized (m_eventListeners) {
+            m_eventListeners.remove(listener);
         }
     }
 
@@ -2107,24 +1985,15 @@ public final class OpenCmsCore {
             redirectURL = servletPath + m_authenticationFormURI + "?requestedResource=" + req.getPathInfo();
             res.sendRedirect(redirectURL);
         }
-    }    
+    }
     
     /**
-     * Sets the OpenCms base application path.<p>
+     * Returns the system information storage.<p> 
      * 
-     * @param path the base application path to set
-     * @return the base path with resolved relative path information 
+     * @return the system information storage
      */
-    protected String setBasePath(String path) {
-        path = path.replace('\\', '/');
-        if (!path.endsWith("/")) {
-            path = path + "/";
-        }
-        m_basePath = CmsLinkManager.normalizeRfsPath(path);
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info("OpenCms: Base application path is " + m_basePath);
-        }
-        return m_basePath;
+    protected CmsSystemInfo getSystemInfo() {
+        return m_systemInfo;
     }
     
     /**
@@ -2135,21 +2004,6 @@ public final class OpenCmsCore {
     private void setMimeTypes(Hashtable types) {
         m_mimeTypes = new HashMap(types.size());
         m_mimeTypes.putAll(types);
-    }
-
-    /**
-     * Sets the OpenCms request context.<p>
-     * 
-     * @param value the OpenCms request context
-     */
-    private void setOpenCmsContext(String value) {
-        if ((value != null) && (value.startsWith("/ROOT"))) {
-            value = value.substring("/ROOT".length());
-        }
-        if (value == null) {
-            value = "";
-        }
-        m_openCmsContext = value;
     }
 
     /**
@@ -2364,10 +2218,11 @@ public final class OpenCmsCore {
                 }
             }
         }
-    }    
+    }  
     
     /**
-     * Upgrades to runlevel 2.<p>
+     * Upgrades to runlevel 2,
+     * this is shell access but no Servlet context.<p>
      * 
      * @param configuration the configuration
      * @return the initialized OpenCmsCore
@@ -2390,7 +2245,8 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Upgrades to runlevel 3.<p>
+     * Upgrades to runlevel 3,
+     * this is the final runlevel with an initialized Servlet context.<p>
      * 
      * @param context the context
      * @return the initialized OpenCmsCore

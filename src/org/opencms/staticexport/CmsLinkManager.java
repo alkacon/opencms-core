@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/01/23 15:41:49 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/11 16:12:05 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsLinkManager {
     
@@ -230,8 +230,8 @@ public class CmsLinkManager {
         if (uri.isAbsolute()) {
             CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
             if (OpenCms.getSiteManager().isMatching(matcher)) {
-                if (path.startsWith(OpenCms.getOpenCmsContext())) {
-                    path = path.substring(OpenCms.getOpenCmsContext().length());
+                if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                    path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
                 return OpenCms.getSiteManager().matchSite(matcher).getSiteRoot() + path + fragment + query;
             } else {
@@ -240,7 +240,7 @@ public class CmsLinkManager {
         } 
         
         // relative uri starting with opencms context
-        String context = OpenCms.getOpenCmsContext();
+        String context = OpenCms.getSystemInfo().getOpenCmsContext();
         if (context != null && path.startsWith(context)) {
             String siteRoot = null;
             if (relativePath != null) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.130 $
+* Date   : $Date: 2004/02/11 16:12:04 $
+* Version: $Revision: 1.131 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.130 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.131 $ $Date: 2004/02/11 16:12:04 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -518,7 +518,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             if (isSimplePage) {
                 style = cms.readProperty(layoutTemplateFilename, C_PROPERTY_TEMPLATE);
                 if (style != null) {
-                    style =  hostName + OpenCms.getOpenCmsContext() + style;
+                    style =  hostName + OpenCms.getSystemInfo().getOpenCmsContext() + style;
                 } else {
                     style = "";
                 }
@@ -563,7 +563,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                     cms.getRequestContext().setCurrentProject(curProject);         
                     style = cms.readProperty(layoutTemplateFilename, C_PROPERTY_TEMPLATE);    
                     if (style != null) {
-                        style = hostName + OpenCms.getOpenCmsContext() + style;
+                        style = hostName + OpenCms.getSystemInfo().getOpenCmsContext() + style;
                     } else {
                         style = "";
                     }
@@ -737,7 +737,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
 		content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
 		
 		// set the context & servlet path in editor content
-		content = CmsStringSubstitution.substitute(content, C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getOpenCmsContext() + "/");
+		content = CmsStringSubstitution.substitute(content, C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getSystemInfo().getOpenCmsContext() + "/");
         
         // escape content
         content = CmsEncoder.escapeWBlanks(content, CmsEncoder.C_UTF8_ENCODING);
@@ -918,7 +918,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                 prop = cms.readProperty(file + "/", C_PROPERTY_CONTENT_ENCODING);
             } 
         } catch (Exception e) {}
-        if (prop == null) prop = OpenCms.getDefaultEncoding();
+        if (prop == null) prop = OpenCms.getSystemInfo().getDefaultEncoding();
         return prop;
     }
     
