@@ -152,20 +152,18 @@ function doEditHTML(para)
 {
 	switch (para)
 	{
-	case 1:
-		document.EDITOR.EXIT.value = "1";
-		document.EDITOR.save.value = "0";
+	case CLOSE:
+		document.EDITOR.action.value = "exit";
 		doSubmit();
 		document.EDITOR.submit();
 		break;
 	case SAVECLOSE:
-		document.EDITOR.save.value = "1";
-		document.EDITOR.EXIT.value = "1";
+		document.EDITOR.action.value = "saveexit";
 		doSubmit();
 		document.EDITOR.submit();
 		break;
 	case SAVE:
-		document.EDITOR.save.value = "1";
+		document.EDITOR.action.value = "save";
 		doSubmit();
 		document.EDITOR.submit();
 		break;

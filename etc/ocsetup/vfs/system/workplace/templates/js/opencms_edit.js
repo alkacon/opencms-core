@@ -42,26 +42,24 @@ function doEdit(para)
 {
 	switch(para)
 	{
-	case 1:
+	case CLOSE:
 	{
 		doSubmit();
-		document.EDITOR.save.value = "0";
-		document.EDITOR.EXIT.value = "1";
+		document.EDITOR.action.value = "exit";
 		document.EDITOR.submit();
 		break;
 	}
 	case SAVECLOSE:
 	{
 		doSubmit();
-		document.EDITOR.save.value = "1";
-		document.EDITOR.EXIT.value = "1";
+		document.EDITOR.action.value = "saveexit";
 		document.EDITOR.submit();
 		break;
 	}
 	case SAVE:
 	{
 		doSubmit();
-		document.EDITOR.save.value = "1";
+		document.EDITOR.action.value = "save";
 		document.EDITOR.submit();
 		break;
 	}
