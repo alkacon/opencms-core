@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/Attic/todo.txt,v $
- * Date   : $Date: 2002/10/07 09:30:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2002/10/18 17:02:29 $
+ * Version: $Revision: 1.7 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@ As a small rule, there can be only a decision to implement a feature if there is
 also a volunteer to do the work!
 
 
-[ + ] Consolidate top-level directories
+[ # ] Consolidate top-level directories
 ================================================================================
 Suggested by:
   Alexander Kandzior (a.kandzior@alkacon.com)
@@ -91,7 +91,7 @@ Updates:
   templates, but should be doable in an acceptable time frame. The true issue is
   finding a way to migrate an old system to the new structure.
   (08/31/02) Alexander Kandzior
-  To overcome the issue of a system upgrade fomr the old to the new structure,
+  To overcome the issue of a system upgrade from the old to the new structure,
   two methods have been discussed:
   1. Write a tool that automatically analyzes and rewrites the content of pages.
   2. Write some kind of "directory mapping"
@@ -103,6 +103,11 @@ Updates:
   mapping will be optional.
   Even with this efforts it is still unclear if the new directory structure
   will make it to the final release.
+  (10/16/02) Alexander Kandzior
+  Directroy translation is in place now.
+  You can use regular expressions in opencms.properties to set the translations.
+  Galleries have been modified on a single codebase and can now easily switched
+  from old to new directory mapping using constants in I_CmsWpConstants.
 
 
 [ d ] Logfile rotation
@@ -157,7 +162,7 @@ Volunteers:
   (No volunteer yet)
 
 
-[ + ] Support for MS-SQL Server in setup wizard
+[ # ] Support for MS-SQL Server in setup wizard
 ================================================================================
 Suggested by:
   Alexander Kandzior (a.kandzior@alkacon.com)
