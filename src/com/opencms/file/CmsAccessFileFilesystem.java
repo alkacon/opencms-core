@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/02/01 08:19:58 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/10 09:23:45 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -198,9 +198,17 @@ import com.opencms.core.*;
          File discFile= new File (absoluteName(filename));
          // check if file exists in the filesystem.
          if (discFile.exists()) {
+			 // get the correct type
+			 int type;
+			 if( discFile.isFile() ) {
+				 type = m_mountpoint.getType();
+			 } else {
+				 type = C_TYPE_FOLDER;
+			 }
+			 
              // create file header
              file=new CmsFile(filename,
-                              m_mountpoint.getType(),
+                              type,
                               m_mountpoint.getFlags(),
                               m_mountpoint.getUser(),
                               m_mountpoint.getGroup(),
