@@ -435,7 +435,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form name="DELETE" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
+<form name="PUBLISH" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -506,6 +506,220 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 ]]>
 </TEMPLATE>
 <!--publish-->
+
+<!-- template history  ********************************************************************* -->
+
+<TEMPLATE name="history">
+<![CDATA[
+<HTML>
+<SCRIPT LANGUAGE="JavaScript">							  
+<!--
+function show_help()
+{
+	return '5_2_2_1.html';
+}
+
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+//-->
+</SCRIPT>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+</HEAD>
+
+<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form name="HIST" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td class="head">]]><LABEL value="title.history" /><![CDATA[ : ]]><PROCESS>id</PROCESS><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+					
+			<tr><td class=dialogtxt>
+				<table border=1 width=100%>
+					<tr><td class=dialogtxt>
+						<table border=0 width=100% height=200>
+						    <tr><td class=dialogtxt>]]><LABEL value="label.historyheader" /><![CDATA[</td></tr>
+							<tr><td class=dialogtxt>
+							]]><SELECT class="textfeld" size="10" name="version" width="400" method="getHistory" /><![CDATA[
+                            </td></tr>
+							<tr><td class=dialogtxt>
+								<table cellspacing=0 cellpadding=5 width=100%>
+								<tr>
+								<td class=formular align=middle width=20%>]]><SUBMITBUTTON class="button" name="ok" value="detail" width="100" action="" /><![CDATA[</td>
+								</tr>
+								</table>
+								<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+								<INPUT type="hidden" name="idhistory" value="]]><PROCESS>id</PROCESS><![CDATA[">
+							</td></tr>
+						</table>
+					</td></tr>
+				</table>
+			</td></tr>
+			
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=center><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK 
+					onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			
+			</table>
+	</td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+<!--history-->
+
+<!-- template history detail ************************************************************* -->
+<TEMPLATE name="historydetail">
+<![CDATA[
+<HTML>
+<SCRIPT LANGUAGE="JavaScript">							  
+<!--
+function show_help()
+{
+	return '5_2_2_1.html';
+}
+
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+//-->
+</SCRIPT>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+</HEAD>
+
+<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form name="HIST" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
+<table cellspacing=0 cellpadding=0 border=2 width=500>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td class="head">]]><LABEL value="title.historydetails" /><![CDATA[ : ]]><PROCESS>histid</PROCESS><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Beginn Inhalt-->
+			<tr><td class=dialogtxt>]]><LABEL value="label.project" /><![CDATA[ : ]]><PROCESS>histproject</PROCESS><![CDATA[</td></tr>
+			
+			<tr><td class=dialogtxt>
+				<table border=1 width=100%>
+					<tr><td class=dialogtxt>
+						<table border=0 width=100% height=200>
+							<tr>
+								<td class=formular width=25%>]]><LABEL value="label.name" /><![CDATA[:</td>
+								<td class=dialogtxt width=25%>]]><PROCESS>histid</PROCESS><![CDATA[</td>
+								<td class=formular width=25%>&nbsp;</td>
+								<td class=dialogtxt width=25%>&nbsp;</td>
+							</tr>
+							<tr>
+								<td class=formular>]]><LABEL value="label.title" /><![CDATA[:</td>
+								<td class=dialogtxt>]]><PROCESS>histtitle</PROCESS><![CDATA[</td>
+							</tr>
+							<tr>
+								<td class=formular>]]><LABEL value="label.editedat" /><![CDATA[:</td>
+								<td class=dialogtxt>]]><PROCESS>histlastmodified</PROCESS><![CDATA[</td>
+								<td class=formular>]]><LABEL value="label.publishedat" /><![CDATA[:</td>
+								<td class=dialogtxt>]]><PROCESS>histpublished</PROCESS><![CDATA[</td>
+							</tr>
+							<tr>
+								<td class=formular>]]><LABEL value="label.editedby" /><![CDATA[:</td>
+								<td class=dialogtxt>]]><PROCESS>histmodifiedby</PROCESS><![CDATA[</td>
+							</tr>
+							<tr>
+								<td class=formular colspan=4 height=30px>&nbsp;</td>												
+							</tr>							
+							<tr>
+								<td class=formular colspan=4 >]]><LABEL value="label.projectdescription" /><![CDATA[:</td>
+							</tr>
+							<tr>
+								<td class=dialogtxt colspan=4 >]]><PROCESS>histdescription</PROCESS><![CDATA[</td>
+							</tr>
+						</table>
+						</td>						
+					</tr>
+				</table>
+				</td>				
+			</tr>
+			
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=dialogtxt align=center>
+						]]><PROCESS>BUTTONRESTORE</PROCESS><![CDATA[
+						<INPUT class=button width = 200 type="button" value="]]><LABEL value="label.histdetailok" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[?idhistory=]]><PROCESS>id</PROCESS><![CDATA[';">
+					</td>
+				</tr>
+				</table>
+				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+				<INPUT type="hidden" name="version" value="]]><PROCESS>version</PROCESS><![CDATA[">
+				<INPUT type="hidden" name="idhistory" value="]]><PROCESS>id</PROCESS><![CDATA[">
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			
+			</table>
+	</td></tr>
+</table>
+</form>
+    
+</td></tr>
+</table>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<!--history detail-->
 
 <!-- template error  ********************************************************************* -->
 
@@ -787,6 +1001,76 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 
 </TEMPLATE>
 
+<!-- template historyerror  ********************************************************************* -->
+
+<TEMPLATE name="historyerror">
+<![CDATA[
+<html>
+<head>
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<!-- Ende Style -->
+</head>
+
+<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id="ERROR" name="ERROR">
+<table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
+	<tr><td class=dialogtxt>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			<!-- Beginn Leerzeile-->
+			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+			<!-- Ende Leerzeile-->
+			<tr> 
+           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.history"/><![CDATA[
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>	
+			<tr>
+				<td class=dialogtxt align=left>]]><PROCESS>historyerror</PROCESS><![CDATA[!
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>
+				<!-- Beginn Leerzeile-->
+			<tr> 
+				<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Begin Buttons-->
+			<tr><td class=dialogtxt colspan=2>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=center><INPUT class=button width = 100                       
+						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			</table>
+			<!-- End Buttons-->	
+	</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</body>
+</html>
+]]>
+
+</TEMPLATE>
+
 <!-- template lockerror  ********************************************************************* -->
 
 <TEMPLATE name="lockerror">
@@ -966,8 +1250,14 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 </selectboxWithParam>
 
 <whatAction>showList</whatAction>
+
+<ENABLERESTORE>
+<![CDATA[<INPUT class=button width = 100 type="submit" value="]]><LABEL value="label.histrestoreversion" /><![CDATA[" id=ok name=ok onClick="">]]>
+</ENABLERESTORE>
+
+<DISABLERESTORE>
+<![CDATA[ ]]>
+</DISABLERESTORE>
 <!-- End processed data -->
 
 </WORKPLACE>
-
-
