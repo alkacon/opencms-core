@@ -1,8 +1,7 @@
-/* 	usual				*/
 BODY
 {
-    Background: #F3F3F3;
-	COLOR: #303030;
+    BACKGROUND: #f3f3f3;
+    COLOR: #303030;
     FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
     FONT-SIZE: 8pt
 }
@@ -15,8 +14,8 @@ P
 .allgtext
 {
     COLOR: #303030;
-	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
-    FONT-SIZE: 8pt;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
 }
 TD
 {
@@ -28,7 +27,7 @@ SELECT
 {
     COLOR: #303030;
     FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
-    FONT-SIZE: 8pt;
+    FONT-SIZE: 8pt
 }
 H3
 {
@@ -38,36 +37,36 @@ H3
 }
 A
 {
-	COLOR: #004444;
-	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
-	TEXT-DECORATION: none
+    TEXT-DECORATION: none
 }
 A:link
 {
-	COLOR: #004444;
-	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
-	TEXT-DECORATION: none
+    TEXT-DECORATION: none
 }
-A:aktive
+A:unknown
 {
-	COLOR: #004444;
-	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
-	TEXT-DECORATION: none
+    TEXT-DECORATION: none
 }
 A:visited
 {
-	COLOR: #004444;
-	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
-	TEXT-DECORATION: none
+    TEXT-DECORATION: none
 }
-A:hover
+A
 {
-	COLOR: #662222;
-	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
-	FONT-SIZE: 8pt;
-	TEXT-DECORATION: none
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: none
 }
