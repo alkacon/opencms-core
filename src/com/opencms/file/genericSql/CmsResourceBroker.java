@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/11 13:23:41 $
- * Version: $Revision: 1.164 $
+ * Date   : $Date: 2000/10/11 13:27:57 $
+ * Version: $Revision: 1.165 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.164 $ $Date: 2000/10/11 13:23:41 $
+ * @version $Revision: 1.165 $ $Date: 2000/10/11 13:27:57 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -368,7 +368,6 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 
 	if (!accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ))
 		return false;
-
 
 	// check the rights for all 
 	CmsResource res = resource; // save the original resource name to be used is an error occurs.
