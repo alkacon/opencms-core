@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2004/12/16 11:01:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/01/18 13:07:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
     
@@ -343,7 +343,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (defaultValue == null) {
             defaultValue = "";
         }
-        return property(I_CmsConstants.C_PROPERTY_DESCRIPTION, "uri", defaultValue);
+        return property(I_CmsConstants.C_PROPERTY_DESCRIPTION, "search", defaultValue);
     }
     
     /**
@@ -481,7 +481,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (defaultValue == null) {
             defaultValue = "";
         }
-        return property(I_CmsConstants.C_PROPERTY_KEYWORDS, "uri", defaultValue);
+        return property(I_CmsConstants.C_PROPERTY_KEYWORDS, "search", defaultValue);
     }
     
     /**
@@ -623,7 +623,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (defaultValue == null) {
             defaultValue = "";
         }
-        return property(I_CmsConstants.C_PROPERTY_TITLE, "uri", defaultValue);    
+        return property(I_CmsConstants.C_PROPERTY_TITLE, "search", defaultValue);    
     }
     
     /**
