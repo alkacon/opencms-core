@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentGeneric.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/31 10:47:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * Since the document type is generic, no content extraction is performed for the resource.
  * However, meta data from the properties and attributes of the resource are indexed.<p>
  * 
- * The class is usefull for example to have images appear in the search result if the title of the image 
- * matched the search query. It's also used if no specifc extraction method is available for a binary document type.<p>
+ * The class is useful for example to have images appear in the search result if the title of the image 
+ * matched the search query. It's also used if no specific extraction method is available for a binary document type.<p>
  * 
  * @version $Revision: 1.1
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
