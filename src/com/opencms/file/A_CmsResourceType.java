@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/01/12 10:06:25 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/01/25 12:42:45 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -71,7 +71,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#lockResource(com.opencms.file.CmsObject, java.lang.String, boolean, int)
      */
     public void lockResource(CmsObject cms, String resourcename, boolean force, int mode) throws CmsException {
-        cms.doLockResource(resourcename, force, mode);
+        cms.doLockResource(resourcename, mode);
     }
 
     /**
@@ -169,7 +169,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#changeLockedInProject(com.opencms.file.CmsObject, int, java.lang.String)
      */
     public void changeLockedInProject(CmsObject cms, int project, String resourcename) throws CmsException {
-        cms.doChangeLockedInProject(project, resourcename);
+        cms.doChangeLockedInProject(resourcename);
     }
 
     /**
@@ -211,7 +211,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 // resource with the same name and same uuid does exist,
                 // update the existing resource
                 cms.lockResource(destination);
-                cms.doWriteResource(destination, properties, null, getResourceType(), content);
+                cms.doWriteResource(destination, properties, content);
                 importedResource = cms.readFileHeader(destination);
                 cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
             } else {

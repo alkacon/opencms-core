@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2003/09/25 14:39:00 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -151,7 +151,7 @@ public class CmsElementLocator {
                                                     CmsObject.class, String.class}).invoke(cmsTemplate,
                                                     new Object[] {cms, methodName});
                     result = new CmsMethodElement(className, methodName, mcd,
-                             CmsXmlTemplateLoader.getElementCache(cms).getVariantCachesize());
+                             CmsXmlTemplateLoader.getElementCache().getVariantCachesize());
                     put(desc, result);
                 } catch(Throwable e) {
                     if(OpenCms.getLog(this).isErrorEnabled()) {

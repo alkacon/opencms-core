@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2004/01/23 09:06:00 $
-* Version: $Revision: 1.282 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.283 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.282 $ $Date: 2004/01/23 09:06:00 $
+ * @version $Revision: 1.283 $ $Date: 2004/01/25 12:42:45 $
  */
 public interface I_CmsConstants {
 
@@ -1147,17 +1147,6 @@ public interface I_CmsConstants {
      * The name of the entry for the id generator to create new channelid's
      */
     String C_TABLE_CHANNELID = "CORE_CHANNEL_ID";
-
-    /**
-     * The modus the cmsObject runs in. There are three diffrent: online, offline
-     * and export. It is used by the link replacement mechanism. (the extern mode is
-     * used for the names in the filesystem for the exported files.)
-     */
-    int C_MODUS_AUTO = -1;
-    int C_MODUS_ONLINE = 0;
-    int C_MODUS_OFFLINE = 1;
-    int C_MODUS_EXPORT = 2;
-    int C_MODUS_EXTERN = 3;
 
     /**
      * The attribute of the publishclass tag in the modules registry used to show

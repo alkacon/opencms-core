@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterMedia.java,v $
-* Date   : $Date: 2003/09/15 10:51:13 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import com.opencms.file.CmsObject;
  * It carries a set of data to read and write.
  *
  * @author A. Schouten $
- * $Revision: 1.6 $
- * $Date: 2003/09/15 10:51:13 $
+ * $Revision: 1.7 $
+ * $Date: 2004/01/25 12:42:45 $
  */
 public class CmsMasterMedia {
 
@@ -153,11 +153,7 @@ public class CmsMasterMedia {
         int lastIndex = filename.lastIndexOf('.');
         if(lastIndex > 0) {
             String extension = filename.substring(lastIndex + 1);
-            try {
-                mimetype = (String)(cms.readMimeTypes().get(extension));
-            } catch(CmsException exc) {
-                // no mimetypes available -> use the default one
-            }
+            mimetype = (String)(cms.readMimeTypes().get(extension));
         }
         if(mimetype == null) {
             return C_DEFAULT_MIMETYPE;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/09/15 10:51:14 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.76 $ $Date: 2003/09/15 10:51:14 $
+ * @version $Revision: 1.77 $ $Date: 2004/01/25 12:42:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -493,18 +493,24 @@ public class CmsFileList extends A_CmsWpElement {
                         // get the folder state
                         template.fastSetXmlData(C_FILELIST_STATE_VALUE, getState(cms, res, lang));
                     }
+                    // TODO: Check if this is still needed
+                    /*
                     if((filelist & C_FILELIST_USER_CREATED) != 0) {
 
                         // get the owner of the folder
                         CmsUser owner = cms.readOwner(res);
                         template.fastSetXmlData(C_FILELIST_OWNER_VALUE, owner.getName());
                     }
+                    */
+                    // TODO: Check if this is still needed
+                    /*
                     if((filelist & C_FILELIST_GROUP) != 0) {
 
                         // get the group of the folder
                         CmsGroup group = cms.readGroup(res);
                         template.fastSetXmlData(C_FILELIST_GROUP_VALUE, group.getName());
                     }
+                    */
                     // TODO: remove later
                     /*
                     if((filelist & C_FILELIST_ACCESS) != 0) {
@@ -599,18 +605,24 @@ public class CmsFileList extends A_CmsWpElement {
                         // get the file state
                         template.fastSetXmlData(C_FILELIST_STATE_VALUE, getState(cms, file, lang));
                     }
+                    // TODO: check if this is still needed
+                    /*
                     if((filelist & C_FILELIST_USER_CREATED) != 0) {
 
                         // get the owner of the file
                         CmsUser owner = cms.readOwner(file);
                         template.fastSetXmlData(C_FILELIST_OWNER_VALUE, owner.getName());
                     }
+                    */
+                    // TODO: check if this is still needed
+                    /*
                     if((filelist & C_FILELIST_GROUP) != 0) {
 
                         // get the group of the file
                         CmsGroup group = cms.readGroup(file);
                         template.fastSetXmlData(C_FILELIST_GROUP_VALUE, group.getName());
                     }
+                    */
                     // TODO: remove later
                     /*
                     if((filelist & C_FILELIST_ACCESS) != 0) {

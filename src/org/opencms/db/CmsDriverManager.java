@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/23 15:02:16 $
- * Version: $Revision: 1.310 $
+ * Date   : $Date: 2004/01/25 12:42:45 $
+ * Version: $Revision: 1.311 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,6 @@ import org.opencms.workflow.CmsTaskLog;
 import com.opencms.boot.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.exceptions.CmsResourceNotFoundException;
 import com.opencms.file.*;
 import com.opencms.template.A_CmsXmlContent;
 
@@ -87,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.310 $ $Date: 2004/01/23 15:02:16 $
+ * @version $Revision: 1.311 $ $Date: 2004/01/25 12:42:45 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5424,8 +5423,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param task the task to read the agent from
      * @return the owner of a task
+     * @throws CmsException if something goes wrong
      */
-    public CmsUser readAgent(CmsTask task) {
+    public CmsUser readAgent(CmsTask task) throws CmsException {
         return readUser(task.getAgentUser());
     }
 
@@ -6256,8 +6256,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param task the task to read the original agent from
      * @return the owner of a task
+     * @throws CmsException if something goes wrong
      */
-    public CmsUser readOriginalAgent(CmsTask task) {
+    public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
         return readUser(task.getOriginalUser());
     }
 
@@ -6265,9 +6266,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Reads the owner of a project from the OpenCms.<p>
      *
      * @param project the project to get the owner from
-     * @return the owner of a resource.
+     * @return the owner of a resource
+     * @throws CmsException if something goes wrong
      */
-    public CmsUser readOwner(CmsProject project) {
+    public CmsUser readOwner(CmsProject project) throws CmsException {
         return readUser(project.getOwnerId());
     }
 
@@ -6276,8 +6278,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param task the task to read the owner from
      * @return the owner of a task
+     * @throws CmsException if something goes wrong
      */
-    public CmsUser readOwner(CmsTask task) {
+    public CmsUser readOwner(CmsTask task) throws CmsException {
         return readUser(task.getInitiatorUser());
     }
 
@@ -6286,8 +6289,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param log the tasklog
      * @return the owner of a resource
+     * @throws CmsException if something goes wrong
      */
-    public CmsUser readOwner(CmsTaskLog log) {
+    public CmsUser readOwner(CmsTaskLog log) throws CmsException {
         return readUser(log.getUser());
     }
 
@@ -7031,26 +7035,33 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Returns a user object.<p>
+     * Returns a user object based on the id of a user.<p>
      *
      * All users are granted.
      *
-     * @param id The id of the user that is to be read.
-     * @return user read form the cms
+     * @param id the id of the user to read
+     * @return the user read 
+     * @throws CmsException if something goes wrong
      */
-    public CmsUser readUser(CmsUUID id) {
-        CmsUser user = null;
-        try {
-            user = getUserFromCache(id);
-            if (user == null) {
-                user = m_userDriver.readUser(id);
-                putUserInCache(user);
-            }
-        } catch (CmsException ex) {
-            return new CmsUser(CmsUUID.getNullUUID(), id + "", "deleted user");
+    public CmsUser readUser(CmsUUID id) throws CmsException {
+        CmsUser user = null; 
+        user = getUserFromCache(id);
+        if (user == null) {
+            user = m_userDriver.readUser(id);
+            putUserInCache(user);
         }
-
         return user;
+// old implementation:
+//        try {
+//            user = getUserFromCache(id);
+//            if (user == null) {
+//                user = m_userDriver.readUser(id);
+//                putUserInCache(user);
+//            }
+//        } catch (CmsException ex) {
+//            return new CmsUser(CmsUUID.getNullUUID(), id + "", "deleted user");
+//        }        
+//        return user;
     }
 
     /**

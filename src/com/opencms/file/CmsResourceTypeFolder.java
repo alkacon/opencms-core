@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2004/01/12 10:06:25 $
-* Version: $Revision: 1.100 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.101 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.100 $
+ * @version $Revision: 1.101 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -440,7 +440,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             // update the folder if something has changed
             if (changed) {
                 lockResource(cms, cms.readAbsolutePath(importedResource), true, CmsLock.C_MODE_COMMON);
-                cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, cms.getRequestContext().currentUser().getName(), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null/* new byte[0] */);
+                cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, null/* new byte[0] */);
             } 
         }
         // get the updated folder
@@ -454,13 +454,13 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         if (C_BODY_MIRROR) {
             // first lock the folder in the C_VFS_PATH_BODIES path if it exists.
             try {
-                cms.doLockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1), force, mode);
+                cms.doLockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1), mode);
             } catch (CmsException e) {
                 // ignore the error. this folder doesent exist.
             }
         }
         // now lock the folder
-        cms.doLockResource(resource, force, mode);
+        cms.doLockResource(resource, mode);
     }
 
     /**
@@ -627,7 +627,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             }
         }
         // finally the folder
-        cms.doChangeLockedInProject(newProjectId, resourcename);
+        cms.doChangeLockedInProject(resourcename);
         if (C_BODY_MIRROR) {
             // change the corresponding folder in C_VFS_PATH_BODIES
             String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourcename;

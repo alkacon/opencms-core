@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/09/19 15:33:08 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.exceptions.CmsPlausibilizationException;
 import com.opencms.defaults.A_CmsContentDefinition;
 import com.opencms.defaults.CmsFilterMethod;
 import com.opencms.defaults.I_CmsExtendedContentDefinition;
@@ -55,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.62 $
- * $Date: 2003/09/19 15:33:08 $
+ * $Revision: 1.63 $
+ * $Date: 2004/01/25 12:42:45 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 

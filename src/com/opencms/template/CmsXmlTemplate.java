@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/09/25 14:39:00 $
-* Version: $Revision: 1.136 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.137 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.136 $ $Date: 2003/09/25 14:39:00 $
+ * @version $Revision: 1.137 $ $Date: 2004/01/25 12:42:45 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -411,26 +411,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException
      */
     public Object getQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        String query = "";
-        if(cms.getMode() == I_CmsConstants.C_MODUS_EXPORT){
-            Enumeration parameters = cms.getRequestContext().getRequest().getParameterNames();
-            if(parameters == null){
-                return query;
-            }
-            StringBuffer paramQuery = new StringBuffer();
-            while(parameters.hasMoreElements()){
-                String name = (String)parameters.nextElement();
-                String value = (String)((Hashtable)userObject).get(name);
-                if(value != null && !"".equals(value)){
-                    paramQuery.append(name+"="+value+"&");
-                }
-            }
-            if(paramQuery.length() > 0){
-                query = paramQuery.substring(0,paramQuery.length()-1).toString();
-            }
-        }else{
-            query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
-        }
+        String query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
         if(query != null && !"".equals(query)) {
             query = "?" + query;
         }
@@ -866,12 +847,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         String query = new String();
         // get the parameternames of the original request and get the values from the userObject
         try{
-            Enumeration parameters = null;
-            if(cms.getMode() == I_CmsConstants.C_MODUS_EXPORT){
-                parameters = cms.getRequestContext().getRequest().getParameterNames();
-            }else{
-                parameters = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getParameterNames();
-            }
+            Enumeration parameters = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getParameterNames();
             StringBuffer paramQuery = new StringBuffer();
             while(parameters.hasMoreElements()){
                 String name = (String)parameters.nextElement();
@@ -1133,9 +1109,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         String cacheKey = getCacheDirectives(cms, templateName, elementName,
                                 parameters, templateSelector).getCacheKey(cms, parameters);
-        if(CmsXmlTemplateLoader.isElementCacheEnabled(cms) && (cacheKey != null) &&
+        if(CmsXmlTemplateLoader.isElementCacheEnabled() && (cacheKey != null) &&
                 (cms.getRequestContext().currentProject().isOnlineProject()) ) {
-            boolean exportmode = cms.getMode() == I_CmsConstants.C_MODUS_EXPORT;
+            boolean exportmode = false;
             Hashtable externVarDeps = CmsXmlTemplateLoader.getVariantDependencies();
             long exTimeForVariant = Long.MAX_VALUE;
             long now = System.currentTimeMillis();
@@ -1204,7 +1180,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // put the alldeps vector in our variant that will be created later
             // in the startproccessing method.
             // Get current element.
-            CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache(cms);
+            CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache();
             CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), templateName);
             A_CmsElement currElem = elementCache.getElementLocator().get(cms, elKey, parameters);
             // add an empty variant with the vector to the element
@@ -1262,12 +1238,12 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         byte[] result = null;
 
-        if(CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
+        if(CmsXmlTemplateLoader.isElementCacheEnabled()) {
             CmsElementDefinitionCollection mergedElDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
             // We are in element cache mode. Create a new variant instead of a completely processed subtemplate
             CmsElementVariant variant = xmlTemplateDocument.generateElementCacheVariant(this, parameters, elementName, templateSelector);
             // Get current element.
-            CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache(cms);
+            CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache();
             CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), xmlTemplateDocument.getAbsoluteFilename());
             A_CmsElement currElem = elementCache.getElementLocator().get(cms, elKey, parameters);
 
@@ -1539,7 +1515,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         // So if if the Exception occurs becource of the template == null it is no error and
         // we set the readAccessGroup = null (this will happen by getReadingpermittedGroup)
         try {
-            CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache(cms);
+            CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache();
             variantCachesize = elementCache.getVariantCachesize();
 
             CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, null, parameters, null);

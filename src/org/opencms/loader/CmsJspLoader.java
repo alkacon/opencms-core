@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/01/25 12:42:46 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.CmsExportRequest;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -77,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -267,36 +266,37 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         }
     }
         
-    /**
-     * Checks if the request parameter C_EXPORT_PARAM is set, if so sets the CmsObject 
-     * working mode to C_MODUS_EXPORT.
-     * 
-     * @param cms provides the current cms context
-     * @param req the current request 
-     * @return int the mode previously set in the CmsObject
-     */
-    private int exportCheckMode(CmsObject cms, HttpServletRequest req) {
-        int oldMode = cms.getMode();
-        String exportUri = req.getParameter(C_EXPORT_PARAM); 
-        if (exportUri != null) {
-            if (!exportUri.equals(cms.getRequestContext().getUri())) {
-                // URI is not the same, so this is a sub - element
-                cms.getRequestContext().setUri(exportUri);
-            }
-            cms.setMode(I_CmsConstants.C_MODUS_EXPORT);
-        }   
-        // check body
-        String body = req.getParameter(C_EXPORT_BODY);
-        if (body != null) {
-            cms.getRequestContext().setAttribute(I_CmsConstants.C_XML_BODY_ELEMENT, body);
-        }
-        // check encoding
-        String encoding = req.getParameter(C_EXPORT_ENCODING);
-        if (encoding != null) {
-            cms.getRequestContext().setEncoding(encoding);
-        }
-        return oldMode;     
-    }
+//    /**
+//     * Checks if the request parameter C_EXPORT_PARAM is set, if so sets the CmsObject 
+//     * working mode to C_MODUS_EXPORT.
+//     * 
+//     * @param cms provides the current cms context
+//     * @param req the current request 
+//     * @return int the mode previously set in the CmsObject
+//     */
+//    private int exportCheckMode(CmsObject cms, HttpServletRequest req) {
+//        // int oldMode = cms.getMode();
+//        String exportUri = req.getParameter(C_EXPORT_PARAM); 
+//        if (exportUri != null) {
+//            if (!exportUri.equals(cms.getRequestContext().getUri())) {
+//                // URI is not the same, so this is a sub - element
+//                cms.getRequestContext().setUri(exportUri);
+//            }
+//            // cms.setMode(I_CmsConstants.C_MODUS_EXPORT);
+//        }   
+//        // check body
+//        String body = req.getParameter(C_EXPORT_BODY);
+//        if (body != null) {
+//            cms.getRequestContext().setAttribute(I_CmsConstants.C_XML_BODY_ELEMENT, body);
+//        }
+//        // check encoding
+//        String encoding = req.getParameter(C_EXPORT_ENCODING);
+//        if (encoding != null) {
+//            cms.getRequestContext().setEncoding(encoding);
+//        }
+//        // return oldMode;     
+//        return 0;     
+//    }
     
     /**
      * Perform an export of the requested JSP page.<p>
@@ -423,15 +423,15 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         return bytes.toByteArray();
     }
 
-    /**
-     * Restores the mode stored in the <code>oldMode</code> paameter to the CmsObject.
-     * 
-     * @param cms provides the current cms context
-     * @param oldMode the old mode to restore in the CmsObject
-     */
-    private void exportResetMode(CmsObject cms, int oldMode) {
-        cms.setMode(oldMode);
-    }
+//    /**
+//     * Restores the mode stored in the <code>oldMode</code> paameter to the CmsObject.
+//     * 
+//     * @param cms provides the current cms context
+//     * @param oldMode the old mode to restore in the CmsObject
+//     */
+//    private void exportResetMode(CmsObject cms, int oldMode) {
+//        cms.setMode(oldMode);
+//    }
 
     /**
      * Returns the links found in the currently processed page as response headers,
@@ -518,7 +518,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
         // check if this is an export request
-        int oldMode = exportCheckMode(cms, req);
+        // int oldMode = exportCheckMode(cms, req);
 
         // load and process the JSP 
 
@@ -533,7 +533,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         boolean bypass = false;
 
         // check if export mode is active, if so "streaming" must be deactivated
-        boolean exportmode = (cms.getMode() == I_CmsConstants.C_MODUS_EXPORT);
+        // TODO: Implement new JSP static export mode (if required)
+        boolean exportmode = false;
 
         try {
             // Read caching property from requested VFS resource                                     
@@ -644,7 +645,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         }
 
         CmsFlexController.removeController(req);
-        exportResetMode(cms, oldMode);
+        // exportResetMode(cms, oldMode);
     }
         
     /**
@@ -667,7 +668,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             System.err.println("========== JspLoader (Template) loading: " + cms.readAbsolutePath(file));
         }       
 
-        if (cms.getRequestContext().getRequest() instanceof CmsExportRequest) {
+        if (false) {
+            // TODO: Re-implement export code
             if (DEBUG > 1) {
                 System.err.println("FlexJspLoader.loadTemplate(): Export requested for " + cms.readAbsolutePath(file));
             }

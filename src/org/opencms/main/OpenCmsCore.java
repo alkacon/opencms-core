@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/01/23 10:35:09 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2004/01/25 12:42:45 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,7 @@ import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.CmsResponseHttpServlet;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
-import com.opencms.core.I_CmsResourceInit;
 import com.opencms.core.I_CmsResponse;
-import com.opencms.core.exceptions.CmsResourceInitException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
@@ -105,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1152,7 +1150,7 @@ public final class OpenCmsCore {
         CmsObject cms = new CmsObject();
         CmsRequestContext context = new CmsRequestContext();
         context.init(m_driverManager, cmsReq, cmsRes, user, project, currentSite, m_directoryTranslator, m_fileTranslator);        
-        cms.init(m_driverManager, context, cmsReq, cmsRes, user, project, currentSite, sessionStorage, m_directoryTranslator, m_fileTranslator);
+        cms.init(m_driverManager, context, sessionStorage);
         return cms;
     }
     

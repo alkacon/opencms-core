@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2004/01/23 10:35:09 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2004/01/25 12:42:45 $
+ * Version: $Revision: 1.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.CmsExportRequest;
 import com.opencms.core.CmsSession;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
@@ -59,7 +58,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.108 $
+ * @version $Revision: 1.109 $
  */
 public class CmsRequestContext {
 
@@ -553,7 +552,7 @@ public class CmsRequestContext {
         if ((m_encoding != null) && ! "".equals(m_encoding)) {
             // encoding was read from resource property
             return;
-        } else if ((getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) && (! (m_req instanceof CmsExportRequest))) {
+        } else if (getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
             // try to get encoding from session for special system folder only                
             if (OpenCms.getLog(this).isDebugEnabled()) {                                
                 OpenCms.getLog(this).debug("Can't get encoding property for resource "

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminElementCache.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.13 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.14 $ $Date: 2004/01/25 12:42:45 $
  */
 public class CmsAdminElementCache extends CmsWorkplaceDefault {
 
@@ -111,7 +111,7 @@ public class CmsAdminElementCache extends CmsWorkplaceDefault {
      * @throws CmsException if there were errors while accessing project data.
      */
     public Boolean isElementcacheAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
-        return new Boolean(cms.getRequestContext().isAdmin() && (CmsXmlTemplateLoader.getElementCache(cms) != null));
+        return new Boolean(cms.getRequestContext().isAdmin() && (CmsXmlTemplateLoader.getElementCache() != null));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/11/12 17:37:14 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.50 $
- * $Date: 2003/11/12 17:37:14 $
+ * $Revision: 1.51 $
+ * $Date: 2004/01/25 12:42:45 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -642,7 +642,7 @@ public abstract class CmsMasterContent
             getDbAccessObject(getSubId()).publishResource(cms, m_dataSet, getSubId(), this.getClass().getName(), historyEnabled, versionId, publishDate, changedResources, changedModuleData);
             
             // update the cache
-            if (CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
+            if (CmsXmlTemplateLoader.isElementCacheEnabled()) {
                 CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
             }
         } catch (Exception e) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/09/19 14:42:52 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -286,17 +286,13 @@ public abstract class A_CmsElement {
                 ((CmsCacheDirectives)m_cacheDirectives).setExport(export);
             }
         }
-        // In Exportmodus set this template as dependency for the request
-        if(cms.getMode() == I_CmsConstants.C_MODUS_EXPORT && m_templateName != null){
-            cms.getRequestContext().addDependency(cms.getRequestContext().addSiteRoot(m_templateName));
-        }
         proxySettings.merge(m_cacheDirectives);
         // now for the subelements
         Enumeration elementNames = m_elementDefinitions.getAllElementNames();
         while(elementNames.hasMoreElements()){
             String name = (String)elementNames.nextElement();
             CmsElementDefinition currentDef = m_elementDefinitions.get(name);
-            A_CmsElement currentEle = CmsXmlTemplateLoader.getElementCache(cms).getElementLocator().get(
+            A_CmsElement currentEle = CmsXmlTemplateLoader.getElementCache().getElementLocator().get(
                                     cms, new CmsElementDescriptor(currentDef.getClassName(),
                                                             currentDef.getTemplateName()), parameters);
             currentEle.checkProxySettings(cms, proxySettings, parameters);
@@ -349,12 +345,6 @@ public abstract class A_CmsElement {
         boolean resolveDebug = false;
         if(resolveDebug) System.err.println("= Start resolving variant " + variant);
         int len = variant.size();
-
-        // if this is exportmodus register that to the variant
-        if(cms.getMode() == I_CmsConstants.C_MODUS_EXPORT){
-            variant.setExported();
-        }
-
         // Try to get the corresponding element using the element locator
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

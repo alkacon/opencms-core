@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/01/25 12:42:45 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $ $Date: 2003/11/08 10:32:44 $ 
+ * @version $Revision: 1.27 $ $Date: 2004/01/25 12:42:45 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -195,24 +195,7 @@ class CmsShellCommands {
      */
     public void addUser(String name, String password, String group, String description) {
         try {
-            System.out.println(m_cms.addUser(name, password, group, description, new Hashtable(), I_CmsConstants.C_FLAG_ENABLED));
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Adds a user to the cms.
-     *
-     * @param name The new name for the user.
-     * @param password The new password for the user.
-     * @param group The default groupname for the user.
-     * @param description The description for the user.
-     * @param flags The flags for the user.
-     */
-    public void addUser(String name, String password, String group, String description, String flags) {
-        try {
-            System.out.println(m_cms.addUser(name, password, group, description, new Hashtable(), Integer.parseInt(flags)));
+            System.out.println(m_cms.addUser(name, password, group, description, new Hashtable()));
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
@@ -231,7 +214,7 @@ class CmsShellCommands {
      */
     public void addUser(String name, String password, String group, String description, String firstname, String lastname, String email) {
         try {
-            CmsUser user = m_cms.addUser(name, password, group, description, new Hashtable(), I_CmsConstants.C_FLAG_ENABLED);
+            CmsUser user = m_cms.addUser(name, password, group, description, new Hashtable());
             user.setEmail(email);
             user.setFirstname(firstname);
             user.setLastname(lastname);
@@ -259,42 +242,17 @@ class CmsShellCommands {
      * Adds a web user to the Cms.
      * <br>
      * A web user has no access to the workplace but is able to access personalized
-     * functions controlled by the OpenCms.
+     * functions controlled by the OpenCms
      *
-     * @param name the new name for the user.
-     * @param password the new password for the user.
-     * @param group the default groupname for the user.
-     * @param description the description for the user.
-     * @param flags the flags for a user (e.g. C_FLAG_ENABLED)
-     *
-     */
-    public void addWebUser(String name, String password, String group, String description, String flags) {
-        try {
-            int intFlags = Integer.parseInt(flags);
-            System.out.println(m_cms.addWebUser(name, password, group, description, new Hashtable(), intFlags));
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Adds a web user to the Cms.
-     * <br>
-     * A web user has no access to the workplace but is able to access personalized
-     * functions controlled by the OpenCms.
-     *
-     * @param name the new name for the user.
-     * @param password the new password for the user.
-     * @param group the default groupname for the user.
-     * @param additionalGroup the additional group for the user.
-     * @param description the description for the user.
-     * @param flags the flags for a user (e.g. C_FLAG_ENABLED)
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param group the default groupname for the user
+     * @param description the description for the user
      *
      */
-    public void addWebUser(String name, String password, String group, String additionalGroup, String description, String flags) {
+    public void addWebUser(String name, String password, String group, String description) {
         try {
-            int intFlags = Integer.parseInt(flags);
-            System.out.println(m_cms.addWebUser(name, password, group, additionalGroup, description, new Hashtable(), intFlags));
+            System.out.println(m_cms.addWebUser(name, password, group, description, new Hashtable()));
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
@@ -384,17 +342,6 @@ class CmsShellCommands {
     public void chtype(String filename, String newType) {
         try {
             m_cms.chtype(filename, m_cms.getResourceTypeId(newType));
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Clears all internal DB-Caches.
-     */
-    public void clearcache() {
-        try {
-            m_cms.clearcache();
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
@@ -609,15 +556,14 @@ class CmsShellCommands {
      * @param agentName the User who will edit the task.
      * @param roleName a Usergroup for the task.
      * @param taskname the name of the task.
-     * @param taskcomment a description of the task.
      * @param timeout the time when the task must finished.
      * @param priority the Id for the priority of the task.
      */
-    public void createTask(String agentName, String roleName, String taskname, String taskcomment, String timeout, String priority) {
+    public void createTask(String agentName, String roleName, String taskname, String timeout, String priority) {
         try {
             int intPriority = Integer.parseInt(priority);
             long longTimeout = Long.parseLong(timeout);
-            System.out.println(m_cms.createTask(agentName, roleName, taskname, taskcomment, longTimeout, intPriority));
+            System.out.println(m_cms.createTask(agentName, roleName, taskname, longTimeout, intPriority));
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
@@ -894,17 +840,17 @@ class CmsShellCommands {
     }
 
     /**
-     * Exits the commandline-interface
+     * Exits the shell and destryose the OpenCms core instance.<p>
      */
     public void exit() {
         try {
             m_openCms.destroy();
         } catch (Throwable e) {
             e.printStackTrace();
-        }
+        }        
         CmsShell.m_exitCalled = true;
-    }
-
+    } 
+    
     /**
      * Exports cms-resources to zip. In the zip-file the system - path will be included.
      *
@@ -2380,19 +2326,6 @@ class CmsShellCommands {
     public void readOwnerOfProject(String project) {
         try {
             System.out.println(m_cms.readOwner(m_cms.readProject(Integer.parseInt(project))));
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Reads the owner of a resource from the Cms.
-     * 
-     * @param resource the name of the resource
-     */
-    public void readOwnerOfResource(String resource) {
-        try {
-            System.out.println(m_cms.readOwner(m_cms.readFileHeader(resource)));
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }

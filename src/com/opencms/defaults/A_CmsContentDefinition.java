@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2003/10/20 13:01:01 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.exceptions.CmsPlausibilizationException;
+import com.opencms.defaults.master.CmsPlausibilizationException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
 import com.opencms.template.I_CmsContent;
@@ -45,7 +45,7 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public abstract class A_CmsContentDefinition implements I_CmsContent {
 

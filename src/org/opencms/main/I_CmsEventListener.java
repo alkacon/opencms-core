@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/01/14 12:55:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/01/25 12:42:45 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -101,7 +101,7 @@ public interface I_CmsEventListener {
      * <li>key "resource": the published CmsResource</li>
      * </ul>
      * 
-     * @see com.opencms.file.CmsObject#publishResource(String)
+     * @see com.opencms.file.CmsObject#publishResource(String, boolean, org.opencms.report.I_CmsReport)
      */    
     int EVENT_PUBLISH_RESOURCE = 3;    
 

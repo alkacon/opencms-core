@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2003/01/20 23:59:20 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.io.*;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.16 $ $Date: 2003/01/20 23:59:20 $  
+ * @version $Revision: 1.17 $ $Date: 2004/01/25 12:42:45 $  
  */
 public interface I_CmsResponse {
     
@@ -50,7 +50,7 @@ public interface I_CmsResponse {
      * 
      * @return The original response of the CmsResponse.
      */
-    public Object getOriginalResponse();
+    Object getOriginalResponse();
     
     /**
      * Returns the type of the response that was used to create the CmsResponse.
@@ -58,46 +58,46 @@ public interface I_CmsResponse {
      * 
      * @return The type of the CmsResponse.
      */
-    public int getOriginalResponseType();
+    int getOriginalResponseType();
     
     /**
      * Returns an OutputStream for writing the response data. 
      * 
      * @return OutputStream for writing data.
-     * @throws Throws IOException if an error occurs.
+     * @throws IOException if something goes wrong
      */
-    public OutputStream getOutputStream() throws IOException;
+    OutputStream getOutputStream() throws IOException;
     
     /**
      * Check if the output stream was requested previously.
      * @return <code>true</code> if getOutputStream() was called, <code>false</code> otherwise.
      */
-    public boolean isOutputWritten();
+    boolean isOutputWritten();
     
     /**
      * Check if the current request was redirected. In this case, the
      * servlet must not write any bytes to the output stream.
      * @return <code>true</code> if the request is redirected, <code>false</code> otherwise.
      */
-    public boolean isRedirected();
+    boolean isRedirected();
     
     /**
      * Sets a redirect to send the responst to. 
      * 
      * @param location The location the response is send to.
      * @param msg Additional error message.
-     * @throws Throws IOException if an error occurs.
+     * @throws IOException if something goes wrong
      */
-    public void sendCmsRedirect(String location) throws IOException;
+    void sendCmsRedirect(String location) throws IOException;
     
     /**
      * Sets the error code that is returnd by the response. The error code is specified
      * by a numeric value.
      * 
      * @param code The error code to be set.
-     * @throws Throws IOException if an error occurs.
+     * @throws IOException if something goes wrong
      */
-    public void sendError(int code) throws IOException;
+    void sendError(int code) throws IOException;
     
     /**
      * Sets the error code and a additional message that is returnd by the response. 
@@ -105,31 +105,31 @@ public interface I_CmsResponse {
      * 
      * @param code The error code to be set.
      * @param msg Additional error message.
-     * @throws Throws IOException if an error occurs.
+     * @throws IOException if something goes wrong
      */
-    public void sendError(int code, String msg) throws IOException;
+    void sendError(int code, String msg) throws IOException;
     
     /**
      *  Helper function for a redirect to the cluster url. 
      * 
-     * @param location a complete url, eg. http://servername/servlets/opencms/index.html 
-     * @throws Throws IOException if an error occurs.
+     * @param location a complete url, eg. <code>http://servername/servlets/opencms/index.html</code> 
+     * @throws IOException if something goes wrong
      */
-    public void sendRedirect(String location) throws IOException;
+    void sendRedirect(String location) throws IOException;
     
     /**
      * Sets the length of the content being returned by the server.
      * 
      * @param len Number of bytes to be returned by the response.
      */
-    public void setContentLength(int len);
+    void setContentLength(int len);
     
     /**
      * Sets the content type of the response to the specified type.
      * 
      * @param type The contnent type of the response.
      */
-    public void setContentType(String type);
+    void setContentType(String type);
     
     /**
      * Returns the content type of the response which has previously
@@ -137,7 +137,7 @@ public interface I_CmsResponse {
      * 
      * @return the content type of the response.
      */
-    public String getContentType();
+    String getContentType();
         
     /**
      * Sets a header-field in the response.
@@ -145,7 +145,7 @@ public interface I_CmsResponse {
      * @param key The key for the header.
      * @param value The value for the header.
      */
-    public void setHeader(String key, String value);
+    void setHeader(String key, String value);
 
     /**
      * Add a header-field in the response.
@@ -153,19 +153,19 @@ public interface I_CmsResponse {
      * @param key The key for the header.
      * @param value The value for the header.
      */
-    public void addHeader(String key, String value);
+    void addHeader(String key, String value);
     
     /**
      * Sets the last modified header-field in the response.
      * 
      * @param time The last-modified time.
      */
-    public void setLastModified(long time);
+    void setLastModified(long time);
     
     /**
      * Checks, if the header was set already.
      * @param key, the header-key to check.
      * @return true, if the header was set before else false.
      */
-    public boolean containsHeader(String key);
+    boolean containsHeader(String key);
 }

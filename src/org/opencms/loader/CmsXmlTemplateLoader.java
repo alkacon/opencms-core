@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/01/23 14:46:31 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/01/25 12:42:46 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -130,16 +130,10 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      * Returns the element cache that belongs to the given cms context,
      * or null if the element cache is not initialized.<p>
      * 
-     * @param cms the opencms context
      * @return the element cache that belongs to the given cms context
      */        
-    public static final CmsElementCache getElementCache(CmsObject cms) {
-//        patched 23.1.2004 by ph@ethikom.de: XML element cache has to be called always
-//        if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            return m_elementCache;
-//        } else {
-//            return null;
-//        }
+    public static final CmsElementCache getElementCache() {
+        return m_elementCache;
     }
 
     /**
@@ -163,12 +157,9 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     /**
      * Returns true if the element cache is enabled for the given cms context.<p>
      * 
-     * @param cms the opencms context
      * @return true if the element cache is enabled for the given cms context
      */
-    public static final boolean isElementCacheEnabled(CmsObject cms) {
-//        patched 23.1.2004 by ph@ethikom.de: XML element cache has to be called always
-//        return (m_elementCache != null) && cms.getRequestContext().currentProject().isOnlineProject();
+    public static final boolean isElementCacheEnabled() {
         return m_elementCache != null;
     }
 
@@ -260,7 +251,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         }
         
         // Parameters used for element cache
-        boolean elementCacheEnabled = CmsXmlTemplateLoader.isElementCacheEnabled(cms);
+        boolean elementCacheEnabled = CmsXmlTemplateLoader.isElementCacheEnabled();
         CmsElementCache elementCache = null;
         CmsUriDescriptor uriDesc = null;
         CmsUriLocator uriLoc = null;
@@ -272,7 +263,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
 
         if (elementCacheEnabled) {
             // Get the global element cache object
-            elementCache = CmsXmlTemplateLoader.getElementCache(cms);
+            elementCache = CmsXmlTemplateLoader.getElementCache();
 
             // Prepare URI Locator
             uriDesc = new CmsUriDescriptor(uri);

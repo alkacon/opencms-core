@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/09/25 14:39:00 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.84 $ $Date: 2003/09/25 14:39:00 $
+ * @version $Revision: 1.85 $ $Date: 2004/01/25 12:42:45 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -85,7 +85,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public CmsXmlTemplateFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
-        if(!CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
+        if(!CmsXmlTemplateLoader.isElementCacheEnabled()) {
             registerMyTags();
         }
         init(cms, file);
@@ -100,7 +100,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public CmsXmlTemplateFile(CmsObject cms, String filename) throws CmsException {
         super();
-        if(!CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
+        if(!CmsXmlTemplateLoader.isElementCacheEnabled()) {
             registerMyTags();
         }
         init(cms, filename);
@@ -108,7 +108,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     
     public CmsXmlTemplateFile(CmsObject cms, String filename, String content) throws CmsException {
         super();
-        if(!CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
+        if(!CmsXmlTemplateLoader.isElementCacheEnabled()) {
             registerMyTags();
         }
         init(cms, filename, content);

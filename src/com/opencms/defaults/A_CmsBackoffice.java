@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/11/12 16:22:19 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.CmsSession;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.core.exceptions.CmsPlausibilizationException;
+import com.opencms.defaults.master.CmsPlausibilizationException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
@@ -74,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 

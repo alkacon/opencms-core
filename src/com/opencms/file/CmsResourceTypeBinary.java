@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeBinary.java,v $
- * Date   : $Date: 2004/01/08 13:15:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/01/25 12:42:45 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  * Describes the resource type "binary".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsResourceTypeBinary extends A_CmsResourceType {
 
@@ -80,7 +80,7 @@ public class CmsResourceTypeBinary extends A_CmsResourceType {
         CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
         contents = null;
         // TODO: Move locking of resource to CmsObject or CmsDriverManager
-        cms.doLockResource(cms.readAbsolutePath(res), false, CmsLock.C_MODE_COMMON);
+        cms.doLockResource(cms.readAbsolutePath(res), CmsLock.C_MODE_COMMON);
         return res;
     }
 }

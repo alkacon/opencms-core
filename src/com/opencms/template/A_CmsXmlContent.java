@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/11/14 10:09:09 $
-* Version: $Revision: 1.97 $
+* Date   : $Date: 2004/01/25 12:42:45 $
+* Version: $Revision: 1.98 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.97 $ $Date: 2003/11/14 10:09:09 $
+ * @version $Revision: 1.98 $ $Date: 2004/01/25 12:42:45 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
@@ -186,7 +186,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         // check if the method has cachedirectives, if so we just return null
         // this way the methode tag stays in the Element and can be handled like
         // an normal element. We do this only if elementCache is active.
-        if (CmsXmlTemplateLoader.isElementCacheEnabled(m_cms) && !resolveMethods) {
+        if (CmsXmlTemplateLoader.isElementCacheEnabled() && !resolveMethods) {
             try {
                 if (callingObject.getClass().getMethod("getMethodCacheDirectives", new Class[] { CmsObject.class, String.class }).invoke(callingObject, new Object[] { m_cms, methodName }) != null) {
                     return null;
