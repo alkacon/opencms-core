@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/08/06 09:12:46 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.20 $ $Date: 2003/08/06 09:12:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -94,10 +94,6 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault {
                 if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                     session.removeValue(C_SESSION_THREAD_ERROR);
                 }
-                // change to the online-project, if needed.
-                if(project.equals(cms.getRequestContext().currentProject())) {
-                    cms.getRequestContext().setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-                }
                 A_CmsReportThread doDelete = new CmsAdminProjectDeleteThread(cms, Integer.parseInt(projectId), session);
                 doDelete.start();
                 session.putValue(C_DELETE_THREAD, doDelete);
@@ -119,6 +115,14 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault {
                         // clear the languagefile cache
                         CmsXmlWpTemplateFile.clearcache();
                         templateSelector = "done";
+                        if (cms.getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+                            // in online project, submit the head project selector with "Online" selected to avoid an infinite loop
+                            xmlTemplateDocument.setData("onlineId", "" + I_CmsConstants.C_PROJECT_ONLINE_ID);
+                            xmlTemplateDocument.setData("switchjavascript", xmlTemplateDocument.getProcessedDataValue("switchheadproject"));
+                        } else {
+                            // in an offline project, the javascript for setting the project is not needed
+                            xmlTemplateDocument.setData("switchjavascript", "");
+                        }
                         session.removeValue("delprojectid");
                     } else {
                         // get errorpage:
