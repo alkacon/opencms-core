@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsDumpLoader.java,v $
- * Date   : $Date: 2002/12/15 18:11:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/01/31 10:01:26 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.ServletException;
  * by other loaders. 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implements I_CmsResourceLoader {
     
@@ -91,7 +91,7 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
      * @param openCms An OpenCms object to use for initalizing.
      */
     public void init(A_OpenCms openCms) {
-        m_cache = (CmsFlexCache)openCms.getRuntimeProperty(C_LOADER_CACHENAME);  
+        m_cache = (CmsFlexCache)A_OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);  
               
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) 
             A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, this.getClass().getName() + " initialized!");        

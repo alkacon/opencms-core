@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2002/12/06 23:16:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/01/31 10:01:26 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -164,7 +164,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         if (m_enabled) {
             this.m_resourceMap = java.util.Collections.synchronizedMap( new CmsLruHashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE,maxKeys) );     
             //this.m_resourceMap = java.util.Collections.synchronizedMap( new HashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE) );
-            com.opencms.core.A_OpenCms.addCmsEventListener(this);
+            A_OpenCms.addCmsEventListener(this);
         }
         
         // make the flex cache available to other classes through the runtime properties
@@ -802,7 +802,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.10 $ 
+     * @version $Revision: 1.11 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2002/12/06 16:00:27 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/01/31 10:00:32 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $ $Date: 2002/12/06 16:00:27 $
+ * @version $Revision: 1.28 $ $Date: 2003/01/31 10:00:32 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -65,7 +65,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     private static java.util.ArrayList m_listeners = new ArrayList();
             
     /** A Map for the storage of various runtime properties */
-    private Map m_runtimeProperties = null;
+    private static Map m_runtimeProperties = null;
 
     /** The OpenCms configuration read from <code>opencms.properties</code> */
     private Configurations m_conf = null;
@@ -206,7 +206,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param key The key to look up in the runtime properties.
      * @return The value for the key, or null if the key was not found.
      */
-    public Object getRuntimeProperty(Object key) {
+    public static Object getRuntimeProperty(Object key) {
         if (m_runtimeProperties == null) return null;
         return m_runtimeProperties.get(key);
     }

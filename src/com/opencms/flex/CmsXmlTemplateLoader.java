@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/01/20 23:59:22 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/01/31 10:01:26 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -103,7 +103,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
     public void init(A_OpenCms openCms) {
         // This must be saved for call to this.generateOutput();
         m_openCms = openCms;
-        m_cache = (CmsFlexCache)openCms.getRuntimeProperty(C_LOADER_CACHENAME);        
+        m_cache = (CmsFlexCache)A_OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);        
         if (C_LOGGING && A_OpenCms.isLogging(C_FLEX_LOADER)) 
             A_OpenCms.log(C_FLEX_LOADER, this.getClass().getName() + " initialized!");     
     }

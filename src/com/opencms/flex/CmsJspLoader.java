@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2003/01/24 20:36:09 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/01/31 10:01:26 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -462,9 +462,9 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         if (! m_jspRepository.endsWith(File.separator)) m_jspRepository += File.separator;
         if (DEBUG > 0) System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
         // Get the cache from the runtime properties
-        m_cache = (CmsFlexCache)openCms.getRuntimeProperty(C_LOADER_CACHENAME);
+        m_cache = (CmsFlexCache)A_OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);
         // Get the export URL from the runtime properties
-        m_jspExportUrl = (String)openCms.getRuntimeProperty(C_LOADER_JSPEXPORTURL);
+        m_jspExportUrl = (String)A_OpenCms.getRuntimeProperty(C_LOADER_JSPEXPORTURL);
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) {
             A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "Initialized!");        
             A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "JSP repository (absolute path): " + m_jspRepository);        
@@ -472,7 +472,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "JSP export URL: " + m_jspExportUrl);
         }
         // Get the "error pages are commited or not" flag from the runtime properties
-        Boolean errorPagesAreNotCommited = (Boolean)openCms.getRuntimeProperty(C_LOADER_ERRORPAGECOMMIT);
+        Boolean errorPagesAreNotCommited = (Boolean)A_OpenCms.getRuntimeProperty(C_LOADER_ERRORPAGECOMMIT);
         if (errorPagesAreNotCommited != null) m_errorPagesAreNotCommited = errorPagesAreNotCommited.booleanValue();
     }
     
