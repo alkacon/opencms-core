@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateSearch.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/08 11:28:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,12 @@
  */
 package org.opencms.frontend.templateone;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
@@ -50,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for the search result JSP page.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsTemplateSearch extends CmsTemplateBean {
     
@@ -238,7 +240,12 @@ public class CmsTemplateSearch extends CmsTemplateBean {
             result.append("<a href=\"");
             result.append(link(path));
             result.append("\">");
-            result.append(entry.getTitle());
+            String title = entry.getTitle();
+            if (CmsStringUtil.isEmpty(title)) {
+                // title is not set, show file name instead
+                title = CmsResource.getName(path);
+            }
+            result.append(title);
             result.append("</a>&nbsp;(");
             result.append(entry.getScore());
             result.append("%)<br>");
