@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2004/02/17 11:40:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/03/05 17:19:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 
 /**
- * @version $Revision: 1.8 $ $Date: 2004/02/17 11:40:29 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/05 17:19:43 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public final class CmsXmlPageConverter {
@@ -62,13 +62,12 @@ public final class CmsXmlPageConverter {
      * 
      * @param cms the cms object
      * @param content the content used with xml templates
-     * @param body the name of the body
-     * @param locale the locale of the body
+     * @param body the name of the default body element
+     * @param locale the locale of the body element(s)
      * @return the xml page content or null if conversion failed
      * @throws CmsException if something goes wrong
      */
     public static CmsXmlPage convertToXmlPage(CmsObject cms, String content, String body, Locale locale) throws CmsException {
-
         CmsXmlPage xmlPage = null;
         
         try {
@@ -80,49 +79,64 @@ public final class CmsXmlPageConverter {
                 throw new Exception("Element XMLTEMPLATE not found");
             }
             
-            Element edittemplate = xmltemplate.element("edittemplate");
-            String bodyContent = null;
+            // get all edittemplate nodes
+            Iterator i = xmltemplate.elementIterator("edittemplate");
+            boolean useEditTemplates = true;
+            if (!i.hasNext()) {
+                // no edittemplate nodes found, get the template nodes
+                i = xmltemplate.elementIterator("TEMPLATE");
+                useEditTemplates = false;
+            }
             
-            if (edittemplate != null) {
-                bodyContent = edittemplate.getText();
-            } else {
-                Element template = xmltemplate.element("TEMPLATE");
-                if (template != null) {
-                    StringBuffer contentBuffer = new StringBuffer();
-                    for (Iterator i = template.nodeIterator(); i.hasNext();) {
-                        Node n = (Node)i.next();
-                        if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
-                            contentBuffer.append(n.getText());
-                            continue;
-                        } else if (n.getNodeType() == Node.ELEMENT_NODE) {
-                            if ("LINK".equals(n.getName())) {
-                                contentBuffer.append(OpenCms.getSystemInfo().getOpenCmsContext());
+            while (i.hasNext()) {
+                Element currentTemplate = (Element)i.next();
+                String bodyName = currentTemplate.attributeValue("name");
+                if (bodyName == null || "".equals(bodyName)) {
+                    // no template name found, use the parameter body name
+                    bodyName = body;
+                }
+                String bodyContent = null;
+                
+                if (useEditTemplates) {
+                    // no content manipulation needed for edittemplates
+                    bodyContent = currentTemplate.getText();
+                } else {
+                    // parse content for TEMPLATEs
+                    if (currentTemplate != null) {
+                        StringBuffer contentBuffer = new StringBuffer();
+                        for (Iterator k = currentTemplate.nodeIterator(); k.hasNext();) {
+                            Node n = (Node)k.next();
+                            if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
                                 contentBuffer.append(n.getText());
                                 continue;
+                            } else if (n.getNodeType() == Node.ELEMENT_NODE) {
+                                if ("LINK".equals(n.getName())) {
+                                    contentBuffer.append(OpenCms.getSystemInfo().getOpenCmsContext());
+                                    contentBuffer.append(n.getText());
+                                    continue;
+                                } 
                             } 
-                        } 
-                        
-                        // ignore other node types
-                        // contentBuffer.append("<!-- ignored: \n");
-                        // contentBuffer.append(n.toString());
-                        // contentBuffer.append("\n//-->");
+                        }
+                        bodyContent = contentBuffer.toString();
                     }
-                    bodyContent = contentBuffer.toString();
+                }
+            
+                if (bodyContent == null) {
+                    throw new Exception("Body content not found");
+                }
+                
+                bodyContent = CmsStringSubstitution.substitute(bodyContent, I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT, OpenCms.getSystemInfo().getOpenCmsContext());
+                
+                if (!"".equals(bodyContent.trim())) {
+                    xmlPage.addElement(bodyName, locale);
+                    xmlPage.setContent(cms, bodyName, locale, bodyContent);
                 }
             }
-        
-            if (bodyContent == null) {
-                throw new Exception("Body content not found");
-            }
-            
-            bodyContent = CmsStringSubstitution.substitute(bodyContent, I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT, OpenCms.getSystemInfo().getOpenCmsContext());
-            
-            xmlPage.addElement(body, locale);
-            xmlPage.setContent(cms, body, locale, bodyContent);
             
             return xmlPage;
         } catch (Exception exc) {
             throw new CmsException(exc.toString());
         }
     }
+    
 }
