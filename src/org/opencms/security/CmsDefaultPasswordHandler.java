@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2004/10/22 13:18:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/17 11:34:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
@@ -69,11 +69,17 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     private static SecureRandom prng = null;
     
+    /*
+     * The configuration of the password handler.
+     */
+    private static ExtendedProperties m_configuration;
+    
     /**
      * The constructor does not perform any operation.<p>
      */
     public CmsDefaultPasswordHandler() {
-        // empty
+        
+        m_configuration = new ExtendedProperties();
     }
     
     /**
@@ -121,11 +127,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        // this configuration does not support parameters 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
-        }
+        m_configuration.addProperty(paramName, paramValue);
     }
     
     /**
@@ -133,11 +135,8 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     public ExtendedProperties getConfiguration() {
 
-        // this configuration does not support parameters
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
-        }
-        return null;
+        // TODO: should be immutable
+        return m_configuration;
     }
     
     /**
@@ -155,7 +154,6 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
         }
     } 
     
-
     /**
      * @see org.opencms.security.I_CmsPasswordHandler#validatePassword(java.lang.String)
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/11/12 18:42:25 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2004/11/17 11:34:44 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
@@ -53,6 +54,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 import java.util.zip.ZipFile;
+
+import org.apache.commons.collections.ExtendedProperties;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -161,10 +164,18 @@ public class CmsImportVersion4 extends A_CmsImport {
      * @throws CmsException in case something goes wrong
      */
     protected void importUser(String name, String description, String flags, String password, String firstname, String lastname, String email, String address, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
-     
-        if (!"com.opencms.legacy.CmsLegacyPasswordHandler".equals(OpenCms.getPasswordHandler().getClass().getName())) {
+        
+        boolean convert = false;
+        
+        ExtendedProperties config = OpenCms.getPasswordHandler().getConfiguration();
+        if (config != null && config.containsKey(I_CmsPasswordHandler.C_CONVERT_DIGEST_ENCODING)) {
+            convert = config.getBoolean(I_CmsPasswordHandler.C_CONVERT_DIGEST_ENCODING);
+        } 
+            
+        if (convert) {
             password = convertDigestEncoding(password);
         }
+        
         super.importUser(name, description, flags, password, firstname, lastname, email, address, type, userInfo, userGroups);
     }
 

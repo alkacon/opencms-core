@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPasswordHandler.java,v $
- * Date   : $Date: 2004/10/22 15:04:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/17 11:34:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.main.CmsException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1.11 
  */
 public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler {
@@ -65,6 +65,11 @@ public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler
      */
     String C_DIGEST_TYPE_MD5 = "md5";
 
+    /** 
+     * Flag for conversion of the password encoding.<p> 
+     */
+    String C_CONVERT_DIGEST_ENCODING = "compatibility.convert.digestencoding";
+    
     /**
      * Creates an OpenCms password digest according to the default setting for method/encodings.<p>
      * 

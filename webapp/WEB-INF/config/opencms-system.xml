@@ -27,6 +27,7 @@
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
 			<encoding>UTF-8</encoding>
 			<digest-type>MD5</digest-type>
+			<param name="compatibility.convert.digestencoding">false</param>
 		</passwordhandler>
 		<sites>
 			<workplace-server>http://localhost:8080</workplace-server>
