@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/locale/Attic/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/01/19 17:14:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/20 11:09:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,11 +37,12 @@ import com.opencms.util.Utils;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/01/19 17:14:14 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/20 11:09:23 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsLocaleManager {
@@ -99,6 +100,23 @@ public class CmsLocaleManager {
      */
     public Locale getDefaultLocale() {
         return m_defaultLocales[0];
+    }
+
+    /**
+     * Returns the appropriate default locale configured in <code>opencms.properties</code>.<p>
+     * 
+     * @param localeNames set of possible locale names for this resource
+     * @return the appropriate default locale
+     */
+    public Locale getDefaultLocale(Set localeNames) {
+        
+        for (int i=0; i < m_defaultLocaleNames.length; i++) {
+            if (localeNames.contains(m_defaultLocaleNames[i])) {
+                return m_defaultLocales[i];
+            }
+        }
+        
+        return getDefaultLocale();
     }
     
     /** 
@@ -171,15 +189,29 @@ public class CmsLocaleManager {
      * @return the default locale for the given resource
      */
     public Locale getLocale(CmsObject cms, String resourcename) {
+        return getLocale(cms, resourcename, null);
+    }
+    
+    /**
+     * Returns the appropriate default locale for a given resource name.<p>
+     * 
+     * @param cms the cms object
+     * @param resourcename the name of the resource
+     * @param localeNames set of possible locale names for this resource
+     * @return the appropriate default locale
+     */
+    public Locale getLocale(CmsObject cms, String resourcename, Set localeNames) {
 
         try {
-            String defaultLocales = cms.readProperty(resourcename, I_CmsConstants.C_PROPERTY_LOCALE);
+            String defaultLocales = cms.readProperty(resourcename, I_CmsConstants.C_PROPERTY_LOCALE, true);
             if (defaultLocales != null) {
-                String localeNames[] = Utils.split(defaultLocales, ",");
-                for (int i = 0; i < localeNames.length; i++) {
-                    Locale l = getLocale(localeNames[i]);
-                    if (l != null) {
-                        return l;
+                String localeName[] = Utils.split(defaultLocales, ",");
+                for (int i = 0; i < localeName.length; i++) {
+                    if (localeNames == null || localeNames.contains(localeName[i])) {
+                        Locale l = getLocale(localeName[i]);
+                        if (l != null) {
+                            return l;
+                        }
                     }
                 }
             }
@@ -187,7 +219,7 @@ public class CmsLocaleManager {
             // noop, return configured default locale
         }
         
-        return getDefaultLocale();
+        return getDefaultLocale(localeNames);
     }
 
     /**
@@ -206,14 +238,18 @@ public class CmsLocaleManager {
             return l;
         }
         
-        l = (Locale)m_availableLocales.get(name[0] + "_" + name[1]);
-        if (l != null) {
-            return l;
+        if (name.length >= 2) {
+            l = (Locale)m_availableLocales.get(name[0] + "_" + name[1]);
+            if (l != null) {
+                return l;
+            }
         }
         
-        l = (Locale)m_availableLocales.get(name[0]);
-        if (l != null) {
-            return l;
+        if (name.length >= 1) {
+            l = (Locale)m_availableLocales.get(name[0]);
+            if (l != null) {
+                return l;
+            }
         }
         
         return null;
@@ -252,5 +288,33 @@ public class CmsLocaleManager {
         }
 
         return getAvailableLocales();
+    }
+    
+    /**
+     * Returns an array of possible fallback names for a given full locale name.<p>
+     * I.e. en_GB returns [ "en_GB", "en" ]
+     *  
+     * @param fullName a full locale name
+     * @return an array of fallback names
+     */
+    public static String[] getLocaleNames(String fullName) {
+        
+        String details[] = Utils.split(fullName, "_");
+        String ext;
+        
+        if (details.length > 1) {
+            ext = details[1];
+            details[1] = details[0];
+            details[0] = details[0] + "_" + ext;
+        }
+        
+        if (details.length > 2) {
+            ext = details[2];
+            details[2] = details[1];
+            details[1] = details[0];
+            details[0] = details[0] + "_" + ext;
+        }
+        
+        return details;
     }
 }
