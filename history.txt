@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/10/09 19:08:54 $
- * Version: $Revision: 1.509 $
+ * Date   : $Date: 2003/10/09 22:45:30 $
+ * Version: $Revision: 1.510 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,8 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.1.12 Salusa Secundus - October xx, 2003
 
 OpenCms 5.1.11 Salusa Secundus - October 09, 2003
 ! Added first version of handler interface in org.opencms.main package
