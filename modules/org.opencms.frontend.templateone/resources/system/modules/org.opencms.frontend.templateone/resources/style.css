@@ -363,14 +363,3 @@ td.imprint { vertical-align: top; font-size: 9pt; }
 /* default styles for the online forms */
 input.onlineform, select.onlineform, textarea.onlineform { width: 300px; border: 1px solid <%= contentFont %>;  }
 textarea.onlineform { height: 80px; }
-
-<%
-
-// get document styles for document management
-try {
-	out.print(cms.getContent("/system/modules/org.opencms.ocee.documents/resources/documents.css"));
-} catch (Throwable t) {
-	// ignore, document style sheet not found
-}
-
-%>
