@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/08/16 08:20:33 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2001/09/26 15:02:28 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.62 $ $Date: 2001/08/16 08:20:33 $ *
+ * @version $Revision: 1.63 $ $Date: 2001/09/26 15:02:28 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -525,6 +525,8 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
     if (enableHistory){
         // get the version id for the backup
         versionId = getBackupVersionId();
+        // store the projectdata to the backuptables for history
+        backupProject(currentProject, versionId, publishDate, user);
     }
 
     // read all folders in offlineProject
@@ -1014,8 +1016,6 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
         removeFolderForPublish(projectId, currentFolder.getAbsolutePath());
     } // end of for
     //clearFilesTable();
-    // store the projectdata to the backuptables for history
-    backupProject(currentProject, versionId, publishDate, user);
     return changedResources;
 }
 /**
