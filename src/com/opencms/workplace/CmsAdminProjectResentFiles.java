@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2001/08/08 12:26:49 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * editing news.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.18 $ $Date: 2001/08/08 12:26:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -92,9 +92,16 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
         session.putValue("filter", filter);
         session.putValue("projectid", projectId);
 
-        if(action != null && "restore".equalsIgnoreCase(action)){
+        if(action != null && "restoreproject".equalsIgnoreCase(action)){
             session.removeValue("projectid");
             session.removeValue("filter");
+            //redirect to the needed headfile
+            try{
+                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
+                    +"administration_head_5.html");
+            } catch (IOException exc){
+                throw new CmsException("Could not redirect to administration_head_5.html", exc);
+            }
         }
         // Finally start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
