@@ -19,9 +19,15 @@ PACKAGE BODY opencmsAccess IS
       RETURN 0;
     END IF;
     -- resource does not belong to the projekt with project_id = pProjectId => false
-    select project_id, resource_name into vResProjectID, vNextPath
-           from cms_resources
-           where resource_id = pResourceID;
+    BEGIN
+      select project_id, resource_name into vResProjectID, vNextPath
+             from cms_resources
+             where resource_id = pResourceID;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        vResProjectID := null;
+        vNextPath := null;
+    END;
     IF vResProjectID != pProjectId THEN
       RETURN 0;
     END IF;
