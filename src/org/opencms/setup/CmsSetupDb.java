@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/02/03 10:59:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/17 16:38:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.setup;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.sql.Connection;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/02/03 10:59:16 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/17 16:38:37 $
  */
 public class CmsSetupDb extends Object {
 
@@ -111,7 +112,7 @@ public class CmsSetupDb extends Object {
      * @param replacer the replacements to perform in the drop script
      */
     public void dropDatabase(String database, Hashtable replacer) {
-        String file = getScript(database + ".dropdb");
+        String file = m_basePath + "setup" + File.separator + "database" + File.separator + database + File.separator + "drop_db.sql";
         if (file != null) {
             m_errorLogging = true;
             parseScript(file, replacer);
@@ -127,7 +128,8 @@ public class CmsSetupDb extends Object {
      * @param replacer the replacements to perform in the drop script
      */
     public void createDatabase(String database, Hashtable replacer) {
-        String file = getScript(database + ".createdb");
+        String file = m_basePath + "setup" + File.separator + "database" + File.separator + database + File.separator + "create_db.sql";
+        
         if (file != null) {
             m_errorLogging = true;
             parseScript(file, replacer);
@@ -143,7 +145,7 @@ public class CmsSetupDb extends Object {
      * @param replacer the replacements to perform in the drop script
      */
     public void createTables(String database, Hashtable replacer) {
-        String file = getScript(database + ".createtables");
+        String file = m_basePath + "setup" + File.separator + "database" + File.separator + database + File.separator + "create_tables.sql";
         if (file != null) {
             m_errorLogging = true;
             parseScript(file, replacer);
@@ -158,7 +160,7 @@ public class CmsSetupDb extends Object {
      * @param database the name of the database
      */
     public void dropTables(String database) {
-        String file = getScript(database + ".droptables");
+        String file = m_basePath + "setup" + File.separator + "database" + File.separator + database + File.separator + "drop_tables.sql";
         if (file != null) {
             m_errorLogging = true;
             parseScript(file, null);
@@ -182,7 +184,7 @@ public class CmsSetupDb extends Object {
 
         /* get and parse the setup script */
         try {
-            LineNumberReader reader = new LineNumberReader(new FileReader(m_basePath + C_SETUP_DATA_FOLDER + file));
+            LineNumberReader reader = new LineNumberReader(new FileReader(file));
             String line = null;
             while (true) {
                 line = reader.readLine();
@@ -278,27 +280,6 @@ public class CmsSetupDb extends Object {
             temp += token + " ";
         }
         return temp;
-    }
-
-    /**
-     * Returns the filename of a script from dbsetup.properties.<p> 
-     * 
-     * @param key the key to identify the script
-     * @return the filename of the script
-     */
-    private String getScript(String key) {
-        /* open properties, get the value */
-        try {
-            Properties properties = new Properties();
-            properties.load(getClass().getClassLoader().getResourceAsStream(C_DB_PROPERTIES));
-            String value = properties.getProperty(key);
-            return value;
-        } catch (Exception e) {
-            if (m_errorLogging) {
-                m_errors.addElement(e.toString() + " \n");
-            }
-            return null;
-        }
     }
 
     /**

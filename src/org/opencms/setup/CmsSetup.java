@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/17 16:01:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/17 16:38:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 public class CmsSetup {
     
@@ -808,15 +808,6 @@ public class CmsSetup {
     public void lockWizard() {
         setExtProperty("wizard.enabled", "false");
     }
-
-    /**
-     * Returns the database setup properties.<p>
-     * 
-     * @return the database setup properties
-     */
-//    public Properties getDbSetupProps() {
-//        return m_dbProperties;
-//    }
 
     /**
      * Sets filename translation to enabled / disabled.<p>
