@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/01/24 15:46:45 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2002/01/25 08:38:27 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -244,134 +244,134 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         System.err.println("-------------------------------------------------");
 */
 
-	String hasFilterParam = (String) session.getValue("filterparameter");
-	template.setData("filternumber","0");
+    String hasFilterParam = (String) session.getValue("filterparameter");
+    template.setData("filternumber","0");
 
-	//change filter
-	if ((hasFilterParam == null) && (filterParam == null) && (setaction == null)) {
-	  if (selectBox != null) {
-	    session.putValue("filter", selectBox);
-	    template.setData("filternumber",selectBox);
-	  }
-	} else {
-	  template.setData("filternumber", (String)session.getValue("filter"));
-	}
+    //change filter
+    if ((hasFilterParam == null) && (filterParam == null) && (setaction == null)) {
+      if (selectBox != null) {
+        session.putValue("filter", selectBox);
+        template.setData("filternumber",selectBox);
+      }
+    } else {
+      template.setData("filternumber", (String)session.getValue("filter"));
+    }
 
-	//move id values to id, remove old markers
-	if (idlock != null) {
-	  id = idlock;
-	  session.putValue("idlock", idlock);
-	  session.removeValue("idedit");
-	  session.removeValue("idnew");
-	  session.removeValue("iddelete");
-      session.removeValue("idundelete");
-      session.removeValue("idpublish");
-      session.removeValue("idhistory");
-      session.removeValue("idpermissions");
-      session.removeValue("idcopy");
-	}
-	if (idedit != null) {
-	  id = idedit;
-	  session.putValue("idedit", idedit);
-	  session.removeValue("idlock");
-	  session.removeValue("idnew");
-	  session.removeValue("iddelete");
-      session.removeValue("idundelete");
-      session.removeValue("idpublish");
-      session.removeValue("idhistory");
-      session.removeValue("idpermissions");
-      session.removeValue("idcopy");
-	}
-	if (iddelete != null) {
-	  id = iddelete;
-	  session.putValue("iddelete", iddelete);
-	  session.removeValue("idedit");
-	  session.removeValue("idnew");
-	  session.removeValue("idlock");
-      session.removeValue("idundelete");
-      session.removeValue("idpublish");
-      session.removeValue("idhistory");
-      session.removeValue("idpermissions");
-      session.removeValue("idcopy");
-	}
-	if (idundelete != null) {
-	  id = idundelete;
-	  session.putValue("idundelete", idundelete);
-	  session.removeValue("idedit");
-	  session.removeValue("idnew");
-	  session.removeValue("idlock");
-      session.removeValue("iddelete");
-      session.removeValue("idpublish");
-      session.removeValue("idhistory");
-      session.removeValue("idpermissions");
-      session.removeValue("idcopy");
-	}
-	if (idpublish != null) {
-	  id = idpublish;
-	  session.putValue("idpublish", idpublish);
-	  session.removeValue("idedit");
-	  session.removeValue("idnew");
-	  session.removeValue("idlock");
-      session.removeValue("iddelete");
-      session.removeValue("idundelete");
-      session.removeValue("idhistory");
-      session.removeValue("idpermissions");
-      session.removeValue("idcopy");
-	}
-
-	if (idhistory != null) {
-	  id = idhistory;
-	  session.putValue("idhistory", idhistory);
-	  session.removeValue("idedit");
-	  session.removeValue("idnew");
-	  session.removeValue("idlock");
-      session.removeValue("iddelete");
-      session.removeValue("idundelete");
-      session.removeValue("idpublish");
-      session.removeValue("idpermissions");
-      session.removeValue("idcopy");
-	}
-
-	if (idpermissions != null) {
-	  id = idpermissions;
-	  session.putValue("idpermissions", idpermissions);
-	  session.removeValue("idedit");
-	  session.removeValue("idnew");
-	  session.removeValue("idlock");
-      session.removeValue("iddelete");
-      session.removeValue("idundelete");
-      session.removeValue("idpublish");
-      session.removeValue("idhistory");
-      session.removeValue("idcopy");
-	}
-
-	if (idcopy != null) {
-	  id = idcopy;
-	  session.putValue("idcopy", idcopy);
-	  session.removeValue("idedit");
-	  session.removeValue("idnew");
-	  session.removeValue("idlock");
+    //move id values to id, remove old markers
+    if (idlock != null) {
+      id = idlock;
+      session.putValue("idlock", idlock);
+      session.removeValue("idedit");
+      session.removeValue("idnew");
       session.removeValue("iddelete");
       session.removeValue("idundelete");
       session.removeValue("idpublish");
       session.removeValue("idhistory");
       session.removeValue("idpermissions");
-	}
-
-	if ((id != null) && (id.equals("new"))) {
-	  session.putValue("idnew", id);
-	  session.removeValue("idedit");
-	  session.removeValue("iddelete");
-	  session.removeValue("idlock");
+      session.removeValue("idcopy");
+    }
+    if (idedit != null) {
+      id = idedit;
+      session.putValue("idedit", idedit);
+      session.removeValue("idlock");
+      session.removeValue("idnew");
+      session.removeValue("iddelete");
       session.removeValue("idundelete");
       session.removeValue("idpublish");
       session.removeValue("idhistory");
       session.removeValue("idpermissions");
       session.removeValue("idcopy");
-	}
-	//get marker id from session
-	String idsave = (String) session.getValue("idsave");
-	if (ok == null) {
+    }
+    if (iddelete != null) {
+      id = iddelete;
+      session.putValue("iddelete", iddelete);
+      session.removeValue("idedit");
+      session.removeValue("idnew");
+      session.removeValue("idlock");
+      session.removeValue("idundelete");
+      session.removeValue("idpublish");
+      session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
+    }
+    if (idundelete != null) {
+      id = idundelete;
+      session.putValue("idundelete", idundelete);
+      session.removeValue("idedit");
+      session.removeValue("idnew");
+      session.removeValue("idlock");
+      session.removeValue("iddelete");
+      session.removeValue("idpublish");
+      session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
+    }
+    if (idpublish != null) {
+      id = idpublish;
+      session.putValue("idpublish", idpublish);
+      session.removeValue("idedit");
+      session.removeValue("idnew");
+      session.removeValue("idlock");
+      session.removeValue("iddelete");
+      session.removeValue("idundelete");
+      session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
+    }
+
+    if (idhistory != null) {
+      id = idhistory;
+      session.putValue("idhistory", idhistory);
+      session.removeValue("idedit");
+      session.removeValue("idnew");
+      session.removeValue("idlock");
+      session.removeValue("iddelete");
+      session.removeValue("idundelete");
+      session.removeValue("idpublish");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
+    }
+
+    if (idpermissions != null) {
+      id = idpermissions;
+      session.putValue("idpermissions", idpermissions);
+      session.removeValue("idedit");
+      session.removeValue("idnew");
+      session.removeValue("idlock");
+      session.removeValue("iddelete");
+      session.removeValue("idundelete");
+      session.removeValue("idpublish");
+      session.removeValue("idhistory");
+      session.removeValue("idcopy");
+    }
+
+    if (idcopy != null) {
+      id = idcopy;
+      session.putValue("idcopy", idcopy);
+      session.removeValue("idedit");
+      session.removeValue("idnew");
+      session.removeValue("idlock");
+      session.removeValue("iddelete");
+      session.removeValue("idundelete");
+      session.removeValue("idpublish");
+      session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+    }
+
+    if ((id != null) && (id.equals("new"))) {
+      session.putValue("idnew", id);
+      session.removeValue("idedit");
+      session.removeValue("iddelete");
+      session.removeValue("idlock");
+      session.removeValue("idundelete");
+      session.removeValue("idpublish");
+      session.removeValue("idhistory");
+      session.removeValue("idpermissions");
+      session.removeValue("idcopy");
+    }
+    //get marker id from session
+    String idsave = (String) session.getValue("idsave");
+    if (ok == null) {
 
           idsave = null;
         }
@@ -3139,10 +3139,10 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
     if ((!action.equals("save")) && (!action.equals("saveexit")) && (!action.equals("exit"))){
       try {
         cd.check(false);
-      } catch (CmsPlausibilizationException plex) {
-        // there was an error during plausibilization, so create an error text
         // put value of last used templateselector in session
         session.putValue("backofficepagetemplateselector",templateSelector);
+      } catch (CmsPlausibilizationException plex) {
+        // there was an error during plausibilization, so create an error text
         errorCodes=plex.getErrorCodes();
         //loop through all errors
         for (int i=0;i<errorCodes.size();i++) {
