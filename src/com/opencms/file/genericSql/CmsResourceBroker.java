@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/25 07:47:38 $
-* Version: $Revision: 1.276 $
+* Date   : $Date: 2001/09/28 08:59:51 $
+* Version: $Revision: 1.277 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.276 $ $Date: 2001/09/25 07:47:38 $
+ * @version $Revision: 1.277 $ $Date: 2001/09/28 08:59:51 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -916,7 +916,15 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
         if (isAdmin(currentUser, currentProject)) {
             CmsUser user;
             CmsGroup group;
-            user = readUser(currentUser, currentProject, username);
+            try{
+                user = readUser(currentUser, currentProject, username);
+            } catch (CmsException e){
+                if (e.getType() == CmsException.C_NO_USER){
+                    user = readWebUser(currentUser, currentProject, username);
+                } else {
+                    throw e;
+                }
+            }
             //check if the user exists
             if (user != null) {
                 group = readGroup(currentUser, currentProject, groupname);
