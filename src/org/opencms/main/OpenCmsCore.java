@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/18 15:03:17 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2004/03/19 13:52:27 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.105 $
+ * @version $Revision: 1.106 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -924,7 +924,7 @@ public final class OpenCmsCore {
             if ((req != null) && ((localeStr = req.getParameter(C_PARAMETER_LOCALE)) != null)) {
                 // "_locale" parameter found in request
                 locale = CmsLocaleManager.getLocale(localeStr);
-            } else if (requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE) || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
+            } else if (requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE) || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_MODULES) || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
                 // the workplace/login requires a special locale handler
                 locale = getWorkplaceManager().getLocale(req, user, project, requestedResource);
             } else {
