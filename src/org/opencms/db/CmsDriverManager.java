@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.250 $
+ * Date   : $Date: 2003/09/26 10:33:15 $
+ * Version: $Revision: 1.251 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.250 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.251 $ $Date: 2003/09/26 10:33:15 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2353,7 +2353,7 @@ public class CmsDriverManager extends Object {
         } else {
             // m_vfsDriver.deleteFolder(context.currentProject(), cmsFolder);
             // add the project id as a property, this is later used for publishing
-            m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), "" + context.currentProject().getId(), cmsFolder, cmsFolder.getType(), false);
+            m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), "" + context.currentProject().getId(), cmsFolder, cmsFolder.getType(), true);
             cmsFolder.setState(I_CmsConstants.C_STATE_DELETED);
             m_vfsDriver.writeResourceState(context.currentProject(), cmsFolder, C_UPDATE_STRUCTURE_STATE);
             // delete the access control entries
