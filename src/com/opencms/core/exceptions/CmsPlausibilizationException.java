@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/exceptions/Attic/CmsPlausibilizationException.java,v $
-* Date   : $Date: 2002/12/06 23:16:58 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/08/15 13:42:34 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.util.Vector;
  * This exception is thrown to signalize plausibilization errors in backoffice modules.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2002/12/06 23:16:58 $
+ * @version $Revision: 1.4 $ $Date: 2003/08/15 13:42:34 $
  */
 public class CmsPlausibilizationException extends CmsException {
 
@@ -61,13 +61,13 @@ public class CmsPlausibilizationException extends CmsException {
   }
 
   /**
-  * Overwrites the standard toString method.
-  */
+   * @see java.lang.Object#toString()
+   */
   public String toString() {
     StringBuffer output = new StringBuffer();
     output.append("[CmsPlauzibilizationException]: ");
     //loop through all error codes
-    for (int i=0;i<m_error.size();i++) {
+    for (int i=0; i<m_error.size(); i++) {
       output.append("("+(String)m_error.elementAt(i)+") ");
     }
 

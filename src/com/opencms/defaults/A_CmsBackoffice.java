@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/08/14 15:37:26 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/08/15 13:40:13 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
@@ -598,8 +598,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 protected Object getContentDefinition(CmsObject cms, Class contentClass, CmsUUID contentId) {
     Object o = null;
     try {
-        Constructor c = contentClass.getConstructor(new Class[] { CmsObject.class, CmsUUID.class });
-        o = c.newInstance(new Object[] { cms, contentId });
+        Constructor c = contentClass.getConstructor(new Class[] {CmsObject.class, CmsUUID.class});
+        o = c.newInstance(new Object[] {cms, contentId});
     } catch (InvocationTargetException ite) {
         if (OpenCms.isLogging(C_OPENCMS_INFO)) {
             OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
@@ -633,8 +633,8 @@ protected Object getContentDefinition(CmsObject cms, Class contentClass, CmsUUID
 protected Object getContentDefinition(CmsObject cms, Class cdClass) {
     Object o = null;
     try {
-        Constructor c = cdClass.getConstructor(new Class[] { CmsObject.class });
-        o = c.newInstance(new Object[] { cms });
+        Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class});
+        o = c.newInstance(new Object[] {cms});
     } catch (InvocationTargetException ite) {
         if (OpenCms.isLogging(C_OPENCMS_INFO)) {
             OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
@@ -669,8 +669,8 @@ protected Object getContentDefinition(CmsObject cms, Class cdClass) {
 protected Object getContentDefinition(CmsObject cms, Class cdClass, String id) {
     Object o = null;
     try {
-        Constructor c = cdClass.getConstructor(new Class[] { CmsObject.class, String.class });
-        o = c.newInstance(new Object[] { cms, id });
+        Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, String.class});
+        o = c.newInstance(new Object[] {cms, id});
     } catch (InvocationTargetException ite) {
         if (OpenCms.isLogging(C_OPENCMS_INFO)) {
             OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
