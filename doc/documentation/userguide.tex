@@ -1,4 +1,4 @@
-\chapter{A Short Usermanual}
+\chapter{Usermanual}
 
 \section{Introduction}
 
@@ -56,11 +56,13 @@ The following demo is based on a real life scenario and was
 designed to get you up and running as quickly as possible.
 
 Open your Internet browser and enter
-http://localhost/opencms/opencms/examples/index.html to access the
-OpenCms demo site.
 
-The OpenCms demo site start page is displayed. The navigator
-contains the links to all of the pages. Click on "examples".
+http://localhost/opencms/opencms/index.html
+
+to access the OpenCms site.
+
+The OpenCms site start page is displayed. The navigator contains
+the links to all of the pages. Click on "projects".
 
 The demo page is displayed (Figure~\ref{demopage01}). The first
 part of the demo consists of modifying the page in OpenCms by
@@ -86,9 +88,10 @@ to run it from your Internet browser.
 
 Enter the following address in your browser to start the
 "Workplace:"
+
 http://localhost/opencms/opencms/system/workplace/action/login.html
 
-\subsection{Logging into the system}
+\subsubsection{Logging into the system}
 
 In the login dialog box (Figure~\ref{loginbox}), enter "Admin" as
 the user name and "admin" as the password.
@@ -174,8 +177,8 @@ The dialog window "Create a new project" is opened
 
 \begin{itemize}
 \item Project name: Nice try
-\item Description: Create test
-\item project Directories: /examples/
+\item Description: Create test project
+\item project Directories: /projects/
 \item Project members: Users
 \item Project leader: Project manager
 \end{itemize}
@@ -198,7 +201,7 @@ new project. The window closes automatically.
 \end{figure}
 
 Switch back to the Explorer view by selecting it from the "View"
-drop-down menu. Select the "examples" directory (the same one you
+drop-down menu. Select the "projects" directory (the same one you
 selected when creating your project) from the drop-down menu. The
 Explorer view is opened. Open your "Nice try" project by selecting
 it from the Project drop-down menu on the menu bar
@@ -217,8 +220,8 @@ it from the Project drop-down menu on the menu bar
 The view for your project is open. You can now edit any one of its pages.
 
 \textbf{NOTE:} You have surely noticed that all of the folders in
-the folder tree are inactive except for "examples", "download",
-"pics" and "content/bodys/examples". Once the project is selected,
+the folder tree are inactive except for "projects", "download",
+"pics" and "content/bodys/projects". Once the project is selected,
 OpenCms only allows you to modify files in your project directory.
 
 \subsubsection{Editing pages}
@@ -277,7 +280,8 @@ on the Internet.
 
 The "Template" drop-down menu is on the right part of the menu bar
 (Figure~\ref{selecttemplate}). Select one of the pre-defined page
-structures and layouts.
+structures and layouts. You will see the changes by clicking on
+the "preview" button in the upper right corner of the editor.
 
 \begin{figure}[hbt]
 \begin{center}
@@ -289,11 +293,10 @@ structures and layouts.
 \end{center}
 \end{figure}
 
-Select "OpenCms Demo Template 1" from the drop-down menu. A bit
-more to the right of the menu bar is the "Editor" drop-down menu,
-which contains a selection of Editor views. You are currently in
-the HTML view. Select the "Text editor" view. The view is opened
-and displays the same content as source code. Close the view by
+In the upper menu bar is the "Editor" drop-down menu, which
+contains a selection of Editor views. You are currently in the
+HTML view. Select the "Text editor" view. The view is opened and
+displays the same content as source code. Close the view by
 clicking on the button "Save \& Exit"
 \includegraphics{pics/usermanual/ic_saveexit}, which is at the far
 left of the menu bar.
@@ -339,7 +342,7 @@ access the context-sensitive menu. Select the menu item "Publish"
 \end{figure}
 
 Start the demo application again:
-http://localhost/opencms/opencms/examples/index.html The test page
+http://localhost/opencms/opencms/projects/index.html The test page
 is displayed with your modifications (Figure~\ref{demopage02}).
 
 \begin{figure}[hbt]
@@ -357,7 +360,7 @@ is displayed with your modifications (Figure~\ref{demopage02}).
 
 You can add new pages and folders for your web page from the
 Explorer view. Create a new project by following the steps
-described above. Go to the "examples" directory by clicking on the
+described above. Go to the "projects" directory by clicking on the
 appropriate folder in the directory tree with the left mouse
 button.
 
@@ -383,7 +386,7 @@ dialog window "Create a new page" (Figure~\ref{newpage02}):
 \begin{itemize}
 \item Name: help
 \item Title: Test page
-\item Template: OpenCms Demo Template 1
+\item Template: OpenCms-Maintemplate
 \item Text in Navigation: Help
 \item Insert after: at the last position
 \end{itemize}
@@ -419,7 +422,7 @@ for other users.
 
 Publish the project as explained under "Publishing a project" and
 open the demo application:
-http://localhost/opencms/opencms/examples/index.html
+http://localhost/opencms/opencms/projects/index.html
 
 The demo page is displayed with the new link. Click on the link to
 view your new page (Figure~\ref{demopage03}).
@@ -551,12 +554,13 @@ be accessed via the "History" option in the context-sensitive menu
 To create new content, the user creates a new file or directory by
 clicking on the "New" button on the menu bar. This opens a dialog
 window in which the user selects the element to create: "Folder,"
-"Page," "Other" or "Load new file." The name, title and navigator
-text as well as the position of the file or directory in the
-navigator, are defined in separate dialog boxes. Selecting the
-option "Load new file" enables users to load files that are stored
-on their PC's local hard disks into an OpenCms directory. Users
-access their assigned directories and files via the file explorer.
+"Page," "Link", "Text", "XMLTemplate" or "Load new file." The
+name, title and navigator text as well as the position of the file
+or directory in the navigator, are defined in separate dialog
+boxes. Selecting the option "Load new file" enables users to load
+files that are stored on their PC's local hard disks into an
+OpenCms directory. Users access their assigned directories and
+files via the file explorer.
 
 Clicking on the directory name (e.g. "OpenCms") in the directory
 tree structure or in the file view displays the directory's
@@ -574,9 +578,6 @@ by several users at the same time. A file or directory is unlocked
 when the user has finished modifying it.
 \item Edit page: Clicking opens a WYSIWYG editor in which the file can be modified.
 At this stage, no HTML knowledge is required to modify a page.
-\item Edit control code: Clicking opens a text editor in which
-control codes can be edited. Extensive HTML knowledge is required
-to make modifications of this type.
 \item Edit control code: Clicking opens a text editor in which
 control codes can be edited. Extensive HTML knowledge is required
 to make modifications of this type.
