@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/14 13:28:23 $
-* Version: $Revision: 1.105 $
+* Date   : $Date: 2003/07/16 13:03:23 $
+* Version: $Revision: 1.106 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.105 $ $Date: 2003/07/14 13:28:23 $
+ * @version $Revision: 1.106 $ $Date: 2003/07/16 13:03:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -518,7 +518,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
             bodytitle = body.equals("(default)") ? "" : body;
             if (isSimplePage) {
-                style = cms.readProperty(layoutTemplateFilename, "stylesheet");
+                style = cms.readProperty(layoutTemplateFilename, C_XML_CONTROL_TEMPLATE_PROPERTY);
                 if (style != null) {
                     style =  hostName + A_OpenCms.getOpenCmsContext() + style;
                 } else {
@@ -565,7 +565,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                     cms.getRequestContext().setCurrentProject(tempProject);
                     cms.writeProperty(tempPageFilename, C_XML_CONTROL_TEMPLATE_PROPERTY, layoutTemplatFilenameRelative);
                     cms.getRequestContext().setCurrentProject(curProject);         
-                    style = cms.readProperty(layoutTemplateFilename, "stylesheet");    
+                    style = cms.readProperty(layoutTemplateFilename, C_XML_CONTROL_TEMPLATE_PROPERTY);    
                     if (style != null) {
                         style = hostName + A_OpenCms.getOpenCmsContext() + style;
                     } else {

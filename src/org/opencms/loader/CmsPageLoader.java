@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsPageLoader.java,v $
- * Date   : $Date: 2003/07/14 20:12:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/16 13:03:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class CmsPageLoader implements I_CmsLauncher, I_CmsResourceLoader {   
@@ -91,9 +91,9 @@ public class CmsPageLoader implements I_CmsLauncher, I_CmsResourceLoader {
         }
         
         if (templateFile.getLauncherType() == C_TYPE_JSP) {
-            cms.getLauncherManager().getLauncher(templateFile.getLauncherType()).initlaunch(cms, templateFile, (String)null, openCms);
+            cms.getLauncherManager().getLauncher(C_TYPE_JSP).initlaunch(cms, templateFile, (String)null, openCms);
         } else {
-            cms.getLauncherManager().getLauncher(C_TYPE_XML).initlaunch(cms, templateFile, (String)null, openCms);
+            cms.getLauncherManager().getLauncher(C_TYPE_XML).initlaunch(cms, file, (String)null, openCms);
         }
     }
 
