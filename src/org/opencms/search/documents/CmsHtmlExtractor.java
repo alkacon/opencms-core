@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlExtractor.java,v $
- * Date   : $Date: 2004/02/17 12:10:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/28 13:20:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,9 @@
 // Revision Control Information
 //
 // $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHtmlExtractor.java,v $
-// $Author: c.weinholz $
-// $Date: 2004/02/17 12:10:52 $
-// $Revision: 1.2 $
+// $Author: a.kandzior $
+// $Date: 2004/10/28 13:20:53 $
+// $Revision: 1.3 $
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -55,9 +55,16 @@
 //
 package org.opencms.search.documents;
 
+import org.opencms.staticexport.CmsLinkProcessor;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
 import org.htmlparser.Parser;
 import org.htmlparser.StringNode;
 import org.htmlparser.lexer.Lexer;
+import org.htmlparser.lexer.Page;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.tags.Tag;
 import org.htmlparser.util.ParserException;
@@ -67,7 +74,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * Extracts plain text from HTML.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2004/02/17 12:10:52 $
+ * @version $Revision: 1.3 $ $Date: 2004/10/28 13:20:53 $
  * @author  Carsten Weinholz (c.weinholz@alkacon.com)
  *
  * @author Derrick Oswald
@@ -254,25 +261,44 @@ public class CmsHtmlExtractor extends NodeVisitor {
      * Extract the text from a page.
      *
      * @param content the html content
+     * @param encoding the encoding of the content
      *
      * @return The textual contents of the page
      * @throws ParserException if something goes wrong
      */
-    public String extractText (String content) throws ParserException {
-        String ret;
+    public String extractText(String content, String encoding) throws ParserException {
 
         m_isPre = false;
         m_isScript = false;
         m_buffer = new StringBuffer (4096);
 
-        Lexer lexer = new Lexer(content);
-        m_parser.setLexer(lexer);
-        m_parser.visitAllNodesWith (this);
-
-        ret = m_buffer.toString ();
+        // we must make sure that the content passed to the parser always is 
+        // a "valid" HTML page, i.e. is surrounded by <html><body>...</body></html> 
+        // otherwise you will get strange results for some specific HTML constructs
+        StringBuffer newContent = new StringBuffer(content.length() + 32);
+        
+        newContent.append(CmsLinkProcessor.C_HTML_START);
+        newContent.append(content);
+        newContent.append(CmsLinkProcessor.C_HTML_END);
+                
+        // create the lexer and parse the input    
+        Lexer lexer = new Lexer();
+        Page page;
+        try {
+            // make sure the Lexer uses the right encoding
+            InputStream stream = new ByteArrayInputStream(newContent.toString().getBytes(encoding));
+            page = new Page(stream, encoding);
+        } catch (UnsupportedEncodingException e) {
+            // fall back to default encoding, should not happen since all xml pages must have a valid encoding    
+            throw new ParserException("Invalid encoding for HTML content parsing '" + encoding + "'");
+        }
+        lexer.setPage(page);
+        m_parser.setLexer(lexer);      
+        m_parser.visitAllNodesWith(this);
+        
+        String result = m_buffer.toString();
         m_buffer = null;
-
-        return (ret);
+        return result.substring(CmsLinkProcessor.C_HTML_START.length(), result.length() - CmsLinkProcessor.C_HTML_END.length()); 
     }
 
     //

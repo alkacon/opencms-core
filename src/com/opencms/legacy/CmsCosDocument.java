@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2004/07/08 15:21:13 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/28 13:20:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.legacy;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.documents.CmsHtmlExtractor;
@@ -49,7 +50,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.6 $ $Date: 2004/10/28 13:20:53 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
@@ -121,7 +122,7 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
             }
             
             CmsHtmlExtractor extractor = new CmsHtmlExtractor();
-            rawContent = extractor.extractText(buf.toString());
+            rawContent = extractor.extractText(buf.toString(), OpenCms.getSystemInfo().getDefaultEncoding());
             
         } catch (Exception exc) {
             throw new CmsIndexException("Reading resource " + indexResource.getRootPath() + " failed", exc);
