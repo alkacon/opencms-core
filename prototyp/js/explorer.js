@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/17 15:41:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/11/17 15:59:02 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -617,13 +617,13 @@ function displayHead(doc){
     doc.open();
     doc.writeln(headHead);
 
-    if(vr.actProject==vr.onlineProject){
+    if(vr.actProject!=vr.onlineProject){
         doc.writeln("<td class=menu nowrap width=32px>"+
-            "<a href=\"javascript: top.updateFrame('body.explorer_content.explorer_files','explorer_files_new.html');\""+
+            //"<a href=\"javascript: top.updateFrame('body.explorer_content.explorer_files','explorer_files_new.html');\""+
+            "<a href='explorer_files_new.html'>"+
             "onmouseout=\"top.choff(document, 'bt_new');\" "+
             "onmouseover=\"top.chon(document, 'bt_new');\">");
         doc.writeln("<img alt=new width=32  height=32 border=0 name='bt_new'></a></td>"); 
-
     } else {
         doc.writeln("<td class=menu nowrap width=32px>");
         doc.writeln("<img alt=new width=32 height=32 border=0 name='bt_new_in'></a></td>"); 
@@ -924,7 +924,8 @@ function printList(wo){
             if(vi.menus[vi.liste[i].type].items[a].name=="-"){
                 wo.writeln("<tr><td><hr size=1></td></tr>");
             }else{
-                if(vr.actProject==1){ /* online project? */
+                //if(vr.actProject==1){ /* online project? */
+                if(vr.actProject!=vr.onlineProject){ /* online project? */
                     if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='0'){
                         wo.writeln("");
                     }
