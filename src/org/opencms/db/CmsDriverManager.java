@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/18 16:24:55 $
- * Version: $Revision: 1.242 $
+ * Date   : $Date: 2003/09/19 10:51:06 $
+ * Version: $Revision: 1.243 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.242 $ $Date: 2003/09/18 16:24:55 $
+ * @version $Revision: 1.243 $ $Date: 2003/09/19 10:51:06 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4227,8 +4227,8 @@ public class CmsDriverManager extends Object {
         }
         m_permissionCache.put(cacheKey, new Boolean(result));
         
-        if (!result && OpenCms.getLog(CmsLog.CHANNEL_USER).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_USER).info(
+        if (!result && OpenCms.getLog(CmsLog.CHANNEL_USER).isDebugEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_USER).debug(
                 "Access to resource " + resource.getRootPath() + " "
                 + "not permitted for user " + context.currentUser().getName() + ", "
                 + "required permissions " + requiredPermissions.getPermissionString() + " "
