@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/01/09 11:11:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/14 17:07:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.0
  */
@@ -153,8 +153,14 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             }
             // initialize the editor content
             initContent();
-            // set template and page title  
-            setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
+            // set template
+            // setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));
+            try {
+                setParamPagetemplate(getCms().readProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, true, ""));
+            } catch (CmsException exc) {
+                setParamPagetemplate("");
+            }
+            // set page title
             setParamPagetitle(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamTempfile(), ""));
         } 
         
