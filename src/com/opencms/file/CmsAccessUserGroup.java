@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/04 16:23:26 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/06 11:52:08 $
  */
  class CmsAccessUserGroup implements I_CmsAccessUserGroup, I_CmsConstants {
 
@@ -93,6 +93,30 @@ import com.opencms.core.*;
          }
          return user;
      }
+     
+      /**
+	 * Returns a user object.<P/>
+	 * 
+	 * @param userid The id of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public A_CmsUser readUser(int id)
+        throws CmsException {
+         A_CmsUser user=null;
+         Hashtable infos=null;
+         A_CmsGroup defaultGroup=null;
+         user=m_accessUser.readUser(id);
+         if (user!= null){
+             infos=m_accessUserInfo.readUserInformation(user.getId()); 
+             user.setAdditionalInfo(infos);
+             defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
+             user.setDefaultGroup(defaultGroup);
+         } else {
+             throw new CmsException(CmsException.C_NOT_FOUND);
+         }
+         return user;
+    }
 	
 	/**
 	 * Returns a list of groups of a user.<P/>
@@ -129,6 +153,21 @@ import com.opencms.core.*;
           group=m_accessGroup.readGroup(groupname);
          return group;
      }
+     
+      /**
+	 * Returns a group object.<P/>
+	 * 
+	 * @param groupId The Id of the group that is to be read.
+	 * @return Group.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+	public A_CmsGroup readGroup(int groupId)
+		throws CmsException {
+          A_CmsGroup group= null;
+          group=m_accessGroup.readGroup(groupId);
+         return group;
+    }
 
 	/**
 	 * Returns a list of users in a group.<P/>

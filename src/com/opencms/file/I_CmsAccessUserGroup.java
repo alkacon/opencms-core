@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/01/04 16:23:26 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/06 11:52:08 $
  */
 interface I_CmsAccessUserGroup {
 
@@ -37,6 +37,16 @@ interface I_CmsAccessUserGroup {
 	 */		
 	public A_CmsUser readUser(String username, String password)
 		throws CmsException;
+    
+     /**
+	 * Returns a user object.<P/>
+	 * 
+	 * @param userid The id of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public A_CmsUser readUser(int id)
+		throws CmsException;
 	
 	/**
 	 * Returns a list of groups of a user.<P/>
@@ -59,6 +69,17 @@ interface I_CmsAccessUserGroup {
 	public A_CmsGroup readGroup(String groupname)
 		throws CmsException;
 
+     /**
+	 * Returns a group object.<P/>
+	 * 
+	 * @param groupId The Id of the group that is to be read.
+	 * @return Group.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+	public A_CmsGroup readGroup(int groupId)
+		throws CmsException;
+    
 	/**
 	 * Returns a list of users in a group.<P/>
 	 * 

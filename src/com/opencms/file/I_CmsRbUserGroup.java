@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/01/04 16:23:26 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/06 11:52:08 $
  */
 interface I_CmsRbUserGroup {
 
@@ -46,6 +46,19 @@ interface I_CmsRbUserGroup {
 	 */		
 	public A_CmsUser readUser(String username, String password)
 		throws CmsException;
+    
+    /**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param userid The Id of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public A_CmsUser readUser(int userid)
+		throws CmsException;
 
 
 	/**
@@ -75,6 +88,21 @@ interface I_CmsRbUserGroup {
 	public A_CmsGroup readGroup(String groupname)
 		throws CmsException;
 
+    
+	/**
+	 * Returns a group object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param groupId The Id of the group that is to be read.
+	 * @return Group.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+	public A_CmsGroup readGroup(int groupId)
+		throws CmsException;
+    
 	/**
 	 * Returns a list of users in a group.<P/>
 	 * 

@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/01/05 11:53:52 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/06 11:52:08 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -71,6 +71,22 @@ import com.opencms.core.*;
          return user;
      }
 	
+     /**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param userid The Id of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public A_CmsUser readUser(int userid)
+		throws CmsException {
+         A_CmsUser user=null;
+         user=m_accessUserGroup.readUser(userid);
+         return user;
+     }
 
 	/**
 	 * Returns a list of groups of a user.<P/>
@@ -125,6 +141,26 @@ import com.opencms.core.*;
          return group;
       }
 
+       
+	/**
+	 * Returns a group object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param groupId The Id of the group that is to be read.
+	 * @return Group.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+	public A_CmsGroup readGroup(int groupId)
+		 throws CmsException {
+         
+         A_CmsGroup group = null;
+         group=m_accessUserGroup.readGroup(groupId);
+         return group;
+      }
+     
 	/**
 	 * Returns a list of users in a group.<P/>
 	 * 
