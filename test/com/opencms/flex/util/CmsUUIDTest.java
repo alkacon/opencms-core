@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/CmsUUIDTest.java,v $
- * Date   : $Date: 2003/03/19 19:40:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/13 15:53:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -70,6 +70,13 @@ public class CmsUUIDTest extends TestCase {
         }
         assertNotSame(id1, id2);
         assertNotSame(id1, id3);
-        assertNotSame(id3, id2);        
+        assertNotSame(id3, id2);  
+        
+        CmsUUID id4 = CmsUUID.getNullUUID();     
+        assertTrue(id4.isNullUUID());
+        
+        if (id4.equals(CmsUUID.getNullUUID())) {
+            System.out.println( "id4 is null-UUID" );
+        }
     }
 }
