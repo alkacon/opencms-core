@@ -290,6 +290,7 @@
 			<groups>Gruppe</groups>
 			<imagelist>Bilderliste</imagelist>
 			<import>Import</import>
+			<module>Modul- verwaltung</module>
 			<mountpoint>Mountpoint- </mountpoint>
 			<newgallery>Neue Galerie</newgallery>
 			<newproject>Neues Projekt</newproject>
@@ -461,6 +462,7 @@
 		
 		<label>
 			<active>aktiv</active>
+			<author>Autor</author>
 			<allfolders>Verzeichnisse</allfolders>
 			<articlestate>Artikel-Status</articlestate>
 			<changegroup>Gruppe bearbeiten</changegroup>
@@ -486,6 +488,8 @@
 			<inactive>nicht aktiv</inactive>
 			<link>Verknüpfung</link>
 			<loading>Lädt...</loading>
+			<modulecreatedate>Erstellt am</modulecreatedate>
+			<modulname>Modulname</modulname>
 			<propertydef>Eigenschaft</propertydef>
 			<path>Ordner</path>
 			<mimetype>MimeTyp</mimetype>
@@ -510,7 +514,9 @@
 			<suredeletingproject2>löschen wollen?</suredeletingproject2>
 			<title>Titel</title>
 			<upload>Hochladen von Datei</upload>
+			<uploaddate>Hochgeladen am</uploaddate>
 			<user>Benutzer</user>
+			<version>Version</version>
 			<view>Ansicht</view>
 		 	<wptitle>OpenCms Arbeitsplatz von</wptitle>
 			<writerights>Schreibberechtigung für andere</writerights>
@@ -622,6 +628,51 @@
 				</filter>
 			</resentfilelist>
 		</project>
+
+		<module>
+			<context>
+				<delete>Löschen</delete>
+				<property>Eigenschaften</property>
+			</context>
+			<lable>
+				<local>Lokaler Rechner</local>
+				<server>Server</server>
+				<upload>Modul hochladen von</upload>
+				<uploadlocal>Modul von lokalem Rechner hochladen</uploadlocal>
+				<uploadserver>Modul vom Server hochladen</uploadserver>
+				<name>Name:</name>
+				<overwrites>Überschreiben von Dateien</overwrites>
+				<fileoverwrite>Die folgenden Dateien sind schon vorhanden. Wollen Sie diese Überschreiben?</fileoverwrite>
+				<description>Beschreibung</description>
+				<moduledescription>Modulebeschreibung</moduledescription>
+				<uploadfrom>Hochgeladen von</uploadfrom>
+				<documentation>Dokumentation</documentation>
+				<dependences>Abhängigkeiten</dependences>
+				<repository>Repository</repository>
+				<parameter>Parameter</parameter>
+				<changeparameter>Eigenschaften ändern von Module</changeparameter>
+				<moduleproperty>Moduleigenschaft</moduleproperty>
+				<type>Type</type>
+				<value>Wert</value>
+				<deletemodule>Modul löschen</deletemodule>
+				<deletetext>Soll das Modul wirklich gelöscht werden?</deletetext>
+			</lable>
+			<error>
+				<parametertitle>Eigenschaft für Modul ändern</parametertitle>
+				<parametermessage>Leider konnte die Eigenschaft nicht geändert werden.</parametermessage>
+				<parameterreason>Ihre Eingabe war im falschen Format.</parameterreason>
+				<replace>Modul überschreiben</replace>
+				<replacemessage>Modul existiert schon in anderer Version. Bitte löschen Sie erst die alte Version.</replacemessage>
+				<dependences>Modul-Abhängigkeiten wurden verletzt:</dependences>
+				<precondition>Folgende Vorbedingungen des Moduls werden nicht erfüllt:</precondition>
+				<preconditiondelete>The module is needed by</preconditiondelete>
+				<deletetitle>Delete Module</deletetitle>
+				<deletetext1>Folgende Dateien sind geändert worden. Welche sollen gelöscht werden?</deletetext1>
+				<deletetext2>Welche zusätzlichen Files sollen gelöscht werden?</deletetext2>
+				<deletetext3>Folgende Dateien können nicht gelöscht werden, da sie noch von anderen Modulen benötigt werden:</deletetext3>
+				<deletetext4>Folgende Dateien fehlen bereits:</deletetext4>
+			</error>
+		</module>
 		
 		<select>
 			<edit>Texteditor</edit>

@@ -289,6 +289,7 @@
 			<groups>Edit Groups</groups> 
 			<imagelist>image list</imagelist>
 			<import>Import</import>
+			<module>Module- management</module>
 			<mountpoint>Mountpoints</mountpoint> 
 			<newgallery>new gallery</newgallery>
 			<newproject>New Project</newproject>
@@ -460,6 +461,7 @@
 		<label>
 			<active>active</active>
 			<allfolders>Folders</allfolders>
+			<author>Author</author>
 			<changegroup>Edit Group</changegroup>
 			<close>Close</close>
 			<createdby>Task Agent</createdby>
@@ -483,6 +485,8 @@
 			<inactive>inactive</inactive>
 			<link>Link</link>
 			<loading>Loading...</loading>
+			<modulecreatedate>Date created</modulecreatedate>
+			<modulname>Modulename</modulname>
 			<propertydef>Property</propertydef>
 			<path>Folder</path>
 			<mimetype>MimeTyp</mimetype>
@@ -508,7 +512,9 @@
 			<suredeletingproject2>?</suredeletingproject2>
 			<title>Title</title>
 			<upload>File upload</upload>
+			<uploaddate>Active since</uploaddate>
 			<user>User</user>
+			<version>Version</version>
 			<view>View</view>
 		 	<wptitle>OpenCms Workplace of</wptitle>
 			<writerights>permission to write for others</writerights>
@@ -619,6 +625,51 @@
 			</resentfilelist>
 		</project>
 		
+		<module>
+			<context>
+				<delete>Delete</delete>
+				<property>Properties</property>
+			</context>
+			<lable>
+				<local>Local computer</local>
+				<server>Server</server>
+				<upload>Upload Module from</upload>
+				<uploadlocal>Load module from local computer</uploadlocal>
+				<uploadserver>Load module from server</uploadserver>
+				<name>Name:</name>
+				<overwrites>Overwriting files</overwrites>
+				<fileoverwrite>These files are already in the system. Do you want to replace them?</fileoverwrite>
+				<description>Description</description>
+				<moduledescription>Moduledescription</moduledescription>
+				<uploadfrom>Uploaded from</uploadfrom>
+				<documentation>Documentation</documentation>
+				<dependences>Dependences</dependences>
+				<repository>Repository</repository>
+				<parameter>Parameter</parameter>
+				<changeparameter>Change Properties of module</changeparameter>
+				<moduleproperty>Moduleproperty</moduleproperty>
+				<type>Type</type>
+				<value>Value</value>
+				<deletemodule>Delete Module</deletemodule>
+				<deletetext>Are you sure that you want to delete the module?</deletetext>
+			</lable>
+			<error>
+				<parametertitle>Change property for module</parametertitle>
+				<parametermessage>Sorry, the property could not be changed.</parametermessage>
+				<parameterreason>Your input was in the wrong format.</parameterreason>
+				<replace>Replace modul</replace>
+				<replacemessage>Module exists in an other version. Please delete the old version first.</replacemessage>
+				<dependences>Module dependences</dependences>
+				<precondition>These precondition are not fulfilled:</precondition>
+				<preconditiondelete>The module is needed by</preconditiondelete>
+				<deletetitle>Delete Module</deletetitle>
+				<deletetext1>The following files have been changed. Which should be deleted?</deletetext1>
+				<deletetext2>Which additional files should be deleted?</deletetext2>
+				<deletetext3>The following files could not be deleted, because the are used by other modules.</deletetext3>
+				<deletetext4>The following files are already missing:</deletetext4>				
+			</error>			
+		</module>
+
 		<select>
 			<edit>Code-Editor</edit>
 			<edithtml>WYSIWYG-Editor</edithtml>
