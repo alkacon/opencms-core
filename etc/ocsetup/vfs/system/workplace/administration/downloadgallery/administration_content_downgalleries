@@ -48,7 +48,7 @@ function show_help()
 </TEMPLATE>
 
 <TEMPLATE name="error"> 
-<ERRORPAGE title="error.title.downgallery" message="error.message.gallerynoright" reason="error.reason.gallerynoright" suggestion="error.suggestion.none" ref="index.html" ><PROCESS>ERRORDETAILS</PROCESS></ERRORPAGE> 
+<ERRORPAGE title="error.title.downgallery" message="error.message.gallerynoright" reason="error.reason.gallerynoright" suggestion="error.suggestion.none" ref="administration_content_downgallery_new.html" ><PROCESS>ERRORDETAILS</PROCESS></ERRORPAGE> 
 </TEMPLATE>
 
 </WORKPLACE>
