@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/03/25 08:52:21 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/03/25 10:06:43 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $ $Date: 2003/03/25 08:52:21 $
+ * @version $Revision: 1.11 $ $Date: 2003/03/25 10:06:43 $
  */
 public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Serializable {
 
@@ -104,7 +104,7 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
         try{
             // first import the channels
             m_report.println(m_report.key("report.import_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-            importResources(null, null, null, null, null);
+            importAllResources(null, null, null, null, null);
             m_report.println(m_report.key("report.import_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);
             
             // now import the moduledata

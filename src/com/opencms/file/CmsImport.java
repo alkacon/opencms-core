@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/03/25 08:52:21 $
-* Version: $Revision: 1.88 $
+* Date   : $Date: 2003/03/25 10:06:43 $
+* Version: $Revision: 1.89 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.88 $ $Date: 2003/03/25 08:52:21 $
+ * @version $Revision: 1.89 $ $Date: 2003/03/25 10:06:43 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -185,7 +185,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             }
             
             // now import the VFS resources
-            importResources(null, null, null, null, null);
+            importAllResources(null, null, null, null, null);
         } catch (CmsException e) {
             throw e;
         } finally {
@@ -193,7 +193,40 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             closeImportFile();
         }
     }
-        
+
+    /**
+     * Imports the resources for a module.<p>
+     * 
+     * @param excludeList filenames of files and folders which should not 
+     *      be (over)written in the virtual file system (not used when null)
+     * @param writtenFilenames filenames of the files and folder which have actually been 
+     *      successfully written (not used when null)
+     * @param fileCodes code of the written files (for the registry)
+     *      (not used when null)
+     * @param propertyName name of a property to be added to all resources
+     * @param propertyValue value of that property
+     * @throws CmsException if something goes wrong
+     */
+    public void importResources(
+        Vector excludeList, 
+        Vector writtenFilenames, 
+        Vector fileCodes, 
+        String propertyName, 
+        String propertyValue
+    ) throws CmsException {
+        // initialize the import
+        openImportFile();
+        try {            
+            // now import the VFS resources
+            importAllResources(excludeList, writtenFilenames, fileCodes, propertyName, propertyValue);
+        } catch (CmsException e) {
+            throw e;
+        } finally {
+            // close the import file
+            closeImportFile();
+        }
+    }
+            
     /**
      * Initilizes the import.<p>
      * 
@@ -214,7 +247,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             m_importVersion = Integer.parseInt(
                 getTextNodeValue((Element)m_docXml.getElementsByTagName(
                     C_EXPORT_TAG_INFO).item(0) , C_EXPORT_TAG_VERSION));
-        }catch(Exception e){
+        } catch(Exception e){
             //ignore the exception, the export file has no version nummber (version 0).
         }        
     }
@@ -583,15 +616,17 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     /**
      * Imports the resources and writes them to the cms.<p>
      * 
-     * @param excludeList filenames of files and folders which should not be (over) written in the virtual file system
-     * @param writtenFilenames filenames of the files and folder which have actually been successfully written
-     *         not used when null
+     * @param excludeList filenames of files and folders which should not 
+     *      be (over)written in the virtual file system (not used when null)
+     * @param writtenFilenames filenames of the files and folder which have actually been 
+     *      successfully written (not used when null)
      * @param fileCodes code of the written files (for the registry)
-     *         not used when null
+     *      (not used when null)
      * @param propertyName name of a property to be added to all resources
      * @param propertyValue value of that property
+     * @throws CmsException if something goes wrong
      */
-    public void importResources(
+    protected void importAllResources(
         Vector excludeList, 
         Vector writtenFilenames, 
         Vector fileCodes, 
@@ -721,6 +756,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 m_cms.joinLinksToTargets(m_report);
             }  
         } catch (Exception exc) {
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
