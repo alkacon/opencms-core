@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2004/02/26 11:35:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/27 14:26:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,6 @@ package org.opencms.file;
 
 import org.opencms.loader.CmsPointerLoader;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -46,7 +44,7 @@ import java.util.Vector;
  * Implementation of a resource type for external links
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
@@ -129,48 +127,5 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
         }
 
         return res;
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, java.lang.String, int)
-     */
-    public void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException {
-        super.deleteResource(cms, resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#undeleteResource(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public void undeleteResource(CmsObject cms, String resourcename) throws CmsException {
-        super.undeleteResource(cms, resourcename);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean, boolean, int)
-     */
-    public void copyResource(CmsObject cms, String theSourceResourceName, String theDestinationResourceName, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
-        super.copyResource(cms, theSourceResourceName, theDestinationResourceName, keepFlags, lockCopy, copyMode);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public void moveResource(CmsObject cms, String theSourceResourceName, String theDestinationResourceName) throws CmsException {
-        super.moveResource(cms, theSourceResourceName, theDestinationResourceName);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#renameResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public void renameResource(CmsObject cms, String theOldResourceName, String theNewResourceName) throws CmsException {
-        super.renameResource(cms, theOldResourceName, theNewResourceName);
-    }
-
-    /**
-     * @see org.opencms.file.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public void undoChanges(CmsObject cms, String theResourceName) throws CmsException {
-        super.undoChanges(cms, theResourceName);
-    }
-    
+    }    
 }
