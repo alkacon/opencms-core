@@ -5,7 +5,7 @@ import java.sql.*;
 
 import com.opencms.core.*;
 
-public class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
+class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	
     /**
      * This is the connection object to the database
@@ -38,6 +38,31 @@ public class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	private PreparedStatement m_statementDeleteMetadef;
 
 	/**
+	 * A prepared statement to access the database.
+	 */
+	private PreparedStatement m_statementCreateMetainfo;
+
+	/**
+	 * Column name
+	 */
+	private static final String C_METAINFO_ID = "METAINFO_ID";
+
+	/**
+	 * Column name
+	 */
+	private static final String C_METAINFO_VALUE = "METAINFO_VALUE";
+
+	/**
+	 * Column name
+	 */
+	private static final String C_RESOURCE_NAME = "RESOURCE_NAME";
+
+	/**
+	 * Column name
+	 */
+	private static final String C_PROJECT_ID = "PROJECT_ID";
+
+	/**
 	 * Column name
 	 */
 	private static final String C_METADEF_ID = "METADEF_ID";
@@ -56,6 +81,11 @@ public class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * Column name
 	 */
 	private static final String C_METADEF_TYPE = "METADEF_TYPE";
+
+	/**
+     * SQL Command for creating metadefinitions.
+     */    
+    private static final String C_METAINFO_CREATE = "INSERT INTO METAINFO VALUES(null,?,?,?,?)";
 
 	/**
      * SQL Command for creating metadefinitions.
@@ -248,7 +278,7 @@ public class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 			 throw new CmsException(CmsException.C_SQL_ERROR, exc);
 		 }
 	}
-	
+
 	/**
      * Connects to the metadefinition database.
      * 
@@ -277,6 +307,8 @@ public class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 			m_statementReadAllMetadefA = m_con.prepareStatement(C_METADEF_READALL_A);
 			m_statementReadAllMetadefB = m_con.prepareStatement(C_METADEF_READALL_B);
 			m_statementDeleteMetadef = m_con.prepareStatement(C_METADEF_DELETE);
+
+			m_statementCreateMetainfo = m_con.prepareStatement(C_METAINFO_CREATE);
 		} catch (SQLException exc) {
 			throw new CmsException(CmsException.C_SQL_ERROR, exc);
 		}

@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/17 14:35:31 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/17 17:25:36 $
  */
 abstract class A_CmsRbProject {
 	
@@ -35,30 +35,20 @@ abstract class A_CmsRbProject {
 	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a project with the same name for this resource-type exists already.
 	 */
 	 abstract A_CmsProject createProject(String name, String description, A_CmsTask task, 
 										 A_CmsUser owner, A_CmsGroup group, int flags)
-		 throws CmsException, CmsDuplicateKeyException;
+		 throws CmsException;
 	
 	/**
 	 * Updates a project.
 	 * 
-	 * @param name The name of the project to read.
-	 * @param description The description for the new project.
-	 * @param task The globe task.
-	 * @param owner The owner to be set.
-	 * @param group the group to be set.
-	 * @param flags The flags to be set.
+	 * @param project The project that will be written.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a project with the same name for this resource-type exists already.
 	 */
-	 abstract A_CmsProject updateProject(String name, String description, A_CmsTask task, 
-										 A_CmsUser owner, A_CmsGroup group, int flags)
-		 throws CmsException, CmsDuplicateKeyException;
+	 abstract A_CmsProject writeProject(A_CmsProject project)
+		 throws CmsException;
 
 	/**
 	 * Returns all projects, which are owned by a user.

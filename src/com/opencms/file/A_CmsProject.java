@@ -5,7 +5,7 @@ package com.opencms.file;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/17 14:35:31 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/17 17:25:36 $
  */
 abstract public class A_CmsProject
 {
@@ -23,6 +23,13 @@ abstract public class A_CmsProject
 	 */
 	abstract public String getDescription();
 
+	/**
+	 * Sets the description of this project.
+	 * 
+	 * @param description The description of this project.
+	 */
+	abstract public void setDescription(String description);
+	
 	/**
 	 * Returns the state of this project.<BR/>
 	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED, 
@@ -52,6 +59,13 @@ abstract public class A_CmsProject
 	 * @return the groupid of this project.
 	 */
     abstract int getGroupId();
+	
+	/**
+	 * Returns the taskid of this project.
+	 * 
+	 * @return the taskid of this project.
+	 */
+    abstract int getTaskId();
 	
 	/**
 	 * Returns a string-representation for this object.

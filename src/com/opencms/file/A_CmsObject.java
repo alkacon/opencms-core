@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/17 14:37:04 $ 
+ * @version $Revision: 1.4 $ $Date: 1999/12/17 17:25:36 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -143,7 +143,7 @@ public abstract class A_CmsObject {
 	 * Creates a new file with the overgiven content and resourcetype.
 	 * If there are some mandatory metadefinitions for the resourcetype, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR/>
+	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * If there is already a file with this filename, a CmsDuplicateKey exception will
 	 * be thrown.
@@ -170,7 +170,7 @@ public abstract class A_CmsObject {
 	 * Creates a new file with the overgiven content and resourcetype.
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR/>
+	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * If there is already a file with this filename, a CmsDuplicateKey exception will
 	 * be thrown.
@@ -232,7 +232,7 @@ public abstract class A_CmsObject {
 	 * Writes a file to the Cms.<BR/>
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory metainformations.<BR/>
+	 * the mandatory Metainformations.<BR/>
 	 * 
 	 * @param file The file to write.
 	 * 
@@ -247,7 +247,7 @@ public abstract class A_CmsObject {
 	 * Writes the fileheader to the Cms.
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory metainformations.<BR/>
+	 * the mandatory Metainformations.<BR/>
 	 * 
 	 * @param resource The resource to write the header of.
 	 * 
@@ -262,7 +262,7 @@ public abstract class A_CmsObject {
 	 * Writes a file to the Cms.<BR/>
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory metainformations.<BR/>
+	 * the mandatory Metainformations.<BR/>
 	 * 
 	 * @param file The file to write.
 	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
@@ -280,7 +280,7 @@ public abstract class A_CmsObject {
 	 * Writes the fileheader to the Cms.
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR/>
+	 * the mandatory Metainformations.<BR/>
 	 * 
 	 * @param resource The resource to write the header of.
 	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
@@ -382,7 +382,7 @@ public abstract class A_CmsObject {
 	 * Creates a new folder.
 	 * If there are some mandatory metadefinitions for the folder-resourcetype, a 
 	 * CmsException will be thrown, because the folder cannot be created without
-	 * the mandatory metainformations.<BR/>
+	 * the mandatory Metainformations.<BR/>
 	 * If there is already a folder with this filename, a CmsDuplicateKey exception 
 	 * will be thrown.
 	 * 
@@ -406,7 +406,7 @@ public abstract class A_CmsObject {
 	 * Creates a new file with the overgiven content and resourcetype.
 	 * If some mandatory metadefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR/>
+	 * the mandatory Metainformations.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * If there is already a file with this filename, a CmsDuplicateKey exception will
 	 * be thrown.
@@ -673,72 +673,72 @@ public abstract class A_CmsObject {
 		throws CmsException;
 
 	/**
-	 * Returns a MetaInformation of a file or folder.
+	 * Returns a Metainformation of a file or folder.
 	 * 
-	 * @param name The resource-name of which the MetaInformation has to be read.
-	 * @param meta The metadefinition-name of which the MetaInformation has to be read.
+	 * @param name The resource-name of which the Metainformation has to be read.
+	 * @param meta The metadefinition-name of which the Metainformation has to be read.
 	 * 
 	 * @return metainfo The metainfo as string.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public String readMetaInformation(String name, String meta)
+	abstract public String readMetainformation(String name, String meta)
 		throws CmsException;	
 
 	/**
-	 * Writes a MetaInformation for a file or folder.
+	 * Writes a Metainformation for a file or folder.
 	 * 
-	 * @param name The resource-name of which the MetaInformation has to be set.
-	 * @param meta The metadefinition-name of which the MetaInformation has to be set.
+	 * @param name The resource-name of which the Metainformation has to be set.
+	 * @param meta The metadefinition-name of which the Metainformation has to be set.
 	 * @param value The value for the metainfo to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void writeMetaInformation(String name, String meta, String value)
+	abstract public void writeMetainformation(String name, String meta, String value)
 		throws CmsException;
 
 	/**
-	 * Writes a couple of MetaInformation for a file or folder.
+	 * Writes a couple of Metainformation for a file or folder.
 	 * 
-	 * @param name The resource-name of which the MetaInformation has to be set.
+	 * @param name The resource-name of which the Metainformation has to be set.
 	 * @param metainfos A Hashtable with metadefinition- metainfo-pairs as strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void writeMetaInformations(String name, Hashtable metainfos)
+	abstract public void writeMetainformations(String name, Hashtable metainfos)
 		throws CmsException;
 
 	/**
-	 * Returns a list of all MetaInformations of a file or folder.
+	 * Returns a list of all Metainformations of a file or folder.
 	 * 
-	 * @param name The resource-name of which the MetaInformation has to be read
+	 * @param name The resource-name of which the Metainformation has to be read
 	 * 
-	 * @return Vector of MetaInformation as Strings.
+	 * @return Vector of Metainformation as Strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public Vector readAllMetaInformations(String name)
+	abstract public Vector readAllMetainformations(String name)
 		throws CmsException;
 	
 	/**
-	 * Deletes all MetaInformation for a file or folder.
+	 * Deletes all Metainformation for a file or folder.
 	 * 
-	 * @param resourcename The resource-name of which the MetaInformation has to be delteted.
+	 * @param resourcename The resource-name of which the Metainformation has to be delteted.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void deleteAllMetaInformations(String resourcename)
+	abstract public void deleteAllMetainformations(String resourcename)
 		throws CmsException;
 
 	/**
-	 * Deletes a MetaInformation for a file or folder.
+	 * Deletes a Metainformation for a file or folder.
 	 * 
-	 * @param resourcename The resource-name of which the MetaInformation has to be delteted.
-	 * @param meta The metadefinition-name of which the MetaInformation has to be set.
+	 * @param resourcename The resource-name of which the Metainformation has to be delteted.
+	 * @param meta The metadefinition-name of which the Metainformation has to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void deleteMetaInformation(String resourcename, String meta)
+	abstract public void deleteMetainformation(String resourcename, String meta)
 		throws CmsException;
 
 	/**
