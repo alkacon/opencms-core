@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
- * Date   : $Date: 2000/02/20 16:08:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/03/15 13:56:05 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/02/20 16:08:38 $
+ * @version $Revision: 1.12 $ $Date: 2000/03/15 13:56:05 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -101,7 +101,15 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
         // the launcher takes another class if no classname was found here
         return result;
     }
-    
+
+    /**
+     * Set the template class used for the master Template
+     * @param templateClass Name of the template class.
+     */
+    public void setTemplateClass(String templateClass) {
+        setData("class", templateClass);
+    }
+        
     /**
      * Gets the filename of the master template file defined in
      * the body file.
@@ -174,6 +182,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @param classname Classname to be set.
      */
     public void setElementClass(String elementName, String classname) {
+        createElementDef(elementName);
         setData("ELEMENTDEF." + elementName + ".CLASS", classname); 
     }
         
@@ -192,6 +201,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @filename Filename to be set.
      */
     public void setElementTemplate(String elementName, String filename) {
+        createElementDef(elementName);
         setData("ELEMENTDEF." + elementName + ".TEMPLATE", filename); 
     }
     
@@ -210,6 +220,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @param templateSelector Template selector to be set.
      */
     public void setElementTemplSelector(String elementName, String templateSelector) {
+        createElementDef(elementName);
         setData("ELEMENTDEF." + elementName + ".TEMPLATESELECTOR", templateSelector); 
     }
 
@@ -243,6 +254,43 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      */
     public String getParameter(String elementName, String parameterName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName);        
+    }
+
+    /**
+     * Set the value of a single parameter of a given subelement definition.
+     * @param elementName Name of the subelement.
+     * @param parameterName Name of the requested parameter.
+     * @param parameterValue Value to be set
+     */
+    public void setParameter(String elementName, String parameterName, String parameterValue) throws CmsException {
+        createElementDef(elementName);
+        if(! hasData("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName)) {
+            Document doc = getXmlDocument();
+            Element e = doc.createElement("PARAMETER");
+            e.setAttribute("name", parameterName);
+            e.appendChild(doc.createTextNode(parameterValue));
+            setData("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName, e);                            
+        } else {            
+            setData("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName, parameterValue);        
+        }
+    }
+    
+    /**
+     * Used for setting element definition values.
+     * Checks if the requested element definition already exists.
+     * If so, nothing will happen. If not, a corresponding section
+     * will be created using a hierarchical datablock tag 
+     * <code>&lt;ELEMENTDEF name="..."/&gt;</code>
+     * 
+     * @param name Name of the element definition section.
+     */
+    private void createElementDef(String name) {
+        if(! hasData("ELEMENTDEF." + name)) {
+            Document doc = getXmlDocument();
+            Element e = doc.createElement("ELEMENTDEF");
+            e.setAttribute("name", name);
+            setData("elementdef." + name, e);                            
+        }
     }
     
     /**
@@ -279,4 +327,5 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
             }
         }
         return collectNames.elements();
-    }}
+    }
+}
