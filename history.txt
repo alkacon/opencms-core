@@ -8,6 +8,12 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.5.18 Chusuk       - 12 November 2001
+* Bugfixing mastermodule.
+- Added systemproperty to registry.xml: UseWpPicturesFromVFS - if this is set to true
+  the system loads all workplace-images from the VFS (default false).
+  This should only be done, if there is no possible export to a http-docroot.
+
 OpenCms 4.5.17 Chusuk       - 09 November 2001
 ! Added class "com.opencms.defaults.master.CmsShowMedia" to show media in a generic way.
 ! New property "description" for type image. The description can be inserted when uploading
