@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/18 19:03:49 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2003/07/21 14:52:12 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -440,7 +440,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#moveResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
-        cms.doMoveResource(source, destination);
+        // cms.doMoveResource(source, destination);
+        this.copyResource(cms, source, destination, true, true);
+        this.deleteResource(cms,source);
     }
 
     /**
@@ -590,7 +592,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         for (int i = 0; i < allSubFiles.size(); i++) {
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if (curFile.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
-                cms.changeLockedInProject(newProjectId, cms.readAbsolutePath(curFile));
+                // must include files already deleted for publishing deleted resources
+                cms.changeLockedInProject(newProjectId, cms.readAbsolutePath(curFile, true));
             }
         }
         // now all the subfolders

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/21 12:45:17 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2003/07/21 14:52:12 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.74 $ $Date: 2003/07/21 12:45:17 $
+ * @version $Revision: 1.75 $ $Date: 2003/07/21 14:52:12 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1138,7 +1138,9 @@ public class CmsDriverManager extends Object {
         validFilename(destination.replace('/', 'a'));
 
         destinationFoldername = destination.substring(0, destination.substring(0, destination.length() - 1).lastIndexOf("/") + 1);
-        destinationResourceName = destination.substring(destinationFoldername.length(), destination.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR));
+        //destinationResourceName = destination.substring(destinationFoldername.length(), destination.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR));
+        destinationResourceName = destination.substring(destinationFoldername.length());
+        if (destinationResourceName.endsWith("/")) destinationResourceName = destinationResourceName.substring(0, destinationResourceName.length()-1);
 
         CmsFolder destinationFolder = readFolder(context, destinationFoldername);
         CmsFolder sourceFolder = readFolder(context, source);
@@ -1202,7 +1204,8 @@ public class CmsDriverManager extends Object {
                 clearResourceCache();
                 m_accessCache.clear();
 
-                offlineRes = readFileHeaderInProject(context, context.currentProject().getId(), resource);
+                // must include files marked as deleted for publishing deleted resources
+                offlineRes = readFileHeaderInProject(context, context.currentProject().getId(), resource, true);
             } catch (CmsException exc) {
                 // if the resource does not exist in the offlineProject - it's ok
             }
@@ -1948,6 +1951,9 @@ public class CmsDriverManager extends Object {
 
         CmsResource onlineFolder;
 
+        // TODO: "/" is currently used inconsistent !!! 
+        if (!foldername.endsWith("/")) foldername = foldername.concat("/");
+        
         // read the folder, that should be deleted
         CmsFolder cmsFolder = readFolder(context, foldername);
         try {
@@ -1969,7 +1975,9 @@ public class CmsDriverManager extends Object {
             m_userDriver.removeAllAccessControlEntries(context.currentProject(), cmsFolder.getResourceAceId());
 
         } else {
-            m_vfsDriver.deleteFolder(context.currentProject(), cmsFolder);
+            // m_vfsDriver.deleteFolder(context.currentProject(), cmsFolder);
+            cmsFolder.setState(I_CmsConstants.C_STATE_DELETED);
+            m_vfsDriver.updateResourcestate(cmsFolder, C_UPDATE_STRUCTURE_STATE);
             // delete the access control entries
             deleteAllAccessControlEntries(context, cmsFolder);
         }
@@ -4567,10 +4575,23 @@ public class CmsDriverManager extends Object {
      * for this resource.
      */
     public void moveResource(CmsRequestContext context, String sourceName, String destinationName) throws CmsException {
-
+        
+        //
+        // move is now copy/delete, since the structure ids should be different
+        //
+        
         // read the source file
         CmsResource source = readFileHeader(context, sourceName);
 
+        if (source.isFile()) { 
+            copyFile(context, sourceName, destinationName, true);
+            deleteFile(context, sourceName);
+        } else {
+            copyFolder(context, sourceName, destinationName, true);
+            deleteFolder(context, sourceName);
+        }
+
+        /*
         // read the parent folder of the destination
         String parentResourceName = CmsResource.getParent(destinationName);
         String resourceName = destinationName.substring(destinationName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
@@ -4588,6 +4609,7 @@ public class CmsDriverManager extends Object {
 
         // inform about the file-system-change
         fileSystemChanged(source.isFolder());
+        */
     }
 
     /**
@@ -5292,12 +5314,12 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public CmsResource readFileHeaderInProject(CmsRequestContext context, int projectId, String filename) throws CmsException {
+    public CmsResource readFileHeaderInProject(CmsRequestContext context, int projectId, String filename, boolean includeDeleted) throws CmsException {
         if (filename.endsWith("/")) {
             return (CmsResource) readFolderInProject(context, projectId, filename);
         }
 
-        List path = readPath(context, filename, false);
+        List path = readPath(context, filename, includeDeleted);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
         int[] pathProjectId = m_vfsDriver.getProjectsForPath(projectId, filename);
 
@@ -7376,30 +7398,28 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void undeleteResource(CmsRequestContext context, String filename) throws CmsException {
-        CmsResource resource = null;
-        int state = I_CmsConstants.C_STATE_CHANGED;
 
         // read the resource to check the access
-        if (filename.endsWith("/")) {
-            resource = readFolder(context, filename, true);
+        CmsResource resource = readFileHeader(context, filename, true);
+        
+        if (resource.isFile()) {
+            resource = (CmsFile)resource;
         } else {
-            resource = (CmsFile) readFileHeader(context, filename, true);
+            resource = readFolder(context, filename, true);
         }
 
         // check if the user has write access to the destination folder
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         // undelete the resource
-        resource.setState(state);
+        resource.setState(I_CmsConstants.C_STATE_CHANGED);
         resource.setLocked(context.currentUser().getId());
 
-        // write the file.
-        if (resource.isFolder()) {
-            m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, C_NOTHING_CHANGED, context.currentUser().getId());
-        } else {
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_NOTHING_CHANGED, context.currentUser().getId());
-        }
-
+        if (resource.isFile())
+            m_vfsDriver.updateResourcestate(resource, C_UPDATE_RESOURCE_STATE);
+        else
+            m_vfsDriver.updateResourcestate(resource, C_UPDATE_STRUCTURE_STATE);
+        
         clearResourceCache();
 
         // undelete access control entries

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/21 11:31:04 $
-* Version: $Revision: 1.340 $
+* Date   : $Date: 2003/07/21 14:52:12 $
+* Version: $Revision: 1.341 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.340 $
+ * @version $Revision: 1.341 $
  */
 public class CmsObject extends Object {
 
@@ -419,7 +419,8 @@ public class CmsObject extends Object {
     	 * @throws CmsException if something goes wrong
      */
     public void changeLockedInProject(int projectId, String resourcename) throws CmsException {
-        getResourceType(readFileHeader(resourcename, projectId).getType()).changeLockedInProject(this, projectId, resourcename);
+        // must include files marked as deleted when publishing
+        getResourceType(readFileHeader(resourcename, projectId, true).getType()).changeLockedInProject(this, projectId, resourcename);
     }
 
     /**
@@ -2913,12 +2914,15 @@ public class CmsObject extends Object {
     public int publishResource(String resourcename, boolean justPrepare, I_CmsReport report) throws CmsException {
         int oldProjectId = m_context.currentProject().getId();
         int retValue = -1;
-        CmsResource res = null;
-        if (resourcename.endsWith("/")) {
-            res = readFolder(resourcename, true);
-        } else {
-            res = readFileHeader(resourcename);
-        }
+        
+        CmsResource res = readFileHeader(resourcename, true);
+        if (res.isFolder()) res = readFolder(resourcename, true);
+            
+        // if (resourcename.endsWith("/")) {
+        //    res = readFolder(resourcename, true);
+        //} else {
+        //    res = readFileHeader(resourcename);
+        //}
         
         CmsLock lock = getLock(resourcename);
         
@@ -3264,8 +3268,8 @@ public class CmsObject extends Object {
      * @throws CmsException , if the user has not the rights
      * to read the file headers, or if the file headers couldn't be read.
      */
-    public CmsResource readFileHeader(String filename, int projectId) throws CmsException {
-        return (m_driverManager.readFileHeaderInProject(m_context, projectId, addSiteRoot(filename)));
+    public CmsResource readFileHeader(String filename, int projectId, boolean includeDeleted) throws CmsException {
+        return (m_driverManager.readFileHeaderInProject(m_context, projectId, addSiteRoot(filename), includeDeleted));
     }
 
     /**

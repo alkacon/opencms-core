@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/21 12:45:17 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/07/21 14:52:12 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2003/07/21 12:45:17 $
+ * @version $Revision: 1.44 $ $Date: 2003/07/21 14:52:12 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -662,7 +662,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         // try to create the projectresource
         String parentFolderName = "/";
         if (!folder.getResourceName().equals(I_CmsConstants.C_ROOT)) {
-            parentFolderName = folder.getResourceName().substring(0, folder.getResourceName().length() - 1);
+            parentFolderName = folder.getResourceName();
+            if (parentFolderName.endsWith("/")) parentFolderName = parentFolderName.substring(0, parentFolderName.length()-1);
             parentFolderName = parentFolderName.substring(0, parentFolderName.lastIndexOf("/") + 1);
         }
 
@@ -1035,7 +1036,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
 
     /**
-     * Deletes the folder.
+     * Deletes the folder.<p>
      *
      * Only empty folders can be deleted yet.
      *
@@ -1063,7 +1064,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                     // mark the folder as deleted
                     stmt.setInt(1, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
                     stmt.setString(2, CmsUUID.getNullUUID().toString());
-                    stmt.setString(3, orgFolder.getId().toString());
+                    stmt.setString(3, orgFolder.getResourceId().toString());
                     stmt.executeUpdate();
                 } catch (SQLException e) {
                     throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -2878,7 +2879,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 m_sqlManager.closeAll(null, stmt, null);
             }
 
-            if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE || changed == CmsDriverManager.C_UPDATE_ALL) {
+            if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE || changed == CmsDriverManager.C_UPDATE_ALL) {
                 stmt = m_sqlManager.getPreparedStatement(conn, res.getProjectId(), "C_RESOURCES_UPDATE_RESOURCE_STATE");
                 stmt.setInt(1, res.getState());
                 stmt.setString(2, res.getResourceId().toString());
@@ -2896,7 +2897,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 m_sqlManager.closeAll(null, stmt, null);
             }
                                     
-            if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE || changed == CmsDriverManager.C_UPDATE_ALL) {
+            if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE || changed == CmsDriverManager.C_UPDATE_ALL) {
                 stmt = m_sqlManager.getPreparedStatement(conn, res.getProjectId(), "C_RESOURCES_UPDATE_STRUCTURE_STATE");
                 stmt.setInt(1, res.getState());
                 stmt.setString(2, res.getId().toString());
