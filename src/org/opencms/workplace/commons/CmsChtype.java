@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/09 16:51:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.0
  */
@@ -155,9 +155,10 @@ public class CmsChtype extends CmsDialog {
                                 OpenCms.getLog(dialog.getClass()).error("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
                             }      
                         }
-        
-                        if (permissions.getPermissionString().indexOf("+w") == -1) {
-                            // skip resource types without needed permissions
+                        
+                        String permString = permissions.getPermissionString();
+                        if (permString.indexOf("+w") == -1 || permString.indexOf("+c") == -1) {
+                            // skip resource types without needed write or create permissions
                             continue;    
                         }
                         // create table row with input radio button

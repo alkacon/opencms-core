@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/02/26 13:53:32 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/03/09 16:51:03 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
-import org.opencms.file.types.CmsResourceTypeGallery;
+import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
@@ -74,7 +74,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 5.3.1
  */
@@ -704,11 +704,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         j = OpenCms.getResourceManager().getResourceTypes().iterator();
         while (j.hasNext()) {
             I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
-            if (resourceType instanceof CmsResourceTypeGallery) {
+            if (resourceType instanceof CmsResourceTypeFolderExtended) {
                 // found a configured gallery resource type
-                CmsResourceTypeGallery galleryType = (CmsResourceTypeGallery)resourceType;
+                CmsResourceTypeFolderExtended galleryType = (CmsResourceTypeFolderExtended)resourceType;
                 // store the gallery class name with the type name as lookup key 
-                m_galleries.put(galleryType.getTypeName(), galleryType.getGalleryClassName());
+                m_galleries.put(galleryType.getTypeName(), galleryType.getFolderClassName());
             }
         }
         m_toolManager = new CmsToolManager(cms);

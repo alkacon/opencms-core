@@ -45,23 +45,23 @@
 					<param name="resource.type.id">11</param>
 					<param name="resource.type.name">xmlcontent</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeGallery">
-					<param name="gallery.class">org.opencms.workplace.galleries.CmsImageGallery</param>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsImageGallery</param>
 					<param name="resource.type.id">15</param>
 					<param name="resource.type.name">imagegallery</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeGallery">
-					<param name="gallery.class">org.opencms.workplace.galleries.CmsLinkGallery</param>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsLinkGallery</param>
 					<param name="resource.type.id">16</param>
 					<param name="resource.type.name">linkgallery</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeGallery">
-					<param name="gallery.class">org.opencms.workplace.galleries.CmsHtmlGallery</param>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsHtmlGallery</param>
 					<param name="resource.type.id">17</param>
 					<param name="resource.type.name">htmlgallery</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeGallery">
-					<param name="gallery.class">org.opencms.workplace.galleries.CmsDownloadGallery</param>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsDownloadGallery</param>
 					<param name="resource.type.id">18</param>
 					<param name="resource.type.name">downloadgallery</param>
 				</type>					

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/03/09 16:51:03 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -4801,7 +4801,7 @@ public final class CmsSecurityManager {
         // checking the filter is less cost intensive then checking the cache,
         // this is why basic filter results are not cached
         String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(
-            String.valueOf(filter.requireVisible()),
+            String.valueOf(filter.requireVisible()) + String.valueOf(filter.requireWritable()),
             context,
             resource,
             requiredPermissions);
@@ -4865,6 +4865,22 @@ public final class CmsSecurityManager {
                     // modify permissions so that view is allowed
                     permissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_VIEW,
                     permissions.getDeniedPermissions() & ~CmsPermissionSet.PERMISSION_VIEW);                
+            }
+        }
+        
+        if ((permissions.getPermissions() & CmsPermissionSet.PERMISSION_WRITE) == 0) {
+            // resource "not writable" flag is set for this user
+            if (filter.requireWritable()) {
+                // filter requires writable permission - extend required permission set
+                requiredPermissions = new CmsPermissionSet(
+                    requiredPermissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_WRITE,
+                    requiredPermissions.getDeniedPermissions());
+            } else {
+                // write permissions can be ignored by filter
+                permissions.setPermissions(
+                    // modify permissions so that write is allowed
+                    permissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_WRITE,
+                    permissions.getDeniedPermissions() & ~CmsPermissionSet.PERMISSION_WRITE);                
             }
         }
 

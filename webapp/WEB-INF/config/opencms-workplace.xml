@@ -26,7 +26,7 @@
 		<labeledfolders/>
 		<explorertypes>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
-				<newresource uri="newresource_folder.jsp" order="10"/>
+				<newresource uri="newresource_folder.jsp" order="5"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -60,10 +60,10 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="gallery" key="fileicon.gallery" icon="gallery.gif" reference="folder">
-				<newresource uri="newresource.jsp?page=gallery" order="11"/>
+				<newresource uri="newresource.jsp?page=gallery" order="10"/>
 			</explorertype>						
 			<explorertype name="structurecontent" key="fileicon.structurecontent" icon="xmlcontent.gif" reference="xmlcontent">
-				<newresource uri="newresource.jsp?page=structurecontent" order="12"/>
+				<newresource uri="newresource.jsp?page=structurecontent" order="15"/>
 			</explorertype>								
 			<explorertype name="imagegallery" key="fileicon.imagegallery" icon="imagegallery.gif">
 				<newresource page="gallery" uri="newresource.jsp?newresourcetype=imagegallery" order="10"/>

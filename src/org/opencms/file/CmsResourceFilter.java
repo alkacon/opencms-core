@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/03/09 16:51:03 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.main.I_CmsConstants;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkaconc.om)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.3.5
  */
 public final class CmsResourceFilter {
@@ -126,6 +126,43 @@ public final class CmsResourceFilter {
      */
     public static final CmsResourceFilter ONLY_VISIBLE_NO_DELETED = ONLY_VISIBLE.addExcludeState(I_CmsConstants.C_STATE_DELETED);
     
+    /** 
+     * Filter to display only visible, writable and not deleted resources.<p>
+     * 
+     * This filter used the following rules:
+     * <ul>
+     * <li>Includes: Resources marked as deleted.</li>
+     * <li>Includes: Resources outside the 'time window' set with release and expiration date.</li>
+     * <li>Excludes: Resources marked as 'invisible' or 'not writable' using permissions.</li>
+     * </ul> 
+     */
+    public static final CmsResourceFilter ONLY_VISIBLE_WRITABLE = ONLY_VISIBLE.addRequireWritable();
+    
+    /** 
+     * Filter to display only visible, writable and not deleted resources.<p>
+     * 
+     * This filter used the following rules:
+     * <ul>
+     * <li>Excludes: Resources marked as deleted.</li>
+     * <li>Includes: Resources outside the 'time window' set with release and expiration date.</li>
+     * <li>Excludes: Resources marked as 'invisible' or 'not writable' using permissions.</li>
+     * </ul> 
+     */
+    public static final CmsResourceFilter ONLY_VISIBLE_WRITABLE_NO_DELETED = ONLY_VISIBLE_WRITABLE.addExcludeState(I_CmsConstants.C_STATE_DELETED);
+    
+    /** 
+     * Filter to display only visible resources.<p>
+     * 
+     * This filter used the following rules:
+     * <ul>
+     * <li>Includes: Resources marked as deleted.</li>
+     * <li>Includes: Resources outside the 'time window' set with release and expiration date.</li>
+     * <li>Includes: Resources marked as 'invisible' using permissions.</li>
+     * <li>Excludes: Resources marked as 'not writable' using permissions.</li>
+     * </ul> 
+     */
+    public static final CmsResourceFilter ONLY_WRITABLE = ALL.addRequireWritable();
+    
     private static final int IGNORED = 0;
     private static final int REQUIRED = 1;
     private static final int EXCLUDED = 2;
@@ -147,6 +184,9 @@ public final class CmsResourceFilter {
 
     /** Indicates if the visible permission is used (true) or ignored (false). */
     private boolean m_filterVisible;
+    
+    /** Indicates if the writable permission is used (true) or ignored (false). */
+    private boolean m_filterWritable;
 
     /** The required start date for the timerange of the last modification date. */
     private long m_modifiedAfter;
@@ -175,6 +215,7 @@ public final class CmsResourceFilter {
         m_type = -1;
 
         m_filterVisible = false;
+        m_filterWritable = false;
 
         m_filterTimerange = false;
         m_filterLastModified = false;
@@ -356,6 +397,21 @@ public final class CmsResourceFilter {
 
         return extendedFilter;
     }
+    
+    /**
+     * Returns an extended filter to guarantee all filtered resources are visible.<p>
+     * 
+     * @return a filter excluding invisible resources
+     */
+    public CmsResourceFilter addRequireWritable() {
+
+        CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
+
+        extendedFilter.m_filterWritable = true;
+        extendedFilter.updateCacheId();
+
+        return extendedFilter;
+    }
 
     /**
      * @see java.lang.Object#clone()
@@ -367,6 +423,7 @@ public final class CmsResourceFilter {
         filter.m_filterState = m_filterState;
         filter.m_filterType = m_filterType;
         filter.m_filterVisible = m_filterVisible;
+        filter.m_filterWritable = m_filterWritable;
         filter.m_filterTimerange = m_filterTimerange;
         filter.m_filterLastModified = m_filterLastModified;
 
@@ -476,9 +533,9 @@ public final class CmsResourceFilter {
     /**
      * Validates if a CmsResource fits to all filer settings.<p>
      * 
-     * Please note that the "visible permission" setting of the filter is NOT checked
+     * Please note that the "visible permission" and the "writable permission" settings of the filter are NOT checked
      * in this method since the permission information is not part of the resource.
-     * The visible permission information in the filter will be used in the permission
+     * The visible and writable permission information in the filter will be used in the permission
      * checks 
      *
      * @param context the current request context
@@ -598,6 +655,16 @@ public final class CmsResourceFilter {
 
         return m_filterVisible;
     }
+    
+    /**
+     * Returns if the writable permission should be required for resources.<p>
+     * 
+     * @return true if the writable permission is required, false if the writable permission is ignored
+     */
+    public boolean requireWritable() {
+
+        return m_filterWritable;
+    }
 
     /**
      * Recalculates the cache id.<p>
@@ -607,6 +674,9 @@ public final class CmsResourceFilter {
         StringBuffer result = new StringBuffer(32);
         if (m_filterVisible) {
             result.append(" Vi");
+        }
+        if (m_filterWritable) {
+            result.append(" Wr");
         }
         if (m_filterTimerange) {
             result.append(" Ti");

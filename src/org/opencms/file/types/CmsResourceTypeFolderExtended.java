@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeGallery.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolderExtended.java,v $
+ * Date   : $Date: 2005/03/09 16:51:03 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,21 +37,23 @@ import org.opencms.util.CmsStringUtil;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * Resource type descriptor for all gallery folder types.<p>
+ * Resource type descriptor for extended folder types like galleries.<p>
  *
- * A gallery extends a folder but has a configurable type id and type name.<p>
+ * This type extends a folder but has a configurable type id and type name.
+ * Optionally, a workplace class name for the type can be provided.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  */
-public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
+public class CmsResourceTypeFolderExtended extends CmsResourceTypeFolder {
 
-    /** Configuration key for the gallery class name. */
-    public static final String C_CONFIGURATION_GALLERY_CLASS = "gallery.class";
+    /** Configuration key for the optional folder class name. */
+    public static final String C_CONFIGURATION_FOLDER_CLASS = "folder.class";
 
-    /** The configured workplace gallery class name for this gallery. */
-    private String m_galleryClassName;
+    /** The configured workplace folder class name for this folder type. */
+    private String m_folderClassName;
 
     /** The type id of this resource. */
     private int m_resourceType;
@@ -69,8 +71,8 @@ public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
             m_resourceType = Integer.valueOf(paramValue).intValue();
         } else if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME.equalsIgnoreCase(paramName)) {
             m_resourceTypeName = paramValue.trim();
-        } else if (C_CONFIGURATION_GALLERY_CLASS.equalsIgnoreCase(paramName)) {
-            m_galleryClassName = paramValue.trim();
+        } else if (C_CONFIGURATION_FOLDER_CLASS.equalsIgnoreCase(paramName)) {
+            m_folderClassName = paramValue.trim();
         }
     }
 
@@ -82,7 +84,9 @@ public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
         ExtendedProperties result = new ExtendedProperties();
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID, new Integer(m_resourceType));
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME, m_resourceTypeName);
-        result.put(C_CONFIGURATION_GALLERY_CLASS, m_galleryClassName);
+        if (! CmsStringUtil.isEmpty(getFolderClassName())) {
+            result.put(C_CONFIGURATION_FOLDER_CLASS, m_folderClassName);
+        }
         ExtendedProperties additional = super.getConfiguration();
         if (additional != null) {
             result.putAll(additional);
@@ -91,13 +95,13 @@ public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
     }
 
     /**
-     * Returns the configured workplace gallery class name for this gallery.<p>
+     * Returns the optional configured workplace folder class name for this folder.<p>
      * 
-     * @return the configured workplace gallery class name for this gallery
+     * @return the optional configured workplace folder class name for this folder
      */
-    public String getGalleryClassName() {
+    public String getFolderClassName() {
 
-        return m_galleryClassName;
+        return m_folderClassName;
     }
 
     /**
@@ -123,7 +127,6 @@ public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
 
         // configuration must be complete for this resource type
         if (CmsStringUtil.isEmpty(m_resourceTypeName)
-            || CmsStringUtil.isEmpty(m_galleryClassName)
             || (m_resourceType <= 0)) {
             throw new CmsConfigurationException("Not all required configuration parameters available for resource type");
         }
