@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/02/03 19:46:00 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 
 package com.opencms.util;
+
+import com.opencms.core.A_OpenCms;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -325,5 +327,20 @@ public class Encoder {
             // return value will be input value
         }
         return result;
+    }
+    
+    /**
+     * Re-decodes a String that has not been correctly decoded and thus has scrambled
+     * character bytes.<p>
+     * 
+     * This is an equivalent to the JavaScript "decodeURIComponent" function.
+     * It converts from the default "UTF-8" to the currently selected system encoding.<p>
+     * 
+     * @param input the String to convert
+     * @return String the converted String
+     */
+    public static String redecodeUriComponent(String input) {
+       if (input == null) return input;
+       return new String(changeEncoding(input.getBytes(), C_URI_ENCODING, A_OpenCms.getDefaultEncoding())); 
     }
 }
