@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.95 $
+* Date   : $Date: 2003/06/24 15:43:42 $
+* Version: $Revision: 1.96 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.95 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.96 $ $Date: 2003/06/24 15:43:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -425,10 +425,12 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
             // We don't want the user to go on and create any temporary
             // files, if he has insufficient rights. Check this now.
-            if(!cms.accessWrite(file)) {
+            // if(!cms.accessWrite(file)) {
+            if(!cms.checkPermissions(file, I_CmsConstants.C_WRITE_ACCESS)) {
                 throw new CmsException(getClassName() + "Insufficient rights for editing the file " + file, CmsException.C_NO_ACCESS);
             }
-            if(!cms.accessWrite(bodyElementFilename)) {
+            //if(!cms.accessWrite(bodyElementFilename)) {
+			if(!cms.checkPermissions(bodyElementFilename, I_CmsConstants.C_WRITE_ACCESS)) {
                 throw new CmsException(getClassName() + "Insufficient rights for editing the file " + bodyElementFilename, CmsException.C_NO_ACCESS);
             }
 

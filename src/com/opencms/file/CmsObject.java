@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/20 16:16:23 $
-* Version: $Revision: 1.289 $
+* Date   : $Date: 2003/06/24 15:43:24 $
+* Version: $Revision: 1.290 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.289 $
+ * @version $Revision: 1.290 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -160,14 +160,15 @@ public boolean accessProject(int projectId) throws CmsException {
  * @return <code>true</code>, if the user has the appropriate rigths to write the resource; <code>false</code> otherwise.
  *
  * @throws CmsException if operation was not successful.
- */
+ *//*
 public boolean accessWrite(String resource) throws CmsException {
     try {
         return m_driverManager.accessWrite(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resource));
     } catch (Exception exc) {
         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
     }
-}
+}*/
+
 /**
  * Adds a file extension to the list of known file extensions.
  * <p>
@@ -4435,7 +4436,6 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     	return m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalName);
     }
     
-
     /**
      * Returns the access control list (summarized access control entries) of a given resource.
      * 
@@ -4444,8 +4444,20 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 	 * @throws CmsException	if something goes wrong
 	 */
 	public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
+		return getAccessControlList(resourceName, false);
+	}
+	
+	/**
+	 * Returns the access control list (summarized access control entries) of a given resource.
+	 * 
+	 * @param resourceName	the name of the resource
+	 * @param inheritedOnly	if set, the non-inherited entries are skipped
+	 * @return				the access control list of the resource
+	 * @throws CmsException	if something goes wrong
+	 */	
+	public CmsAccessControlList getAccessControlList(String resourceName, boolean inheritedOnly) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
-		return m_driverManager.getAccessControlList(m_context.currentUser(), m_context.currentProject(), res); 
+		return m_driverManager.getAccessControlList(m_context.currentUser(), m_context.currentProject(), res, inheritedOnly); 
     }
     
 	/**

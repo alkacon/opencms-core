@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/23 16:34:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/06/24 15:44:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.9 $ $Date: 2003/06/23 16:34:59 $
+ * @version $Revision: 1.10 $ $Date: 2003/06/24 15:44:26 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -109,7 +109,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.9 $ $Date: 2003/06/23 16:34:59 $
+	 * @version $Revision: 1.10 $ $Date: 2003/06/24 15:44:26 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -200,6 +200,9 @@ public class CmsDriverManager implements I_CmsConstants {
 			//	return false;
 			//}
 
+if (resource.getResourceName().equals("/default/vfs/release/")) {
+	int i = 42;
+}
 			if (isAdmin(getUser(),getProject())) {
 				// if the current user is administrator, anything is allowed
 				permissions = new CmsPermissionSet(~0);			
@@ -218,7 +221,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.9 $ $Date: 2003/06/23 16:34:59 $
+	 * @version $Revision: 1.10 $ $Date: 2003/06/24 15:44:26 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -343,7 +346,7 @@ public class CmsDriverManager implements I_CmsConstants {
         Class driverClass = null;
                 
         I_CmsVfsDriver vfsDriver = null;
-        CmsUserDriver userDriver = null;
+        I_CmsUserDriver userDriver = null;
         I_CmsProjectDriver projectDriver = null;
         I_CmsWorkflowDriver workflowDriver = null;
         I_CmsBackupDriver backupDriver = null;
@@ -436,7 +439,7 @@ public class CmsDriverManager implements I_CmsConstants {
             }
             
             // try to create a instance
-            userDriver = (CmsUserDriver)driverClass.newInstance();
+            userDriver = (I_CmsUserDriver)driverClass.newInstance();
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName );
             }
@@ -657,7 +660,7 @@ public class CmsDriverManager implements I_CmsConstants {
      * @param resource The resource to check.
      *
      * @return wether the user has access, or not.
-     */
+     *//*
     public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
                                CmsResource resource) throws CmsException {
 
@@ -739,7 +742,7 @@ public class CmsDriverManager implements I_CmsConstants {
 
         // all checks are done positive
         return(true);
-    }
+    }*/
     
     /**
      * Checks, if the user may write this resource.
@@ -749,13 +752,13 @@ public class CmsDriverManager implements I_CmsConstants {
      * @param resourceName The name of the resource to check.
      *
      * @return wether the user has access, or not.
-     */
+     *//*
     public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
                                String resourceName) throws CmsException {
 
         CmsResource resource = m_vfsDriver.readFileHeader(currentProject.getId(), resourceName, false);
         return accessWrite(currentUser,currentProject,resource);
-    }
+    }*/
     
     /**
      * Returns an instance of the vfs access guard performing permission checks for vfs operations.
@@ -8930,48 +8933,57 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * @return					the access control list of the resource
 	 * @throws CmsException		if something goes wrong
 	 */	
-	// TODO: build acl upon acl of predecessor
 	public CmsAccessControlList getAccessControlList(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 
+		return getAccessControlList(currentUser, currentProject, resource, false);
+	}
+	
+	/**
+	 * Returns the access control list of a given resource.
+	 * If inheritedOnly is set, non-inherited entries of the resource are skipped.
+	 * 
+	 * @param currentUser		the user requesting the action
+	 * @param currentProject	the project in which the action is performed
+	 * @param resource			the resource
+	 * @param inheritedOnly		skip non-inherited entries if set
+	 * @return					the access control list of the resource
+	 * @throws CmsException		if something goes wrong
+	 */
+	public CmsAccessControlList getAccessControlList(CmsUser currentUser, CmsProject currentProject, CmsResource resource, boolean inheritedOnly) throws CmsException {
+
         CmsResource res = resource;
-        CmsAccessControlList acList = (CmsAccessControlList)m_accessControlListCache.get(resource.getAbsolutePath());
+        CmsAccessControlList acList = (CmsAccessControlList)m_accessControlListCache.get(getCacheKey(inheritedOnly + "_", null, currentProject, resource.getId().toString()));
 		ListIterator acEntries = null;
 		CmsUUID resourceId = null;
 		
+		// return the cached acl if already available
 		if (acList != null)
 			return acList;
-			
-		acList = new CmsAccessControlList(); 
-		
-		// add the aces of each predecessor
-		while (!(resourceId = res.getParentId()).isNullUUID()) {			
-            res = m_vfsDriver.readFolder(currentProject.getId(), resourceId);
-            resourceId = res.getResourceAceId();
-			acEntries = m_userDriver.getAccessControlEntries(currentProject, resourceId, true).listIterator();
-			while (acEntries.hasNext()) {
-				CmsAccessControlEntry acEntry = (CmsAccessControlEntry)acEntries.next();
-				if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) 
-					acList.setAllowedPermissions(acEntry);
-				else
-					acList.add(acEntry);
-			}
-		}
 
-		// add the aces of the resource itself
-		acEntries = m_userDriver.getAccessControlEntries(currentProject, resource.getResourceAceId(), false).listIterator();
+		// otherwise, get the acl of the parent or a new one
+		if (!(resourceId = res.getParentId()).isNullUUID()) {
+			res = m_vfsDriver.readFolder(currentProject.getId(), resourceId);
+			acList = (CmsAccessControlList)getAccessControlList(currentUser, currentProject, res, true).clone();
+		} else {
+			acList = new CmsAccessControlList();				
+		}
+		
+		// add the access control entries belonging to this resource
+		acEntries = m_userDriver.getAccessControlEntries(currentProject, resource.getResourceAceId(), inheritedOnly).listIterator();
 		while (acEntries.hasNext()) {
 			CmsAccessControlEntry acEntry = (CmsAccessControlEntry)acEntries.next();
+						
+			// if the overwrite flag is set, reset the allowed permissions to the permissions of this entry	
 			if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) 
 				acList.setAllowedPermissions(acEntry);
 			else
 				acList.add(acEntry);
 		}
 				
-		m_accessControlListCache.put(resource.getAbsolutePath(), acList);
+		m_accessControlListCache.put(getCacheKey(inheritedOnly + "_", null, currentProject, resource.getId().toString()), acList);
 		
 		return acList;
 	}
-	
 
 	//
 	//	Permissions and permission checks

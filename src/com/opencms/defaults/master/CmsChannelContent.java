@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/06/13 16:16:41 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/06/24 15:42:59 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.26 $
- * $Date: 2003/06/13 16:16:41 $
+ * $Revision: 1.27 $
+ * $Date: 2003/06/24 15:42:59 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -747,7 +747,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
     public boolean isWriteable() {
         m_cms.setContextToCos();
         try {
-            return m_cms.accessWrite(m_channel.getAbsolutePath());
+            // return m_cms.accessWrite(m_channel.getAbsolutePath());
+            return m_cms.checkPermissions(m_channel.getAbsolutePath(), I_CmsConstants.C_WRITE_ACCESS);
         } catch(CmsException exc) {
             // there was a cms-exception - no write-access!
             return false;

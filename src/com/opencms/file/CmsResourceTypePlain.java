@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/06/11 17:04:23 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/06/24 15:43:24 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -493,7 +493,8 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException{
-        if(!cms.accessWrite(filename)){
+        //if(!cms.accessWrite(filename)){
+        if(!cms.checkPermissions(filename, I_CmsConstants.C_WRITE_ACCESS)) {
             throw new CmsException(filename, CmsException.C_NO_ACCESS);
         }
         cms.doRestoreResource(versionId, filename);
@@ -509,7 +510,8 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
     * to write this resource.
     */
     public void undoChanges(CmsObject cms, String resource) throws CmsException{
-        if(!cms.accessWrite(resource)){
+        // if(!cms.accessWrite(resource)){
+        if(!cms.checkPermissions(resource, I_CmsConstants.C_WRITE_ACCESS)) {
             throw new CmsException(resource, CmsException.C_NO_ACCESS);
         }
         cms.doUndoChanges(resource);

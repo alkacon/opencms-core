@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/06/12 09:39:08 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/06/24 15:43:24 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -877,7 +877,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
         getAllResources(cms, source, allSubFiles, allSubFolders);
-        if(!cms.accessWrite(source)){
+        //if(!cms.accessWrite(source)){
+        if(!cms.checkPermissions(source, I_CmsConstants.C_WRITE_ACCESS)) {
             throw new CmsException(source, CmsException.C_NO_ACCESS);
         }
         // first copy the folder
@@ -919,7 +920,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         Vector allSubFiles   = new Vector();
         getAllResources(cms, oldname, allSubFiles, allSubFolders);
         String parent = ((CmsResource)cms.readFileHeader(oldname)).getParent();
-        if(!cms.accessWrite(oldname)){
+        //if(!cms.accessWrite(oldname)){
+        if (!cms.checkPermissions(oldname, I_CmsConstants.C_WRITE_ACCESS)) {
             throw new CmsException(oldname, CmsException.C_NO_ACCESS);
         }
         if(!newname.endsWith("/")){
@@ -978,7 +980,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 //        Vector allSubFiles   = new Vector();
 //        getAllResources(cms, resource, allSubFiles, allSubFolders);
         
-        if(!cms.accessWrite(resource)){
+        //if(!cms.accessWrite(resource)){
+        if(!cms.checkPermissions(resource, I_CmsConstants.C_WRITE_ACCESS)) {
             throw new CmsException("[" + this.getClass().getName() + "]"+resource, CmsException.C_NO_ACCESS);
         }
         // first undo changes of the folder
