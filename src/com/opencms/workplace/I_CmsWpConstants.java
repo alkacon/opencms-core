@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2002/11/07 19:33:57 $
-* Version: $Revision: 1.116 $
+* Date   : $Date: 2002/11/08 21:55:39 $
+* Version: $Revision: 1.117 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,14 +35,11 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.116 $ $Date: 2002/11/07 19:33:57 $
+ * @version $Revision: 1.117 $ $Date: 2002/11/08 21:55:39 $
  */
 
 public interface I_CmsWpConstants {
 
-
-    /** Constant for the current language */
-    public final static String C_CURRENT_LANGUAGE = "en";
 
     /** Parameter for the default language */
     public static final String C_DEFAULT_LANGUAGE = "en";
@@ -102,7 +99,7 @@ public interface I_CmsWpConstants {
     public static final String C_VFS_PATH_DEFAULT_TEMPLATES = C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_TEMPLATES;
 
     /** Path to content internal folder */
-    public static final String C_VFS_PATH_DEFAULT_INTERNAL = C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_INTERNAL;
+    public static final String C_VFS_PATH_DEFAULT_INTERNAL = C_VFS_NEW_STRUCTURE?"/system/workplace/templates/":C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_INTERNAL;
 
     /** Path to content default_bodies folder */
     public static final String C_VFS_PATH_DEFAULT_BODIES = C_VFS_PATH_DEFAULTMODULE + C_VFS_DIR_DEFAULTBODIES;
