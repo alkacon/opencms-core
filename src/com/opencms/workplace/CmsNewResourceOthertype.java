@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
-* Date   : $Date: 2001/04/04 12:10:12 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/06/29 13:44:06 $
+* Version: $Revision: 1.25 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2001/04/04 12:10:12 $
+ * @version $Revision: 1.25 $ $Date: 2001/06/29 13:44:06 $
  */
 
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -127,11 +127,10 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
                     keywords = (String)session.getValue(C_PARA_KEYWORDS);
                     description = (String)session.getValue(C_PARA_DESCRIPTION);
                     // create the new file
-                    cms.createFile(foldername, filename, new byte[0], type);
+                    Hashtable prop = new Hashtable();
+                    prop.put(C_PROPERTY_TITLE, title);
+                    cms.createResource(foldername, filename, type, prop, new byte[0]);
 
-                    // lock the new file
-                    cms.lockResource(foldername + filename);
-                    cms.writeProperty(foldername + filename, C_PROPERTY_TITLE, title);
                     if( keywords != null && !keywords.equals("") ) {
                         cms.writeProperty(foldername + filename, C_PROPERTY_KEYWORDS, keywords);
                     }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2001/03/13 16:37:44 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2001/06/29 13:44:06 $
+* Version: $Revision: 1.28 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2001/03/13 16:37:44 $
+ * @version $Revision: 1.28 $ $Date: 2001/06/29 13:44:06 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -185,7 +185,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 if(step.equals("2")) {
 
                     // get the selected resource and check if it is an image
-                    CmsResourceType type = cms.getResourceType(newtype);
+                    I_CmsResourceType type = cms.getResourceType(newtype);
                     if(newtype.equals(C_TYPE_IMAGE_NAME)) {
 
                         // the file type is an image
@@ -200,8 +200,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                         // todo: error handling if file already exits
 
                         try{
-                            cms.createFile(currentFolder, filename, filecontent, type.getResourceName());
-                            cms.lockResource(currentFolder+filename);
+                            cms.createResource(currentFolder, filename, type.getResourceTypeName(), new Hashtable(), filecontent);
                         }catch(CmsException e){
                             // remove the values form the session
                             session.removeValue(C_PARA_FILE);
@@ -246,14 +245,14 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                         // create the new file.
 
                         // todo: error handling if file already exits
-                        CmsResourceType type = cms.getResourceType(newtype);
-                        CmsFile file = cms.createFile(currentFolder, filename, filecontent, type.getResourceName());
-
+                        I_CmsResourceType type = cms.getResourceType(newtype);
+                        Hashtable prop = new Hashtable();
                         // check if a file title was given
                         if(title != null) {
-                            cms.lockResource(file.getAbsolutePath());
-                            cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_TITLE, title);
+                            prop.put(C_PROPERTY_TITLE, title);
                         }
+                        CmsResource file = cms.createResource(currentFolder, filename,
+                                               type.getResourceTypeName(), prop, filecontent);
 
                         // remove the values form the session
                         session.removeValue(C_PARA_FILE);

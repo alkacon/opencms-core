@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2001/02/22 14:17:28 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2001/06/29 13:44:06 $
+* Version: $Revision: 1.29 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.28 $ $Date: 2001/02/22 14:17:28 $
+ * @version $Revision: 1.29 $ $Date: 2001/06/29 13:44:06 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -112,28 +112,6 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
         }
         if(lock != null) {
             if(lock.equals("true")) {
-                if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME)) {
-                    String bodyPath = getBodyPath(cms, (CmsFile)file);
-                    try {
-                        cms.readFile(bodyPath);
-                        cms.lockResource(bodyPath, true);
-                    }
-                    catch(CmsException e) {
-
-
-                    //TODO: ErrorHandling
-                    }
-                }
-                else {
-                        if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_FOLDER_NAME)) {
-                            try {
-                                cms.lockResource(C_CONTENTBODYPATH + filename.substring(1), true);
-                            }
-                            catch(CmsException e) {
-
-                            }
-                        }
-                }
                 cms.lockResource(filename, true);
                 session.removeValue(C_PARA_FILE);
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2001/02/22 14:17:28 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2001/06/29 13:44:06 $
+* Version: $Revision: 1.34 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,23 +44,10 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2001/02/22 14:17:28 $
+ * @version $Revision: 1.34 $ $Date: 2001/06/29 13:44:06 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
-
-    /**
-     * method to check get the real body path from the content file
-     *
-     * @param cms The CmsObject, to access the XML read file.
-     * @param file File in which the body path is stored.
-     */
-
-    private String getBodyPath(CmsObject cms, CmsFile file) throws CmsException {
-        file = cms.readFile(file.getAbsolutePath());
-        CmsXmlControlFile hXml = new CmsXmlControlFile(cms, file);
-        return hXml.getElementTemplate("body");
-    }
 
     /**
      * Overwrties the getContent method of the CmsWorkplaceDefault.<br>
@@ -115,36 +102,6 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         }
         if(unlock != null) {
             if(unlock.equals("true")) {
-                if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME)) {
-                    String bodyPath = getBodyPath(cms, (CmsFile)file);
-                    try {
-                        CmsFile bodyFile = (CmsFile)cms.readFileHeader(bodyPath);
-                        if(bodyFile.isLocked() && (bodyFile.isLockedBy() == file.isLockedBy())) {
-                            cms.unlockResource(bodyPath);
-                        }
-                    }
-                    catch(CmsException e) {
-                        if(e.getType() == CmsException.C_NO_ACCESS) {
-                            template = "erroraccessdenied";
-                            CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-                            xmlTemplateDocument.setData("details", file.getName());
-                            return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
-                        }
-                        else {
-                            throw e;
-                        }
-                    }
-                }
-                else {
-                    if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_FOLDER_NAME)) {
-                        try {
-                            cms.unlockResource(C_CONTENTBODYPATH + filename.substring(1));
-                        }
-                        catch(CmsException e) {
-
-                        }
-                    }
-                }
                 try {
                     cms.unlockResource(filename);
                     session.removeValue(C_PARA_FILE);

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/06/22 16:00:28 $
- * Version: $Revision: 1.161 $
+ * Date   : $Date: 2001/06/29 13:42:21 $
+ * Version: $Revision: 1.162 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.161 $ $Date: 2001/06/22 16:00:28 $
+ * @version $Revision: 1.162 $ $Date: 2001/06/29 13:42:21 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -188,23 +188,7 @@ public void addFileExtension(String extension, String resTypeName) throws CmsExc
 public CmsGroup addGroup(String name, String description, int flags, String parent) throws CmsException {
     return (m_rb.addGroup(m_context.currentUser(), m_context.currentProject(), name, description, flags, parent));
 }
-/**
- * Adds a resource type to the Cms.
- * <p>
- * <b>Security:</b>
- * Only members of the group administrators are allowed to add a resource type.
- *
- * @param resourceType the name of the resource to get.
- * @param launcherType the launcherType-id.
- * @param launcherClass the name of the launcher-class normaly "".
- *
- * @return a <code>CmsResourceType</code> object representing the new resource type.
- *
- * @exception CmsException if operation was not successful.
- */
-public CmsResourceType addResourceType(String resourceType, int launcherType, String launcherClass) throws CmsException {
-    return (m_rb.addResourceType(m_context.currentUser(), m_context.currentProject(), resourceType, launcherType, launcherClass));
-}
+
 /**
  * Adds a user to the Cms.
  * <p>
@@ -325,8 +309,64 @@ public CmsUser anonymousUser() throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chgrp(String filename, String newGroup) throws CmsException {
-    m_rb.chgrp(m_context.currentUser(), m_context.currentProject(), filename, newGroup);
+	CmsResource res = readFileHeader(filename);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.chgrp(this, filename, newGroup, false);
 }
+
+/**
+ * Changes the group of a resource.
+ * <br>
+ * Only the group of a resource in an offline project can be changed. The state
+ * of the resource is set to CHANGED (1).
+ * If the content of this resource is not existing in the offline project already,
+ * it is read from the online project and written into the offline project.
+ * <p>
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user is owner of the resource or is admin</li>
+ * <li>the resource is locked by the callingUser</li>
+ * </ul>
+ *
+ * @param filename the complete path to the resource.
+ * @param newGroup the name of the new group for this resource.
+ * @param chRekursive shows if the subResources (of a folder) should be changed too.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void chgrp(String filename, String newGroup, boolean chRekursive) throws CmsException {
+	CmsResource res = readFileHeader(filename);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.chgrp(this, filename, newGroup, chRekursive);
+}
+
+/**
+ * Changes the group of a resource.
+ * <br>
+ * Only the group of a resource in an offline project can be changed. The state
+ * of the resource is set to CHANGED (1).
+ * If the content of this resource is not existing in the offline project already,
+ * it is read from the online project and written into the offline project.
+ * <p>
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user is owner of the resource or is admin</li>
+ * <li>the resource is locked by the callingUser</li>
+ * </ul>
+ *
+ * @param filename the complete path to the resource.
+ * @param newGroup the name of the new group for this resource.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+protected void doChgrp(String filename, String newGroup) throws CmsException {
+	m_rb.chgrp(m_context.currentUser(), m_context.currentProject(), filename, newGroup);
+}
+
 /**
  * Changes the flags of a resource.
  * <br>
@@ -351,8 +391,68 @@ public void chgrp(String filename, String newGroup) throws CmsException {
  * for this resource.
  */
 public void chmod(String filename, int flags) throws CmsException {
-    m_rb.chmod(m_context.currentUser(), m_context.currentProject(), filename, flags);
+	CmsResource res = readFileHeader(filename);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.chmod(this, filename, flags, false);
 }
+
+/**
+ * Changes the flags of a resource.
+ * <br>
+ * Only the flags of a resource in an offline project can be changed. The state
+ * of the resource is set to CHANGED (1).
+ * If the content of this resource is not existing in the offline project already,
+ * it is read from the online project and written into the offline project.
+ * The user may change the flags, if he is admin of the resource.
+ * <p>
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can write the resource</li>
+ * <li>the resource is locked by the callingUser</li>
+ * </ul>
+ *
+ * @param filename the complete path to the resource.
+ * @param flags the new flags for the resource.
+ * @param chRekursive shows if the subResources (of a folder) should be changed too.
+ *
+ * @exception CmsException if operation was not successful.
+ * for this resource.
+ */
+public void chmod(String filename, int flags, boolean chRekursive) throws CmsException {
+	CmsResource res = readFileHeader(filename);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.chmod(this, filename, flags, chRekursive);
+}
+
+/**
+ * Changes the flags of a resource.
+ * <br>
+ * Only the flags of a resource in an offline project can be changed. The state
+ * of the resource is set to CHANGED (1).
+ * If the content of this resource is not existing in the offline project already,
+ * it is read from the online project and written into the offline project.
+ * The user may change the flags, if he is admin of the resource.
+ * <p>
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user can write the resource</li>
+ * <li>the resource is locked by the callingUser</li>
+ * </ul>
+ *
+ * @param filename the complete path to the resource.
+ * @param flags the new flags for the resource.
+ *
+ * @exception CmsException if operation was not successful.
+ * for this resource.
+ */
+protected void doChmod(String filename, int flags) throws CmsException {
+	m_rb.chmod(m_context.currentUser(), m_context.currentProject(), filename, flags);
+}
+
 /**
  * Changes the owner of a resource.
  * <br>
@@ -376,8 +476,66 @@ public void chmod(String filename, int flags) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chown(String filename, String newOwner) throws CmsException {
-    m_rb.chown(m_context.currentUser(), m_context.currentProject(), filename, newOwner);
+	CmsResource res = readFileHeader(filename);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.chown(this, filename, newOwner, false);
 }
+
+/**
+ * Changes the owner of a resource.
+ * <br>
+ * Only the owner of a resource in an offline project can be changed. The state
+ * of the resource is set to CHANGED (1).
+ * If the content of this resource is not existing in the offline project already,
+ * it is read from the online project and written into the offline project.
+ * The user may change this, if he is admin of the resource.
+ * <p>
+ * <B>Security:</B>
+ * Access is cranted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user is owner of the resource or the user is admin</li>
+ * <li>the resource is locked by the callingUser</li>
+ * </ul>
+ *
+ * @param filename the complete path to the resource.
+ * @param newOwner the name of the new owner for this resource.
+ * @param chRekursive shows if the subResources (of a folder) should be changed too.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void chown(String filename, String newOwner, boolean chRekursive) throws CmsException {
+	CmsResource res = readFileHeader(filename);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.chown(this, filename, newOwner, chRekursive);
+}
+
+/**
+ * Changes the owner of a resource.
+ * <br>
+ * Only the owner of a resource in an offline project can be changed. The state
+ * of the resource is set to CHANGED (1).
+ * If the content of this resource is not existing in the offline project already,
+ * it is read from the online project and written into the offline project.
+ * The user may change this, if he is admin of the resource.
+ * <p>
+ * <B>Security:</B>
+ * Access is cranted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user is owner of the resource or the user is admin</li>
+ * <li>the resource is locked by the callingUser</li>
+ * </ul>
+ *
+ * @param filename the complete path to the resource.
+ * @param newOwner the name of the new owner for this resource.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+protected void doChown(String filename, String newOwner) throws CmsException {
+	m_rb.chown(m_context.currentUser(), m_context.currentProject(), filename, newOwner);
+}
+
 /**
  * Changes the resourcetype of a resource.
  * <br>
@@ -401,8 +559,37 @@ public void chown(String filename, String newOwner) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chtype(String filename, String newType) throws CmsException {
-    m_rb.chtype(m_context.currentUser(), m_context.currentProject(), filename, newType);
+	CmsResource res = readFileHeader(filename);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.chtype(this, filename, newType);
 }
+
+/**
+ * Changes the resourcetype of a resource.
+ * <br>
+ * Only the resourcetype of a resource in an offline project can be changed. The state
+ * of the resource is set to CHANGED (1).
+ * If the content of this resource is not exisiting in the offline project already,
+ * it is read from the online project and written into the offline project.
+ * The user may change this, if he is admin of the resource.
+ * <p>
+ * <B>Security:</B>
+ * Access is granted, if:
+ * <ul>
+ * <li>the user has access to the project</li>
+ * <li>the user is owner of the resource or is admin</li>
+ * <li>the resource is locked by the callingUser</li>
+ * </ul>
+ *
+ * @param filename the complete path to the resource.
+ * @param newType the name of the new resourcetype for this resource.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+protected void doChtype(String filename, String newType) throws CmsException {
+	m_rb.chtype(m_context.currentUser(), m_context.currentProject(), filename, newType);
+}
+
 /**
  * Clears all internal DB-Caches.
  */
@@ -410,6 +597,89 @@ public void clearcache() {
     m_rb.clearcache();
     System.gc();
 }
+
+/**
+ * Copies a file.
+ *
+ * @param source the complete path of the sourcefile.
+ * @param destination the complete path of the destinationfolder.
+ *
+ * @exception CmsException if the file couldn't be copied, or the user
+ * has not the appropriate rights to copy the file.
+ */
+public void copyResource(String source, String destination) throws CmsException {
+	CmsResource res = readFileHeader(source);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.copyResource(this, source, destination, false);
+}
+/**
+ * Copies a file.
+ *
+ * @param source the complete path of the sourcefile.
+ * @param destination the complete path of the destinationfolder.
+ * @param keepFlags <code>true</code> if the copy should keep the source file's flags,
+ *        <code>false</code> if the copy should get the user's default flags.
+ *
+ * @exception CmsException if the file couldn't be copied, or the user
+ * has not the appropriate rights to copy the file.
+ */
+public void copyResource(String source, String destination, boolean keepFlags) throws CmsException {
+	CmsResource res = readFileHeader(source);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.copyResource(this, source, destination, keepFlags);
+}
+/**
+ * Copies a file.
+ *
+ * @param source the complete path of the sourcefile.
+ * @param destination the complete path of the destinationfolder.
+ *
+ * @exception CmsException if the file couldn't be copied, or the user
+ * has not the appropriate rights to copy the file.
+ */
+protected void doCopyFile(String source, String destination) throws CmsException {
+	m_rb.copyFile(m_context.currentUser(), m_context.currentProject(), source, destination);
+/*
+   	//Linkmanagement
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+	int resId = m_lm.getResourceId(destination,m_context.currentProject().getId());
+	if (resId != -1){
+		m_lm.createNewUrl(resId);
+    }
+    //End of Linkmanagement
+*/
+}
+
+/**
+ * Copies a folder.
+ *
+ * @param source the complete path of the sourcefolder.
+ * @param destination the complete path of the destinationfolder.
+ *
+ * @exception CmsException if the folder couldn't be copied, or if the
+ * user has not the appropriate rights to copy the folder.
+ */
+protected void doCopyFolder(String source, String destination) throws CmsException {
+	m_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), source, destination);
+/*
+    //Linkmanagement
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+	int resId = m_lm.getResourceId(destination,m_context.currentProject().getId());
+	if (resId != -1){
+		m_lm.createNewUrl(resId);
+    }
+    //End of Linkmanagement
+*/
+}
+
 /**
  * Copies a file.
  *
@@ -538,6 +808,165 @@ public CmsFolder createFolder(String folder, String newFolderName) throws CmsExc
 public CmsFolder createFolder(String folder, String newFolderName, Hashtable properties) throws CmsException {
     return (m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, properties));
 }
+
+public CmsResource createResource(String folder, String name, String type) throws CmsException {
+	return createResource(folder, name, type, new Hashtable());
+}
+
+public CmsResource createResource(String folder, String name, String type, Hashtable properties) throws CmsException {
+	return createResource(folder, name, type, properties, new byte[0]);
+}
+
+public CmsResource createResource(String folder, String name, String type, Hashtable properties, byte[] contents) throws CmsException {
+	I_CmsResourceType rt = getResourceType(type);
+	return rt.createResource(this, folder, name, properties, contents);
+}
+
+/**
+ * Creates a new file with the given content and resourcetype.<br>
+ *
+ * @param folder the complete path to the folder in which the file will be created.
+ * @param filename the name of the new file.
+ * @param contents the contents of the new file.
+ * @param type the resourcetype of the new file.
+ *
+ * @return file a <code>CmsFile</code> object representing the newly created file.
+ *
+ * @exception CmsException if the mandatory property-definitions for this file are missing
+ * or if the resourcetype is set to folder. The CmsException is also thrown, if the
+ * filename is not valid or if the user has not the appropriate rights to create a new file.
+ */
+protected CmsFile doCreateFile(String folder, String filename, byte[] contents, String type) throws CmsException {
+    CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, new Hashtable());
+/*
+    //Linkmanagement
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+    int urlId = m_lm.getUrlIdOfCmsUrl(file.getAbsolutePath());
+
+    if (urlId == -1) {
+        m_lm.createNewUrl(file.getResourceId());
+    } else {
+        m_lm.setUrlIdToNewResource(file.getResourceId(), urlId);
+    }
+    // End of Linkmanagement
+*/
+	return file;
+}
+/**
+ * Creates a new file with the given content and resourcetype.
+ *
+ * @param folder the complete path to the folder in which the file will be created.
+ * @param filename the name of the new file.
+ * @param contents the contents of the new file.
+ * @param type the resourcetype of the new file.
+ * @param properties A Hashtable of properties, that should be set for this file.
+ * The keys for this Hashtable are the names for properties, the values are
+ * the values for the properties.
+ *
+ * @return file a <code>CmsFile</code> object representing the newly created file.
+ *
+ * @exception CmsException if the mandatory property-definitions for this file are missing,
+ * the wrong properties are given, or if the resourcetype is set to folder.
+ * The CmsException is also thrown, if the filename is not valid or if the user
+ * has not the appropriate rights to create a new file.
+ */
+protected CmsFile doCreateFile(String folder, String filename, byte[] contents, String type, Hashtable properties) throws CmsException {
+	CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, properties);
+/*
+    //Linkmanagement
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+    int urlId = m_lm.getUrlIdOfCmsUrl(file.getAbsolutePath());
+
+    if (urlId == -1) {
+        m_lm.createNewUrl(file.getResourceId());
+    } else {
+        m_lm.setUrlIdToNewResource(file.getResourceId(), urlId);
+    }
+    // End of Linkmanagement
+*/
+	return file;
+}
+
+/**
+ * Creates a new folder.
+ *
+ * @param folder the complete path to the folder in which the new folder
+ * will be created.
+ * @param newFolderName the name of the new folder.
+ *
+ * @return folder a <code>CmsFolder</code> object representing the newly created folder.
+ *
+ * @exception CmsException if the mandatory property-definitions for this folder are missing
+ * , the foldername is not valid, or if the user has not the appropriate rights to create
+ * a new folder.
+ */
+protected CmsFolder doCreateFolder(String folder, String newFolderName) throws CmsException {
+	CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, new Hashtable());
+/*
+    //Linkmanagement
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+    int urlId = m_lm.getUrlIdOfCmsUrl(cmsFolder.getAbsolutePath());
+
+    if (urlId == -1) {
+        m_lm.createNewUrl(cmsFolder.getResourceId());
+    } else {
+        m_lm.setUrlIdToNewResource(cmsFolder.getResourceId(), urlId);
+    }
+    // End of Linkmanagement
+*/
+    return cmsFolder;
+}
+
+/**
+ * Creates a new folder.
+ *
+ * @param folder the complete path to the folder in which the new folder will
+ * be created.
+ * @param newFolderName the name of the new folder.
+ * @param properties A Hashtable of properties, that should be set for this folder.
+ * The keys for this Hashtable are the names for property-definitions, the values are
+ * the values for the properties.
+ *
+ * @return a <code>CmsFolder</code> object representing the newly created folder.
+ * @exception CmsException if the mandatory property-definitions for this folder are missing
+ * , the foldername is not valid, or if the user has not the appropriate rights to create
+ * a new folder.
+ *
+ */
+protected CmsFolder doCreateFolder(String folder, String newFolderName, Hashtable properties) throws CmsException {
+	CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, properties);
+
+/*
+    //Linkmanagement
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+    int urlId = m_lm.getUrlIdOfCmsUrl(cmsFolder.getAbsolutePath());
+
+    if (urlId == -1) {
+        m_lm.createNewUrl(cmsFolder.getResourceId());
+    } else {
+        m_lm.setUrlIdToNewResource(cmsFolder.getResourceId(), urlId);
+    }
+    // End of Linkmanagement
+*/
+    return cmsFolder;
+}
+
 /**
   * Creates a new project for task handling.
   *
@@ -674,6 +1103,99 @@ public void deleteFile(String filename) throws CmsException {
 public void deleteFolder(String foldername) throws CmsException {
     m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), foldername);
 }
+
+/**
+ * Deletes a resource.
+ *
+ * @param filename the complete path of the file.
+ *
+ * @exception CmsException if the file couldn't be deleted, or if the user
+ * has not the appropriate rights to delete the file.
+ */
+public void deleteResource(String filename) throws CmsException {
+	CmsResource res = readFileHeader(filename);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.deleteResource(this, filename);
+}
+
+/**
+ * Deletes a file.
+ *
+ * @param filename the complete path of the file.
+ *
+ * @exception CmsException if the file couldn't be deleted, or if the user
+ * has not the appropriate rights to delete the file.
+ */
+protected void doDeleteFile(String filename) throws CmsException {
+/*
+	//Linkmanagement
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+	int projectId = m_context.currentProject().getId();
+	CmsFile file = readFile(filename);
+	int resId = file.getResourceId();
+	int urlId = file.getUrlId();
+
+	Vector resources  = m_lm.selectReferencingResources(urlId, projectId, onlineProject().getId());
+        if (!resources.isEmpty()) {
+          // there are resources that refer to the resource that should be deleted
+          System.err.println("!!! There are resources that refer to the resource that should be deleted: !!!");
+          for (int i=0; i<resources.size(); i++){
+            CmsResource res = (CmsResource)resources.elementAt(i);
+            String resName = res.getName();
+            System.err.println("!!! " + resName);
+          }
+//          System.err.println("*** do not delete the resource!");
+//          return;
+        }
+
+	//delete all entries with this resourceId from CMS_LINKS, CMS_EXTERNALLINKS and CMS_ANCHOR
+	m_lm.deleteLinksOfResource(resId);
+	m_lm.deleteExternallinksOfResource(resId);
+	m_lm.deleteAnchorsOfResource(resId);
+
+	//check Url if it is still needed in CMS_URL. If not, delete it.
+	if (!m_lm.urlStillNeeded(urlId,projectId)) {
+		m_lm.deleteUrl(urlId);
+	}
+	//End of Linkmanagement
+*/
+	m_rb.deleteFile(m_context.currentUser(), m_context.currentProject(), filename);
+}
+
+/**
+ * Deletes a folder.
+ * <br>
+ * This is a very complex operation, because all sub-resources may be
+ * deleted too.
+ *
+ * @param foldername the complete path of the folder.
+ *
+ * @exception CmsException if the folder couldn't be deleted, or if the user
+ * has not the rights to delete this folder.
+ */
+protected void doDeleteFolder(String foldername) throws CmsException {
+/*
+	//Linkmanagement
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+   	int projectId = m_context.currentProject().getId();
+	int urlId = m_lm.getUrlId(foldername, projectId);
+    //check Url if it is still needed in CMS_URL. If not, delete it.
+	if (!m_lm.urlStillNeeded(urlId,projectId)) {
+		m_lm.deleteUrl(urlId);
+	}
+	//End of Linkmanagement
+*/
+    m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), foldername);
+}
+
 /**
  * Deletes a group.
  * <p>
@@ -814,6 +1336,14 @@ public void exportResources(String exportFile, String[] exportPaths, boolean inc
 }
 
 /**
+ *
+ */
+public CmsFile exportResource(CmsFile file) throws CmsException {
+    I_CmsResourceType rt = getResourceType(file.getType());
+    return rt.exportResource(this, file);
+}
+
+/**
  * Creates a static export of a Cmsresource in the filesystem
  *
  * @param exportTo The Directory to where the files should be exported.
@@ -893,6 +1423,7 @@ public Vector getAllAccessibleProjects() throws CmsException {
 public Vector getAllManageableProjects() throws CmsException {
     return (m_rb.getAllManageableProjects(m_context.currentUser(), m_context.currentProject()));
 }
+
 /**
  * Returns a Hashtable with all I_CmsResourceTypes.
  *
@@ -903,6 +1434,7 @@ public Vector getAllManageableProjects() throws CmsException {
 public Hashtable getAllResourceTypes() throws CmsException {
     return (m_rb.getAllResourceTypes(m_context.currentUser(), m_context.currentProject()));
 }
+
 /**
 * Gets information about the cache size.
 * <br>
@@ -1116,7 +1648,7 @@ public Vector getResourcesInFolder(String folder) throws CmsException {
  *
  * @exception CmsException if operation was not successful.
  */
-public CmsResourceType getResourceType(int resourceType) throws CmsException {
+public I_CmsResourceType getResourceType(int resourceType) throws CmsException {
     return (m_rb.getResourceType(m_context.currentUser(), m_context.currentProject(), resourceType));
 }
 /**
@@ -1128,7 +1660,7 @@ public CmsResourceType getResourceType(int resourceType) throws CmsException {
  *
  * @exception CmsException if operation was not successful.
  */
-public CmsResourceType getResourceType(String resourceType) throws CmsException {
+public I_CmsResourceType getResourceType(String resourceType) throws CmsException {
     return (m_rb.getResourceType(m_context.currentUser(), m_context.currentProject(), resourceType));
 }
 /**
@@ -1256,6 +1788,32 @@ public void importFolder(String importFile, String importPath) throws CmsExcepti
     m_rb.importFolder(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
     clearcache();
 }
+
+/**
+ * Imports a resource to the cms.
+ *
+ * @param source the name of the import resource (zipfile or folder).
+ * @param destination the name (absolute Path) of the folder in which should be imported.
+ * @param type the type of the resource
+ * @param user the owner of the resource
+ * @param group the group of the resource
+ * @param access the access flags of the resource
+ * @param properties the properties of the resource
+ * @param launcherStartClass the name of launcher start class
+ * @param content the content of the resource
+ * @param importPath the name of the import path
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public CmsResource importResource(String source, String destination, String type,
+                                  String user, String group, String access,
+                                  Hashtable properties, String launcherStartClass,
+                                  byte[] content, String importPath)
+    throws CmsException {
+	I_CmsResourceType rt = getResourceType(type);
+	return rt.importResource(this, source, destination, type, user, group, access, properties, launcherStartClass, content, importPath);
+}
+
 /**
  * Imports a import-resource (folder or zip-file) to the cms.
  *
@@ -1309,6 +1867,16 @@ public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse res
 public boolean isAdmin() throws CmsException {
     return m_rb.isAdmin(getRequestContext().currentUser(), getRequestContext().currentProject());
 }
+
+/**
+ *
+ */
+public void linkmanagementSaveImportedResource(String importedResource) throws CmsException {
+	CmsResource res = readFileHeader(importedResource);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.linkmanagementSaveImportedResource(this, importedResource);
+}
+
 /**
  * Returns the user, who has locked a given resource.
  * <br>
@@ -1355,6 +1923,7 @@ public void lockResource(String resource) throws CmsException {
     // try to lock the resource, prevent from overwriting an existing lock
     lockResource(resource, false);
 }
+
 /**
  * Locks a given resource.
  * <br>
@@ -1368,8 +1937,27 @@ public void lockResource(String resource) throws CmsException {
  * It will also be thrown, if there is a existing lock and force was set to false.
  */
 public void lockResource(String resource, boolean force) throws CmsException {
-    m_rb.lockResource(m_context.currentUser(), m_context.currentProject(), resource, force);
+	CmsResource res = readFileHeader(resource);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.lockResource(this, resource, force);
 }
+
+/**
+ * Locks a given resource.
+ * <br>
+ * A user can lock a resource, so he is the only one who can write this
+ * resource.
+ *
+ * @param resource the complete path to the resource to lock.
+ * @param force if force is <code>true</code>, a existing locking will be overwritten.
+ *
+ * @exception CmsException if the user has not the rights to lock this resource.
+ * It will also be thrown, if there is a existing lock and force was set to false.
+ */
+protected void doLockResource(String resource, boolean force) throws CmsException {
+	m_rb.lockResource(m_context.currentUser(), m_context.currentProject(), resource, force);
+}
+
 /**
  * Logs a user into the Cms, if the password is correct.
  *
@@ -1416,6 +2004,71 @@ public String loginWebUser(String username, String password) throws CmsException
 public void moveFile(String source, String destination) throws CmsException {
     m_rb.moveFile(m_context.currentUser(), m_context.currentProject(), source, destination);
 }
+
+/**
+ * Moves a resource to the given destination.
+ *
+ * @param source the complete path of the sourcefile.
+ * @param destination the complete path of the destinationfile.
+ *
+ * @exception CmsException if the user has not the rights to move this resource,
+ * or if the file couldn't be moved.
+ */
+public void moveResource(String source, String destination) throws CmsException {
+	CmsResource res = readFileHeader(source);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.moveResource(this, source, destination);
+}
+
+/**
+ * Moves a file to the given destination.
+ *
+ * @param source the complete path of the sourcefile.
+ * @param destination the complete path of the destinationfile.
+ *
+ * @exception CmsException if the user has not the rights to move this resource,
+ * or if the file couldn't be moved.
+ */
+protected void doMoveFile(String source, String destination) throws CmsException {
+	//Linkmanagement #1
+	//CmsFile oldFile = readFile(source);
+	//end of Linkmanagement #1
+
+	m_rb.moveFile(m_context.currentUser(), m_context.currentProject(), source, destination);
+
+/*
+	//Linkmanagement #2
+
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+	int oldResId = oldFile.getResourceId();
+	int oldUrlId = oldFile.getUrlId();
+
+	CmsFile newfile = readFile(destination);
+	int newResId = newfile.getResourceId();
+	if (newResId != -1){
+		// check if there is already an entry with this url in CMS_URL
+		int urlId = m_lm.getUrlIdOfCmsUrl(destination);
+		if (urlId == -1){
+			m_lm.createNewUrl(newResId);
+			urlId = m_lm.getUrlIdOfCmsUrl(destination);
+		} else {
+			m_lm.setUrlIdToNewResource(newResId,urlId);
+		}
+		int projectId = newfile.getProjectId();
+		m_lm.moveResource(oldResId, newResId, oldUrlId, urlId, projectId, onlineProject().getId());
+		//check if the entry in CMS_URL with the old Url is still needed.
+		if(!m_lm.urlStillNeeded(oldUrlId,m_context.currentProject().getId())){
+			//Url is not needed, so delete it.
+			m_lm.deleteUrl(oldUrlId);
+		}
+	}
+*/
+}
+
 /**
  * Returns the online project.
  * <p>
@@ -2018,6 +2671,70 @@ public void removeUserFromGroup(String username, String groupname) throws CmsExc
 public void renameFile(String oldname, String newname) throws CmsException {
     m_rb.renameFile(m_context.currentUser(), m_context.currentProject(), oldname, newname);
 }
+
+/**
+ * Renames the resource to the new name.
+ *
+ * @param oldname the complete path to the file which will be renamed.
+ * @param newname the new name of the file.
+ *
+ * @exception CmsException if the user has not the rights
+ * to rename the file, or if the file couldn't be renamed.
+ */
+public void renameResource(String oldname, String newname) throws CmsException {
+	CmsResource res = readFileHeader(oldname);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.renameResource(this, oldname, newname);
+}
+
+/**
+ * Renames the resource to the new name.
+ *
+ * @param oldname the complete path to the file which will be renamed.
+ * @param newname the new name of the file.
+ *
+ * @exception CmsException if the user has not the rights
+ * to rename the file, or if the file couldn't be renamed.
+ */
+protected void doRenameFile(String oldname, String newname) throws CmsException {
+	//Linkmanagement #1
+	//CmsFile oldFile = readFile(oldname);
+	//end of Linkmanagement #1
+
+	m_rb.renameFile(m_context.currentUser(), m_context.currentProject(), oldname, newname);
+/*
+	//Linkmanagement #2
+
+	//*** für Aufruf mit der Shell
+	if (m_lm == null) {
+        m_lm = m_rb.getLinkManager();
+    }
+
+	int oldResId = oldFile.getResourceId();
+	int oldUrlId = oldFile.getUrlId();
+
+	String newFilename = (oldname.substring(0,oldname.lastIndexOf("/")+1) + newname);
+
+	CmsFile newfile = readFile(newFilename);
+	int newResId = newfile.getResourceId();
+	if (newResId != -1){
+		// check if there is already an entry with this url in CMS_URL
+		int urlId = m_lm.getUrlIdOfCmsUrl(newFilename);
+		if (urlId == -1){
+			m_lm.createNewUrl(newResId);
+			urlId = m_lm.getUrlIdOfCmsUrl(newFilename);
+		}
+		int projectId = newfile.getProjectId();
+		m_lm.renameResource(oldResId, newResId, oldUrlId, urlId, projectId, onlineProject().getId());
+		//check if the entry in CMS_URL with the old Url is still needed.
+		if(!m_lm.urlStillNeeded(oldUrlId,m_context.currentProject().getId())){
+			//Url is not needed, so delete it.
+			m_lm.deleteUrl(oldUrlId);
+		}
+	}
+*/
+}
+
 /**
  * Returns the root-folder object.
  *
@@ -2151,6 +2868,7 @@ public void syncFolder(String resourceName) throws CmsException {
 public void unlockProject(int id) throws CmsException {
     m_rb.unlockProject(m_context.currentUser(), m_context.currentProject(), id);
 }
+
 /**
  * Unlocks a resource.
  * <br>
@@ -2162,8 +2880,25 @@ public void unlockProject(int id) throws CmsException {
  * to unlock this resource.
  */
 public void unlockResource(String resource) throws CmsException {
-    m_rb.unlockResource(m_context.currentUser(), m_context.currentProject(), resource);
+	CmsResource res = readFileHeader(resource);
+	I_CmsResourceType rt = getResourceType(res.getType());
+	rt.unlockResource(this, resource);
 }
+
+/**
+ * Unlocks a resource.
+ * <br>
+ * A user can unlock a resource, so other users may lock this file.
+ *
+ * @param resource the complete path to the resource to be unlocked.
+ *
+ * @exception CmsException if the user has not the rights
+ * to unlock this resource.
+ */
+protected void doUnlockResource(String resource) throws CmsException {
+	m_rb.unlockResource(m_context.currentUser(), m_context.currentProject(), resource);
+}
+
 /**
  * Tests, if a user is member of the given group.
  *

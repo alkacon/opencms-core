@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/06/28 09:36:21 $
-* Version: $Revision: 1.167 $
+* Date   : $Date: 2001/06/29 13:41:41 $
+* Version: $Revision: 1.168 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.167 $ $Date: 2001/06/28 09:36:21 $
+ * @version $Revision: 1.168 $ $Date: 2001/06/29 13:41:41 $
  */
 public interface I_CmsConstants {
 
@@ -135,6 +135,11 @@ public interface I_CmsConstants {
      * The resource type-name for plain files.
      */
     final static String C_TYPE_PLAIN_NAME = "plain";
+
+    /**
+     * The resource type-name for body files.
+     */
+    final static String C_TYPE_BODY_NAME = "body";
 
     /**
      * This constant signs a normal "classic" propertydefinition.
@@ -1072,6 +1077,15 @@ public interface I_CmsConstants {
      */
     static final String C_SYNCHRONISATION_RESOURCETAG = "res";
 
+    /**
+	 * The name of the known launchers tag in registry.
+	 */
+	static final String C_REGISTRY_KNOWNLAUNCHERS = "launchers";
+
+	/**
+	 * The name of the launcher tag in registry.
+	 */
+	static final String C_REGISTRY_LAUNCHER = "launcher";
 }
 
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2001/02/22 13:56:11 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2001/06/29 13:44:06 $
+* Version: $Revision: 1.35 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.34 $ $Date: 2001/02/22 13:56:11 $
+ * @version $Revision: 1.35 $ $Date: 2001/06/29 13:44:06 $
  */
 
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -117,65 +117,38 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         boolean hlock = true;
         if(lock != null) {
             if(lock.equals("true")) {
-                if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME)) {
-                    String bodyPath = getBodyPath(cms, (CmsFile)file);
-                    try {
-                        CmsFile bodyFile = (CmsFile)cms.readFileHeader(bodyPath);
-                        if(bodyFile.isLocked() && (bodyFile.isLockedBy()
-                                != cms.getRequestContext().currentUser().getId())) {
-                            hlock = false;
-                        }
-                        else {
-                            cms.lockResource(bodyPath);
-                        }
-                    }
-                    catch(CmsException e) {
-                        if(e.getType() == CmsException.C_ACCESS_DENIED) {
-                            template = "accessdenied";
-                        }
-                        else {
-                            throw e;
-                        }
-                    }
-                }
-                else {
-                        if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_FOLDER_NAME)) {
-                            try {
-                                cms.lockResource(C_CONTENTBODYPATH + filename.substring(1));
-                            }
-                            catch(CmsException e) {
-
-                            }
-                        }
-                }
                 session.removeValue(C_PARA_FILE);
-                if(hlock) {
+                try{
                     cms.lockResource(filename);
-
-                    // TODO: ErrorHandling
-
-                    // return to filelist
-                    try {
-                        if(lasturl == null || "".equals(lasturl)) {
-                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                                    + C_WP_EXPLORER_FILELIST);
-                        }
-                        else {
-                            cms.getRequestContext().getResponse().sendRedirect(lasturl);
-                        }
+                }catch(CmsException e){
+                    if(e.getType() == CmsException.C_ACCESS_DENIED) {
+                        template = "accessdenied";
+                    }else {
+                        xmlTemplateDocument.setData("details", "unknown error:"+e.toString());
+                        template = "error";
                     }
-                    catch(Exception e) {
+                    xmlTemplateDocument.setData("FILENAME", file.getName());
+                    // process the selected template
+                    return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
+                    // TODO: ErrorHandling
+                }
+
+                // return to filelist
+                try {
+                    if(lasturl == null || "".equals(lasturl)) {
+                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
+                                    + C_WP_EXPLORER_FILELIST);
+                    }
+                    else {
+                        cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                    }
+                }
+                catch(Exception e) {
                         throw new CmsException("Redirect fails :"
                                 + getConfigFile(cms).getWorkplaceActionPath()
                                 + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
-                    }
-                    return null;
                 }
-                else {
-                    xmlTemplateDocument.setData("details", "unknown error");
-                    template = "error";
-                    session.removeValue(C_PARA_FILE);
-                }
+                return null;
             }
         }
         xmlTemplateDocument.setData("FILENAME", file.getName());

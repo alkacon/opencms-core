@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/06/22 16:01:33 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2001/06/29 13:44:06 $
+* Version: $Revision: 1.26 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2001/06/22 16:01:33 $
+ * @version $Revision: 1.26 $ $Date: 2001/06/29 13:44:06 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -153,13 +153,13 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 }else{
                     try {
                         // create the folder
-                        CmsFolder folder = cms.createFolder(currentFilelist, newFolder);
-                        cms.lockResource(folder.getAbsolutePath());
+                        CmsFolder folder = (CmsFolder)cms.createResource(currentFilelist, newFolder, "folder");
+                        //cms.lockResource(folder.getAbsolutePath());
                         cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
                         // create the folder in content bodys
                         try{
-                            CmsFolder bodyFolder = cms.createFolder(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1)+currentFilelist, newFolder);
-                            cms.lockResource(bodyFolder.getAbsolutePath());
+                            CmsFolder bodyFolder = (CmsFolder)cms.createResource(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1)+currentFilelist, newFolder, "folder");
+                            //cms.lockResource(bodyFolder.getAbsolutePath());
                             cms.writeProperty(bodyFolder.getAbsolutePath(), C_PROPERTY_TITLE, title);
                         } catch (CmsException ce){
                             //throw ce;
@@ -629,7 +629,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 properties.remove("Hauptlogo_img");
             }else{
                 CmsResource pic = cms.readFileHeader(logo);
-                if(!(cms.getResourceType(pic.getType()).getResourceName()).equals(cms.C_TYPE_IMAGE_NAME)){
+                if(!(cms.getResourceType(pic.getType()).getResourceTypeName()).equals(cms.C_TYPE_IMAGE_NAME)){
                    return 1;
                 }
             }
@@ -644,7 +644,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                     properties.remove("Verzeichnislogo_img");
                 }else{
                     CmsResource pic = cms.readFileHeader(logo);
-                    if(!(cms.getResourceType(pic.getType()).getResourceName()).equals(cms.C_TYPE_IMAGE_NAME)){
+                    if(!(cms.getResourceType(pic.getType()).getResourceTypeName()).equals(cms.C_TYPE_IMAGE_NAME)){
                        return 1;
                     }
                 }

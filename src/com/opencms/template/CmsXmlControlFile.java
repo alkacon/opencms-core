@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/06/29 13:43:23 $
+* Version: $Revision: 1.21 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -40,7 +40,7 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.21 $ $Date: 2001/06/29 13:43:23 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -172,7 +172,9 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @return Filename of the template file.
      */
     public String getElementTemplate(String elementName) throws CmsException {
-        return getDataValue("ELEMENTDEF." + elementName + ".TEMPLATE");
+        //return getDataValue("ELEMENTDEF." + elementName + ".TEMPLATE");
+        String result = getDataValue("ELEMENTDEF." + elementName + ".TEMPLATE");
+           return result;
     }
 
     /**

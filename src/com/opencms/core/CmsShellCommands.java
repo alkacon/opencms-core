@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/06/22 16:00:10 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2001/06/29 13:41:41 $
+* Version: $Revision: 1.32 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.31 $ $Date: 2001/06/22 16:00:10 $
+ * @version $Revision: 1.32 $ $Date: 2001/06/29 13:41:41 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -210,22 +210,6 @@ public class CmsShellCommands implements I_CmsConstants {
     public void addGroup(String name, String description, String flags, String parent) {
         try {
             m_cms.addGroup(name, description, Integer.parseInt(flags), parent);
-        }
-        catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Adds a CmsResourceType.
-     *
-     * @param resourceType the name of the resource to get.
-     * @param launcherType the launcherType-id
-     * @param launcherClass the name of the launcher-class normaly ""
-     */
-    public void addResourceType(String resourceType, String launcherType, String launcherClass) {
-        try {
-            System.out.println(m_cms.addResourceType(resourceType, Integer.parseInt(launcherType), launcherClass));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/06/01 08:22:46 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2001/06/29 13:41:41 $
+* Version: $Revision: 1.56 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.55 $ $Date: 2001/06/01 08:22:46 $
+ * @version $Revision: 1.56 $ $Date: 2001/06/29 13:41:41 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -163,7 +163,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize launchers...");
             }
-            m_launcherManager = new CmsLauncherManager();
+            m_launcherManager = new CmsLauncherManager(this);
         }
         catch(Exception e) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {

@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/06/22 16:00:59 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2001/06/29 13:42:56 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.25 $ $Date: 2001/06/22 16:00:59 $
+ * @version $Revision: 1.26 $ $Date: 2001/06/29 13:42:56 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -310,7 +310,6 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 	//dbAccess.lockResource(currentUser, currentProject, resourcename, force);
 	//m_resourceCache.clear();
 	// update the cache
-
 	for (int i = 0; i < resources.size(); i++) {
 		cmsResource = (CmsResource) resources.elementAt(i);
 		String resourceName = cmsResource.getAbsolutePath();
@@ -336,7 +335,6 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 			m_resourceCache.put(C_FILE + currentProject.getId() + resourceName, cmsFile);
 		}
 	}
-
 	m_subresCache.clear();
 }
 /**

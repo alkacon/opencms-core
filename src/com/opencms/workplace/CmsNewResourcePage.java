@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/04/27 14:39:59 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2001/06/29 13:44:06 $
+* Version: $Revision: 1.38 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2001/04/27 14:39:59 $
+ * @version $Revision: 1.38 $ $Date: 2001/06/29 13:44:06 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -224,12 +224,14 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                     // check if the nescessary folders for the content files are existing.
 
                     // if not, create the missing folders.
-                    checkFolders(cms, currentFilelist);
+                    //checkFolders(cms, currentFilelist);
 
                     // create the page file
-                    CmsFile file = cms.createFile(currentFilelist, newFile, content, "page");
-                    cms.lockResource(file.getAbsolutePath());
-                    cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_TITLE, title);
+                    Hashtable prop = new Hashtable();
+                    prop.put(C_PROPERTY_TITLE, title);
+                    CmsResourceTypePage rtpage = new CmsResourceTypePage();
+                    CmsResource file = rtpage.createResource(cms, currentFilelist, newFile, prop, "".getBytes(), templatefile);
+
                     if( keywords != null && !keywords.equals("") ) {
                         cms.writeProperty(file.getAbsolutePath(), C_PROPERTY_KEYWORDS, keywords);
                     }
@@ -246,24 +248,6 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                         CmsFile layoutFile = cms.readFile(layoutFilePath);
                         bodyBytes = layoutFile.getContents();
                     }
-                    // now create the page content file
-                    contentFile = cms.createFile(C_CONTENTBODYPATH + currentFilelist.substring(1,
-                                currentFilelist.length()), newFile, bodyBytes, "plain");
-
-                    /* try {
-                    contentFile=cms.readFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile);
-                    } catch (CmsException e) {
-                    if (contentFile == null) {
-                    contentFile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,C_DEFAULTBODY.getBytes(),"plain");
-                    }
-                    }*/
-
-                    // set the flags for the content file to internal use, the content
-
-                    // should not be loaded
-                    cms.lockResource(contentFile.getAbsolutePath());
-                    cms.chmod(contentFile.getAbsolutePath(), contentFile.getAccessFlags()
-                            + C_ACCESS_INTERNAL_READ);
 
                     // now check if navigation informations have to be added to the new page.
                     if(navtitle != null) {
@@ -542,7 +526,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
      * @param navpos The file after which the new entry is sorted.
      */
 
-    private void updateNavPos(CmsObject cms, CmsFile newfile, String newpos) throws CmsException {
+    private void updateNavPos(CmsObject cms, CmsResource newfile, String newpos) throws CmsException {
         float newPos = 0;
 
         // get the nav information

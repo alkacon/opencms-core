@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2001/06/22 16:00:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/06/29 13:42:22 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -44,7 +44,7 @@ import source.org.apache.java.util.*;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2001/06/22 16:00:28 $
+ * @version $Revision: 1.7 $ $Date: 2001/06/29 13:42:22 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -147,7 +147,6 @@ public class CmsSynchronize implements I_CmsConstants{
         File startFolder = null;
         File sfsFile = null;
 		int onlineProject = m_cms.onlineProject().getId();
-
 		startResource = m_cms.readFileHeader(resourceName);
 		if (startResource == null || startResource.getProjectId() == onlineProject){
 			throw new CmsException("["+this.getClass().getName()+"] "+resourceName, CmsException.C_NOT_FOUND);

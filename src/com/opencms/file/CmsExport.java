@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2001/06/22 16:00:28 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2001/06/29 13:42:21 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2001/06/22 16:00:28 $
+ * @version $Revision: 1.21 $ $Date: 2001/06/29 13:42:21 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -526,7 +526,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 
 		// get all needed informations from the resource
 		source = getSourceFilename(resource.getAbsolutePath());
-		type = m_cms.getResourceType(resource.getType()).getResourceName();
+		type = m_cms.getResourceType(resource.getType()).getResourceTypeName();
 		user = m_cms.readOwner(resource).getName();
 		group = m_cms.readGroup(resource).getName();
 		access = resource.getAccessFlags() + "";

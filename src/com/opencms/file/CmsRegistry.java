@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2001/05/15 19:29:01 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2001/06/29 13:42:21 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2001/05/15 19:29:01 $
+ * @version $Revision: 1.32 $ $Date: 2001/06/29 13:42:21 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1182,6 +1182,43 @@ public java.lang.String[] getRepositories() {
 	retValueArray = new String[retValue.size()];
 	retValue.copyInto(retValueArray);
 	return retValueArray;
+}
+
+/**
+ * Returns all Resourcetypes and korresponding parameter for System and all modules.
+ *
+ * @parameter Vector names in this parameter the names of the Resourcetypes will be returned.
+ * @parameter Vector launcherTypes in this parameters the launcherType will be returned(int).
+ * @parameter Vector launcherClass in this parameters the launcherClass will be returned.
+ * @parameter Vector resourceClass in this parameters the resourceClass will be returned.
+ * @return int the amount of resourcetypes.
+ */
+public int getResourceTypes(Vector names, Vector launcherTypes, Vector launcherClass, Vector resourceClass){
+    try{
+        NodeList resTypes = m_xmlReg.getElementsByTagName("restype");
+        for (int x = 0; x < resTypes.getLength(); x++){
+            try{
+                String name = ((Element)resTypes.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+                String lType = ((Element)resTypes.item(x)).getElementsByTagName("launcherType").item(0).getFirstChild().getNodeValue();
+                String lClass = "";
+                try{
+                    lClass = ((Element)resTypes.item(x)).getElementsByTagName("launcherClass").item(0).getFirstChild().getNodeValue();
+                }catch(Exception ex){
+                }
+                String resClass = ((Element)resTypes.item(x)).getElementsByTagName("resourceClass").item(0).getFirstChild().getNodeValue();
+                names.addElement(name);
+                launcherTypes.addElement(lType);
+                launcherClass.addElement(lClass);
+                resourceClass.addElement(resClass);
+            }catch(Exception exc){
+                // ignore the exeption
+            }
+        }
+        return names.size();
+    }catch(Exception e){
+        // no returnvalues
+        return 0;
+    }
 }
 
 /**

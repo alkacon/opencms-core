@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2001/03/23 10:32:21 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2001/06/29 13:42:22 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2001/03/23 10:32:21 $
+ * @version $Revision: 1.22 $ $Date: 2001/06/29 13:42:22 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -453,6 +453,18 @@ public String getModuleViewUrl(String modulename);
  * @return java.lang.String[] the reprositories of all modules.
  */
 public String[] getRepositories();
+
+/**
+ * Returns all Resourcetypes and korresponding parameter for System and all modules.
+ *
+ * @parameter Vector names in this parameter the names of the Resourcetypes will be returned.
+ * @parameter Vector launcherTypes in this parameters the launcherType will be returned(int).
+ * @parameter Vector launcherClass in this parameters the launcherClass will be returned.
+ * @parameter Vector resourceClass in this parameters the resourceClass will be returned.
+ * @return int the amount of resourcetypes.
+ */
+public int getResourceTypes(Vector names, Vector launcherTypes, Vector launcherClass, Vector resourceClass);
+
 /**
  * Returns a value for a system-key.
  * E.g. <code>&lt;system&gt;&lt;mailserver&gt;mail.server.com&lt;/mailserver&gt;&lt;/system&gt;</code>

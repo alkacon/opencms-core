@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/06/22 16:00:29 $
- * Version: $Revision: 1.145 $
+ * Date   : $Date: 2001/06/29 13:42:22 $
+ * Version: $Revision: 1.146 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.145 $ $Date: 2001/06/22 16:00:29 $
+ * @version $Revision: 1.146 $ $Date: 2001/06/29 13:42:22 $
  *
  */
 
@@ -160,27 +160,7 @@ public interface I_CmsResourceBroker {
 	public CmsGroup addGroup(CmsUser currentUser, CmsProject currentProject,
 							   String name, String description, int flags, String parent)
 		throws CmsException;
-	/**
-	 * Adds a CmsResourceTypes.
-	 *
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 *
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resourceType the name of the resource to get.
-	 * @param launcherType the launcherType-id
-	 * @param launcherClass the name of the launcher-class normaly ""
-	 *
-	 * Returns a CmsResourceTypes.
-	 *
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	public CmsResourceType addResourceType(CmsUser currentUser,
-											 CmsProject currentProject,
-											 String resourceType, int launcherType,
-											 String launcherClass)
-		throws CmsException;
+
 	/**
 	 * Adds a user to the Cms.
 	 *
@@ -1330,7 +1310,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 *
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public CmsResourceType getResourceType(CmsUser currentUser,
+	public I_CmsResourceType getResourceType(CmsUser currentUser,
 											 CmsProject currentProject,
 											 int resourceType)
 		throws CmsException;
@@ -1348,7 +1328,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 *
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public CmsResourceType getResourceType(CmsUser currentUser,
+	public I_CmsResourceType getResourceType(CmsUser currentUser,
 											 CmsProject currentProject,
 											 String resourceType)
 		throws CmsException;

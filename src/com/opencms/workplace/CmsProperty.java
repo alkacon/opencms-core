@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2001/01/24 09:43:30 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/06/29 13:44:06 $
+* Version: $Revision: 1.23 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -39,19 +39,19 @@ import java.util.*;
 /**
  * Template class for displaying the property screens of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
- * 
+ *
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2001/01/24 09:43:30 $
+ * @version $Revision: 1.23 $ $Date: 2001/06/29 13:44:06 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
-    
+
     /**
      * Gets all  propertydefintions for the file.
      * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
+     * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
      * a select box.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -65,10 +65,10 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         String filename = (String)session.getValue(C_PARA_FILE);
         if(filename != null) {
             CmsResource file = (CmsResource)cms.readFileHeader(filename);
-            CmsResourceType type = cms.getResourceType(file.getType());
-            
+            I_CmsResourceType type = cms.getResourceType(file.getType());
+
             // get all propertydefinitions for this type
-            Vector propertydef = cms.readAllPropertydefinitions(type.getResourceName());
+            Vector propertydef = cms.readAllPropertydefinitions(type.getResourceTypeName());
             Enumeration enu = propertydef.elements();
             while(enu.hasMoreElements()) {
                 CmsPropertydefinition prop = (CmsPropertydefinition)enu.nextElement();
@@ -76,11 +76,11 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 values.addElement(prop.getName());
             }
         }
-        
+
         // no current user, set index to -1
         return new Integer(retValue);
     }
-    
+
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
      * Gets the content of the property template and processed the data input.
@@ -94,21 +94,21 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        
+
         // the template to be displayed
         String template = null;
-        
+
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
-            
+
             // remove all session values
             session.removeValue(C_PARA_FILE);
             session.removeValue(C_PARA_PROPERTYDEF);
             session.removeValue("lasturl");
         }
         String lasturl = getLastUrl(cms, parameters);
-        
+
         // get all parameters and put them into the session
         String filename = (String)parameters.get(C_PARA_FILE);
         if(filename != null) {
@@ -125,36 +125,36 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         String delete = (String)parameters.get("DELETE");
         String newproperty = (String)parameters.get("NEWPROPERTY");
         String newpropertydef = (String)parameters.get("ORGANIZE");
-        
-        // select the displayed template        
-        // check if the file is locked by the current user.        
+
+        // select the displayed template
+        // check if the file is locked by the current user.
         // if so, display a different dialog with more functions is shown
         if(file.isLockedBy() == cms.getRequestContext().currentUser().getId()) {
             if(edit != null) {
-                
-                // display the edit property dialog  
+
+                // display the edit property dialog
                 template = "editproperty";
             }
             else {
                 if(delete != null) {
-                    
-                    // display the delete property dialog  
+
+                    // display the delete property dialog
                     template = "deleteproperty";
                 }
                 else {
                     if(newproperty != null) {
-                        
-                        // display the newproperty  dialog  
+
+                        // display the newproperty  dialog
                         template = "newproperty";
                     }
                     else {
                         if(newpropertydef != null) {
-                            
-                            // display the newpropertydef dialog  
+
+                            // display the newpropertydef dialog
                             template = "newpropertydef";
                         }
                         else {
-                            
+
                             // set the default display
                             template = "ownlocked";
                         }
@@ -164,106 +164,106 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
-        
-        // now process the data taken form the dialog        
+
+        // now process the data taken form the dialog
         // edit was selected
         if(edit != null) {
-            
-            // check if a property was selected          
+
+            // check if a property was selected
             if(propertydef != null) {
                 xmlTemplateDocument.setData("PROPERTYDEF", propertydef);
-                
+
                 // check if a edited property is available
                 String newValue = (String)parameters.get("EDITEDPROPERTY");
                 if(newValue != null) {
-                    
+
                     // update the property
                     cms.writeProperty(filename, propertydef, newValue);
                     template = "ownlocked";
-                
-                //session.removeValue(C_PARA_FILE);                
-                //session.removeValue(C_PARA_PROPERTYDEF);  
+
+                //session.removeValue(C_PARA_FILE);
+                //session.removeValue(C_PARA_PROPERTYDEF);
                 }
             }
             else {
                 template = "ownlocked";
             }
         }
-        
+
         // delete was selected
         if(delete != null) {
-            
+
             // check if the ok button was selected
             if(delete.equals("true")) {
-                
+
                 // delete the propertydefinition
                 if(propertydef != null) {
                     cms.deleteProperty(filename, propertydef);
                     template = "ownlocked";
-                
-                //session.removeValue(C_PARA_FILE);                
+
+                //session.removeValue(C_PARA_FILE);
                 //session.removeValue(C_PARA_PROPERTYDEF);
                 }
             }
         }
-        
+
         // new property was selected
         if(newproperty != null) {
-            
+
             // check if the ok button was selected
             if(newproperty.equals("true")) {
                 String newValue = (String)parameters.get("NEWPROPERTYVALUE");
                 if((newValue != null) && (propertydef != null)) {
-                    
+
                     // test if this property is already existing
                     String testValue = cms.readProperty(filename, propertydef);
                     if(testValue == null) {
-                        
-                        // add the property                    
+
+                        // add the property
                         cms.writeProperty(filename, propertydef, newValue);
                         template = "ownlocked";
-                    
-                    //session.removeValue(C_PARA_FILE);                    
-                    //session.removeValue(C_PARA_PROPERTYDEF); 
+
+                    //session.removeValue(C_PARA_FILE);
+                    //session.removeValue(C_PARA_PROPERTYDEF);
                     }
                     else {
-                        
-                    
+
+
                     // todo: add an error message that this key is already exisitng
                     }
                 }
                 else {
                     template = "ownlocked";
-                
-                //session.removeValue(C_PARA_FILE);                
-                //session.removeValue(C_PARA_PROPERTYDEF);  
+
+                //session.removeValue(C_PARA_FILE);
+                //session.removeValue(C_PARA_PROPERTYDEF);
                 }
             }
         }
-        
+
         // new propertydef was selected
         if(newpropertydef != null) {
-            
+
             // check if the ok button was selected
             if(newpropertydef.equals("true")) {
                 String newValue = (String)parameters.get("NEWPROPERTYDEF");
                 if(newValue != null) {
-                    
-                    // try to add the property   
-                    CmsResourceType type = cms.getResourceType(file.getType());
+
+                    // try to add the property
+                    I_CmsResourceType type = cms.getResourceType(file.getType());
                     try {
-                        CmsPropertydefinition def = cms.createPropertydefinition(newValue, type.getResourceName(), C_PROPERTYDEF_TYPE_NORMAL);
+                        CmsPropertydefinition def = cms.createPropertydefinition(newValue, type.getResourceTypeName(), C_PROPERTYDEF_TYPE_NORMAL);
                         cms.writePropertydefinition(def);
                         template = "ownlocked";
-                    
-                    //session.removeValue(C_PARA_FILE);                    
+
+                    //session.removeValue(C_PARA_FILE);
                     //session.removeValue(C_PARA_PROPERTYDEF);
                     }
                     catch(CmsException e) {
-                        
+
                         // todo: add an error message that this key is already exisitng
                         StringBuffer errmesg = new StringBuffer();
-                        errmesg.append(lang.getLanguageValue("error.reason.newprop1") + " '" + newValue + "' " + lang.getLanguageValue("error.reason.newprop2") + " '" + type.getResourceName() + "' " + lang.getLanguageValue("error.reason.newprop3") + "\n\n");
+                        errmesg.append(lang.getLanguageValue("error.reason.newprop1") + " '" + newValue + "' " + lang.getLanguageValue("error.reason.newprop2") + " '" + type.getResourceTypeName() + "' " + lang.getLanguageValue("error.reason.newprop3") + "\n\n");
                         errmesg.append(Utils.getStackTrace(e));
                         xmlTemplateDocument.setData("NEWDETAILS", errmesg.toString());
                         template = "newerror";
@@ -271,13 +271,13 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 }
                 else {
                     template = "ownlocked";
-                
-                //session.removeValue(C_PARA_FILE);                
-                //session.removeValue(C_PARA_PROPERTYDEF); 
+
+                //session.removeValue(C_PARA_FILE);
+                //session.removeValue(C_PARA_PROPERTYDEF);
                 }
             }
         }
-        
+
         // set the required datablocks
         String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
         if(title == null) {
@@ -290,18 +290,18 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         xmlTemplateDocument.setData("GROUP", cms.readGroup(file).getName());
         xmlTemplateDocument.setData("FILENAME", file.getName());
         xmlTemplateDocument.setData("lasturl", lasturl);
-        
-        // process the selected template 
+
+        // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
     }
-    
+
     /**
      * Gets all property the file.
      * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
+     * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
      * a select box.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -323,18 +323,18 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 values.addElement(key);
             }
         }
-        
+
         // no current user, set index to -1
         return new Integer(retValue);
     }
-    
+
     /**
      * Gets all unused propertydefintions for the file.
      * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
+     * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
      * a select box.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
@@ -348,11 +348,11 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         String filename = (String)session.getValue(C_PARA_FILE);
         if(filename != null) {
             CmsResource file = (CmsResource)cms.readFileHeader(filename);
-            CmsResourceType type = cms.getResourceType(file.getType());
-            
+            I_CmsResourceType type = cms.getResourceType(file.getType());
+
             // get all propertydefinitions for this type
-            Vector propertydef = cms.readAllPropertydefinitions(type.getResourceName());
-            
+            Vector propertydef = cms.readAllPropertydefinitions(type.getResourceTypeName());
+
             // get all existing properties of this file
             Hashtable property = cms.readAllProperties(filename);
             Enumeration enu = propertydef.elements();
@@ -365,11 +365,11 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 }
             }
         }
-        
+
         // no current user, set index to -1
         return new Integer(retValue);
     }
-    
+
     /**
      * Gets the value of selected property and sets it in the input field of the dialog.
      * This method is directly called by the content definiton.
@@ -382,15 +382,15 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
     public String getPropertyValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         String propertyValue = null;
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        
+
         // get the filename
         String filename = (String)session.getValue(C_PARA_FILE);
         if(filename != null) {
-            
+
             //get the propertydefinition
             String propertydef = (String)session.getValue(C_PARA_PROPERTYDEF);
             if(propertydef != null) {
-                
+
                 // everything is there, so try to read the meteainfo
                 propertyValue = cms.readProperty(filename, propertydef);
                 if(propertyValue == null) {
@@ -400,7 +400,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         }
         return propertyValue;
     }
-    
+
     /**
      * Gets a formated file state string.
      * @param cms The CmsObject.
@@ -419,12 +419,12 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         }
         return output.toString();
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.

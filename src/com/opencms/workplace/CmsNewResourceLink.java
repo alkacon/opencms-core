@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2001/01/24 09:43:28 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/06/29 13:44:06 $
+* Version: $Revision: 1.19 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -40,13 +40,13 @@ import java.util.*;
  * Template class for displaying the new resource screen for a new link
  * of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
- * 
+ *
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2001/01/24 09:43:28 $
+ * @version $Revision: 1.19 $ $Date: 2001/06/29 13:44:06 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
-    
+
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
      * Gets the content of the new resource othertype template and processed the data input.
@@ -58,29 +58,29 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
      * @return Bytearry containing the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
+
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        
+
         // the template to be displayed
         String template = null;
         String filename = null;
-        
+
         // String title=null;
         String link = null;
         String foldername = null;
         String type = null;
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        
+
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
-        
+
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
-            
-            // remove all session values 
+
+            // remove all session values
             session.removeValue(C_PARA_FILE);
             session.removeValue(C_PARA_LINK);
             session.removeValue(C_PARA_VIEWFILE);
@@ -91,7 +91,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         if(link != null) {
             session.putValue(C_PARA_LINK, link);
         }
-        
+
         // get the parameters
         String notChange = (String)parameters.get("newlink");
         String linkName = null;
@@ -115,14 +115,14 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         if(link != null) {
             session.putValue(C_PARA_LINK, link);
         }
-        
+
         // get the current phase of this wizard
         if(step != null) {
-            
+
             // step 1 - show the final selection screen
             if(step.equals("1")) {
-                
-                // step 1 - create the link                
+
+                // step 1 - create the link
                 // get folder- and filename
                 foldername = (String)session.getValue(C_PARA_FILELIST);
                 if(foldername == null) {
@@ -133,7 +133,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                 String title = lang.getLanguageValue("explorer.linkto") + " " + link;
                 type = "link";
                 if(notChange != null && notChange.equals("false")) {
-                    
+
                     // change old file
                     linkName = (String)parameters.get("file");
                     editFile = cms.readFile(linkName);
@@ -142,20 +142,20 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                     cms.writeProperty(linkName, C_PROPERTY_TITLE, title);
                 }
                 else {
-                    
+
                     // create the new file
-                    cms.createFile(foldername, filename, link.getBytes(), type);
-                    cms.lockResource(foldername + filename);
-                    cms.writeProperty(foldername + filename, C_PROPERTY_TITLE, title);
+                    Hashtable prop = new Hashtable();
+                    prop.put(C_PROPERTY_TITLE, title);
+                    cms.createResource(foldername, filename, type, prop, link.getBytes());
                 }
-                
+
                 // remove values from session
                 session.removeValue(C_PARA_FILE);
                 session.removeValue(C_PARA_VIEWFILE);
                 session.removeValue(C_PARA_LINK);
-                
+
                 // TODO: ErrorHandling
-                
+
                 // now return to appropriate filelist
                 try {
                     String lastUrl = (String)session.getValue("lasturl");
@@ -164,12 +164,12 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                         cms.getRequestContext().getResponse().sendRedirect(lastUrl);
                     }
                     else {
-                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() 
+                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                                 + C_WP_EXPLORER_FILELIST);
                     }
                 }
                 catch(Exception e) {
-                    throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() 
+                    throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
                             + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
                 return null;
@@ -185,27 +185,27 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             cancelUrl = C_WP_EXPLORER_FILELIST;
         }
         xmlTemplateDocument.setData("lasturl", cancelUrl);
-        
-        // process the selected template 
+
+        // process the selected template
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, template);
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, 
+
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
     }
-    
+
     /**
      * Sets the value of the new file input field of dialog.
      * This method is directly called by the content definiton.
@@ -215,10 +215,10 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
      * @return Value that is set into the new file dialod.
      * @exception CmsExeption if something goes wrong.
      */
-    
+
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        
+
         // get a previous value from the session
         String filename = (String)session.getValue(C_PARA_FILE);
         if(filename == null) {

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/06/27 07:24:41 $
- * Version: $Revision: 1.244 $
+ * Date   : $Date: 2001/06/29 13:42:43 $
+ * Version: $Revision: 1.245 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.244 $ $Date: 2001/06/27 07:24:41 $
+ * @version $Revision: 1.245 $ $Date: 2001/06/29 13:42:43 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -713,63 +713,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
                 CmsException.C_NO_ACCESS);
         }
     }
-    /**
-     * Adds a CmsResourceTypes.
-     *
-     * <B>Security:</B>
-     * Users, which are in the group "administrators" are granted.<BR/>
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resourceType the name of the resource to get.
-     * @param launcherType the launcherType-id
-     * @param launcherClass the name of the launcher-class normaly ""
-     *
-     * Returns a CmsResourceTypes.
-     *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
-     */
-    public CmsResourceType addResourceType(CmsUser currentUser,
-                                             CmsProject currentProject,
-                                             String resourceType, int launcherType,
-                                             String launcherClass)
-        throws CmsException {
-        if( isAdmin(currentUser, currentProject) ) {
 
-            // read the resourceTypes from the propertys
-            m_resourceTypes = (Hashtable)
-                               m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE);
-
-            synchronized(m_resourceTypes) {
-
-                // get the last index and increment it.
-                Integer lastIndex =
-                    new Integer(((Integer)
-                                  m_resourceTypes.get(C_TYPE_LAST_INDEX)).intValue() + 1);
-
-                // write the last index back
-                m_resourceTypes.put(C_TYPE_LAST_INDEX, lastIndex);
-
-                // add the new resource-type
-                m_resourceTypes.put(resourceType, new CmsResourceType(lastIndex.intValue(),
-                                                                      launcherType,
-                                                                      resourceType,
-                                                                      launcherClass));
-
-                // store the resource types in the properties
-                m_dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, m_resourceTypes);
-
-            }
-
-            // the cached resource types aren't valid any more.
-            m_resourceTypes = null;
-            // return the new resource-type
-            return(getResourceType(currentUser, currentProject, resourceType));
-        } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
-                CmsException.C_NO_ACCESS);
-        }
-    }
     /**
      * Adds a user to the Cms.
      *
@@ -1302,7 +1246,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                       String filename, String newType)
         throws CmsException {
 
-        CmsResourceType type = getResourceType(currentUser, currentProject, newType);
+        I_CmsResourceType type = getResourceType(currentUser, currentProject, newType);
 
         // read the resource to check the access
         CmsResource resource = readFileHeader(currentUser,currentProject, filename);
@@ -2235,8 +2179,8 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                 CmsException.C_NO_ACCESS);
         }
         // read the metadefinition
-        CmsResourceType resType = getResourceType(currentUser,currentProject,res.getType());
-        CmsPropertydefinition metadef = readPropertydefinition(currentUser,currentProject,property, resType.getResourceName());
+        I_CmsResourceType resType = getResourceType(currentUser,currentProject,res.getType());
+        CmsPropertydefinition metadef = readPropertydefinition(currentUser,currentProject,property, resType.getResourceTypeName());
 
         // is this a mandatory metadefinition?
         if(  (metadef != null) &&
@@ -2617,35 +2561,51 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         // return the vector of projects
         return(projects);
      }
-    /**
-     * Returns a Vector with all I_CmsResourceTypes.
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     *
-     * Returns a Hashtable with all I_CmsResourceTypes.
-     *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
-     */
-    public Hashtable getAllResourceTypes(CmsUser currentUser,
-                                         CmsProject currentProject)
-        throws CmsException {
-        // check, if the resourceTypes were read bevore
-        if(m_resourceTypes == null) {
-            // read the resourceTypes from the propertys
-            m_resourceTypes = (Hashtable)
-                               m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE);
 
-            // remove the last index.
-            m_resourceTypes.remove(C_TYPE_LAST_INDEX);
-        }
+	/**
+	 * Returns a Vector with all I_CmsResourceTypes.
+	 *
+	 * <B>Security:</B>
+	 * All users are granted.
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 *
+	 * Returns a Hashtable with all I_CmsResourceTypes.
+	 *
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Hashtable getAllResourceTypes(CmsUser currentUser,
+										 CmsProject currentProject)
+		throws CmsException {
+		// check, if the resourceTypes were read bevore
+		if(m_resourceTypes == null) {
+            // get the resourceTypes from the registry
+            m_resourceTypes = new Hashtable();
+            Vector resTypeNames = new Vector();
+            Vector launcherTypes = new Vector();
+            Vector launcherClass = new Vector();
+            Vector resourceClass = new Vector();
+            int resTypeCount = m_registry.getResourceTypes(resTypeNames, launcherTypes, launcherClass, resourceClass);
+            for (int i = 0; i < resTypeCount; i++){
+				// add the resource-type
+                try{
+                    Class c = Class.forName((String)resourceClass.elementAt(i));
+                    I_CmsResourceType resTypeClass = (I_CmsResourceType) c.newInstance();
+                    resTypeClass.init(i, Integer.parseInt((String)launcherTypes.elementAt(i)),
+                                         (String)resTypeNames.elementAt(i),
+                                         (String)launcherClass.elementAt(i));
+                    m_resourceTypes.put((String)resTypeNames.elementAt(i), resTypeClass);
+                }catch(Exception e){
+                    e.printStackTrace();
+                    throw new CmsException("[" + this.getClass().getName() + "] Error while getting ResourceType: " + (String)resTypeNames.elementAt(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION );
+                }
+            }
+		}
+		// return the resource-types.
+		return(m_resourceTypes);
+	}
 
-        // return the resource-types.
-        return(m_resourceTypes);
-    }
     /**
      * Returns informations about the cache<P/>
      *
@@ -3140,70 +3100,70 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
     }
     return retValue;
 }
-    /**
-     * Returns a CmsResourceTypes.
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resourceType the id of the resourceType to get.
-     *
-     * Returns a CmsResourceTypes.
-     *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
-     */
-    public CmsResourceType getResourceType(CmsUser currentUser,
-                                             CmsProject currentProject,
-                                             int resourceType)
-        throws CmsException {
-        // try to get the resource-type
-        Hashtable types = getAllResourceTypes(currentUser, currentProject);
-        Enumeration keys = types.keys();
-        CmsResourceType currentType;
-        while(keys.hasMoreElements()) {
-            currentType = (CmsResourceType) types.get(keys.nextElement());
-            if(currentType.getResourceType() == resourceType) {
-                return(currentType);
-            }
-        }
-        // was not found - throw exception
-        throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
-            CmsException.C_NOT_FOUND);
-    }
-    /**
-     * Returns a CmsResourceTypes.
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resourceType the name of the resource to get.
-     *
-     * Returns a CmsResourceTypes.
-     *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
-     */
-    public CmsResourceType getResourceType(CmsUser currentUser,
-                                             CmsProject currentProject,
-                                             String resourceType)
-        throws CmsException {
-        // try to get the resource-type
-        try {
-            CmsResourceType type = (CmsResourceType)getAllResourceTypes(currentUser, currentProject).get(resourceType);
-            if(type == null) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
-                    CmsException.C_NOT_FOUND);
-            }
-            return type;
-        } catch(NullPointerException exc) {
-            // was not found - throw exception
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
-                CmsException.C_NOT_FOUND);
-        }
-    }
+	/**
+	 * Returns a I_CmsResourceType.
+	 *
+	 * <B>Security:</B>
+	 * All users are granted.
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourceType the id of the resourceType to get.
+	 *
+	 * Returns a I_CmsResourceType.
+	 *
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public I_CmsResourceType getResourceType(CmsUser currentUser,
+											 CmsProject currentProject,
+											 int resourceType)
+		throws CmsException {
+		// try to get the resource-type
+		Hashtable types = getAllResourceTypes(currentUser, currentProject);
+		Enumeration keys = types.keys();
+		I_CmsResourceType currentType;
+		while(keys.hasMoreElements()) {
+			currentType = (I_CmsResourceType) types.get(keys.nextElement());
+			if(currentType.getResourceType() == resourceType) {
+				return(currentType);
+			}
+		}
+		// was not found - throw exception
+		throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
+			CmsException.C_NOT_FOUND);
+	}
+	/**
+	 * Returns a I_CmsResourceType.
+	 *
+	 * <B>Security:</B>
+	 * All users are granted.
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourceType the name of the resource to get.
+	 *
+	 * Returns a I_CmsResourceType.
+	 *
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public I_CmsResourceType getResourceType(CmsUser currentUser,
+											 CmsProject currentProject,
+											 String resourceType)
+		throws CmsException {
+		// try to get the resource-type
+		try {
+			I_CmsResourceType type = (I_CmsResourceType)getAllResourceTypes(currentUser, currentProject).get(resourceType);
+			if(type == null) {
+				throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
+					CmsException.C_NOT_FOUND);
+			}
+			return type;
+		} catch(NullPointerException exc) {
+			// was not found - throw exception
+			throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
+				CmsException.C_NOT_FOUND);
+		}
+	}
     /**
      * Returns a Vector with all subfolders.<br>
      *
@@ -4298,12 +4258,12 @@ public void setCmsObjectForStaticExport(CmsObject cms){
                                               String resourcetype)
         throws CmsException {
         Vector returnValue = null;
-        CmsResourceType resType = getResourceType(currentUser, currentProject, resourcetype);
+        I_CmsResourceType resType = getResourceType(currentUser, currentProject, resourcetype);
 
-        returnValue = (Vector)m_propertyDefVectorCache.get(resType.getResourceName());
+        returnValue = (Vector)m_propertyDefVectorCache.get(resType.getResourceTypeName());
         if (returnValue == null){
             returnValue = m_dbAccess.readAllPropertydefinitions(resType);
-            m_propertyDefVectorCache.put(resType.getResourceName(), returnValue);
+            m_propertyDefVectorCache.put(resType.getResourceTypeName(), returnValue);
         }
         return returnValue;
     }
@@ -4327,7 +4287,7 @@ public void setCmsObjectForStaticExport(CmsObject cms){
                                          String resourcetype, int type)
         throws CmsException {
 
-        CmsResourceType restype=getResourceType(currentUser,currentProject,resourcetype);
+        I_CmsResourceType restype=getResourceType(currentUser,currentProject,resourcetype);
         return readAllPropertydefinitions(currentUser, currentProject, restype.getResourceType(),type);
     }
     // Methods working with system properties
@@ -5189,7 +5149,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
                                                   String name, String resourcetype)
         throws CmsException {
 
-        CmsResourceType resType = getResourceType(currentUser,currentProject,resourcetype);
+        I_CmsResourceType resType = getResourceType(currentUser,currentProject,resourcetype);
         CmsPropertydefinition returnValue = null;
         returnValue = (CmsPropertydefinition)m_propertyDefCache.get(name + resType.getResourceType());
 
