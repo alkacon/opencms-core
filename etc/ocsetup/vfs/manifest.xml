@@ -4097,7 +4097,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_Bg_mitte_links.gif</source>
+            <source>pics/system/_Bg_mitte_links.gif</source>
             <destination>system/workplace/pics/_Bg_mitte_links.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4106,7 +4106,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_bg_grau.gif</source>
+            <source>pics/system/_bg_grau.gif</source>
             <destination>system/workplace/pics/_bg_grau.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4115,7 +4115,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_bg_mitte.gif</source>
+            <source>pics/system/_bg_mitte.gif</source>
             <destination>system/workplace/pics/_bg_mitte.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4124,7 +4124,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_bg_mitte2.gif</source>
+            <source>pics/system/_bg_mitte2.gif</source>
             <destination>system/workplace/pics/_bg_mitte2.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4133,7 +4133,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_bg_mitte3.gif</source>
+            <source>pics/system/_bg_mitte3.gif</source>
             <destination>system/workplace/pics/_bg_mitte3.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4142,7 +4142,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_bg_mitte4.gif</source>
+            <source>pics/system/_bg_mitte4.gif</source>
             <destination>system/workplace/pics/_bg_mitte4.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4151,7 +4151,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_bg_mitte_oben.gif</source>
+            <source>pics/system/_bg_mitte_oben.gif</source>
             <destination>system/workplace/pics/_bg_mitte_oben.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4160,7 +4160,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_bg_mitte_rahmen.gif</source>
+            <source>pics/system/_bg_mitte_rahmen.gif</source>
             <destination>system/workplace/pics/_bg_mitte_rahmen.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4169,7 +4169,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_bg_mitte_rahmen_links.gif</source>
+            <source>pics/system/_bg_mitte_rahmen_links.gif</source>
             <destination>system/workplace/pics/_bg_mitte_rahmen_links.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4178,7 +4178,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_bg_mitte_rahmen_mitte.gif</source>
+            <source>pics/system/_bg_mitte_rahmen_mitte.gif</source>
             <destination>system/workplace/pics/_bg_mitte_rahmen_mitte.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4187,7 +4187,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/_bg_mitte_rechts.gif</source>
+            <source>pics/system/_bg_mitte_rechts.gif</source>
             <destination>system/workplace/pics/_bg_mitte_rechts.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4214,7 +4214,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/bg_mitte4.gif</source>
+            <source>pics/system/bg_mitte4.gif</source>
             <destination>system/workplace/pics/bg_mitte4.gif</destination>
             <type>image</type>
             <user>Admin</user>
@@ -4223,7 +4223,7 @@
             <properties/>
         </file>
         <file>
-            <<source>pics/system/bg_mitte_rechts.gif</source>
+            <source>pics/system/bg_mitte_rechts.gif</source>
             <destination>system/workplace/pics/bg_mitte_rechts.gif</destination>
             <type>image</type>
             <user>Admin</user>
