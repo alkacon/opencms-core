@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/08/29 15:13:25 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/09/27 17:24:08 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,8 +43,8 @@ import java.io.*;
 /**
  * This class is used to send a mail, it uses Threads to send it.
  *
- * @author $Author: a.lucas $
- * @version $Name:  $ $Revision: 1.11 $ $Date: 2000/08/29 15:13:25 $
+ * @author $Author: mla $
+ * @version $Name:  $ $Revision: 1.12 $ $Date: 2000/09/27 17:24:08 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -52,6 +52,8 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	// constants	
 	private final String c_FROM;
 	private final String[] c_TO;
+	private String[] c_BCC = null;
+	private String[] c_CC = null;
 	private final String c_MAILSERVER;
 	private final String c_SUBJECT;
 	private final String c_CONTENT;	
@@ -128,7 +130,6 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		c_MAILSERVER=conf.getMailServer();
 		c_TYPE=type;
 		c_CMS=cms;
-   
 	}
 	/**
 	 * Constructor, that creates an Email Object.
@@ -194,6 +195,96 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		c_TYPE=type;
 		c_CMS=cms;
 	}
+/**
+ * Constructor, that creates an Email Object.
+ *
+ * @see #CmsMail(CmsObject,String, String[], String[], String, String, String) 
+ *
+ * @param cms Cms object.
+ * @param from Address of sender.
+ * @param to Address of recipient.
+ * @param cc Address of copy recipient.
+ * @param bcc Address of blank copy recipient.
+ * @param subject Subject of email.
+ * @param content Content of email.
+ * @param type ContentType of email.
+ */
+public CmsMail(CmsObject cms, String from, String[] to, String[] cc, String[] bcc, String subject, String content, String type) throws com.opencms.core.CmsException
+{
+	this(cms, from, to, bcc, subject, content, type);
+
+	Vector v = new Vector(cc.length);
+	for (int i = 0; i < cc.length; i++)
+	{
+		if (cc[i] == null)
+		{
+			continue;
+		}
+		if (cc[i].equals(""))
+		{
+			continue;
+		}
+		if (cc[i].indexOf("@") == -1 || cc[i].indexOf(".") == -1)
+		{
+			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + cc[i], CmsException.C_BAD_NAME);
+		}
+		v.addElement(cc[i]);
+	}
+	String users[] = new String[v.size()];
+	for (int i = 0; i < v.size(); i++)
+	{
+		users[i] = (String) v.elementAt(i);
+	}
+	if (users.length == 0)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
+	}
+	c_CC = users;
+}
+/**
+ * Constructor, that creates an Email Object.
+ *
+ * @see #CmsMail(CmsObject,String, String[], String, String, String) 
+ *
+ * @param cms Cms object.
+ * @param from Address of sender.
+ * @param to Address of recipient.
+ * @param bcc Address of blank copy recipient.
+ * @param subject Subject of email.
+ * @param content Content of email.
+ * @param type ContentType of email.
+ */
+public CmsMail(CmsObject cms, String from, String[] to, String[] bcc, String subject, String content, String type) throws CmsException
+{
+	this(cms, from, to, subject, content, type);
+	Vector v = new Vector(bcc.length);
+	for (int i = 0; i < bcc.length; i++)
+	{
+		if (bcc[i] == null)
+		{
+			continue;
+		}
+		if (bcc[i].equals(""))
+		{
+			continue;
+		}
+		if (bcc[i].indexOf("@") == -1 || bcc[i].indexOf(".") == -1)
+		{
+			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, Invalid recipient email address: " + bcc[i], CmsException.C_BAD_NAME);
+		}
+		v.addElement(bcc[i]);
+	}
+	String users[] = new String[v.size()];
+	for (int i = 0; i < v.size(); i++)
+	{
+		users[i] = (String) v.elementAt(i);
+	}
+	if (users.length == 0)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
+	}
+	c_BCC = users;
+}
 	/**
 	 * Constructor, that creates an Email Object.
 	 * 
@@ -244,89 +335,129 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);		
 		c_MAILSERVER=conf.getMailServer();		
 		c_TYPE=type;
-		c_CMS=cms;			
+		c_CMS=cms;		
 	}
 	public void addAttachment(String content, String type) {
 		attachContent.addElement(content);
 		attachType.addElement(type);
 	}
-	/**
-	 * This method starts sending an email.
-	 */
-	public void run() {
-		// Send the mail
-		// create some properties and get the default Session
-		Properties props=System.getProperties();
-		props.put("mail.smtp.host",c_MAILSERVER);		
-		Session session=Session.getDefaultInstance(props,null);	
-		MimeMessage msg=new MimeMessage(session);
-		try {			
-			InternetAddress[] to=new InternetAddress[c_TO.length];
-			for(int i=0;i<c_TO.length;i++) {
-				to[i]=new InternetAddress(c_TO[i]);
+/**
+ * This method starts sending an email.
+ */
+public void run()
+{
+	// Send the mail
+	// create some properties and get the default Session
+	Properties props = System.getProperties();
+	props.put("mail.smtp.host", c_MAILSERVER);
+	Session session = Session.getDefaultInstance(props, null);
+	MimeMessage msg = new MimeMessage(session);
+	try
+	{
+		InternetAddress[] to = new InternetAddress[c_TO.length];
+		for (int i = 0; i < c_TO.length; i++)
+		{
+			to[i] = new InternetAddress(c_TO[i]);
+		}
+		msg.setFrom(new InternetAddress(c_FROM));
+		msg.setRecipients(Message.RecipientType.TO, to);
+		
+		InternetAddress[] cc = null; 
+		if (c_CC != null)
+		{
+			cc = new InternetAddress[c_CC.length];
+			for (int i = 0; i < c_CC.length; i++)
+			{
+				cc[i] = new InternetAddress(c_CC[i]);
 			}
-			msg.setFrom(new InternetAddress(c_FROM));
-			msg.setRecipients(Message.RecipientType.TO,to);
-			msg.setSubject(c_SUBJECT,"ISO-8859-1");
-						
-			Enumeration enum=c_CMS.getRequestContext().getRequest().getFileNames();
-			Vector v=new Vector();
-			while(enum.hasMoreElements()) {
-				v.addElement(enum.nextElement());
-			}		
-			int size=v.size();
-			int numAttach = attachContent.size();
-			if (size!=0 || numAttach!=0) {
-				// create and fill the first message part
-				MimeBodyPart mbp1=new MimeBodyPart();
-				Multipart mp=new MimeMultipart();
-				if (c_TYPE.equals("text/html")) {
-					mbp1.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE)));
-				} else {
-					mbp1.setText(c_CONTENT,"ISO-8859-1");
-				}
-				mp.addBodyPart(mbp1);
-					
-				// Check, if there are any attachments
-				for(int i=0; i<numAttach; i++) {
-					// create another message part					
-				    // attach the file to the message				
-					MimeBodyPart mbpAttach = new MimeBodyPart();
-					if("text/html".equals((String)attachType.elementAt(i))) {
-				    	mbpAttach.setDataHandler(new DataHandler(new CmsByteArrayDataSource((String)attachContent.elementAt(i), "text/html")));
-				    } else {
-				    	mbpAttach.setText((String)attachContent.elementAt(i), "ISO-8859-1");
-				    }
-					mp.addBodyPart(mbpAttach);
-				}	
-					
-				for(int i=0;i<size;i++) {
-					String filename=(String)v.elementAt(i);
-					System.err.println("Filename: "+filename);
-					MimetypesFileTypeMap mimeTypeMap=new MimetypesFileTypeMap();
-					String mimeType=mimeTypeMap.getContentType(filename);
-					System.err.println("MimeType: "+mimeType);
-					MimeBodyPart mbp=new MimeBodyPart();
-					mbp.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CMS.getRequestContext().getRequest().getFile(filename), mimeType)));
-					mbp.setFileName(filename);
-					mp.addBodyPart(mbp);
-				}
-				msg.setContent(mp);
-			} else {
-				if (c_TYPE.equals("text/html")) {
-					msg.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE)));
-				} else {
-					msg.setContent(c_CONTENT,c_TYPE);
-				}
+			msg.setRecipients(Message.RecipientType.CC, cc);
+		}
+
+		InternetAddress[] bcc = null; 
+		if (c_BCC != null)
+		{
+			bcc = new InternetAddress[c_BCC.length];
+			for (int i = 0; i < c_BCC.length; i++)
+			{
+				bcc[i] = new InternetAddress(c_BCC[i]);
 			}
-			msg.setSentDate(new Date());
-			Transport.send(msg);
-		} catch(Exception e) {
-			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_DEBUG, "Error in sending email:"+ e.getMessage());
-			}
-			
+			msg.setRecipients(Message.RecipientType.BCC, bcc);
 		}
 		
+		msg.setSubject(c_SUBJECT, "ISO-8859-1");
+		Enumeration enum = c_CMS.getRequestContext().getRequest().getFileNames();
+		Vector v = new Vector();
+		while (enum.hasMoreElements())
+		{
+			v.addElement(enum.nextElement());
+		}
+		int size = v.size();
+		int numAttach = attachContent.size();
+		if (size != 0 || numAttach != 0)
+		{
+			// create and fill the first message part
+			MimeBodyPart mbp1 = new MimeBodyPart();
+			Multipart mp = new MimeMultipart();
+			if (c_TYPE.equals("text/html"))
+			{
+				mbp1.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE)));
+			}
+			else
+			{
+				mbp1.setText(c_CONTENT, "ISO-8859-1");
+			}
+			mp.addBodyPart(mbp1);
+
+			// Check, if there are any attachments
+			for (int i = 0; i < numAttach; i++)
+			{
+				// create another message part					
+				// attach the file to the message				
+				MimeBodyPart mbpAttach = new MimeBodyPart();
+				if ("text/html".equals((String) attachType.elementAt(i)))
+				{
+					mbpAttach.setDataHandler(new DataHandler(new CmsByteArrayDataSource((String) attachContent.elementAt(i), "text/html")));
+				}
+				else
+				{
+					mbpAttach.setText((String) attachContent.elementAt(i), "ISO-8859-1");
+				}
+				mp.addBodyPart(mbpAttach);
+			}
+			for (int i = 0; i < size; i++)
+			{
+				String filename = (String) v.elementAt(i);
+				System.err.println("Filename: " + filename);
+				MimetypesFileTypeMap mimeTypeMap = new MimetypesFileTypeMap();
+				String mimeType = mimeTypeMap.getContentType(filename);
+				System.err.println("MimeType: " + mimeType);
+				MimeBodyPart mbp = new MimeBodyPart();
+				mbp.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CMS.getRequestContext().getRequest().getFile(filename), mimeType)));
+				mbp.setFileName(filename);
+				mp.addBodyPart(mbp);
+			}
+			msg.setContent(mp);
+		}
+		else
+		{
+			if (c_TYPE.equals("text/html"))
+			{
+				msg.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE)));
+			}
+			else
+			{
+				msg.setContent(c_CONTENT, c_TYPE);
+			}
+		}
+		msg.setSentDate(new Date());
+		Transport.send(msg);
 	}
+	catch (Exception e)
+	{
+		if (A_OpenCms.isLogging())
+		{
+			A_OpenCms.log(C_OPENCMS_DEBUG, "Error in sending email:" + e.getMessage());
+		}
+	}
+}
 }
