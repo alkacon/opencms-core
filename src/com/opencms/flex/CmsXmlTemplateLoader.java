@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2002/12/15 14:23:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2002/12/15 18:11:40 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -139,7 +139,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
         if (res instanceof CmsFlexResponse) {
             w_res = (CmsFlexResponse)res;              
         } else {
-            w_res = new CmsFlexResponse(res, false, cms.getRequestContext().getEncoding());
+            w_res = new CmsFlexResponse(res, false, false, cms.getRequestContext().getEncoding());
         }                
         service(cms, file, w_req, w_res);
     }
@@ -166,30 +166,44 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
             timer1 = System.currentTimeMillis();        
             System.err.println("========== XmlTemplateLoader loading: " + file.getAbsolutePath());            
         }
+        // save the original context settings
+        String rnc = cms.getRequestContext().getEncoding().trim();
+        I_CmsRequest cms_req = cms.getRequestContext().getRequest();
+        HttpServletRequest originalreq = (HttpServletRequest)cms_req.getOriginalRequest();
         try {                        
             // get the CmsRequest
-            I_CmsRequest cms_req = cms.getRequestContext().getRequest();
             byte[] result = null;
-            
-            HttpServletRequest originalreq = (HttpServletRequest)cms_req.getOriginalRequest();            
             com.opencms.file.CmsFile fx = req.getCmsObject().readFile(file.getAbsolutePath());            
-            
+            // care about encoding issues
+            String dnc = A_OpenCms.getDefaultEncoding().trim();
+            String enc = cms.readProperty(fx.getAbsolutePath(), C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
             // fake the called URI (otherwise XMLTemplate / ElementCache would not work)
             cms.getRequestContext().setUri(fx.getAbsolutePath());            
             cms_req.setOriginalRequest(req);
+            cms.getRequestContext().setEncoding(enc);            
             // process the included XMLTemplate
-            result = generateOutput(cms, fx, fx.getLauncherClassname(), cms_req, m_openCms);            
-            // reset the called URI to the originally requested resource
-            cms_req.setOriginalRequest(originalreq);
-            cms.getRequestContext().setUri(null);
-
+            result = generateOutput(cms, fx, fx.getLauncherClassname(), cms_req, m_openCms);                                    
+            // append the result to the output stream
             if(result != null) {
+                // Encoding project:
+                // The byte array must internally be encoded in the OpenCms
+                // default encoding. It will be converted to the requested encoding 
+                // on the most top-level JSP element
+                if (DEBUG > 1) System.out.println("CmsXmlTemplateLoader.service(): encoding=" + enc + " requestEncoding=" + rnc + " defaultEncoding=" + dnc);
+                if (! enc.equalsIgnoreCase(dnc)) {
+                    result = (new String(result, enc)).getBytes(dnc);
+                }                                
                 res.getOutputStream().write(result);
             }        
         }  catch (Exception e) {
             System.err.println("Error in CmsXmlTemplateLoader: " + e.toString());
             if (DEBUG > 0) e.printStackTrace(System.err);
             throw new ServletException("Error in CmsXmlTemplateLoader processing", e);       
+        } finally {
+            // restore the context settings
+            cms_req.setOriginalRequest(originalreq);
+            cms.getRequestContext().setEncoding(rnc);
+            cms.getRequestContext().setUri(null);
         }
         if (DEBUG > 0) {
             long timer2 = System.currentTimeMillis() - timer1;        

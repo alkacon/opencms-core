@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
-* Date   : $Date: 2002/12/15 14:23:44 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/12/15 18:11:41 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  * A wrapper class for a HttpServletRequest that controls the Flex cache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapper {
     
@@ -111,6 +111,9 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
     /** The encoding to use for the response */
     private String m_encoding;
     
+    /** Flag to indicate if this is the top level element or an included sub - element */ 
+    private boolean m_isTopElement;     
+    
     /** 
      * Constructor for the CmsFlexResponse.
      * This one is usually used for the "Top" response.     
@@ -118,11 +121,12 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
      * @param res The HttpServletResponse to wrap
      * @param streaming Indicates if streaming should be enabled or not
      */
-    public CmsFlexResponse(HttpServletResponse res, boolean streaming, String encoding) {
+    public CmsFlexResponse(HttpServletResponse res, boolean streaming, boolean isTopElement, String encoding) {
         super(res);
         m_res = res;
         m_out = null;
         m_encoding = encoding;
+        m_isTopElement = isTopElement;
         m_parentWritesOnlyToBuffer = ! streaming;
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
         m_headers = new java.util.HashMap(37);
@@ -140,6 +144,7 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
         m_res = res;
         m_out = null;
         m_encoding = res.getEncoding();
+        m_isTopElement = res.isTopElement();        
         m_parentWritesOnlyToBuffer = res.hasIncludeList();
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
         m_headers = new java.util.HashMap(37);
@@ -153,6 +158,19 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
      */
     public String getEncoding() {
         return m_encoding;
+    }
+    
+    /**
+     * Returns <code>true</code> if this response has been constructed for the 
+     * top level element of this request, <code>false</code> if it was 
+     * constructed for an included sub-element.<p>
+     * 
+     * @return <code>true</code> if this response has been constructed for the 
+     * top level element of this request, <code>false</code> if it was 
+     * constructed for an included sub-element.
+     */
+    public boolean isTopElement() {
+        return m_isTopElement;        
     }
 
     /** 
@@ -741,7 +759,11 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
      * Method overlodad from the standard javax.servlet.http.HttpServletRequest.
      */
     public void setContentType(String type) {
-        if (DEBUG) System.err.println("FlexResponse: setContentType(" +type + ") called");        
+        if (DEBUG) System.err.println("FlexResponse: setContentType(" +type + ") called");
+        // HACK: If this is not the "Top-Level" element ignore all settings of content type    
+        // If this is not done an included JSP could reset the type with some unwanted defaults    
+        if (! m_isTopElement) return;
+        /*       
         if (type != null) {
             // HACK: ensure that the encoding set by OpenCms is not overwritten by the default form the JSP            
             type = type.toLowerCase();
@@ -755,7 +777,8 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
                 if (DEBUG) System.err.println("FlexResponse: setContentType() changed type to " +type);
             }            
         }
-        m_res.setContentType(type);        
+        m_res.setContentType(type);
+        */        
     }
     
     /**

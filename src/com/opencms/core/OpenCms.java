@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/12/06 16:01:20 $
-* Version: $Revision: 1.100 $
+* Date   : $Date: 2002/12/15 18:11:41 $
+* Version: $Revision: 1.101 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.100 $ $Date: 2002/12/06 16:01:20 $
+ * @version $Revision: 1.101 $ $Date: 2002/12/15 18:11:41 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -465,15 +465,24 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         }
 
         // Encoding project:
-        String defaultEncoding = conf.getString("defaultContentEncoding", "UTF-8");        
+        // this will initialize the encoding with some default from the A_OpenCms
+        String defaultEncoding = getDefaultEncoding();
         try {
-            // This will work with Java 1.4+ only
+            defaultEncoding = System.getProperty("file.encoding");
+        } catch (SecurityException se) {
+            // security manager is active, but we will try other options before giving up
+        }
+        // check the opencms.properties for a different setting
+        defaultEncoding = conf.getString("defaultContentEncoding", defaultEncoding);
+        try {
+            // check if the found encoding is supported 
+            // this will work with Java 1.4+ only
             if (!java.nio.charset.Charset.isSupported(defaultEncoding)) {
                 defaultEncoding = getDefaultEncoding();
             }
         } catch (Throwable t) {
-            // Will be thrown in Java < 1.4 (NoSuchMethodException etc.)
-            // In Java < 1.4 there is no easy way to check if encoding is supported,
+            // will be thrown in Java < 1.4 (NoSuchMethodException etc.)
+            // in Java < 1.4 there is no easy way to check if encoding is supported,
             // so you must make sure your setting in "opencms.properties" is correct.             
         }        
         setDefaultEncoding(defaultEncoding);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/12/15 14:23:44 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/12/15 18:11:40 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -464,7 +464,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
     
     /**
      * Basic top-page processing method for this I_CmsResourceLoader,
-     * this method is called by <code>initlaunch()</code> if a JSP is requested if
+     * this method is called by <code>initlaunch()</code> if a JSP is requested and
      * the original request was from the launcher manager.
      *
      * @param cms The initialized CmsObject which provides user permissions
@@ -521,7 +521,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         if (res instanceof CmsFlexResponse) {
             w_res = (CmsFlexResponse)res;              
         } else {
-            w_res = new CmsFlexResponse(res, streaming, cms.getRequestContext().getEncoding());
+            w_res = new CmsFlexResponse(res, streaming, true, cms.getRequestContext().getEncoding());
         }
         
         if (bypass) {
@@ -624,7 +624,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             if (res instanceof CmsFlexResponse) {
                 w_res = (CmsFlexResponse)res;              
             } else {
-                w_res = new CmsFlexResponse(res, false, cms.getRequestContext().getEncoding());
+                w_res = new CmsFlexResponse(res, false, false, cms.getRequestContext().getEncoding());
             }
             
             try {
@@ -642,7 +642,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                 try {      
                     if ((res == null) || (! res.isCommitted())) {
                         // If a JSP errorpage was triggered the response will be already committed here
-                        result = w_res.getWriterBytes();
+                        result = w_res.getWriterBytes();                                                
                         // Encoding project:
                         // The byte array will internally be encoded in the OpenCms
                         // default encoding. In case another encoding is set
@@ -653,7 +653,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                         if (! dnc.equals(enc)) {
                             if (DEBUG > 1) System.err.println("CmsJspLoader.loadTemplate(): Encoding result from " + dnc + " to " + enc);
                             result = (new String(result, dnc)).getBytes(enc);
-                        }                        
+                        }                                                
                     }
                 } catch (IllegalStateException e) {
                     // Uncritical, might happen if JSP error page was used

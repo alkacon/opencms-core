@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsDumpLoader.java,v $
- * Date   : $Date: 2002/12/15 14:23:44 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2002/12/15 18:11:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.ServletException;
  * by other loaders. 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implements I_CmsResourceLoader {
     
@@ -119,7 +119,7 @@ public class CmsDumpLoader extends com.opencms.launcher.CmsDumpLauncher implemen
     public void load(com.opencms.file.CmsObject cms, com.opencms.file.CmsFile file, javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse res) 
     throws ServletException, IOException {           
         CmsFlexRequest w_req = new CmsFlexRequest(req, file, m_cache, cms); 
-        CmsFlexResponse w_res = new CmsFlexResponse(res, false, cms.getRequestContext().getEncoding());
+        CmsFlexResponse w_res = new CmsFlexResponse(res, false, false, cms.getRequestContext().getEncoding());
         service(cms, file, w_req, w_res);
     }   
     
