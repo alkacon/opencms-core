@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
- * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/05 13:05:11 $
- * Version: $Revision: 1.5 $
+ * Author : $Author: e.falkenhan $
+ * Date   : $Date: 2001/11/05 16:11:38 $
+ * Version: $Revision: 1.6 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -1373,6 +1373,23 @@ public class CmsDbAccess {
         }
      }
 
+    /**
+     * Publishes a single content definition
+     *
+     * @param cms The CmsObject
+     * @param dataset the dataset to publish.
+     * @param subId the subId to publish cd's for.
+     * @param contentDefinitionName the name of the contentdefinition.
+     * @param enableHistory set to true if backup tables should be filled.
+     * @param versionId the versionId to save in the backup tables.
+     * @param publishingDate the date and time of this publishing process.
+     */
+    public void publishResource(CmsObject cms, CmsMasterDataSet dataset, int subId, String contentDefinitionName,
+                                boolean enableHistory, int versionId, long publishingDate, Vector changedResources,
+                                Vector changedModuleData) throws CmsException{
+        this.publishOneLine(cms, dataset, subId, contentDefinitionName, enableHistory, versionId,
+        publishingDate, changedResources,changedModuleData);
+    }
     /**
      * Publishes all ressources for this project
      * Publishes all modified content definitions for this project.

@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
  * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/02 14:42:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/11/05 16:11:51 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -39,8 +39,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.1 $
- * $Date: 2001/11/02 14:42:43 $
+ * $Revision: 1.2 $
+ * $Date: 2001/11/05 16:11:51 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -518,7 +518,22 @@ public abstract class CmsMasterContent
      * @param cms The CmsObject
      */
     public void publishResource(CmsObject cms) throws Exception {
-        // TODO: implement this
+        Vector changedResources = new Vector();
+        Vector changedModuleData = new Vector();
+        int versionId = 0;
+        long publishDate = System.currentTimeMillis();
+        boolean enableHistory = cms.isHistoryEnabled();
+        if (enableHistory){
+            // Get the next version id
+            versionId = cms.getBackupVersionId();
+            // backup the current project
+            cms.backupProject(cms.getRequestContext().currentProject().getId(), versionId, publishDate);
+        }
+        // now publish the content definition
+        getDbAccessObject(getSubId()).publishResource(cms, m_dataSet, getSubId(), this.getClass().getName(),
+        enableHistory, versionId, publishDate, changedResources, changedModuleData);
+        // update the cache
+        cms.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
     }
 
     /**
@@ -528,7 +543,9 @@ public abstract class CmsMasterContent
      * @param cms The CmsObject
      */
     public void undelete(CmsObject cms) throws Exception {
-        // TODO: implement this
+        m_dataSet.m_state = I_CmsConstants.C_STATE_CHANGED;
+        this.setLockstate(cms.getRequestContext().currentUser().getId());
+        this.write(cms);
     }
 
     /**
