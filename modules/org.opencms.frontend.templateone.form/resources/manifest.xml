@@ -36,9 +36,14 @@
 		</parameters>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="emailform" id="60">
-				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.form/pages/form.html</param>
-				<param name="schema">/system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</param>
-			</type>
+				<properties>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templateone.form/pages/form.html]]></value>
+					</property>
+				</properties>
+                <param name="schema">/system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</param>
+            </type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="emailform" key="fileicon.emailform" icon="emailform.gif" reference="xmlcontent">

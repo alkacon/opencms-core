@@ -46,25 +46,57 @@
 		</parameters>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="news" id="30">
-				<param name="property.create.content-conversion">cleanup;xhtml</param>
-				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html</param>
+                <properties>
+					<property>
+						<name>content-conversion</name>
+						<value type="shared"><![CDATA[cleanup;xhtml]]></value>
+					</property>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-news.html]]></value>
+					</property>
+				</properties>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</param>
-			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="faq" id="35">
-				<param name="property.create.content-conversion">cleanup;xhtml</param>
-				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="faq" id="35">
+                <properties>
+					<property>
+						<name>content-conversion</name>
+						<value type="shared"><![CDATA[cleanup;xhtml]]></value>
+					</property>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-faq.html]]></value>
+					</property>
+				</properties>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/faq.xsd</param>
-			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="event" id="40">
-				<param name="property.create.content-conversion">cleanup;xhtml</param>
-				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="event" id="40">
+                <properties>
+					<property>
+						<name>content-conversion</name>
+						<value type="shared"><![CDATA[cleanup;xhtml]]></value>
+					</property>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-events.html]]></value>
+					</property>
+				</properties>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/event.xsd</param>
-			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="job" id="45">
-				<param name="property.create.content-conversion">cleanup;xhtml</param>
-				<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="job" id="45">
+                <properties>
+					<property>
+						<name>content-conversion</name>
+						<value type="shared"><![CDATA[cleanup;xhtml]]></value>
+					</property>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-jobs.html]]></value>
+					</property>
+				</properties>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/job.xsd</param>
-			</type>
+            </type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="news" key="fileicon.news" icon="article.gif" reference="xmlcontent">
