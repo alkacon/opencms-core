@@ -116,7 +116,7 @@
 
 											//Drop Database
 											out.print("<p>Trying to drop database  ...");
-											db.dropDatabase(Bean.getResourceBroker(), Bean.getReplacer());
+											db.dropDatabase(Bean.getDatabase(), Bean.getReplacer());
 											if(db.noErrors())	{
 
 												out.println(" <b>Ok</b></p>");
@@ -140,7 +140,7 @@
 										if (createDb) {
 											//Create Database
 											out.print("<p>Creating database ...");
-											db.createDatabase(Bean.getResourceBroker(), Bean.getReplacer());
+											db.createDatabase(Bean.getDatabase(), Bean.getReplacer());
 											if(db.noErrors())	{										
 												out.println(" <b>Ok</b></p>");
 											}
@@ -165,7 +165,7 @@
 										if (createTables) {
 											db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());									
 											//Drop Tables (intentionally quiet)
-											db.dropTables(Bean.getResourceBroker());
+											db.dropTables(Bean.getDatabase());
 											db.clearErrors();
 											db.closeConnection();
 											
@@ -173,7 +173,7 @@
 											db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
 											//Create Tables
 											out.print("<p>Creating tables ...");
-											db.createTables(Bean.getResourceBroker());
+											db.createTables(Bean.getDatabase());
 											if(db.noErrors())	{										
 												out.println(" <b>Ok</b></p>");
 											}
@@ -203,7 +203,7 @@
 					<table border="0">
 						<tr>
 							<td width="200" align="right">
-								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-3)">
+								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-2)">
 							</td>
 							<td width="200" align="left">
 								<input type="submit" name="submit" class="button" style="width:150px;" width="150" value="Continue &#062;&#062;">

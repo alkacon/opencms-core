@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/05/21 16:08:28 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/05/22 11:10:57 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,12 +75,12 @@ public class CmsSetup {
 	private boolean m_setupType;
 
 	/**
-	 * name of the database (mysql)
+	 * name of the database system
 	 */
 	private String m_database;
 	
-	// TODO: remove this later
-	private String m_resourceBroker;
+	// name of the database
+	private String m_db;
 	
 	/**
 	 * database password used to drop and create database
@@ -236,37 +236,37 @@ public class CmsSetup {
 
 	/** Gets the default pool */
 	public String getPool() {
-		return this.getExtProperty("resourcebroker.pool");
+		// TODO: get only first in list
+		return this.getExtProperty("db.pools");
 	}
 	
-	/** Sets the resource broker to the given value *//** Sets the driver manager to the given value */
-	public void setResourceBroker(String resourceBroker) {
-		// setExtProperty("resourcebroker", resourceBroker);
-		m_resourceBroker = resourceBroker;
+	/** Sets the database drivers to the given value */
+	public void setDatabase(String database) {
+
+		m_database = database;
 		
-		String vfsAccess = this.getDbProperty(this.getResourceBroker() + ".vfs.class");
-		String userAccess = this.getDbProperty(this.getResourceBroker() + ".user.class");
-		String dbAccess = this.getDbProperty(this.getResourceBroker() + ".db.class");
+		String vfsDriver = this.getDbProperty(m_database + ".vfs.driver");
+		String userDriver = this.getDbProperty(m_database + ".user.driver");
+		String projectDriver = this.getDbProperty(m_database + ".project.driver");
 		
-		setExtProperty("resourcebroker.access.vfs.class",vfsAccess);
-		setExtProperty("resourcebroker.access.user.class",userAccess);
-		setExtProperty("resourcebroker.access.db.class",dbAccess);
+		setExtProperty("db.vfs.driver", vfsDriver);
+		setExtProperty("db.user.driver",userDriver);
+		setExtProperty("db.project.driver",projectDriver);
 	}
 
-	/** Gets the resource broker */
-	public String getResourceBroker() {
-		//return this.getExtProperty("resourcebroker");
-		if (m_resourceBroker == null) {
-			m_resourceBroker = (String)this.getResourceBrokers().firstElement();
+	/** Gets the database */
+	public String getDatabase() {
+		if (m_database == null) {
+			m_database = (String)this.getDatabases().firstElement();
 		}
-		return m_resourceBroker;
+		return m_database;
 	}
 
-	/** Returns all resource Brokers found in 'dbsetup.properties' */
-	public Vector getResourceBrokers() {
+	/** Returns all databases found in 'dbsetup.properties' */
+	public Vector getDatabases() {
 		Vector values = new Vector();
 
-		String value = this.getDbProperty("resourceBrokers");
+		String value = this.getDbProperty("databases");
 		StringTokenizer tokenizer = new StringTokenizer(value, ",");
 		while (tokenizer.hasMoreTokens()) {
 			values.add(tokenizer.nextToken().trim());
@@ -274,11 +274,11 @@ public class CmsSetup {
 		return values;
 	}
     
-    /** Returns "nice display names" for all resource Brokers found in 'dbsetup.properties' */
-    public Vector getResourceBrokerNames() {
+    /** Returns "nice display names" for all databases found in 'dbsetup.properties' */
+    public Vector getDatabaseNames() {
         Vector values = new Vector();
 
-        String value = this.getDbProperty("resourceBrokerNames");
+        String value = this.getDbProperty("databaseNames");
         StringTokenizer tokenizer = new StringTokenizer(value, ",");
         while (tokenizer.hasMoreTokens()) {
             values.add(tokenizer.nextToken().trim());
@@ -288,48 +288,42 @@ public class CmsSetup {
 
 	/** Sets the connection string to the database to the given value */
 	public void setDbWorkConStr(String dbWorkConStr) {
-		//setExtProperty("pool." + getResourceBroker() + ".url", dbWorkConStr);
-		//setExtProperty("pool." + getResourceBroker() + "backup.url", dbWorkConStr);
-		//setExtProperty("pool." + getResourceBroker() + "online.url", dbWorkConStr);
-		String driver = this.getDbProperty(this.getResourceBroker() + ".driver");
+
+		String driver = this.getDbProperty(m_database + ".driver");
 		
 		// TODO: set the driver in own methods
-		setExtProperty(this.getPool() + ".jdbcDriver", driver);
-		setExtProperty(this.getPool() + ".jdbcUrl", dbWorkConStr);
+		setExtProperty("db.pool." + getPool() + ".jdbcDriver", driver);
+		setExtProperty("db.pool." + getPool() + ".jdbcUrl", dbWorkConStr);
 	}
 
 	/** Returns a connection string */
 	public String getDbWorkConStr() {
-		//return this.getExtProperty("pool." + getResourceBroker() + ".url");
-		return this.getExtProperty(this.getPool() + ".jdbcUrl");
+
+		return this.getExtProperty("db.pool." + getPool() + ".jdbcUrl");
 	}
 	
 	/** Sets the user of the database to the given value */
 	public void setDbWorkUser(String dbWorkUser) {
-		//setExtProperty("pool." + getResourceBroker() + ".user", dbWorkUser);
-		//setExtProperty("pool." + getResourceBroker() + "backup.user", dbWorkUser);
-		//setExtProperty("pool." + getResourceBroker() + "online.user", dbWorkUser);
-		setExtProperty(this.getPool() + ".user", dbWorkUser);
+
+		setExtProperty("db.pool." + getPool() + ".user", dbWorkUser);
 	}
 
 	/** Returns the user of the database from the properties */
 	public String getDbWorkUser() {
-		//return this.getExtProperty("pool." + getResourceBroker() + ".user");
-		return this.getExtProperty(this.getPool() + ".user");
+
+		return this.getExtProperty("db.pool." + getPool() + ".user");
 	}
 
 	/** Sets the password of the database to the given value */
 	public void setDbWorkPwd(String dbWorkPwd) {
-		//setExtProperty("pool." + getResourceBroker() + ".password", dbWorkPwd);
-		//setExtProperty("pool." + getResourceBroker() + "backup.password", dbWorkPwd);
-		//setExtProperty("pool." + getResourceBroker() + "online.password", dbWorkPwd);
-		setExtProperty(this.getPool() + ".password", dbWorkPwd);
+
+		setExtProperty("db.pool." + getPool() + ".password", dbWorkPwd);
 	}
 
 	/** Returns the password of the database from the properties */
 	public String getDbWorkPwd() {
-		//return this.getExtProperty("pool." + getResourceBroker() + ".password");
-		return this.getExtProperty(this.getPool() + ".password");
+
+		return this.getExtProperty("db.pool." + getPool() + ".password");
 	}
 
 	/** Returns the extended properties */
@@ -352,61 +346,66 @@ public class CmsSetup {
 		return (m_basePath + "WEB-INF/config/").replace('\\', '/').replace('/', File.separatorChar);
 	}
 
-	/** Returns the database driver belonging to the resource broker */
+	/** Sets the database driver belonging to the database */
+	public void setDbDriver(String driver) {
+		this.setDbProperty(m_database + ".driver", driver);
+	}
+	
+	/** Returns the database driver belonging to the database */
 	public String getDbDriver() {
-		//return m_ExtProperties.get("pool." + getResourceBroker() + ".driver").toString();
-		return this.getDbProperty(this.getResourceBroker() + ".driver");
+
+		return this.getDbProperty(m_database + ".driver");
 	}
 
 	/** Sets the minimum connections to the given value */
 	public void setMinConn(String minConn) {
-		setExtProperty("pool." + getResourceBroker() + ".minConn", minConn);
+		setExtProperty("db.pool." + getPool() + ".maxIdle", minConn);
 	}
 
 	/** Returns the min. connections */
 	public String getMinConn() {
-		return this.getExtProperty("pool." + getResourceBroker() + ".minConn");
+		return this.getExtProperty("db.pool." + getPool() + ".maxIdle");
 	}
 
 	/** Sets the maximum connections to the given value */
 	public void setMaxConn(String maxConn) {
-		setExtProperty("pool." + getResourceBroker() + ".maxConn", maxConn);
+		setExtProperty("db.pool." + getPool() + ".maxActive", maxConn);
 	}
 
 	/** Returns the max. connections */
 	public String getMaxConn() {
-		return this.getExtProperty("pool." + getResourceBroker() + ".maxConn");
+		return this.getExtProperty("db.pool." + getPool() + ".maxActive");
 	}
 
 	/** Sets the increase rate to the given value */
-	public void setIncreaseRate(String increaseRate) {
-		setExtProperty("pool." + getResourceBroker() + ".increaseRate", increaseRate);
-	}
+	//public void setIncreaseRate(String increaseRate) {
+	//	setExtProperty("pool." + getResourceBroker() + ".increaseRate", increaseRate);
+	//}
 
 	/** Returns the increase rate */
-	public String getIncreaseRate() {
-		return this.getExtProperty("pool." + getResourceBroker() + ".increaseRate");
-	}
+	//public String getIncreaseRate() {
+	//	return this.getExtProperty("pool." + getResourceBroker() + ".increaseRate");
+	//}
 
 	/** Sets the timeout to the given value */
 	public void setTimeout(String timeout) {
-		setExtProperty("pool." + getResourceBroker() + ".timeout", timeout);
+		setExtProperty("db.pool." + getPool() + ".maxWait", timeout);
 	}
 
 	/** Returns the timeout value */
 	public String getTimeout() {
-		return this.getExtProperty("pool." + getResourceBroker() + ".timeout");
+		return this.getExtProperty("db.pool." + getPool() + ".maxWait");
 	}
 
 	/** Sets the max. age to the given value */
-	public void setMaxAge(String maxAge) {
-		setExtProperty("pool." + getResourceBroker() + ".maxage", maxAge);
-	}
+	//public void setMaxAge(String maxAge) {
+	//	setExtProperty("pool." + getResourceBroker() + ".maxage", maxAge);
+	//}
 
 	/** Returns the max. age */
-	public String getMaxAge() {
-		return this.getExtProperty("pool." + getResourceBroker() + ".maxage");
-	}
+	//public String getMaxAge() {
+	//	return this.getExtProperty("pool." + getResourceBroker() + ".maxage");
+	//}
 
 	/** Sets the cache value for user to the given value */
 	public void setCacheUser(String cacheUser) {
@@ -836,20 +835,28 @@ public class CmsSetup {
         return getExtProperty("workplace.file.maxuploadsize");
     }
 
+	public String getDb() {
+		return this.getDbProperty(m_database + ".dbname");
+	}
+
+	public void setDb(String db) {
+		this.setDbProperty(m_database + ".dbname", db);
+	}
+	
 	public String getDbCreateConStr() {
-		return this.getDbProperty(this.getResourceBroker() + ".constr");
+		return this.getDbProperty(m_database + ".constr");
 	}
 
 	public void setDbCreateConStr(String dbCreateConStr) {
-		this.setDbProperty(this.getResourceBroker() + ".constr", dbCreateConStr);
+		this.setDbProperty(m_database + ".constr", dbCreateConStr);
 	}
 
 	public String getDbCreateUser() {
-		return this.getDbProperty(this.getResourceBroker() + ".user");
+		return this.getDbProperty(m_database + ".user");
 	}
 
 	public void setDbCreateUser(String dbCreateUser) {
-		this.setDbProperty(this.getResourceBroker() + ".user", dbCreateUser);
+		this.setDbProperty(m_database + ".user", dbCreateUser);
 	}
 
 	public String getDbCreatePwd() {
@@ -862,22 +869,22 @@ public class CmsSetup {
 
     /** Set the default tablespace when creating a new oracle user */
     public void setDbDefaultTablespace(String dbDefaultTablespace) {
-        this.setDbProperty(this.getResourceBroker() + ".defaultTablespace", dbDefaultTablespace);
+        this.setDbProperty(m_database + ".defaultTablespace", dbDefaultTablespace);
     }
 
     /** Get the default tablespace when creating a new oracle user */
     public String getDbDefaultTablespace() {
-        return this.getDbProperty(this.getResourceBroker() + ".defaultTablespace");
+        return this.getDbProperty(m_database + ".defaultTablespace");
     }
 
     /** Set the temporary tablespace when creating a new oracle user */
     public void setDbTemporaryTablespace(String dbTemporaryTablespace) {
-        this.setDbProperty(this.getResourceBroker() + ".temporaryTablespace", dbTemporaryTablespace);
+        this.setDbProperty(m_database + ".temporaryTablespace", dbTemporaryTablespace);
     }
 
     /** Get the temporary tablespace when creating a new oracle user */
     public String getDbTemporaryTablespace() {
-        return this.getDbProperty(this.getResourceBroker() + ".temporaryTablespace");
+        return this.getDbProperty(m_database + ".temporaryTablespace");
     }
        
 	public boolean getWizardEnabled() {
@@ -891,14 +898,6 @@ public class CmsSetup {
 
 	public Properties getDbSetupProps() {
 		return m_DbProperties;
-	}
-
-	public String getDb() {
-		return m_database;
-	}
-
-	public void setDb(String db) {
-		m_database = db;
 	}
 
 	public Hashtable getReplacer() {

@@ -16,7 +16,7 @@
 	String nextPage = "";
 	
 	if(setupOk)	{
-		String temp = Bean.getDbSetupProps().getProperty(Bean.getResourceBroker()+".page");
+		String temp = Bean.getDbSetupProps().getProperty(Bean.getDatabase()+".page");
 		if(temp != null)	{
 			nextPage = temp;
 		}

@@ -68,14 +68,14 @@
 											<input type="text" size="10" name="maxConn" value="<%= Bean.getMaxConn() %>">
 										</td>
 									</tr>
-									<tr>
+									<%-- <tr>
 										<td>
 											Increase rate
 										</td>
 										<td align="right">
 											<input type="text" size="10" name="increaseRate" value="<%= Bean.getIncreaseRate() %>">
 										</td>
-									</tr>
+									</tr> --%>
 									<tr>
 										<td>
 											Timeout
@@ -84,14 +84,14 @@
 											<input type="text" size="10" name="timeout" value="<%= Bean.getTimeout() %>">
 										</td>
 									</tr>
-									<tr>
+									<%-- <tr>
 										<td>
 											Max. Age.
 										</td>
 										<td align="right">
 											<input type="text" size="10" name="maxAge" value="<%= Bean.getMaxAge() %>">
 										</td>
-									</tr>													
+									</tr> --%>													
 								</table>
 							</td>
 							<td rowspan="2" align="center" valign="top" >

@@ -2,8 +2,9 @@
 <% /* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
 
+<% /* Set all given Properties */%>
+<jsp:setProperty name="Bean" property="*" />
 <% 
-	/* Set all given Properties */
 	int redirectNr = 0;	
 	while(request.getParameter("redirect"+redirectNr) != null)	{
 		Bean.setRedirect(request.getParameter("redirect"+redirectNr),redirectNr);

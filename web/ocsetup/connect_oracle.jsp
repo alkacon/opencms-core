@@ -147,26 +147,26 @@
 											Select Database
 										</td>
 										<td width="250">
-											<select name="resourceBroker" style="width:250px;" size="1" width="250" onchange="location.href='database_connection.jsp?resourceBroker='+this.options[this.selectedIndex].value;">
+											<select name="database" style="width:250px;" size="1" width="250" onchange="location.href='database_connection.jsp?database='+this.options[this.selectedIndex].value;">
 											<!-- --------------------- JSP CODE --------------------------- -->
 											<%
-												/* get all available resource brokers */
-												Vector resourceBrokers = Bean.getResourceBrokers();
-												Vector resourceBrokerNames = Bean.getResourceBrokerNames();
-												/* 	List all resource broker found in the dbsetup.properties */
-												if (resourceBrokers !=null && resourceBrokers.size() > 0)	{
-													for(int i=0;i<resourceBrokers.size();i++)	{
-														String rb = resourceBrokers.elementAt(i).toString();
-														String rn = resourceBrokerNames.elementAt(i).toString();
+												/* get all available databases */
+												Vector databases = Bean.getDatabases();
+												Vector databaseNames = Bean.getDatabaseNames();
+												/* 	List all databases found in the dbsetup.properties */
+												if (databases !=null && databases.size() > 0)	{
+													for(int i=0;i<databases.size();i++)	{
+														String db = databases.elementAt(i).toString();
+														String dn = databaseNames.elementAt(i).toString();
 														String selected = "";													
-														if(Bean.getResourceBroker().equals(rb))	{
+														if(Bean.getDatabase().equals(db))	{
 															selected = "selected";
 														}
-														out.println("<option value='"+rb+"' "+selected+">"+rn);
+														out.println("<option value='"+db+"' "+selected+">"+dn);
 													}
 												}
 												else	{
-													out.println("<option value='null'>no resource broker found");
+													out.println("<option value='null'>no database found");
 												}
 											%>
 											<!-- --------------------------------------------------------- -->
