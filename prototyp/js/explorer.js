@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/17 14:07:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/11/17 15:21:59 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -208,9 +208,12 @@ var i;
  */
 function histGoBack(){
     if(g_histLoc>0){//g_histLoc=1;
-    window.frames[1].frames[1].frames[0].document.forms[0].url.value=g_history[g_histLoc];
-    g_histLoc--;
+        window.frames[1].frames[1].frames[0].document.forms[0].url.value=g_history[g_histLoc];
+        g_histLoc--;
     }
+
+    window.frames[1].frames[1].frames[1].document.forms[0].document.location.href=window.frames[1].frames[1].frames[0].document.forms[0].url.value;
+    openurl();
 }
 
 /**
@@ -273,7 +276,7 @@ function display_ex(){
     explorer_head = window.body.explorer_content.explorer_head.document;
     framefill(explorer_head, framehead);
 
-    window.body.explorer_content.explorer_files.document.location="explorer_files.html";
+    window.body.explorer_content.explorer_files.document.location="new_explorer_files.html";
 }
 
 /* explorer_tree / tree functions ------------------------------------------ */
@@ -351,14 +354,15 @@ function openFolder(id){
         test = tree.nodes[nodeName].parent.id;
 
     }while(id!=tree.root.id);
+    top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value +='/';
     openurl();
 }
 
 function openurl(){
     folder=top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value;
-    top.window.frames[1].frames[1].frames[1].document.location="explorer_files.html?folder="+folder+"&check="+vi.checksum;
+    top.window.frames[1].frames[1].frames[1].document.location="new_explorer_files.html?folder="+folder+"&check="+vi.checksum;
 
-    //window.alert("explorer_files.html?folder="+folder+"&check="+vi.checksum);
+    //window.alert("new_explorer_files.html?folder="+folder+"&check="+vi.checksum);
 
 }
 
@@ -554,7 +558,7 @@ function dirUp(){
     window.frames[1].frames[1].frames[0].document.forms[0].url.value=window.frames[1].frames[1].frames[0].document.forms[0].url.value+"/";
     if(window.frames[1].frames[1].frames[0].document.forms[0].url.value.length<3)window.frames[1].frames[1].frames[0].document.forms[0].url.value="/";
     
-//TODO: LINK TO SERVER
+    openurl();
 }
 
 
@@ -786,6 +790,14 @@ function aF(name, path, title, type, dateolc, whoChanged, date, size, status, pr
 	vi.liste[vi.liste.length] = new file( name, path, title, type, dateolc, whoChanged, date, size, status, project, owner, group, permission, lockedBy);
 }
 
+
+function openthisfolder(thisdir){
+
+    top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value +=thisdir;
+    openurl();
+
+}
+
 /**
  *  creates content of the main-filelist-frame
  *  chooses which icon to use, which lockedBy icon, which color, etc...
@@ -820,7 +832,7 @@ function printList(wo){
 
             "td.filenotinproject{ background:#FFFFFF; color:#bbbbbb;} "+
             "a.filenotinproject{ color: #888888; } "+
-            "a:visited.filenotinproject{ color: #555555;} "+
+            "a:visited.filenotinproject{ color: #888888;} "+
             "a:hover.filenotinproject { background:#000088; color:#FFFFFF; text-decoration: none; } "+
 
             "td.filenormal{ background:#FFFFFF; color:#000000; } "+
@@ -842,17 +854,17 @@ function printList(wo){
 
     wo.writeln("<td class=topic width=20>&nbsp;</td>");
     wo.writeln("<td class=topic width=20>&nbsp;</td>");
-    if(vi.check_name)wo.writeln("<td class=topic width=120>"+vr.descr[0]+"</td>");
+    if(vi.check_name)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[0]+"</td>");
 
-    if(vi.check_title)wo.writeln("<td class=topic width=80>"+vr.descr[1]+"</td>");
-    if(vi.check_type)wo.writeln("<td class=topic width=100>"+vr.descr[2]+"</td>");
-    if(vi.check_date)wo.writeln("<td class=topic width=75>"+vr.descr[3]+"</td>");
-    if(vi.check_size)wo.writeln("<td class=topic width=60>"+vr.descr[4]+"</td>");
-    if(vi.check_status)wo.writeln("<td class=topic width=60>"+vr.descr[5]+"</td>");
-    if(vi.check_owner)wo.writeln("<td class=topic width=85>"+vr.descr[6]+"</td>");
-    if(vi.check_group)wo.writeln("<td class=topic width=85>"+vr.descr[7]+"</td>");
-    if(vi.check_perm)wo.writeln("<td class=topic width=45>"+vr.descr[8]+"</td>");
-    if(vi.check_lockedBy)wo.writeln("<td class=topic width=45>"+vr.descr[9]+"</td>");
+    if(vi.check_title)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[1]+"</td>");
+    if(vi.check_type)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[2]+"</td>");
+    if(vi.check_date)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[3]+"</td>");
+    if(vi.check_size)wo.writeln("<td nowrap class=topic width=50>"+vr.descr[4]+"</td>");
+    if(vi.check_status)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[5]+"</td>");
+    if(vi.check_owner)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[6]+"</td>");
+    if(vi.check_group)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[7]+"</td>");
+    if(vi.check_perm)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[8]+"</td>");
+    if(vi.check_lockedBy)wo.writeln("<td nowrap class=topic width=100>"+vr.descr[9]+"</td>");
     wo.writeln("</tr>");
 
     for(var i=0; i<vi.liste.length; i++){
@@ -881,18 +893,21 @@ function printList(wo){
             lockedBystring="";
         }
 
-        wo.write("<td align=center><img name='lock_"+i+"' "+lockedBystring+" border=0 width=16 height=16></a></td>");
+        wo.write("<td nowrap align=center><img name='lock_"+i+"' "+lockedBystring+" border=0 width=16 height=16></a></td>");
 
-        if(vi.check_name)wo.writeln("<td class="+ssclass+"><a href='#' class="+ssclass+">"+vi.liste[i].name+"</a></td>");
-        if(vi.check_title)wo.writeln("<td class="+ssclass+">"+vi.liste[i].title+"&nbsp;</td>");
-        if(vi.check_type)wo.writeln("<td class="+ssclass+">"+vi.resource[vi.liste[i].type].text+"</td>");
-        if(vi.check_date)wo.writeln("<td class="+ssclass+">"+vi.liste[i].date+"</td>");
-        if(vi.check_size)wo.writeln("<td class="+ssclass+">"+vi.liste[i].size+"</td>");
-        if(vi.check_status)wo.writeln("<td class="+ssclass+">"+vr.stati[vi.liste[i].status]+"</td>");
-        if(vi.check_owner)wo.writeln("<td class="+ssclass+">"+vi.liste[i].owner+"</td>");
-        if(vi.check_group)wo.writeln("<td class="+ssclass+">"+vi.liste[i].group+"</td>");
-        if(vi.check_perm)wo.write("<td class="+ssclass+">"+permShow(vi.liste[i].permission,wo)+"</td>");
-        if(vi.check_lockedBy)wo.writeln("<td class="+ssclass+">"+vi.liste[i].lockedBy+"</td>");
+        if(vi.check_name){
+            if(vi.liste[i].type==0)wo.writeln("<td nowrap class="+ssclass+"><a href=javascript:top.openthisfolder('"+vi.liste[i].name+"'); class="+ssclass+">"+vi.liste[i].name+"</a></td>");
+                else wo.writeln("<td nowrap class="+ssclass+"><a href='#' class="+ssclass+">"+vi.liste[i].name+"</a></td>");
+        }
+        if(vi.check_title)wo.writeln("<td nowrap class="+ssclass+">"+vi.liste[i].title+"&nbsp;</td>");
+        if(vi.check_type)wo.writeln("<td nowrap class="+ssclass+">"+vi.resource[vi.liste[i].type].text+"</td>");
+        if(vi.check_date)wo.writeln("<td nowrap class="+ssclass+">"+vi.liste[i].date+"</td>");
+        if(vi.check_size)wo.writeln("<td nowrap class="+ssclass+">"+vi.liste[i].size+"</td>");
+        if(vi.check_status)wo.writeln("<td nowrap class="+ssclass+">"+vr.stati[vi.liste[i].status]+"</td>");
+        if(vi.check_owner)wo.writeln("<td nowrap class="+ssclass+">"+vi.liste[i].owner+"</td>");
+        if(vi.check_group)wo.writeln("<td nowrap class="+ssclass+">"+vi.liste[i].group+"</td>");
+        if(vi.check_perm)wo.write("<td nowrap class="+ssclass+">"+permShow(vi.liste[i].permission,wo)+"</td>");
+        if(vi.check_lockedBy)wo.writeln("<td nowrap class="+ssclass+">"+vi.liste[i].lockedBy+"</td>");
         wo.writeln("</td></tr>");
     }
     wo.writeln("</tr></table>");
