@@ -72,7 +72,7 @@
 # Provides method for password encryption and password validation.
 # See the JavaDoc of interface org.opencms.security.I_CmsPasswordHandler for more details.
 -->
-<!ELEMENT passwordhandler (encoding, digest-type)>
+<!ELEMENT passwordhandler (encoding, digest-type, param*)>
 <!ATTLIST passwordhandler class CDATA #REQUIRED>
 
 <!ELEMENT digest-type (#PCDATA)>
