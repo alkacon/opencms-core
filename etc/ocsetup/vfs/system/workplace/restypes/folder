@@ -20,3 +20,6 @@
 	addMenuEntry(resource_id, "-", " ", "''","0222022202220");
 	addMenuEntry(resource_id, "language_key(explorer.context.property)", "property.html?initial=true", "''","2222022202220");
     
+	addMenuEntry(resource_id, "-", " ", "_top","2000000000000");
+	addMenuEntry(resource_id, "language_key(explorer.context.project)", "resource_to_project.html?initial=true", "''","2000000000000");
+    

@@ -41,7 +41,7 @@
 			<newbody>Neuer Textkörper</newbody>
 			<newtask>Neue Aufgabe</newtask>
 			<newpropertydef>Organisieren...</newpropertydef>
-	 	<next>Weiter</next>
+			<next>Weiter</next>
 			<nextscreen>Weiter <![CDATA[>>]]></nextscreen>
 			<ol>Nummerierung</ol>
 			<ok>OK</ok>
@@ -121,6 +121,7 @@
 				<chpwd>Leider konnte das Kennwort nicht geändert werden.</chpwd>
 				<chtype>Leider konnte der Dateityp nicht geändert werden.</chtype>
 				<copy>Leider konnte die Datei nicht kopiert werden.</copy>
+				<createasproject>Sie haben nicht das Recht ein Projekt anzulegen.</createasproject>
 				<datamissing>Sie haben noch nicht alle notwendigen Einträge in das Formular gemacht.</datamissing>
 				<delete>Leider konnte die Datei nicht gelöscht werden.</delete>
 				<deleteuser> Leider konnte der Benutzer nicht gelöscht werden.</deleteuser>
@@ -207,7 +208,7 @@
 			<suggestion>
 				<accessdenied>Bitte überprüfen Sie die Zugriffsrechte und die Sperrung des Verzeichnisses</accessdenied>
 				<adduser>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</adduser>
-			 <chgrp>Kontaktieren Sie Ihren Systemadministrator.</chgrp>
+				<chgrp>Kontaktieren Sie Ihren Systemadministrator.</chgrp>
 				<chmod>Kontaktieren Sie Ihren Systemadministrator.</chmod>
 				<chown>Kontaktieren Sie Ihren Systemadministrator.</chown>
 				<chpwd>Geben Sie das neue Kennwort erneut ein.</chpwd>
@@ -241,9 +242,9 @@
 				<unlock>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</unlock>
 				<upload>Bitte überprüfen Sie den Dateinamen, oder kontaktieren Sie Ihren Systemadministrator.</upload>
 			</suggestion>
- 		<title>	
+			<title>	
 				<accessdenied>Zugriff verweigert</accessdenied>
-			 	<adduser>Benutzer neu anlegen</adduser>
+				<adduser>Benutzer neu anlegen</adduser>
 				<addgroup>Gruppe neu anlegen</addgroup>
 				<changeuser>Benutzer ändern</changeuser>
 				<chgrp>Gruppe ändern</chgrp>
@@ -354,6 +355,7 @@
 				<newsedit>News bearbeiten</newsedit>
 				<overridelock>Sperrung übernehmen</overridelock>
 				<pageedit>Seite bearbeiten</pageedit>
+				<project>Als Project anlegen</project>
 				<property>Eigenschaften</property>
 				<rename>Umbenennen</rename>
 				<type>Dateityp ändern</type>

@@ -41,7 +41,7 @@
 			<newbody>New Body</newbody>
 			<newtask>New Task</newtask>
 			<newpropertydef>Define Properties...</newpropertydef>
-	 		<next>Next</next>
+			<next>Next</next>
 			<nextscreen>Continue <![CDATA[>>]]></nextscreen>
 			<ol>Enumeration</ol>
 			<ok>Ok</ok>
@@ -110,7 +110,7 @@
 			</label>
 		</database>
 		
-		<error>		
+		<error>
 			<message>
 				<accessdenied>The access to the selected resource is denied.</accessdenied>
 				<badcharacter>invalid character : </badcharacter>
@@ -120,6 +120,7 @@
 				<chpwd>Sorry, the password could not be changed.</chpwd>
 				<chtype>Sorry, the file type could not be changed.</chtype>
 				<copy>Sorry, the file could not be copied.</copy>
+				<createasproject>You don't have the permissions to create a project.</createasproject>
 				<datamissing>You have not entered all the required fields in the form.</datamissing>
 				<delete>Sorry, the file could not be deleted.</delete>
 				<deleteuser> Sorry, the user could not be deleted.</deleteuser>
@@ -240,9 +241,9 @@
 				<unlock>Please try again later, or contact your system administrator.</unlock>
 				<upload>Please check the filename, or contact your system administrator.</upload>
 			</suggestion>
- 		<title>	
+			<title>	
 				<accessdenied>Access denied</accessdenied>
-			 	<adduser>Create new User</adduser>
+				<adduser>Create new User</adduser>
 				<addgroup>Create new Group</addgroup>
 				<changeuser>Change User</changeuser>
 				<chgrp>Change Group</chgrp>
@@ -260,12 +261,12 @@
 				<downgallery>Creating new Download Gallery</downgallery>
 				<lock>Lock File</lock>
 				<lockchange>Steal Lock</lockchange>
- 				<login>Login Error</login>
+				<login>Login Error</login>
 				<projectlockchange>Release lock for project</projectlockchange>
 				<newprop>New property for resource type</newprop>
-				<newextension>Associate new file extension</newextension>				
- 				<newproject>New Project</newproject>
- 				<newtask>New Task</newtask>
+				<newextension>Associate new file extension</newextension>
+				<newproject>New Project</newproject>
+				<newtask>New Task</newtask>
 				<picbrowser>Picture Browser</picbrowser>
 				<picgallery>Creating new Picture Gallery</picgallery>
 				<publishproject>Publish Project</publishproject>
@@ -353,6 +354,7 @@
 				<newsedit>Edit News</newsedit>
 				<overridelock>Steal Lock</overridelock>
 				<pageedit>Edit Page</pageedit>
+				<project>Create as project</project>
 				<property>Properties</property>
 				<rename>Rename</rename>
 				<type>Change File Type</type>
@@ -493,7 +495,7 @@
 			<groupsprojectmanager>Manager Group</groupsprojectmanager>
 			<groupsprojectworker>User Group</groupsprojectworker>
 			<historyheader><![CDATA[Last edited at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edited by]]></historyheader>
-		 	<imagelist>Imagelist</imagelist>
+			<imagelist>Imagelist</imagelist>
 			<inactive>inactive</inactive>
 			<link>Link</link>
 			<loading>Loading...</loading>
@@ -528,7 +530,7 @@
 			<user>User</user>
 			<version>Version</version>
 			<view>View</view>
-		 	<wptitle>OpenCms Workplace of</wptitle>
+			<wptitle>OpenCms Workplace of</wptitle>
 			<writerights>permission to write for others</writerights>
 		</label>
 		
@@ -539,7 +541,7 @@
 			<nocolor>No color has been selected</nocolor>
 			<reason>Reason</reason>
 			<wait>Please wait...</wait>
-	 	</message>
+		</message>
 		
 		<messagebox>
 			<title>
