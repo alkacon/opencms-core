@@ -406,6 +406,107 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 </TEMPLATE>
 <!--delete-->
 
+<!-- template publish  ********************************************************************* -->
+
+<TEMPLATE name="publish">
+<![CDATA[
+<HTML>
+
+<SCRIPT LANGUAGE="JavaScript">							  
+<!--
+function show_help()
+{
+	return '5_2_2_1.html';
+}
+
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+//-->
+</SCRIPT>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+</HEAD>
+
+<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form name="DELETE" action="]]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[" method=get>
+<table cellspacing=0 cellpadding=0 border=2 width=310px>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Begin tablehead blue -->
+			<tr> 
+           		<td colspan=3 class="head">]]><PROCESS>publishtitle</PROCESS><![CDATA[: ]]><PROCESS>newsentry</PROCESS><![CDATA[</td>
+			</tr>
+			<!-- Ende tablehead blue -->
+			
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- End empty row -->
+			
+			<tr>
+				<td class=dialogtxt colspan=3>
+				<br>
+				</td>
+			</tr>
+						
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- End empty row -->
+
+			<tr>
+				<td class=dialogtxt colspan=3 align=center>
+					]]><PROCESS>publishdialog1</PROCESS><![CDATA[<br>
+					]]><PROCESS>publishdialog2</PROCESS><![CDATA[<br>
+				</td>
+			</tr>
+
+
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- End empty row -->
+			
+			<!-- Begin buttons -->
+			<tr><td class=dialogtxt colspan=3>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
+						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
+						onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';">
+					</td>
+				</tr>
+				</table>
+				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+			</td>
+			</tr>
+			<!-- End buttons -->			
+			</table>
+	</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+<!--publish-->
+
 <!-- template error  ********************************************************************* -->
 
 <TEMPLATE name="error">
@@ -583,6 +684,76 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 			</tr>	
 			<tr>
 				<td class=dialogtxt align=left>]]><PROCESS>undeleteerror</PROCESS><![CDATA[!
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>
+				<!-- Beginn Leerzeile-->
+			<tr> 
+				<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Begin Buttons-->
+			<tr><td class=dialogtxt colspan=2>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=center><INPUT class=button width = 100                       
+						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[';"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			</table>
+			<!-- End Buttons-->	
+	</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</body>
+</html>
+]]>
+
+</TEMPLATE>
+
+<!-- template publisherror  ********************************************************************* -->
+
+<TEMPLATE name="publisherror">
+<![CDATA[
+<html>
+<head>
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<!-- Ende Style -->
+</head>
+
+<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id="ERROR" name="ERROR">
+<table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
+	<tr><td class=dialogtxt>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			<!-- Beginn Leerzeile-->
+			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+			<!-- Ende Leerzeile-->
+			<tr> 
+           		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+				<td class=dialogtxt align=left>]]><LABEL value="explorer.context.publish"/><![CDATA[
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>	
+			<tr>
+				<td class=dialogtxt align=left>]]><PROCESS>publisherror</PROCESS><![CDATA[!
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			</tr>
 				<!-- Beginn Leerzeile-->
@@ -798,3 +969,5 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 <!-- End processed data -->
 
 </WORKPLACE>
+
+
