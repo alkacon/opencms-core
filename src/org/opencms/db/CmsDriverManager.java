@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.369 $
+ * Date   : $Date: 2004/06/04 16:13:57 $
+ * Version: $Revision: 1.370 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.369 $ $Date: 2004/06/04 15:42:06 $
+ * @version $Revision: 1.370 $ $Date: 2004/06/04 16:13:57 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3581,6 +3581,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 while (i.hasNext()) {
                     CmsResource res = (CmsResource)i.next();
 
+                    int warning = 0;
+                    // this must use the new filter methods / options 
+                    
                     if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                         if (res.isFolder() && !CmsResource.isFolder(res.getName())) {
                             res.setFullResourceName(folderRes.getRootPath() + res.getName().concat("/"));
