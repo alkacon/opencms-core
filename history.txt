@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.13 Bela Tegeuse - 22 May 2001
+! Added accessrights for the new element cache.
+
 OpenCms 4.3.12 Bela Tegeuse - 17 May 2001
 ! Added db2 sql setup script. Thanks to Uwe Heldt.
 ! Timeout for the new element cache. 
