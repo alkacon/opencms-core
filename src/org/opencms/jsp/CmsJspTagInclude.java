@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/01/20 15:59:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/02 13:59:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -439,7 +439,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         }
        
         // save old parameters from request
-        Map oldParamterMap = req.getParameterMap();
+        Map oldParameterMap = req.getParameterMap();
         
         // check the edit mode
         String editMode = null;
@@ -448,7 +448,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         if (editable) {
             I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
             editMode = actionClass.getEditMode(controller.getCmsObject(), target, (CmsXmlPage)req.getAttribute(CmsXmlPageLoader.C_XMLPAGE_OBJECT), element);
-            editArea = (String) context.getAttribute(I_CmsEditorActionHandler.C_EDIT_AREA);
+            editArea = (String)context.getRequest().getAttribute(I_CmsEditorActionHandler.C_EDIT_AREA);
         }
 
         try {         
@@ -494,8 +494,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             }
             throw new JspException(imprintExceptionMessage(e, target), e);
         } finally {
-            if (oldParamterMap != null) {
-                controller.getCurrentRequest().setParameterMap(oldParamterMap);
+            if (oldParameterMap != null) {
+                controller.getCurrentRequest().setParameterMap(oldParameterMap);
             }
         }           
     }
