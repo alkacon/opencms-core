@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/06/14 12:02:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/30 08:50:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.configuration;
 
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
@@ -132,13 +133,22 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void addResourceInitHandler(String clazz) {
         // initialize "resourceinit" registry classes
+        Object initClass;
         try {
-            m_resourceInitHandlers.add(Class.forName(clazz).newInstance());
+            initClass = Class.forName(clazz).newInstance();
+        } catch (Throwable t) {
+            OpenCms.getLog(this).error(". Resource init class '" + clazz  + "' could not be instanciated", t);
+            return;
+        }
+        if (initClass instanceof I_CmsResourceInit) {
+            m_resourceInitHandlers.add(initClass);
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Resource init class  : " + clazz + " instanciated");
             }
-        } catch (Throwable t) {
-            OpenCms.getLog(this).error(". Resource init class '" + clazz  + "' could not be instanciated", t);
+        } else {        
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).error(". Resource init class  : " + clazz + " invalid");
+            }
         }
     }
 
@@ -169,13 +179,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILFROM, "setMailFromDefault", 0);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_MAIL, "setMailSettings");
         
-        // add mail host configuration rul
+        // add mail host configuration rule
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, "addMailHost", 5);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 0, A_NAME);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 1, A_ORDER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 2, A_PROTOCOL);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 3, A_USER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 4, A_PASSWORD);
+
+        // add resource init classes
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER, "addResourceInitHandler", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_RESOURCEINIT + "/" + N_RESOURCEINITHANDLER, 0, A_CLASS);    
     }
     
     /**
