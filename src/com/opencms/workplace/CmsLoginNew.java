@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2002/12/06 23:16:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/12/17 19:41:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -82,12 +82,12 @@ public class CmsLoginNew extends CmsXmlTemplate {
         // Initialize the display - language
         Vector v = cms.getRequestContext().getAcceptedLanguages();
         for (int i=0; i<v.size(); i++) {
-            m_messages = new CmsMessages("workplace", new Locale((String)v.get(i), "", ""));  
+            m_messages = new CmsMessages("com.opencms.workplace.workplace", new Locale((String)v.get(i), "", ""));  
             if (m_messages.isInitialized()) break;                  
         }        
         // Still no initialized locale, so use "en".
         if (! m_messages.isInitialized()) {
-            m_messages = new CmsMessages("workplace", new Locale("en", "", ""));  
+            m_messages = new CmsMessages("com.opencms.workplace.workplace", new Locale("en", "", ""));  
         }
         
         // Check if a "logout=true" parameter is present, if so trash the session
