@@ -1,8 +1,8 @@
 package com.opencms.file;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronizeList.java,v $
- * Date   : $Date: 2001/02/06 14:36:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/02/16 09:16:16 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -37,24 +37,24 @@ import com.opencms.util.*;
  * in the virtual filesystem (VFS) and the server filesystem (SFS)
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2001/02/06 14:36:25 $
+ * @version $Revision: 1.4 $ $Date: 2001/02/16 09:16:16 $
  */
 public class CmsSynchronizeList implements I_CmsConstants, Serializable {
 
 	/**
 	 * the name of the synchronize list in the filesystem
 	 */
-	private String C_SYNCLIST_FILE = "synchronize.list";
+	public static String C_SYNCLIST_FILE = "synchronize.list";
 
 	/**
 	 * the name of the key for the resource date in the virtual filesystem
 	 */
-	private String C_VFS_DATE = "VFSDATE";
+	static final String C_VFS_DATE = "VFSDATE";
 
 	/**
 	 * the name of the key for the resource date in the server filesystem
 	 */
-	private String C_SFS_DATE = "SFSDATE";
+	static final String C_SFS_DATE = "SFSDATE";
 
 	/**
 	 * the path on the filesystem for synchronization

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2001/02/05 16:55:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/02/16 09:16:16 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -44,7 +44,7 @@ import source.org.apache.java.util.*;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2001/02/05 16:55:59 $
+ * @version $Revision: 1.3 $ $Date: 2001/02/16 09:16:16 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -56,23 +56,23 @@ public class CmsSynchronize implements I_CmsConstants{
 	/**
 	 * flag to synchronize no filesystem,
 	 */
-	private int C_SYNC_NONE = 0;
+	static final int C_SYNC_NONE = 0;
 
 	/**
 	 * flag to synchronize the server filesystem
 	 */
-	private int C_SYNC_SFS = 1;
+	static final int C_SYNC_SFS = 1;
 
 	/**
 	 * flag to synchronize the virtual filesystem
 	 */
-	private int C_SYNC_VFS = 2;
+	static final int C_SYNC_VFS = 2;
 
 	/**
 	 * flag to synchronize the server filesystem,
 	 * rename the old file and copy the new file from VFS
 	 */
-	private int C_SYNC_SFSNEW = 3;
+	static final int C_SYNC_SFSNEW = 3;
 
 	/**
 	 * the path in the server filesystem where the resource has to be synchronized
@@ -105,7 +105,7 @@ public class CmsSynchronize implements I_CmsConstants{
 	 */
 	public CmsSynchronize(CmsObject cms, String resourceName)
 		throws CmsException {
-                File syncpath = null;
+        File syncpath = null;
 		m_cms = cms;
 		m_synchronizePath = m_cms.getRegistry().getSystemValue(C_SYNCHRONISATION_PATH);
 
@@ -118,13 +118,13 @@ public class CmsSynchronize implements I_CmsConstants{
 			// create the syncpath if necessary
 			syncpath = new File(m_synchronizePath.replace('/', syncpath.separatorChar));
 			if (!syncpath.exists()){
-                            syncpath.mkdirs();
-                        }
+                syncpath.mkdirs();
+            }
 			// first synchronize the SFS with the resources from VFS
 			synchronizeServer(resourceName);
 			// if the resource is a folder then synchronize the VFS with the SFS
 			if (resourceName.endsWith("/")){
-                            synchronizeVirtual(resourceName);
+                synchronizeVirtual(resourceName);
 			}
 			// save the synchronisation-list
 			//System.out.println(m_synchronizeList.toString());
@@ -149,8 +149,8 @@ public class CmsSynchronize implements I_CmsConstants{
 		CmsResource startResource = null;
 		CmsFile syncFile = null;
 		CmsFolder syncFolder = null;
-                File startFolder = null;
-                File sfsFile = null;
+        File startFolder = null;
+        File sfsFile = null;
 		int onlineProject = m_cms.onlineProject().getId();
 
 		startResource = m_cms.readFileHeader(resourceName);
@@ -161,7 +161,7 @@ public class CmsSynchronize implements I_CmsConstants{
 			// it's a folder, so all files and folders in this have to be synchronized
 			// first create the start folder
 			startFolder = new File((m_synchronizePath+startResource.getAbsolutePath()).replace('/', startFolder.separatorChar));
-                        startFolder.mkdirs();
+            startFolder.mkdirs();
 			// now put the resource in the hashtable for VFS resources
 			m_vfsFolders.put(m_synchronizePath+startResource.getAbsolutePath(), startResource);
 			// read the resources from the virtual filesystem
@@ -169,7 +169,7 @@ public class CmsSynchronize implements I_CmsConstants{
 			filesInFolder = m_cms.getFilesInFolder(resourceName);
 			for (int i = 0; i < filesInFolder.size(); i++){
 				syncFile = ((CmsFile) filesInFolder.elementAt(i));
-				if (syncFile.getProjectId() != onlineProject){
+				if ((syncFile.getProjectId() != onlineProject) && (!syncFile.getName().startsWith("~"))){
 					if (syncFile.getState() == C_STATE_DELETED) {
 						// the file has to be deleted from the server filesystem
 						sfsFile = new File(m_synchronizePath+syncFile.getAbsolutePath());
@@ -208,7 +208,7 @@ public class CmsSynchronize implements I_CmsConstants{
 			}
 		} else {
 			// it's only one file that has to be synchronized
-			if (startResource.getProjectId() != onlineProject){
+			if ((startResource.getProjectId() != onlineProject) && (!startResource.getName().startsWith("~"))){
 				if (startResource.getState() == C_STATE_DELETED) {
 					// the file has to be deleted from the server filesystem
 					sfsFile = new File(m_synchronizePath+startResource.getAbsolutePath());
@@ -237,21 +237,21 @@ public class CmsSynchronize implements I_CmsConstants{
 		// and add the new resources to the virtual filesystem
 		File sfsFile = new File(m_synchronizePath+resourceName);
 		//String sfsAbsolutePath = sfsFile.getPath().substring(m_synchronizePath.length()).replace(sfsFile.separatorChar,'/');
-                String sfsAbsolutePath = resourceName;
-                String[] diskFiles = sfsFile.list();
+        String sfsAbsolutePath = resourceName;
+        String[] diskFiles = sfsFile.list();
 		File currentFile;
 		CmsFile hashFile = null;
 		CmsFolder hashFolder = null;
 		for (int i = 0; i < diskFiles.length; i++){
 			currentFile = new File(sfsFile, diskFiles[i]);
 			if (currentFile.isDirectory()){
-                                //hashFolder = (CmsFolder)m_vfsFolders.get(sfsFile.getPath().replace(sfsFile.separatorChar,'/')+"/"+currentFile.getName()+"/");
-                                hashFolder = (CmsFolder)m_vfsFolders.get(m_synchronizePath+resourceName+currentFile.getName()+"/");
-                                if (hashFolder == null){
-					// the folder does not exist in the VFS, so add it from SFS
+                //hashFolder = (CmsFolder)m_vfsFolders.get(sfsFile.getPath().replace(sfsFile.separatorChar,'/')+"/"+currentFile.getName()+"/");
+                hashFolder = (CmsFolder)m_vfsFolders.get(m_synchronizePath+resourceName+currentFile.getName()+"/");
+                if (hashFolder == null){
+				    // the folder does not exist in the VFS, so add it from SFS
 					try {
-                                        	m_cms.createFolder(sfsAbsolutePath,currentFile.getName());
-                                        	m_cms.lockResource(sfsAbsolutePath+currentFile.getName()+"/");
+                        m_cms.createFolder(sfsAbsolutePath,currentFile.getName());
+                        m_cms.lockResource(sfsAbsolutePath+currentFile.getName()+"/");
 					} catch (CmsException e){
 						// if the folder already exists do nothing
 						if (e.getType() != CmsException.C_FILE_EXISTS){
@@ -261,23 +261,25 @@ public class CmsSynchronize implements I_CmsConstants{
 				}
 				hashFolder = null;
 				// now read the filelist of this folder
-                                synchronizeVirtual(sfsAbsolutePath+currentFile.getName()+"/");
+                synchronizeVirtual(sfsAbsolutePath+currentFile.getName()+"/");
 			} else {
-                                //hashFile = (CmsFile)m_vfsFiles.get(sfsFile.getPath().replace(sfsFile.separatorChar,'/')+"/"+currentFile.getName());
+                //hashFile = (CmsFile)m_vfsFiles.get(sfsFile.getPath().replace(sfsFile.separatorChar,'/')+"/"+currentFile.getName());
 				hashFile = (CmsFile)m_vfsFiles.get(m_synchronizePath+resourceName+currentFile.getName());
-                                if (hashFile == null){
+                if (hashFile == null){
 					// the file does not exist in the VFS, so add it from SFS
 					try {
 						byte[] content = getFileBytes(currentFile);
 						String type = getFileType(currentFile.getName());
-						if (!currentFile.getName().startsWith("$")){
+						if ((!currentFile.getName().startsWith("$")) &&
+                            (!currentFile.getName().startsWith("~")) &&
+                            (!currentFile.getName().equals(CmsSynchronizeList.C_SYNCLIST_FILE))){
 							try {
-                                                                CmsFile newFile = m_cms.createFile(sfsAbsolutePath, currentFile.getName(), content, type);
+                                CmsFile newFile = m_cms.createFile(sfsAbsolutePath, currentFile.getName(), content, type);
 								m_cms.lockResource(sfsAbsolutePath+currentFile.getName());
 								m_synchronizeList.putDates(sfsAbsolutePath+currentFile.getName(), newFile.getDateLastModified(), currentFile.lastModified());
 							} catch (CmsException e) {
 								if (e.getType() == CmsException.C_FILE_EXISTS){
-                                                                        System.out.println("File "+sfsAbsolutePath+currentFile.getName()+" already exists!");
+                                    System.out.println("File "+sfsAbsolutePath+currentFile.getName()+" already exists!");
 									// if the file exists try to update the file
 									//try {
 									//	CmsFile updFile = m_cms.readFile(sfsAbsolutePath+currentFile.getName());
@@ -313,7 +315,7 @@ public class CmsSynchronize implements I_CmsConstants{
 
 		String path = m_synchronizePath+vfsFile.getAbsolutePath().substring(0,vfsFile.getAbsolutePath().lastIndexOf("/"));
 		String fileName = vfsFile.getAbsolutePath().substring(vfsFile.getAbsolutePath().lastIndexOf("/")+1);
-                sfsFile = new File(path, fileName);
+        sfsFile = new File(path, fileName);
 
 		if (!sfsFile.exists()){
 			// if the file does not exist in SFS, it has to be created
@@ -329,7 +331,7 @@ public class CmsSynchronize implements I_CmsConstants{
 			// the file from VFS has changed, so update the SFS
 			try {
 				writeFileByte(vfsFile.getContents(), sfsFile);
-                                m_synchronizeList.putDates(vfsFile.getAbsolutePath(), vfsFile.getDateLastModified(), sfsFile.lastModified());
+                m_synchronizeList.putDates(vfsFile.getAbsolutePath(), vfsFile.getDateLastModified(), sfsFile.lastModified());
 			} catch (Exception e){
 				throw new CmsException("["+this.getClass().getName()+"]"+" Error while updating server filesystem",e);
 			}
@@ -340,8 +342,9 @@ public class CmsSynchronize implements I_CmsConstants{
 				byte [] content = getFileBytes(sfsFile);
 				updVfsFile = vfsFile;
 				updVfsFile.setContents(content);
+                m_cms.lockResource(updVfsFile.getAbsolutePath(), true);
 				m_cms.writeFile(updVfsFile);
-                                m_synchronizeList.putDates(vfsFile.getAbsolutePath(), m_cms.readFile(updVfsFile.getAbsolutePath()).getDateLastModified(), sfsFile.lastModified());
+                m_synchronizeList.putDates(vfsFile.getAbsolutePath(), m_cms.readFile(updVfsFile.getAbsolutePath()).getDateLastModified(), sfsFile.lastModified());
 			} catch (Exception e) {
 				throw new CmsException("["+this.getClass().getName()+"]"+" Error while updating virtual filesystem",e);
 			}
@@ -354,7 +357,7 @@ public class CmsSynchronize implements I_CmsConstants{
 				// file has copied successfully, now copy the file from VFS
 				try {
 					writeFileByte(vfsFile.getContents(), sfsFile);
-                                        m_synchronizeList.putDates(vfsFile.getAbsolutePath(), vfsFile.getDateLastModified(), sfsFile.lastModified());
+                    m_synchronizeList.putDates(vfsFile.getAbsolutePath(), vfsFile.getDateLastModified(), sfsFile.lastModified());
 				} catch (Exception e) {
 					throw new CmsException("["+this.getClass().getName()+"]"+" Error while updating server filesystem",e);
 				}
@@ -388,7 +391,7 @@ public class CmsSynchronize implements I_CmsConstants{
 			return C_SYNC_SFS;
 		}
 
-                if (vfsDate > syncVfsDate){
+        if (vfsDate > syncVfsDate){
 			if (sfsDate > syncSfsDate){
 				return C_SYNC_SFSNEW;
 			} else {
@@ -415,9 +418,9 @@ public class CmsSynchronize implements I_CmsConstants{
 			throw new CmsException("["+this.getClass().getName()+"] "+newFile.getPath()+" already exists on filesystem");
 		}
 		try {
-                        File parentFolder = new File(newFile.getPath().replace('/', newFile.separatorChar).substring(0,newFile.getPath().lastIndexOf(newFile.separator)));
-                        parentFolder.mkdirs();
-                        if (parentFolder.exists()){
+            File parentFolder = new File(newFile.getPath().replace('/', newFile.separatorChar).substring(0,newFile.getPath().lastIndexOf(newFile.separator)));
+            parentFolder.mkdirs();
+            if (parentFolder.exists()){
 				fOut = new FileOutputStream(newFile);
 			} else {
 				throw new CmsException("["+this.getClass().getName()+"]"+" Cannot create directories for "+newFile.getPath());
