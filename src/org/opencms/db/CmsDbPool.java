@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/09/17 16:11:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/18 16:43:31 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,6 @@ package org.opencms.db;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-
-import org.apache.commons.dbcp.AbandonedConfig;
-import org.apache.commons.dbcp.AbandonedObjectPool;
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
@@ -54,7 +51,7 @@ import source.org.apache.java.util.Configurations;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/09/17 16:11:16 $
+ * @version $Revision: 1.13 $ $Date: 2003/09/18 16:43:31 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -71,7 +68,6 @@ public final class CmsDbPool extends Object {
 
     protected static final String C_KEY_JDBC_DRIVER = "jdbcDriver";
     protected static final String C_KEY_JDBC_URL = "jdbcUrl";
-    protected static final String C_KEY_LOG_ABANDONED = "logAbandoned";
     protected static final String C_KEY_MAX_ACTIVE = "maxActive";
     protected static final String C_KEY_MAX_IDLE = "maxIdle";
     protected static final String C_KEY_MAX_WAIT = "maxWait";
@@ -81,8 +77,7 @@ public final class CmsDbPool extends Object {
     public static final String C_KEY_POOL_USER = "user";
     public static final String C_KEY_POOL_VFS = "vfs";
     protected static final String C_KEY_POOLING = "pooling";
-    protected static final String C_KEY_REMOVE_ABANDONED = "removeAbandoned";
-    protected static final String C_KEY_REMOVE_ABANDONED_TIMEOUT = "removeAbandonedTimeout";
+
     protected static final String C_KEY_TEST_ON_BORROW = "testOnBorrow";
     protected static final String C_KEY_TEST_QUERY = "testQuery";
     protected static final String C_KEY_USERNAME = "user";
@@ -116,7 +111,6 @@ public final class CmsDbPool extends Object {
         String username = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_USERNAME);
         String password = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_PASSWORD);
         String poolUrl = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_POOL_URL);
-        String dbName = config.getString(C_KEY_DATABASE_NAME).trim();
         String whenExhaustedActionValue = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_WHEN_EXHAUSTED_ACTION).trim();
         byte whenExhaustedAction = 0;
         boolean testOnBorrow = "true".equalsIgnoreCase(config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_TEST_ON_BORROW).trim());
@@ -164,23 +158,8 @@ public final class CmsDbPool extends Object {
         // initialize a keyed object pool to store connections
         GenericObjectPool connectionPool = null;
 
-        if ("mysql".equalsIgnoreCase(dbName.trim())) {
-            // read the additional config values
-            boolean logAbandoned = "true".equalsIgnoreCase(config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_LOG_ABANDONED).trim());
-            boolean removeAbandoned = "true".equalsIgnoreCase(config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_REMOVE_ABANDONED).trim());
-            int removeAbandonedTimeout = config.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_REMOVE_ABANDONED_TIMEOUT, 300);
-
-            // settings to handle abandoned db connections in case of a MySQL server
-            AbandonedConfig abandonedConfig = new AbandonedConfig();
-            abandonedConfig.setLogAbandoned(logAbandoned);
-            abandonedConfig.setRemoveAbandoned(removeAbandoned);
-            abandonedConfig.setRemoveAbandonedTimeout(removeAbandonedTimeout);
-
-            connectionPool = new AbandonedObjectPool(null, abandonedConfig);
-        } else {
-            // all other servers use a generic pool
-            connectionPool = new GenericObjectPool(null);
-        }
+        // use the generic pool
+        connectionPool = new GenericObjectPool(null);
 
         // initialize an object pool to store connections
         connectionPool.setMaxActive(maxActive);
