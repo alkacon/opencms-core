@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2001/12/11 09:13:05 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/12/18 15:26:52 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -133,11 +133,14 @@ public class CmsSetupUtils {
             while(true) {
                 String line = lnr.readLine();
                 if(line == null)  break;
+                line = line.trim();
 
-                int equalSign = line.indexOf('=');
-
-                if (equalSign > 0 && (line.indexOf('#') == -1)) {
-                    String key = line.substring(0,equalSign).trim();
+                if(line.startsWith("#")) {
+                    /* write comment). */
+                    fw.write(line);
+                }
+                else if (line.indexOf('=') > -1) {
+                    String key = line.substring(0,line.indexOf('=')).trim();
 
                     /* write key */
                     fw.write((key+"="));
@@ -147,10 +150,9 @@ public class CmsSetupUtils {
                         String value = extProp.get(key).toString();
 
                         /* if this was a list, we need to delete leading and tailing '[]' characters */
-                        if(value.startsWith("[") && value.endsWith("]")) {
-                            value = value.substring(1, value.length() - 1);
+                        if(value.startsWith("[") && value.endsWith("]") && value.indexOf(',')>-1) {
+                            value = splitMultipleValues(value.substring(1,value.length()-1));
                         }
-
                         /* write it */
                         fw.write(value);
                     }
@@ -159,9 +161,9 @@ public class CmsSetupUtils {
                     }
                 }
                 else  {
-                    /* no key found ! write the line anyway (might be a comment). */
-                    fw.write(line);
+                  //do nothing
                 }
+
                 /* add at the end of each line */
                 fw.write("\n");
             }
@@ -279,5 +281,20 @@ public class CmsSetupUtils {
             } catch (IOException e) {
             }
         }
+    }
+
+    private String splitMultipleValues(String value)  {
+      String tempValue = "";
+      StringTokenizer st = new StringTokenizer(value,",");
+      int counter = 1;
+      int max = st.countTokens();
+      while(st.hasMoreTokens()) {
+        tempValue += st.nextToken().trim();
+        if(counter < max)  {
+          tempValue += ", \\ \n";
+        }
+        counter++;
+      }
+      return tempValue;
     }
 }
