@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/07/23 08:22:53 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/08/01 19:48:58 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.12 $ $Date: 2003/07/23 08:22:53 $
+ * @version $Revision: 1.13 $ $Date: 2003/08/01 19:48:58 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1714,6 +1714,10 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 		Connection conn = null;
 		ResultSet res = null;
 		
+        // at first, we remove all access contries of this resource in the online project
+        removeAllAccessControlEntries(onlineProject, onlineId);
+        
+        // then, we copy thze access control entries from the offline project into the online project
 		try {
 			conn = m_sqlManager.getConnection();
 			stmt = m_sqlManager.getPreparedStatement(conn, offlineProject, "C_ACCESS_READ_ENTRIES");
