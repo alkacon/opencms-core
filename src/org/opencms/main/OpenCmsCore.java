@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/01/06 12:26:42 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/01/06 12:52:55 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -415,8 +415,12 @@ public final class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info("[OpenCms] Performing shutdown ...");
         }
         try {
-            m_scheduler.shutDown();
-            m_driverManager.destroy();
+            if (m_scheduler != null) {
+                m_scheduler.shutDown();
+            }
+            if (m_driverManager != null) {
+                m_driverManager.destroy();
+            }
         } catch (Throwable e) {
             if (getLog(this).isErrorEnabled()) {
                 getLog(this).error("[OpenCms]" + e.toString());
