@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/02/23 15:55:34 $
- * Version: $Revision: 1.228 $
+ * Date   : $Date: 2005/02/26 13:51:00 $
+ * Version: $Revision: 1.229 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.228 $ $Date: 2005/02/23 15:55:34 $
+ * @version $Revision: 1.229 $ $Date: 2005/02/26 13:51:00 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1546,9 +1546,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            String query = m_sqlManager.readQuery(projectId, "C_RESOURCES_READ_TREE");
-            String order = " " + m_sqlManager.readQuery(projectId, "C_RESOURCES_ORDER_BY_PATH");
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, query + conditions + order);
+            StringBuffer queryBuf = new StringBuffer(256);
+            queryBuf.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_READ_TREE"));
+            queryBuf.append(conditions);
+            queryBuf.append(" ");
+            queryBuf.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_ORDER_BY_PATH"));
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
             
             for (int i = 0; i < params.size(); i++) {
                 stmt.setString(i+1, (String)params.get(i));
