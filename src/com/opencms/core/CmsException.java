@@ -4,7 +4,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/01/13 17:39:03 $
+ * @version $Revision: 1.15 $ $Date: 2000/01/21 10:33:07 $
  */
 public class CmsException extends Exception {
 	
@@ -108,6 +108,65 @@ public class CmsException extends Exception {
     */
     public final static int C_SERVICE_UNAVAILABLE= 17;
     
+    /**
+     * Definition of error code for unknown XML datablocks
+     */
+    public final static int C_XML_UNKNOWN_DATA = 18;
+    
+    /**
+     * Definition of error code for corrupt internal structure.
+     */
+    public final static int C_XML_CORRUPT_INTERNAL_STRUCTURE = 19;
+    
+    /**
+     * Definition of error code for wrong XML content type.
+     */
+    public final static int C_XML_WRONG_CONTENT_TYPE = 20;
+    
+    /**
+     * Definition of error code for XML parsing error.
+     */
+    public final static int C_XML_PARSING_ERROR = 21;
+    
+    /**
+     * Definition of error code for XML processing error.
+     */
+    public final static int C_XML_PROCESS_ERROR = 22;
+    
+    /**
+     * Definition of error code for XML user method not found.
+     */
+    public final static int C_XML_NO_USER_METHOD = 23;
+
+    /**
+     * Definition of error code for XML process method not found.
+     */
+    public final static int C_XML_NO_PROCESS_METHOD = 23;
+
+    /**
+     * Definition of error code for missing XML tag.
+     */
+    public final static int C_XML_TAG_MISSING = 24;
+    
+    /**
+     * Definition of error code for wrong XML template class.
+     */
+    public final static int C_XML_WRONG_TEMPLATE_CLASS = 25;
+
+    /**
+     * Definition of error code for no XML template class.
+     */
+    public final static int C_XML_NO_TEMPLATE_CLASS = 26;
+
+    /**
+     * Definition of error code for launcher errors.
+     */
+    public final static int C_LAUNCH_ERROR = 27;
+
+    /**
+     * Definition of error code for launcher errors.
+     */
+    public final static int C_CLASSLOADER_ERROR = 28;
     
 	public final static String C_EXTXT[] = {
 							"Unknown exception ",
@@ -128,7 +187,19 @@ public class CmsException extends Exception {
                             "Internal use only ",
                             "Metainformation is mandatory ",
                             "Service unavailable ",
-							};
+                            "Unknown XML datablock ",
+                            "Corrupt internal structure ",
+                            "Wrong XML content type ",
+                            "XML parsing error ",
+                            "Could not process OpenCms special XML tag ",
+                            "Could not call user method ",
+                            "Could not call process method ",
+                            "XML tag missing ",
+                            "Wrong XML template class ",
+                            "No XML template class ",
+                            "Error while launching template class ",
+                            "OpenCms class loader error ",
+};
     
 	/** 
 	 * Constructs a simple CmsException
