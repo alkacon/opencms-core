@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/10/12 07:46:09 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/01/11 13:36:59 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2001/10/12 07:46:09 $
+ * @version $Revision: 1.32 $ $Date: 2002/01/11 13:36:59 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -205,11 +205,22 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             CmsElementDefinitionCollection eldefs = doc.getElementDefinitionCollection();
             cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
                         cms.getRequestContext().currentProject().getId(),
-                        templateName), eldefs);
+                        templateName), eldefs, Utils.isHttpsResource(cms, file));
             elementCache.getUriLocator().put(uriDesc, cmsUri);
         }
 
         if(elementCacheEnabled) {
+                // lets check if ssl is active
+                String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
+                boolean httpsReq = "https".equalsIgnoreCase(scheme);
+                if(cmsUri.isHttpsResource() != httpsReq){
+                    if(httpsReq){
+                        throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
+                    }else{
+                        throw new CmsException(" "+file.getAbsolutePath()+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
+                    }
+                }
+                // now lets get the output
                 output = elementCache.callCanonicalRoot(cms, newParameters);
         } else {
             // ----- traditional stuff ------

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2001/12/21 13:19:31 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/01/11 13:36:58 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.6 $ $Date: 2001/12/21 13:19:31 $
+ * @version $Revision: 1.7 $ $Date: 2002/01/11 13:36:58 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -121,8 +121,48 @@ public class CmsStaticExport implements I_CmsConstants{
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
             }
             for(int i=0; i < exportLinks.size(); i++){
-                exportLink((String)exportLinks.elementAt(i), exportLinks);
+//mgm at work                if(linkHasChanged((String)exportLinks.elementAt(i))){
+                    exportLink((String)exportLinks.elementAt(i), exportLinks);
+//                }
             }
+        }
+    }
+
+    /**
+     * This method checks if this link has to be exported.
+     *
+     * @param link The link to be checked.
+     * @return true if the link should be exported.
+     * /
+    private boolean linkHasChanged(String link){
+        try{
+            // first look if this link was exported before (then it is saved in the database
+            CmsExportLink linkObject = m_cms.readExportLink(link);
+            if(linkObject == null){
+                return true;
+            }else{
+                // lets check the dates
+                Vector deps = linkObject.getDependencies();
+                try{
+                    for(int i=0; i<deps.size(); i++){
+                        CmsResource res = m_cms.readFileHeader((String)deps.elementAt(i));
+                        if(linkObject.getLastExportDate() < res.getDateLastModified()){
+                            //mgm at work
+                        }
+                    }
+                }catch(CmsException e){
+                    // we have to export it again
+                    m_cms.deleteExportLink(linkObject);
+                    return true;
+                }
+            }
+        }catch(CmsException e){
+            // this should not happen. Better we delete the link in the database and export it.
+            try{
+                m_cms.deleteExportLink(link);
+            }catch(CmsException exc){
+            }
+            return true;
         }
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/12/20 15:29:37 $
-* Version: $Revision: 1.165 $
+* Date   : $Date: 2002/01/11 13:36:58 $
+* Version: $Revision: 1.166 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.165 $ $Date: 2001/12/20 15:29:37 $
+ * @version $Revision: 1.166 $ $Date: 2002/01/11 13:36:58 $
  *
  */
 
@@ -1983,7 +1983,44 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      */
     public String readExportPath(CmsUser currentUser, CmsProject currentProject)
         throws CmsException ;
-     /**
+
+    /**
+     * Reads a exportrequest from the Cms.<BR/>
+     *
+     *
+     * @param request The request to be read.
+     *
+     * @return The exportrequest read from the Cms.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public CmsExportLink readExportLink(String filename)
+        throws CmsException;
+
+    /**
+     * Writes an exportlink to the Cms.
+     *
+     * @param link the cmsexportlink object to write.
+     *
+     * @exception CmsException if something goes wrong.
+     */
+    public void writeExportLink(CmsExportLink link) throws CmsException;
+
+    /**
+     * Deletes an exportlink in the database.
+     *
+     * @param link the name of the link
+     */
+    public void deleteExportLink(String link) throws CmsException;
+
+    /**
+     * Deletes an exportlink in the database.
+     *
+     * @param link the cmsExportLink object to delete.
+     */
+    public void deleteExportLink(CmsExportLink link) throws CmsException ;
+
+    /**
      * Reads a file from a previous project of the Cms.<BR/>
      *
      * <B>Security:</B>

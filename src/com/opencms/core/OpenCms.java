@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/01/03 14:56:35 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2002/01/11 13:36:58 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,8 +30,6 @@ package com.opencms.core;
 
 import java.io.*;
 import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 import com.opencms.file.*;
@@ -39,6 +37,11 @@ import com.opencms.boot.*;
 import com.opencms.util.*;
 import com.opencms.launcher.*;
 import com.opencms.template.cache.*;
+
+// if you need one of these test if the OpenCms Shell still runs!
+//import javax.servlet.*;
+//import javax.servlet.http.*;
+
 
 /**
  * This class is the main class of the OpenCms system.
@@ -52,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.73 $ $Date: 2002/01/03 14:56:35 $
+ * @version $Revision: 1.74 $ $Date: 2002/01/11 13:36:58 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -633,18 +636,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(C_OPENCMS_INFO, "[OpenCms] " + errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
-        }
-        // test if ssl is active
-        String httpsProp = cms.readProperty(file.getAbsolutePath(),C_PROPERTY_EXPORT);
-        boolean httpsResource = "https".equalsIgnoreCase(httpsProp);
-        String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
-        boolean httpsReq = "https".equalsIgnoreCase(scheme);
-        if(httpsResource != httpsReq){
-            if(httpsReq){
-                throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
-            }else{
-                throw new CmsException(" "+file.getAbsolutePath()+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
-            }
         }
         cms.setLauncherManager(m_launcherManager);
         launcher.initlaunch(cms, file, startTemplateClass, this);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/08/30 13:50:01 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/01/11 13:36:59 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,6 +63,11 @@ public class CmsUri implements I_CmsConstants {
      */
     private CmsElementDefinitionCollection m_elementDefinitions = null;
 
+    /**
+     * Indicates if this uri object needs the https scheme.
+     */
+    private boolean m_https = false;
+
 
     /**
      * Constructor.
@@ -72,8 +77,8 @@ public class CmsUri implements I_CmsConstants {
      * @param def a content-definition for the an element (normaly body).
      */
     public CmsUri(CmsElementDescriptor startingElement, String readAccessGroup,
-        CmsElementDefinition def){
-        this(startingElement, readAccessGroup, new CmsElementDefinitionCollection());
+        CmsElementDefinition def, boolean https){
+        this(startingElement, readAccessGroup, new CmsElementDefinitionCollection(), https);
         m_elementDefinitions.add(def);
     }
 
@@ -85,10 +90,11 @@ public class CmsUri implements I_CmsConstants {
      * @param definitions a vector of definitions for elements.
      */
     public CmsUri(CmsElementDescriptor startingElement, String readAccessGroup,
-        CmsElementDefinitionCollection definitions) {
+        CmsElementDefinitionCollection definitions, boolean https) {
         m_startingElement = startingElement;
         m_readAccessGroup = readAccessGroup;
         m_elementDefinitions = definitions;
+        m_https = https;
     }
 
     public byte[] callCanonicalRoot(CmsElementCache elementCache, CmsObject cms, Hashtable parameters) throws CmsException  {
@@ -205,4 +211,10 @@ public class CmsUri implements I_CmsConstants {
                                 CmsException.C_ACCESS_DENIED);
     }
 
+    /**
+     *
+     */
+    public boolean isHttpsResource(){
+        return m_https;
+    }
 }

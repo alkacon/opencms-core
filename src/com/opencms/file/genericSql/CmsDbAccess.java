@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/12/20 15:29:37 $
-* Version: $Revision: 1.231 $
+* Date   : $Date: 2002/01/11 13:36:58 $
+* Version: $Revision: 1.232 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.231 $ $Date: 2001/12/20 15:29:37 $ *
+ * @version $Revision: 1.232 $ $Date: 2002/01/11 13:36:58 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -5847,6 +5847,209 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
         return file;
      }
+
+    /**
+     * Reads a exportrequest from the Cms.
+     *
+     *
+     * @param request The request to be read.
+     *
+     * @return The exportrequest read from the Cms.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public CmsExportLink readExportLink(String request) throws CmsException{
+        CmsExportLink link = null;
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_EXPORT_LINK_READ"));
+            statement.setString(1, request);
+            res = statement.executeQuery();
+
+            // create new Cms exportlink object
+            if(res.next()) {
+                link = new CmsExportLink(res.getInt(m_cq.get("C_EXPORT_ID")),
+                                   res.getString(m_cq.get("C_EXPORT_LINK")),
+                                   res.getLong(m_cq.get("C_EXPORT_DATE")),
+                                   null);
+
+                // now the dependencies
+                try{
+                    res.close();
+                    statement.close();
+                }catch(SQLException ex){
+                }
+                statement = con.prepareStatement(m_cq.get("C_EXPORT_DEPENDENCIES_READ"));
+                statement.setInt(1,link.getId());
+                res = statement.executeQuery();
+                while(res.next()){
+                    link.addDependency(res.getString(m_cq.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
+                }
+            }
+            return link;
+         }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        }
+        catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                 try {
+                     res.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+     }
+
+    /**
+     * Deletes an exportlink from the Cms.
+     *
+     * @param link the cmsexportlink to delete.
+     *
+     * @exception CmsException if something goes wrong.
+     */
+    public void deleteExportLink(String link) throws CmsException {
+        CmsExportLink dbLink = readExportLink(link);
+        if(dbLink != null){
+            deleteExportLink(dbLink);
+        }
+    }
+
+    /**
+     * Deletes an exportlink from the Cms.
+     *
+     * @param link the cmsexportlink object to delete.
+     *
+     * @exception CmsException if something goes wrong.
+     */
+    public void deleteExportLink(CmsExportLink link) throws CmsException {
+        int deleteId = link.getId();
+        if(deleteId == 0){
+            CmsExportLink dbLink = readExportLink(link.getLink());
+            if(dbLink == null){
+                return;
+            }else{
+                deleteId = dbLink.getId();
+            }
+        }
+        Connection con = null;
+        PreparedStatement statement = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            // delete the link table entry
+            statement=con.prepareStatement(m_cq.get("C_EXPORT_LINK_DELETE"));
+            statement.setInt(1, deleteId);
+            statement.executeUpdate();
+            // now the dependencies
+            try{
+                statement.close();
+            }catch(SQLException ex){
+            }
+            statement=con.prepareStatement(m_cq.get("C_EXPORT_DEPENDENCIES_DELETE"));
+            statement.setInt(1, deleteId);
+            statement.executeUpdate();
+        } catch (SQLException e){
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } finally {
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+    }
+    /**
+     * Writes an exportlink to the Cms.
+     *
+     * @param link the cmsexportlink object to write.
+     *
+     * @exception CmsException if something goes wrong.
+     */
+    public void writeExportLink(CmsExportLink link) throws CmsException {
+        //first delete old entrys in the database
+        deleteExportLink(link);
+        int id = link.getId();
+        if(id == 0){
+            id = nextId(m_cq.get("C_TABLE_EXPORT_LINKS"));
+        }
+        // now write it
+        Connection con = null;
+        PreparedStatement statement = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            // write the link table entry
+            statement=con.prepareStatement(m_cq.get("C_EXPORT_LINK_WRITE"));
+            statement.setInt(1, id);
+            statement.setString(2, link.getLink());
+            statement.setLong(3, link.getLastExportDate());
+            statement.setBoolean(4, link.getProcessedState());
+            statement.executeUpdate();
+            // now the dependencies
+            try{
+                statement.close();
+            }catch(SQLException ex){
+            }
+            statement = con.prepareStatement(m_cq.get("C_EXPORT_DEPENDENCIES_WRITE"));
+            statement.setInt(1, id);
+            Vector deps = link.getDependencies();
+            for(int i=0; i < deps.size(); i++){
+                try{
+                    statement.setString(2, (String)deps.elementAt(i));
+                    statement.executeUpdate();
+                }catch(SQLException e){
+                    // this should be an Duplicate entry error and can be ignored
+                    // todo: if it is something else we should coutionary delete the whole exportlink
+                }
+            }
+        } catch (SQLException e){
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } finally {
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+    }
 
     /**
      * Reads a file from the Cms.<BR/>

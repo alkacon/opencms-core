@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/12/20 15:29:37 $
-* Version: $Revision: 1.213 $
+* Date   : $Date: 2002/01/11 13:36:58 $
+* Version: $Revision: 1.214 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.213 $ $Date: 2001/12/20 15:29:37 $
+ * @version $Revision: 1.214 $ $Date: 2002/01/11 13:36:58 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2514,6 +2514,45 @@ public Vector readAllPropertydefinitions(String resourcetype, int type) throws C
  */
 public String readExportPath() throws CmsException {
     return m_rb.readExportPath(m_context.currentUser(), m_context.currentProject());
+}
+/**
+ * Reads a exportrequest from the Cms.
+ *
+ * @param request the reourcename with  the url parameter.
+ *
+ * @return CmsExportLink the read exportrequest.
+ *
+ * @exception CmsException if the user has not the rights to read this resource,
+ * or if it couldn't be read.
+ */
+public CmsExportLink readExportLink(String request) throws CmsException {
+    return (m_rb.readExportLink(request));
+}
+/**
+ * Writes an exportlink to the Cms.
+ *
+ * @param link the cmsexportlink object to write.
+ *
+ * @exception CmsException if something goes wrong.
+ */
+public void writeExportLink(CmsExportLink link) throws CmsException {
+    m_rb.writeExportLink(link);
+}
+/**
+ * Deletes an exportlink in the database.
+ *
+ * @param link the name of the link
+ */
+public void deleteExportLink(String link) throws CmsException {
+    m_rb.deleteExportLink(link);
+}
+/**
+ * Deletes an exportlink in the database.
+ *
+ * @param link the cmsExportLink object to delete.
+ */
+public void deleteExportLink(CmsExportLink link) throws CmsException{
+    m_rb.deleteExportLink(link);
 }
 /**
  * Reads a file from the Cms.

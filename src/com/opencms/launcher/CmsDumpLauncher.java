@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/01/11 13:36:59 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -31,6 +31,7 @@ package com.opencms.launcher;
 import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
+import com.opencms.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.util.*;
@@ -46,7 +47,7 @@ import com.opencms.template.cache.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.27 $ $Date: 2002/01/11 13:36:59 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -80,6 +81,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
         // Get the currently requested URI
         String uri = cms.getRequestContext().getUri();
+        CmsUri cmsUri = null;
 
         String templateClass = startTemplateClass;
         if(templateClass == null || "".equals(templateClass) || (startTemplateClass.equals(C_UNKNOWN_LAUNCHER))) {
@@ -92,14 +94,15 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
             CmsUriDescriptor uriDesc = new CmsUriDescriptor(uri);
             CmsUriLocator uriLoc = elementCache.getUriLocator();
-            CmsUri cmsUri = uriLoc.get(uriDesc);
+            cmsUri = uriLoc.get(uriDesc);
 
             if(cmsUri == null) {
                 // hammer nich
                 CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, file.getAbsolutePath());
                 cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
                         cms.getRequestContext().currentProject().getId(),
-                        file.getAbsolutePath()), (CmsElementDefinitionCollection)null);
+                        file.getAbsolutePath()), (CmsElementDefinitionCollection)null,
+                        Utils.isHttpsResource(cms, file));
                 elementCache.getUriLocator().put(uriDesc, cmsUri);
             }
         }
@@ -134,6 +137,16 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
         }
 
         if(elementCacheEnabled) {
+            // lets check if ssl is active
+            String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
+            boolean httpsReq = "https".equalsIgnoreCase(scheme);
+            if(cmsUri.isHttpsResource() != httpsReq){
+                if(httpsReq){
+                    throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
+                }else{
+                    throw new CmsException(" "+file.getAbsolutePath()+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
+                }
+            }
             result = elementCache.callCanonicalRoot(cms, newParameters);
         } else {
             Object tmpl = getTemplateClass(cms, templateClass);

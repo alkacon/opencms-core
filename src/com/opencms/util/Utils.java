@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2001/12/20 15:29:38 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/01/11 13:36:59 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -282,6 +282,27 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
             throw new CmsException("Error while reading input stream in com.opencms.util.Utils.removeLineBreaks: " + e);
         }
         return result.toString();
+    }
+
+    /**
+     * Checks if a resource needs the https scheme. Thats the case if the resource
+     * itself or a parent folder has the property 'export' set to 'https'.
+     *
+     * @param cms The cms Object, used for reading the parent folder and the properties.
+     * @param res The resource to be checked.
+     * @exception CmsException.
+     */
+    public static boolean isHttpsResource(CmsObject cms, CmsResource res) throws CmsException{
+        while(!res.getAbsolutePath().equals(C_ROOT)){
+            // check for the property export
+            String prop = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_EXPORT);
+            if((prop != null) && "https".equalsIgnoreCase(prop)){
+                // found one
+                return true;
+            }
+            res = cms.readFileHeader(res.getParent());
+        }
+        return false;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/10/26 12:43:45 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/01/11 13:36:59 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -392,8 +392,13 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         boolean resolveDebug = false;
         if(resolveDebug) System.err.println("= Start resolving variant " + variant);
         int len = variant.size();
-        // Try to get the corresponding element using the element locator
 
+        // if this is exportmodus register that to the variant
+        if(cms.getMode() == cms.C_MODUS_EXPORT){
+            variant.setExported();
+        }
+
+        // Try to get the corresponding element using the element locator
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             for(int i=0; i<len; i++) {

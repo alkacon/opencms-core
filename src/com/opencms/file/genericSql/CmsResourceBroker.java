@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/12/20 15:31:51 $
-* Version: $Revision: 1.300 $
+* Date   : $Date: 2002/01/11 13:36:59 $
+* Version: $Revision: 1.301 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.300 $ $Date: 2001/12/20 15:31:51 $
+ * @version $Revision: 1.301 $ $Date: 2002/01/11 13:36:59 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4747,6 +4747,47 @@ public void exportStaticResources(CmsUser currentUser, CmsProject currentProject
         throws CmsException  {
         return (String) m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_EXPORTPATH);
     }
+    /**
+     * Reads a exportrequest from the Cms.<BR/>
+     *
+     *
+     * @param request The request to be read.
+     *
+     * @return The exportrequest read from the Cms.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public CmsExportLink readExportLink(String request) throws CmsException{
+        return m_dbAccess.readExportLink(request);
+     }
+
+    /**
+     * Writes an exportlink to the Cms.
+     *
+     * @param link the cmsexportlink object to write.
+     *
+     * @exception CmsException if something goes wrong.
+     */
+    public void writeExportLink(CmsExportLink link) throws CmsException {
+        m_dbAccess.writeExportLink(link);
+    }
+    /**
+     * Deletes an exportlink in the database.
+     *
+     * @param link the name of the link
+     */
+    public void deleteExportLink(String link) throws CmsException {
+        m_dbAccess.deleteExportLink(link);
+    }
+    /**
+     * Deletes an exportlink in the database.
+     *
+     * @param link the cmsExportLink object to delete.
+     */
+    public void deleteExportLink(CmsExportLink link) throws CmsException {
+        m_dbAccess.deleteExportLink(link);
+    }
+
 /**
  * Reads a file from a previous project of the Cms.<BR/>
  *

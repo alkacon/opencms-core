@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementVariant.java,v $
-* Date   : $Date: 2001/10/26 12:43:45 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/01/11 13:36:59 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,6 +59,11 @@ public class CmsElementVariant {
      * The date when this variant must be new generated. Only used if it is not 0.
      */
     private long m_nextTimeout = 0;
+
+    /**
+     * Marker that indicates if this variant was exported before.
+     */
+    private boolean m_exported = false;
 
     /**
      * Creates a new empty variant for an element.
@@ -123,6 +128,21 @@ public class CmsElementVariant {
      */
     public void setDependencies(Vector dependencies){
         m_dependencies = dependencies;
+    }
+
+    /**
+     * Returns true if this variant was allready exported.
+     */
+    public boolean wasExported(){
+        return m_exported;
+    }
+
+    /**
+     * Sets the marker exported to true. Used when this variant is created in
+     * export modus.
+     */
+    public void setExported(){
+        m_exported = true;
     }
 
     /**
