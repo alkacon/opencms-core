@@ -14,7 +14,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;SUBMITBUTTON&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/26 13:52:40 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/27 15:01:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsButtonSubmit extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -28,12 +28,13 @@ public class CmsButtonSubmit extends A_CmsWpElement implements I_CmsWpElement, I
      * 
      * @param cms A_CmsObject Object for accessing resources.
      * @param n XML element containing the <code>&lt;BUTTON&gt;</code> tag.
+     * @param callingObject reference to the calling object.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         // Read button parameters
         String buttonName = n.getAttribute(C_BUTTON_NAME);
         String buttonAction = n.getAttribute(C_BUTTON_ACTION);

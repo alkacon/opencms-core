@@ -16,7 +16,7 @@ import java.util.*;
  * has to implement this interface.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/26 09:16:28 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/27 15:01:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public interface I_CmsWpElement {
@@ -27,10 +27,11 @@ public interface I_CmsWpElement {
      * 
      * @param cms A_CmsObject Object for accessing resources.
      * @param n XML element containing the current tag.
+     * @param callingObject reference to the calling object.
      * @param parameters Hashtable containing all user parameters.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed special workplace XML tag.
      * @exception CmsException 
      */
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException;    
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException;    
 }

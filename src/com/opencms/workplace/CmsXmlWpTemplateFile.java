@@ -14,7 +14,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/01/27 10:54:38 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/27 15:01:43 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -97,6 +97,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         registerTag("LABEL", "com.opencms.workplace.CmsLabel");
         registerTag("PASSWORD", "com.opencms.workplace.CmsInputPassword");
         registerTag("SUBMITBUTTON", "com.opencms.workplace.CmsButtonSubmit");
+        registerTag("SELECT", "com.opencms.workplace.CmsSelectBox");
     }    
     
     /**
@@ -143,7 +144,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * <code>I_CmsWpElement</code>
      * 
      * @param n XML element containing the current special workplace tag.
-     * @param callingObject reference to the calling object <em>(not used here)</em>.
+     * @param callingObject reference to the calling object.
      * @param userObj hashtable containig all user parameters.
      * @exception CmsException
      * @see com.opencms.workplace.I_CmsWpElement
@@ -166,7 +167,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         }
     
         workplaceObject = (I_CmsWpElement)loadedClass;
-        result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, (Hashtable)userObj, m_languageFile);                
+        result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, callingObject, (Hashtable)userObj, m_languageFile);                
     
         return result; 
     }                    

@@ -15,7 +15,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORBOX&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/27 10:54:38 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/27 15:00:56 $
  */
 public class CmsErrorbox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -30,8 +30,7 @@ public class CmsErrorbox extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      * @return Result of user method <code>templateElement()</code>.
      * @exception CmsException
      */
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         // collect all required data
         String errorTitle = n.getAttribute(C_ERROR_TITLE);
         String errorMessage = n.getAttribute(C_ERROR_MESSAGE);

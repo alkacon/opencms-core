@@ -15,7 +15,7 @@ import java.util.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/26 17:12:01 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/27 15:01:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate {
@@ -27,44 +27,32 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate {
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
-    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters) {
+    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
         Vector v = new Vector();
         A_CmsRequestContext reqContext = cms.getRequestContext();
         
         v.addElement(templateFile);
         v.addElement(parameters);
+        v.addElement(templateSelector);
         return v;
-    }
+    }    
     
     /**
-     * Gets the content of a given workplace  template file 
-     * with the given parameters. 
-     * <P>
-     * Parameters are stored in a hashtable and can derive from
-     * <UL>
-     * <LI>Template file of the parent template</LI>
-     * <LI>Body file clicked by the user</LI>
-     * <LI>URL parameters</LI>
-     * </UL>
-     * Paramter names must be in "elementName.parameterName" format.
+     * Reads in the template file and starts the XML parser for the expected
+     * content type <class>CmsXmlWpTemplateFile</code>
      * 
-     * @param cms A_CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
-     * @param elementName Element name of this template in our parent template
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param templateFile Filename of the template file.
+     * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
-     * @return Content of the template and all subtemplates.
-     * @exception CmsException 
+     * @param templateSelector template section that should be processed.
      */
-    public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
-
+    public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);       
-        return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);  
+        return xmlTemplateDocument;
     }        
+    
 }

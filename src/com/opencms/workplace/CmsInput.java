@@ -15,7 +15,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;INPUT&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/26 11:50:14 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/27 15:01:43 $
  */
 public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -30,7 +30,7 @@ public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
      * @return Result of user method <code>templateElement()</code>.
      * @exception CmsException
      */
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         String styleClass= n.getAttribute(C_INPUT_CLASS);
         String name=n.getAttribute(C_INPUT_NAME);
         String size=n.getAttribute(C_INPUT_SIZE);

@@ -13,7 +13,7 @@ import java.util.*;
  *  Content definition for the workplace input element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/26 11:50:14 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/27 15:01:43 $
  */
 public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -101,6 +101,22 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
         return getProcessedDataValue(C_TAG_PASSWORD);                
      }  
 
+
+    public String getSelectBoxHeader() throws CmsException {
+        return getProcessedDataValue(C_TAG_SELECTBOX_HEADER);
+    }
+
+    public String getSelectBoxOption(String name, String value) throws CmsException {
+        setData(C_SELECTBOX_NAME, name);
+        setData(C_SELECTBOX_VALUE, value);
+        return getProcessedDataValue(C_TAG_SELECTBOX_OPTION);
+    }
+
+    public String getSelectBoxSelOption(String name, String value) throws CmsException {
+        setData(C_SELECTBOX_NAME, name);
+        setData(C_SELECTBOX_VALUE, value);
+        return getProcessedDataValue(C_TAG_SELECTBOX_SELOPTION);
+    }
     
     
 }

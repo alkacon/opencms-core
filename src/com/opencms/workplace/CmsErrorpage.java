@@ -15,7 +15,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/27 10:54:38 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/27 15:01:43 $
  */
 public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -30,7 +30,7 @@ public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_Cm
      * @return Result of user method <code>templateElement()</code>.
      * @exception CmsException
      */
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
         // collect all required data
         String errorTitle = n.getAttribute(C_ERROR_TITLE);
