@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/29 08:17:41 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2000/07/03 08:15:31 $
+ * Version: $Revision: 1.80 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.79 $ $Date: 2000/06/29 08:17:41 $
+ * @version $Revision: 1.80 $ $Date: 2000/07/03 08:15:31 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1496,7 +1496,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     }
 
      /**
-	 * Logs a user into the Cms, if the password is correct.
+	 * Logs a web user into the Cms, if the password is correct.
 	 * 
 	 * <B>Security</B>
 	 * All users are granted.
@@ -2213,7 +2213,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 
     
     /** 
-	 * Deletes a user from the Cms.
+	 * Deletes a web user from the Cms.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
@@ -2283,7 +2283,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     }
 
 	/**
-	 * Updated the user information.<BR/>
+	 * Updates the user information.<BR/>
 	 * 
 	 * Only the administrator can do this.<P/>
 	 * 
@@ -4200,7 +4200,12 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void renameFile(CmsUser currentUser, CmsProject currentProject, 
 					       String oldname, String newname)
         throws CmsException {
+                        
         
+        String path=oldname.substring(0,oldname.lastIndexOf("/")+1);
+        copyFile(currentUser,currentProject,oldname,path+newname);
+        deleteFile(currentUser,currentProject,oldname);
+        /*
 		// check, if the new name is a valid filename
 		validFilename(newname);
 		
@@ -4225,6 +4230,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " + oldname, 
 				CmsException.C_NO_ACCESS);
 		}
+        */
     }
 	
 	/**

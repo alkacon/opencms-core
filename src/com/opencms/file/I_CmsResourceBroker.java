@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/29 07:59:35 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2000/07/03 08:15:30 $
+ * Version: $Revision: 1.91 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.90 $ $Date: 2000/06/29 07:59:35 $
+ * @version $Revision: 1.91 $ $Date: 2000/07/03 08:15:30 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -698,7 +698,7 @@ public interface I_CmsResourceBroker {
 		throws CmsException;
 
     /**
-	 * Logs a user into the Cms, if the password is correct.
+	 * Logs a web user into the Cms, if the password is correct.
 	 * 
 	 * <B>Security</B>
 	 * All users are granted.
@@ -1167,7 +1167,7 @@ public interface I_CmsResourceBroker {
 		throws CmsException;
 
   	/** 
-	 * Deletes a user from the Cms.
+	 * Deletes a web user from the Cms.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
@@ -1219,7 +1219,7 @@ public interface I_CmsResourceBroker {
 
 
 	/**
-	 * Updated the user information.<BR/>
+	 * Updates the user information.<BR/>
 	 * 
 	 * Only the administrator can do this.<P/>
 	 * 
@@ -1237,7 +1237,7 @@ public interface I_CmsResourceBroker {
 		throws CmsException;
 
     /**
-	 * Updated the user information of a web user.<BR/>
+	 * Updates the user information of a web user.<BR/>
 	 * 
 	 * Only a web user can be updated this way.<P/>
 	 * 

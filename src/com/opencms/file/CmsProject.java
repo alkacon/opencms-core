@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/06/27 15:56:27 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/07/03 08:15:30 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/06/27 15:56:27 $
+ * @version $Revision: 1.22 $ $Date: 2000/07/03 08:15:30 $
  */
 public class CmsProject implements I_CmsConstants,
                                                         Cloneable{
@@ -153,7 +153,7 @@ public class CmsProject implements I_CmsConstants,
 	 */
 	public String getDescription() {
         if ((m_description== null) || (m_description.length()<1) ) {
-            return "OpcnCms Project";
+            return "OpenCms Project";
         } else {
 		    return m_description;
         }

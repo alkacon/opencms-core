@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/29 06:46:26 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2000/07/03 08:15:30 $
+ * Version: $Revision: 1.83 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,6 +39,7 @@ import source.org.apache.java.util.*;
 import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.file.utils.*;
+import com.opencms.util.*;
 
 
 /**
@@ -48,7 +49,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.82 $ $Date: 2000/06/29 06:46:26 $ * 
+ * @version $Revision: 1.83 $ $Date: 2000/07/03 08:15:30 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -708,8 +709,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 										   res.getString(C_USERS_USER_FIRSTNAME),
 										   res.getString(C_USERS_USER_LASTNAME),
 										   res.getString(C_USERS_USER_EMAIL),
-										   res.getTimestamp(C_USERS_USER_LASTLOGIN).getTime(),
-										   res.getTimestamp(C_USERS_USER_LASTUSED).getTime(),
+										   SqlHelper.getTimestamp(res,C_USERS_USER_LASTLOGIN).getTime(),
+										   SqlHelper.getTimestamp(res,C_USERS_USER_LASTUSED).getTime(),
 										   res.getInt(C_USERS_USER_FLAGS),
 										   info,
 										   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
@@ -947,8 +948,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 								   res.getString(C_USERS_USER_FIRSTNAME),
 								   res.getString(C_USERS_USER_LASTNAME),
 								   res.getString(C_USERS_USER_EMAIL),
-								   res.getTimestamp(C_USERS_USER_LASTLOGIN).getTime(),
-								   res.getTimestamp(C_USERS_USER_LASTUSED).getTime(),
+								   SqlHelper.getTimestamp(res,C_USERS_USER_LASTLOGIN).getTime(),
+								   SqlHelper.getTimestamp(res,C_USERS_USER_LASTUSED).getTime(),
 								   res.getInt(C_USERS_USER_FLAGS),
 								   info,
 								   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
@@ -1017,8 +1018,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 								   res.getString(C_USERS_USER_FIRSTNAME),
 								   res.getString(C_USERS_USER_LASTNAME),
 								   res.getString(C_USERS_USER_EMAIL),
-								   res.getTimestamp(C_USERS_USER_LASTLOGIN).getTime(),
-								   res.getTimestamp(C_USERS_USER_LASTUSED).getTime(),
+								   SqlHelper.getTimestamp(res,C_USERS_USER_LASTLOGIN).getTime(),
+								   SqlHelper.getTimestamp(res,C_USERS_USER_LASTUSED).getTime(),
 								   res.getInt(C_USERS_USER_FLAGS),
 								   info,
 								   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
@@ -1084,8 +1085,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 								   res.getString(C_USERS_USER_FIRSTNAME),
 								   res.getString(C_USERS_USER_LASTNAME),
 								   res.getString(C_USERS_USER_EMAIL),
-								   res.getTimestamp(C_USERS_USER_LASTLOGIN).getTime(),
-								   res.getTimestamp(C_USERS_USER_LASTUSED).getTime(),
+								   SqlHelper.getTimestamp(res,C_USERS_USER_LASTLOGIN).getTime(),
+								   SqlHelper.getTimestamp(res,C_USERS_USER_LASTUSED).getTime(),
 								   res.getInt(C_USERS_USER_FLAGS),
 								   info,
 								   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
@@ -1245,8 +1246,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 										   res.getString(C_USERS_USER_FIRSTNAME),
 										   res.getString(C_USERS_USER_LASTNAME),
 										   res.getString(C_USERS_USER_EMAIL),
-										   res.getTimestamp(C_USERS_USER_LASTLOGIN).getTime(),
-										   res.getTimestamp(C_USERS_USER_LASTUSED).getTime(),
+										   SqlHelper.getTimestamp(res,C_USERS_USER_LASTLOGIN).getTime(),
+										   SqlHelper.getTimestamp(res,C_USERS_USER_LASTUSED).getTime(),
 										   res.getInt(C_USERS_USER_FLAGS),
 										   info,
 										   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
@@ -1390,8 +1391,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 										 res.getInt(C_PROJECTS_GROUP_ID),
 										 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
 										 res.getInt(C_PROJECTS_PROJECT_FLAGS),
-										 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
-										 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+										 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_CREATEDATE),
+										 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_PUBLISHDATE),
 										 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
 										 res.getInt(C_PROJECTS_PROJECT_TYPE));
 			} else {
@@ -1403,6 +1404,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
          }
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);	
 		} finally {
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_PROJECTS_READ_KEY, statement);
@@ -1439,8 +1442,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 										 res.getInt(C_PROJECTS_GROUP_ID),
 										 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
 										 res.getInt(C_PROJECTS_PROJECT_FLAGS),
-										 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
-										 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+										 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_CREATEDATE),
+										 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_PUBLISHDATE),
 										 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
 										 res.getInt(C_PROJECTS_PROJECT_TYPE));
 			} else {
@@ -1452,6 +1455,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
          }
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);	
 		} finally {
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_PROJECTS_READ_BYTASK_KEY, statement);
@@ -1489,8 +1494,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 													 res.getInt(C_PROJECTS_GROUP_ID),
 													 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
 													 res.getInt(C_PROJECTS_PROJECT_FLAGS),
-													 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
-													 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+													 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_CREATEDATE),
+													 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_PUBLISHDATE),
 													 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
 													 res.getInt(C_PROJECTS_PROJECT_TYPE) ) );
 			 }
@@ -1498,7 +1503,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		 } catch( Exception exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
-		 } finally {
+        } finally {
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_PROJECTS_READ_BYUSER_KEY, statement);
 			}
@@ -1536,8 +1541,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 													 res.getInt(C_PROJECTS_GROUP_ID),
 													 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
 													 res.getInt(C_PROJECTS_PROJECT_FLAGS),
-													 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
-													 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+													 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_CREATEDATE),
+													 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_PUBLISHDATE),
 													 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
 													 res.getInt(C_PROJECTS_PROJECT_TYPE) ) );
 			 }
@@ -1545,6 +1550,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		 } catch( Exception exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
+             
 		 } finally {
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_PROJECTS_READ_BYGROUP_KEY, statement);
@@ -1582,8 +1588,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 													 res.getInt(C_PROJECTS_GROUP_ID),
 													 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
 													 res.getInt(C_PROJECTS_PROJECT_FLAGS),
-													 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
-													 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+													 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_CREATEDATE),
+													 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_PUBLISHDATE),
 													 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
 													 res.getInt(C_PROJECTS_PROJECT_TYPE) ) );
 			 }
@@ -1628,8 +1634,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 													 res.getInt(C_PROJECTS_GROUP_ID),
 													 res.getInt(C_PROJECTS_MANAGERGROUP_ID),
 													 res.getInt(C_PROJECTS_PROJECT_FLAGS),
-													 res.getTimestamp(C_PROJECTS_PROJECT_CREATEDATE),
-													 res.getTimestamp(C_PROJECTS_PROJECT_PUBLISHDATE),
+													 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_CREATEDATE),
+													 SqlHelper.getTimestamp(res,C_PROJECTS_PROJECT_PUBLISHDATE),
 													 res.getInt(C_PROJECTS_PROJECT_PUBLISHED_BY),
 													 res.getInt(C_PROJECTS_PROJECT_TYPE) ) );
 			 }
@@ -2896,8 +2902,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                     int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
                     int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
                     String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
-                    long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-                    long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                    long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+                    long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                     int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                     int resSize= res.getInt(C_RESOURCES_SIZE);
                   
@@ -2907,25 +2913,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                          launcherType,launcherClass,created,modified,modifiedBy,
                                          resSize);
                                          
-                        /*file = new CmsResource(res.getInt(C_RESOURCES_RESOURCE_ID),
-										   res.getInt(C_RESOURCES_PARENT_ID),
-										   res.getInt(C_RESOURCES_FILE_ID),
-										   res.getString(C_RESOURCES_RESOURCE_NAME),
-                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
-                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
-                                           res.getInt(C_RESOURCES_USER_ID),
-                                           res.getInt(C_RESOURCES_GROUP_ID),
-                                           res.getInt(C_RESOURCES_PROJECT_ID),
-                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
-                                           res.getInt(C_RESOURCES_STATE),
-                                           res.getInt(C_RESOURCES_LOCKED_BY),
-                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
-                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
-                                           res.getInt(C_RESOURCES_SIZE)
-                                           );*/
+            
 					res.close();
                } else {
 				 res.close();
@@ -2983,8 +2971,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                     int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
                     int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
                     String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
-                    long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-                    long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                    long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+                    long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                     int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                     int resSize= res.getInt(C_RESOURCES_SIZE);
                   
@@ -2994,30 +2982,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                          launcherType,launcherClass,created,modified,modifiedBy,
                                          resSize);
                    
-				    /*file = new CmsResource(res.getInt(C_RESOURCES_RESOURCE_ID),
-										   res.getInt(C_RESOURCES_PARENT_ID),
-										   res.getInt(C_RESOURCES_FILE_ID),
-										   res.getString(C_RESOURCES_RESOURCE_NAME),
-                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
-                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
-                                           res.getInt(C_RESOURCES_USER_ID),
-                                           res.getInt(C_RESOURCES_GROUP_ID),
-                                           res.getInt(C_PROJECT_ID_RESOURCES),
-                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
-                                           res.getInt(C_RESOURCES_STATE),
-                                           res.getInt(C_RESOURCES_LOCKED_BY),
-                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
-                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
-                                           res.getInt(C_RESOURCES_SIZE)
-                                           );*/
+				    
 					resources.addElement(file);
 			   }
 			res.close();
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         } catch (Exception ex) {
+            throw new CmsException("["+this.getClass().getName()+"]", ex);		
 		}finally {
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_RESOURCES_READBYPROJECT_KEY, statement);
@@ -3063,8 +3035,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
                 int state= res.getInt(C_RESOURCES_STATE);
                 int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
-                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+                long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                 int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                    
                 folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
@@ -3075,6 +3047,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			res.close();
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         } catch (Exception ex) {
+            throw new CmsException("["+this.getClass().getName()+"]", ex);	
 		}finally {
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_RESOURCES_READFOLDERSBYPROJECT_KEY, statement);
@@ -3121,8 +3095,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
                 int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
                 String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
-                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+                long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                 int resSize= res.getInt(C_RESOURCES_SIZE);
                 int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                                      
@@ -3136,6 +3110,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			res.close();
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         } catch (Exception ex) {
+            throw new CmsException("["+this.getClass().getName()+"]", ex);	
 		}finally {
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_RESOURCES_READFILESBYPROJECT_KEY, statement);
@@ -3263,8 +3239,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                       int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
                       int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
                       String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
-                      long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-                      long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                      long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+                      long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                       int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                       int resSize= res.getInt(C_RESOURCES_SIZE);
                       byte[] content=res.getBytes(C_RESOURCES_FILE_CONTENT);
@@ -3361,8 +3337,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
                 int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
                 String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
-                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+                long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                 int resSize= res.getInt(C_RESOURCES_SIZE);
                 int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                                      
@@ -3431,8 +3407,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
                 int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
                 String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
-                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+                long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                 int resSize= res.getInt(C_RESOURCES_SIZE);
                 int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                                      
@@ -3502,8 +3478,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
                 int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
                 String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
-                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+                long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                 int resSize= res.getInt(C_RESOURCES_SIZE);
                 int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                                      
@@ -3854,8 +3830,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
                 int state= res.getInt(C_RESOURCES_STATE);
                 int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
-                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+                long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                 int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                    
                 folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
@@ -3867,8 +3843,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                res.close();
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		//} catch( Exception exc ) {
-        //   throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+		} catch( Exception exc ) {
+           throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}finally {
 				if( statement != null) {
 					m_pool.putPreparedStatement(C_RESOURCES_READ_KEY, statement);
@@ -4414,8 +4390,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
                int state= res.getInt(C_RESOURCES_STATE);
                int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
-               long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-               long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+               long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+               long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                    
                folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
@@ -4475,8 +4451,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
                int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
                String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
-               long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
-               long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+               long created=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_CREATED).getTime();
+               long modified=SqlHelper.getTimestamp(res,C_RESOURCES_DATE_LASTMODIFIED).getTime();
                int resSize= res.getInt(C_RESOURCES_SIZE);
                int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
                                      

@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/06/25 11:40:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/07/03 08:15:31 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -192,7 +192,7 @@ public class CmsPreparedStatementPool {
 			temp.notify();
 		}
 		   
-       // System.err.println("**** --> key: "+key+" *** "+pstmt);
+        //System.err.println("**** --> key: "+key+" *** "+pstmt);
 		return pstmt;
 	}
 	

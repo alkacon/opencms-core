@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/29 07:59:35 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2000/07/03 08:15:30 $
+ * Version: $Revision: 1.96 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.95 $ $Date: 2000/06/29 07:59:35 $ 
+ * @version $Revision: 1.96 $ $Date: 2000/07/03 08:15:30 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1447,7 +1447,7 @@ public class CmsObject implements I_CmsConstants {
 	}
     
      /**
-	 * Logs a user into the Cms, if the password is correct.
+	 * Logs a web user into the Cms, if the password is correct.
 	 * 
 	 * @param username The name of the user to be returned.
 	 * @param password The password of the user to be returned.
@@ -1554,7 +1554,7 @@ public class CmsObject implements I_CmsConstants {
     }
     
  	/** 
-	 * Deletes a user from the Cms.
+	 * Deletes a web user from the Cms.
 	 * 
 	 * @param name The Id of the user to be deleted.
 	 * 
@@ -1595,7 +1595,7 @@ public class CmsObject implements I_CmsConstants {
 
 	
 	/**
-	 * Updated the userinformation.<BR/>
+	 * Updates the userinformation.<BR/>
 	 * 
 	 * Only the administrator can do this.
 	 * 
