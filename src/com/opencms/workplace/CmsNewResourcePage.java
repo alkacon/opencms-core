@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/06/13 15:13:14 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 
 package com.opencms.workplace;
+
+import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -60,7 +62,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.65 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.66 $ $Date: 2003/06/13 15:13:14 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -239,10 +241,10 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 // now return to filelist
                 try {
                     cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                            + C_WP_EXPLORER_FILELIST);
+                            + CmsWorkplaceAction.getExplorerFileUri(cms));
                 }catch(Exception e) {
                     throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                            + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                            + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
                 return null;
             }

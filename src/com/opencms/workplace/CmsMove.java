@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/06/12 15:16:32 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/06/13 15:13:14 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -48,7 +50,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.53 $ $Date: 2003/06/12 15:16:32 $
+ * @version $Revision: 1.54 $ $Date: 2003/06/13 15:13:14 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -217,7 +219,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     // return to the calling page
                     try {
                         if(lasturl == null || "".equals(lasturl)) {
-                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
                         }
                         else {
                             cms.getRequestContext().getResponse().sendRedirect(lasturl);
@@ -226,7 +228,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     catch(Exception e) {
                         throw new CmsException("Redirect fails :"
                                 + getConfigFile(cms).getWorkplaceActionPath()
-                                + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                                + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
                     return null;
                 }

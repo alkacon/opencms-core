@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/06/13 15:13:14 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
@@ -45,7 +47,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.34 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.35 $ $Date: 2003/06/13 15:13:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -277,12 +279,12 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                         }
                                         else {
                                             cms.getRequestContext().getResponse().sendCmsRedirect(
-                                                getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+                                                getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
                                         }
                                     } catch(Exception ex) {
                                         throw new CmsException(
                                             "Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                                            + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                            + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
                                     }
                                     return null;
                                     }

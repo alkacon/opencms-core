@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2003/06/12 15:16:32 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/06/13 15:13:14 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -27,6 +27,8 @@
  */
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -42,7 +44,7 @@ import java.util.Vector;
  * Template class for displaying the chown screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2003/06/12 15:16:32 $
+ * @version $Revision: 1.33 $ $Date: 2003/06/13 15:13:14 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants {
     
@@ -113,14 +115,14 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants {
 				try {
 					if(lasturl == null || "".equals(lasturl)) {
 						requestContext.getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-						+ C_WP_EXPLORER_FILELIST);
+						+ CmsWorkplaceAction.getExplorerFileUri(cms));
 					} else {
 						requestContext.getResponse().sendRedirect(lasturl);
                     }
 				}
 				catch(Exception e) {
 					throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-					+ C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+					+ CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
 				}
 				return null;
 			}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2003/06/13 10:04:20 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/06/13 15:13:14 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -27,6 +27,8 @@
  */
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -40,7 +42,7 @@ import java.util.Hashtable;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.35 $ $Date: 2003/06/13 15:13:14 $
  */
 
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -149,14 +151,14 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
 				// return to filelist
 				try {
 					if(lasturl == null || "".equals(lasturl))
-						requestContext.getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+						requestContext.getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
 					else
 						requestContext.getResponse().sendRedirect(lasturl);
 				}
 				catch(Exception e) {
 					throw new CmsException("Redirect fails :"
 					+ getConfigFile(cms).getWorkplaceActionPath()
-					+ C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+					+ CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
 				}
 				return null;
 			}else {

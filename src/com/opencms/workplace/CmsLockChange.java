@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/06/13 15:13:13 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -42,7 +44,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.37 $ $Date: 2003/02/15 11:14:53 $
+ * @version $Revision: 1.38 $ $Date: 2003/06/13 15:13:13 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -127,7 +129,7 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
             try {
                 if(lasturl == null || "".equals(lasturl)) {
                     cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                            + C_WP_EXPLORER_FILELIST);
+                            + CmsWorkplaceAction.getExplorerFileUri(cms));
                 }
                 else {
                     cms.getRequestContext().getResponse().sendRedirect(lasturl);
@@ -136,7 +138,7 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
             catch(Exception e) {
                 throw new CmsException("Redirect fails :"
                         + getConfigFile(cms).getWorkplaceActionPath()
-                        + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                        + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;
         }

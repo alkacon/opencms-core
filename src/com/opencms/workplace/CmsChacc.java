@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/06/13 10:04:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/13 15:13:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -27,9 +27,8 @@
  */
 package com.opencms.workplace;
 
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Vector;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
@@ -38,14 +37,17 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import org.opencms.security.CmsAccessControlEntry;
 import com.opencms.util.Encoder;
+
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.7 $ $Date: 2003/06/13 15:13:13 $
  */
 
 public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -167,14 +169,14 @@ public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
 				// return to filelist
 				try {
 					if(lasturl == null || "".equals(lasturl))
-						requestContext.getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+						requestContext.getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
 					else
 						requestContext.getResponse().sendRedirect(lasturl);
 				}
 				catch(Exception e) {
 					throw new CmsException("Redirect fails :"
 					+ getConfigFile(cms).getWorkplaceActionPath()
-					+ C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+					+ CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
 				}
 				return null;
 			}else {

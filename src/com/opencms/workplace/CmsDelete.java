@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2003/06/12 15:16:32 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/06/13 15:13:14 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -45,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.45 $ $Date: 2003/06/12 15:16:32 $
+ * @version $Revision: 1.46 $ $Date: 2003/06/13 15:13:14 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -127,7 +129,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     try {
                         if(lasturl == null || "".equals(lasturl)) {
                             cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                                    + C_WP_EXPLORER_FILELIST);
+                                    + CmsWorkplaceAction.getExplorerFileUri(cms));
                         }
                         else {
                             cms.getRequestContext().getResponse().sendRedirect(lasturl);
@@ -135,7 +137,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     }
                     catch(Exception e) {
                         throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                                + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                                + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
                     return null;
                 }

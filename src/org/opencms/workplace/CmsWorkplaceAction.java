@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2003/06/12 16:32:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/13 15:13:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace;
 
 import com.opencms.file.CmsObject;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -41,7 +42,7 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -53,6 +54,9 @@ public class CmsWorkplaceAction {
     /** Path to the JSP workplace */    
     public static final String C_JSP_WORKPLACE_URI = "/system/workplace/jsp/top.html";
     
+    /** Path to the JSP explorer */
+    public static final String C_JSP_WORKPLACE_FILELIST = "../jsp/explorer_files.html";
+        
     /**
      * Constructor is private since there must be no intances of this class.<p>
      */
@@ -87,6 +91,20 @@ public class CmsWorkplaceAction {
         return C_JSP_WORKPLACE_URI;        
     }    
     
+    /**
+     * Returns the uri of the file explorer.<p>
+     * 
+     * @param cms the current cms context
+     * @return the uri of the file explorer
+     */    
+    public static String getExplorerFileUri(CmsObject cms) {              
+        HttpSession session = extractSession(cms);
+        if (session == null) return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+        if (settings == null) return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
+        return C_JSP_WORKPLACE_FILELIST;        
+    }    
+        
     /**
      * Extracts the HttpSession from the provided OpenCms context 
      * 

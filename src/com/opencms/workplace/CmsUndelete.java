@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndelete.java,v $
-* Date   : $Date: 2003/03/05 12:16:42 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/06/13 15:13:13 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -43,7 +45,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2003/03/05 12:16:42 $
+ * @version $Revision: 1.8 $ $Date: 2003/06/13 15:13:13 $
  */
 
 public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -93,14 +95,14 @@ public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants
             try {
                 if(lasturl == null || "".equals(lasturl)) {
                     cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                                        + C_WP_EXPLORER_FILELIST);
+                                        + CmsWorkplaceAction.getExplorerFileUri(cms));
                 }else {
                     cms.getRequestContext().getResponse().sendRedirect(lasturl);
                 }
             }catch(Exception e) {
                 throw new CmsException("Redirect fails :"
                     + getConfigFile(cms).getWorkplaceActionPath()
-                    + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                    + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;
         } catch(CmsException e){

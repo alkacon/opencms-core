@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.124 $
+* Date   : $Date: 2003/06/13 15:13:14 $
+* Version: $Revision: 1.125 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.124 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.125 $ $Date: 2003/06/13 15:13:14 $
  */
 
 public interface I_CmsWpConstants {
@@ -397,29 +397,29 @@ public interface I_CmsWpConstants {
 
 
     /** The explorer tree. */
-    public static final String C_WP_EXPLORER_TREE = "explorer_tree.html";
+    public static final String C_WP_EXPLORER_TREE = "../action/explorer_tree.html";
 
 
     /** The explorer file list. */
-    public static final String C_WP_EXPLORER_FILELIST = "explorer_files.html";
+    public static final String C_WP_EXPLORER_FILELIST = "../action/explorer_files.html";
 
 
     /** The folder tree. */
-    public static final String C_WP_FOLDER_TREE = "folder_tree.html";
+    public static final String C_WP_FOLDER_TREE = "../action/folder_tree.html";
 
     /** The channel tree. */
-    public static final String C_WP_CHANNEL_TREE = "channel_tree.html";
+    public static final String C_WP_CHANNEL_TREE = "../action/channel_tree.html";
 
     /** The workplace */
-    public static final String C_WP_RELOAD = "workplace_reload.html";
+    public static final String C_WP_RELOAD = "../action/workplace_reload.html";
 
 
     /** The preferences update */
-    public static final String C_PREFERENCES_UPDATE = "preferences_update.html";
+    public static final String C_PREFERENCES_UPDATE = "../action/preferences_update.html";
 
 
     /** The preferences user panel */
-    public static final String C_WP_EXPLORER_PREFERENCES = "preferences.html?panel=user";
+    public static final String C_WP_EXPLORER_PREFERENCES = "../action/preferences.html?panel=user";
 
 
     // Filenames of special templates

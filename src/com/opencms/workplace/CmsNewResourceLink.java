@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/05/05 07:50:52 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/06/13 15:13:14 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -49,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2003/05/05 07:50:52 $
+ * @version $Revision: 1.36 $ $Date: 2003/06/13 15:13:14 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -268,11 +270,11 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                             cms.getRequestContext().getResponse().sendRedirect(lastUrl);
                         } else {
                             cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                                    + C_WP_EXPLORER_FILELIST);
+                                    + CmsWorkplaceAction.getExplorerFileUri(cms));
                         }
                     } catch(Exception e) {
                         throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                            + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                            + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
                     return null;
                 }
@@ -285,7 +287,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         }
         // set lasturl
         if(lastUrl == null) {
-            lastUrl = C_WP_EXPLORER_FILELIST;
+            lastUrl = CmsWorkplaceAction.getExplorerFileUri(cms);
         }
         xmlTemplateDocument.setData("lasturl", lastUrl);
         // set the templateselector if there was an error

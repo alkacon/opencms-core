@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/04/17 15:14:36 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/06/13 15:13:14 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -48,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2003/04/17 15:14:36 $
+ * @version $Revision: 1.38 $ $Date: 2003/06/13 15:13:14 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
@@ -234,12 +236,12 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                                     }
                                     else {
                                         cms.getRequestContext().getResponse().sendCmsRedirect(
-                                            getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+                                            getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
                                     }
                                 } catch(Exception ex) {
                                     throw new CmsException(
                                         "Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                                        + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                        + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
                                 }
                                 return null;
                             }
@@ -308,11 +310,11 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                                 cms.getRequestContext().getResponse().sendRedirect(lastUrl);
                             }
                             else {
-                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
                             }
                         }
                         catch(Exception ex) {
-                            throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, ex);
+                            throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
                         }
                         return null;
                     }
@@ -368,11 +370,11 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                                 cms.getRequestContext().getResponse().sendRedirect(lastUrl);
                             }
                             else {
-                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
                             }
                         }
                         catch(Exception ex) {
-                            throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, ex);
+                            throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
                         }
                         return null;
                     }

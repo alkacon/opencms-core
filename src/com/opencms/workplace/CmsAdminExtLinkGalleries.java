@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/06/13 15:13:14 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFolder;
@@ -43,7 +45,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.9 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.10 $ $Date: 2003/06/13 15:13:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -268,7 +270,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                 }
 
                 if(lasturl == null) {
-                    lasturl = C_WP_EXPLORER_FILELIST;
+                    lasturl = CmsWorkplaceAction.getExplorerFileUri(cms);
                 }
                 xmlTemplateDocument.setData("lasturl", lasturl);
                 // set the template for url check if check failed

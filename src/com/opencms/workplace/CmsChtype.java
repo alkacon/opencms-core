@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2003/01/20 17:57:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/06/13 15:13:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,6 +28,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
@@ -43,7 +45,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.19 $ $Date: 2003/06/13 15:13:14 $
  */
 public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
@@ -110,7 +112,7 @@ public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants {
             try {
                 if(lasturl == null || "".equals(lasturl)) {
 					requestContext.getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                    + C_WP_EXPLORER_FILELIST);
+                    + CmsWorkplaceAction.getExplorerFileUri(cms));
                 }
                 else {
                     requestContext.getResponse().sendRedirect(lasturl);
@@ -118,7 +120,7 @@ public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants {
             }
             catch(Exception e) {
                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                        + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                        + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;
         }

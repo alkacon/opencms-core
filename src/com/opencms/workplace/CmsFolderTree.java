@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2003/06/13 10:04:20 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/06/13 15:13:13 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
@@ -49,7 +51,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.54 $ $Date: 2003/06/13 15:13:13 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -520,7 +522,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 }
 
                 // set all data for the treeline tag
-                template.setData(C_FILELIST, C_WP_EXPLORER_FILELIST + "?" + C_PARA_FILELIST
+                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(cms) + "?" + C_PARA_FILELIST
                         + "=" + res.getAbsolutePath());
                 template.setData(C_TREELIST, C_WP_EXPLORER_TREE + "?" + C_PARA_FILELIST
                         + "=" + res.getAbsolutePath());
