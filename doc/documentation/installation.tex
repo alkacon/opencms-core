@@ -187,27 +187,27 @@ for a more detailed description of these external parts of OpenCms.
 
 
 \section{\label{42dbsetup}Setting up the OpenCms database}
-For setting up the MySQL database for OpenCms, create a new database \texttt{opencms42}
+For setting up the MySQL database for OpenCms, create a new database \texttt{opencms}
 by calling
 
 \begin{quote}
-\texttt{(your MySQL path)/mysql/bin/mysqladmin create opencms42}
+\texttt{(your MySQL path)/mysql/bin/mysqladmin create opencms}
 \end{quote}
 
-It is important to name the database \texttt{opencms42} because the configuration file of
-OpenCms (\texttt{opencms.properties}) creates a database connection to a database named \texttt{opencms42}.
+It is important to name the database \texttt{opencms} because the configuration file of
+OpenCms (\texttt{opencms.properties}) creates a database connection to a database named \texttt{opencms}.
 If you want to use another name for your database
 you will have to change the line for the database connection in the \texttt{opencms.properties} file.
 
 Run
 \begin{quote}
-\texttt{(your MySQL path)/mysql/bin/mysql opencms42 < config/mysql.sql}
+\texttt{(your MySQL path)/mysql/bin/mysql opencms < config/mysql.sql}
 \end{quote}
 This will create all of the required database tables. 
 Make sure that all of the tables are created properly by calling the MySQL monitor again with
 
 \begin{quote}
-\texttt{(your MySQL path)/mysql/bin/mysql opencms42}
+\texttt{(your MySQL path)/mysql/bin/mysql opencms}
 \end{quote}
 
 and entering 
@@ -219,7 +219,7 @@ at the monitor prompt. MySQL should print the following list of tables:
 \begin{quote}
 \begin{verbatim}
 +--------------------------+
-| Tables_in_opencms42      |
+| Tables_in_opencms        |
 +--------------------------+
 | cms_files                |
 | cms_groups               |
@@ -330,8 +330,8 @@ If there are errors, please carefully check the classpath option of your command
 Some Java VM need additional settings for the classpath. Try to add the current directory 
 and (for JDK 1.1.x) the \texttt{classes.zip} in the \texttt{lib} folder of your JDK installation to your 
 classpath, if the command above doesn't work and throws a \texttt{ClassNotFoundException} error message.
-After fixing a problem, you should drop (\texttt{mysqladmin drop opencms42}) and recreate 
-the existing database \texttt{opencms42} (see previous section) before 
+After fixing a problem, you should drop (\texttt{mysqladmin drop opencms}) and recreate 
+the existing database \texttt{opencms} (see previous section) before 
 running the command above for a second time.
 
 After this the OpenCms database setup is completed. You are now able to check the basic OpenCms system. 
@@ -437,7 +437,7 @@ use mysql;
 insert into user values ('localhost', 'ocmsuser',
 password('XXXXX'),'N','N','N','N','N','N','N','N','N',
 'N','N','N','N','N'); 
-insert into db values ('localhost', 'opencms42', 'ocmsuser',
+insert into db values ('localhost', 'opencms', 'ocmsuser',
 'Y','Y','Y','Y','Y','Y','Y','Y','Y','Y'); 
 flush privileges; 
 \end{verbatim}
@@ -482,7 +482,7 @@ Change to the folder in which the file \\
 \texttt{NewsModuleSetup.sql} resides and type in the following shell command:
 
 \begin{quote}
-\texttt{(your MySQL path)/bin/mysql opencms42 < NewsModuleSetup.sql}
+\texttt{(your MySQL path)/bin/mysql opencms < NewsModuleSetup.sql}
 \end{quote}
 
 This creates all necessary tables and inserts some test data.
@@ -531,7 +531,7 @@ Change to the folder in which the file
 \texttt{website.sql} resides and type in the following shell command:
 
 \begin{quote}
-\texttt{(your MySQL path)/bin/mysql opencms42 < website.sql}
+\texttt{(your MySQL path)/bin/mysql opencms < website.sql}
 \end{quote}
 
 \item
@@ -899,8 +899,8 @@ opencms.properties. Also ensure you are using Java 1.2 or higher since
 previous versions are not able to start a JAR file.
 the classpath option of your command.
 
-After fixing a problem, you should drop (\texttt{mysqladmin drop opencms42}) and recreate 
-the existing database \texttt{opencms42} (see previous section) before 
+After fixing a problem, you should drop (\texttt{mysqladmin drop opencms}) and recreate 
+the existing database \texttt{opencms} (see previous section) before 
 running the command above for a second time.
 
 After this the OpenCms database setup is completed. You are now able to check the basic OpenCms system. 
