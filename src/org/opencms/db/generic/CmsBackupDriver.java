@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2005/02/23 13:27:16 $
+ * Version: $Revision: 1.120 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.119 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.120 $ $Date: 2005/02/23 13:27:16 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -259,23 +259,36 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
      * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(org.opencms.db.CmsDbContext, java.util.List, int)
      */
     public void deleteBackups(CmsDbContext dbc, List existingBackups, int maxVersions) throws CmsDataAccessException {
-        PreparedStatement stmt1 = null;
+        //PreparedStatement stmt1 = null;
+        PreparedStatement stmt1a = null;
+        PreparedStatement stmt1b = null;
+        PreparedStatement stmt1c = null;
         PreparedStatement stmt2 = null;
         Connection conn = null;
         CmsBackupResource currentResource = null;
         int count = existingBackups.size() - maxVersions;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);           
-            stmt1 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCE");
+            conn = m_sqlManager.getConnection(dbc);  
+            // stmt1 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCE");
+            stmt1a = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_CONTENTS_BYBACKUPID");
+            stmt1b = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_STRUCTURE_BYBACKUPID");
+            stmt1c = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCES_BYBACKUPID");
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_DELETEALL_BACKUP");
 
             for (int i = 0; i < count; i++) {
                 currentResource = (CmsBackupResource)existingBackups.get(i);
                 // delete the resource
-                stmt1.setString(1, currentResource.getStructureId().toString());
-                stmt1.setInt(2, currentResource.getTagId());
-                stmt1.addBatch();
+                //stmt1.setString(1, currentResource.getStructureId().toString());
+                //stmt1.setInt(2, currentResource.getTagId());
+                //stmt1.addBatch();
+                stmt1a.setString(1, currentResource.getBackupId().toString());
+                stmt1a.addBatch();
+                stmt1b.setString(1, currentResource.getBackupId().toString());
+                stmt1b.addBatch();
+                stmt1c.setString(1, currentResource.getBackupId().toString());
+                stmt1c.addBatch();
+
                 // delete the properties
                 stmt2.setString(1, currentResource.getBackupId().toString());
                 stmt2.setInt(2, currentResource.getTagId());
@@ -287,7 +300,10 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             }
 
             if (count > 0) {
-                stmt1.executeBatch();
+                // stmt1.executeBatch();
+                stmt1a.executeBatch();
+                stmt1b.executeBatch();
+                stmt1c.executeBatch();
                 stmt2.executeBatch();
             }
 
@@ -296,7 +312,10 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         } catch (Exception ex) {
             throw new CmsDataAccessException(ex);
         } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt1, null);
+            //m_sqlManager.closeAll(dbc, conn, stmt1, null);
+            m_sqlManager.closeAll(dbc, conn, stmt1a, null);
+            m_sqlManager.closeAll(dbc, null, stmt1b, null);
+            m_sqlManager.closeAll(dbc, null, stmt1c, null);
             m_sqlManager.closeAll(dbc, null, stmt2, null);
         }
     }
