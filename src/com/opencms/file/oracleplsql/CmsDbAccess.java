@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/11/02 17:10:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/11/08 13:46:24 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,9 +52,10 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.5 $ $Date: 2000/11/02 17:10:38 $ * 
+ * @version $Revision: 1.6 $ $Date: 2000/11/08 13:46:24 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
+	
 	/**
 	 * Instanciates the access-module and sets up all required modules and connections.
 	 * @param config The OpenCms configuration.
@@ -367,6 +368,170 @@ public boolean accessWrite(CmsUser currentUser, CmsProject currentProject, CmsRe
 	}
 }
 /**
+>>>>>>> 1.161
+ * Creates a serializable object in the systempropertys.
+ * 
+ * @param name The name of the property.
+ * @param object The property-object.
+ * 
+ * @return object The property-object.
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public Serializable addSystemProperty(String name, Serializable object) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+	byte[] value;
+	PreparedStatement statement = null;
+	PreparedStatement statement2 = null;
+	PreparedStatement nextStatement = null;
+	try {
+		int id = nextId(C_TABLE_SYSTEMPROPERTIES);
+		// serialize the object	
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(bout);
+		oout.writeObject(object);
+		oout.close();
+		value = bout.toByteArray();
+
+		// create the object
+		// first insert the new systemproperty with empty systemproperty_value, then update
+		// the systemproperty_value. These two steps are necessary because of using Oracle BLOB
+		statement = pool.getPreparedStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORINSERT_KEY);
+		statement.setInt(1, id);
+		statement.setString(2, name);
+		//statement.setBytes(3,value);
+		statement.executeUpdate();
+		// now update the systemproperty_value
+		statement2 = pool.getNextPreparedStatement(statement,cq.C_PLSQL_SYSTEMPROPERTIES_FORUPDATE_KEY);
+		statement2.setInt(1, id);
+		Connection conn = pool.getConnectionOfStatement(statement);
+		conn.setAutoCommit(false);	
+		ResultSet res = statement2.executeQuery();
+		while (res.next()) {
+			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
+			ByteArrayInputStream instream = new ByteArrayInputStream(value);
+			OutputStream outstream = blob.getBinaryOutputStream();
+			byte[] chunk = new byte[blob.getChunkSize()];
+			int i = -1;
+			while ((i = instream.read(chunk)) != -1) {
+				outstream.write(chunk, 0, i);
+			}
+			instream.close();
+			outstream.close();
+		}
+		// for the oracle-driver commit or rollback must be executed manually
+		// because setAutoCommit = false
+		nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
+		nextStatement.execute();
+		conn.setAutoCommit(true);
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (IOException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + CmsException.C_SERIALIZATION, e);
+	} finally {
+		if (statement != null) {
+			pool.putPreparedStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORINSERT_KEY, statement);
+		}
+	}	
+	return readSystemProperty(name);
+}
+/**
+ * Adds a user to the database.
+ * 
+ * @param name username
+ * @param password user-password
+ * @param description user-description
+ * @param firstname user-firstname
+ * @param lastname user-lastname
+ * @param email user-email
+ * @param lastlogin user-lastlogin
+ * @param lastused user-lastused
+ * @param flags user-flags
+ * @param additionalInfos user-additional-infos
+ * @param defaultGroup user-defaultGroup
+ * @param address user-defauladdress
+ * @param section user-section
+ * @param type user-type
+ * 
+ * @return the created user.
+ * @exception thorws CmsException if something goes wrong.
+ */
+public CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+	int id = nextId(C_TABLE_USERS);
+	byte[] value = null;
+	PreparedStatement statement = null;
+	PreparedStatement statement2 = null;
+	PreparedStatement nextStatement = null;
+	OraclePreparedStatement trimStatement = null;
+	try {
+		// serialize the hashtable
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(bout);
+		oout.writeObject(additionalInfos);
+		oout.close();
+		value = bout.toByteArray();
+
+		// write data to database
+		// first insert the data without user_info 
+		statement = pool.getPreparedStatement(cq.C_PLSQL_USERSFORINSERT_KEY);
+		statement.setInt(1, id);
+		statement.setString(2, name);
+		// crypt the password with MD5
+		statement.setString(3, digest(password));
+		statement.setString(4, digest(""));
+		statement.setString(5, checkNull(description));
+		statement.setString(6, checkNull(firstname));
+		statement.setString(7, checkNull(lastname));
+		statement.setString(8, checkNull(email));
+		statement.setTimestamp(9, new Timestamp(lastlogin));
+		statement.setTimestamp(10, new Timestamp(lastused));
+		statement.setInt(11, flags);
+		//statement.setBytes(12,value);
+		statement.setInt(12, defaultGroup.getId());
+		statement.setString(13, checkNull(address));
+		statement.setString(14, checkNull(section));
+		statement.setInt(15, type);
+		statement.executeUpdate();
+
+		// now update user_info of the new user
+		statement2 = pool.getNextPreparedStatement(statement, cq.C_PLSQL_USERSFORUPDATE_KEY);
+		statement2.setInt(1, id);
+		Connection conn = pool.getConnectionOfStatement(statement);
+		conn.setAutoCommit(false);
+		ResultSet res = statement2.executeQuery();
+		while (res.next()) {
+			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("USER_INFO");
+			ByteArrayInputStream instream = new ByteArrayInputStream(value);
+			OutputStream outstream = blob.getBinaryOutputStream();
+			byte[] chunk = new byte[blob.getChunkSize()];
+			int i = -1;
+			while ((i = instream.read(chunk)) != -1) {
+				outstream.write(chunk, 0, i);
+			}
+			instream.close();
+			outstream.close();
+		}
+		res.close();
+		// for the oracle-driver commit or rollback must be executed manually
+		// because setAutoCommit = false in CmsDbPool.CmsDbPool
+		nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
+		nextStatement.execute();
+		conn.setAutoCommit(true);
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (IOException e) {
+		throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+	} finally {
+		if (statement != null) {
+			pool.putPreparedStatement(cq.C_PLSQL_USERSFORINSERT_KEY, statement);
+		}
+	}
+	return readUser(id);
+}
+/**
  * Copies the file.
  * 
  * @param project The project in which the resource will be used.
@@ -552,7 +717,7 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 				outstream.close();
 			}
 			// for the oracle-driver commit or rollback must be executed manually
-			// because setAutoCommit = false in CmsDbPool.CmsDbPool
+			// because setAutoCommit = false
 			nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
 			nextStatement.execute();
 			conn.setAutoCommit(true);
@@ -567,6 +732,109 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 		}
 	}
 	return readFile(user.getId(), project.getId(), onlineProject.getId(), filename);
+}
+// methods working with session-storage
+
+/**
+ * This method creates a new session in the database. It is used 
+ * for sessionfailover.
+ * 
+ * @param sessionId the id of the session.
+ * @return data the sessionData.
+ */
+public void createSession(String sessionId, Hashtable data) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+	byte[] value = null;
+	PreparedStatement statement = null;
+	PreparedStatement statement2 = null;
+	PreparedStatement nextStatement = null;	
+	try {
+		// serialize the hashtable
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(bout);
+		oout.writeObject(data);
+		oout.close();
+		value = bout.toByteArray();
+
+		// write data to database     
+		statement = pool.getPreparedStatement(cq.C_PLSQL_SESSION_FORINSERT_KEY);
+		statement.setString(1, sessionId);
+		statement.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
+		statement.executeUpdate();
+		statement2 = pool.getNextPreparedStatement(statement, cq.C_PLSQL_SESSION_FORUPDATE_KEY);
+		statement2.setString(1, sessionId);
+		Connection conn = pool.getConnectionOfStatement(statement);
+		conn.setAutoCommit(false);
+		ResultSet res = statement2.executeQuery();
+		while (res.next()) {
+			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
+			ByteArrayInputStream instream = new ByteArrayInputStream(value);
+			OutputStream outstream = blob.getBinaryOutputStream();
+			byte[] chunk = new byte[blob.getChunkSize()];
+			int i = -1;
+			while ((i = instream.read(chunk)) != -1) {
+				outstream.write(chunk, 0, i);
+			}
+			instream.close();
+			outstream.close();
+		}
+		// for the oracle-driver commit or rollback must be executed manually
+		// because setAutoCommit = false
+		nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
+		nextStatement.execute();
+		conn.setAutoCommit(true);
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (IOException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]:" + CmsException.C_SERIALIZATION, e);
+	} finally {
+		if (statement != null) {
+			pool.putPreparedStatement(cq.C_PLSQL_SESSION_FORINSERT_KEY, statement);
+		}
+	}
+}
+/**
+ * Private method to init all default-resources
+ */
+protected void fillDefaults() throws CmsException
+{
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fillDefaults() starting NOW!");	}
+	// insert the first Id
+	initId();
+
+	// the resourceType "folder" is needed always - so adding it
+	Hashtable resourceTypes = new Hashtable(1);
+	resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, C_TYPE_FOLDER_NAME, ""));
+
+	// sets the last used index of resource types.
+	resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
+
+	// add the resource-types to the database
+	addSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes);
+
+	// set the mimetypes
+	addSystemProperty(C_SYSTEMPROPERTY_MIMETYPES, initMimetypes());
+
+	// set the groups
+	CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
+	CmsGroup administrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER, null);
+	CmsGroup projectleader = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER | C_FLAG_GROUP_PROJECTCOWORKER | C_FLAG_GROUP_ROLE, null);
+	CmsGroup users = createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED | C_FLAG_GROUP_ROLE | C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
+
+	// add the users
+	CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", C_USER_TYPE_SYSTEMUSER);
+	CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", C_USER_TYPE_SYSTEMUSER);
+	addUserToGroup(guest.getId(), guests.getId());
+	addUserToGroup(admin.getId(), administrators.getId());
+	CmsTask task = createTask(0, 0, 1, // standart project type,
+	admin.getId(), admin.getId(), administrators.getId(), C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), C_TASK_PRIORITY_NORMAL);
+	CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
+
+	// create the root-folder
+	CmsFolder rootFolder = createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
+	rootFolder.setGroupId(users.getId());
+	writeFolder(online, rootFolder, false);
 }
 /**
  * Returns all projects, which are owned by a user.
@@ -751,6 +1019,69 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 {
 	return new com.opencms.file.oracleplsql.CmsQueries();
 }
+	/**
+	 * Gets all users of a type.
+	 * 
+	 * @param type The type of the user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public Vector getUsers(int type) 
+		throws CmsException {
+		Vector users = new Vector();
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		
+		try	{			
+			statement = m_pool.getPreparedStatement(m_cq.C_USERS_GETUSERS_KEY);
+			statement.setInt(1,type);
+			res = statement.executeQuery();
+			// create new Cms user objects
+			while( res.next() ) {
+				// read the additional infos.
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO); 
+				byte[] value = new byte[(int) blob.length()]; 
+				value = blob.getBytes(1, (int) blob.length());
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				CmsUser user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
+										   res.getString(m_cq.C_USERS_USER_NAME),
+										   res.getString(m_cq.C_USERS_USER_PASSWORD),
+										   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
+										   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
+										   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
+										   res.getString(m_cq.C_USERS_USER_LASTNAME),
+										   res.getString(m_cq.C_USERS_USER_EMAIL),
+										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
+										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
+										   res.getInt(m_cq.C_USERS_USER_FLAGS),
+										   info,
+										   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
+														res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
+														res.getString(m_cq.C_GROUPS_GROUP_NAME),
+														res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
+														res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+										   res.getString(m_cq.C_USERS_USER_ADDRESS),
+										   res.getString(m_cq.C_USERS_USER_SECTION),
+										   res.getInt(m_cq.C_USERS_USER_TYPE));
+				
+				users.addElement(user);
+			} 
+
+			res.close();
+		} catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} catch (Exception e) {
+			throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_USERS_GETUSERS_KEY, statement);
+			}
+		}
+		return users;
+	}
 /**
  * Returns a list of users of a group.<P/>
  * 
@@ -776,7 +1107,9 @@ public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws
 		res = (ResultSet) statement.getObject(1);
 		while (res.next()) {
 			// read the additional infos.
-			byte[] value = res.getBytes(m_cq.C_USERS_USER_INFO);
+			oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+			byte[] value = new byte[(int) blob.length()];
+			value = blob.getBytes(1, (int) blob.length());
 			// now deserialize the object
 			ByteArrayInputStream bin = new ByteArrayInputStream(value);
 			ObjectInputStream oin = new ObjectInputStream(bin);
@@ -872,6 +1205,21 @@ protected void initStatements() throws CmsException {
 	pool.initCallableStatement(cq.C_PLSQL_FILESFORUPDATE_KEY, cq.C_PLSQL_FILESFORUPDATE);
 	pool.initCallableStatement(cq.C_PLSQL_FILESFORINSERT_KEY, cq.C_PLSQL_FILESFORINSERT);
 
+	// init statements for users
+	pool.initCallableStatement(cq.C_PLSQL_USERSWRITE_KEY, cq.C_PLSQL_USERSWRITE);
+	pool.initCallableStatement(cq.C_PLSQL_USERSFORUPDATE_KEY, cq.C_PLSQL_USERSFORUPDATE);
+	pool.initCallableStatement(cq.C_PLSQL_USERSFORINSERT_KEY, cq.C_PLSQL_USERSFORINSERT);	
+
+	// init statements for systemproperties
+	pool.initCallableStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORUPDATE_KEY, cq.C_PLSQL_SYSTEMPROPERTIES_FORUPDATE);
+	pool.initCallableStatement(cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE_KEY, cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE);
+	pool.initCallableStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORINSERT_KEY, cq.C_PLSQL_SYSTEMPROPERTIES_FORINSERT);	
+		
+	// init statements for sessions
+	pool.initCallableStatement(cq.C_PLSQL_SESSION_FORINSERT_KEY, cq.C_PLSQL_SESSION_FORINSERT);	
+	pool.initCallableStatement(cq.C_PLSQL_SESSION_FORUPDATE_KEY, cq.C_PLSQL_SESSION_FORUPDATE);		
+	pool.initCallableStatement(cq.C_PLSQL_SESSION_UPDATE_KEY, cq.C_PLSQL_SESSION_UPDATE);	
+		
 	pool.initLinkConnections();
 	}
 /**
@@ -1252,6 +1600,400 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 		return returnValue;
 	}
 /**
+ * Reads a session from the database.
+ * 
+ * @param sessionId, the id og the session to read.
+ * @return the read session as Hashtable.
+ * @exception thorws CmsException if something goes wrong.
+ */
+public Hashtable readSession(String sessionId) throws CmsException {
+	PreparedStatement statement = null;
+	ResultSet res = null;
+	Hashtable session = null;
+	try {
+		statement = m_pool.getPreparedStatement(m_cq.C_SESSION_READ_KEY);
+		statement.setString(1, sessionId);
+		statement.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT));
+		res = statement.executeQuery();
+
+		// create new Cms user object
+		if (res.next()) {
+			// read the additional infos.
+			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
+			byte[] value = new byte[ (int) blob.length()];
+			value = blob.getBytes(1, (int) blob.length());
+			// now deserialize the object
+			ByteArrayInputStream bin = new ByteArrayInputStream(value);
+			ObjectInputStream oin = new ObjectInputStream(bin);
+			session = (Hashtable) oin.readObject();
+		} else {
+			deleteSessions();
+		}
+		res.close();
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (Exception e) {
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	} finally {
+		if (statement != null) {
+			m_pool.putPreparedStatement(m_cq.C_SESSION_READ_KEY, statement);
+		}
+	}
+	return session;
+}
+	 /**
+	 * Reads a serializable object from the systempropertys.
+	 * 
+	 * @param name The name of the property.
+	 * 
+	 * @return object The property-object.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public Serializable readSystemProperty(String name)
+		throws CmsException {
+		
+		Serializable property=null;
+
+		ResultSet res = null;
+		PreparedStatement statement = null;
+			
+		// create get the property data from the database
+		try {
+		  statement=m_pool.getPreparedStatement(m_cq.C_SYSTEMPROPERTIES_READ_KEY);
+		  statement.setString(1,name);
+		  res = statement.executeQuery();
+		  if(res.next()) {
+			    oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_SYSTEMPROPERTY_VALUE);
+				byte[] value = new byte[(int) blob.length()];			    
+				value = blob.getBytes(1, (int) blob.length());
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				property=(Serializable)oin.readObject();                
+			}	
+		   res.close();
+		}
+		catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}	
+		catch (IOException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+		}
+	    catch (ClassNotFoundException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_SYSTEMPROPERTIES_READ_KEY, statement);
+			}
+		  }	
+		return property;
+	}
+	/**
+	 * Reads a user from the cms, only if the password is correct.
+	 * 
+	 * @param id the id of the user.
+	 * @param type the type of the user.
+	 * @return the read user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */
+	public CmsUser readUser(int id) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		CmsUser user = null;
+
+		try	{			
+			statement = m_pool.getPreparedStatement(m_cq.C_USERS_READID_KEY);
+			statement.setInt(1,id);
+			res = statement.executeQuery();
+			
+			// create new Cms user object
+			if(res.next()) {
+				// read the additional infos.
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO); 
+				byte[] value = new byte[(int) blob.length()]; 
+				value = blob.getBytes(1, (int) blob.length());
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
+								   res.getString(m_cq.C_USERS_USER_NAME),
+								   res.getString(m_cq.C_USERS_USER_PASSWORD),
+								   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
+								   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
+								   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
+								   res.getString(m_cq.C_USERS_USER_LASTNAME),
+								   res.getString(m_cq.C_USERS_USER_EMAIL),
+								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
+								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
+								   res.getInt(m_cq.C_USERS_USER_FLAGS),
+								   info,
+								   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
+												res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
+												res.getString(m_cq.C_GROUPS_GROUP_NAME),
+												res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
+												res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+								   res.getString(m_cq.C_USERS_USER_ADDRESS),
+								   res.getString(m_cq.C_USERS_USER_SECTION),
+								   res.getInt(m_cq.C_USERS_USER_TYPE));
+			} else {
+				res.close();
+				throw new CmsException("["+this.getClass().getName()+"]"+id,CmsException.C_NO_USER);
+			}
+
+			res.close();
+			return user;
+		 }
+		catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+		// a.lucas: catch CmsException here and throw it again.
+		// Don't wrap another CmsException around it, since this may cause problems during login.
+		catch (CmsException e) {
+			throw e;
+		}
+		catch (Exception e) {
+			throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_USERS_READID_KEY, statement);
+			}
+		}
+	}
+	/**
+	 * Reads a user from the cms.
+	 * 
+	 * @param name the name of the user.
+	 * @param type the type of the user.
+	 * @return the read user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */
+	public CmsUser readUser(String name, int type) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		CmsUser user = null;
+		
+		try	{			
+			statement = m_pool.getPreparedStatement(m_cq.C_USERS_READ_KEY);
+			statement.setString(1,name);
+			statement.setInt(2,type);
+   
+			res = statement.executeQuery();
+			
+			// create new Cms user object
+			if(res.next()) {
+				// read the additional infos.
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				byte[] value = new byte[(int) blob.length()];
+				value = blob.getBytes(1, (int) blob.length());
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
+								   res.getString(m_cq.C_USERS_USER_NAME),
+								   res.getString(m_cq.C_USERS_USER_PASSWORD),
+								   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
+								   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
+								   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
+								   res.getString(m_cq.C_USERS_USER_LASTNAME),
+								   res.getString(m_cq.C_USERS_USER_EMAIL),
+								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
+								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
+								   res.getInt(m_cq.C_USERS_USER_FLAGS),
+								   info,
+								   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
+												res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
+												res.getString(m_cq.C_GROUPS_GROUP_NAME),
+												res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
+												res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+								   res.getString(m_cq.C_USERS_USER_ADDRESS),
+								   res.getString(m_cq.C_USERS_USER_SECTION),
+								   res.getInt(m_cq.C_USERS_USER_TYPE));
+			} else {
+				res.close();
+				throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
+			}
+
+			res.close();            
+			return user;
+		 }
+		catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+		// a.lucas: catch CmsException here and throw it again.
+		// Don't wrap another CmsException around it, since this may cause problems during login.
+		catch (CmsException e) {
+			throw e;
+		}
+		catch (Exception e) {
+			throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_USERS_READ_KEY, statement);
+			}
+		}
+	}
+	/**
+	 * Reads a user from the cms, only if the password is correct.
+	 * 
+	 * @param name the name of the user.
+	 * @param password the password of the user.
+	 * @param type the type of the user.
+	 * @return the read user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */
+	public CmsUser readUser(String name, String password, int type) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		CmsUser user = null;
+
+		try	{			
+			statement = m_pool.getPreparedStatement(m_cq.C_USERS_READPW_KEY);
+			statement.setString(1,name);
+			statement.setString(2,digest(password));
+			statement.setInt(3,type);
+			res = statement.executeQuery();
+			
+			// create new Cms user object
+			if(res.next()) {
+				// read the additional infos.
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				byte[] value = new byte[(int) blob.length()]; 
+				value = blob.getBytes(1, (int) blob.length());
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
+								   res.getString(m_cq.C_USERS_USER_NAME),
+								   res.getString(m_cq.C_USERS_USER_PASSWORD),
+								   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
+								   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
+								   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
+								   res.getString(m_cq.C_USERS_USER_LASTNAME),
+								   res.getString(m_cq.C_USERS_USER_EMAIL),
+								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
+								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
+								   res.getInt(m_cq.C_USERS_USER_FLAGS),
+								   info,
+								   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
+												res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
+												res.getString(m_cq.C_GROUPS_GROUP_NAME),
+												res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
+												res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+								   res.getString(m_cq.C_USERS_USER_ADDRESS),
+								   res.getString(m_cq.C_USERS_USER_SECTION),
+								   res.getInt(m_cq.C_USERS_USER_TYPE));
+			} else {
+				res.close();
+				throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
+			}
+
+			res.close();
+			return user;
+		 }
+		catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+		// a.lucas: catch CmsException here and throw it again.
+		// Don't wrap another CmsException around it, since this may cause problems during login.
+		catch (CmsException e) {
+			throw e;
+		}
+		catch (Exception e) {
+			throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_USERS_READPW_KEY, statement);
+			}
+		}
+	}
+	/**
+	 * Reads the user, which is agent for the role, from the cms, only if the password is correct.
+	 * 
+	 * @param id the id of the role.
+	 * @param type the type of the user.
+	 * @return the read user.
+	 * @exception throws CmsException if something goes wrong.
+	 */
+	public CmsUser readUserAgent(int roleId) 
+		throws CmsException {
+			
+		int agentId = this.findAgent(roleId);
+		
+		PreparedStatement statement = null;
+		ResultSet res = null;
+		CmsUser user = null;
+
+		try	{			
+			statement = m_pool.getPreparedStatement(m_cq.C_USERS_READID_KEY);
+			statement.setInt(1,agentId);
+			res = statement.executeQuery();
+			
+			// create new Cms user object
+			if(res.next()) {
+				// read the additional infos.
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO); 
+				byte[] value = new byte[(int) blob.length()]; 
+				value = blob.getBytes(1, (int) blob.length());
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
+								   res.getString(m_cq.C_USERS_USER_NAME),
+								   res.getString(m_cq.C_USERS_USER_PASSWORD),
+								   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
+								   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
+								   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
+								   res.getString(m_cq.C_USERS_USER_LASTNAME),
+								   res.getString(m_cq.C_USERS_USER_EMAIL),
+								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
+								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
+								   res.getInt(m_cq.C_USERS_USER_FLAGS),
+								   info,
+								   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
+												res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
+												res.getString(m_cq.C_GROUPS_GROUP_NAME),
+												res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
+												res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+								   res.getString(m_cq.C_USERS_USER_ADDRESS),
+								   res.getString(m_cq.C_USERS_USER_SECTION),
+								   res.getInt(m_cq.C_USERS_USER_TYPE));
+			} else {
+				res.close();
+				throw new CmsException("["+this.getClass().getName()+"]"+roleId,CmsException.C_NO_USER);
+			}
+
+			res.close();
+			return user;
+		 }
+		catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+		// a.lucas: catch CmsException here and throw it again.
+		// Don't wrap another CmsException around it, since this may cause problems during login.
+		catch (CmsException e) {
+			throw e;
+		}
+		catch (Exception e) {
+			throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(m_cq.C_USERS_READID_KEY, statement);
+			}
+		}
+	}
+/**
   * Deletes a project from the cms.
   * Therefore it deletes all files, resources and properties.
   * 
@@ -1310,6 +2052,78 @@ public Vector unlockResource(CmsUser currentUser, CmsProject currentProject, Str
 			pool.putPreparedStatement(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE_KEY, statement);
 		}
 	}
+}
+/**
+ * This method updates a session in the database. It is used 
+ * for sessionfailover.
+ * 
+ * @param sessionId the id of the session.
+ * @return data the sessionData.
+ */
+public int updateSession(String sessionId, Hashtable data) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+	byte[] value = null;
+	PreparedStatement statement = null;
+	PreparedStatement statement2 = null;
+	PreparedStatement nextStatement = null;
+	OraclePreparedStatement trimStatement = null;
+	int retValue;
+	ResultSet res = null;
+	try {
+		// serialize the hashtable
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(bout);
+		oout.writeObject(data);
+		oout.close();
+		value = bout.toByteArray();
+
+		// write data to database in two steps because of using Oracle BLOB
+		// first update the session_time 
+		statement = pool.getPreparedStatement(cq.C_PLSQL_SESSION_UPDATE_KEY);
+		statement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+		statement.setString(2, sessionId);
+		retValue = statement.executeUpdate();
+		// now update the session_data	
+		statement2 = pool.getNextPreparedStatement(statement, cq.C_PLSQL_SESSION_FORUPDATE_KEY);
+		statement2.setString(1, sessionId);
+		Connection conn = pool.getConnectionOfStatement(statement);
+		conn.setAutoCommit(false);
+		res = statement2.executeQuery();
+		while (res.next()) {
+			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
+			// first trim the blob to 0 bytes, otherwise there could be left some bytes
+			// of the old content
+			trimStatement = (OraclePreparedStatement) pool.getNextPreparedStatement(statement, cq.C_TRIMBLOB_KEY);
+			trimStatement.setBLOB(1, blob);
+			trimStatement.setInt(2, 0);
+			trimStatement.execute();
+			ByteArrayInputStream instream = new ByteArrayInputStream(value);
+			OutputStream outstream = blob.getBinaryOutputStream();
+			byte[] chunk = new byte[blob.getChunkSize()];
+			int i = -1;
+			while ((i = instream.read(chunk)) != -1) {
+				outstream.write(chunk, 0, i);
+			}
+			instream.close();
+			outstream.close();
+		}
+		res.close();
+		// for the oracle-driver commit or rollback must be executed manually
+		// because setAutoCommit = false in CmsDbPool.CmsDbPool
+		nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
+		nextStatement.execute();
+		conn.setAutoCommit(true);
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (IOException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]:" + CmsException.C_SERIALIZATION, e);
+	} finally {
+		if (statement != null) {
+			pool.putPreparedStatement(cq.C_PLSQL_SESSION_UPDATE_KEY, statement);
+		}
+	}
+	return retValue;
 }
 /**
  * Checks if a user is member of a group.<P/>
@@ -1546,6 +2360,155 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
 		}
 		if (statementResourceUpdate != null) {
 			m_pool.putPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY, statementResourceUpdate);
+		}
+	}
+}
+/**
+ * Writes a serializable object to the systemproperties.
+ * 
+ * @param name The name of the property.
+ * @param object The property-object.
+ * 
+ * @return object The property-object.
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public Serializable writeSystemProperty(String name, Serializable object) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+	PreparedStatement statement = null;
+	PreparedStatement nextStatement = null;
+	OraclePreparedStatement trimStatement = null;
+	byte[] value = null;
+	try {
+		// serialize the object	
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(bout);
+		oout.writeObject(object);
+		oout.close();
+		value = bout.toByteArray();
+		statement = pool.getPreparedStatement(cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE_KEY);
+		statement.setString(1, name);
+		Connection conn = pool.getConnectionOfStatement(statement);
+		conn.setAutoCommit(false);
+		ResultSet res = statement.executeQuery();	
+		while (res.next()) {
+			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
+			// first trim the blob to 0 bytes, otherwise ther could be left some bytes
+			// of the old content
+			trimStatement = (OraclePreparedStatement) pool.getNextPreparedStatement(statement, cq.C_TRIMBLOB_KEY);
+			trimStatement.setBLOB(1, blob);
+			trimStatement.setInt(2, 0);
+			trimStatement.execute();
+			ByteArrayInputStream instream = new ByteArrayInputStream(value);
+			OutputStream outstream = blob.getBinaryOutputStream();
+			byte[] chunk = new byte[blob.getChunkSize()];
+			int i = -1;
+			while ((i = instream.read(chunk)) != -1) {
+				outstream.write(chunk, 0, i);
+			}
+			instream.close();
+			outstream.close();
+		}
+		res.close();
+		// for the oracle-driver commit or rollback must be executed manually
+		// because setAutoCommit = false in CmsDbPool.CmsDbPool
+		nextStatement = pool.getNextPreparedStatement(statement, cq.C_COMMIT_KEY);
+		nextStatement.execute();
+		conn.setAutoCommit(true);
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (IOException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + CmsException.C_SERIALIZATION, e);
+	} finally {
+		if (statement != null) {
+			pool.putPreparedStatement(cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE_KEY, statement);
+		}
+	}
+	return readSystemProperty(name);
+}
+/**
+ * Writes a user to the database.
+ * 
+ * @param user the user to write
+ * @exception thorws CmsException if something goes wrong.
+ */
+public void writeUser(CmsUser user) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
+	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
+	byte[] value = null;
+	PreparedStatement statement = null;
+	PreparedStatement statement2 = null;
+	PreparedStatement nextStatement = null;
+	OraclePreparedStatement trimStatement = null;
+	try {
+		// serialize the hashtable
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		ObjectOutputStream oout = new ObjectOutputStream(bout);
+		oout.writeObject(user.getAdditionalInfo());
+		oout.close();
+		value = bout.toByteArray();
+
+		// write data to database     
+		statement = pool.getPreparedStatement(cq.C_PLSQL_USERSWRITE_KEY);
+		statement.setString(1, checkNull(user.getDescription()));
+		statement.setString(2, checkNull(user.getFirstname()));
+		statement.setString(3, checkNull(user.getLastname()));
+		statement.setString(4, checkNull(user.getEmail()));
+		statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
+		statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
+		statement.setInt(7, user.getFlags());
+		//statement.setBytes(8,value);
+		statement.setInt(8, user.getDefaultGroupId());
+		statement.setString(9, checkNull(user.getAddress()));
+		statement.setString(10, checkNull(user.getSection()));
+		statement.setInt(11, user.getType());
+		statement.setInt(12, user.getId());
+		statement.executeUpdate();
+		// update user_info in this special way because of using blob
+		statement2 = pool.getPreparedStatement(cq.C_PLSQL_USERSFORUPDATE_KEY);
+		statement2.setInt(1, user.getId());
+		Connection conn = pool.getConnectionOfStatement(statement2);
+		conn.setAutoCommit(false);
+		ResultSet res = statement2.executeQuery();
+		try {
+			while (res.next()) {
+				oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("USER_INFO");
+				// first trim the blob to 0 bytes, otherwise ther could be left some bytes
+				// of the old content
+				trimStatement = (OraclePreparedStatement) pool.getNextPreparedStatement(statement2, cq.C_TRIMBLOB_KEY);
+				trimStatement.setBLOB(1, blobnew);
+				trimStatement.setInt(2, 0);
+				trimStatement.execute();
+				ByteArrayInputStream instream = new ByteArrayInputStream(value);
+				OutputStream outstream = blobnew.getBinaryOutputStream();
+				byte[] chunk = new byte[blobnew.getChunkSize()];
+				int i = -1;
+				while ((i = instream.read(chunk)) != -1) {
+					outstream.write(chunk, 0, i);
+				}
+				instream.close();
+				outstream.close();
+			}
+			res.close();
+			// for the oracle-driver commit or rollback must be executed manually
+			// because setAutoCommit = false in CmsDbPool.CmsDbPool
+			nextStatement = pool.getNextPreparedStatement(statement2, cq.C_COMMIT_KEY);
+			nextStatement.execute();
+			conn.setAutoCommit(true);
+		} catch (IOException e) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
+		}
+	} catch (SQLException e) {
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	} catch (IOException e) {
+		throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+	} finally {
+		if (statement != null) {
+			m_pool.putPreparedStatement(m_cq.C_USERS_WRITE_KEY, statement);
+		}
+		if (statement2 != null) {
+			pool.putPreparedStatement(cq.C_PLSQL_USERSFORUPDATE_KEY, statement2);
 		}
 	}
 }

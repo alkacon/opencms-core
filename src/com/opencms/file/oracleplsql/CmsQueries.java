@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/11/02 17:10:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/11/08 13:46:24 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -104,4 +104,30 @@ public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
 	public String C_PLSQL_FILESFORUPDATE = "select file_content from cms_files where file_id = ? for update nowait";
 	public Integer C_PLSQL_FILESFORINSERT_KEY = new Integer(10041);
 	public String C_PLSQL_FILESFORINSERT = "insert into cms_files (file_id, file_content) values (?, empty_blob())";
+
+	
+	// statements for users
+	public Integer C_PLSQL_USERSWRITE_KEY = new Integer(10050);
+	public String C_PLSQL_USERSWRITE = "update cms_users set user_description = ?, USER_FIRSTNAME = ?, USER_LASTNAME = ?, USER_EMAIL = ?, USER_LASTLOGIN = ?, USER_LASTUSED = ?, USER_FLAGS = ?, USER_DEFAULT_GROUP_ID = ?, USER_ADDRESS = ?, USER_SECTION = ?, USER_TYPE = ? WHERE USER_ID = ? ";
+	public Integer C_PLSQL_USERSFORUPDATE_KEY = new Integer(10051);
+	public String C_PLSQL_USERSFORUPDATE = "select user_info from cms_users where user_id = ? for update nowait";
+	public Integer C_PLSQL_USERSFORINSERT_KEY = new Integer(10052);
+	public String C_PLSQL_USERSFORINSERT = "insert into cms_users (USER_ID, USER_NAME, USER_PASSWORD, USER_RECOVERY_PASSWORD, USER_DESCRIPTION, USER_FIRSTNAME, USER_LASTNAME, USER_EMAIL, USER_LASTLOGIN, USER_LASTUSED, USER_FLAGS, USER_INFO, USER_DEFAULT_GROUP_ID, USER_ADDRESS, USER_SECTION, USER_TYPE) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, empty_blob(), ?, ?, ?, ?)";
+	
+	// statements for systemproperties
+	public Integer C_PLSQL_SYSTEMPROPERTIES_FORINSERT_KEY = new Integer(10060);
+	public String C_PLSQL_SYSTEMPROPERTIES_FORINSERT = "INSERT INTO CMS_SYSTEMPROPERTIES (SYSTEMPROPERTY_ID, SYSTEMPROPERTY_NAME, SYSTEMPROPERTY_VALUE) VALUES(?,?,empty_blob())";
+	public Integer C_PLSQL_SYSTEMPROPERTIES_FORUPDATE_KEY = new Integer(10061);
+	public String C_PLSQL_SYSTEMPROPERTIES_FORUPDATE = "select systemproperty_value from cms_systemproperties where systemproperty_id = ? for update nowait";
+	public Integer C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE_KEY = new Integer(10062);
+	public String C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE = "select systemproperty_value from cms_systemproperties where systemproperty_name = ? for update nowait";
+		
+	// statements for sessions
+	public Integer C_PLSQL_SESSION_FORINSERT_KEY = new Integer(10070);
+	public String C_PLSQL_SESSION_FORINSERT = "INSERT into CMS_SESSIONS (SESSION_ID, SESSION_LASTUSED, SESSION_DATA) values (?,?,empty_blob())";	
+	public Integer C_PLSQL_SESSION_FORUPDATE_KEY = new Integer(10071);
+	public String C_PLSQL_SESSION_FORUPDATE = "select SESSION_DATA from CMS_SESSIONS where SESSION_ID = ? for update nowait";	
+	public Integer C_PLSQL_SESSION_UPDATE_KEY = new Integer(10072);
+	public String C_PLSQL_SESSION_UPDATE = "UPDATE CMS_SESSIONS set SESSION_LASTUSED = ? where SESSION_ID = ?";
+	
 	}

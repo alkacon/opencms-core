@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/02 17:10:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/11/08 13:46:25 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.4 $ $Date: 2000/11/02 17:10:38 $
+ * @version $Revision: 1.5 $ $Date: 2000/11/08 13:46:25 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -164,6 +164,174 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 public boolean accessWrite(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 	return (dbAccess.accessWrite(currentUser, currentProject, resource));
+}
+/**
+ * adds a file extension to the list of known file extensions 
+ * 
+ * <B>Security:</B>
+ * Users, which are in the group "administrators" are granted.<BR/>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param extension a file extension like 'html'
+ * @param resTypeName name of the resource type associated to the extension
+ */
+
+public void addFileExtension(CmsUser currentUser, CmsProject currentProject, String extension, String resTypeName) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	if (extension != null && resTypeName != null) {
+		if (isAdmin(currentUser, currentProject)) {
+			Hashtable suffixes = (Hashtable) dbAccess.readSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS);
+			if (suffixes == null) {
+				suffixes = new Hashtable();
+				suffixes.put(extension, resTypeName);
+				dbAccess.addSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS, suffixes);
+			} else {
+				suffixes.put(extension, resTypeName);
+				dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS, suffixes);
+			}
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + extension, CmsException.C_NO_ACCESS);
+		}
+	}
+}
+/**
+ * Adds a CmsResourceTypes.
+ * 
+ * <B>Security:</B>
+ * Users, which are in the group "administrators" are granted.<BR/>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param resourceType the name of the resource to get.
+ * @param launcherType the launcherType-id
+ * @param launcherClass the name of the launcher-class normaly ""
+ * 
+ * Returns a CmsResourceTypes.
+ * 
+ * @exception CmsException  Throws CmsException if operation was not succesful.
+ */
+public CmsResourceType addResourceType(CmsUser currentUser, CmsProject currentProject, String resourceType, int launcherType, String launcherClass) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	if (isAdmin(currentUser, currentProject)) {
+
+		// read the resourceTypes from the propertys
+		m_resourceTypes = (Hashtable) dbAccess.readSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE);
+		synchronized (m_resourceTypes) {
+
+			// get the last index and increment it.
+			Integer lastIndex = new Integer(((Integer) m_resourceTypes.get(C_TYPE_LAST_INDEX)).intValue() + 1);
+
+			// write the last index back
+			m_resourceTypes.put(C_TYPE_LAST_INDEX, lastIndex);
+
+			// add the new resource-type
+			m_resourceTypes.put(resourceType, new CmsResourceType(lastIndex.intValue(), launcherType, resourceType, launcherClass));
+
+			// store the resource types in the properties
+			dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, m_resourceTypes);
+		}
+
+		// the cached resource types aren't valid any more.
+		m_resourceTypes = null;
+		// return the new resource-type
+		return (getResourceType(currentUser, currentProject, resourceType));
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, CmsException.C_NO_ACCESS);
+	}
+}
+/** 
+ * Adds a user to the Cms.
+ * 
+ * Only a adminstrator can add users to the cms.<P/>
+ * 
+ * <B>Security:</B>
+ * Only users, which are in the group "administrators" are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param name The new name for the user.
+ * @param password The new password for the user.
+ * @param group The default groupname for the user.
+ * @param description The description for the user.
+ * @param additionalInfos A Hashtable with additional infos for the user. These
+ * Infos may be stored into the Usertables (depending on the implementation).
+ * @param flags The flags for a user (e.g. C_FLAG_ENABLED)
+ * 
+ * @return user The added user will be returned.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesfull.
+ */
+public CmsUser addUser(CmsUser currentUser, CmsProject currentProject, String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+
+	// Check the security
+	if (isAdmin(currentUser, currentProject)) {
+		// check the password minimumsize
+		if ((name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE)) {
+			CmsGroup defaultGroup = readGroup(currentUser, currentProject, group);
+			CmsUser newUser = dbAccess.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_SYSTEMUSER);
+			addUserToGroup(currentUser, currentProject, newUser.getName(), defaultGroup.getName());
+			return newUser;
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_SHORT_PASSWORD);
+		}
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
+	}
+}
+/** 
+ * Adds a web user to the Cms. <br>
+ * 
+ * A web user has no access to the workplace but is able to access personalized
+ * functions controlled by the OpenCms.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param name The new name for the user.
+ * @param password The new password for the user.
+ * @param group The default groupname for the user.
+ * @param description The description for the user.
+ * @param additionalInfos A Hashtable with additional infos for the user. These
+ * Infos may be stored into the Usertables (depending on the implementation).
+ * @param flags The flags for a user (e.g. C_FLAG_ENABLED)
+ * 
+ * @return user The added user will be returned.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesfull.
+ */
+public CmsUser addWebUser(CmsUser currentUser, CmsProject currentProject, String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+
+	// check the password minimumsize
+	if ((name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE)) {
+		CmsGroup defaultGroup = readGroup(currentUser, currentProject, group);
+		CmsUser newUser = dbAccess.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_WEBUSER);
+		CmsUser user;
+		CmsGroup usergroup;
+		user = dbAccess.readUser(newUser.getName(), C_USER_TYPE_WEBUSER);
+
+		//check if the user exists
+		if (user != null) {
+			usergroup = readGroup(currentUser, currentProject, group);
+			//check if group exists
+			if (usergroup != null) {
+				//add this user to the group
+				m_dbAccess.addUserToGroup(user.getId(), usergroup.getId());
+				// update the cache
+				m_usergroupsCache.clear();
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "]" + group, CmsException.C_NO_GROUP);
+			}
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "]" + name, CmsException.C_NO_USER);
+		}
+		return newUser;
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_SHORT_PASSWORD);
+	}
 }
 /**
  * Copies a file in the Cms. <br>
@@ -308,6 +476,98 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 		}
 
 	 }
+/**
+ * Creates a new task.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param projectid The Id of the current project task of the user.
+ * @param agentName User who will edit the task 
+ * @param roleName Usergroup for the task
+ * @param taskName Name of the task
+ * @param taskType Type of the task 
+ * @param taskComment Description of the task
+ * @param timeout Time when the task must finished
+ * @param priority Id for the priority
+ * 
+ * @return A new Task Object
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public CmsTask createTask(CmsUser currentUser, int projectid, String agentName, String roleName, String taskName, String taskComment, int taskType, long timeout, int priority) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	CmsUser agent = dbAccess.readUser(agentName, C_USER_TYPE_SYSTEMUSER);
+	CmsGroup role = m_dbAccess.readGroup(roleName);
+	java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
+	java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+	CmsTask task = m_dbAccess.createTask(projectid, projectid, taskType, currentUser.getId(), agent.getId(), role.getId(), taskName, now, timestamp, priority);
+	if (taskComment != null && !taskComment.equals("")) {
+		m_dbAccess.writeTaskLog(task.getId(), currentUser.getId(), new java.sql.Timestamp(System.currentTimeMillis()), taskComment, C_TASKLOG_USER);
+	}
+	return task;
+}
+/**
+ * Creates a new task.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param agent Username who will edit the task 
+ * @param role Usergroupname for the task
+ * @param taskname Name of the task
+ * @param taskcomment Description of the task.
+ * @param timeout Time when the task must finished
+ * @param priority Id for the priority
+ * 
+ * @return A new Task Object
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public CmsTask createTask(CmsUser currentUser, CmsProject currentProject, String agentName, String roleName, String taskname, String taskcomment, long timeout, int priority) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	CmsGroup role = m_dbAccess.readGroup(roleName);
+	java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
+	java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
+	int agentId = C_UNKNOWN_ID;
+	try {
+		agentId = dbAccess.readUser(agentName, C_USER_TYPE_SYSTEMUSER).getId();
+	} catch (Exception e) {
+		// ignore that this user doesn't exist and create a task for the role
+	}
+	return m_dbAccess.createTask(currentProject.getTaskId(), currentProject.getTaskId(), 1, // standart Task Type
+	currentUser.getId(), agentId, role.getId(), taskname, now, timestamp, priority);
+}
+/**
+ * Forwards a task to a new user.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param taskid The Id of the task to forward.
+ * @param newRole The new Group for the task
+ * @param newUser The new user who gets the task. if its "" the new agent will automatic selected
+ * 
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public void forwardTask(CmsUser currentUser, CmsProject currentProject, int taskid, String newRoleName, String newUserName) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	CmsGroup newRole = m_dbAccess.readGroup(newRoleName);
+	CmsUser newUser = null;
+	if (newUserName.equals("")) {
+		// use new method readUserAgent because of protected method findAgent()
+		newUser = dbAccess.readUserAgent(newRole.getId());
+	} else {
+		newUser = dbAccess.readUser(newUserName, C_USER_TYPE_SYSTEMUSER);
+	}
+	m_dbAccess.forwardTask(taskid, newRole.getId(), newUser.getId());
+	m_dbAccess.writeSystemTaskLog(taskid, "Task fowarded from " + currentUser.getFirstname() + " " + currentUser.getLastname() + " to " + newUser.getFirstname() + " " + newUser.getLastname() + ".");
+}
 	/**
 	 * Returns all projects, which are owned by the user or which are accessible
 	 * for the group of the user.
@@ -332,6 +592,35 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 		return(projects);
 	 }
 /**
+ * Returns a Vector with all I_CmsResourceTypes.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * 
+ * Returns a Hashtable with all I_CmsResourceTypes.
+ * 
+ * @exception CmsException  Throws CmsException if operation was not succesful.
+ */
+public Hashtable getAllResourceTypes(CmsUser currentUser, CmsProject currentProject) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+
+	// check, if the resourceTypes were read bevore
+	if (m_resourceTypes == null) {
+		// read the resourceTypes from the propertys
+		m_resourceTypes = (Hashtable) dbAccess.readSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE);
+
+		// remove the last index.
+		m_resourceTypes.remove(C_TYPE_LAST_INDEX);
+	}
+
+	// return the resource-types.
+	return (m_resourceTypes);
+}
+/**
  * Returns a list of groups of a user.<P/>
  * 
  * <B>Security:</B>
@@ -354,6 +643,49 @@ public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, St
 		return groups;		
 	}	
 	return allGroups;
+}
+/**
+ * Returns all users<P/>
+ * 
+ * <B>Security:</B>
+ * All users are granted, except the anonymous user.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @return users A Vector of all existing users.
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public Vector getUsers(CmsUser currentUser, CmsProject currentProject) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+
+	// check security
+	if (!anonymousUser(currentUser, currentProject).equals(currentUser)) {
+		return dbAccess.getUsers(C_USER_TYPE_SYSTEMUSER);
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(), CmsException.C_NO_ACCESS);
+	}
+}
+/**
+ * Returns all users from a given type<P/>
+ * 
+ * <B>Security:</B>
+ * All users are granted, except the anonymous user.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param type The type of the users. 
+ * @return users A Vector of all existing users.
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public Vector getUsers(CmsUser currentUser, CmsProject currentProject, int type) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+
+	// check security
+	if (!anonymousUser(currentUser, currentProject).equals(currentUser)) {
+		return dbAccess.getUsers(type);
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(), CmsException.C_NO_ACCESS);
+	}
 }
 	/**
 	 * Returns a list of users in a group.<P/>
@@ -474,6 +806,74 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 	
 	m_subresCache.clear();
 }
+//  Methods working with user and groups
+
+/**
+ * Logs a user into the Cms, if the password is correct.
+ * 
+ * <B>Security</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param username The name of the user to be returned.
+ * @param password The password of the user to be returned.
+ * @return the logged in user.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public CmsUser loginUser(CmsUser currentUser, CmsProject currentProject, String username, String password) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	CmsUser newUser = readUser(currentUser, currentProject, username, password);
+
+	// is the user enabled?
+	if (newUser.getFlags() == C_FLAG_ENABLED) {
+		// Yes - log him in!
+		// first write the lastlogin-time.
+		newUser.setLastlogin(new Date().getTime());
+		// write the user back to the cms.
+		dbAccess.writeUser(newUser);
+		// update cache
+		m_userCache.put(newUser.getName(), newUser);
+		return (newUser);
+	} else {
+		// No Access!
+		throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
+	}
+}
+/**
+ * Logs a web user into the Cms, if the password is correct.
+ * 
+ * <B>Security</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param username The name of the user to be returned.
+ * @param password The password of the user to be returned.
+ * @return the logged in user.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public CmsUser loginWebUser(CmsUser currentUser, CmsProject currentProject, String username, String password) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	CmsUser newUser = readWebUser(currentUser, currentProject, username, password);
+
+	// is the user enabled?
+	if (newUser.getFlags() == C_FLAG_ENABLED) {
+		// Yes - log him in!
+		// first write the lastlogin-time.
+		newUser.setLastlogin(new Date().getTime());
+		// write the user back to the cms.
+		dbAccess.writeUser(newUser);
+		// update cache
+		m_userCache.put(newUser.getName(), newUser);
+		return (newUser);
+	} else {
+		// No Access!
+		throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
+	}
+}
 /**
  * Publishes a project.
  * 
@@ -517,6 +917,25 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 			throw new CmsException(0, ex);
 		}
 	}
+}
+// Methods working with system properties
+
+
+/**
+ * Reads the export-path for the system.
+ * This path is used for db-export and db-import.
+ * 
+ * <B>Security:</B>
+ * All users are granted.<BR/>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @return the exportpath.
+ */
+public String readExportPath(CmsUser currentUser, CmsProject currentProject) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	return (String) dbAccess.readSystemProperty(C_SYSTEMPROPERTY_EXPORTPATH);
 }
 /**
  * Reads a file from a previous project of the Cms.<BR/>
@@ -584,6 +1003,212 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
 		throw exc;
 	}
 	return cmsFile;
+}
+/**
+ * Gets the known file extensions (=suffixes) 
+ * 
+ * <B>Security:</B>
+ * All users are granted access<BR/>
+ * 
+ * @param currentUser The user who requested this method, not used here
+ * @param currentProject The current project of the user, not used here
+ * 
+ * @return Hashtable with file extensions as Strings
+ */
+
+public Hashtable readFileExtensions(CmsUser currentUser, CmsProject currentProject) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	Hashtable res = (Hashtable) dbAccess.readSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS);
+	return ((res != null) ? res : new Hashtable());
+}
+/**
+ * Gets the MimeTypes. 
+ * The Mime-Types will be returned.
+ * 
+ * <B>Security:</B>
+ * All users are garnted<BR/>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * 
+ * @return the mime-types.
+ */
+public Hashtable readMimeTypes(CmsUser currentUser, CmsProject currentProject) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	return (Hashtable) dbAccess.readSystemProperty(C_SYSTEMPROPERTY_MIMETYPES);
+}
+/**
+ * Reads all tasks for a user in a project.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param projectId The id of the Project in which the tasks are defined.
+ * @param userName The user who has to process the task.
+ * @param taskType Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+ * @param orderBy Chooses, how to order the tasks.
+ * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public Vector readTasksForUser(CmsUser currentUser, CmsProject currentProject, int projectId, String userName, int taskType, String orderBy, String sort) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	CmsUser user = dbAccess.readUser(userName, C_USER_TYPE_SYSTEMUSER);
+	return m_dbAccess.readTasks(currentProject, user, null, null, taskType, orderBy, sort);
+}
+/**
+ * Returns a user object.<P/>
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param id The id of the user that is to be read.
+ * @return User
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	try {
+		CmsUser user = null;
+		// try to read the user from cache
+		user = (CmsUser) m_userCache.get(id);
+		if (user == null) {
+			user = dbAccess.readUser(id);
+			m_userCache.put(id, user);
+		}
+		return user;
+	} catch (CmsException ex) {
+		return new CmsUser(C_UNKNOWN_ID, id + "", "deleted user");
+	}
+}
+/**
+ * Returns a user object.<P/>
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param username The name of the user that is to be read.
+ * @return User
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, String username) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	CmsUser user = null;
+	// try to read the user from cache
+	user = (CmsUser) m_userCache.get(username);
+	if (user == null) {
+		user = dbAccess.readUser(username, C_USER_TYPE_SYSTEMUSER);
+		m_userCache.put(username, user);
+	}
+	return user;
+}
+/**
+ * Returns a user object.<P/>
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param username The name of the user that is to be read.
+ * @param type The type of the user.
+ * @return User
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, String username, int type) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	CmsUser user = null;
+	// try to read the user from cache
+	user = (CmsUser) m_userCache.get(username);
+	if (user == null) {
+		user = dbAccess.readUser(username, type);
+		m_userCache.put(username, user);
+	}
+	return user;
+}
+/**
+ * Returns a user object if the password for the user is correct.<P/>
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param username The username of the user that is to be read.
+ * @param password The password of the user that is to be read.
+ * @return User
+ * 
+ * @exception CmsException  Throws CmsException if operation was not succesful
+ */
+public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, String username, String password) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	CmsUser user = dbAccess.readUser(username, password, C_USER_TYPE_SYSTEMUSER);
+	// store user in cache
+	if (user == null) {
+		m_userCache.put(username, user);
+	}
+	return user;
+}
+/**
+ * Returns a user object if the password for the user is correct.<P/>
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param username The username of the user that is to be read.
+ * @param password The password of the user that is to be read.
+ * @return User
+ * 
+ * @exception CmsException  Throws CmsException if operation was not succesful
+ */
+public CmsUser readWebUser(CmsUser currentUser, CmsProject currentProject, String username, String password) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	CmsUser user = dbAccess.readUser(username, password, C_USER_TYPE_WEBUSER);
+	// store user in cache
+	if (user == null) {
+		m_userCache.put(username, user);
+	}
+	return user;
+}
+/**
+ * This method loads old sessiondata from the database. It is used 
+ * for sessionfailover.
+ * 
+ * @param oldSessionId the id of the old session.
+ * @return the old sessiondata.
+ */
+public Hashtable restoreSession(String oldSessionId) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	return dbAccess.readSession(oldSessionId);
+}
+/**
+ * This method stores sessiondata into the database. It is used 
+ * for sessionfailover.
+ * 
+ * @param sessionId the id of the session.
+ * @param isNew determines, if the session is new or not.
+ * @return data the sessionData.
+ */
+public void storeSession(String sessionId, Hashtable sessionData) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	// update the session
+	int rowCount = dbAccess.updateSession(sessionId, sessionData);
+	if (rowCount != 1) {
+		// the entry dosn't exists - create it
+		dbAccess.createSession(sessionId, sessionData);
+	}
 }
 /**
  * Locks a resource.<br>
@@ -675,6 +1300,36 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
 	return (dbAccess.userInGroup(user.getId(), group.getId()));
 	}
 /**
+ * Writes the export-path for the system.
+ * This path is used for db-export and db-import.
+ * 
+ * <B>Security:</B>
+ * Users, which are in the group "administrators" are granted.<BR/>
+ *  
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param mountpoint The mount point in the Cms filesystem.
+ */
+public void writeExportPath(CmsUser currentUser, CmsProject currentProject, String path) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+
+	// check the security
+	if (isAdmin(currentUser, currentProject)) {
+
+		// security is ok - write the exportpath.
+		if (dbAccess.readSystemProperty(C_SYSTEMPROPERTY_EXPORTPATH) == null) {
+			// the property wasn't set before.
+			dbAccess.addSystemProperty(C_SYSTEMPROPERTY_EXPORTPATH, path);
+		} else {
+			// overwrite the property.
+			dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_EXPORTPATH, path);
+		}
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + path, CmsException.C_NO_ACCESS);
+	}
+}
+/**
  * Writes a file to the Cms.<br>
  * 
  * A file can only be written to an offline project.<br>
@@ -707,6 +1362,34 @@ public void writeFile(CmsUser currentUser, CmsProject currentProject, CmsFile fi
 	fileSystemChanged();
 }
 /**
+ * Writes the file extensions  
+ * 
+ * <B>Security:</B>
+ * Users, which are in the group "Administrators" are authorized.<BR/>
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param extensions Holds extensions as keys and resourcetypes (Stings) as values
+ */
+
+public void writeFileExtensions(CmsUser currentUser, CmsProject currentProject, Hashtable extensions) 
+	throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+	if (extensions != null) {
+		if (isAdmin(currentUser, currentProject)) {
+			if (dbAccess.readSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS) == null) {
+				// the property wasn't set before.
+				dbAccess.addSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS, extensions);
+			} else {
+				// overwrite the property.
+				dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS, extensions);
+			}
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + extensions.size(), CmsException.C_NO_ACCESS);
+		}
+	}
+}
+/**
  * Writes a fileheader to the Cms.<br>
  * 
  * A file can only be written to an offline project.<br>
@@ -737,5 +1420,62 @@ public void writeFileHeader(CmsUser currentUser, CmsProject currentProject, CmsF
 	// inform about the file-system-change
 	m_subresCache.clear();
 	fileSystemChanged();
+}
+/**
+ * Updates the user information.<BR/>
+ * 
+ * Only the administrator can do this.<P/>
+ * 
+ * <B>Security:</B>
+ * Only users, which are in the group "administrators" are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param user The  user to be updated.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public void writeUser(CmsUser currentUser, CmsProject currentProject, CmsUser user) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+
+	// Check the security
+	if (isAdmin(currentUser, currentProject) || (currentUser.equals(user))) {
+
+		// prevent the admin to be set disabled!
+		if (isAdmin(user, currentProject)) {
+			user.setEnabled();
+		}
+		dbAccess.writeUser(user);
+		// update the cache
+		m_userCache.put(user.getName(), user);
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(), CmsException.C_NO_ACCESS);
+	}
+}
+/**
+ * Updates the user information of a web user.<BR/>
+ * 
+ * Only a web user can be updated this way.<P/>
+ * 
+ * <B>Security:</B>
+ * Only users of the user type webuser can be updated this way.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param user The  user to be updated.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful
+ */
+public void writeWebUser(CmsUser currentUser, CmsProject currentProject, CmsUser user) throws CmsException {
+	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+
+	// Check the security
+	if (user.getType() == C_USER_TYPE_WEBUSER) {
+		dbAccess.writeUser(user);
+		// update the cache
+		m_userCache.put(user.getName(), user);
+	} else {
+		throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(), CmsException.C_NO_ACCESS);
+	}
 }
 }
