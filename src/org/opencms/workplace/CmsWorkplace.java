@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/12/08 13:18:28 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2004/12/08 14:30:29 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace;
 
 import org.opencms.db.CmsUserSettings;
@@ -81,45 +82,22 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.94 $
+ * @version $Revision: 1.95 $
  * 
  * @since 5.1
  */
 public abstract class CmsWorkplace {
-    
+
+    /** Constant for the JSP explorer filelist file. */
+    public static final String C_FILE_EXPLORER_FILELIST = I_CmsWpConstants.C_VFS_PATH_WORKPLACE
+        + "views/explorer/explorer_files.jsp";
+
+    /** Constant for the JSP dialogs path. */
+    public static final String C_PATH_DIALOGS = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "commons/";
+
     /** Constant for the JSP workplace path. */
     public static final String C_PATH_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE;
-    
-    /** Constant for the JSP dialogs path. */
-    public static final String C_PATH_DIALOGS = C_PATH_WORKPLACE + "commons/";
-    
-    /** Constant for the JSP common files (e.g. error page) path. */
-    protected static final String C_PATH_DIALOG_COMMON = C_PATH_DIALOGS + "includes/";
-    
-    /** Constant for the JSP common close dialog page. */
-    protected static final String C_FILE_DIALOG_CLOSE = C_PATH_DIALOG_COMMON + "closedialog.jsp";
-    
-    /** Constant for the JSP common confirmation dialog. */
-    protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_PATH_DIALOG_COMMON + "confirmation.jsp";
-    
-    /** Constant for the JSP common error dialog. */
-    protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_PATH_DIALOG_COMMON + "error.jsp";
-    
-    /** Constant for the JSP common wait screen. */
-    protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_PATH_DIALOG_COMMON + "wait.jsp";
-    
-    /** Constant for the JSP explorer filelist file. */
-    public static final String C_FILE_EXPLORER_FILELIST = C_PATH_WORKPLACE + "views/explorer/explorer_files.jsp";
-    
-    /** Constant for the JSP common report page. */
-    protected static final String C_FILE_REPORT_OUTPUT = C_PATH_DIALOG_COMMON + "report.jsp";
-    
-    /** Key name for the request attribute to reload the folder tree view. */
-    protected static final String C_REQUEST_ATTRIBUTE_RELOADTREE = "__CmsWorkplace.RELOADTREE";
-    
-    /** Key name for the session workplace class. */
-    protected static final String C_SESSION_WORKPLACE_CLASS    = "__CmsWorkplace.WORKPLACE_CLASS";
-    
+
     /** Key name for the session workplace settings. */
     public static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
 
@@ -128,65 +106,72 @@ public abstract class CmsWorkplace {
 
     /** Helper variable to deliver the html end part. */
     public static final int HTML_END = 1;
-    
+
     /** Helper variable to deliver the html start part. */
     public static final int HTML_START = 0;
-       
+
+    /** Constant for the JSP common files (e.g. error page) path. */
+    protected static final String C_DIALOG_PATH_COMMON = C_PATH_DIALOGS + "includes/";
+
+    /** Constant for the JSP common close dialog page. */
+    protected static final String C_FILE_DIALOG_CLOSE = C_DIALOG_PATH_COMMON + "closedialog.jsp";
+
+    /** Constant for the JSP common confirmation dialog. */
+    protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_DIALOG_PATH_COMMON + "confirmation.jsp";
+
+    /** Constant for the JSP common error dialog. */
+    protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_DIALOG_PATH_COMMON + "error.jsp";
+
+    /** Constant for the JSP common wait screen. */
+    protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_DIALOG_PATH_COMMON + "wait.jsp";
+
+    /** Constant for the JSP common report page. */
+    protected static final String C_FILE_REPORT_OUTPUT = C_DIALOG_PATH_COMMON + "report.jsp";
+
+    /** Key name for the request attribute to reload the folder tree view. */
+    protected static final String C_REQUEST_ATTRIBUTE_RELOADTREE = "__CmsWorkplace.RELOADTREE";
+
+    /** Key name for the session workplace class. */
+    protected static final String C_SESSION_WORKPLACE_CLASS = "__CmsWorkplace.WORKPLACE_CLASS";
+
     /** The link to the explorer file list (cached for performance reasons). */
-    private static String m_file_explorer_filelist;     
-       
+    private static String m_file_explorer_filelist;
+
     /** The URI to the skin resources (cached for performance reasons). */
-    private static String m_skinUri;    
+    private static String m_skinUri;
+
+    private CmsObject m_cms;
 
     /** Helper variable to store the id of the current project. */
     private int m_currentProjectId = -1;
-    
-    private CmsObject m_cms;    
     private CmsJspActionElement m_jsp;
     private List m_multiPartFileItems;
     private String m_resourceUri;
     private HttpSession m_session;
     private CmsWorkplaceSettings m_settings;
-    
+
     /**
      * Public constructor.<p>
      * 
      * @param jsp the initialized JSP context
-     */    
+     */
     public CmsWorkplace(CmsJspActionElement jsp) {
-        if (jsp != null) {       
-            m_jsp = jsp;        
-            m_cms = m_jsp.getCmsObject();                
-            m_session = m_jsp.getRequest().getSession();
-            
-            // get / create the workplace settings 
-            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
-            if (m_settings == null) {
-                // create the settings object
-                m_settings = new CmsWorkplaceSettings();
-                initWorkplaceSettings(m_cms, m_settings, false);
-                storeSettings(m_session, m_settings);
-            }
-            
-            // check request for changes in the workplace settings
-            initWorkplaceRequestValues(m_settings, m_jsp.getRequest());        
-            
-            // set cms context accordingly
-            initWorkplaceCmsContext(m_settings, m_cms);
-        }
-    }    
-    
+
+        initWorkplaceMembers(jsp);
+    }
+
     /**
      * Public constructor with JSP variables.<p>
      * 
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
-     */    
+     */
     public CmsWorkplace(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * Parses the JS calendar date format to the java patterns of SimpleDateFormat.<p>
      * 
@@ -194,6 +179,7 @@ public abstract class CmsWorkplace {
      * @return the parsed SimpleDateFormat pattern String
      */
     public static String getCalendarJavaDateFormat(String dateFormat) {
+
         dateFormat = CmsStringUtil.substitute(dateFormat, "%", ""); // remove all "%"
         dateFormat = CmsStringUtil.substitute(dateFormat, "m", "{$month}");
         dateFormat = CmsStringUtil.substitute(dateFormat, "H", "{$hour}");
@@ -206,19 +192,20 @@ public abstract class CmsWorkplace {
         dateFormat = dateFormat.replace('p', 'a'); // pm/am String
         return dateFormat;
     }
-    
+
     /**
      * Returns the path to the skin resources.<p>
      * 
      * @return the path to the skin resources
      */
     public static String getSkinUri() {
+
         if (m_skinUri == null) {
             m_skinUri = OpenCms.getSystemInfo().getContextPath() + "/resources/";
         }
-        return m_skinUri;      
+        return m_skinUri;
     }
-    
+
     /**
      * Returns true if the provided request was done by a Workplace user.<p>
      * 
@@ -226,15 +213,16 @@ public abstract class CmsWorkplace {
      * @return true if the provided request was done by a Workplace user
      */
     public static boolean isWorkplaceUser(HttpServletRequest req) {
+
         HttpSession session = req.getSession(false);
         if (session != null) {
             // if a session is available, check for a workplace configuration
             return null != session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
-    }
+        }
         // no session means no workplace use
         return false;
     }
-        
+
     /**
      * Initializes the current users workplace settings by reading the values 
      * from the users preferences.<p>
@@ -246,8 +234,12 @@ public abstract class CmsWorkplace {
      * @param settings the current workplace settings
      * @param update flag indicating if settings are only updated (user preferences)
      * @return initialized object with the current users workplace settings 
-     */    
-    static synchronized CmsWorkplaceSettings initWorkplaceSettings(CmsObject cms, CmsWorkplaceSettings settings, boolean update) {                
+     */
+    static synchronized CmsWorkplaceSettings initWorkplaceSettings(
+        CmsObject cms,
+        CmsWorkplaceSettings settings,
+        boolean update) {
+
         // save current workplace user & user settings object
         CmsUser user;
         if (update) {
@@ -258,7 +250,7 @@ public abstract class CmsWorkplace {
                 // can usually be ignored
                 if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
                     OpenCms.getLog(CmsWorkplace.class).info(e);
-                }                
+                }
                 user = cms.getRequestContext().currentUser();
             }
         } else {
@@ -266,40 +258,40 @@ public abstract class CmsWorkplace {
         }
         settings.setUser(user);
         settings.setUserSettings(new CmsUserSettings(user));
-        
+
         // save current project
         settings.setProject(cms.getRequestContext().currentProject().getId());
-  
+
         // initialize messages and also store them in settings
         CmsWorkplaceMessages messages = new CmsWorkplaceMessages(settings.getUserSettings().getLocale());
-        settings.setMessages(messages);    
-                        
+        settings.setMessages(messages);
+
         // switch to users preferred site      
         String siteRoot = settings.getUserSettings().getStartSite();
         if (siteRoot.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             // remove trailing slash
-            siteRoot = siteRoot.substring(0, siteRoot.length() - 1);    
+            siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
         }
         if (!"".equals(siteRoot) && CmsSiteManager.getSite(siteRoot) == null) {
             // this is not the root site and the site is not in the list
             siteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
             if (siteRoot.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 // remove trailing slash
-                siteRoot = siteRoot.substring(0, siteRoot.length() - 1);    
+                siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
             }
         }
         boolean access = false;
         CmsResource res = null;
         try {
             // check access to the site
-            res = cms.readResource("/");   
+            res = cms.readResource("/");
             access = cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW);
         } catch (CmsException e) {
             // error reading site root, in this case we will use a readable default
             if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
                 OpenCms.getLog(CmsWorkplace.class).info(e);
-            }            
-            
+            }
+
         }
         if ((res == null) || !access) {
             List sites = CmsSiteManager.getAvailableSites(cms, true);
@@ -307,22 +299,22 @@ public abstract class CmsWorkplace {
                 siteRoot = ((CmsSite)sites.get(0)).getSiteRoot();
                 cms.getRequestContext().setSiteRoot(siteRoot);
             }
-        }            
+        }
         // set the current site
         settings.setSite(siteRoot);
-        
+
         // set the preferred folder to display
         settings.setExplorerResource(settings.getUserSettings().getStartFolder());
-        
+
         // get the default view from the user settings
         settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));
-        
+
         // save the editable resource types for the current user
         settings.setResourceTypes(initWorkplaceResourceTypes(cms));
-                  
-        return settings;   
+
+        return settings;
     }
-    
+
     /**
      * Stores the settings in the given session.<p>
      * 
@@ -330,10 +322,11 @@ public abstract class CmsWorkplace {
      * @param settings the settings
      */
     static synchronized void storeSettings(HttpSession session, CmsWorkplaceSettings settings) {
+
         // save the workplace settings in the session
-        session.setAttribute(C_SESSION_WORKPLACE_SETTINGS, settings);        
+        session.setAttribute(C_SESSION_WORKPLACE_SETTINGS, settings);
     }
-        
+
     /**
      * Initializes a Map with all editable resource types for the current user.<p>
      * 
@@ -341,42 +334,49 @@ public abstract class CmsWorkplace {
      * @return all editable resource types in a map with the resource type id as key value
      */
     private static Map initWorkplaceResourceTypes(CmsObject cms) {
+
         Map resourceTypes = new HashMap();
         List allResTypes = OpenCms.getResourceManager().getResourceTypes();
-        for (int i=0; i<allResTypes.size(); i++) {
+        for (int i = 0; i < allResTypes.size(); i++) {
             // loop through all types and check which types can be displayed and edited for the user
             I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
             // get the settings for the resource type
-            CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+            CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                type.getTypeName());
             // determine if this resource type is editable for the current user
             CmsPermissionSet permissions;
             try {
                 // get permissions of the current user
-                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
+                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
+                    cms.getRequestContext().currentUser(),
+                    cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
             } catch (CmsException e) {
                 // error reading the groups of the current user
-                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
+                    cms.getRequestContext().currentUser());
                 if (OpenCms.getLog(CmsWorkplace.class).isWarnEnabled()) {
-                    OpenCms.getLog(CmsTree.class).warn("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
-                }      
+                    OpenCms.getLog(CmsTree.class).warn(
+                        "Error reading groups of user " + cms.getRequestContext().currentUser().getName());
+                }
             }
             if (permissions.getPermissionString().indexOf("+w") != -1) {
                 // user is allowed to edit this resource type
                 resourceTypes.put(new Integer(type.getTypeId()), type);
-            }      
+            }
         }
-        return resourceTypes;      
-    }        
-     
+        return resourceTypes;
+    }
+
     /**
      * Builds the end html of the body.<p>
      * 
      * @return the end html of the body
      */
     public String bodyEnd() {
+
         return pageBody(HTML_END, null, null);
     }
-    
+
     /**
      * Builds the start html of the body.<p>
      * 
@@ -384,6 +384,7 @@ public abstract class CmsWorkplace {
      * @return the start html of the body
      */
     public String bodyStart(String className) {
+
         return pageBody(HTML_START, className, null);
     }
 
@@ -395,6 +396,7 @@ public abstract class CmsWorkplace {
      * @return the start html of the body
      */
     public String bodyStart(String className, String parameters) {
+
         return pageBody(HTML_START, className, parameters);
     }
 
@@ -409,9 +411,10 @@ public abstract class CmsWorkplace {
      * @return a formatted html String representing a html select box
      */
     public String buildSelect(String parameters, List options, List values, int selected) {
+
         return buildSelect(parameters, options, values, selected, true);
     }
-    
+
     /**
      * Generates a html select box out of the provided values.<p>
      * 
@@ -424,6 +427,7 @@ public abstract class CmsWorkplace {
      * @return a String representing a html select box
      */
     public String buildSelect(String parameters, List options, List values, int selected, boolean useLineFeed) {
+
         StringBuffer result = new StringBuffer(1024);
         result.append("<select ");
         if (parameters != null) {
@@ -435,7 +439,7 @@ public abstract class CmsWorkplace {
         }
         int length = options.size();
         String value = null;
-        for (int i=0; i<length; i++) {
+        for (int i = 0; i < length; i++) {
             if (values != null) {
                 try {
                     value = (String)values.get(i);
@@ -443,17 +447,17 @@ public abstract class CmsWorkplace {
                     // can usually be ignored
                     if (OpenCms.getLog(this).isInfoEnabled()) {
                         OpenCms.getLog(this).info(e);
-                    }                    
+                    }
                     // lists are not properly initialized, just don't use the value                    
                     value = null;
-                }                
+                }
             }
             if (value == null) {
                 result.append("<option");
                 if (i == selected) {
                     result.append(" selected=\"selected\"");
                 }
-                result.append(">");  
+                result.append(">");
                 result.append(options.get(i));
                 result.append("</option>");
                 if (useLineFeed) {
@@ -462,25 +466,25 @@ public abstract class CmsWorkplace {
             } else {
                 result.append("<option value=\"");
                 result.append(value);
-                result.append("\""); 
+                result.append("\"");
                 if (i == selected) {
                     result.append(" selected=\"selected\"");
                 }
-                result.append(">");                
+                result.append(">");
                 result.append(options.get(i));
                 result.append("</option>");
                 if (useLineFeed) {
                     result.append("\n");
                 }
-            }       
-        }        
+            }
+        }
         result.append("</select>");
         if (useLineFeed) {
             result.append("\n");
         }
         return result.toString();
     }
-    
+
     /**
      * Generates a button for the OpenCms workplace.<p>
      * 
@@ -493,9 +497,10 @@ public abstract class CmsWorkplace {
      * @return a button for the OpenCms workplace
      */
     public String button(String href, String target, String image, String label, int type) {
-        return button(href, target, image, label, type, getSkinUri() +  "buttons/");
+
+        return button(href, target, image, label, type, getSkinUri() + "buttons/");
     }
-    
+
     /**
      * Generates a button for the OpenCms workplace.<p>
      * 
@@ -509,17 +514,18 @@ public abstract class CmsWorkplace {
      * @return a button for the OpenCms workplace
      */
     public String button(String href, String target, String image, String label, int type, String imagePath) {
+
         StringBuffer result = new StringBuffer(512);
-        
-        String anchorStart =  "<a href=\"";
+
+        String anchorStart = "<a href=\"";
         if (href != null && href.toLowerCase().startsWith("javascript:")) {
             anchorStart = "<a href=\"#\" onclick=\"";
         }
-      
-        result.append("<td style=\"vertical-align: top;\">");      
-        switch (type) {     
+
+        result.append("<td style=\"vertical-align: top;\">");
+        switch (type) {
             case 1:
-            // image and text
+                // image and text
                 if (href != null) {
                     result.append(anchorStart);
                     result.append(href);
@@ -528,9 +534,9 @@ public abstract class CmsWorkplace {
                         result.append(" target=\"");
                         result.append(target);
                         result.append("\"");
-    }
+                    }
                     result.append(">");
-                }           
+                }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
                     result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
@@ -549,9 +555,9 @@ public abstract class CmsWorkplace {
                     result.append("</a>");
                 }
                 break;
-    
+
             case 2:
-            // text only
+                // text only
                 if (href != null) {
                     result.append(anchorStart);
                     result.append(href);
@@ -562,7 +568,7 @@ public abstract class CmsWorkplace {
                         result.append("\"");
                     }
                     result.append(">");
-                }           
+                }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
                     result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
@@ -574,11 +580,11 @@ public abstract class CmsWorkplace {
                 result.append("</span></span>");
                 if (href != null) {
                     result.append("</a>");
-                }       
-                break;          
-            
-            default: 
-            // only image
+                }
+                break;
+
+            default:
+                // only image
                 if (href != null) {
                     result.append(anchorStart);
                     result.append(href);
@@ -591,7 +597,7 @@ public abstract class CmsWorkplace {
                     result.append(" title=\"");
                     result.append(key(label));
                     result.append("\">");
-                }           
+                }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
                     result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
@@ -606,13 +612,13 @@ public abstract class CmsWorkplace {
                 result.append("</span>");
                 if (href != null) {
                     result.append("</a>");
-                }       
+                }
                 break;
-        }   
+        }
         result.append("</td>\n");
-        return result.toString();   
+        return result.toString();
     }
-        
+
     /**
      * Returns the html for a button bar.<p>
      * 
@@ -621,9 +627,10 @@ public abstract class CmsWorkplace {
      * @return a button bar html start / end segment 
      */
     public String buttonBar(int segment) {
+
         return buttonBar(segment, null);
     }
-    
+
     /**
      * Returns the html for a button bar.<p>
      * 
@@ -633,6 +640,7 @@ public abstract class CmsWorkplace {
      * @return a button bar html start / end segment 
      */
     public String buttonBar(int segment, String attributes) {
+
         if (segment == HTML_START) {
             String result = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"";
             if (attributes != null) {
@@ -643,22 +651,25 @@ public abstract class CmsWorkplace {
             return "</tr></table>";
         }
     }
-    
+
     /**
      * Generates a horizontal button bar separator line with maximum width.<p>
      * 
      * @return a horizontal button bar separator line
      */
     public String buttonBarHorizontalLine() {
-        StringBuffer result = new StringBuffer(256); 
+
+        StringBuffer result = new StringBuffer(256);
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\">\n");
         result.append("<tr>\n");
-        result.append("\t<td class=\"horseparator\" ><img src=\"" + getSkinUri() + "tree/empty.gif\" border=\"0\" width=\"1\" height=\"1\" alt=\"\"></td>\n");
+        result.append("\t<td class=\"horseparator\" ><img src=\""
+            + getSkinUri()
+            + "tree/empty.gif\" border=\"0\" width=\"1\" height=\"1\" alt=\"\"></td>\n");
         result.append("</tr>\n");
         result.append("</table>\n");
         return result.toString();
     }
-    
+
     /**
      * Generates a button bar label.<p>
      * 
@@ -667,9 +678,10 @@ public abstract class CmsWorkplace {
      * @return a button bar label
      */
     public String buttonBarLabel(String label) {
+
         return buttonBarLabel(label, "norm");
-    }  
-    
+    }
+
     /**
      * Generates a button bar label.<p>
      * 
@@ -677,9 +689,10 @@ public abstract class CmsWorkplace {
      * @param className the css class name for the formatting
      * 
      * @return a button bar label
-     */    
+     */
     public String buttonBarLabel(String label, String className) {
-        StringBuffer result = new StringBuffer(128); 
+
+        StringBuffer result = new StringBuffer(128);
         result.append("<td><span class=\"");
         result.append(className);
         result.append("\"><span unselectable=\"on\" class=\"txtbutton\">");
@@ -687,7 +700,7 @@ public abstract class CmsWorkplace {
         result.append("</span></span></td>\n");
         return result.toString();
     }
-    
+
     /**
      * Generates a variable button bar separator line.<p>  
      * 
@@ -696,36 +709,39 @@ public abstract class CmsWorkplace {
      * @param className the css class name for the formatting
      * 
      * @return  a variable button bar separator line
-     */    
+     */
     public String buttonBarLine(int leftPixel, int rightPixel, String className) {
+
         StringBuffer result = new StringBuffer(512);
         if (leftPixel > 0) {
-            result.append(buttonBarLineSpacer(leftPixel)); 
+            result.append(buttonBarLineSpacer(leftPixel));
         }
         result.append("<td><span class=\"");
         result.append(className);
         result.append("\"></span></td>\n");
         if (rightPixel > 0) {
-            result.append(buttonBarLineSpacer(rightPixel)); 
+            result.append(buttonBarLineSpacer(rightPixel));
         }
-        return result.toString();        
+        return result.toString();
     }
-    
+
     /**
      * Generates a variable button bar separator line spacer.<p>  
      * 
      * @param pixel the amount of pixel space
      * 
      * @return a variable button bar separator line spacer
-     */       
+     */
     public String buttonBarLineSpacer(int pixel) {
+
         StringBuffer result = new StringBuffer(128);
-        result.append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: "); 
+        result
+            .append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: ");
         result.append(pixel);
         result.append("px;\"></span></span></td>\n");
-        return result.toString();        
+        return result.toString();
     }
-    
+
     /**
      * Generates a button bar separator.<p>  
      * 
@@ -735,9 +751,10 @@ public abstract class CmsWorkplace {
      * @return a button bar separator
      */
     public String buttonBarSeparator(int leftPixel, int rightPixel) {
+
         return buttonBarLine(leftPixel, rightPixel, "separator");
-    }    
-    
+    }
+
     /**
      * Returns the html for an invisible spacer between button bar contents like buttons, labels, etc.<p>
      * 
@@ -745,13 +762,14 @@ public abstract class CmsWorkplace {
      * @return the html for the invisible spacer
      */
     public String buttonBarSpacer(int width) {
+
         StringBuffer result = new StringBuffer(128);
-        result.append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"width: "); 
+        result.append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"width: ");
         result.append(width);
         result.append("px;\"></span></span></td>\n");
         return result.toString();
     }
-    
+
     /**
      * Generates a button bar starter tab.<p>  
      * 
@@ -761,13 +779,14 @@ public abstract class CmsWorkplace {
      * @return a button bar starter tab
      */
     public String buttonBarStartTab(int leftPixel, int rightPixel) {
+
         StringBuffer result = new StringBuffer(512);
-        result.append(buttonBarLineSpacer(leftPixel)); 
+        result.append(buttonBarLineSpacer(leftPixel));
         result.append("<td><span class=\"starttab\"><span style=\"width:1px; height:1px\"></span></span></td>\n");
-        result.append(buttonBarLineSpacer(rightPixel)); 
-        return result.toString();          
+        result.append(buttonBarLineSpacer(rightPixel));
+        return result.toString();
     }
-    
+
     /**
      * Displays a javascript calendar element with the standard "opencms" style.<p>
      * 
@@ -776,9 +795,10 @@ public abstract class CmsWorkplace {
      * @return the necessary HTML code for the js and stylesheet includes
      */
     public String calendarIncludes() {
+
         return calendarIncludes("opencms");
     }
-    
+
     /**
      * Displays a javascript calendar element.<p>
      * 
@@ -788,18 +808,27 @@ public abstract class CmsWorkplace {
      * @return the necessary HTML code for the js and stylesheet includes
      */
     public String calendarIncludes(String style) {
+
         StringBuffer result = new StringBuffer(512);
         String calendarPath = getSkinUri() + "components/js_calendar/";
         if (style == null || "".equals(style)) {
             style = "system";
         }
-        result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + calendarPath + "calendar-" + style + ".css\">\n");
+        result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+            + calendarPath
+            + "calendar-"
+            + style
+            + ".css\">\n");
         result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "calendar.js\"></script>\n");
-        result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "lang/calendar-" + getLocale().getLanguage() + ".js\"></script>\n");
+        result.append("<script type=\"text/javascript\" src=\""
+            + calendarPath
+            + "lang/calendar-"
+            + getLocale().getLanguage()
+            + ".js\"></script>\n");
         result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "calendar-setup.js\"></script>\n");
         return result.toString();
     }
-    
+
     /**
      * Initializes a javascript calendar element to be shown on a page.<p>
      * 
@@ -814,10 +843,26 @@ public abstract class CmsWorkplace {
      * @param dateStatusFunc name of the function which determines if/how a date should be disabled
      * @return the HTML code to initialize a calendar poup element
      */
-    public String calendarInit(String inputFieldId, String triggerButtonId, String align, boolean singleClick, boolean weekNumbers, boolean mondayFirst, String dateStatusFunc) {
-        return calendarInit(inputFieldId, triggerButtonId, align, singleClick, weekNumbers, mondayFirst, dateStatusFunc, false);
+    public String calendarInit(
+        String inputFieldId,
+        String triggerButtonId,
+        String align,
+        boolean singleClick,
+        boolean weekNumbers,
+        boolean mondayFirst,
+        String dateStatusFunc) {
+
+        return calendarInit(
+            inputFieldId,
+            triggerButtonId,
+            align,
+            singleClick,
+            weekNumbers,
+            mondayFirst,
+            dateStatusFunc,
+            false);
     }
-    
+
     /**
      * Initializes a javascript calendar element to be shown on a page.<p>
      * 
@@ -833,7 +878,16 @@ public abstract class CmsWorkplace {
      * @param showTime true if the time selector should be shown, otherwise false
      * @return the HTML code to initialize a calendar poup element
      */
-    public String calendarInit(String inputFieldId, String triggerButtonId, String align, boolean singleClick, boolean weekNumbers, boolean mondayFirst, String dateStatusFunc, boolean showTime) {
+    public String calendarInit(
+        String inputFieldId,
+        String triggerButtonId,
+        String align,
+        boolean singleClick,
+        boolean weekNumbers,
+        boolean mondayFirst,
+        String dateStatusFunc,
+        boolean showTime) {
+
         StringBuffer result = new StringBuffer(512);
         if (align == null || "".equals(align)) {
             align = "Bc";
@@ -846,7 +900,7 @@ public abstract class CmsWorkplace {
         if (showTime) {
             result.append(" " + key("calendar.timeformat"));
         }
-        result.append("\",\n");        
+        result.append("\",\n");
         result.append("\t\tbutton         :    \"" + triggerButtonId + "\",\n");
         result.append("\t\talign          :    \"" + align + "\",\n");
         result.append("\t\tsingleClick    :    " + singleClick + ",\n");
@@ -865,7 +919,7 @@ public abstract class CmsWorkplace {
         result.append("</script>\n");
         return result.toString();
     }
-    
+
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
@@ -873,9 +927,10 @@ public abstract class CmsWorkplace {
      * @throws CmsException if reading or locking the resource fails
      */
     public void checkLock(String resource) throws CmsException {
+
         checkLock(resource, org.opencms.lock.CmsLock.C_MODE_COMMON);
     }
-    
+
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
@@ -884,16 +939,17 @@ public abstract class CmsWorkplace {
      * @throws CmsException if reading or locking the resource fails
      */
     public void checkLock(String resource, int mode) throws CmsException {
+
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
             // Autolock is enabled, check the lock state of the resource
             CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
             if (getCms().getLock(res).isNullLock()) {
                 // resource is not locked, lock it automatically
                 getCms().lockResource(resource, mode);
-            }           
+            }
         }
     }
-    
+
     /**
      * Fills all class parameter values from the data provided in the current request.<p>
      * 
@@ -905,7 +961,8 @@ public abstract class CmsWorkplace {
      * 
      * @param request the current JSP request
      */
-    public void fillParamValues(HttpServletRequest request)  {
+    public void fillParamValues(HttpServletRequest request) {
+
         boolean isMultiPart = FileUploadBase.isMultipartContent(request);
         Map parameterMap = null;
         if (isMultiPart) {
@@ -945,9 +1002,9 @@ public abstract class CmsWorkplace {
                     OpenCms.getLog(this).info(eae);
                 }
             }
-        } 
+        }
     }
-    
+
     /**
      * Creates the time in milliseconds from the given parameter.<p>
      * 
@@ -957,20 +1014,21 @@ public abstract class CmsWorkplace {
      * @throws ParseException if something goes wrong
      */
     public long getCalendarDate(String dateString, boolean useTime) throws ParseException {
+
         long dateLong = 0;
-        
+
         // substitute some chars because calendar syntax != DateFormat syntax
         String dateFormat = key("calendar.dateformat");
         if (useTime) {
             dateFormat += " " + key("calendar.timeformat");
-    } 
+        }
         dateFormat = getCalendarJavaDateFormat(dateFormat);
-    
-        SimpleDateFormat df = new SimpleDateFormat(dateFormat);       
-        dateLong = df.parse(dateString).getTime();    
+
+        SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+        dateLong = df.parse(dateString).getTime();
         return dateLong;
     }
-    
+
     /**
      * Returns the given timestamp as String formatted in a localized pattern.<p>
      * 
@@ -978,57 +1036,64 @@ public abstract class CmsWorkplace {
      * @return the given timestamp as String formatted in a localized pattern
      */
     public String getCalendarLocalizedTime(long timestamp) {
+
         // get the current date & time 
         Locale locale = getLocale();
         TimeZone zone = TimeZone.getDefault();
         GregorianCalendar cal = new GregorianCalendar(zone, locale);
         cal.setTimeInMillis(timestamp);
         // format it nicely according to the localized pattern
-        DateFormat df = new SimpleDateFormat(getCalendarJavaDateFormat(key("calendar.dateformat") + " " + key("calendar.timeformat")));
+        DateFormat df = new SimpleDateFormat(getCalendarJavaDateFormat(key("calendar.dateformat")
+            + " "
+            + key("calendar.timeformat")));
         return df.format(cal.getTime());
-    } 
-                    
+    }
+
     /**
      * Returns the initialized cms object for the current user.<p>
      * 
      * @return the initialized cms object for the current user
      */
     public CmsObject getCms() {
+
         return m_cms;
     }
-    
+
     /**
      * Returns the current workplace encoding.<p>
      * 
      * @return the current workplace encoding
      */
     public String getEncoding() {
-        return  m_settings.getMessages().getEncoding();
-            }
+
+        return m_settings.getMessages().getEncoding();
+    }
 
     /**
      * Returns the uri (including context path) to the explorer file list.<p>
      * 
      * @return the uri (including context path) to the explorer file list
-     */    
+     */
     public String getExplorerFileListFullUri() {
+
         if (m_file_explorer_filelist != null) {
             return m_file_explorer_filelist;
-            }
+        }
         synchronized (this) {
-            m_file_explorer_filelist = OpenCms.getLinkManager().substituteLink(getCms(), C_FILE_EXPLORER_FILELIST);            
+            m_file_explorer_filelist = OpenCms.getLinkManager().substituteLink(getCms(), C_FILE_EXPLORER_FILELIST);
         }
         return m_file_explorer_filelist;
     }
-    
+
     /**
      * Returns the html for the frame name and source and stores this information in the workplace settings.<p>
      * 
      * @param frameName the name of the frame
      * @param uri the absolute path of the frame
      * @return the html for the frame name and source
-     */    
+     */
     public String getFrameSource(String frameName, String uri) {
+
         String frameString = "name=\"" + frameName + "\" src=\"" + uri + "\"";
         int paramIndex = uri.indexOf("?");
         if (paramIndex != -1) {
@@ -1038,16 +1103,17 @@ public abstract class CmsWorkplace {
         getSettings().getFrameUris().put(frameName, uri);
         return frameString;
     }
-    
+
     /**
      * Returns the JSP action element.<p>
      * 
      * @return the JSP action element
-     */    
+     */
     public CmsJspActionElement getJsp() {
+
         return m_jsp;
-    }        
-    
+    }
+
     /**
      * Returns the current users locale setting.<p>
      * 
@@ -1058,8 +1124,10 @@ public abstract class CmsWorkplace {
      * @return the current users locale setting
      */
     public Locale getLocale() {
+
         return getCms().getRequestContext().getLocale();
     }
+
     /**
      * Returns a list of FileItem instances parsed from the request, in the order that they were transmitted.<p>
      * 
@@ -1068,9 +1136,10 @@ public abstract class CmsWorkplace {
      * @return list of FileItem instances parsed from the request, in the order that they were transmitted
      */
     public List getMultiPartFileItems() {
+
         return m_multiPartFileItems;
     }
-    
+
     /**
      * Returns the path to the workplace static resources.<p>
      * 
@@ -1082,8 +1151,9 @@ public abstract class CmsWorkplace {
      * @return the path to the workplace static resources
      */
     public String getResourceUri() {
+
         if (m_resourceUri == null) {
-            m_resourceUri = OpenCms.getSystemInfo().getContextPath() + I_CmsWpConstants.C_SYSTEM_PICS_EXPORT_PATH;          
+            m_resourceUri = OpenCms.getSystemInfo().getContextPath() + I_CmsWpConstants.C_SYSTEM_PICS_EXPORT_PATH;
         }
         return m_resourceUri;
     }
@@ -1094,6 +1164,7 @@ public abstract class CmsWorkplace {
      * @return the current user http session
      */
     public HttpSession getSession() {
+
         return m_session;
     }
 
@@ -1103,18 +1174,20 @@ public abstract class CmsWorkplace {
      * @return the current users workplace settings
      */
     public CmsWorkplaceSettings getSettings() {
+
         return m_settings;
     }
-    
+
     /**
      * Builds the end html of the page.<p>
      * 
      * @return the end html of the page
      */
     public String htmlEnd() {
+
         return pageHtml(HTML_END, null);
-    } 
-    
+    }
+
     /**
      * Builds the start html of the page, including setting of DOCTYPE and 
      * inserting a header with the content-type.<p>
@@ -1123,18 +1196,20 @@ public abstract class CmsWorkplace {
      * @return the start html of the page
      */
     public String htmlStart(String title) {
+
         return pageHtml(HTML_START, title);
-    } 
-    
+    }
+
     /**
      * Returns true if the currently processed element is an included sub element.<p>
      * 
      * @return true if the currently processed element is an included sub element
      */
     public boolean isSubElement() {
+
         return !getJsp().getRequestContext().getUri().equals(getJsp().info("opencms.request.element.uri"));
-    }    
-    
+    }
+
     /**
      * Get a localized key value for the workplace.<p>
      * 
@@ -1142,9 +1217,10 @@ public abstract class CmsWorkplace {
      * @return a localized key value
      */
     public String key(String keyName) {
+
         return m_settings.getMessages().key(keyName);
     }
-    
+
     /**
      * Returns the empty String "" if the provided value is null, otherwise just returns 
      * the provided value.<p>
@@ -1157,12 +1233,13 @@ public abstract class CmsWorkplace {
      * the provided value
      */
     public String nullToEmpty(String value) {
+
         if (value != null) {
             return value;
         }
         return "";
     }
-    
+
     /**
      * Builds the html of the body.<p>
      * 
@@ -1172,6 +1249,7 @@ public abstract class CmsWorkplace {
      * @return the html of the body
      */
     public String pageBody(int segment, String className, String parameters) {
+
         if (segment == HTML_START) {
             StringBuffer result = new StringBuffer(128);
             result.append("</head>\n<body unselectable=\"on\"");
@@ -1179,8 +1257,10 @@ public abstract class CmsWorkplace {
                 if (className == null || "dialog".equals(className)) {
                     className = "dialogadmin";
                 }
-                if (parameters == null) {               
-                    result.append(" onLoad=\"window.top.body.admin_head.location.href='" + getJsp().link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_head.html") + "';\"");
+                if (parameters == null) {
+                    result.append(" onLoad=\"window.top.body.admin_head.location.href='"
+                        + getJsp().link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_head.html")
+                        + "';\"");
                 }
             }
             if (className != null) {
@@ -1192,13 +1272,13 @@ public abstract class CmsWorkplace {
                 result.append(" ");
                 result.append(parameters);
             }
-            result.append(">\n");            
+            result.append(">\n");
             return result.toString();
         } else {
             return "</body>";
-        }        
-    }  
-    
+        }
+    }
+
     /**
      * Returns the default html for a workplace page, including setting of DOCTYPE and 
      * inserting a header with the content-type.<p>
@@ -1208,9 +1288,10 @@ public abstract class CmsWorkplace {
      * @return the default html for a workplace page
      */
     public String pageHtml(int segment, String title) {
+
         return pageHtmlStyle(segment, title, null);
-                }
-    
+    }
+
     /**
      * Returns the default html for a workplace page, including setting of DOCTYPE and 
      * inserting a header with the content-type, allowing the selection of an individual style sheet.<p>
@@ -1221,6 +1302,7 @@ public abstract class CmsWorkplace {
      * @return the default html for a workplace page
      */
     public String pageHtmlStyle(int segment, String title, String stylesheet) {
+
         if (segment == HTML_START) {
             StringBuffer result = new StringBuffer(512);
             result.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
@@ -1238,13 +1320,13 @@ public abstract class CmsWorkplace {
             if (stylesheet != null) {
                 result.append(stylesheet);
             } else {
-                result.append("commons/css_workplace.css"); 
-        }        
+                result.append("commons/css_workplace.css");
+            }
             result.append("\">\n");
             return result.toString();
         } else {
             return "</html>";
-    }
+        }
     }
 
     /**
@@ -1255,6 +1337,7 @@ public abstract class CmsWorkplace {
      * as hidden field tags that can be inserted in a html form
      */
     public String paramsAsHidden() {
+
         StringBuffer result = new StringBuffer(512);
         Map params = paramValues();
         Iterator i = params.keySet().iterator();
@@ -1264,13 +1347,13 @@ public abstract class CmsWorkplace {
             result.append("<input type=\"hidden\" name=\"");
             result.append(param);
             result.append("\" value=\"");
-            String encoded = CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding()); 
+            String encoded = CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding());
             result.append(encoded);
             result.append("\">\n");
-                }
+        }
         return result.toString();
-            }
-    
+    }
+
     /**
      * Returns all initialized parameters of the current workplace class in the
      * form of a parameter map, i.e. the values are arrays.<p>
@@ -1279,6 +1362,7 @@ public abstract class CmsWorkplace {
      * form of a parameter map
      */
     public Map paramsAsParameterMap() {
+
         Map params = paramValues();
         Map result = new HashMap(params.size());
         Iterator i = params.keySet().iterator();
@@ -1289,7 +1373,7 @@ public abstract class CmsWorkplace {
         }
         return result;
     }
-    
+
     /**
      * Returns all initialized parameters of the current workplace class 
      * as request parameters, i.e. in the form <code>key1=value1&key2=value2</code> etc.
@@ -1298,6 +1382,7 @@ public abstract class CmsWorkplace {
      * as request parameters
      */
     public String paramsAsRequest() {
+
         StringBuffer result = new StringBuffer(512);
         Map params = paramValues();
         Iterator i = params.keySet().iterator();
@@ -1310,7 +1395,7 @@ public abstract class CmsWorkplace {
             if (i.hasNext()) {
                 result.append("&");
             }
-            }
+        }
         return result.toString();
     }
     
@@ -1325,7 +1410,7 @@ public abstract class CmsWorkplace {
     public String resolveMacros(String input) {
         
         // TODO: improve resolving of macros, this is just a quick hack
-        int warning = 0;
+        int improve_me = 0;
         while (input.indexOf("${") != -1 && input.indexOf('}') != -1) {
             int start = input.indexOf("${");
             int end = input.indexOf('}');
@@ -1336,7 +1421,7 @@ public abstract class CmsWorkplace {
         }
         return input;
     }
-    
+
     /**
      * Sends a http redirect to the specified URI in the OpenCms VFS.<p>
      *
@@ -1344,9 +1429,10 @@ public abstract class CmsWorkplace {
      * @throws IOException in case redirection fails
      */
     public void sendCmsRedirect(String location) throws IOException {
+
         getJsp().getResponse().sendRedirect(OpenCms.getSystemInfo().getOpenCmsContext() + location);
-            }
-    
+    }
+
     /**
      * Get a localized short key value for the workplace.<p>
      * 
@@ -1354,16 +1440,15 @@ public abstract class CmsWorkplace {
      * @return a localized short key value
      */
     public String shortKey(String keyName) {
+
         String value = key(keyName + CmsMessages.C_KEY_SHORT_SUFFIX);
         if (value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
             // short key value not found, return default key value
             return key(keyName);
-        }        
+        }
         return value;
     }
-    
-    
-    
+
     /**
      * Fills the request parameters in a map if treating a multipart request.<p>
      * 
@@ -1373,6 +1458,7 @@ public abstract class CmsWorkplace {
      * @return a map containing all non-file request parameters
      */
     protected Map createParameterMapFromMultiPart(HttpServletRequest request) {
+
         Map parameterMap = new HashMap();
         DiskFileUpload fu = new DiskFileUpload();
         // maximum size that will be stored in memory
@@ -1391,18 +1477,18 @@ public abstract class CmsWorkplace {
                     try {
                         value = item.getString(getCms().getRequestContext().getEncoding());
                     } catch (UnsupportedEncodingException e) {
-                        OpenCms.getLog(this).error("Encoding error parsing multipart request in workplace", e);  
+                        OpenCms.getLog(this).error("Encoding error parsing multipart request in workplace", e);
                         value = item.getString();
                     }
                     parameterMap.put(name, value);
                 }
             }
         } catch (FileUploadException e) {
-            OpenCms.getLog(this).error("Error parsing multipart request in workplace", e);    
+            OpenCms.getLog(this).error("Error parsing multipart request in workplace", e);
         }
         return parameterMap;
     }
-    
+
     /**
      * Decodes an individual parameter value.<p>
      * 
@@ -1416,13 +1502,46 @@ public abstract class CmsWorkplace {
      * @return the encoded value of the parameter
      */
     protected String fillParamValuesDecode(String paramName, String paramValue) {
+
         if ((paramName != null) && (paramValue != null)) {
             return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
         } else {
             return null;
         }
     }
-    
+
+    /**
+     * Initializes this workplace class instance.<p>
+     * 
+     * This method can be used in case there a workplace class was generated using
+     * {@link Class#forName(java.lang.String)} to initialize the class members.<p> 
+     * 
+     * @param jsp the initialized JSP context
+     */
+    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
+
+        if (jsp != null) {
+            m_jsp = jsp;
+            m_cms = m_jsp.getCmsObject();
+            m_session = m_jsp.getRequest().getSession();
+
+            // get / create the workplace settings 
+            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
+            if (m_settings == null) {
+                // create the settings object
+                m_settings = new CmsWorkplaceSettings();
+                initWorkplaceSettings(m_cms, m_settings, false);
+                storeSettings(m_session, m_settings);
+            }
+
+            // check request for changes in the workplace settings
+            initWorkplaceRequestValues(m_settings, m_jsp.getRequest());
+
+            // set cms context accordingly
+            initWorkplaceCmsContext(m_settings, m_cms);
+        }
+    }
+
     /**
      * Analyzes the request for workplace parameters and adjusts the workplace
      * settings accordingly.<p> 
@@ -1431,13 +1550,14 @@ public abstract class CmsWorkplace {
      * @param request the current request
      */
     protected abstract void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request);
-    
+
     /**
      * Returns the values of all parameter methods of this workplace class instance.<p>
      * 
      * @return the values of all parameter methods of this workplace class instance
      */
     protected Map paramValues() {
+
         List methods = paramGetMethods();
         Map map = new HashMap(methods.size());
         Iterator i = methods.iterator();
@@ -1450,32 +1570,33 @@ public abstract class CmsWorkplace {
                 // can usually be ignored
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(ite);
-                }                               
+                }
             } catch (IllegalAccessException eae) {
                 // can usually be ignored
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(eae);
-                }     
+                }
             }
             if (o != null) {
-                map.put(m.getName().substring(8).toLowerCase(), o);            
+                map.put(m.getName().substring(8).toLowerCase(), o);
             }
         }
         return map;
     }
-        
+
     /**
      * Helper method to change back from the temporary project to the current project.<p>
      * 
      * @throws CmsException if switching back fails
      */
     protected void switchToCurrentProject() throws CmsException {
+
         if (m_currentProjectId != -1) {
             // switch back to the current users project
-            getCms().getRequestContext().setCurrentProject(getCms().readProject(m_currentProjectId)); 
+            getCms().getRequestContext().setCurrentProject(getCms().readProject(m_currentProjectId));
         }
     }
-    
+
     /**
      * Helper method to change the current project to the temporary file project.<p>
      * 
@@ -1485,13 +1606,14 @@ public abstract class CmsWorkplace {
      * @throws CmsException if getting the tempfileproject id fails
      */
     protected int switchToTempProject() throws CmsException {
+
         // store the current project id in member variable
         m_currentProjectId = getSettings().getProject();
         int tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
         getCms().getRequestContext().setCurrentProject(getCms().readProject(tempProjectId));
         return tempProjectId;
     }
-    
+
     /**
      * Sets the cms request context and other cms related settings to the 
      * values stored int the workplace settings.<p>
@@ -1520,8 +1642,8 @@ public abstract class CmsWorkplace {
             reqCont.setSiteRoot(settings.getSite());
             // removed setting explorer resource to "/" to get the stored folder
         }
-    }           
-            
+    }
+
     /**
      * Returns a list of all methods of the current class instance that 
      * start with "getParam" and have no parameters.<p> 
@@ -1530,53 +1652,55 @@ public abstract class CmsWorkplace {
      * start with "getParam" and have no parameters
      */
     private List paramGetMethods() {
+
         List list = new ArrayList();
         Method[] methods = this.getClass().getMethods();
         int length = methods.length;
-        for (int i=0; i<length; i++) {
+        for (int i = 0; i < length; i++) {
             Method method = methods[i];
             if (method.getName().startsWith("getParam") && (method.getParameterTypes().length == 0)) {
                 if (DEBUG) {
                     System.err.println("getMethod: " + method.getName());
-    }
+                }
                 list.add(method);
-        }
+            }
         }
         return list;
     }
-    
+
     /**
      * Returns a list of all methods of the current class instance that 
      * start with "setParam" and have exactly one String parameter.<p> 
      * 
      * @return a list of all methods of the current class instance that 
      * start with "setParam" and have exactly one String parameter
-     */       
+     */
     private List paramSetMethods() {
+
         List list = new ArrayList();
         Method[] methods = this.getClass().getMethods();
         int length = methods.length;
-        for (int i=0; i<length; i++) {
+        for (int i = 0; i < length; i++) {
             Method method = methods[i];
-            if (method.getName().startsWith("setParam") 
-            && (method.getParameterTypes().length == 1)
-            && (method.getParameterTypes()[0].equals(java.lang.String.class))) {
+            if (method.getName().startsWith("setParam")
+                && (method.getParameterTypes().length == 1)
+                && (method.getParameterTypes()[0].equals(java.lang.String.class))) {
                 if (DEBUG) {
                     System.err.println("setMethod: " + method.getName());
-    }
+                }
                 list.add(method);
-    }
-    }    
+            }
+        }
         return list;
-    }  
-    
+    }
+
     /**
      * Sets a list of FileItem instances parsed from the request, in the order that they were transmitted.<p>
      * 
      * @param fileItems a list of FileItem instances parsed from the request, in the order that they were transmitted
      */
     private void setMultiPartFileItems(List fileItems) {
-        m_multiPartFileItems = fileItems;
-    }
 
+        m_multiPartFileItems = fileItems;
+    }    
 }

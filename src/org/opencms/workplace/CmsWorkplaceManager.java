@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/12/03 18:40:22 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/12/08 14:30:29 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,8 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeGallery;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleComparator;
@@ -71,7 +73,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 5.3.1
  */
@@ -135,6 +137,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** Maximum size of an upload file. */
     private int m_fileMaxUploadSize;
 
+    /** The configured workplace galleries. */
+    private Map m_galleries;
+
     /** Contains all folders that should be labled if siblings exist. */
     private List m_labelSiteFolders;
 
@@ -177,7 +182,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_enableAdvancedPropertyTabs = true;
         m_defaultUserSettings = new CmsDefaultUserSettings();
         m_defaultAccess = new CmsExplorerTypeAccess();
-
+        m_galleries = new HashMap();
     }
 
     /**
@@ -427,16 +432,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         int maxFileSize = getFileMaxUploadSize();
         long maxFileSizeBytes = maxFileSize * 1024;
-        boolean isAdmin = false;
-        try {
-            isAdmin = cms.userInGroup(
-                cms.getRequestContext().currentUser().getName(), OpenCms.getDefaultUsers().getGroupAdministrators());
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(
-                    "Error checking groups of user " + cms.getRequestContext().currentUser().getName());
-            }
-        }
+        boolean isAdmin = cms.isAdmin();
         // check if current user belongs to Admin group, if so no file upload limit
         if ((maxFileSize <= 0) || isAdmin) {
             maxFileSizeBytes = -1;
@@ -452,6 +448,20 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public int getFileMaxUploadSize() {
 
         return m_fileMaxUploadSize;
+    }
+
+    /**
+     * Returns the configured class name for the given gallery type name.<p>
+     * 
+     * If no gallery type of the given name is configured, <code>null</code> is returned.<p>
+     * 
+     * @param galleryTypeName the gallery type name to look up
+     * 
+     * @return the configured class name for the given gallery type name
+     */
+    public String getGalleryClassName(String galleryTypeName) {
+
+        return (String)m_galleries.get(galleryTypeName);
     }
 
     /**
@@ -640,7 +650,17 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         }
         // create an instance of editor display options
         m_editorDisplayOptions = new CmsEditorDisplayOptions();
-
+        // read out the configured gallery classes
+        j = OpenCms.getResourceManager().getResourceTypes().iterator();
+        while (j.hasNext()) {
+            I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
+            if (resourceType instanceof CmsResourceTypeGallery) {
+                // found a configured gallery resource type
+                CmsResourceTypeGallery galleryType = (CmsResourceTypeGallery)resourceType;
+                // store the gallery class name with the type name as lookup key 
+                m_galleries.put(galleryType.getTypeName(), galleryType.getGalleryClassName());
+            }
+        }
     }
 
     /**

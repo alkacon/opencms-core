@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryLinks.java,v $
- * Date   : $Date: 2004/12/03 17:08:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/08 14:30:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,24 +52,33 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.2
  */
 public class CmsGalleryLinks extends CmsGallery {
     
     /** URI of the image gallery popup dialog. */
-    public static final String C_URI_GALLERY = C_PATH_GALLERIES + "link_fs.jsp";       
-    
+    public static final String C_URI_GALLERY = C_PATH_GALLERIES + "link_fs.jsp";
+
+    /**
+     * Public empty constructor, required for {@link CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
+     */
+    public CmsGalleryLinks() {
+
+        // noop
+    }
+
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsGalleryLinks(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -79,6 +87,7 @@ public class CmsGalleryLinks extends CmsGallery {
      * @param res the JSP response
      */
     public CmsGalleryLinks(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
     }
     
@@ -140,21 +149,5 @@ public class CmsGalleryLinks extends CmsGallery {
     public int getGalleryItemsTypeId() {
         
         return CmsResourceTypePointer.C_RESOURCE_TYPE_ID;
-    }  
-    
-    /**
-     * @see org.opencms.workplace.commons.CmsGallery#getGalleryTypeId()
-     */
-    public int getGalleryTypeId() {
-        
-        int galleryTypeId = 0;
-        try {
-            galleryTypeId = OpenCms.getResourceManager().getResourceType(C_LINKGALLERY).getTypeId();
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);    
-            }
-        }
-        return galleryTypeId;
-    }
+    } 
 }

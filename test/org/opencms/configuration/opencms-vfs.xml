@@ -55,18 +55,22 @@
 					<param name="resource.type.name">xmlcontent</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="gallery.class">org.opencms.workplace.commons.CmsGalleryImages</param>
 					<param name="resource.type.id">15</param>
 					<param name="resource.type.name">imagegallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="gallery.class">org.opencms.workplace.commons.CmsGalleryLinks</param>
 					<param name="resource.type.id">16</param>
 					<param name="resource.type.name">linkgallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="gallery.class">org.opencms.workplace.commons.CmsGalleryHtmls</param>
 					<param name="resource.type.id">17</param>
 					<param name="resource.type.name">htmlgallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="gallery.class">org.opencms.workplace.commons.CmsGalleryDownloads</param>
 					<param name="resource.type.id">18</param>
 					<param name="resource.type.name">downloadgallery</param>
 				</type>							

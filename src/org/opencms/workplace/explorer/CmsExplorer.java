@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/08 14:30:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.explorer;
 
 import org.opencms.db.CmsUserSettings;
@@ -42,6 +43,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -64,160 +66,71 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
 public class CmsExplorer extends CmsWorkplace {
-    
+
+    /** The "vfslink:" location prefix for VFS link display. */
+    private static final String C_LOCATION_VFSLINK = "vfslink:";
+
+    /** The "flaturl" parameter. */
+    private static final String C_PARAMETER_FALTURL = "flaturl";
+
+    /** The "mode" parameter. */
+    private static final String C_PARAMETER_MODE = "mode";
+
+    /** The "page" parameter. */
+    private static final String C_PARAMETER_PAGE = "page";
+
+    /** The "projectfilter" parameter. */
+    private static final String C_PARAMETER_PROJECTFILTER = "projectfilter";
+
+    /** The "projectid" parameter. */
+    private static final String C_PARAMETER_PROJECTID = "projectid";
+
+    /** The "resource" parameter. */
+    private static final String C_PARAMETER_RESOURCE = "resource";
+
+    /** The "showlinks" parameter. */
+    private static final String C_PARAMETER_SHOWLINKS = "showlinks";
+
+    /** The "explorerview" view selection. */
+    private static final String C_VIEW_EXPLORER = "explorerview";
+
+    /** The "galleryview" view selection. */
+    private static final String C_VIEW_GALLERY = "galleryview";
+
+    /** The "projectview" view selection. */
+    private static final String C_VIEW_PROJECT = "projectview";
+
     /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsExplorer(CmsJspActionElement jsp) {
+
         super(jsp);
-        // get the localized default messages
     }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {       
-        String currentResource = request.getParameter("resource");
-        String mode = request.getParameter("mode");
-        if (mode != null) {
-            settings.setExplorerMode(mode);
-        } else {
-            // null argument, use explorer view if no other view currently specified
-            if (! ("projectview".equals(settings.getExplorerMode()) || "galleryview".equals(settings.getExplorerMode()))) {
-                settings.setExplorerMode("explorerview");
-            }
-        }
-        
-        // get filter parameter for project view
-        String filter = request.getParameter("projectfilter");
-        if (filter == null || "".equals(filter)) {
-            settings.setExplorerProjectFilter("all");
-        } else {
-            settings.setExplorerProjectFilter(filter);
-        }
-        
-        // get project id parameter for project view
-        String projectIdString = request.getParameter("projectid");
-        int projectId = getCms().getRequestContext().currentProject().getId();
-        if (projectIdString != null && !"".equals(projectIdString)) {
-            projectId = Integer.parseInt(projectIdString);
-        }
-        settings.setExplorerProjectId(projectId);
-        
-        boolean showLinks = "true".equals(request.getParameter("showlinks"));
-        
-        if (showLinks) {
-            // "showlinks" parameter found, set resource name
-            settings.setExplorerResource(currentResource);
-        } else {
-            // "showlinks" parameter not found 
-            if (currentResource != null && currentResource.startsWith("vfslink:")) {
-                // given resource starts with "vfslink:", list of links is shown
-                showLinks = true;
-                settings.setExplorerResource(currentResource.substring(8));
-            } else {
-                if ((currentResource != null) && (!"".equals(currentResource)) && folderExists(getCms(), currentResource)) {
-                    // resource is a folder, set resource name
-                    settings.setExplorerResource(currentResource);
-                } else {
-                    // other cases (resource null, no folder), first get the resource name from settings
-                    showLinks = settings.getExplorerShowLinks();
-                    currentResource = settings.getExplorerResource();
-                    if (!resourceExists(getCms(), currentResource)) {
-                        // resource does not exist, display root folder
-                        settings.setExplorerResource("/");
-                        showLinks = false;
-                    }
-                }
-            }
-        }
-        settings.setExplorerShowLinks(showLinks);
-              
-        String selectedPage = request.getParameter("page");
-        if (selectedPage != null) {
-            int page = 1;
-            try {
-                page = Integer.parseInt(selectedPage);
-            } catch (NumberFormatException e) {
-                // default is 1
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
-                }                
-            }
-            settings.setExplorerPage(page);
-        }        
-        
-        // the flaturl 
-        settings.setExplorerFlaturl(request.getParameter("flaturl"));
-    }
-    
-    /**
-     * Checks if a folder with a given name exits in the VFS.<p>
-     * 
-     * @param cms the current cms context
-     * @param folder the folder to check for
-     * @return true if the folder exists in the VFS
-     */
-    private boolean folderExists(CmsObject cms, String folder) {
-        try {
-            CmsFolder test = cms.readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
-            if (test.isFile()) {
-                return false;
-            }
-            return true;            
-        } catch (Exception e) {
-            return false;
-        }
-    }    
-    
-    /**
-     * Checks if a resource with a given name exits in the VFS.<p>
-     * 
-     * @param cms the current cms context
-     * @param resource the resource to check for
-     * @return true if the resource exists in the VFS
-     */
-    private boolean resourceExists(CmsObject cms, String resource) {
-        try {
-            cms.readResource(resource, CmsResourceFilter.ALL);
-            return true;            
-        } catch (CmsException e) {
-            return false;
-        }
-    }    
-    
-    /**
-     * Sets the default preferences for the current user if those values are not available.<p>
-     * 
-     * @return the int value of the default preferences
-     */
-    private int getUserPreferences() {
-        CmsUserSettings settings = new CmsUserSettings(getCms().getRequestContext().currentUser());
-        return settings.getExplorerSettings();       
-    }
-        
+
     /**
      * Returns the html for the explorer file list.<p>
      *
      * @return the html for the explorer file list
      */
-    public String getFileList() { 
+    public String getFileList() {
+
         // if mode is "listonly", only the list will be shown
-        boolean galleryView = "galleryview".equals(getSettings().getExplorerMode()); 
+        boolean galleryView = C_VIEW_GALLERY.equals(getSettings().getExplorerMode());
         // if mode is "projectview", all changed files in that project will be shown
-        boolean projectView = "projectview".equals(getSettings().getExplorerMode());
+        boolean projectView = C_VIEW_PROJECT.equals(getSettings().getExplorerMode());
         // if VFS links should be displayed, this is true
         boolean showVfsLinks = getSettings().getExplorerShowLinks();
 
         CmsResource currentResource = null;
-                
+
         String currentFolder = getSettings().getExplorerResource();
         boolean found = true;
         try {
@@ -226,13 +139,13 @@ public class CmsExplorer extends CmsWorkplace {
             // file was not readable
             if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info(e);
-            }            
+            }
             found = false;
         }
         if (found) {
             if (showVfsLinks) {
                 // file / folder exists and is readable
-                currentFolder = "vfslink:" + currentFolder;
+                currentFolder = C_LOCATION_VFSLINK + currentFolder;
             }
         } else {
             // show the root folder in case of an error and reset the state
@@ -245,9 +158,9 @@ public class CmsExplorer extends CmsWorkplace {
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(e);
                 }
-            }            
+            }
         }
-        
+
         // start creating content
         StringBuffer content = new StringBuffer(2048);
         content.append("function initialize() {\n");
@@ -256,22 +169,22 @@ public class CmsExplorer extends CmsWorkplace {
         String rootFolder = getRootFolder();
         content.append(rootFolder);
         content.append("\");\n");
-        
-        content.append("top.mode=\"");        
+
+        content.append("top.mode=\"");
         content.append(getSettings().getExplorerMode());
         content.append("\";\n");
 
-        content.append("top.showlinks=");        
+        content.append("top.showlinks=");
         content.append(showVfsLinks);
         content.append(";\n");
-        
+
         // the autolock setting
-        content.append("top.autolock=");        
+        content.append("top.autolock=");
         content.append(OpenCms.getWorkplaceManager().autoLockResources());
         content.append(";\n");
-        
+
         // the button type setting
-        content.append("top.buttonType=");        
+        content.append("top.buttonType=");
         content.append(getSettings().getUserSettings().getExplorerButtonStyle());
         content.append(";\n");
 
@@ -287,7 +200,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(");\n");
         // set the writeAccess for the current Folder       
         boolean writeAccess = "explorerview".equals(getSettings().getExplorerMode());
-        if (writeAccess && (! showVfsLinks)) {        
+        if (writeAccess && (!showVfsLinks)) {
             writeAccess = getCms().isInsideCurrentProject(currentFolder);
         }
         content.append("top.enableNewButton(");
@@ -309,7 +222,7 @@ public class CmsExplorer extends CmsWorkplace {
         if (reloadTreeFolders != null) {
             // folder tree has to be reloaded after copy, delete, move, rename operation
             String reloadFolder = "";
-            for (int i=0; i<reloadTreeFolders.size(); i++) {
+            for (int i = 0; i < reloadTreeFolders.size(); i++) {
                 reloadFolder = (String)reloadTreeFolders.get(i);
                 if (getSettings().getUserSettings().getRestrictExplorerView()) {
                     // in restricted view, adjust folder path to reload: remove restricted folder name
@@ -323,7 +236,7 @@ public class CmsExplorer extends CmsWorkplace {
 
         // now check which filelist colums we want to show
         int preferences = getUserPreferences();
-        
+
         boolean showTitle = (preferences & I_CmsWpConstants.C_FILELIST_TITLE) > 0;
         boolean showPermissions = (preferences & I_CmsWpConstants.C_FILELIST_PERMISSIONS) > 0;
         boolean showDateLastModified = (preferences & I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED) > 0;
@@ -342,7 +255,7 @@ public class CmsExplorer extends CmsWorkplace {
         int selectedPage = 1;
         int numberOfPages = 0;
         int maxEntrys = getSettings().getUserSettings().getExplorerFileEntries();
-        
+
         if (!(galleryView || projectView || showVfsLinks)) {
             selectedPage = getSettings().getExplorerPage();
             if (stopat > maxEntrys) {
@@ -358,7 +271,7 @@ public class CmsExplorer extends CmsWorkplace {
                 }
             }
         }
-        
+
         // read the list of project resource to select which resource is "inside" or "outside" 
         List projectResources;
         try {
@@ -367,7 +280,7 @@ public class CmsExplorer extends CmsWorkplace {
             // use an empty list (all resources are "outside")
             if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info(e);
-            }            
+            }
             projectResources = new ArrayList();
         }
 
@@ -375,24 +288,24 @@ public class CmsExplorer extends CmsWorkplace {
             CmsResource res = (CmsResource)resources.get(i);
             CmsLock lock = null;
             String path = getCms().getSitePath(res);
-            
+
             try {
                 lock = getCms().getLock(res);
             } catch (CmsException e) {
                 lock = CmsLock.getNullLock();
-            
-                if (OpenCms.getLog(this).isErrorEnabled()) { 
+
+                if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error("Error getting lock state for resource " + res, e);
-                }             
-            }      
-            
+                }
+            }
+
             content.append("top.aF(");
-            
+
             // position 1: name
             content.append("\"");
             content.append(res.getName());
             content.append("\",");
-            
+
             // position 2: path
             if (projectView || showVfsLinks) {
                 content.append("\"");
@@ -403,17 +316,20 @@ public class CmsExplorer extends CmsWorkplace {
                 //is taken from top.setDirectory
                 content.append("\"\",");
             }
-            
+
             // position 3: title
             if (showTitle) {
                 String title = "";
                 try {
-                    title = getCms().readPropertyObject(getCms().getSitePath(res), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+                    title = getCms().readPropertyObject(
+                        getCms().getSitePath(res),
+                        I_CmsConstants.C_PROPERTY_TITLE,
+                        false).getValue();
                 } catch (CmsException e) {
                     // should usually never happen
                     if (OpenCms.getLog(this).isInfoEnabled()) {
                         OpenCms.getLog(this).info(e);
-                    }                   
+                    }
                 }
                 if (title == null) {
                     title = "";
@@ -423,15 +339,15 @@ public class CmsExplorer extends CmsWorkplace {
                     content.append(CmsEncoder.escapeHtml(title));
                 }
                 content.append("\",");
-                
+
             } else {
                 content.append("\"\",");
             }
-            
+
             // position 4: type
             content.append(res.getTypeId());
             content.append(",");
-            
+
             // position 5: link count
             if (res.getSiblingCount() > 1) {
                 // links are present
@@ -446,15 +362,15 @@ public class CmsExplorer extends CmsWorkplace {
                 // no links to the resource are in the VFS
                 content.append("0");
             }
-            content.append(",");    
-                    
+            content.append(",");
+
             // position 6: size
             content.append(res.getLength());
-            content.append(",");                
-            
+            content.append(",");
+
             // position 7: state
             content.append(res.getState());
-            content.append(",");     
+            content.append(",");
 
             // position 8: layoutstyle
             int layoutstyle = I_CmsWpConstants.C_LAYOUTSTYLE_INRANGE;
@@ -464,46 +380,46 @@ public class CmsExplorer extends CmsWorkplace {
                 layoutstyle = I_CmsWpConstants.C_LAYOUTSTYLE_AFTEREXPIRE;
             }
             content.append(layoutstyle);
-            content.append(',');  
-            
+            content.append(',');
+
             // position 9: project
             int projectId = lock.isNullLock() ? res.getProjectLastModified() : lock.getProjectId();
             content.append(projectId);
-            content.append(",");      
-                                   
+            content.append(",");
+
             // position 10: date of last modification
             if (showDateLastModified) {
                 content.append("\"");
                 content.append(getSettings().getMessages().getDateTime(res.getDateLastModified()));
                 content.append("\",");
-                
+
             } else {
                 content.append("\"\",");
             }
-            
+
             // position 11: user who last modified the resource
             if (showUserWhoLastModified) {
-                content.append("\"");  
-                try {            
+                content.append("\"");
+                try {
                     content.append(getCms().readUser(res.getUserLastModified()).getName());
                 } catch (CmsException e) {
-                   content.append(e.getMessage());
+                    content.append(e.getMessage());
                 }
-                content.append("\",");                
+                content.append("\",");
             } else {
                 content.append("\"\",");
             }
-            
+
             // position 12: date of creation
             if (showDateCreated) {
                 content.append("\"");
                 content.append(getSettings().getMessages().getDateTime(res.getDateCreated()));
                 content.append("\",");
-                
+
             } else {
                 content.append("\"\",");
-            }     
-                
+            }
+
             // position 13 : user who created the resource 
             if (showUserWhoCreated) {
                 content.append("\"");
@@ -516,7 +432,7 @@ public class CmsExplorer extends CmsWorkplace {
             } else {
                 content.append("\"\",");
             }
-            
+
             // position 14: date of release
             if (showDateReleased) {
                 content.append("\"");
@@ -524,14 +440,14 @@ public class CmsExplorer extends CmsWorkplace {
                 if (release != CmsResource.DATE_RELEASED_DEFAULT) {
                     content.append(getSettings().getMessages().getDateTime(release));
                 } else {
-                    content.append(CmsTouch.C_RELEASE_EXPIRE_DEFAULT);        
+                    content.append(CmsTouch.C_RELEASE_EXPIRE_DEFAULT);
                 }
                 content.append("\",");
-                
+
             } else {
                 content.append("\"\",");
-            }  
-            
+            }
+
             // position 15: date of expiration
             if (showDateExpired) {
                 content.append("\"");
@@ -539,50 +455,50 @@ public class CmsExplorer extends CmsWorkplace {
                 if (expire != CmsResource.DATE_EXPIRED_DEFAULT) {
                     content.append(getSettings().getMessages().getDateTime(expire));
                 } else {
-                    content.append(CmsTouch.C_RELEASE_EXPIRE_DEFAULT);        
+                    content.append(CmsTouch.C_RELEASE_EXPIRE_DEFAULT);
                 }
                 content.append("\",");
-                
+
             } else {
                 content.append("\"\",");
-            } 
-            
+            }
+
             // position 16: permissions
             if (showPermissions) {
-                content.append("\"");  
-                try {            
+                content.append("\"");
+                try {
                     content.append(getCms().getPermissions(getCms().getSitePath(res)).getPermissionString());
                 } catch (CmsException e) {
-                   content.append(e.getMessage());
+                    content.append(e.getMessage());
                 }
-                content.append("\",");                
+                content.append("\",");
             } else {
                 content.append("\"\",");
-            }     
-            
+            }
+
             // position 17: locked by
             if (lock.isNullLock()) {
                 content.append("\"\",");
             } else {
-                content.append("\"");                
+                content.append("\"");
                 try {
                     content.append(getCms().readUser(lock.getUserId()).getName());
                 } catch (CmsException e) {
                     content.append(e.getMessage());
                 }
-                content.append("\",");                
+                content.append("\",");
             }
-            
+
             // position 18: type of lock
             content.append(lock.getType());
-            content.append(",");     
-                       
+            content.append(",");
+
             // position 19: name of project where the resource is locked in
             int lockedInProject = I_CmsConstants.C_UNKNOWN_ID;
             if (lock.isNullLock() && res.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                 // resource is unlocked and modified
                 lockedInProject = res.getProjectLastModified();
-            } else {                
+            } else {
                 if (res.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                     // resource is locked and modified
                     lockedInProject = lock.getProjectId();
@@ -603,17 +519,17 @@ public class CmsExplorer extends CmsWorkplace {
                 // where did my project go?
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(exc);
-                }                
+                }
                 lockedInProjectName = "";
-            }                        
+            }
             content.append("\"");
             content.append(lockedInProjectName);
             content.append("\",");
-            
+
             // position 20: id of project where resource belongs to
             content.append(lockedInProject);
             content.append(",\"");
-            
+
             // position 21: project state, I=resource is inside current project, O=resource is outside current project        
             if (CmsProject.isInsideProject(projectResources, res)) {
                 content.append("I");
@@ -623,26 +539,27 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"");
             content.append(");\n");
         }
-        
+
         content.append("top.dU(document,");
         content.append(numberOfPages);
         content.append(",");
         content.append(selectedPage);
         content.append("); \n");
-        
+
         content.append("}\n");
         return content.toString();
     }
-    
+
     /**
      * Determines the root folder of the current tree dependent on users setting of explorer view restriction.<p>
      * 
      * @return the root folder resource name to display
      */
     public String getRootFolder() {
+
         String folder = "/";
         if (getSettings().getUserSettings().getRestrictExplorerView()) {
-            folder = getSettings().getUserSettings().getStartFolder();    
+            folder = getSettings().getUserSettings().getStartFolder();
         }
         try {
             getCms().readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -651,11 +568,111 @@ public class CmsExplorer extends CmsWorkplace {
             // should usually never happen
             if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info(e);
-            }            
-            return "/";    
+            }
+            return "/";
         }
     }
-    
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        String currentResource = request.getParameter(C_PARAMETER_RESOURCE);
+        String mode = request.getParameter(C_PARAMETER_MODE);
+        if (CmsStringUtil.isNotEmpty(mode)) {
+            settings.setExplorerMode(mode);
+        } else {
+            // null argument, use explorer view if no other view currently specified
+            if (!(C_VIEW_PROJECT.equals(settings.getExplorerMode()) || C_VIEW_GALLERY
+                .equals(settings.getExplorerMode()))) {
+                settings.setExplorerMode(C_VIEW_EXPLORER);
+            }
+        }
+
+        // get filter parameter for project view
+        String filter = request.getParameter(C_PARAMETER_PROJECTFILTER);
+        if (CmsStringUtil.isEmpty(filter)) {
+            settings.setExplorerProjectFilter("all");
+        } else {
+            settings.setExplorerProjectFilter(filter);
+        }
+
+        // get project id parameter for project view
+        String projectIdString = request.getParameter(C_PARAMETER_PROJECTID);
+        int projectId = getCms().getRequestContext().currentProject().getId();
+        if (projectIdString != null && !"".equals(projectIdString)) {
+            projectId = Integer.parseInt(projectIdString);
+        }
+        settings.setExplorerProjectId(projectId);
+
+        boolean showLinks = Boolean.valueOf(request.getParameter(C_PARAMETER_SHOWLINKS)).booleanValue();
+
+        if (showLinks) {
+            // "showlinks" parameter found, set resource name
+            settings.setExplorerResource(currentResource);
+        } else {
+            // "showlinks" parameter not found 
+            if (currentResource != null && currentResource.startsWith(C_LOCATION_VFSLINK)) {
+                // given resource starts with "vfslink:", list of links is shown
+                showLinks = true;
+                settings.setExplorerResource(currentResource.substring(8));
+            } else {
+                if (CmsStringUtil.isNotEmpty(currentResource) && folderExists(getCms(), currentResource)) {
+                    // resource is a folder, set resource name
+                    settings.setExplorerResource(currentResource);
+                } else {
+                    // other cases (resource null, no folder), first get the resource name from settings
+                    showLinks = settings.getExplorerShowLinks();
+                    currentResource = settings.getExplorerResource();
+                    if (!resourceExists(getCms(), currentResource)) {
+                        // resource does not exist, display root folder
+                        settings.setExplorerResource("/");
+                        showLinks = false;
+                    }
+                }
+            }
+        }
+        settings.setExplorerShowLinks(showLinks);
+
+        String selectedPage = request.getParameter(C_PARAMETER_PAGE);
+        if (selectedPage != null) {
+            int page = 1;
+            try {
+                page = Integer.parseInt(selectedPage);
+            } catch (NumberFormatException e) {
+                // default is 1
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(e);
+                }
+            }
+            settings.setExplorerPage(page);
+        }
+
+        // the flaturl 
+        settings.setExplorerFlaturl(request.getParameter(C_PARAMETER_FALTURL));
+    }
+
+    /**
+     * Checks if a folder with a given name exits in the VFS.<p>
+     * 
+     * @param cms the current cms context
+     * @param folder the folder to check for
+     * @return true if the folder exists in the VFS
+     */
+    private boolean folderExists(CmsObject cms, String folder) {
+
+        try {
+            CmsFolder test = cms.readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
+            if (test.isFile()) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     /**
      * Returns a list resources that should be displayed in the 
      * OpenCms Exlorer.<p>
@@ -677,24 +694,24 @@ public class CmsExplorer extends CmsWorkplace {
                 // should usually never happen
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(e);
-                }                
+                }
                 return Collections.EMPTY_LIST;
             }
-        } else if ("projectview".equals(getSettings().getExplorerMode())) {
-            
+        } else if (C_VIEW_PROJECT.equals(getSettings().getExplorerMode())) {
+
             // select status to be shown
             String criteria = getSettings().getExplorerProjectFilter();
             int state;
             if (criteria.equals("new")) {
-                state=I_CmsConstants.C_STATE_NEW;
+                state = I_CmsConstants.C_STATE_NEW;
             } else if (criteria.equals("changed")) {
-                state=I_CmsConstants.C_STATE_CHANGED;
+                state = I_CmsConstants.C_STATE_CHANGED;
             } else if (criteria.equals("deleted")) {
-                state=I_CmsConstants.C_STATE_DELETED;
+                state = I_CmsConstants.C_STATE_DELETED;
             } else {
-                state=I_CmsConstants.C_STATE_KEEP;
+                state = I_CmsConstants.C_STATE_KEEP;
             }
-                        
+
             // show files in the selected project with the selected status
             try {
                 return getCms().readProjectView(getSettings().getExplorerProjectId(), state);
@@ -702,7 +719,7 @@ public class CmsExplorer extends CmsWorkplace {
                 // should usually never happen
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(e);
-                }                
+                }
                 return Collections.EMPTY_LIST;
             }
         } else {
@@ -713,9 +730,37 @@ public class CmsExplorer extends CmsWorkplace {
                 // should usually never happen
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(e);
-                }                
+                }
                 return Collections.EMPTY_LIST;
             }
         }
-    }   
+    }
+
+    /**
+     * Sets the default preferences for the current user if those values are not available.<p>
+     * 
+     * @return the int value of the default preferences
+     */
+    private int getUserPreferences() {
+
+        CmsUserSettings settings = new CmsUserSettings(getCms().getRequestContext().currentUser());
+        return settings.getExplorerSettings();
+    }
+
+    /**
+     * Checks if a resource with a given name exits in the VFS.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the resource to check for
+     * @return true if the resource exists in the VFS
+     */
+    private boolean resourceExists(CmsObject cms, String resource) {
+
+        try {
+            cms.readResource(resource, CmsResourceFilter.ALL);
+            return true;
+        } catch (CmsException e) {
+            return false;
+        }
+    }
 }

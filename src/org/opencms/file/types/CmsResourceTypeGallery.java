@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeGallery.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/08 14:30:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.util.CmsStringUtil;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -42,9 +43,15 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
+
+    /** Configuration key for the gallery class name. */
+    public static final String C_CONFIGURATION_GALLERY_CLASS = "gallery.class";
+
+    /** The configured workplace gallery class name for this gallery. */
+    private String m_galleryClassName;
 
     /** The type id of this resource. */
     private int m_resourceType;
@@ -61,9 +68,11 @@ public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
             m_resourceType = Integer.valueOf(paramValue).intValue();
         } else if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME.equalsIgnoreCase(paramName)) {
             m_resourceTypeName = paramValue.trim();
+        } else if (C_CONFIGURATION_GALLERY_CLASS.equalsIgnoreCase(paramName)) {
+            m_galleryClassName = paramValue.trim();
         }
     }
-    
+
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
@@ -72,9 +81,20 @@ public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
         ExtendedProperties result = new ExtendedProperties();
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID, new Integer(m_resourceType));
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME, m_resourceTypeName);
+        result.put(C_CONFIGURATION_GALLERY_CLASS, m_galleryClassName);
         return result;
     }
-    
+
+    /**
+     * Returns the configured workplace gallery class name for this gallery.<p>
+     * 
+     * @return the configured workplace gallery class name for this gallery
+     */
+    public String getGalleryClassName() {
+
+        return m_galleryClassName;
+    }
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
      */
@@ -97,7 +117,9 @@ public class CmsResourceTypeGallery extends CmsResourceTypeFolder {
     public void initConfiguration() throws CmsConfigurationException {
 
         // configuration must be complete for this resource type
-        if ((m_resourceTypeName == null) || (m_resourceType <= 0)) {
+        if (CmsStringUtil.isEmpty(m_resourceTypeName)
+            || CmsStringUtil.isEmpty(m_galleryClassName)
+            || (m_resourceType <= 0)) {
             throw new CmsConfigurationException("Not all required configuration parameters available for resource type");
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGallery.java,v $
- * Date   : $Date: 2004/12/07 17:19:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/08 14:30:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,8 +52,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 
 /**
  * Provides constants, members and methods to generate a gallery popup window usable in editors or as widget.<p>
@@ -62,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.5.2
  */
@@ -122,8 +120,8 @@ public abstract class CmsGallery extends CmsDialog {
     public static final String PARAM_RESOURCEPATH = "resourcepath";
     /** Request parameter name for the search word. */
     public static final String PARAM_SEARCHWORD = "searchword";
-    private CmsResource m_currentResource;
     
+    private CmsResource m_currentResource;           
     private String m_paramDialogMode;
     private String m_paramFieldId;
     private String m_paramGalleryPath;
@@ -131,24 +129,95 @@ public abstract class CmsGallery extends CmsDialog {
     private String m_paramPropertyValue;
     private String m_paramResourcePath;
     private String m_paramSearchWord;
+    
+    /** The resource type name of this gallery instance. */
+    private String m_galleryTypeName;
+
+    /** The resource type id of this gallery instance. */
+    private int m_galleryTypeId;
+
+    /**
+     * Returns the resource type name of this gallery instance.<p>
+     * 
+     * @return the resource type name of this gallery instance
+     */
+    public String getGalleryTypeName() {
+
+        return m_galleryTypeName;
+    }
+
+    /**
+     * Returns the resource type id of this gallery instance.<p>
+     *
+     * @return the resource type id of this gallery instance
+     */
+    public int getGalleryTypeId() {
+
+        return m_galleryTypeId;
+    }
+
+    /**
+     * Creates a new gallery instance of the given gallery type name.<p>
+     * 
+     * @param galleryTypeName the gallery type name to create the instance for
+     * @param jsp an initialized JSP action element
+     * 
+     * @return a new gallery instance of the given gallery type name
+     */
+    public static CmsGallery createInstance(String galleryTypeName, CmsJspActionElement jsp) {
+
+        String className = OpenCms.getWorkplaceManager().getGalleryClassName(galleryTypeName);
+
+        if (className == null) {
+            // requested type is not configured
+            String message = "Unknown gallery type '"
+                + galleryTypeName
+                + "' requested"
+                + (jsp != null ? " on JSP " + jsp.info("opencms.request.element.uri") : "");
+            OpenCms.getLog(CmsGallery.class).error(message);
+            throw new RuntimeException(message);
+        }
+
+        try {
+            // first get the class for the gallery
+            Class galleryClass = Class.forName(className);
+            // create a new instance and cast to a gallery
+            CmsGallery galleryInstance = (CmsGallery)galleryClass.newInstance();
+            // initialize the members
+            galleryInstance.initWorkplaceMembers(jsp);
+            // set the type name and id
+            galleryInstance.m_galleryTypeName = galleryTypeName;
+            galleryInstance.m_galleryTypeId = OpenCms.getResourceManager().getResourceType(galleryTypeName).getTypeId();
+            // return the resulz
+            return galleryInstance;
+        } catch (Exception e) {
+            // requested type is not configured
+            String message = "Unable to create class instance '"
+                + className
+                + "' for gallery type '"
+                + galleryTypeName
+                + "'"
+                + (jsp != null ? " on JSP " + jsp.info("opencms.request.element.uri") : "");
+            OpenCms.getLog(CmsGallery.class).error(message);
+            throw new RuntimeException(message, e);
+        }
+    }
+
+    /**
+     * Public empty constructor, required for {@link CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
+     */
+    public CmsGallery() {
+        this(null);
+    }
+    
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsGallery(CmsJspActionElement jsp) {
+
         super(jsp);
-    }
-    
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-        this(new CmsJspActionElement(context, req, res));
     }
     
     /**
@@ -597,13 +666,6 @@ public abstract class CmsGallery extends CmsDialog {
      * @return the type id of the gallery items that should be listed
      */
     public abstract int getGalleryItemsTypeId();
-    
-    /**
-     * Returns the type id of the gallery.<p>
-     * 
-     * @return the type id of the gallery
-     */
-    public abstract int getGalleryTypeId();
     
     /**
      * Returns the current mode of the dialog.<p>
