@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/02/20 16:10:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/20 18:11:27 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/02/20 16:10:05 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/20 18:11:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -160,7 +160,6 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         String picsUrl = getConfigFile(cms).getCommonPictureUrl();
         HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
         HttpServletResponse resp = (HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse());
-        String servletPath = req.getServletPath();
         String hostName = req.getScheme() + "://" + req.getHeader("HOST");
                            
              
@@ -170,7 +169,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             String filename = file.getName();
             if(inFilter(filename, filter) && isImage(filename)) {
                 result.append(xmlTemplateDocument.getProcessedXmlDataValue("picstartseq", this, userObj));
-                result.append(hostName + servletPath + picsUrl + file.getName());
+                result.append(hostName + picsUrl + file.getName());
                 result.append(xmlTemplateDocument.getProcessedXmlDataValue("picendseq", this, userObj));
                 result.append(xmlTemplateDocument.getProcessedXmlDataValue("textstartseq", this, userObj));
                 result.append(file.getName() + " (" + file.getLength() + " Bytes)\n");
