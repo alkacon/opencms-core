@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/09/02 12:15:38 $
-* Version: $Revision: 1.119 $
+* Date   : $Date: 2003/09/03 08:34:23 $
+* Version: $Revision: 1.120 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.119 $ $Date: 2003/09/02 12:15:38 $
+ * @version $Revision: 1.120 $ $Date: 2003/09/03 08:34:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -100,7 +100,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         cms.getRequestContext().setCurrentProject(tempProject);
         
         try {
-            cms.copyResource(cms.readAbsolutePath(file), temporaryFilename);
+            cms.copyResource(cms.readAbsolutePath(file), temporaryFilename, false, true, I_CmsConstants.C_COPY_AS_NEW);
             // cms.chmod(temporaryFilename, 91);
         } catch (CmsException e) {
             if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
