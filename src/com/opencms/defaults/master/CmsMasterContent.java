@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
  * Author : $Author: m.dernen $
- * Date   : $Date: 2001/11/12 13:57:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2001/11/14 11:23:28 $
+ * Version: $Revision: 1.8 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -39,8 +39,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.7 $
- * $Date: 2001/11/12 13:57:29 $
+ * $Revision: 1.8 $
+ * $Date: 2001/11/14 11:23:28 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -57,9 +57,6 @@ public abstract class CmsMasterContent
 
     /** A private HashMap to store all data access-objects. */
     private static HashMap c_accessObjects = new HashMap();
-
-    /** the root channel for all channels of this module */
-    protected static String c_rootChannel = null;
 
     /** Vector of currently selected channels */
     protected Vector m_selectedChannels = null;
@@ -677,21 +674,6 @@ public abstract class CmsMasterContent
         return getDbAccessObject(this.getSubId()).getVersionFromHistory(cms, this.getClass(), m_dataSet.m_masterId, this.getSubId(), versionId);
     }
 
-    /**
-     * Get the root channel for this module
-     * @return name of the root channel for this module
-     */
-     public static String getRootChannel() {
-        return c_rootChannel;
-     }
-
-    /**
-     * Set the root channel for this module
-     * @param newRootChannel a new value for the root channel
-     */
-    public static void setRootChannel(String newRootChannel) {
-        c_rootChannel = newRootChannel;
-    }
 
     /**
      * Get all currently selected channels
@@ -701,10 +683,12 @@ public abstract class CmsMasterContent
         if (m_selectedChannels == null) {
             Vector dbChannels = getChannels();
             m_selectedChannels = new Vector();
+            String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();
+            int offset = rootChannel.length()-1;
             for (int i=0; i< dbChannels.size(); i++) {
                 // remove the root channel name from the channel's name
-                // and add to new Vector 
-                m_selectedChannels.add(((String)dbChannels.elementAt(i)).substring(c_rootChannel.length()-1));
+                // and add to new Vector
+                m_selectedChannels.add(((String)dbChannels.elementAt(i)).substring(offset));
             }
         }
         return m_selectedChannels;
@@ -730,7 +714,7 @@ public abstract class CmsMasterContent
 
      /**
       * Get all currently available channels
-      * Note: the root channel of the module is not included in the returned 
+      * Note: the root channel of the module is not included in the returned
       * channelnames. For example if the root channel is /Jobs/ and a channel's
       * name is /Jobs/Education/Cologne/ the returned name for this channel will
       * be /Education/Cologne/.
@@ -745,7 +729,7 @@ public abstract class CmsMasterContent
                 for (int j=0; j<selectedChannels.size(); j++) {
                     if (subChannels.elementAt(i).equals(selectedChannels.elementAt(j))) {
                         subChannels.removeElementAt(i);
-                    } 
+                    }
                 }
             }
             m_availableChannels = subChannels;
@@ -800,7 +784,7 @@ public abstract class CmsMasterContent
         }
         return allChannels;
     }
-    
+
      /**
      * Get all subchannels of the module root channel without the root channel in the channel names
      * @param cms object to access system resources
@@ -808,20 +792,22 @@ public abstract class CmsMasterContent
      * @return Vector with names of all subchannels
      * @throws com.opencms.core.CmsException in case of unrecoverable errors
      */
-    protected static Vector getAllSubChannelsOfRootChannel (CmsObject cms)
+    protected Vector getAllSubChannelsOfRootChannel (CmsObject cms)
             throws CmsException {
         Vector allChannels = new Vector();
         try {
             cms.setContextToCos();
-            Vector subChannels = cms.getSubFolders(c_rootChannel);
+            String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();
+            Vector subChannels = cms.getSubFolders(rootChannel);
+            int offset = rootChannel.length()-1;
             for (int i=0; i < subChannels.size(); i++) {
                 String folder = ((CmsFolder)subChannels.elementAt(i)).getAbsolutePath();
                 Vector v = getAllSubChannelsOf(cms, folder);
                 if (v.size() == 0) {
-                    allChannels.addElement(folder.substring(c_rootChannel.length()-1));
+                    allChannels.addElement(folder.substring(offset));
                 }else {
                     for (int j=0; j < v.size(); j++) {
-                        allChannels.addElement(((String)v.elementAt(j)).substring(c_rootChannel.length()-1));
+                        allChannels.addElement(((String)v.elementAt(j)).substring(offset));
                     }
                 }
             }
@@ -839,7 +825,8 @@ public abstract class CmsMasterContent
     protected void updateChannels() throws CmsException{
         Vector dbChannels = getChannels();
         Vector selectedChannels = getSelectedChannels();
-        String prefix = c_rootChannel.substring(0, c_rootChannel.length()-1); 
+        String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();
+        String prefix = rootChannel.substring(0, rootChannel.length()-1);
         // mark all channels to be deleted if not existing in m_selectedChannels but in datatabase
         for (int i=0; i < dbChannels.size(); i++) {
             boolean found = false;
