@@ -20,14 +20,10 @@ function show_help()
 }
 
 function deleteAnItem(theList,itemNo) {
-// var n=theList.length;
-// if ((n > 0) && (itemNo > -1)) {
-//	 for (i=itemNo; i<n-1; i++) {
-//		 theList.options[i]=theList.options[i+1];
-//	 }
-//	 theList.options[n-1]=null; 
- 	 theList.options[itemNo]=null; 
-// }
+var n=theList.length;
+if ((n > 0) && (itemNo > -1)) {
+	theList.options[itemNo]=null; 
+}
 }
 
 function addFolder(theList, item) { 
