@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsLog.java,v $
-* Date   : $Date: 2003/06/25 13:50:13 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/08/15 13:54:52 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,21 +38,25 @@ import java.io.*;
  * Different logging channels are supported and can be
  * (de)activated by the log settings in the proerty file.
  *
- * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2003/06/25 13:50:13 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/15 13:54:52 $
  */
 public class CmsLog implements I_Logger {
 
     /** The internal m_logger */
     private LogWriter m_logger = null;
 
-    /** The main constructor */
+    
+    /**
+     * Creates a new cms log.<p>
+     * 
+     * @param identifier the identifier for the log writer
+     * @param confs the configuration
+     */
     public CmsLog(String identifier, Configurations confs) {
         m_logger = null;
         try {
             m_logger = new LogWriter(identifier, confs);
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -61,7 +65,7 @@ public class CmsLog implements I_Logger {
      * Writes any pending messages into the log media.
      */
     public void flush() {
-        if(m_logger != null) {
+        if (m_logger != null) {
             m_logger.flush();
         }
     }
@@ -92,21 +96,23 @@ public class CmsLog implements I_Logger {
      * If a channel is not recognized or its property is set to false
      * the message is not written.
      *
-     * @param channel the channel to put the message on.
-     * @param name the message to log.
+     * @param channel the channel to put the message on
+     * @param message the message to log
      */
     public void log(String channel, String message) {
-        if(m_logger != null) {
+        if (m_logger != null) {
             m_logger.log(channel, message);
         }
     }
 
     /**
      * Prints the error message and stack trace if channel enabled.
+     * 
+     * @param channel the channel to put the message on
      * @param t the error thrown.
      */
     public void log(String channel, Throwable t) {
-        if(m_logger != null) {
+        if (m_logger != null) {
             m_logger.log(channel, t);
         }
     }
