@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportRequest.java,v $
-* Date   : $Date: 2002/10/30 10:07:06 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/12/04 18:24:29 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import javax.servlet.http.*;
  * Implementation of the I_CmsRequest interface which is used to request pages
  * during a static export.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2002/10/30 10:07:06 $
+ * @version $Revision: 1.8 $ $Date: 2002/12/04 18:24:29 $
  */
 public class CmsExportRequest implements I_CmsRequest {
 
@@ -121,9 +121,16 @@ public class CmsExportRequest implements I_CmsRequest {
     public void setParameters(Hashtable parameters){
         m_parameters = parameters;
     }
+    
     public String getRequestedResource() {
+        if (m_resourcePath != null) { 
+            return m_resourcePath;
+        } else {
+            m_resourcePath = "/";
+        }       
         return m_resourcePath;
     }
+    
     public void setRequestedResource(String res){
         m_resourcePath = res;
     }
