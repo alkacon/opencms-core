@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/08/16 08:20:33 $
-* Version: $Revision: 1.266 $
+* Date   : $Date: 2001/08/31 13:32:11 $
+* Version: $Revision: 1.267 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.266 $ $Date: 2001/08/16 08:20:33 $
+ * @version $Revision: 1.267 $ $Date: 2001/08/31 13:32:11 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -5126,7 +5126,13 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
         group=(CmsGroup)m_groupCache.get(resource.getGroupId());
 
         if (group== null) {
-            group=m_dbAccess.readGroup(resource.getGroupId()) ;
+            try {
+                group=m_dbAccess.readGroup(resource.getGroupId()) ;
+            } catch(CmsException exc) {
+                if(exc.getType() == exc.C_NO_GROUP) {
+                    return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, resource.getGroupId() + "", "deleted group", 0);
+                }
+            }
             m_groupCache.put(resource.getGroupId(),group);
         }
         return group;
