@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/04/01 13:34:31 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/04/02 16:20:26 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsObject {
 
@@ -2434,10 +2434,18 @@ public class CmsObject {
         synchronized (m_driverManager) {            
             try {                                
                 m_driverManager.publishProject(this, m_context, publishList, report);
+            } catch (CmsException e) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error(e);
+                }
+                
+                throw e;
             } catch (Exception e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error publishing resource(s): " + publishList.toString(), e);
+                    OpenCms.getLog(this).error(e);
                 }
+
+                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
             } finally {
                 // TODO check if useful/neccessary
                 m_driverManager.clearcache();
