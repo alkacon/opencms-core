@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
-* Date   : $Date: 2002/07/24 16:15:01 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2002/10/21 15:30:07 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Waruschan Babachan
- * @version $Revision: 1.44 $ $Date: 2002/07/24 16:15:01 $
+ * @version $Revision: 1.45 $ $Date: 2002/10/21 15:30:07 $
  */
 
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -63,8 +63,15 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
+                                      
+        I_CmsSession session = cms.getRequestContext().getSession(false);
+        // Check if there already is a session
+        if (session != null) {
+            // Old session found, must be invalidated
+            session.invalidate();
+        }
+                
         String username = null;
-        I_CmsSession session = null;
         CmsUser user;
         CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
         String actionPath = configFile.getWorkplaceActionPath();
