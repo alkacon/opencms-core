@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/09 08:10:22 $
- * Version: $Revision: 1.163 $
+ * Date   : $Date: 2001/07/10 14:26:15 $
+ * Version: $Revision: 1.164 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.163 $ $Date: 2001/07/09 08:10:22 $
+ * @version $Revision: 1.164 $ $Date: 2001/07/10 14:26:15 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2247,15 +2247,10 @@ public CmsProject onlineProject() throws CmsException {
  */
 public void publishProject(int id) throws CmsException {
     clearcache();
-    long startTime = System.currentTimeMillis();
     Vector changedResources = m_rb.publishProject(m_context.currentUser(), m_context.currentProject(), id);
     try{
         getRequestContext().getElementCache().cleanupCache(changedResources);
     }catch (Exception e){}
-    long stopTime = System.currentTimeMillis();
-    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsObject] publishProject time: "+(stopTime-startTime));
-    }
     clearcache();
 }
 
@@ -2269,15 +2264,19 @@ public void publishProject(int id) throws CmsException {
  */
 public void publishResource(String resourcename) throws CmsException {
     int oldProjectId = m_context.currentProject().getId();
-    int newProjectId = m_rb.createProject(m_context.currentUser(), m_context.currentProject(),
-                                          "__forPublish","project for single resource publishing","Users",
-                                          "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
-    getRequestContext().setCurrentProject(newProjectId);
-	CmsResource res = readFileHeader(resourcename);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.copyResourceToProject(this, resourcename);
-    publishProject(newProjectId);
-    getRequestContext().setCurrentProject(oldProjectId);
+    if(oldProjectId != C_PROJECT_ONLINE_ID){
+        int newProjectId = m_rb.createProject(m_context.currentUser(), m_context.currentProject(),
+                                              "__forPublish","project for single resource publishing","Users",
+                                              "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
+        getRequestContext().setCurrentProject(newProjectId);
+	    CmsResource res = readFileHeader(resourcename);
+	    I_CmsResourceType rt = getResourceType(res.getType());
+	    rt.copyResourceToProject(this, resourcename);
+        publishProject(newProjectId);
+        getRequestContext().setCurrentProject(oldProjectId);
+    } else {
+        throw new CmsException("[CmsObject] cannot publish resource in online project", CmsException.C_NO_ACCESS);
+    }
 }
 
 /**
