@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/02/27 14:36:30 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/02/27 14:53:32 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.importexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.file.CmsResourceTypeLink;
 import org.opencms.file.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -536,7 +535,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 1
             );
              
-            if (resType==CmsResourceTypeLink.C_RESOURCE_TYPE_ID) {
+            if (C_RESOURCE_TYPE_LINK_ID == resType) {
                 // store links for later conversion
                 m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
                 m_linkStorage.put(m_importPath + destination, new String(content));
@@ -548,7 +547,7 @@ public class CmsImportVersion4 extends A_CmsImport {
             }
 
             if (res != null) {
-                if (A_CmsImport.C_RESOURCE_TYPE_PAGE_ID == resType) {
+                if (C_RESOURCE_TYPE_PAGE_ID == resType) {
                     m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
                 }
                 m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);

@@ -2,14 +2,13 @@
 <registry>
 	<system>
 		<resourcetype>
+            <class>org.opencms.file.CmsResourceTypeXMLTemplate</class>
 			<class>org.opencms.file.CmsResourceTypeFolder</class>
+            <class>org.opencms.file.CmsResourceTypePlain</class>
 			<class>org.opencms.file.CmsResourceTypePointer</class>
-			<class>org.opencms.file.CmsResourceTypePlain</class>
-			<class>org.opencms.file.CmsResourceTypeXMLTemplate</class>
 			<class>org.opencms.file.CmsResourceTypeBinary</class>
 			<class>org.opencms.file.CmsResourceTypeImage</class>
 			<class>org.opencms.file.CmsResourceTypeJsp</class>
-			<class>org.opencms.file.CmsResourceTypeLink</class>
 			<class>org.opencms.file.CmsResourceTypeXmlPage</class>
 		</resourcetype>
 		<resourceloader>
@@ -162,7 +161,7 @@
                 <lang>it</lang>
             </analyzer>
             <index>
-                <name>default (Online)</name>
+                <name>Online project</name>
                 <rebuild>auto</rebuild>
                 <project>online</project>
                 <site>/sites/default/</site>
@@ -180,7 +179,7 @@
                  </folder>
             </index>
             <index>
-                <name>default (Offline)</name>
+                <name>Offline project</name>
                 <rebuild>auto</rebuild>
                 <project>offline</project>
                 <site>/sites/default/</site>
@@ -198,7 +197,7 @@
                  </folder>
             </index>
             <index>
-                <name>system</name>
+                <name>System folder</name>
                 <rebuild>auto</rebuild>
                 <project>online</project>
                 <site>/</site>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/26 14:18:10 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/02/27 14:53:32 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.importexport;
 
+import org.opencms.db.CmsDbUtil;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.file.CmsResourceTypeLink;
 import org.opencms.file.CmsResourceTypePlain;
 import org.opencms.file.CmsResourceTypeXmlPage;
 import org.opencms.loader.CmsXmlPageLoader;
@@ -356,8 +356,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     resourceTypeLoaderId = (m_cms.getResourceType(resourceTypeId)).getLoaderId();
                 } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(resourceTypeName)) {
                     // resource with a "legacy" resource type are imported using the "plain" resource
-                    // type because you cannot import a resource without having the resource type object                    
-                    //resType = C_RESOURCE_TYPE_PAGE_ID;
+                    // type because you cannot import a resource without having the resource type object
                     resourceTypeId = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
                     resourceTypeLoaderId = (m_cms.getResourceType(resourceTypeId)).getLoaderId();
                 } else {
@@ -497,7 +496,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
                 if (channelId == null) {
                     // the channel id does not exist, so generate a new one
-                    int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
+                    int newChannelId = CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
                     channelId = "" + newChannelId;
                 }
                 properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);
@@ -549,7 +548,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     lastmodified, curUser, size,
                     1);
             
-            if (resourceTypeId==CmsResourceTypeLink.C_RESOURCE_TYPE_ID) {
+            if (C_RESOURCE_TYPE_LINK_ID == resourceTypeId) {
                 // store links for later conversion
                 m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
                 m_linkStorage.put(m_importPath + destination, new String(content));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/02/27 14:53:32 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,17 +99,23 @@ public abstract class A_CmsImport implements I_CmsImport {
     /** Groups to create during import are stored here */
     protected Stack m_groupsToCreate = new Stack();
     
-    /** The id of the legacy resource type "newpage" */
-    protected static final int C_RESOURCE_TYPE_NEWPAGE_ID = 9;
-    
-    /** The name of the legacy resource type "newpage" */
-    protected static final String C_RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
-    
     /** The id of the legacy resource type "page" */
-    protected static final int C_RESOURCE_TYPE_PAGE_ID = 1;
+    public static final int C_RESOURCE_TYPE_PAGE_ID = 1;
     
     /** The name of the legacy resource type "page" */
-    protected static final String C_RESOURCE_TYPE_PAGE_NAME = "page";
+    public static final String C_RESOURCE_TYPE_PAGE_NAME = "page";
+    
+    /** The id of the legacy resource type "link" */
+    public static final int C_RESOURCE_TYPE_LINK_ID = 2;
+    
+    /** The name of the legacy resource type "link" */
+    public static final String C_RESOURCE_TYPE_LINK_NAME = "link";
+    
+    /** The id of the legacy resource type "newpage" */
+    public static final int C_RESOURCE_TYPE_NEWPAGE_ID = 9;
+    
+    /** The name of the legacy resource type "newpage" */
+    public static final String C_RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
 
     /**
      * In this vector we store the imported pages (as Strings from getAbsolutePath()),
