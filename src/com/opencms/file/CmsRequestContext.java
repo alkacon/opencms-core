@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/07/18 16:13:48 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/07/27 12:54:00 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/07/18 16:13:48 $
+ * @version $Revision: 1.24 $ $Date: 2000/07/27 12:54:00 $
  * 
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -92,7 +92,7 @@ public class CmsRequestContext implements I_CmsConstants {
     	m_rb = rb;
 		m_req = req;
 		m_resp = resp;
-   
+		
 		m_user = m_rb.readUser(null, null, user);
 
 		// check, if the user is disabled

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/07/19 16:13:13 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/07/27 12:53:59 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.31 $ $Date: 2000/07/19 16:13:13 $  
+* @version $Revision: 1.32 $ $Date: 2000/07/27 12:53:59 $  
 * 
 * */
 
@@ -72,6 +72,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      */
      //private static String C_DEFAULT_MIMETYPE="application/octet-stream";
     private static String C_DEFAULT_MIMETYPE="text/html";
+
+	/**
+	 * The resource-broker to access the database.
+	 */
+	private static I_CmsResourceBroker c_rb;
      
      /**
       * The session storage for all active users.
@@ -105,19 +110,20 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 			}
             CmsObject cms=new CmsObject();
 			if(A_OpenCms.isLogging()) {
-				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the cms-object and the main resource-broker");
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the main resource-broker");
 			}
 
 			// init the rb via the manager with the configuration 			
 			// and init the cms-object with the rb.
-			cms.init(CmsRbManager.init(conf));
+			c_rb = CmsRbManager.init(conf);
 
 			printCopyrightInformation(cms);
             // initalize the Hashtable with all available mimetypes
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] read mime types");
 			}
-            m_mt=cms.readMimeTypes();
+
+			m_mt = c_rb.readMimeTypes(null, null);
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] found " + m_mt.size() + " mime-type entrys");			
 			}
@@ -254,6 +260,21 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
              cms.getRequestContext().getResponse().setContentType(C_DEFAULT_MIMETYPE);
         }
     }
+	
+	/**
+	 * Inits a new user and sets it into the overgiven cms-object.
+	 * 
+	 * @param cms the cms-object to use.
+	 * @param cmsReq the cms-request for this http-request.
+	 * @param cmsRes the cms-response for this http-request.
+	 * @param user The name of the user to init.
+	 * @param group The name of the current group.
+	 * @param project The id of the current project.
+	 */
+	public void initUser(CmsObject cms,I_CmsRequest cmsReq,I_CmsResponse cmsRes,String user,String group,int project) 
+		throws CmsException {
+		cms.init(c_rb, cmsReq, cmsRes, user, group, project);
+	}
 	
 	/**
 	 * Prints a copyright information to all log-files.

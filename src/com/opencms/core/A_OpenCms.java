@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2000/06/06 13:21:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/07/27 12:53:59 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import source.org.apache.java.util.*;
 *   
 * @author Alexander Lucas
 * @author Michael Emmerich
-* @version $Revision: 1.7 $ $Date: 2000/06/06 13:21:01 $  
+* @version $Revision: 1.8 $ $Date: 2000/07/27 12:53:59 $  
 * 
 */
 public abstract class A_OpenCms implements I_CmsLogChannels {
@@ -137,4 +137,17 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
             System.err.println(message);
         }
     }
+	
+	/**
+	 * Inits a new user and sets it into the overgiven cms-object.
+	 * 
+	 * @param cms the cms-object to use.
+	 * @param cmsReq the cms-request for this http-request.
+	 * @param cmsRes the cms-response for this http-request.
+	 * @param user The name of the user to init.
+	 * @param group The name of the current group.
+	 * @param project The id of the current project.
+	 */
+	abstract public void initUser(CmsObject cms,I_CmsRequest cmsReq,I_CmsResponse cmsRes,String user,String group,int project)
+		throws CmsException;
 }

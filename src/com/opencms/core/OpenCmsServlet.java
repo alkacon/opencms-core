@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/07/27 11:34:42 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2000/07/27 12:53:59 $
+ * Version: $Revision: 1.51 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.50 $ $Date: 2000/07/27 11:34:42 $  
+* @version $Revision: 1.51 $ $Date: 2000/07/27 12:53:59 $  
 * 
 * */
 
@@ -303,7 +303,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         
         //set up the default Cms object
         try {
-            cms.init(cmsReq,cmsRes,C_USER_GUEST,C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+			m_opencms.initUser(cms,cmsReq,cmsRes,C_USER_GUEST,C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
      
             // check if a parameter "opencms=login" was included in the request.
             // this is used to force the HTTP-Authentification to appear.
@@ -338,7 +338,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
                
                     group=m_sessionStorage.getCurrentGroup(session.getId());
                     project=m_sessionStorage.getCurrentProject(session.getId());
-                    cms.init(cmsReq,cmsRes,user,group,project.intValue());
+					m_opencms.initUser(cms,cmsReq,cmsRes,user,group,project.intValue());
                 }
               } else {
                   
