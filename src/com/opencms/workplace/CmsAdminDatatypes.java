@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
- * Date   : $Date: 2000/04/13 18:06:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/04/13 19:55:13 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.3 $ $Date: 2000/04/13 18:06:06 $
+ * @version $Revision: 1.4 $ $Date: 2000/04/13 19:55:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -99,9 +99,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
         }
 		
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-  
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-        A_CmsRequestContext reqCont = cms.getRequestContext();
+    
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 		
 		String action = (String) parameters.get("action");
