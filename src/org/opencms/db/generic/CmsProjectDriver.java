@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/07 09:31:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/07 12:47:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.10 $ $Date: 2003/07/07 09:31:53 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/07 12:47:14 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -318,41 +318,6 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         }
 
         return readProject(id);
-    }
-
-    /**
-     * Creates a new projectResource from an given CmsResource object.
-     *
-     * @param project The project in which the resource will be used.
-     * @param resource The resource to be written to the Cms.
-     *
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public void createProjectResource(int projectId, String resourceName) throws CmsException {
-        // do not create entries for online-project
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        try {
-            m_driverManager.getVfsDriver().readProjectResource(projectId, resourceName);
-            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-        } catch (CmsException e) {
-            if (e.getType() == CmsException.C_FILE_EXISTS) {
-                throw e;
-            }
-        }
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_CREATE");
-            // write new resource to the database
-            stmt.setInt(1, projectId);
-            stmt.setString(2, resourceName);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
     }
 
     /**

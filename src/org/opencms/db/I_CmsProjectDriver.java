@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/07 12:47:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/07 12:47:14 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -69,7 +69,6 @@ public interface I_CmsProjectDriver {
     void createLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException;
     void createOnlineLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException;
     CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type) throws CmsException;
-    void createProjectResource(int projectId, String resourceName) throws CmsException;
     
     /**
      * This method creates a new session in the database. It is used

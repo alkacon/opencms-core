@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/07 09:31:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/07 12:47:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/07/07 09:31:53 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/07 12:47:14 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -2627,6 +2627,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_READ_BY_ID");
 
             stmt.setInt(1, project.getId());
+            stmt.setString(2, "%" + I_CmsConstants.C_FOLDER_SEPARATOR + I_CmsConstants.C_ROOTNAME_VFS + I_CmsConstants.C_FOLDER_SEPARATOR + "%");
+            stmt.setInt(3, project.getId());
+            stmt.setString(4, I_CmsConstants.C_ROOT);
             res = stmt.executeQuery();
 
             if (res.next()) {
@@ -3306,7 +3309,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         // this task is split into two statements because Oracle doesnt support muti-table updates
         PreparedStatement stmt = null;
         Connection conn = null;
-        CmsUUID modifiedByUserId = userId;
+        //CmsUUID modifiedByUserId = userId;
         long dateModified = file.isTouched() ? file.getDateLastModified() : System.currentTimeMillis();
         //Savepoint savepoint = null;
 
@@ -3332,22 +3335,41 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             
             // update the structure
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_STRUCTURE");
-            stmt.setInt(1, file.getProjectId());
+            stmt.setString(1, file.getParentId().toString());
+            stmt.setInt(2, file.getProjectId());
+            stmt.setString(3, file.getResourceName());
+            stmt.setInt(4, 0);
             int state = file.getState();
             if ((state == com.opencms.core.I_CmsConstants.C_STATE_NEW) || (state == com.opencms.core.I_CmsConstants.C_STATE_CHANGED)) {
-                stmt.setInt(2, state);
+                stmt.setInt(5, state);
             } else {
                 if (changed == true) {
-                    stmt.setInt(2, com.opencms.core.I_CmsConstants.C_STATE_CHANGED);
+                    stmt.setInt(5, com.opencms.core.I_CmsConstants.C_STATE_CHANGED);
                 } else {
-                    stmt.setInt(2, file.getState());
+                    stmt.setInt(5, file.getState());
                 }
             }
-            stmt.setString(3, file.isLockedBy().toString());      
-            stmt.setString(4, modifiedByUserId.toString()); 
-            stmt.setString(5, file.getResourceName());     
-            stmt.setString(6, file.getId().toString());               
-            stmt.executeUpdate();
+            stmt.setString(6, file.isLockedBy().toString());
+            stmt.setString(7, userId.toString());
+            stmt.setString(8, file.getId().toString());
+            stmt.executeUpdate();          
+            
+//            stmt.setInt(1, file.getProjectId());
+//            int state = file.getState();
+//            if ((state == com.opencms.core.I_CmsConstants.C_STATE_NEW) || (state == com.opencms.core.I_CmsConstants.C_STATE_CHANGED)) {
+//                stmt.setInt(2, state);
+//            } else {
+//                if (changed == true) {
+//                    stmt.setInt(2, com.opencms.core.I_CmsConstants.C_STATE_CHANGED);
+//                } else {
+//                    stmt.setInt(2, file.getState());
+//                }
+//            }
+//            stmt.setString(3, file.isLockedBy().toString());      
+//            stmt.setString(4, modifiedByUserId.toString()); 
+//            stmt.setString(5, file.getResourceName());     
+//            stmt.setString(6, file.getId().toString());               
+//            stmt.executeUpdate();
             
             //m_sqlManager.commit(conn);
         } catch (SQLException e) {
@@ -3385,7 +3407,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     public void writeFolder(CmsProject project, CmsFolder folder, boolean changed, CmsUUID userId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
-        CmsUUID modifiedByUserId = userId;
+        //CmsUUID modifiedByUserId = userId;
         long dateModified = folder.isTouched() ? folder.getDateLastModified() : System.currentTimeMillis();
         //Savepoint savepoint = null;
         
@@ -3411,22 +3433,41 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             
             // update the structure
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_STRUCTURE");
-            stmt.setInt(1, folder.getProjectId());
+            stmt.setString(1, folder.getParentId().toString());            
+            stmt.setInt(2, folder.getProjectId());
+            stmt.setString(3, folder.getResourceName());
+            stmt.setInt(4, 0);            
             int state = folder.getState();
             if ((state == com.opencms.core.I_CmsConstants.C_STATE_NEW) || (state == com.opencms.core.I_CmsConstants.C_STATE_CHANGED)) {
-                stmt.setInt(2, state);
+                stmt.setInt(5, state);
             } else {
                 if (changed == true) {
-                    stmt.setInt(2, com.opencms.core.I_CmsConstants.C_STATE_CHANGED);
+                    stmt.setInt(5, com.opencms.core.I_CmsConstants.C_STATE_CHANGED);
                 } else {
-                    stmt.setInt(2, folder.getState());
+                    stmt.setInt(5, folder.getState());
                 }
-            }
-            stmt.setString(3, folder.isLockedBy().toString());  
-            stmt.setString(4, modifiedByUserId.toString());  
-            stmt.setString(5, folder.getResourceName());   
-            stmt.setString(6, folder.getId().toString());       
+            }            
+            stmt.setString(6, folder.isLockedBy().toString());            
+            stmt.setString(7, userId.toString());
+            stmt.setString(8, folder.getId().toString());                       
             stmt.executeUpdate();
+                        
+//            stmt.setInt(1, folder.getProjectId());
+//            int state = folder.getState();
+//            if ((state == com.opencms.core.I_CmsConstants.C_STATE_NEW) || (state == com.opencms.core.I_CmsConstants.C_STATE_CHANGED)) {
+//                stmt.setInt(2, state);
+//            } else {
+//                if (changed == true) {
+//                    stmt.setInt(2, com.opencms.core.I_CmsConstants.C_STATE_CHANGED);
+//                } else {
+//                    stmt.setInt(2, folder.getState());
+//                }
+//            }
+//            stmt.setString(3, folder.isLockedBy().toString());  
+//            stmt.setString(4, modifiedByUserId.toString());  
+//            stmt.setString(5, folder.getResourceName());   
+//            stmt.setString(6, folder.getId().toString());       
+//            stmt.executeUpdate();
             
             //m_sqlManager.commit(conn);
         } catch (SQLException e) {
@@ -3594,7 +3635,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     public void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, boolean isChanged, CmsUUID userId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
-        CmsUUID modifiedByUserId = userId;
+        //CmsUUID modifiedByUserId = userId;
         long dateModified = resource.isTouched() ? resource.getDateLastModified() : System.currentTimeMillis();
         boolean isFolder = false;
         //Savepoint savepoint = null;
@@ -3606,7 +3647,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             filecontent = new byte[0];
         }
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            modifiedByUserId = resource.getResourceLastModifiedBy();
+            userId = resource.getResourceLastModifiedBy();
         }
         
         try {
@@ -3630,22 +3671,41 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             m_sqlManager.closeAll(null, stmt, null);
             
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_STRUCTURE");
-            stmt.setInt(1, resource.getProjectId());
+            stmt.setString(1, resource.getParentId().toString());
+            stmt.setInt(2, resource.getProjectId());
+            stmt.setString(3, resource.getResourceName());
+            stmt.setInt(4, 0);
             int state = resource.getState();
             if ((state == I_CmsConstants.C_STATE_NEW) || (state == I_CmsConstants.C_STATE_CHANGED)) {
-                stmt.setInt(2, state);
+                stmt.setInt(5, state);
             } else {
                 if (isChanged == true) {
-                    stmt.setInt(2, I_CmsConstants.C_STATE_CHANGED);
+                    stmt.setInt(5, I_CmsConstants.C_STATE_CHANGED);
                 } else {
-                    stmt.setInt(2, resource.getState());
+                    stmt.setInt(5, resource.getState());
                 }
             }
-            stmt.setString(3, resource.isLockedBy().toString());
-            stmt.setString(4, modifiedByUserId.toString());   
-            stmt.setString(5, resource.getResourceName());            
-            stmt.setString(6, resource.getId().toString());
+            stmt.setString(6, resource.isLockedBy().toString());
+            stmt.setString(7, userId.toString());
+            stmt.setString(8, resource.getId().toString());
             stmt.executeUpdate();
+                        
+//            stmt.setInt(1, resource.getProjectId());
+//            int state = resource.getState();
+//            if ((state == I_CmsConstants.C_STATE_NEW) || (state == I_CmsConstants.C_STATE_CHANGED)) {
+//                stmt.setInt(2, state);
+//            } else {
+//                if (isChanged == true) {
+//                    stmt.setInt(2, I_CmsConstants.C_STATE_CHANGED);
+//                } else {
+//                    stmt.setInt(2, resource.getState());
+//                }
+//            }
+//            stmt.setString(3, resource.isLockedBy().toString());
+//            stmt.setString(4, modifiedByUserId.toString());   
+//            stmt.setString(5, resource.getResourceName());            
+//            stmt.setString(6, resource.getId().toString());
+//            stmt.executeUpdate();
             
             //m_sqlManager.commit(conn);            
         } catch (SQLException e) {
@@ -3703,12 +3763,14 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
             // update the online structure with attribs. of the corresponding offline structure
             stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE_STRUCTURE");
-            stmt.setInt(1, offlineResource.getProjectId());
-            stmt.setInt(2, I_CmsConstants.C_STATE_UNCHANGED);
-            stmt.setString(3, offlineResource.isLockedBy().toString());
-            stmt.setString(4, offlineResource.getResourceLastModifiedBy().toString());
-            stmt.setString(5, offlineResource.getResourceName());
-            stmt.setString(6, offlineResource.getId().toString());
+            stmt.setString(1, offlineResource.getParentId().toString());            
+            stmt.setInt(2, offlineResource.getProjectId());
+            stmt.setString(3, offlineResource.getResourceName());
+            stmt.setInt(4, 0);            
+            stmt.setInt(5, I_CmsConstants.C_STATE_UNCHANGED);            
+            stmt.setString(6, CmsUUID.getNullUUID().toString());            
+            stmt.setString(7, offlineResource.getResourceLastModifiedBy().toString());
+            stmt.setString(8, offlineResource.getId().toString());                       
             stmt.executeUpdate();
          
             //m_sqlManager.commit(conn);
