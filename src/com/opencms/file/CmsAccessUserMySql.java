@@ -15,14 +15,14 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
  */
  public class CmsAccessUserMySql extends A_CmsAccessUser implements I_CmsConstants  {
      
      /**
      * SQL Command for writing users.
      */   
-    private static final String C_USER_WRITE = "INSERT INTO USERS VALUES(?,?,?,?)";
+    private static final String C_USER_WRITE = "INSERT INTO USERS VALUES(?,?,PASSWORD(?),?)";
     
      /**
      * SQL Command for reading users.
@@ -32,12 +32,28 @@ import com.opencms.core.*;
      /**
      * SQL Command for reading users.
      */   
-    private static final String C_USER_READPWD = "SELECT * FROM USERS WHERE USER_NAME = ? AND USER_PASSWORD = ?";
+    private static final String C_USER_READID = "SELECT * FROM USERS WHERE USER_ID = ?";
+    
+    
+    /**
+     * SQL Command for reading users.
+     */   
+    private static final String C_USER_READPWD = "SELECT * FROM USERS WHERE USER_NAME = ? AND USER_PASSWORD = PASSWORD(?)";
     
      /**
     * SQL Command for deleting users.
     */   
     private static final String C_USER_DELETE = "DELETE FROM USERS WHERE USER_NAME = ?";
+    
+    /**
+    * SQL Command for updating the user password.
+    */   
+    private static final String C_USER_SETPWD="UPDATE USERS SET USER_PASSWORD = PASSWORD(?) WHERE USER_NAME = ? ";  
+   
+    /**
+    * SQL Command for getting all users.
+    */   
+    private static final String C_USER_GETALL = "SELECT * FROM USERS";
     
     
     /**
@@ -66,6 +82,44 @@ import com.opencms.core.*;
      */
     private Connection m_Con  = null;
 
+    /**
+    * Prepared SQL Statement for reading a user.
+    */
+    private PreparedStatement m_statementUserRead;
+  
+    /**
+    * Prepared SQL Statement for reading a user.
+    */
+    private PreparedStatement m_statementUserReadId;
+    
+    
+    /**
+    * Prepared SQL Statement for writing a user.
+    */
+    private PreparedStatement m_statementUserWrite;
+    
+    /**
+    * Prepared SQL Statement for reading a user by his password.
+    */
+    private PreparedStatement m_statementUserReadPwd;
+
+    /**
+    * Prepared SQL Statement for setting a new password
+    */
+    private PreparedStatement m_statementSetPwd;
+    
+    
+    /**
+    * Prepared SQL Statement for deleting a user.
+    */
+    private PreparedStatement m_statementUserDelete;
+    
+    /**
+    * Prepared SQL Statement for getting all users.
+    */
+    private PreparedStatement m_statementUserGetAll;    
+    
+    
      /**
      * Constructor, creartes a new CmsAccessUserMySql object and connects it to the
      * user information database.
@@ -80,7 +134,9 @@ import com.opencms.core.*;
         throws CmsException, ClassNotFoundException {
         Class.forName(driver);
         initConnections(conUrl);
+        initStatements();
     }
+    
    	/**
 	 * Returns a user object.<P/>
 	 * 
@@ -95,10 +151,8 @@ import com.opencms.core.*;
    
          try{
              // read the user from the database
-             PreparedStatement s = getConnection().prepareStatement(C_USER_READ);
-             s.setEscapeProcessing(false);       
-             s.setString(1,username);
-             ResultSet res = s.executeQuery();
+             m_statementUserRead.setString(1,username);
+             ResultSet res = m_statementUserRead.executeQuery();
              // create new Cms user object
 			 if(res.next()) {
                 user=new CmsUser(res.getInt(C_USER_ID),
@@ -107,7 +161,37 @@ import com.opencms.core.*;
              }
        
          } catch (SQLException e){
-            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+         return user;
+  
+     }
+     
+     /**
+	 * Returns a user object.<P/>
+	 * 
+	 * @param userid The id of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 A_CmsUser readUser(int userid)
+         throws CmsException {
+      
+         A_CmsUser user=null;
+         
+         try{
+             // read the user from the database
+             m_statementUserReadId.setInt(1,userid);
+             ResultSet res = m_statementUserReadId.executeQuery();
+             // create new Cms user object
+			 if(res.next()) {
+                user=new CmsUser(res.getInt(C_USER_ID),
+                                 res.getString(C_USER_NAME),
+                                 res.getString(C_USER_DESCRIPTION));                                                        
+             }
+       
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return user;
   
@@ -129,11 +213,9 @@ import com.opencms.core.*;
    
          try{
              // read the user from the database
-             PreparedStatement s = getConnection().prepareStatement(C_USER_READPWD);
-             s.setEscapeProcessing(false);       
-             s.setString(1,username);
-             s.setString(2,password);
-             ResultSet res = s.executeQuery();
+             m_statementUserReadPwd.setString(1,username);
+             m_statementUserReadPwd.setString(2,password);
+             ResultSet res = m_statementUserReadPwd.executeQuery();
              // create new Cms user object
 			 if(res.next()) {
                 user=new CmsUser(res.getInt(C_USER_ID),
@@ -142,7 +224,7 @@ import com.opencms.core.*;
              }
        
          } catch (SQLException e){
-            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return user;
      }
@@ -170,13 +252,11 @@ import com.opencms.core.*;
          
          try {     
             // write new user to the database
-            PreparedStatement s = getConnection().prepareStatement(C_USER_WRITE);
-            s.setEscapeProcessing(false);       
-            s.setInt(1,0);
-            s.setString(2,name);
-            s.setString(3,password);
-            s.setString(4,description);
-            s.executeUpdate();
+            m_statementUserWrite.setInt(1,0);
+            m_statementUserWrite.setString(2,name);
+            m_statementUserWrite.setString(3,password);
+            m_statementUserWrite.setString(4,description);
+            m_statementUserWrite.executeUpdate();
             
             // read the new user object
             user=readUser(name);
@@ -185,7 +265,7 @@ import com.opencms.core.*;
              if (e.getErrorCode() == 1062) {
 				throw new CmsDuplicateKeyException(e.toString());
              } else {
-                throw new CmsException(CmsException.C_SQL_ERROR, e);			
+                throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
              }
 		}
          return user;
@@ -203,12 +283,10 @@ import com.opencms.core.*;
 	 void deleteUser(String username)
          throws CmsException {
           try {
-            PreparedStatement s = getConnection().prepareStatement(C_USER_DELETE);
-            s.setEscapeProcessing(false);       
-            s.setString(1,username);
-            s.executeUpdate();
+            m_statementUserDelete.setString(1,username);
+            m_statementUserDelete.executeUpdate();
          } catch (SQLException e){
-            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
  
      }
@@ -233,9 +311,29 @@ import com.opencms.core.*;
 	 * Returns all users<P/>
 	 * 
 	 * @return users A Vector of all existing users.
+ 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getUsers() {
-         return null;
+     Vector getUsers()
+     throws CmsException {
+         Vector users=new Vector();
+         A_CmsUser user=null;
+         
+         try {
+            //  get all users
+            ResultSet res = m_statementUserGetAll.executeQuery();
+            // create new Cms group objects
+		    while ( res.next() ) {
+                    user=new CmsUser(res.getInt(C_USER_ID),
+                                     res.getString(C_USER_NAME),
+                                     res.getString(C_USER_DESCRIPTION));
+                    users.addElement(user);
+             }
+             
+       
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);		
+         }
+         return users;
      }
 
 
@@ -251,16 +349,37 @@ import com.opencms.core.*;
 	 */
 	 void setPassword(String username, String newPassword)
          throws CmsException {
+          try {     
+            // write new password
+            m_statementSetPwd.setString(1,newPassword);    
+            m_statementSetPwd.setString(2,username);
+            m_statementSetPwd.executeUpdate();
+            
+         } catch (SQLException e){
+             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+          }
      }
      
-     /**
-     * Selects a free database connection.
+   /**
+     * This method creates all preparted SQL statements required in this class.
      * 
-     * @return Database connection to the property database.
+     * @exception CmsException Throws CmsException if something goes wrong.
      */
-    private Connection getConnection() {
-        return m_Con;
-    }
+     private void initStatements()
+       throws CmsException{
+         try{
+          m_statementUserRead=m_Con.prepareStatement(C_USER_READ);
+          m_statementUserReadId=m_Con.prepareStatement(C_USER_READID);
+          m_statementUserWrite=m_Con.prepareStatement(C_USER_WRITE);
+          m_statementUserReadPwd=m_Con.prepareStatement(C_USER_READPWD);
+          m_statementUserDelete=m_Con.prepareStatement(C_USER_DELETE);
+          m_statementUserGetAll=m_Con.prepareStatement(C_USER_GETALL);
+          m_statementSetPwd=m_Con.prepareStatement(C_USER_SETPWD);
+         } catch (SQLException e){
+           
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+     }
     
      /**
      * Connects to the property database.
@@ -275,7 +394,7 @@ import com.opencms.core.*;
         try {
         	m_Con = DriverManager.getConnection(conUrl);
        	} catch (SQLException e)	{
-         	throw new CmsException(CmsException.C_SQL_ERROR, e);
+         	throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
     }
    

@@ -5,7 +5,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/16 18:11:56 $
  */
 public class CmsException extends Exception {
 	
@@ -23,18 +23,22 @@ public class CmsException extends Exception {
 	public final static int C_SERIALIZATION = 7;
     public final static int C_NO_GROUP = 8;
     public final static int C_GROUP_NOT_EMPTY = 9;
+    public final static int C_NO_USER= 10;
+    public final static int C_NO_DEFAULT_GROUP= 11;
 
 	public final static String C_EXTXT[] = {
-							"Unknown exception",
-							"Access denied: ",
-							"Not found: ",
-							"Bad name: ",
-							"Sql exception: ",
-							"Folder not empty: ",
-							"Admin access required: ",
-							"Serialization/Deserialization failed:",
-                            "Unknown User Group:",
-                            "Group not empty:",
+							"Unknown exception ",
+							"Access denied ",
+							"Not found ",
+							"Bad name ",
+							"Sql exception ",
+							"Folder not empty ",
+							"Admin access required ",
+							"Serialization/Deserialization failed ",
+                            "Unknown User Group ",
+                            "Group not empty ",
+                            "Unknown User ",
+                            "No removal from Default Group "
 							};
     
 	/** 

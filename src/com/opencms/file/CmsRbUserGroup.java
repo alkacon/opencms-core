@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
  */
  class CmsRbUserGroup extends A_CmsRbUserGroup implements I_CmsConstants {
 
@@ -34,53 +34,7 @@ import com.opencms.core.*;
         m_accessUserGroup=accessUserGroup;
     }
     
-	/**
-	 * Determines, if the users current group is the admin-group.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @return true, if the users current group is the admin-group, 
-	 * else it returns false.
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */	
-     boolean isAdmin(A_CmsUser callingUser) 
-         throws CmsException {
-      boolean isAdmin=false;
-    
-      
-      return isAdmin;
-     }
 
-	/**
-	 * Determines, if the users current group is the projectleader-group.<BR/>
-	 * All projectleaders can create new projects, or close their own projects.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @return true, if the users current group is the projectleader-group, 
-	 * else it returns false.
-	 */	
-     boolean isProjectLeader(A_CmsUser callingUSer){
-         return true;
-     }
-
-	/**
-	 * Returns the anonymous user object.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @return the anonymous user object.
-	 */
-     A_CmsUser anonymousUser(A_CmsUser callingUSer) {
-         return null;
-     }
-	
 	/**
 	 * Returns a user object.<P/>
 	 * 
@@ -119,28 +73,6 @@ import com.opencms.core.*;
          return user;
      }
 	
-	/**
-	 * Authentificates a user to the CmsSystem. If the user exists in the system, 
-	 * a CmsUser object is created and his session is used for identification. This
-	 * operation fails, if the password is incorrect.</P>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param session The HttpSession to store identification.
-	 * @param username The Name of the user.
-	 * @param password The password of the user.
-	 * @return A CmsUser Object if authentification was succesful, otherwise null 
-	 * will be returned.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	 A_CmsUser loginUser(A_CmsUser callingUser, HttpSession session, 
-						String username, String password)
-         throws CmsException {
-         return null;
-     }
 
 	/**
 	 * Returns a list of groups of a user.<P/>
@@ -155,8 +87,8 @@ import com.opencms.core.*;
 	 */
 	 Vector getGroupsOfUser(A_CmsUser callingUser, String username)
          throws CmsException {
-         return null;
-     }
+         return m_accessUserGroup.getGroupsOfUser(username);
+       }
      
 
 	/**
@@ -192,7 +124,7 @@ import com.opencms.core.*;
 	 */
 	 Vector getUsersOfGroup(A_CmsUser callingUser, String groupname)
          throws CmsException {
-         return null;
+         return m_accessUserGroup.getUsersOfGroup(groupname);
      }
 
 	/**
@@ -210,8 +142,8 @@ import com.opencms.core.*;
 	 */
 	 boolean userInGroup(A_CmsUser callingUser, String username, String groupname)
          throws CmsException {
-         return true;
-     }
+         return m_accessUserGroup.userInGroup(username,groupname);
+    }
 
 	/** 
 	 * Adds a user to the Cms.
@@ -242,7 +174,10 @@ import com.opencms.core.*;
          throws CmsException, CmsDuplicateKeyException {
          
          A_CmsUser user=null;
+         //create new user.
          user=m_accessUserGroup.addUser(name,password,group,description,additionalInfos,flags);
+         //add user to user group.
+         m_accessUserGroup.addUserToGroup(name,group);
          return user;
      }
 
@@ -282,6 +217,7 @@ import com.opencms.core.*;
 	 void updateUser(A_CmsUser callingUser, String username, 
 					Hashtable additionalInfos, int flag)
          throws CmsException {
+         m_accessUserGroup.updateUser(username,additionalInfos,flag);
      }
 
 	/**
@@ -356,6 +292,7 @@ import com.opencms.core.*;
 	 */	
 	 void addUserToGroup(A_CmsUser callingUser, String username, String groupname)
          throws CmsException {
+         m_accessUserGroup.addUserToGroup(username,groupname);
      }
 
 	/**
@@ -373,6 +310,7 @@ import com.opencms.core.*;
 	 */	
 	 void removeUserFromGroup(A_CmsUser callingUser, String username, String groupname)
          throws CmsException {
+         m_accessUserGroup.removeUserFromGroup(username,groupname);
      }
 
 	/**
@@ -383,9 +321,13 @@ import com.opencms.core.*;
 	 * 
 	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing users.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getUsers(A_CmsUser callingUser) {
-         return null;
+     Vector getUsers(A_CmsUser callingUser)
+       throws CmsException{
+        Vector users=null;
+        users=m_accessUserGroup.getUsers();
+        return users;
      }
 	
 	/**
@@ -441,5 +383,6 @@ import com.opencms.core.*;
 	 */
 	 void setPassword(A_CmsUser callingUser, String username, String newPassword)
         throws CmsException{
-                           }
+         m_accessUserGroup.setPassword(username,newPassword);
+       }
  }

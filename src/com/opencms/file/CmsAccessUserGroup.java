@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
  */
  class CmsAccessUserGroup extends A_CmsAccessUserGroup implements I_CmsConstants {
 
@@ -54,10 +54,9 @@ import com.opencms.core.*;
          A_CmsUser user=null;
          Hashtable infos=null;
          A_CmsGroup defaultGroup=null;
-         
          user=m_accessUser.readUser(username);
          if (user!= null){
-             infos=m_accessUserInfo.readUserInformation(user.getId());             
+             infos=m_accessUserInfo.readUserInformation(user.getId()); 
              user.setAdditionalInfo(infos);
              defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
              user.setDefaultGroup(defaultGroup);
@@ -104,7 +103,16 @@ import com.opencms.core.*;
 	 */
 	 Vector getGroupsOfUser(String username)
          throws CmsException {
-         return null;
+         Vector groups=new Vector();
+         A_CmsUser user=null;
+         
+         user=m_accessUser.readUser(username);
+         if (user != null) {
+            groups=m_accessGroup.getGroupsOfUser(user.getId());
+            } else {
+            throw new CmsException(CmsException.C_NO_USER);
+       }
+         return groups;
      }
 
 	/**
@@ -131,7 +139,31 @@ import com.opencms.core.*;
 	 */
 	 Vector getUsersOfGroup(String groupname)
          throws CmsException {
-         return null;
+         A_CmsGroup group=null;
+         A_CmsUser user=null;
+         int userid;
+         Vector users=new Vector();
+         Vector userids=new Vector();
+         
+         group=m_accessGroup.readGroup(groupname);
+         //check if group exists
+         if (group != null) {
+             // get all user id's of the users in the group
+             userids=m_accessGroup.getUsersOfGroup(group.getId());      
+             // get all users that have those id's 
+             Enumeration enu=userids.elements();
+             while (enu.hasMoreElements()){
+                 userid=((Integer)enu.nextElement()).intValue();
+                 user=m_accessUser.readUser(userid);
+                  // check if this user really exists
+                 if (user != null) {
+                    users.addElement(user);
+                 }
+             }
+         }   else {
+               throw new CmsException(CmsException.C_NO_GROUP);
+         }
+         return users;
      }
      
 	/**
@@ -145,7 +177,26 @@ import com.opencms.core.*;
 	 */
 	 boolean userInGroup(String username, String groupname)
          throws CmsException {
-         return true;
+         boolean userInGroup=false;
+         A_CmsUser user=null;
+         A_CmsGroup group=null;
+         
+         user=m_accessUser.readUser(username);
+         //check if the user exists
+         if (user != null) {
+            group=m_accessGroup.readGroup(groupname);
+            //check if group exists
+            if (group != null){
+                //add this user to the group
+                userInGroup=m_accessGroup.userInGroup(user.getId(),group.getId());
+            } else {
+                throw new CmsException(CmsException.C_NO_GROUP);
+            }
+         } else {
+            throw new CmsException(CmsException.C_NO_USER);
+       }
+         
+         return userInGroup;
      }
                
 
@@ -187,7 +238,6 @@ import com.opencms.core.*;
         //combine user object and additional information to the complete user object.
         user.setAdditionalInfo(additionalInfos);
         user.setDefaultGroup(defaultGroup);
-        
         return user;
     }
 
@@ -205,6 +255,7 @@ import com.opencms.core.*;
          A_CmsUser user =null;
          int userId=C_UNKNOWN_ID;
          user=m_accessUser.readUser(username);
+         //check if this user is existing
          if (user!= null){
              userId=user.getId();
              m_accessUser.deleteUser(username);
@@ -231,6 +282,19 @@ import com.opencms.core.*;
 	  void updateUser(String username, 
 					Hashtable additionalInfos, int flag)
          throws CmsException {
+            A_CmsUser user =null;
+            int userId=C_UNKNOWN_ID;
+            user=m_accessUser.readUser(username);
+            //check if this user is existing
+            if (user != null) {
+                userId=user.getId();
+                // update the flag information
+                additionalInfos.put(C_ADDITIONAL_INFO_FLAGS,new Integer(flag));
+                // write it to database
+                m_accessUserInfo.writeUserInformation(userId,additionalInfos);               
+            } else {
+              throw new CmsException(CmsException.C_NOT_FOUND);
+            }   
                  
      }
 
@@ -282,6 +346,23 @@ import com.opencms.core.*;
 	 */	
 	 void addUserToGroup(String username, String groupname)
          throws CmsException {
+         A_CmsUser user;
+         A_CmsGroup group;
+         
+         user=m_accessUser.readUser(username);
+         //check if the user exists
+         if (user != null) {
+            group=m_accessGroup.readGroup(groupname);
+            //check if group exists
+            if (group != null){
+                //add this user to the group
+                m_accessGroup.addUserToGroup(user.getId(),group.getId());
+            } else {
+                throw new CmsException(CmsException.C_NO_GROUP);
+            }
+         } else {
+            throw new CmsException(CmsException.C_NO_USER);
+       }
      }
 
 	/**
@@ -294,16 +375,56 @@ import com.opencms.core.*;
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 void removeUserFromGroup(String username, String groupname)
-         throws CmsException {
+            throws CmsException {
+         A_CmsUser user;
+         A_CmsGroup group;
+         
+         user=readUser(username);
+         //check if the user exists
+         if (user != null) {
+            group=m_accessGroup.readGroup(groupname);
+            //check if group exists
+            if (group != null){       
+                // do not remmove the user from its default group
+                if (user.getDefaultGroupId() != group.getId()) {
+                    //remove this user from the group
+                    m_accessGroup.removeUserFromGroup(user.getId(),group.getId());
+                } else {
+                    throw new CmsException(CmsException.C_NO_DEFAULT_GROUP);
+                }
+            } else {
+                throw new CmsException(CmsException.C_NO_GROUP);
+            }
+         } else {
+            throw new CmsException(CmsException.C_NO_USER);
+       }
      }
-
+     
 	/**
 	 * Returns all users<P/>
 	 * 
 	 * @return users A Vector of all existing users.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getUsers() {
-      return null;
+     Vector getUsers() 
+     throws CmsException {
+        Vector users=null;
+        A_CmsUser user;
+        A_CmsGroup defaultGroup;
+        Hashtable infos;
+        
+        // read all basic information form the users database
+        users=m_accessUser.getUsers();
+        // add additional user information to each user 
+        Enumeration e=users.elements();
+        while (e.hasMoreElements()){
+            user=(A_CmsUser)e.nextElement();
+            infos=m_accessUserInfo.readUserInformation(user.getId());
+            user.setAdditionalInfo(infos);
+            defaultGroup=m_accessGroup.readGroup(user.getDefaultGroupId());
+            user.setDefaultGroup(defaultGroup);
+        }
+        return users;
      }
 	
 	/**
@@ -344,5 +465,6 @@ import com.opencms.core.*;
 	 */
 	 void setPassword(String username, String newPassword)
          throws CmsException {
+         m_accessUser.setPassword(username,newPassword);
      }
 }

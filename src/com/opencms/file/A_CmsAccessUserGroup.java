@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/16 18:13:09 $
  */
 abstract class A_CmsAccessUserGroup {
 
@@ -191,8 +191,10 @@ abstract class A_CmsAccessUserGroup {
 	 * Returns all users<P/>
 	 * 
 	 * @return users A Vector of all existing users.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getUsers();
+	abstract Vector getUsers()
+        throws CmsException;
 	
 	/**
 	 * Returns all groups<P/>

@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
  */
  class CmsAccessUserInfoMySql extends A_CmsAccessUserInfo {
 
@@ -34,9 +34,10 @@ import com.opencms.core.*;
     private static final String C_USERINFO_UPDATE="UPDATE USERS_ADDITIONALINFO SET USER_INFO = ? WHERE USER_ID = ? ";
        
      /**
-     * SQL Command for deleting properties.
+     * SQL Command for deleting user information.
      */   
     private static final String C_USERINFO_DELETE="DELETE FROM  USERS_ADDITIONALINFO WHERE USER_ID = ?"; 
+    
     
     /**
      * Name of the column USER_INFO in the SQL table USERS_ADDITIONALINFOS.
@@ -48,6 +49,26 @@ import com.opencms.core.*;
     */
     private Connection m_Con  = null;
     
+    /**
+    * Prepared SQL Statement for reading a userinfo.
+    */
+    private PreparedStatement m_statementUserinfoRead;
+    
+    /**
+    * Prepared SQL Statement for writing a userinfo.
+    */
+    private PreparedStatement m_statementUserinfoWrite;
+    
+    /**
+    * Prepared SQL Statement for updasting a userinfo.
+    */
+    private PreparedStatement m_statementUserinfoUpdate;
+    
+    /**
+    * Prepared SQL Statement for deleting a userinfo.
+    */
+    private PreparedStatement m_statementUserinfoDelete;
+	
       /**
      * Constructor, creartes a new CmsAccessUserInfoMySql object and connects it to the
      * user information database.
@@ -62,6 +83,7 @@ import com.opencms.core.*;
         throws CmsException, ClassNotFoundException {
         Class.forName(driver);
         initConnections(conUrl);
+        initStatements();
     }
     
 	/**
@@ -84,10 +106,8 @@ import com.opencms.core.*;
        
         // get the additional user information data from the database
     	try {
-			PreparedStatement s = getConnection().prepareStatement(C_USERINFO_READ);
-            s.setEscapeProcessing(false);
-            s.setInt(1,id);
-           	ResultSet res = s.executeQuery();
+		    m_statementUserinfoRead.setInt(1,id);
+           	ResultSet res = m_statementUserinfoRead.executeQuery();
 	        if(res.next()) {
                 value = res.getBytes(C_USER_INFO);
                  // now deserialize the object
@@ -98,7 +118,7 @@ import com.opencms.core.*;
 			
 		}
 		catch (SQLException e){
-            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}	
         catch (IOException e){
             throw new CmsException(CmsException. C_SERIALIZATION, e);			
@@ -120,10 +140,9 @@ import com.opencms.core.*;
 	 * @param infos The additional user information.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if something goes wrong.
 	 */
 	 void writeUserInformation(int id , Hashtable infos)
-         throws CmsDuplicateKeyException, CmsException {
+         throws CmsException {
          
         byte[] value=null;
         try	{			
@@ -135,21 +154,17 @@ import com.opencms.core.*;
             value=bout.toByteArray();
            // check if this property exists already
             if (readUserInformation(id) == null)	{
-                PreparedStatement s = getConnection().prepareStatement(C_USERINFO_WRITE);
-               	s.setEscapeProcessing(false);       
-                s.setInt(1,id);
-                s.setBytes(2,value);
-             	s.executeUpdate();    
+                m_statementUserinfoWrite.setInt(1,id);
+                m_statementUserinfoWrite.setBytes(2,value);
+             	m_statementUserinfoWrite.executeUpdate();    
          	} else {
-                PreparedStatement s = getConnection().prepareStatement(C_USERINFO_UPDATE);
-                s.setEscapeProcessing(false);
-                s.setBytes(1,value);
-                s.setInt(2,id);
-				s.executeUpdate();
-			}
+                m_statementUserinfoUpdate.setBytes(1,value);
+                m_statementUserinfoUpdate.setInt(2,id);
+      		    m_statementUserinfoUpdate.executeUpdate();
+     		}
          }
         catch (SQLException e){
-            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
         catch (IOException e){
             throw new CmsException(CmsException. C_SERIALIZATION, e);			
@@ -169,25 +184,31 @@ import com.opencms.core.*;
          throws CmsException {
                
 		try	{			
-            PreparedStatement s = getConnection().prepareStatement(C_USERINFO_DELETE);
-            s.setEscapeProcessing(false);
-            s.setInt(1,id);
-          	s.executeUpdate();
-		
+            m_statementUserinfoDelete.setInt(1,id);
+          	m_statementUserinfoDelete.executeUpdate();
 		}catch (SQLException e){
-            throw new CmsException(CmsException.C_SQL_ERROR, e);			
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          
      }
      
-     /**
-     * Selects a free database connection.
+   /**
+     * This method creates all preparted SQL statements required in this class.
      * 
-     * @return Database connection to the property database.
+     * @exception CmsException Throws CmsException if something goes wrong.
      */
-    private Connection getConnection() {
-        return m_Con;
-    }
+     private void initStatements()
+       throws CmsException{
+         try{
+          m_statementUserinfoRead=m_Con.prepareStatement(C_USERINFO_READ);
+          m_statementUserinfoWrite=m_Con.prepareStatement(C_USERINFO_WRITE);
+          m_statementUserinfoUpdate=m_Con.prepareStatement(C_USERINFO_UPDATE);
+          m_statementUserinfoDelete=m_Con.prepareStatement(C_USERINFO_DELETE);
+         } catch (SQLException e){
+           
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+     }
     
      /**
      * Connects to the property database.
@@ -202,7 +223,7 @@ import com.opencms.core.*;
         try {
         	m_Con = DriverManager.getConnection(conUrl);
        	} catch (SQLException e)	{
-         	throw new CmsException(CmsException.C_SQL_ERROR, e);
+         	throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
     }
 }

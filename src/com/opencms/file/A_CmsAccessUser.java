@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/16 18:13:09 $
  */
 abstract class A_CmsAccessUser {
 
@@ -23,6 +23,16 @@ abstract class A_CmsAccessUser {
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	abstract A_CmsUser readUser(String username)
+		throws CmsException;
+    
+     /**
+	 * Returns a user object.<P/>
+	 * 
+	 * @param userid The id of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	abstract A_CmsUser readUser(int id)
 		throws CmsException;
 	
 	/**
@@ -87,8 +97,10 @@ abstract class A_CmsAccessUser {
 	 * Returns all users<P/>
 	 * 
 	 * @return users A Vector of all existing users.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getUsers();
+	abstract Vector getUsers()
+        throws CmsException;
 
 
 	/** 

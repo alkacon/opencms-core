@@ -11,21 +11,32 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/15 19:08:18 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
  */
 abstract class A_CmsAccessGroup {
 		
 	/**
 	 * Returns a list of groups of a user.<P/>
 	 * 
-	 * @param username The name of the user.
+	 * @param userid The id of the user.
 	 * @return Vector of groups
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract Vector getGroupsOfUser(String username)
+	abstract Vector getGroupsOfUser(int userid)
 		throws CmsException;
 
 	/**
+	 * Returns a group object.<P/>
+	 * 
+	 * @param groupid The id of the group that is to be read.
+	 * @return Group.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */
+	abstract A_CmsGroup readGroup(int groupid)
+		throws CmsException;
+
+    /**
 	 * Returns a group object.<P/>
 	 * 
 	 * @param groupname The name of the group that is to be read.
@@ -36,37 +47,26 @@ abstract class A_CmsAccessGroup {
 	abstract A_CmsGroup readGroup(String groupname)
 		throws CmsException;
 
-    /**
-	 * Returns a group object.<P/>
-	 * 
-	 * @param groupname The id of the group that is to be read.
-	 * @return Group.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful
-	 */
-	abstract A_CmsGroup readGroup(int id)
-		throws CmsException;
-
 	/**
 	 * Returns a list of users in a group.<P/>
 	 * 
-	 * @param groupname The name of the group to list users from.
-	 * @return Vector of users.
+	 * @param groupid The id of the group to list users from.
+	 * @return Vector of user id's.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getUsersOfGroup(String groupname)
+	abstract Vector getUsersOfGroup(int groupid)
 		throws CmsException;
 
 	/**
 	 * Checks if a user is member of a group.<P/>
 	 *  
-	 * @param nameuser The name of the user to check.
-	 * @param groupname The name of the group to check.
+	 * @param nameid The id of the user to check.
+	 * @param groupid The id of the group to check.
 	 * @return True or False
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract boolean userInGroup(String username, String groupname)
+	abstract boolean userInGroup(int userid, int groupid)
 		throws CmsException;
 
 
@@ -106,11 +106,11 @@ abstract class A_CmsAccessGroup {
      *
 	 * Only the admin can do this.<P/>
 	 * 
-	 * @param username The name of the user that is to be added to the group.
-	 * @param groupname The name of the group.
+	 * @param userid The id of the user that is to be added to the group.
+	 * @param groupid The id of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	abstract void addUserToGroup(String username, String groupname)
+	abstract void addUserToGroup(int  userid, int groupid)
 		throws CmsException;
 
 	/**
@@ -118,11 +118,11 @@ abstract class A_CmsAccessGroup {
 	 * 
 	 * Only the admin can do this.<P/>
 	 * 
-	 * @param username The name of the user that is to be removed from the group.
-	 * @param groupname The name of the group.
+	 * @param userid The id of the user that is to be added to the group.
+	 * @param groupid The id of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract void removeUserFromGroup(String username, String groupname)
+	abstract void removeUserFromGroup(int  userid, int groupid)
 		throws CmsException;
 
 	/**
