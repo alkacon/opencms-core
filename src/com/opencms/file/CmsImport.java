@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2003/02/21 17:21:36 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,36 +32,56 @@ import com.opencms.boot.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.OpenCms;
+import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
+import com.opencms.workplace.I_CmsWpConstants;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Hashtable;
 import java.util.Stack;
+import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
+;
 
 /**
  * This class holds the functionaility to import resources from the filesystem
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.67 $ $Date: 2003/02/15 11:14:54 $
+ * @version $Revision: 1.68 $ $Date: 2003/02/21 17:21:36 $
  */
-public class CmsImport implements I_CmsConstants, Serializable {
+public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
     /**
      * The algorithm for the message digest
      */
     public static final String C_IMPORT_DIGEST="MD5";
+    
+    /**
+     * The path to the bodies in OpenCms 4.x
+     */
+    public static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
+    
+    /**
+     * The content generated from a DOM document is stored in this StringBuffer
+     */
+    private StringBuffer m_content = new StringBuffer("");
 
     /**
      * The import-file to load resources from
@@ -121,11 +141,7 @@ public class CmsImport implements I_CmsConstants, Serializable {
      */
     private I_CmsReport m_report = null;
     
-    /**
-     * 
-     */
-    private boolean m_modified = false;
-    
+   
     /**
      * This constructs a new CmsImport-object which imports the resources.
      *
@@ -442,7 +458,7 @@ private void importResource(String source, String destination, String type, Stri
             content = getFileBytes(source);
             if ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type))) {
                 // change the filecontent for encoding if necessary
-                content = convertFile(source, content);
+                content = convertFile(source, content, type);
             }
         }
 
@@ -823,13 +839,15 @@ private boolean inExcludeList(Vector excludeList, String path) {
 	 * 
 	 * @param filename The name of the file to convert
 	 * @param byteContent The content of the file
+     * @param type The type of the file
 	 * @return byte[] The converted filecontent
 	 */
-	private byte[] convertFile(String filename, byte[] byteContent){
+	private byte[] convertFile(String filename, byte[] byteContent, String type){
     	byte[] returnValue = byteContent;
-      	// set modification flag and path Strings
-        m_modified = false;
-        // get content of the file and store it in String
+        if (!filename.startsWith("/")) {
+            filename = "/" + filename;
+        }
+      	// get content of the file and store it in String
         String fileContent = new String(byteContent);
 
         // check the frametemplates
@@ -838,15 +856,19 @@ private boolean inExcludeList(Vector excludeList, String path) {
         }
         // set encoding of xml files
         fileContent = setEncoding(fileContent, OpenCms.getDefaultEncoding());
-        // create output file if content has changed
-	    if(m_modified){
-	    	returnValue = fileContent.getBytes();
-	    }
+        // translate OpenCms 4.x paths to new directory structure 
+        fileContent = setDirectories(fileContent,type);
+        // scan content/bodys
+        if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1 || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
+            fileContent = setBody(fileContent);
+        }
+        // create output file
+	    returnValue = fileContent.getBytes();
 	    return returnValue;
 
 	}	
     
-    /** scans the given content of frametemplate and returns the result
+    /** Scans the given content of frametemplate and returns the result
      *
      * @param content The filecontent
      * @return String with new content
@@ -855,7 +877,6 @@ private boolean inExcludeList(Vector excludeList, String path) {
         // no Meta-Tag present, insert it!
         if (content.toLowerCase().indexOf("http-equiv=\"content-type\"") == -1) {
             content = replaceString(content,"</head>","<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
-            m_modified = true;
         }
         // Meta-Tag present
         else {
@@ -865,13 +886,12 @@ private boolean inExcludeList(Vector excludeList, String path) {
             	editContent = editContent.substring(editContent.indexOf("\""));
             	String newEncoding = "]]><method name=\"getEncoding\"/><![CDATA[";
             	content = fileStart + newEncoding + editContent;
-        		m_modified = true;
         	}
         }
         return content;
     }
     
-    /** sets the right encoding and returns the result
+    /** Sets the right encoding and returns the result
      * 
      * @param content The filecontent
      * @param encoding The encoding to use
@@ -888,11 +908,146 @@ private boolean inExcludeList(Vector excludeList, String path) {
         	if(xmlTag.toLowerCase().indexOf("encoding") == -1){
             	content = content.substring(content.indexOf(">")+1);
             	content = "<?xml version=\"1.0\" encoding=\""+encoding+"\"?>" + content; 
-            	m_modified = true;
         	}
         }       
         return content;
     }
+    
+    /** 
+     * Translates directory Strings from OpenCms 4.x structure to new 5.0 structure.<p>
+     * 
+     * @param content the filecontent
+     * @param type the file type
+     * @return String the manipulated file content
+     */
+    private String setDirectories(String content, String type) {
+        // get translation rules
+        String[] rules = m_cms.getRequestContext().getDirectoryTranslator().getTranslations();
+        for (int i=0; i<rules.length; i++) {
+            String actRule = rules[i];
+            // cut String "/default/vfs/" from rule
+            actRule = com.opencms.flex.util.CmsStringSubstitution.substitute(actRule, "/default/vfs","");
+            // divide rule into search and replace parts and delete regular expressions
+            StringTokenizer ruleT = new StringTokenizer(actRule, "#");
+            ruleT.nextToken();
+            String search = ruleT.nextToken();
+            search = search.substring(0,search.lastIndexOf("(.*)"));
+            String replace = ruleT.nextToken();
+            replace = replace.substring(0,replace.lastIndexOf("$1"));
+            // scan content for paths if the replace String is not present
+            if (content.indexOf(replace) == -1 && content.indexOf(search) != -1) {
+                content = com.opencms.flex.util.CmsStringSubstitution.substitute(content, search, replace);
+            }
+        }
+        return content;
+    }
+    
+    
+    /**
+     * Searches for the webapps String and replaces it with a makro which is needed for the WYSIWYG editor.<p>
+     * 
+     * @param content the filecontent 
+     * @return String the modified filecontent
+     */
+    private String setBody(String content) {
+        String[] contextPath = {"/opencms/opencms/"};
+        String testContext = "";
+        // first check if any contextpaths are in the content String
+        boolean found = false;
+        for (int i=0; i<contextPath.length; i++) {
+            if (content.indexOf(contextPath[i]) != -1) {
+                found = true;
+            }
+        }
+        // only build document when some paths were found!
+        if (found == true) { 
+            InputStream in = new ByteArrayInputStream(content.getBytes());
+            try {
+                Document contentXml = A_CmsXmlContent.getXmlParser().parse(in);
+                // get all "edittemplate" nodes to check their content
+                NodeList editNodes = contentXml.getElementsByTagName("edittemplate");
+                for (int i=0; i<editNodes.getLength(); i++) {
+                    String editString = editNodes.item(i).getFirstChild().getNodeValue();
+                    for (int k=0; k<contextPath.length; k++) {
+                        testContext = contextPath[k];
+                        editString = CmsStringSubstitution.substitute(editString,CmsStringSubstitution.escapePattern(testContext),CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT));
+                        editNodes.item(i).getFirstChild().setNodeValue(editString);
+                    }               
+                }
+                // fill StringBuffer with XML content
+                m_content = new StringBuffer("");
+                printNode(contentXml.getFirstChild().getOwnerDocument());                   
+                content = m_content.toString();
+            }
+            catch(Exception exc) {
+            }
+        }   
+        return content;
+    }   
+    
+    
+    /**
+     * Recursive method to generate a Stringbuffer from a DOM document.<p>
+     * 
+     * @param node the document node
+     */
+    public void printNode(Node node) {
+        if ( node == null ) {
+            return;
+        }
+        int type = node.getNodeType();
+        // generate output depending on node type
+        switch ( type ) {
+        case Node.DOCUMENT_NODE:
+            m_content.append("<?xml version=\"1.0\" encoding=\""+m_cms.getRequestContext().getEncoding()+"\"?>\n");
+            printNode(((Document)node).getDocumentElement());
+            break;
+    
+        case Node.ELEMENT_NODE:
+            m_content.append("<");
+            m_content.append(node.getNodeName());
+            // append node attributes
+            NamedNodeMap attrs = node.getAttributes();
+            for ( int i = 0; i < attrs.getLength(); i++ ) {
+                m_content.append(" ");
+                m_content.append(attrs.item(i).getNodeName());
+                m_content.append("=\"");
+                m_content.append(attrs.item(i).getNodeValue());
+                m_content.append("\"");
+            }
+            m_content.append(">");
+            // check for child nodes and call recursion
+            NodeList children = node.getChildNodes();
+            if ( children != null ) {
+                int len = children.getLength();
+                for ( int i = 0; i < len; i++ ) {
+                    printNode(children.item(i));
+                }
+            }
+            break;
+        case Node.TEXT_NODE:
+            m_content.append(node.getNodeValue());
+            break;
+        case Node.CDATA_SECTION_NODE:
+            m_content.append("<![CDATA[");
+            m_content.append(node.getNodeValue());
+            m_content.append("]]>");
+            break;
+        case Node.COMMENT_NODE:
+            m_content.append("<!-- ");
+            m_content.append(node.getNodeValue());
+            m_content.append(" //-->");
+            break;            
+        }
+        // end of recursion, append end tags
+        if ( type == Node.ELEMENT_NODE ) {
+            m_content.append("</");
+            m_content.append(node.getNodeName());
+            m_content.append('>');
+     
+        }
+    }
+    
     
     /**
      * Method to replace a subString with replaceItem.
