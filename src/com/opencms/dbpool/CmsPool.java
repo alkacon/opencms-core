@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
- * Date   : $Date: 2001/02/06 18:33:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/02/06 19:25:20 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -113,10 +113,10 @@ public class CmsPool {
 	 * @return a Connection to the database
 	 * @exception SQLException if a database-access error occurs.
 	 */
-	public Connection connect()
-		throws SQLException {
-                System.out.println("connect " + m_connectionAmount + " " + m_availableConnections.size());
+	public Connection connect() throws SQLException {
+          synchronized(m_availableConnections) {
 		return getConnection();
+          }
 	}
 
 	/**
@@ -125,7 +125,6 @@ public class CmsPool {
 	 */
 	public Connection getConnection()
 		throws SQLException {
-		synchronized(m_availableConnections) {
                   try {
                           return (Connection) m_availableConnections.pop();
                   } catch(EmptyStackException exc) {
@@ -147,7 +146,6 @@ public class CmsPool {
                   }
                   // try again to get a connection
                   return getConnection();
-                }
 	}
 
 	/**
@@ -155,9 +153,7 @@ public class CmsPool {
 	 */
 	public void putConnection(CmsConnection con) {
           synchronized(m_availableConnections) {
-
 		boolean alive = false;
-                System.out.println("put back");
 		try {
 			// check, if the connection is available
 			if(!con.isClosed()) {
@@ -199,7 +195,7 @@ public class CmsPool {
 		}
 
 		// wake up eventually waiting threads
-                  m_availableConnections.notifyAll();
+                m_availableConnections.notifyAll();
           }
 	}
 
@@ -210,15 +206,11 @@ public class CmsPool {
 	 */
 	private void createConnections(int amount)
 		throws SQLException {
-                synchronized(m_availableConnections) {
-                System.out.println("createConnections " + amount + " " + m_connectionAmount + " " + m_maxConn);
                   for(int i = 0; (i < amount) && (m_connectionAmount < m_maxConn); i++) {
                           // create another connection
                           m_availableConnections.push(createConnection());
                           m_connectionAmount++;
   		  }
-                  m_availableConnections.notifyAll();
-                }
 	}
 
 	/**
