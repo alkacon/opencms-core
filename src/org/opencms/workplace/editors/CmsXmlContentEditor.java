@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/08 13:17:34 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/12/16 11:00:49 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -1111,7 +1111,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         if (! type.isSimpleType()) {
                             // recurse into nested type sequence
                             String newPath = CmsXmlUtils.createXpathElement(value.getElementName(), value.getIndex() + 1);
-                            result.append("<td>");
+                            result.append("<td class=\"maxwidth\">");
                             boolean showHelp = (j == 0);
                             result.append(getXmlEditorForm(nestedContentDefinition, pathPrefix + newPath + "/", showHelp));
                             result.append("</td>");
