@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryImages.java,v $
- * Date   : $Date: 2004/11/03 14:55:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/03 16:06:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.2
  */
@@ -116,7 +116,7 @@ public class CmsGalleryImages extends CmsGallery {
                     pasteImage.append("\', \'");
                     pasteImage.append(CmsStringUtil.escapeJavaScript(title));
                     pasteImage.append("\', \'");
-                    result.append(CmsStringUtil.escapeJavaScript(description));
+                    pasteImage.append(CmsStringUtil.escapeJavaScript(description));
                     pasteImage.append("\');");
                     result.append(button(pasteImage.toString(), null, "paste", "button.paste", 0));
                     result.append(button("javascript:deleteImage(\'" + resPath + "\');", null, "deletecontent", "title.delete", 0));
