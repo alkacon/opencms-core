@@ -11,6 +11,7 @@ Legend:
 OpenCms 4.1.57 Arakis - not jet released
 
 - ATTENTION! On a win32 System with jdk1.3 you have to unzipp the .jar and .zip files containing the classes.
+! Finished the opencms-pool. Now old and outtimed connections will be closed properly.
 * changed the CmsClassloader: the parent classloader of a loaded class is always the 
   CmsClassloader. This way we are able to load classes in the virtual file system.
 * changed CmsHistory and the template history: more information in the history overview.
