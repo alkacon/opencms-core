@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: ControlLucene.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/26 14:02:46 $
- *  $Revision: 1.3 $
+ *  $Date: 2002/02/26 16:16:48 $
+ *  $Revision: 1.4 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -39,10 +39,16 @@ import javax.servlet.http.*;
 public class ControlLucene implements com.opencms.core.I_CmsConstants, com.opencms.modules.search.form.I_CmsSearchEngine {
     // the debug flag
     private final static boolean debug = false;
+
     // for start as standalone application
     private static boolean mainStart = false;
 
-    private String m_query;
+    // the switch to stop or start indexing
+    private static boolean m_active=false;
+
+    // the switch to create a completely ne indexdirectory
+    private static boolean m_newIndex=false;
+
     private static String m_searchword = "Möglichkeiten";
     private static String m_url = CmsBase.getAbsoluteWebPath("search/index");
     /**
@@ -80,9 +86,6 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
     public static final String C_PARAM_SEARCHENGINE_TOKEN = ",";
 
     private static Vector C_INDEX_FILES = null;
-
-    private static boolean m_active=false;
-    private static boolean m_newIndex=false;
 
 
     /**
@@ -283,11 +286,10 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                     System.out.println("link=" + link);
                 }
 
-                //every html-page should contain a ".htm" or ".pdf" or be loaded from the docloader
+                //every html-page should contain a ".htm" or ".pdf"
                 if(!link.startsWith(cms.getRequestContext().getRequest().getServletUrl())
                          && (link.indexOf(".htm") != -1
-                            || link.indexOf(".pdf") != -1
-                            || link.indexOf("internal/document") != -1)) {
+                            || link.indexOf(".pdf") != -1)) {
                     if(link.startsWith("/")) {
                         files.addElement(linkPrefix + link);
                     }

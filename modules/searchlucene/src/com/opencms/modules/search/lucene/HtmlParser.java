@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: HtmlParser.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/26 14:02:46 $
- *  $Revision: 1.2 $
+ *  $Date: 2002/02/26 16:16:48 $
+ *  $Revision: 1.3 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -142,7 +142,7 @@ public class HtmlParser implements I_ContentParser{
     public String getKeywords() {
         return m_keywords;
     }
-        /**
+    /**
      *  Description of the Method
      *
      *@param  content   Description of the Parameter

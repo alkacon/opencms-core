@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: SearchLucene.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/20 11:06:09 $
- *  $Revision: 1.2 $
+ *  $Date: 2002/02/26 16:17:38 $
+ *  $Revision: 1.3 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -29,6 +29,7 @@ import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import java.util.*;
+
 
 /**
  *  Description of the Class

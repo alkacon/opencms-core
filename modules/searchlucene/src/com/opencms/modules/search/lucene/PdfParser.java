@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: PdfParser.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/26 14:02:46 $
- *  $Revision: 1.2 $
+ *  $Date: 2002/02/26 16:16:48 $
+ *  $Revision: 1.3 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -170,15 +170,13 @@ public class PdfParser implements I_ContentParser{
                 }
             }
             if (matchCount <= 0 ) break;
-
             charPosition++;
-
         }
 
         return null;
     }
     /**
-     * Parse Content. [24] 320:1
+     * Parse Content.
      */
     public String getAuthor() {
         return author;
@@ -190,13 +188,13 @@ public class PdfParser implements I_ContentParser{
         return null;
     }
     /**
-     * Parse Content. [24] 320:1
+     * Parse Content.
      */
     public String getContents() {
         return contents.toString();
     }
     /**
-     * Parse Content. [24] 320:1
+     * Parse Content.
      */
     public String getDescription() {
         return description;
@@ -208,7 +206,7 @@ public class PdfParser implements I_ContentParser{
         return null;
     }
     /**
-     * Parse Content. [24] 320:1
+     * Parse Content.
      */
     public String getKeywords() {
         return keywords;
@@ -220,25 +218,14 @@ public class PdfParser implements I_ContentParser{
         return null;
     }
     /**
-     * Parse Content. [24] 320:1
+     * Parse Content.
      */
     public long getPublished() {
         return published;
     }
+
     /**
-     * Return boolean true if links are to be followed
-     */
-    public boolean getRobotFollow() {
-        return false;
-    }
-    /**
-     * Return boolean true it this is to be indexed
-     */
-    public boolean getRobotIndex() {
-        return true;
-    }
-    /**
-     * Parse Content. [24] 320:1
+     *
      */
     public String getTitle() {
         return title;
@@ -647,57 +634,11 @@ public class PdfParser implements I_ContentParser{
 
         ++currentPosition;
         return in.read();
-
-        //return in.read();
-    /*
-    if (pos >= len) {
-
-        // This loop allows us to ignore interrupts if the flag
-        // says so
-        for (;;) {
-            try {
-                len = in.read(buf);
-                System.out.println("next");
-                break;
-            } catch (InterruptedIOException ex) {
-                throw ex;
-            }
-        }
-        if (len <= 0) {
-            return -1; // eof
-        }
-        pos = 0;
-    }
-    ++currentPosition;
-    return buf[pos++];
-     */
     }
     private final char readCh() throws IOException {
 
         ++currentPosition;
         return (char)in.read();
-    /*
-    if (pos >= len) {
-
-        // This loop allows us to ignore interrupts if the flag
-        // says so
-        for (;;) {
-            try {
-                len = in.read(buf);
-                System.out.println("next");
-                break;
-            } catch (InterruptedIOException ex) {
-                throw ex;
-            }
-        }
-        if (len <= 0) {
-            return -1; // eof
-        }
-        pos = 0;
-    }
-    ++currentPosition;
-    return buf[pos++];
-     */
     }
     /**
      *	Return contents
