@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/22 14:30:40 $
-* Version: $Revision: 1.157 $
+* Date   : $Date: 2001/10/22 15:09:26 $
+* Version: $Revision: 1.158 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.157 $ $Date: 2001/10/22 14:30:40 $
+ * @version $Revision: 1.158 $ $Date: 2001/10/22 15:09:26 $
  *
  */
 
@@ -2295,6 +2295,22 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      */
     public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
                                 String groupname)
+        throws CmsException;
+    /**
+     * Returns a group object.<P/>
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param groupid The id of the group that is to be read.
+     * @return Group.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful
+     */
+    public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
+                              int groupid)
         throws CmsException;
     /**
      * Reads the managergroup of a project from the OpenCms.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/22 14:32:28 $
-* Version: $Revision: 1.282 $
+* Date   : $Date: 2001/10/22 15:09:41 $
+* Version: $Revision: 1.283 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.282 $ $Date: 2001/10/22 14:32:28 $
+ * @version $Revision: 1.283 $ $Date: 2001/10/22 15:09:41 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -5277,6 +5277,25 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
         return group;
 
 
+    }
+
+    /**
+     * Returns a group object.<P/>
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param groupid The id of the group that is to be read.
+     * @return Group.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful
+     */
+    public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
+                              int groupid)
+        throws CmsException {
+        return m_dbAccess.readGroup(groupid);
     }
     /**
      * Reads the managergroup of a project from the OpenCms.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/10/22 14:30:57 $
-* Version: $Revision: 1.195 $
+* Date   : $Date: 2001/10/22 15:09:16 $
+* Version: $Revision: 1.196 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.195 $ $Date: 2001/10/22 14:30:57 $
+ * @version $Revision: 1.196 $ $Date: 2001/10/22 15:09:16 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2561,6 +2561,17 @@ public CmsGroup readGroup(CmsTask task) throws CmsException {
  */
 public CmsGroup readGroup(String groupname) throws CmsException {
     return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), groupname));
+}
+/**
+ * Reads a group of the Cms.
+ *
+ * @param groupid the id of the group to be returned.
+ * @return a group in the Cms.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public CmsGroup readGroup(int groupid) throws CmsException {
+    return (m_rb.readGroup(m_context.currentUser(), m_context.currentProject(), groupid));
 }
 /**
  * Reads the managergroup of a project from the Cms.
