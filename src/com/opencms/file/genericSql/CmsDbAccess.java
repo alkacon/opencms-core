@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/23 08:01:33 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2000/06/23 13:01:51 $
+ * Version: $Revision: 1.76 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.75 $ $Date: 2000/06/23 08:01:33 $ * 
+ * @version $Revision: 1.76 $ $Date: 2000/06/23 13:01:51 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3936,9 +3936,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 */	
 	 public void writeFolder(CmsProject project, CmsFolder folder, boolean changed)
          throws CmsException {
-           System.err.println("++++"+folder.getAbsolutePath());
-           System.err.println("++++"+folder.getState());
-           System.err.println("++++"+changed);
            PreparedStatement statement = null;
            try {   
                 // update resource in the database

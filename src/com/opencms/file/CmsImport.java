@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/06/23 08:01:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/23 13:01:51 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/06/23 08:01:33 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/23 13:01:51 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -177,6 +177,8 @@ public class CmsImport implements I_CmsConstants {
 					// store these informations
 					if( (name != null) && (value != null) ) {
 						properties.put(name, value);
+                        System.err.println("+++++");
+                        System.err.println(name+":"+propertyType+":"+type);
 						createPropertydefinition(name, propertyType, type);
 					}
 				}

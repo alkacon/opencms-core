@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/23 12:59:22 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2000/06/23 13:01:51 $
+ * Version: $Revision: 1.66 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.65 $ $Date: 2000/06/23 12:59:22 $
+ * @version $Revision: 1.66 $ $Date: 2000/06/23 13:01:51 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3621,6 +3621,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                     }
                // }
             }    
+            
             // lock the resouece
             cmsResource.setLocked(currentUser.getId());
             //update resource
@@ -3632,7 +3633,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             } else {           
                 m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
                 // update the cache           
-                m_resourceCache.put(C_FILE+currentProject.getId()+resourcename,cmsResource);
+                m_resourceCache.put(C_FILE+currentProject.getId()+resourcename,(CmsFile)cmsResource);
             }
             m_subresCache.clear();
 
@@ -3706,19 +3707,26 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
            
                 // check if the resource is locked by the actual user
                 if (cmsResource.isLockedBy()==currentUser.getId()) {
-                
+            
+  
                 // unlock the resouece
                 cmsResource.setLocked(C_UNKNOWN_ID);
+     
                 //update resource
                 if (resourcename.endsWith("/")) { 
+        
                     m_dbAccess.writeFolder(currentProject,(CmsFolder)cmsResource,false);
                     // update the cache           
+    
                     m_resourceCache.put(C_FOLDER+currentProject.getId()+resourcename,(CmsFolder)cmsResource);              
                 } else {           
+
                     m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
-                    // update the cache           
-                    m_resourceCache.put(C_FILE+currentProject.getId()+resourcename,cmsResource);                                  
+                    // update the cache   
+     
+                    m_resourceCache.put(C_FILE+currentProject.getId()+resourcename,(CmsFile)cmsResource);                                  
                 }
+     
                 m_subresCache.clear();
             } else {
                  throw new CmsException("[" + this.getClass().getName() + "] " + 
@@ -4258,6 +4266,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
             //set the flags
             resource.setAccessFlags(flags);
+            if (resource.getState()==C_STATE_UNCHANGED) {
+                resource.setState(C_STATE_CHANGED);
+            }
             //update file
             if (filename.endsWith("/")) { 
                 m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true);
@@ -4319,6 +4330,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			  isAdmin(currentUser, currentProject))) {
 	        CmsUser owner = readUser(currentUser, currentProject, newOwner);		  
             resource.setUserId(owner.getId());
+            if (resource.getState()==C_STATE_UNCHANGED) {
+                resource.setState(C_STATE_CHANGED);
+            }
 			// write-acces  was granted - write the file.
 			 if (filename.endsWith("/")) { 
                 m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true);
@@ -4380,6 +4394,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			  isAdmin(currentUser, currentProject))) {
 		    CmsGroup group = readGroup(currentUser, currentProject, newGroup);
             resource.setGroupId(group.getId());
+            if (resource.getState()==C_STATE_UNCHANGED) {
+                resource.setState(C_STATE_CHANGED);
+            }
 			// write-acces  was granted - write the file.
 			if (filename.endsWith("/")) { 
                 m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true);
@@ -4440,7 +4457,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// write-acces  was granted - write the file.
             resource.setType(type.getResourceType());
 			resource.setLauncherType(type.getLauncherType());
-            resource.setState(C_STATE_CHANGED);
+            if (resource.getState()==C_STATE_UNCHANGED) {
+                resource.setState(C_STATE_CHANGED);
+            }
             m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject),(CmsFile)resource,true);    
             // update the cache
             m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);   
