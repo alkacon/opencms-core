@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2002/12/12 18:46:13 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,11 +30,28 @@
 package com.opencms.util;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.defaults.*;
-import java.util.*;
-import java.io.*;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.OpenCms;
+import com.opencms.defaults.I_CmsLifeCycle;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsProject;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsUser;
+import com.opencms.file.I_CmsRegistry;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.GregorianCalendar;
+import java.util.Vector;
 
 /**
  * This is a general helper class.
@@ -42,7 +59,7 @@ import java.io.*;
  * @author Andreas Schouten
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  */
-public class Utils implements I_CmsConstants,I_CmsLogChannels {
+public class Utils {
 
 
     /** Constant for sorting files upward by name */
@@ -372,9 +389,9 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
      * @exception CmsException.
      */
     public static boolean isHttpsResource(CmsObject cms, CmsResource res) throws CmsException{
-        while(!res.getAbsolutePath().equals(C_ROOT)){
+        while(!res.getAbsolutePath().equals(I_CmsConstants.C_ROOT)){
             // check for the property export
-            String prop = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_EXPORT);
+            String prop = cms.readProperty(res.getAbsolutePath(), I_CmsConstants.C_PROPERTY_EXPORT);
             if((prop != null) && "https".equalsIgnoreCase(prop)){
                 // found one
                 return true;
@@ -429,8 +446,8 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
             }
         }
         catch(Exception e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[Utils] :" + e.toString());
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[Utils] :" + e.toString());
             }
         }
         return v;
