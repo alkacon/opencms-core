@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/10/01 12:25:02 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -193,110 +193,124 @@ public class CmsTree extends CmsWorkplace {
     public String getTree() {
         String targetFolder = getTargetFolder();
         String startFolder = getStartFolder();
-
-        // read the selected folder
-        CmsFolder folder;
-        try {
-            folder = getCms().readFolder(targetFolder);
-        } catch (CmsException e) {
-            // return with error
-            return printError(e);
-        }        
-
-        // read the list of project resource to select which resource is "inside" or "outside" 
-        List projectResources;
-        try {
-            projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
-        } catch (CmsException e) {
-            // use an empty list (all resources are "outside")
-            projectResources = new ArrayList();
+        
+        // change the site root for channel tree window
+        boolean showChannelTree = false;
+        if ("channelselector".equals(getTreeType())) {
+            showChannelTree = true;
+            getCms().getRequestContext().saveSiteRoot();
+            getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
         }
-        
-        boolean grey;
-        List resources;        
-        
-        if ((startFolder == null) || (! targetFolder.startsWith(startFolder))) {
-            // no (valid) start folder given, just load current folder        
+
+        StringBuffer result = new StringBuffer(2048);
+        try {
+            // read the selected folder
+            CmsFolder folder;
             try {
-                if (includeFiles()) {
-                    resources = new ArrayList();
-                    resources.addAll(getCms().getResourcesInFolder(targetFolder));
-                } else {
-                    resources = getCms().getSubFolders(targetFolder);
-                }
+                folder = getCms().readFolder(targetFolder);
             } catch (CmsException e) {
                 // return with error
                 return printError(e);
-            }
-        } else {
-            // valid start folder given, load all folders between start and current folder
-            resources = new ArrayList();
+            }        
+    
+            // read the list of project resource to select which resource is "inside" or "outside" 
+            List projectResources;
             try {
-                if (includeFiles()) {
-                    resources.addAll(getCms().getResourcesInFolder(startFolder));
-                } else {
-                    resources.addAll(getCms().getSubFolders(startFolder));
-                }                     
-                StringTokenizer tok = new StringTokenizer(targetFolder.substring(startFolder.length()), "/");
-                while (tok.hasMoreTokens()) {
-                    startFolder += tok.nextToken() + "/";
+                projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
+            } catch (CmsException e) {
+                // use an empty list (all resources are "outside")
+                projectResources = new ArrayList();
+            }
+            
+            boolean grey;
+            List resources;        
+            
+            if ((startFolder == null) || (! targetFolder.startsWith(startFolder))) {
+                // no (valid) start folder given, just load current folder        
+                try {
+                    if (includeFiles()) {
+                        resources = new ArrayList();
+                        resources.addAll(getCms().getResourcesInFolder(targetFolder));
+                    } else {
+                        resources = getCms().getSubFolders(targetFolder);
+                    }
+                } catch (CmsException e) {
+                    // return with error
+                    return printError(e);
+                }
+            } else {
+                // valid start folder given, load all folders between start and current folder
+                resources = new ArrayList();
+                try {
                     if (includeFiles()) {
                         resources.addAll(getCms().getResourcesInFolder(startFolder));
                     } else {
                         resources.addAll(getCms().getSubFolders(startFolder));
-                    }                      
-                }                                             
-            } catch (CmsException e) {
-                // return with error 
-                return printError(e);
-            }            
-        }
-
-        StringBuffer result = new StringBuffer(2048);
-        result.append("function init() {\n");
-              
-        if (newTree()) {
-            // new tree must be reloaded
-            result.append("parent.initTree();\n");
-            result.append(getRootNode());
-        }
-
-        // now output all the tree nodes
-        Iterator i = resources.iterator();
-        while (i.hasNext()) {          
-            CmsResource resource = (CmsResource)i.next();
-            grey = !CmsProject.isInsideProject(projectResources, resource);
-            result.append(getNode(resource.getName(), resource.getType(), resource.getStructureId(), resource.getParentStructureId(), grey));
-        }
+                    }                     
+                    StringTokenizer tok = new StringTokenizer(targetFolder.substring(startFolder.length()), "/");
+                    while (tok.hasMoreTokens()) {
+                        startFolder += tok.nextToken() + "/";
+                        if (includeFiles()) {
+                            resources.addAll(getCms().getResourcesInFolder(startFolder));
+                        } else {
+                            resources.addAll(getCms().getSubFolders(startFolder));
+                        }                      
+                    }                                             
+                } catch (CmsException e) {
+                    // return with error 
+                    return printError(e);
+                }            
+            }
     
-        if (includeFiles()) {
-            result.append("parent.setIncludeFiles(true);\n");
-        }
-        if (getTreeType() != null) {
-            // this is a popup window tree
-            result.append("parent.setTreeType(\"");
-            result.append(getTreeType());
-            result.append("\");\n");            
-        }
-        if (newTree()) {
-            // new tree 
-            result.append("parent.showTree(parent.tree_display.document, \"");
-            result.append(folder.getStructureId().hashCode());
-            result.append("\");\n");
-        } else {
-            // update the current tree with the childs of the selected node
-            if (resources.size() == 0) {
-                // the node had no childs 
-                result.append("parent.setNoChilds(\"");
+            result.append("function init() {\n");
+                  
+            if (newTree()) {
+                // new tree must be reloaded
+                result.append("parent.initTree();\n");
+                result.append(getRootNode());
+            }
+    
+            // now output all the tree nodes
+            Iterator i = resources.iterator();
+            while (i.hasNext()) {          
+                CmsResource resource = (CmsResource)i.next();
+                grey = !CmsProject.isInsideProject(projectResources, resource);
+                result.append(getNode(resource.getName(), resource.getType(), resource.getStructureId(), resource.getParentStructureId(), grey));
+            }
+        
+            if (includeFiles()) {
+                result.append("parent.setIncludeFiles(true);\n");
+            }
+            if (getTreeType() != null) {
+                // this is a popup window tree
+                result.append("parent.setTreeType(\"");
+                result.append(getTreeType());
+                result.append("\");\n");            
+            }
+            if (newTree()) {
+                // new tree 
+                result.append("parent.showTree(parent.tree_display.document, \"");
                 result.append(folder.getStructureId().hashCode());
                 result.append("\");\n");
-            } 
-            result.append("parent.showLoadedNodes(parent.tree_display.document,\"");
-            result.append(folder.getStructureId().hashCode());
-            result.append("\");\n");
+            } else {
+                // update the current tree with the childs of the selected node
+                if (resources.size() == 0) {
+                    // the node had no childs 
+                    result.append("parent.setNoChilds(\"");
+                    result.append(folder.getStructureId().hashCode());
+                    result.append("\");\n");
+                } 
+                result.append("parent.showLoadedNodes(parent.tree_display.document,\"");
+                result.append(folder.getStructureId().hashCode());
+                result.append("\");\n");
+            }
+            
+            result.append("}\n");
+        } finally {
+            if (showChannelTree) {
+                getCms().getRequestContext().restoreSiteRoot();
+            }
         }
-        
-        result.append("}\n");
         return result.toString();
     }
 
