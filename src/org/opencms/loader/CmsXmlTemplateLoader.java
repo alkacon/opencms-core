@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/08/04 12:22:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/08/05 15:39:03 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
@@ -735,10 +735,11 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
         }
 
-        // if the user is "Guest", we send an servlet error,
+        // if the user is "Guest" (and its not a login exception, we send an servlet error,
         // otherwise we try to throw an exception.
         CmsRequestContext reqContext = cms.getRequestContext();
-        if ((DEBUG == 0) && reqContext.currentUser().isGuestUser()) {
+        if ((DEBUG == 0) && reqContext.currentUser().isGuestUser()
+            && (!(e instanceof CmsException && ((CmsException)e).getType() == CmsException.C_NO_USER))) {
             throw new CmsException(errorText, CmsException.C_SERVICE_UNAVAILABLE, e);
         } else {
             if (e instanceof CmsException) {
