@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -386,6 +386,12 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         byte[] content, 
         List properties
     ) throws CmsException;
+    
+    /**
+     * Indicates that this is an additional resource type which is defined in a module.<p>
+     * @return true or false
+     */
+    boolean isAdditionalModuleResourceType();
 
     /**
      * Returns <code>true</code> if a resource type is direct editable.<p>
@@ -490,6 +496,12 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource resource, 
         int tag
     ) throws CmsException;
+    
+    /**
+     * Sets the additional resource type flag.<p>
+     * @param additionalType true or false
+     */
+    void setAdditionalModuleResourceType(boolean additionalType);
 
     /**
      * Change the timestamp information of a resource.<p>

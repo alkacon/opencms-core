@@ -101,9 +101,6 @@
 					</contextmenu>
 				</editoptions>
 			</explorertype>
-			<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
-				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25"/>
-			</explorertype>	
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
 				<newresource uri="newresource_xmlpage.jsp" order="20"/>
 				<accesscontrol>

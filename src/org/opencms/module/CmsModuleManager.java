@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2004/10/28 14:01:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,11 +67,11 @@ public class CmsModuleManager {
     /** Indicates dependency check for module import. */
     public static final int C_DEPENDENCY_MODE_IMPORT = 1;
 
-    /** The list of module export points. */
-    private Set m_moduleExportPoints;
-
     /** The map of initialized module action instances. */
     private Map m_moduleActionInstances;
+
+    /** The list of module export points. */
+    private Set m_moduleExportPoints;
 
     /** The map of configured modules. */
     private Map m_modules;
@@ -231,10 +231,19 @@ public class CmsModuleManager {
         }
 
         CmsModule module;
+        boolean removeResourceTypes = false;
         
         if (! replace) {
             // module is deleted, not replaced
-            module = (CmsModule)m_modules.get(moduleName);        
+            module = (CmsModule)m_modules.get(moduleName);    
+            // makr the resource manager to reinitialize if nescessary
+            if (module.getResourceTypes() != Collections.EMPTY_LIST) {
+                removeResourceTypes = true;          
+            }   
+            if (module.getExplorerTypes() != Collections.EMPTY_LIST) {
+                OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module.getExplorerTypes());
+            }
+            
             // perform dependency check
             List dependencies = checkDependencies(module, C_DEPENDENCY_MODE_DELETE);
             if (! dependencies.isEmpty()) {
@@ -253,6 +262,8 @@ public class CmsModuleManager {
             }
         }
 
+
+        
         // now remove the module
         module = (CmsModule)m_modules.remove(moduleName);
         
@@ -285,6 +296,33 @@ public class CmsModuleManager {
         
         // update the configuration
         updateModuleConfiguration();        
+        
+        // reinit the manager is nescessary
+        if (removeResourceTypes) {
+            OpenCms.getResourceManager().initialize(adminCms);
+        }
+    }
+    
+    /**
+     * Returns the module aciton instance of the module with the given name, or <code>null</code>
+     * if no module action instance with that name is configured.<p>
+     * 
+     * @param name the module name to get the action instance for
+     * @return the module aciton instance of the module with the given name
+     */
+    public I_CmsModuleAction getActionInstance(String name) {
+        
+        return (I_CmsModuleAction)m_moduleActionInstances.get(name);
+    }
+    
+    /**
+     * Returns an iterator that iterates the initialized module action instances.<p>
+     * 
+     * @return  an iterator that iterates the initialized module action instances
+     */
+    public Iterator getActionInstances() {
+        
+        return new ArrayList(m_moduleActionInstances.values()).iterator();
     }
 
     /**
@@ -308,28 +346,6 @@ public class CmsModuleManager {
     public CmsModule getModule(String name) {
 
         return (CmsModule)m_modules.get(name);
-    }
-    
-    /**
-     * Returns an iterator that iterates the initialized module action instances.<p>
-     * 
-     * @return  an iterator that iterates the initialized module action instances
-     */
-    public Iterator getActionInstances() {
-        
-        return new ArrayList(m_moduleActionInstances.values()).iterator();
-    }
-    
-    /**
-     * Returns the module aciton instance of the module with the given name, or <code>null</code>
-     * if no module action instance with that name is configured.<p>
-     * 
-     * @param name the module name to get the action instance for
-     * @return the module aciton instance of the module with the given name
-     */
-    public I_CmsModuleAction getActionInstance(String name) {
-        
-        return (I_CmsModuleAction)m_moduleActionInstances.get(name);
     }
 
     /**

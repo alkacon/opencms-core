@@ -35,6 +35,18 @@
 		<parameters>
 			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/;/system/workplace/resources/filetypes/article.gif;/xmlcontent/</param>
 		</parameters>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="resource.type.id">12</param>
+				<param name="resource.type.name">article</param>
+				<param name="schema">/sites/default/xmlcontent/article.xsd</param>
+			</type>				
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
+				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25"/>
+	       	</explorertype>	
+        </explorertypes>
 	</module>
 	<files>
 		<file>

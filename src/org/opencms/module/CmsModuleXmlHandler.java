@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2004/09/22 12:08:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,20 @@
 
 package org.opencms.module;
 
+import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsVfsConfiguration;
+import org.opencms.configuration.CmsWorkplaceConfiguration;
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.db.CmsExportPoint;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -61,15 +68,18 @@ import org.dom4j.Element;
  */
 public class CmsModuleXmlHandler {
     
+    /** The "name" attribute. */
+    protected static final  String A_NAME = "name";
+       
     /** The "version" attribute. */
     protected static final String A_VERSION = "version";
-    
+        
     /** The node name for the authoremail node. */
     protected static final String N_AUTHOREMAIL = "authoremail";
 
     /** The node name for the authorname node. */
     protected static final String N_AUTHORNAME = "authorname";
-    
+        
     /** The node name for the class node. */
     protected static final String N_CLASS = "class";
     
@@ -93,9 +103,12 @@ public class CmsModuleXmlHandler {
     
     /** The node name for the name node. */
     protected static final String N_NAME = "name";
-
+    
     /** The node name for the nicename node. */
     protected static final String N_NICENAME = "nicename";
+    
+    /** The "param" node name for generic parameters. */
+    protected static final String N_PARAM = "param";   
     
     /** The node name for the parameters node. */
     protected static final String N_PARAMETERS = "parameters";        
@@ -111,6 +124,9 @@ public class CmsModuleXmlHandler {
     
     /** The list of dependencies for a module. */
     private List m_dependencies;
+    
+    /** The explorer type settings. */
+    private List m_explorerTypeSettings;
 
     /** The list of export points for a module. */
     private List m_exportPoints;
@@ -127,6 +143,9 @@ public class CmsModuleXmlHandler {
     /** The list of resources for a module. */
     private List m_resources;
     
+    /** The list of additional resource types. */
+    private List m_resourceTypes;
+    
     /**
      * Public constructor, will be called by digester during import.<p> 
      */
@@ -135,7 +154,9 @@ public class CmsModuleXmlHandler {
         m_exportPoints = new ArrayList();
         m_dependencies = new ArrayList();
         m_resources = new ArrayList();
-        m_parameters = new HashMap();                             
+        m_parameters = new HashMap();          
+        m_resourceTypes = new ArrayList();
+        m_explorerTypeSettings = new ArrayList();
     }
 
     /**
@@ -181,6 +202,65 @@ public class CmsModuleXmlHandler {
         digester.addCallParam("*/" + N_MODULE + "/" + N_PARAMETERS + "/" + I_CmsXmlConfiguration.N_PARAM , 0, I_CmsXmlConfiguration.A_NAME);        
         digester.addCallParam("*/" + N_MODULE + "/" + N_PARAMETERS + "/" + I_CmsXmlConfiguration.N_PARAM , 1);
 
+        // add rules for resource types
+        digester.addObjectCreate("*/" + N_MODULE + "/" + CmsVfsConfiguration.N_RESOURCETYPES + "/" + CmsVfsConfiguration.N_TYPE, I_CmsXmlConfiguration.A_CLASS, CmsConfigurationException.class);
+        digester.addCallMethod("*/" + N_MODULE + "/" + CmsVfsConfiguration.N_RESOURCETYPES + "/" + CmsVfsConfiguration.N_TYPE, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
+        digester.addSetNext("*/" + N_MODULE + "/" + CmsVfsConfiguration.N_RESOURCETYPES + "/" + CmsVfsConfiguration.N_TYPE, "addResourceType");   
+        
+        // extension mapping rules
+        digester.addCallMethod("*/" + N_MODULE + "/" + CmsVfsConfiguration.N_RESOURCETYPES + "/" + CmsVfsConfiguration.N_TYPE + "/" + CmsVfsConfiguration.N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
+        digester.addCallParam ("*/" +  N_MODULE + "/" + CmsVfsConfiguration.N_RESOURCETYPES + "/" + CmsVfsConfiguration.N_TYPE + "/" + CmsVfsConfiguration.N_MAPPING, 0, CmsVfsConfiguration.A_SUFFIX);       
+        
+        // generic <param> parameter rules
+        digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
+        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);     
+        
+        
+        // add explorer type settings
+        digester.addObjectCreate("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
+        digester.addSetNext("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE, "addExplorerTypeSetting");
+        
+        digester.addCallMethod("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE, "setTypeAttributes", 4);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE, 0, A_NAME);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE, 1, I_CmsXmlConfiguration.A_KEY);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE, 2, I_CmsXmlConfiguration.A_ICON);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE, 3, CmsWorkplaceConfiguration.A_REFERENCE);
+                
+        digester.addCallMethod("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_NEWRESOURCE, "setNewResourceUri", 1);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_NEWRESOURCE, 0, I_CmsXmlConfiguration.A_URI);
+        digester.addCallMethod("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_NEWRESOURCE, "setNewResourceOrder", 1);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_NEWRESOURCE, 0, I_CmsXmlConfiguration.A_ORDER);
+        
+        digester.addObjectCreate("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE +"/" + CmsWorkplaceConfiguration.N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
+        digester.addSetNext("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE +"/" + CmsWorkplaceConfiguration.N_ACCESSCONTROL, "setAccess");        
+        
+        digester.addCallMethod("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_ACCESSCONTROL + "/" + CmsWorkplaceConfiguration.N_ACCESSENTRY, "addAccessEntry", 2);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_ACCESSCONTROL + "/" + CmsWorkplaceConfiguration.N_ACCESSENTRY, 0, CmsWorkplaceConfiguration.A_PRINCIPAL);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_ACCESSCONTROL + "/" + CmsWorkplaceConfiguration.N_ACCESSENTRY, 1, CmsWorkplaceConfiguration.A_PERMISSIONS);
+        
+        digester.addCallMethod("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES, "setPropertyDefaults", 2);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES, 0, I_CmsXmlConfiguration.A_ENABLED);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES, 1, CmsWorkplaceConfiguration.A_SHOWNAVIGATION);
+        
+        digester.addCallMethod("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES + "/" + I_CmsXmlConfiguration.N_PROPERTY, "addProperty", 1);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES + "/" + I_CmsXmlConfiguration.N_PROPERTY, 0, A_NAME);
+        
+        digester.addCallMethod("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU + "/" + CmsWorkplaceConfiguration.N_ENTRY, "addContextMenuEntry", 6);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU + "/" + CmsWorkplaceConfiguration.N_ENTRY, 0, I_CmsXmlConfiguration.A_KEY);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU + "/" + CmsWorkplaceConfiguration.N_ENTRY, 1, I_CmsXmlConfiguration.A_URI);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU + "/" + CmsWorkplaceConfiguration.N_ENTRY, 2, CmsWorkplaceConfiguration.A_RULES);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU + "/" + CmsWorkplaceConfiguration.N_ENTRY, 3, CmsWorkplaceConfiguration.A_TARGET);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU + "/" + CmsWorkplaceConfiguration.N_ENTRY, 4, I_CmsXmlConfiguration.A_ORDER);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU + "/" + CmsWorkplaceConfiguration.N_ENTRY, 5, CmsWorkplaceConfiguration.A_ISXML);
+        
+        digester.addCallMethod("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU + "/" + CmsWorkplaceConfiguration.N_SEPARATOR, "addContextMenuSeparator", 1);
+        digester.addCallParam("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU + "/" + CmsWorkplaceConfiguration.N_SEPARATOR, 0, I_CmsXmlConfiguration.A_ORDER);
+        
+        digester.addCallMethod("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS + "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU, "createContextMenu");
+        digester.addCallMethod("*/" + CmsWorkplaceConfiguration.N_EXPLORERTYPE + "/" + CmsWorkplaceConfiguration.N_EDITOPTIONS, "setIsResourceType");
+
+        
         // finally add all rules for backward compatibility with OpenCms 5.0
         addXmlDigesterRulesForVersion5Modules(digester);
     }
@@ -277,6 +357,19 @@ public class CmsModuleXmlHandler {
                 paramNode.addText(value);
             }
         }
+           
+        // add resource types       
+        List resourceTypes = module.getResourceTypes();
+        if (resourceTypes.size() > 0) {
+            Element resourcetypesElement = moduleElement.addElement(CmsVfsConfiguration.N_RESOURCETYPES);            
+            CmsVfsConfiguration.generateResourceTypeXml(resourcetypesElement, resourceTypes, true);
+        }
+        
+        List explorerTypes = module.getExplorerTypes();
+        if (explorerTypes.size() > 0) {
+            Element explorerTypesElement = moduleElement.addElement(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            CmsWorkplaceConfiguration.generateExplorerTypesXml(explorerTypesElement, explorerTypes);           
+        }
         
         // return the modules node
         moduleElement.detach();
@@ -372,6 +465,17 @@ public class CmsModuleXmlHandler {
         }        
     }
     
+    /** 
+     * Adds an explorer type setting object to the list of type settings.<p>
+     * 
+     * Adds the type setting as well to a map with the resource type name as key.
+     * 
+     * @param settings the explorer type settings
+     */
+    public void addExplorerTypeSetting(CmsExplorerTypeSettings settings) {
+        m_explorerTypeSettings.add(settings);
+    }
+    
     /**
      * Adds an export point to the module configuration.<p>
      * 
@@ -409,6 +513,16 @@ public class CmsModuleXmlHandler {
             OpenCms.getLog(this).debug("Added module resource: " + resource);
         }           
         m_resources.add(resource);
+    }
+    
+    /**
+     * Adds a new resource type to the internal list of loaded resource types.<p>
+     *
+     * @param resourceType the resource type to add
+     */
+    public void addResourceType(I_CmsResourceType resourceType) {
+        resourceType.setAdditionalModuleResourceType(true);
+        m_resourceTypes.add(resourceType);
     }
     
     /**
@@ -497,6 +611,12 @@ public class CmsModuleXmlHandler {
         
         // add the module to the list of configured modules
         m_module = module;
+        
+        // set the additional resource types;
+        m_module.setResourceTypes(m_resourceTypes);
+        
+        // set the additional explorertypes
+        m_module.setExplorerTypes(m_explorerTypeSettings);       
     }    
     
     /**
@@ -519,4 +639,5 @@ public class CmsModuleXmlHandler {
             OpenCms.getLog(this).debug("Imported module is an old (5.0.x) style module.");
         }          
     }
+    
 }

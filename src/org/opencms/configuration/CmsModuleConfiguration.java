@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2004/07/19 17:04:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,17 +94,6 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
         // add the module rules for the module digester
         CmsModuleXmlHandler.addXmlDigesterRules(digester);        
     }
-
-    /**
-     * Adds a new module to the list of configured modules.<p>
-     * 
-     * @param moduleHandler contains the imported module
-     */
-    public void setModule(CmsModuleXmlHandler moduleHandler) {
-
-        // add the module info to the list of configured modules
-        m_modules.add(moduleHandler.getModule());
-    }    
     
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#generateXml(org.dom4j.Element)
@@ -152,7 +141,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
      * @return the configured module manager
      */
     public CmsModuleManager getModuleManager() {
-
+        
         return m_moduleManager;
     }
     
@@ -163,9 +152,22 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // create the module manager with the configured modules
         m_moduleManager = new CmsModuleManager(m_modules);
+                      
         
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Module configuration : finished");
         }            
-    }   
+    }       
+
+    /**
+     * Adds a new module to the list of configured modules.<p>
+     * 
+     * @param moduleHandler contains the imported module
+     */
+    public void setModule(CmsModuleXmlHandler moduleHandler) {
+
+        // add the module info to the list of configured modules
+        m_modules.add(moduleHandler.getModule());
+    }    
+    
 }

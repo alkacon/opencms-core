@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2004/07/19 17:05:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,6 +79,9 @@ public class CmsModule implements Comparable {
 
     /** The description of this module. */
     private String m_description;
+    
+    /** The explorer type settings. */
+    private List m_explorerTypeSettings;
 
     /** List of export points added by this module. */
     private List m_exportPoints;
@@ -94,12 +97,16 @@ public class CmsModule implements Comparable {
 
     /** List of VFS resources that belong to this module. */
     private List m_resources;
+    
+    /** The list of additional resource types. */
+    private List m_resourceTypes;
 
     /** The name of the user who installed this module. */
     private String m_userInstalled;
 
     /** The version of this module. */
     private CmsModuleVersion m_version;
+
 
     /**
      * Creates a new module description with the specified values.<p>
@@ -202,6 +209,8 @@ public class CmsModule implements Comparable {
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Created module instance named '" + m_name + "'");
         }
+        m_resourceTypes = Collections.EMPTY_LIST;
+        m_explorerTypeSettings = Collections.EMPTY_LIST;
     }
 
     /**
@@ -333,6 +342,17 @@ public class CmsModule implements Comparable {
 
         return m_description;
     }
+    
+    
+    /**
+     * Returns the list of explorer resource types that belong to this module.<p>
+     *
+     * @return the list of explorer resource types that belong to this module
+     */
+    public List getExplorerTypes() {
+
+        return m_explorerTypeSettings;
+    }
 
     /**
      * Returns the list of export point added by this module.<p>
@@ -412,6 +432,17 @@ public class CmsModule implements Comparable {
     }
 
     /**
+     * Returns the list of additional resource types that belong to this module.<p>
+     *
+     * @return the list of additional resource types that belong to this module
+     */
+    public List getResourceTypes() {
+
+        return m_resourceTypes;
+    }
+    
+    
+    /**
      * Returns the name of the user who uploaded this module.<p>
      *
      * @return the name of the user who uploaded this module
@@ -483,6 +514,25 @@ public class CmsModule implements Comparable {
         }
 
         return true;
+    }
+
+    /**
+     * Sets the additional explorer types that belong to this module.<p>
+     *
+     * @param explorerTypeSettings the explorer type settings.
+     */
+    public void setExplorerTypes(List explorerTypeSettings) {
+        m_explorerTypeSettings = explorerTypeSettings;
+    }
+    
+    /**
+     * Sets the list of additional resource types that belong to this module.<p>
+     *
+     * @param resourceTypes list of additional resource types that belong to this module
+     */
+    public void setResourceTypes(List resourceTypes) {
+
+        m_resourceTypes = Collections.unmodifiableList(resourceTypes);
     }
 
     /**

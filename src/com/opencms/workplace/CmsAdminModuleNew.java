@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2004/07/18 16:27:13 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2004/10/29 13:46:41 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -48,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -65,17 +67,17 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
      * the different templateselectors.
      */
     private final String C_DONE = "done";
+    private final String C_ERRORDEP = "errordep";
+    private final String C_ERRORREPLACE = "errorreplace";
     private final String C_FILES = "files";
     private final String C_FROMERRORPAGE = "fromerrorpage";
-    private final String C_ERRORREPLACE = "errorreplace";
-    private final String C_ERRORDEP = "errordep";
+    private final String C_MODULE = "moduleinstance";
+    private final String C_MODULE_FILENAME = "modulefilename";
 
     /**
      * const for session entrys.
      */
     private final String C_MODULE_NAV = "modulenav";
-    private final String C_MODULE_FILENAME = "modulefilename";
-    private final String C_MODULE = "moduleinstance";
     private final String C_MODULE_THREAD = "modulethread";
 
     /**
@@ -208,6 +210,20 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
     }
 
     /**
+     * Indicates if the results of this class are cacheable.
+     *
+     * @param cms CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+     */
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return false;
+    }
+
+    /**
      * Imports the file zipName.
      * Creation date: (05.09.00 10:17:56)
      * @param zipName the complete path and name of the zip-file to import.
@@ -267,19 +283,5 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
         }
         xmlDocument.setData("time", "5");      
         return "showresult";                
-    }
-
-    /**
-     * Indicates if the results of this class are cacheable.
-     *
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        return false;
     }
 }

@@ -47,8 +47,13 @@
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeJsp">
 					<mapping suffix=".jsp" />
+				    <param name="default.encoding">UTF-8</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" />
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+					<param name="resource.type.id">11</param>
+					<param name="resource.type.name">xmlcontent</param>
+				</type>	
 			</resourcetypes>  
 			<collectors>
 				<collector class="org.opencms.file.CmsDefaultResourceCollector" order="100" />

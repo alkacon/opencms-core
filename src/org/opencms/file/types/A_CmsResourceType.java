@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,16 +55,21 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
+    
+    
+    /** Flag for showing that this is an additional resource type which defined in a module. */
+    private boolean m_addititionalModuleResourceType = false;
 
     /** 
      * The list of all resourcetype mappings.<p>
      * Contains those file extensions mapped to the resourcetype.
      */
     private List m_mappings = new ArrayList();
+    
     
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -326,6 +331,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }    
     
     /**
+     * @see org.opencms.file.types.I_CmsResourceType#isAdditionalModuleResourceType()
+     */
+    public boolean isAdditionalModuleResourceType() {
+        return m_addititionalModuleResourceType;
+    }
+    
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#isDirectEditable()
      */
     public boolean isDirectEditable() {
@@ -427,6 +439,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             cms.getRequestContext(), 
             resource, 
             tag);
+    }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#setAdditionalModuleResourceType(boolean)
+     */
+    public void setAdditionalModuleResourceType(boolean additionalType) {
+        m_addititionalModuleResourceType = additionalType;
     }
 
     /**

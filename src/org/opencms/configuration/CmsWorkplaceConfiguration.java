@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/10/22 10:03:42 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,8 +58,41 @@ import org.dom4j.Element;
  */
 public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     
+    /** The "isxml" attribute. */
+    public static final String A_ISXML = "isxml";
+    
+    /** The "permissions" attribute. */
+    public static final String A_PERMISSIONS = "permissions";
+   
+    /** The "principal" attribute. */
+    public static final String A_PRINCIPAL = "principal";
+    
+    /** The "reference" attribute. */
+    public static final String A_REFERENCE = "reference";
+    
+    /** The "rules" attribute. */
+    public static final String A_RULES = "rules";
+    
+    /** The "shownavigation" attribute. */
+    public static final String A_SHOWNAVIGATION = "shownavigation";
+    
+    /** The "target" attribute. */
+    public static final String A_TARGET = "target";
+    
+    /** The name of the access control node. */
+    public static final String N_ACCESSCONTROL = "accesscontrol";
+    
+    /** The name of the access entry node. */
+    public static final String N_ACCESSENTRY = "accessentry";
+    
     /** The node name of the buttonstyle node. */
     public static final String N_BUTTONSTYLE = "buttonstyle";
+    
+    /** The name of the context menu node. */
+    public static final String N_CONTEXTMENU = "contextmenu";
+    
+    /** The name of the default properties node. */
+    public static final String N_DEFAULTPROPERTIES = "defaultproperties";
     
     /** The node name of the dialogs defaultsettings node. */
     public static final String N_DIALOGSDEFAULTSETTINGS = "dialogs-defaultsettings";
@@ -69,6 +102,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The node name of the directpublish node. */
     public static final String N_DIRECTPUBLISH = "directpublish";
+    
+    /** The name of the edit options node. */
+    public static final String N_EDITOPTIONS = "editoptions";
     
     /** The node name of the editor node. */
     public static final String N_EDITOR = "editor";    
@@ -81,12 +117,21 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The node name of the file entries node. */
     public static final String N_ENTRIES = "entries";
+    
+    /** The name of the entry node. */
+    public static final String N_ENTRY = "entry";
 
     /** The node name of the explorer displayoptions node. */
     public static final String N_EXPLORERDISPLAYOPTIONS = "explorer-displayoptions";
     
     /** The node name of the explorer generaloptions node. */
     public static final String N_EXPLORERGENERALOPTIONS = "explorer-generaloptions";
+    
+    /** The name of the explorer type node. */
+    public static final String N_EXPLORERTYPE = "explorertype";
+    
+    /** The name of the explorer types node. */
+    public static final String N_EXPLORERTYPES = "explorertypes";
 
     /** The node name of the file copy node. */
     public static final String N_FILECOPY = "filecopy";
@@ -115,6 +160,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the message-forwarded node. */
     public static final String N_MESSAGEFORWARDED = "message-forwarded";
     
+    /** The name of the new resource node. */
+    public static final String N_NEWRESOURCE = "newresource";
+    
     /** The node name of the project node. */
     public static final String N_PROJECT = "project";
 
@@ -123,6 +171,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The node name of the restrict explorer view node. */
     public static final String N_RESTRICTEXPLORERVIEW = "restrictexplorerview";
+    
+    /** The name of the separator node. */
+    public static final String N_SEPARATOR = "separator";
     
     /** The node name of the file copy node. */
     public static final String N_SHOWLOCK = "showlock";
@@ -151,38 +202,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the view node. */
     public static final String N_WORKPLACEVIEW = "workplaceview";
     
-    /** The "isxml" attribute. */
-    protected static final String A_ISXML = "isxml";
-    
-    /** The "permissions" attribute. */
-    protected static final String A_PERMISSIONS = "permissions";
-   
-    /** The "principal" attribute. */
-    protected static final String A_PRINCIPAL = "principal";
-    
-    /** The "reference" attribute. */
-    protected static final String A_REFERENCE = "reference";
-    
-    /** The "rules" attribute. */
-    protected static final String A_RULES = "rules";
-    
-    /** The "shownavigation" attribute. */
-    protected static final String A_SHOWNAVIGATION = "shownavigation";
-    
-    /** The "target" attribute. */
-    protected static final String A_TARGET = "target";
-    
-    /** The name of the access control node. */
-    protected static final String N_ACCESSCONTROL = "accesscontrol";
-    
-    /** The name of the access entry node. */
-    protected static final String N_ACCESSENTRY = "accessentry";
-    
     /** The name of the autolock node. */
     protected static final String N_AUTOLOCK = "autolock";
-    
-    /** The name of the context menu node. */
-    protected static final String N_CONTEXTMENU = "contextmenu";
 
     /** The node name of the datecreated column node. */
     protected static final String N_DATECREATED = "show-datecreated";
@@ -202,9 +223,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the node for the default locale. */
     protected static final String N_DEFAULTLOCALE = "defaultlocale";
     
-    /** The name of the default properties node. */
-    protected static final String N_DEFAULTPROPERTIES = "defaultproperties";
-    
     /** The name of the default properties on structure node. */
     protected static final String N_DEFAULTPROPERTIESONSTRUCTURE = "defaultpropertiesonstructure";
     
@@ -216,9 +234,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The node name of the dialogs preferences node. */
     protected static final String N_DIALOGSPREFERENCES = "dialogs-preferences";
-    
-    /** The name of the edit options node. */
-    protected static final String N_EDITOPTIONS = "editoptions";
     
     /** The name of the editor action node. */
     protected static final String N_EDITORACTION = "editoraction";
@@ -234,18 +249,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The name of the "user management enabled" node. */
     protected static final String N_ENABLEUSERMGMT = "enableusermanagement";
-    
-    /** The name of the entry node. */
-    protected static final String N_ENTRY = "entry";
 
     /** The node name of the explorer preferences node. */
     protected static final String N_EXPLORERPREFERENCES = "explorer-preferences";
-    
-    /** The name of the explorer type node. */
-    protected static final String N_EXPLORERTYPE = "explorertype";
-    
-    /** The name of the explorer types node. */
-    protected static final String N_EXPLORERTYPES = "explorertypes";
 
     /** The name of the "labeled folders" node. */
     protected static final String N_LABELEDFOLDERS = "labeledfolders";    
@@ -259,14 +265,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the "max file upload size" node. */
     protected static final String N_MAXUPLOADSIZE = "maxfileuploadsize";
     
-    /** The name of the new resource node. */
-    protected static final String N_NEWRESOURCE = "newresource";
-    
     /** The node name of the permissions column node. */
     protected static final String N_PERMISSIONS = "show-permissions";
-    
-    /** The name of the separator node. */
-    protected static final String N_SEPARATOR = "separator";
     
     /** The node name of the size column node. */
     protected static final String N_SIZE = "show-size";
@@ -318,6 +318,89 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace config     : initialized");
         }               
     } 
+
+    
+    /**
+     * Creates the xml output for explorer type nodes.<p>
+     * 
+     * @param startNode the startnode to add all rescource types to
+     * @param explorerTypes the list of explorer types
+     */
+    public static void generateExplorerTypesXml(Element startNode, List explorerTypes) {
+        
+        Iterator i = explorerTypes.iterator();
+        while (i.hasNext()) {
+            // create an explorer type node
+            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+            Element explorerTypeElement = startNode.addElement(N_EXPLORERTYPE);
+            explorerTypeElement.addAttribute(A_NAME, settings.getName());
+            explorerTypeElement.addAttribute(A_KEY, settings.getKey());
+            explorerTypeElement.addAttribute(A_ICON, settings.getIcon());
+            if (settings.getReference() != null) {
+                explorerTypeElement.addAttribute(A_REFERENCE, settings.getReference());
+            }
+            // create subnode <newresource>
+            Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
+            newResElement.addAttribute(A_URI, settings.getNewResourceUri());
+            newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
+            // create subnode <accesscontrol>            
+            List accessEntries = new ArrayList(); 
+            // sort accessEntries   
+            CmsExplorerTypeAccess access = settings.getAccess();
+            Iterator iter = access.getAccessEntries().keySet().iterator();
+            while (iter.hasNext()) {
+                accessEntries.add(iter.next());                 
+            }
+            Collections.sort(accessEntries);
+            
+            if (accessEntries.size() >0) {
+                Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
+                Iterator k = accessEntries.iterator();
+            
+                while (k.hasNext()) {
+                    String key = (String)k.next();
+                    String value = (String)settings.getAccess().getAccessEntries().get(key);
+                    Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
+                    accessEntryElement.addAttribute(A_PRINCIPAL, key);
+                    accessEntryElement.addAttribute(A_PERMISSIONS, value);
+                }        
+            }
+            // create subnode <editoptions>
+            if (settings.isResourceType()) {
+                Element editOptionsElement = explorerTypeElement.addElement(N_EDITOPTIONS);
+                Element defaultPropertiesElement = editOptionsElement.addElement(N_DEFAULTPROPERTIES);
+                defaultPropertiesElement.addAttribute(A_ENABLED, "" + settings.isPropertiesEnabled());
+                defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, "" + settings.isShowNavigation());
+                Iterator m = settings.getProperties().iterator();
+                while (m.hasNext()) {
+                    defaultPropertiesElement.addElement(N_PROPERTY).addAttribute(A_NAME, (String)m.next());
+                }
+                Element contextMenuElement = editOptionsElement.addElement(N_CONTEXTMENU);
+                m = settings.getContextMenuEntries().iterator();
+                while (m.hasNext()) {
+                    CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)m.next();
+                    Element itemElement;
+                    if (CmsExplorerContextMenuItem.C_TYPE_ENTRY.equals(item.getType())) {
+                        // create an <entry> node
+                        itemElement = contextMenuElement.addElement(N_ENTRY);
+                        itemElement.addAttribute(A_KEY, item.getKey());
+                        itemElement.addAttribute(A_URI, item.getUri());
+                        if (item.isXml()) {
+                            itemElement.addAttribute(A_ISXML, "" + item.isXml());
+                        }
+                        if (item.getTarget() != null) {
+                            itemElement.addAttribute(A_TARGET, item.getTarget());
+                        }
+                        itemElement.addAttribute(A_RULES, item.getRules());
+                    } else {
+                        // create a <separator> node
+                        itemElement = contextMenuElement.addElement(N_SEPARATOR);
+                    }
+                    itemElement.addAttribute(A_ORDER, "" + item.getOrder());
+                }
+            }            
+        }
+    }
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
@@ -593,78 +676,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         
         // add <explorertypes> node
         Element explorerTypesElement = workplaceElement.addElement(N_EXPLORERTYPES);
-        i = m_workplaceManager.getExplorerTypeSettings().iterator();
-        while (i.hasNext()) {
-            // create an explorer type node
-            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
-            Element explorerTypeElement = explorerTypesElement.addElement(N_EXPLORERTYPE);
-            explorerTypeElement.addAttribute(A_NAME, settings.getName());
-            explorerTypeElement.addAttribute(A_KEY, settings.getKey());
-            explorerTypeElement.addAttribute(A_ICON, settings.getIcon());
-            if (settings.getReference() != null) {
-                explorerTypeElement.addAttribute(A_REFERENCE, settings.getReference());
-            }
-            // create subnode <newresource>
-            Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
-            newResElement.addAttribute(A_URI, settings.getNewResourceUri());
-            newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
-            // create subnode <accesscontrol>            
-            List accessEntries = new ArrayList(); 
-            // sort accessEntries   
-            CmsExplorerTypeAccess access = settings.getAccess();
-            Iterator iter = access.getAccessEntries().keySet().iterator();
-            while (iter.hasNext()) {
-                accessEntries.add(iter.next());                 
-            }
-            Collections.sort(accessEntries);
-            
-            if (accessEntries.size() >0) {
-                Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
-                Iterator k = accessEntries.iterator();
-            
-                while (k.hasNext()) {
-                    String key = (String)k.next();
-                    String value = (String)settings.getAccess().getAccessEntries().get(key);
-                    Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
-                    accessEntryElement.addAttribute(A_PRINCIPAL, key);
-                    accessEntryElement.addAttribute(A_PERMISSIONS, value);
-                }        
-            }
-            // create subnode <editoptions>
-            if (settings.isResourceType()) {
-                Element editOptionsElement = explorerTypeElement.addElement(N_EDITOPTIONS);
-                Element defaultPropertiesElement = editOptionsElement.addElement(N_DEFAULTPROPERTIES);
-                defaultPropertiesElement.addAttribute(A_ENABLED, "" + settings.isPropertiesEnabled());
-                defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, "" + settings.isShowNavigation());
-                Iterator m = settings.getProperties().iterator();
-                while (m.hasNext()) {
-                    defaultPropertiesElement.addElement(N_PROPERTY).addAttribute(A_NAME, (String)m.next());
-                }
-                Element contextMenuElement = editOptionsElement.addElement(N_CONTEXTMENU);
-                m = settings.getContextMenuEntries().iterator();
-                while (m.hasNext()) {
-                    CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)m.next();
-                    Element itemElement;
-                    if (CmsExplorerContextMenuItem.C_TYPE_ENTRY.equals(item.getType())) {
-                        // create an <entry> node
-                        itemElement = contextMenuElement.addElement(N_ENTRY);
-                        itemElement.addAttribute(A_KEY, item.getKey());
-                        itemElement.addAttribute(A_URI, item.getUri());
-                        if (item.isXml()) {
-                            itemElement.addAttribute(A_ISXML, "" + item.isXml());
-                        }
-                        if (item.getTarget() != null) {
-                            itemElement.addAttribute(A_TARGET, item.getTarget());
-                        }
-                        itemElement.addAttribute(A_RULES, item.getRules());
-                    } else {
-                        // create a <separator> node
-                        itemElement = contextMenuElement.addElement(N_SEPARATOR);
-                    }
-                    itemElement.addAttribute(A_ORDER, "" + item.getOrder());
-                }
-            }            
-        }
+        List explorerTypes = m_workplaceManager.getExplorerTypeSettings();
+        generateExplorerTypesXml(explorerTypesElement, explorerTypes);
+             
         // add the <defaultaccesscontrol> node
         Element defaultAccessControlElement = explorerTypesElement.addElement(N_DEFAULTACCESSCONTROL);
         // create subnode <accesscontrol>            
@@ -811,7 +825,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // return the configured node
         return workplaceElement;
     }
-
+    
+    
+    
+    
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
      */

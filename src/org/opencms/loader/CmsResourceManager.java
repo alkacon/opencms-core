@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2004/10/19 18:05:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,8 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleManager;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -65,7 +67,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -531,16 +533,68 @@ public class CmsResourceManager {
      */
     public void initConfiguration() {
 
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : loaded");
+        }
+    }
+
+    /**
+     * Initializes all additional resource types stored in the modules.<p>
+     * 
+     * @param adminCms an initialized CmsObject with "Admin" permissions
+     */
+    public synchronized void initialize(CmsObject adminCms) {
+        
+        if (((adminCms == null) && (OpenCms.getRunLevel() > 1)) || ((adminCms != null) && !adminCms.isAdmin())) {
+            // null admin cms only allowed during test cases
+            throw new RuntimeException("Admin permissions are required to initialize the module manager");
+        }
+        
+        // open the frozen lists if nescessary
+        if (m_frozen) {
+            m_frozen = false;
+            
+            // build a new resource type list without the module defined resource types
+            Iterator i = new ArrayList(m_resourceTypeList).iterator();
+            m_resourceTypeList = new ArrayList();
+            while (i.hasNext()) {
+                I_CmsResourceType res = (I_CmsResourceType)i.next();
+                if (!res.isAdditionalModuleResourceType()) {
+                    m_resourceTypeList.add(res);
+                }
+            }
+        }
+        
+        // add all resource types declared in the modules
+        CmsModuleManager moduleManager = OpenCms.getModuleManager();
+        Iterator i = moduleManager.getModuleNames().iterator();
+        while (i.hasNext()) {
+            CmsModule module = moduleManager.getModule((String)i.next());           
+            List resTypes = module.getResourceTypes();
+            Iterator j = resTypes.iterator();
+            while (j.hasNext()) {
+                I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
+                try {
+                  addResourceType(resourceType);
+                } catch (CmsConfigurationException e) {
+                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_INIT).error(e);
+                    } 
+                }
+            }
+        }
+ 
+
         // freeze the current configuration
         m_frozen = true;
         m_resourceTypeList = Collections.unmodifiableList(m_resourceTypeList);
         m_loaderList = Collections.unmodifiableList(m_loaderList);
-
+        
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader configuration : finished");
         }
     }
-
+    
     /**    
      * Loads the requested resource and writes the contents to the response stream.<p>
      * 

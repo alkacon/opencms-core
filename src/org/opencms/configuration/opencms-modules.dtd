@@ -32,7 +32,9 @@
 	dependencies?,
 	exportpoints?,
 	resources?,
-	parameters?
+	parameters?,
+	resourcetypes?,
+	explorertypes?
 )>
 
 <!--
@@ -144,3 +146,52 @@
 <!ELEMENT parameters (param*)>
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #REQUIRED>
+
+
+<!-- 
+# Additional resourcetypes to be defined in a module.	
+-->
+<!ELEMENT resourcetypes (type+)>
+<!ELEMENT type (mapping*, param*)>
+<!ATTLIST type class CDATA #REQUIRED>
+
+<!--
+# Settings for the new resource dialog and the contextmenus in the explorer view.
+# Configure which options are shown in the new resource dialog and if resources are 
+# visible and editable depending on the current users group(s). The defaultaccesscontrol
+# describes the default access control settings for all resourcestypes
+-->
+<!ELEMENT explorertypes (explorertype+)>
+
+<!--
+# The resource type name, the key of the localized name and the used icon are required.
+-->
+<!ELEMENT explorertype (
+	newresource,
+	accesscontrol?,
+	editoptions?)>
+<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #REQUIRED reference CDATA #IMPLIED>
+
+<!--
+# The URI for the new resource dialog and the ranking is required.
+-->
+<!ELEMENT newresource EMPTY>
+<!ATTLIST newresource uri CDATA #REQUIRED order CDATA #REQUIRED>
+
+<!--
+# Enter the permissions for OpenCms groups. The flags have the following meaning:
+# +w: the context menu for editing the resource is shown
+# +c: this entry is shown in the new resource dialog for this group
+# +v: resources of the current type are visible in the explorer view
+-->
+<!ELEMENT accesscontrol (accessentry*)>
+<!ELEMENT accessentry EMPTY>
+<!ATTLIST accessentry principal CDATA #REQUIRED permissions CDATA #REQUIRED>
+
+<!--
+# The edit options of the current explorer type. 
+# Don't specify them for the file upload and new link types.
+-->
+<!ELEMENT editoptions (
+	defaultproperties,
+	contextmenu)>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/10/19 18:05:16 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -60,10 +61,25 @@ import org.dom4j.Element;
 public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
     /** The suffix attribute. */
-    protected static final String A_SUFFIX = "suffix";
+    public static final String A_SUFFIX = "suffix";
+
+    /** The node name of an resource type mapping. */
+    public static final String N_MAPPING = "mapping";
+
+    /** The resource types node name. */
+    public static final String N_RESOURCETYPES = "resourcetypes";
+
+    /** The node name of an individual resource type. */
+    public static final String N_TYPE = "type";
 
     /** The widget attribute. */
     protected static final String A_WIDGET = "widget";
+    
+    /** The collector node name. */
+    protected static final String N_COLLECTOR = "collector";
+
+    /** The collectors node name. */
+    protected static final String N_COLLECTORS = "collectors";
 
     /** File translations node name. */
     protected static final String N_FILETRANSLATIONS = "filetranslations";
@@ -74,26 +90,17 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     /** The node name of an individual resource loader. */
     protected static final String N_LOADER = "loader";
 
-    /** The node name of an resource type mapping. */
-    protected static final String N_MAPPING = "mapping";
-
     /** The resource loaders node name. */
     protected static final String N_RESOURCELOADERS = "resourceloaders";
 
     /** The main resource node name. */
     protected static final String N_RESOURCES = "resources";
 
-    /** The resource types node name. */
-    protected static final String N_RESOURCETYPES = "resourcetypes";
-
     /** Individual translation node name. */
     protected static final String N_TRANSLATION = "translation";
 
     /** The translations master node name. */
     protected static final String N_TRANSLATIONS = "translations";
-
-    /** The node name of an individual resource type. */
-    protected static final String N_TYPE = "type";
 
     /** The node name for the version history. */
     protected static final String N_VERSIONHISTORY = "versionhistory";
@@ -106,12 +113,6 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The xmlcontents node name. */
     protected static final String N_XMLCONTENTS = "xmlcontents";
-
-    /** The collectors node name. */
-    protected static final String N_COLLECTORS = "collectors";
-    
-    /** The collector node name. */
-    protected static final String N_COLLECTOR = "collector";
     
     /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
@@ -147,6 +148,51 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         m_folderTranslations = new ArrayList();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". VFS configuration    : initialized");
+        }
+    }
+
+    
+    /**
+     * Creates the xml output for resourcetype nodes.<p>
+     * 
+     * @param startNode the startnode to add all rescource types to
+     * @param resourceTypes the list of resource types
+     * @param module flag, signaling to add them modile resource types or not
+     */
+    public static void generateResourceTypeXml(Element startNode, List resourceTypes, boolean module) {
+
+        for (int i=0; i<resourceTypes.size(); i++) {
+            I_CmsResourceType resType = (I_CmsResourceType)resourceTypes.get(i);
+            // only add this resource type to the xml output, if it is no additional type defined
+            // in a module
+            if (resType.isAdditionalModuleResourceType() == module) {
+                Element resourceType = startNode.addElement(N_TYPE).addAttribute(A_CLASS, resType.getClass().getName());
+                List mappings = (resType).getMapping();
+                for (int j = 0; j < mappings.size(); j++) {
+                    Element mapping = resourceType.addElement(N_MAPPING);
+                    mapping.addAttribute(A_SUFFIX, (String)mappings.get(j));
+                }     
+                ExtendedProperties prop = resType.getConfiguration();
+                if (prop!= null) {
+                    List sortedRuntimeProperties = new ArrayList(prop.keySet());
+                    Collections.sort(sortedRuntimeProperties);
+                    Iterator it = sortedRuntimeProperties.iterator();
+                    while (it.hasNext()) {
+                        String key = (String)it.next();
+                        // create <param name="">value</param> subnodes
+                        Object valueObject = prop.get(key);
+                        String value = new String();
+                        if (valueObject instanceof String) {
+                            value = (String)valueObject;
+                        } else if (valueObject instanceof Integer) {
+                            value = ((Integer)valueObject).toString();
+                        }
+                        resourceType.addElement(N_PARAM)
+                            .addAttribute(A_NAME, key)
+                            .addText(value);
+                    }
+                }
+            }
         }
     }
 
@@ -273,14 +319,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // add resource types
         Element resourcetypesElement = resources.addElement(N_RESOURCETYPES);
         List resourceTypes = m_resourceManager.getResourceTypes();
-        for (int i=0; i<resourceTypes.size(); i++) {
-            Element resourceType = resourcetypesElement.addElement(N_TYPE).addAttribute(A_CLASS, resourceTypes.get(i).getClass().getName());
-            List mappings = ((I_CmsResourceType)resourceTypes.get(i)).getMapping();
-            for (int j = 0; j < mappings.size(); j++) {
-                Element mapping = resourceType.addElement(N_MAPPING);
-                mapping.addAttribute(A_SUFFIX, (String)mappings.get(j));
-            }
-        }
+        generateResourceTypeXml(resourcetypesElement, resourceTypes, false);
         
         // add VFS content collectors
         Element collectorsElement = resources.addElement(N_COLLECTORS);
@@ -329,7 +368,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // return the vfs node
         return vfs;
     }
-
+    
+    
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
      */

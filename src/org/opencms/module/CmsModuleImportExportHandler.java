@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2004/09/20 08:16:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -67,7 +68,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2004/09/20 08:16:18 $
+ * @version $Revision: 1.6 $ $Date: 2004/10/29 13:46:41 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
@@ -414,6 +415,7 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
         
         // read the module from the import file
         CmsModule importedModule = readModuleFromImport(importResource);
+   
         
         // check if the module is already istalled
         if (OpenCms.getModuleManager().hasModule(importedModule.getName())) {
@@ -432,6 +434,18 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
             }
             throw new CmsConfigurationException("The following dependencies for the module are not fulfilled:\n" + missingModules, CmsConfigurationException.C_CONFIGURATION_MODULE_DEPENDENCIES);
         }
+
+        //  add the imported module to the module manager
+        OpenCms.getModuleManager().addModule(cms, importedModule);
+        
+        // reinitialize the resource manager with additional module resourcetypes if nescessary
+        if (importedModule.getResourceTypes() != Collections.EMPTY_LIST) {
+            OpenCms.getResourceManager().initialize(cms);
+        }    
+        // reinitialize the workplace manager with addititonal module explorertypes if nescessary
+        if (importedModule.getExplorerTypes() != Collections.EMPTY_LIST) {
+            OpenCms.getWorkplaceManager().addExplorerTypeSettings(cms, importedModule.getExplorerTypes());
+        }   
         
         Vector exclusion = new Vector();
         // add all default directories to the exclusion list
@@ -451,10 +465,7 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
 
         // import the module resources
         CmsImport cmsImport = new CmsImport(cms, importResource, "/", report);
-        cmsImport.importResources(exclusion, new Vector(), new Vector(), null, null);
-        
-        // finally add the imported module to the module manager
-        OpenCms.getModuleManager().addModule(cms, importedModule);
+        cmsImport.importResources(exclusion, new Vector(), new Vector(), null, null);               
     }
     
 }

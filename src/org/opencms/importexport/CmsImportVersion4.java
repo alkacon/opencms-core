@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/10/14 08:22:13 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -145,6 +145,209 @@ public class CmsImportVersion4 extends A_CmsImport {
             cleanUp();
         }
     }
+
+    /**
+     * Imports a single user.<p>
+     * @param name user name
+     * @param description user description
+     * @param flags user flags
+     * @param password user password 
+     * @param firstname firstname of the user
+     * @param lastname lastname of the user
+     * @param email user email
+     * @param address user address 
+     * @param type user type
+     * @param userInfo user info
+     * @param userGroups user groups
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    protected void importUser(String name, String description, String flags, String password, String firstname, String lastname, String email, String address, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
+     
+        if (!"com.opencms.legacy.CmsLegacyPasswordHandler".equals(OpenCms.getPasswordHandler().getClass().getName())) {
+            password = convertDigestEncoding(password);
+        }
+        super.importUser(name, description, flags, password, firstname, lastname, email, address, type, userInfo, userGroups);
+    }
+
+    /**
+     * Convert a given timestamp from a String format to a long value.<p>
+     * 
+     * The timestamp is either the string representation of a long value (old export format)
+     * or a user-readable string format.
+     * 
+     * @param timestamp timestamp to convert
+     * @return long value of the timestamp
+     */
+    private long convertTimestamp(String timestamp) {
+        long value = 0;
+        // try to parse the timestamp string
+        // if it successes, its an old style long value
+        try {
+            value = Long.parseLong(timestamp);
+            
+        } catch (NumberFormatException e) {           
+            // the timestamp was in in a user-readable string format, create the long value form it
+            try {
+                value = CmsDateUtil.parseHeaderDate(timestamp);
+            } catch (ParseException pe) {
+                value = System.currentTimeMillis();
+            }
+        }
+        return value;
+    }
+
+   /**
+     * Imports a resource (file or folder) into the cms.<p>
+     * 
+     * @param source the path to the source-file
+     * @param destination the path to the destination-file in the cms
+     * @param resType the resource-type of the file
+     * @param loaderId the loader id of the resource
+     * @param uuidresource  the resource uuid of the resource
+     * @param datelastmodified the last modification date of the resource
+     * @param userlastmodified the user who made the last modifications to the resource
+     * @param datecreated the creation date of the resource
+     * @param usercreated the user who created 
+     * @param datereleased the release date of the resource
+     * @param dateexpired the expire date of the resource
+     * @param flags the flags of the resource     
+     * @param properties a hashtable with properties for this resource
+     * 
+     * @return imported resource
+     */
+    private CmsResource importResource(
+        String source, 
+        String destination,         
+        int resType, 
+        String uuidresource, 
+        long datelastmodified, 
+        String userlastmodified, 
+        long datecreated, 
+        String usercreated, 
+        long datereleased, 
+        long dateexpired, 
+        String flags, 
+        List properties) {
+
+        byte[] content = null;
+        CmsResource res = null;
+
+        try {
+            // get the file content
+            if (source != null) {
+                content = getFileBytes(source);
+            }
+            int size = 0;
+            if (content != null) {
+                size = content.length;
+            }
+
+            // get UUIDs for the user   
+            CmsUUID newUserlastmodified;
+            CmsUUID newUsercreated;
+            // check if user created and user lastmodified are valid users in this system.
+            // if not, use the current user
+            try {
+                newUserlastmodified = m_cms.readUser(userlastmodified).getId();
+            } catch (CmsException e) {
+                newUserlastmodified = m_cms.getRequestContext().currentUser().getId();
+                // datelastmodified = System.currentTimeMillis();
+            }
+
+            try {
+                newUsercreated = m_cms.readUser(usercreated).getId();
+            } catch (CmsException e) {
+                newUsercreated = m_cms.getRequestContext().currentUser().getId();
+                // datecreated = System.currentTimeMillis();
+            }
+
+            // get UUIDs for the resource and content        
+            CmsUUID newUuidresource = null;
+            if ((uuidresource != null) && (resType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID)) {
+                // create a UUID from the provided string
+                newUuidresource = new CmsUUID(uuidresource);
+            } else {
+                // folders get always a new resource record UUID
+                newUuidresource = new CmsUUID();
+            }
+            
+            // extract the name of the resource form the destination
+            String resname = destination;
+            if (resname.endsWith("/")) {
+                resname = resname.substring(0, resname.length() - 1);
+            }
+            if (resname.lastIndexOf("/") > 0) {
+                resname = resname.substring(resname.lastIndexOf("/") + 1, resname.length());
+            }
+
+            // convert to xml page if wanted
+            if (m_convertToXmlPage 
+            && (resType == A_CmsImport.C_RESOURCE_TYPE_PAGE_ID 
+                || resType == C_RESOURCE_TYPE_NEWPAGE_ID)) {
+                
+                if (content != null) {
+                    //get the encoding
+                    String encoding = null;                    
+                    encoding = CmsProperty.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, properties).getValue();
+                    if (encoding == null) {
+                        encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                    }  
+                    
+                    CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content, encoding), "body", getLocale(destination, properties), encoding);                     
+                    content = xmlPage.marshal();
+                }
+                resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
+            }
+            
+            // create a new CmsResource                         
+            CmsResource resource = new CmsResource(
+                new CmsUUID(), // structure ID is always a new UUID
+                newUuidresource, 
+                destination,
+                resType,
+                new Integer(flags).intValue(),
+                m_cms.getRequestContext().currentProject().getId(), 
+                I_CmsConstants.C_STATE_NEW, 
+                datecreated, 
+                newUsercreated,
+                datelastmodified, 
+                newUserlastmodified, 
+                datereleased, 
+                dateexpired, 
+                1,
+                size
+            );
+             
+            if (C_RESOURCE_TYPE_LINK_ID == resType) {
+                // store links for later conversion
+                m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
+                m_linkStorage.put(/* m_importPath + */destination, new String(content));
+                m_linkPropertyStorage.put(/* m_importPath + */destination, properties);                
+                res = resource;
+            } else {             
+                // import this resource in the VFS   
+                res = m_cms.importResource(/* m_importPath + */destination, resource, content, properties);
+            }
+
+            if (res != null) {
+                if (C_RESOURCE_TYPE_PAGE_ID == resType) {
+                    m_importedPages.add(/* I_CmsConstants.C_FOLDER_SEPARATOR + */destination);
+                }
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            }          
+        } catch (Exception exc) {
+            // an error while importing the file
+            m_report.println(exc);
+            try {
+                // Sleep some time after an error so that the report output has a chance to keep up
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                // 
+            }
+        }
+        return res;
+    }
   
     /**
      * Reads all file nodes plus their meta-information (properties, ACL) 
@@ -218,8 +421,8 @@ public class CmsImportVersion4 extends A_CmsImport {
                 } else if (C_RESOURCE_TYPE_LINK_NAME.equals(type)) {
                     resType = C_RESOURCE_TYPE_LINK_ID;
                 } else {
-                    I_CmsResourceType rt = OpenCms.getResourceManager().getResourceType(type);
-                    resType = rt.getTypeId();
+                     I_CmsResourceType rt = OpenCms.getResourceManager().getResourceType(type);
+                     resType = rt.getTypeId();
                 }
 
                 if (resType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
@@ -398,209 +601,6 @@ public class CmsImportVersion4 extends A_CmsImport {
                 m_cms.getRequestContext().restoreSiteRoot();
             }
         }
-    }
-
-   /**
-     * Imports a resource (file or folder) into the cms.<p>
-     * 
-     * @param source the path to the source-file
-     * @param destination the path to the destination-file in the cms
-     * @param resType the resource-type of the file
-     * @param loaderId the loader id of the resource
-     * @param uuidresource  the resource uuid of the resource
-     * @param datelastmodified the last modification date of the resource
-     * @param userlastmodified the user who made the last modifications to the resource
-     * @param datecreated the creation date of the resource
-     * @param usercreated the user who created 
-     * @param datereleased the release date of the resource
-     * @param dateexpired the expire date of the resource
-     * @param flags the flags of the resource     
-     * @param properties a hashtable with properties for this resource
-     * 
-     * @return imported resource
-     */
-    private CmsResource importResource(
-        String source, 
-        String destination,         
-        int resType, 
-        String uuidresource, 
-        long datelastmodified, 
-        String userlastmodified, 
-        long datecreated, 
-        String usercreated, 
-        long datereleased, 
-        long dateexpired, 
-        String flags, 
-        List properties) {
-
-        byte[] content = null;
-        CmsResource res = null;
-
-        try {
-            // get the file content
-            if (source != null) {
-                content = getFileBytes(source);
-            }
-            int size = 0;
-            if (content != null) {
-                size = content.length;
-            }
-
-            // get UUIDs for the user   
-            CmsUUID newUserlastmodified;
-            CmsUUID newUsercreated;
-            // check if user created and user lastmodified are valid users in this system.
-            // if not, use the current user
-            try {
-                newUserlastmodified = m_cms.readUser(userlastmodified).getId();
-            } catch (CmsException e) {
-                newUserlastmodified = m_cms.getRequestContext().currentUser().getId();
-                // datelastmodified = System.currentTimeMillis();
-            }
-
-            try {
-                newUsercreated = m_cms.readUser(usercreated).getId();
-            } catch (CmsException e) {
-                newUsercreated = m_cms.getRequestContext().currentUser().getId();
-                // datecreated = System.currentTimeMillis();
-            }
-
-            // get UUIDs for the resource and content        
-            CmsUUID newUuidresource = null;
-            if ((uuidresource != null) && (resType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID)) {
-                // create a UUID from the provided string
-                newUuidresource = new CmsUUID(uuidresource);
-            } else {
-                // folders get always a new resource record UUID
-                newUuidresource = new CmsUUID();
-            }
-            
-            // extract the name of the resource form the destination
-            String resname = destination;
-            if (resname.endsWith("/")) {
-                resname = resname.substring(0, resname.length() - 1);
-            }
-            if (resname.lastIndexOf("/") > 0) {
-                resname = resname.substring(resname.lastIndexOf("/") + 1, resname.length());
-            }
-
-            // convert to xml page if wanted
-            if (m_convertToXmlPage 
-            && (resType == A_CmsImport.C_RESOURCE_TYPE_PAGE_ID 
-                || resType == C_RESOURCE_TYPE_NEWPAGE_ID)) {
-                
-                if (content != null) {
-                    //get the encoding
-                    String encoding = null;                    
-                    encoding = CmsProperty.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, properties).getValue();
-                    if (encoding == null) {
-                        encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-                    }  
-                    
-                    CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content, encoding), "body", getLocale(destination, properties), encoding);                     
-                    content = xmlPage.marshal();
-                }
-                resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
-            }
-            
-            // create a new CmsResource                         
-            CmsResource resource = new CmsResource(
-                new CmsUUID(), // structure ID is always a new UUID
-                newUuidresource, 
-                destination,
-                resType,
-                new Integer(flags).intValue(),
-                m_cms.getRequestContext().currentProject().getId(), 
-                I_CmsConstants.C_STATE_NEW, 
-                datecreated, 
-                newUsercreated,
-                datelastmodified, 
-                newUserlastmodified, 
-                datereleased, 
-                dateexpired, 
-                1,
-                size
-            );
-             
-            if (C_RESOURCE_TYPE_LINK_ID == resType) {
-                // store links for later conversion
-                m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
-                m_linkStorage.put(/* m_importPath + */destination, new String(content));
-                m_linkPropertyStorage.put(/* m_importPath + */destination, properties);                
-                res = resource;
-            } else {             
-                // import this resource in the VFS   
-                res = m_cms.importResource(/* m_importPath + */destination, resource, content, properties);
-            }
-
-            if (res != null) {
-                if (C_RESOURCE_TYPE_PAGE_ID == resType) {
-                    m_importedPages.add(/* I_CmsConstants.C_FOLDER_SEPARATOR + */destination);
-                }
-                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-            }          
-        } catch (Exception exc) {
-            // an error while importing the file
-            m_report.println(exc);
-            try {
-                // Sleep some time after an error so that the report output has a chance to keep up
-                Thread.sleep(1000);
-            } catch (Exception e) {
-                // 
-            }
-        }
-        return res;
-    }
-
-    /**
-     * Imports a single user.<p>
-     * @param name user name
-     * @param description user description
-     * @param flags user flags
-     * @param password user password 
-     * @param firstname firstname of the user
-     * @param lastname lastname of the user
-     * @param email user email
-     * @param address user address 
-     * @param type user type
-     * @param userInfo user info
-     * @param userGroups user groups
-     * 
-     * @throws CmsException in case something goes wrong
-     */
-    protected void importUser(String name, String description, String flags, String password, String firstname, String lastname, String email, String address, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
-     
-        if (!"com.opencms.legacy.CmsLegacyPasswordHandler".equals(OpenCms.getPasswordHandler().getClass().getName())) {
-            password = convertDigestEncoding(password);
-        }
-        super.importUser(name, description, flags, password, firstname, lastname, email, address, type, userInfo, userGroups);
-    }
-
-    /**
-     * Convert a given timestamp from a String format to a long value.<p>
-     * 
-     * The timestamp is either the string representation of a long value (old export format)
-     * or a user-readable string format.
-     * 
-     * @param timestamp timestamp to convert
-     * @return long value of the timestamp
-     */
-    private long convertTimestamp(String timestamp) {
-        long value = 0;
-        // try to parse the timestamp string
-        // if it successes, its an old style long value
-        try {
-            value = Long.parseLong(timestamp);
-            
-        } catch (NumberFormatException e) {           
-            // the timestamp was in in a user-readable string format, create the long value form it
-            try {
-                value = CmsDateUtil.parseHeaderDate(timestamp);
-            } catch (ParseException pe) {
-                value = System.currentTimeMillis();
-            }
-        }
-        return value;
     }
     
     

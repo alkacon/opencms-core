@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/10/28 12:58:07 $
- * Version: $Revision: 1.148 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.149 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.148 $
+ * @version $Revision: 1.149 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -144,9 +144,6 @@ public final class OpenCmsCore {
 
     /** Directory translator, used to translate all accesses to resources. */
     private CmsResourceTranslator m_directoryTranslator;
-    
-    /** The security manager to access the database and validate user permissions. */
-    private CmsSecurityManager m_securityManager;
 
     /** List to save the event listeners in. */
     private Map m_eventListeners;
@@ -201,6 +198,9 @@ public final class OpenCmsCore {
 
     /** The search manager provides indexing and searching. */
     private CmsSearchManager m_searchManager;
+    
+    /** The security manager to access the database and validate user permissions. */
+    private CmsSecurityManager m_securityManager;
 
     /** The session info storage for all active users. */
     private CmsSessionInfoManager m_sessionInfoManager;
@@ -596,6 +596,15 @@ public final class OpenCmsCore {
         
         return m_moduleManager;
     }
+
+    /**
+     * Return the password handler.<p>
+     * 
+     * @return the password handler
+     */
+    protected I_CmsPasswordHandler getPasswordHandler() {
+        return m_passwordHandler;
+    }
     
     /**
      * Returns the handler instance for the specified name, 
@@ -606,15 +615,6 @@ public final class OpenCmsCore {
      */
     protected I_CmsRequestHandler getRequestHandler(String name) {
         return (I_CmsRequestHandler)m_requestHandlers.get(name);
-    }
-
-    /**
-     * Return the password handler.<p>
-     * 
-     * @return the password handler
-     */
-    protected I_CmsPasswordHandler getPasswordHandler() {
-        return m_passwordHandler;
     }
     
     /**
@@ -675,6 +675,16 @@ public final class OpenCmsCore {
      */
     protected CmsSearchManager getSearchManager() {
         return m_searchManager;
+    }
+    
+    /**
+     * Returns the initialized OpenCms security manager.<p>
+     * 
+     * @return the initialized OpenCms security manager
+     */
+    protected CmsSecurityManager getSecurityManager() {
+        
+        return m_securityManager;
     }
 
     /**
@@ -1040,6 +1050,9 @@ public final class OpenCmsCore {
 
         // intialize the module manager
         m_moduleManager.initialize(adminCms, m_configurationManager);
+        
+        // initialize the resource manager
+        m_resourceManager.initialize(adminCms);
     }
 
     /**
@@ -2042,16 +2055,6 @@ public final class OpenCmsCore {
                 }
             }
         }
-    }
-    
-    /**
-     * Returns the initialized OpenCms security manager.<p>
-     * 
-     * @return the initialized OpenCms security manager
-     */
-    protected CmsSecurityManager getSecurityManager() {
-        
-        return m_securityManager;
     }
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/10/22 15:06:54 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/10/29 13:46:41 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleManager;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
@@ -76,7 +78,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.3.1
  */
@@ -218,7 +220,35 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adding type setting  : " + settings.getName());
         }
     }
-
+ 
+    /** 
+     * Adds a list of explorer type settings to the list of all type settings.<p>
+     * 
+     * Removes the type settings as well to a map with the resource type name as key.
+     * 
+     * @param cms the current CmsObject
+     * @param explorerTypes the list of explorer type settings to be added
+     */
+    public void addExplorerTypeSettings(CmsObject cms, List explorerTypes) {
+        
+        Iterator i = explorerTypes.iterator();
+        while (i.hasNext()) {
+            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+            try {
+                m_explorerTypeSettings.add(settings);
+                m_explorerTypeSettingsMap.put(settings.getName(), settings);
+                settings.getAccess().createAccessControlList(cms);              
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adding type setting  : " + settings.getName());
+                }
+            } catch (CmsException e) {
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". could not add type setting  : " + settings.getName() + ":" + e);
+                }
+            }
+        }
+    }
+    
     /**
      * Adds newly created export point to the workplace configuration.<p>
      * 
@@ -574,6 +604,19 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 "Workplace manager initialization can only be done by an OpenCms Administrator",
                 CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
+        
+        // add the additional explorer types found in the modules
+        CmsModuleManager moduleManager = OpenCms.getModuleManager();
+        Iterator j = moduleManager.getModuleNames().iterator();
+        while (j.hasNext()) {
+            CmsModule module = moduleManager.getModule((String)j.next());           
+            List explorerTypes = module.getExplorerTypes();
+            Iterator l = explorerTypes.iterator();
+            while (l.hasNext()) {
+                CmsExplorerTypeSettings explorerType = (CmsExplorerTypeSettings)l.next();
+                addExplorerTypeSetting(explorerType);
+            }
+        }                
         // initialize the workplace views
         initWorkplaceViews(cms);
         // initialize the workplace editor manager
@@ -624,6 +667,30 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public boolean isEnableAdvancedPropertyTabs() {
 
         return m_enableAdvancedPropertyTabs;
+    }
+    
+    
+    /** 
+     * Removes a list of explorer type settings from the list of all type settings.<p>
+     * 
+     * Removes the type settings as well from a map with the resource type name as key.
+     * 
+     * @param explorerTypes the list of explorer type settings to be removed
+     */
+    public void removeExplorerTypeSettings(List explorerTypes) {
+        Iterator i = explorerTypes.iterator();
+        while (i.hasNext()) {
+            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+            if (m_explorerTypeSettings.contains(settings)) {        
+                m_explorerTypeSettings.remove(settings);
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Remove type setting  : " + settings.getName());
+                }
+            }
+            if (m_explorerTypeSettingsMap.containsKey(settings.getName())) {
+                m_explorerTypeSettingsMap.remove(settings.getName());
+            }
+        }
     }
 
     /**
