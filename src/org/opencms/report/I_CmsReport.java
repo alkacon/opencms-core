@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2003/10/01 14:05:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/10/08 18:11:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,19 +39,19 @@ import com.opencms.linkmanagement.CmsPageLinks;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public interface I_CmsReport {
-
-    // some statics to indicate the formatting
-    int C_FORMAT_DEFAULT = 0;
-    int C_FORMAT_WARNING = 1;
-    int C_FORMAT_HEADLINE = 2;
-    int C_FORMAT_NOTE = 3;  
-    int C_FORMAT_OK = 4;      
         
     /** The name of the property file */
     String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
+
+    // some statics to indicate the formatting
+    int C_FORMAT_DEFAULT = 0;
+    int C_FORMAT_HEADLINE = 2;
+    int C_FORMAT_NOTE = 3;  
+    int C_FORMAT_OK = 4;      
+    int C_FORMAT_WARNING = 1;
     
     /**
      * Adds a bundle specified by it's name to the List of resource bundles.<p>
@@ -60,69 +60,7 @@ public interface I_CmsReport {
      * @param locale a 2-letter language code according to ISO 639 
      */
     void addBundle(String bundleName, String locale);
-        
-    /**
-     * Adds a line break to the report.<p>
-     */
-    void println();
-
-    /**
-     * Prints a String to the report.<p>
-     * 
-     * @param value the String to add
-     */
-    void print(String value);
-
-    /**
-     * Prints a String with line break to the report.<p>
-     *
-     * @param value the String to add
-     */
-    void println(String value);
-
-    /**
-     * Prints a String to the report, using the indicated formatting.<p>
-     * 
-     * Use the contants starting with <code>C_FORMAT</code> from this interface
-     * to indicate which formatting to use.<p>
-     *
-     * @param value the String to add
-     * @param format the formatting to use for the output
-     */
-    void print(String value, int format);
-
-    /**
-     * Prints a String with line break to the report, using the indicated formatting.<p>
-     * 
-     * Use the contants starting with <code>C_FORMAT</code> from this interface
-     * to indicate which formatting to use.<p>
-     *
-     * @param value the String to add
-     * @param format the formatting to use for the output
-     */
-    void println(String value, int format);
-    
-    /**
-     * Adds a CmsPageLinks object to the report<p>
-     * 
-     * The object will be stored and the output will later be processed
-     * in a special way.<p>
-     *
-     * @param value the CmsPageLinks object to add to the report
-     */
-    void println(CmsPageLinks value);        
-
-    /**
-     * Adds an Exception to the report, ensuring that the Exception content is
-     * processed to generate a valid output esp. for HTML pages.<p>
-     * 
-     * The exception will be stored and the output will later be processed
-     * in a special way.<p>    
-     * 
-     * @param t the exception to add
-     */
-    void println(Throwable t);
-        
+           
     /**
      * Updates this report, this processes all new output added since 
      * the last call to this method.<p>
@@ -133,6 +71,13 @@ public interface I_CmsReport {
      * @return new elements that have been added to the report and not yet processed.
      */
     String getReportUpdate();
+ 
+    /** 
+     * Returns the time this report has been running.<p>
+     * 
+     * @return the time this report has been running
+     */
+    long getRuntime();
     
     /**
      * Gets the localized resource string for a given message key.<p>
@@ -146,4 +91,78 @@ public interface I_CmsReport {
      * @see com.opencms.flex.util.CmsMessages#key(String)
      */
     String key(String keyName);
+
+    /**
+     * Prints a String to the report.<p>
+     * 
+     * @param value the String to add
+     */
+    void print(String value);
+
+    /**
+     * Prints a String to the report, using the indicated formatting.<p>
+     * 
+     * Use the contants starting with <code>C_FORMAT</code> from this interface
+     * to indicate which formatting to use.<p>
+     *
+     * @param value the String to add
+     * @param format the formatting to use for the output
+     */
+    void print(String value, int format);
+        
+    /**
+     * Adds a line break to the report.<p>
+     */
+    void println();
+    
+    /**
+     * Adds a CmsPageLinks object to the report<p>
+     * 
+     * The object will be stored and the output will later be processed
+     * in a special way.<p>
+     *
+     * @param value the CmsPageLinks object to add to the report
+     */
+    void println(CmsPageLinks value);        
+
+    /**
+     * Prints a String with line break to the report.<p>
+     *
+     * @param value the String to add
+     */
+    void println(String value);
+
+    /**
+     * Prints a String with line break to the report, using the indicated formatting.<p>
+     * 
+     * Use the contants starting with <code>C_FORMAT</code> from this interface
+     * to indicate which formatting to use.<p>
+     *
+     * @param value the String to add
+     * @param format the formatting to use for the output
+     */
+    void println(String value, int format);
+
+    /**
+     * Adds an Exception to the report, ensuring that the Exception content is
+     * processed to generate a valid output esp. for HTML pages.<p>
+     * 
+     * The exception will be stored and the output will later be processed
+     * in a special way.<p>    
+     * 
+     * @param t the exception to add
+     */
+    void println(Throwable t);
+    
+    /**
+     * Formats the runtime formatted as "hh:mm:ss".<p>
+     * 
+     * @return the runtime formatted as "hh:mm:ss"
+     */
+    String formatRuntime();
+    
+    /**
+     * Resets the runtime to 0 milliseconds.<p>
+     */
+    void resetRuntime();
 }

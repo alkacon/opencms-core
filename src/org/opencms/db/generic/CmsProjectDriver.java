@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/06 14:46:21 $
- * Version: $Revision: 1.122 $
+ * Date   : $Date: 2003/10/08 18:11:13 $
+ * Version: $Revision: 1.123 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.122 $ $Date: 2003/10/06 14:46:21 $
+ * @version $Revision: 1.123 $ $Date: 2003/10/08 18:11:13 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1301,7 +1301,10 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         List projectResources = null;
         Map sortedFolderMap = null;
         List sortedFolderList = null;
-        int m, n;
+        int n;
+        int publishedFolderCount = 0;
+        int deletedFolderCount = 0;
+        int publishedFileCount = 0;
         Set publishedContentIds = (Set) new HashSet();
 
         try {
@@ -1356,7 +1359,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             offlineFolders.clear();
             offlineFolders = null;
 
-            m = 1;
+            publishedFolderCount = 0;
             n = sortedFolderList.size();
             i = sortedFolderList.iterator();
 
@@ -1373,12 +1376,12 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     deletedFolders.add(currentFolder);
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
                     // bounce the current publish task through all project drivers
-                    m_driverManager.getProjectDriver().publishFolder(context, report, m++, n, onlineProject, currentFolder, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
+                    m_driverManager.getProjectDriver().publishFolder(context, report, ++publishedFolderCount, n, onlineProject, currentFolder, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
                     // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
                     internalResetResourceState(context, currentFolder);                                    
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
                     // bounce the current publish task through all project drivers
-                    m_driverManager.getProjectDriver().publishFolder(context, report, m++, n, onlineProject, currentFolder, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
+                    m_driverManager.getProjectDriver().publishFolder(context, report, ++publishedFolderCount, n, onlineProject, currentFolder, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
                     // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
                     internalResetResourceState(context, currentFolder);                                    
                 }
@@ -1477,7 +1480,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 }
             }
 
-            m = 1;
+            publishedFileCount = 0;
             n = offlineFiles.size();
             i = offlineFiles.iterator();
 
@@ -1491,7 +1494,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 currentFileHeader.setFullResourceName(currentResourceName);
                 
                 // bounce the current publish task through all project drivers
-                m_driverManager.getProjectDriver().publishFile(context, report, m++, n, onlineProject, currentFileHeader, publishedContentIds, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
+                m_driverManager.getProjectDriver().publishFile(context, report, ++publishedFileCount, n, onlineProject, currentFileHeader, publishedContentIds, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
                 
                 if (currentFileHeader.getState() != I_CmsConstants.C_STATE_DELETED) {
                     // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
@@ -1540,7 +1543,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 deletedFolders = null;
             }
 
-            m = 1;
+            deletedFolderCount = 0;
             n = sortedFolderList.size();
             i = sortedFolderList.iterator();
 
@@ -1553,7 +1556,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 currentFolder = (CmsFolder) sortedFolderMap.get(currentResourceName);
 
                 // bounce the current publish task through all project drivers
-                m_driverManager.getProjectDriver().publishDeletedFolder(context, report, m++, n, onlineProject, currentFolder, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
+                m_driverManager.getProjectDriver().publishDeletedFolder(context, report, ++deletedFolderCount, n, onlineProject, currentFolder, backupEnabled, publishDate, publishHistoryId, backupTagId, maxVersions);
 
                 i.remove();
             }
@@ -1619,7 +1622,24 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             currentFileHeader = null;
-            currentFolder = null;
+            currentFolder = null;    
+                        
+            StringBuffer stats = new StringBuffer();
+            stats.append(report.key("report.publish_stats"));
+            stats.append(report.key("report.publish_stats_files"));
+            stats.append(publishedFileCount);
+            stats.append(report.key("report.publish_stats_folders"));
+            stats.append(publishedFolderCount);
+            stats.append(report.key("report.publish_stats_deleted_folders"));
+            stats.append(deletedFolderCount);
+            stats.append(report.key("report.publish_stats_duration"));
+            stats.append(report.formatRuntime()); 
+            
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(stats.toString());
+            }
+            
+            report.println(stats.toString());
         }
     }
 

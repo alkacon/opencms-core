@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2003/10/01 14:05:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/10/08 18:11:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.report;
 
-import com.opencms.flex.util.CmsMessages;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -41,13 +40,9 @@ import com.opencms.workplace.I_CmsWpConstants;
  * It stores nothing. It just prints everthing to <code>System.out</code>.
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
-public class CmsShellReport implements I_CmsReport {
-
-    /** Localized message access object */
-    private CmsMessages m_messages;
-
+public class CmsShellReport extends A_CmsReport {
         
     /**
      * Empty default constructor. 
@@ -55,6 +50,7 @@ public class CmsShellReport implements I_CmsReport {
      * @see java.lang.Object#Object()
      */
     public CmsShellReport() {
+        // generate a message object with the default (english) language
         this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LANGUAGE);    
     }
 
@@ -66,30 +62,16 @@ public class CmsShellReport implements I_CmsReport {
      * @param bundleName the name of the resource bundle with localized strings
      */      
     public CmsShellReport(String bundleName, String locale) {
-        // generate a message object with the default (english) language
-        m_messages = new CmsMessages(bundleName, locale);        
+        init();     
+        addBundle(bundleName, locale);
     }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#addBundle(java.lang.String, java.lang.String)
-     */
-    public void addBundle(String bundleName, String locale) {
-        return;        
-    }       
     
     /**
      * @see org.opencms.report.I_CmsReport#getReportUpdate()
      */
     public synchronized String getReportUpdate() {
         return "";
-    }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#key(java.lang.String)
-     */
-    public String key(String keyName) {
-        return m_messages.key(keyName);
-    }
+    }    
 
     /**
      * @see org.opencms.report.I_CmsReport#print(java.lang.String)
@@ -137,7 +119,7 @@ public class CmsShellReport implements I_CmsReport {
     public synchronized void println(CmsPageLinks value) {        
         this.println(value.getResourceName());
         for (int index=0; index<value.getLinkTargets().size(); index++) {
-            this.println("     " + m_messages.key("report.broken_link_to") + (String)value.getLinkTargets().elementAt(index));
+            this.println("     " + key("report.broken_link_to") + (String)value.getLinkTargets().elementAt(index));
         }
     }
     
@@ -179,7 +161,7 @@ public class CmsShellReport implements I_CmsReport {
      */
     public synchronized void println(Throwable t) {
         StringBuffer buf = new StringBuffer();        
-        buf.append(m_messages.key("report.exception"));   
+        buf.append(key("report.exception"));   
         buf.append(t.getMessage());
         this.println(new String(buf), C_FORMAT_WARNING);
         t.printStackTrace(System.out);

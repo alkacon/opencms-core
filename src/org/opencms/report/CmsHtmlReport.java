@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/10/01 14:05:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/10/08 18:11:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.report;
 
 import org.opencms.util.CmsStringSubstitution;
 
-import com.opencms.flex.util.CmsMessages;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
@@ -47,9 +46,9 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
-public class CmsHtmlReport implements I_CmsReport {
+public class CmsHtmlReport extends A_CmsReport {
     
     /** Constant for a HTML linebreak with added "real" line break) */
     private static final String C_LINEBREAK = "<br>\\n";
@@ -61,10 +60,7 @@ public class CmsHtmlReport implements I_CmsReport {
      * Counter to remember what is already shown,
      * indicates the next index of the m_content list that has to be reported
      */
-    private int m_indexNext;
-    
-    /** Localized message access object */
-    private List m_messages;        
+    private int m_indexNext;        
     
     /** Flag to indicate if exception should be displayed long or short */
     private boolean m_showExceptionStackTracke; 
@@ -88,27 +84,11 @@ public class CmsHtmlReport implements I_CmsReport {
      * @param bundleName the name of the resource bundle with localized strings
      */    
     public CmsHtmlReport(String bundleName, String locale) {
-        m_messages = (List) new ArrayList();
+        init();
         addBundle(bundleName, locale);
         m_content = new ArrayList(256);
         m_showExceptionStackTracke = true;
     }      
-    
-    /**
-     * Adds a bundle specified by it's name to the List of resource bundles.<p>
-     * 
-     * @param bundleName the name of the resource bundle with localized strings
-     * @param locale a 2-letter language code according to ISO 639 
-     */
-    public void addBundle(String bundleName, String locale) {
-        CmsMessages msg = new CmsMessages(bundleName, locale);
-
-        if (m_messages.contains(msg)) {
-            m_messages.remove(msg);
-        }
-
-        m_messages.add(msg);
-    }    
     
     /**
      * Converts chars and removes linebreaks from a String.<p>
@@ -224,22 +204,7 @@ public class CmsHtmlReport implements I_CmsReport {
         m_indexNext = indexEnd;
 
         return result.toString();
-    }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#key(java.lang.String)
-     */
-    public String key(String keyName) {
-        for (int i=0, l=m_messages.size(); i < l; i++) {
-            CmsMessages msg = (CmsMessages)m_messages.get(i);
-            String key = msg.key(keyName, (i < (l-1)));
-            if (key != null) {
-                return key;
-            }
-        }         
-        // if not found, check in 
-        return CmsMessages.formatUnknownKey(keyName);
-    }
+    }  
 
     /**
      * @see org.opencms.report.I_CmsReport#print(java.lang.String)
