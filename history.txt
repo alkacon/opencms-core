@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/01/28 14:12:27 $
- * Version: $Revision: 1.437 $
+ * Date   : $Date: 2003/01/29 17:25:11 $
+ * Version: $Revision: 1.438 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,10 @@ OpenCms 5.0 (next version)
 * Fixed issues #43, 44 and 45 from Bugzilla
 * CmsMethodElement could produce NullPointerExceptions in rare circumstances
 * Fixed issue with text editor not displaying save/exit buttons in IE if ActiveX is not installed
+- The Italian locale has been moved to a separate module "com.opencms.locales.it" and is
+  not longer part of the core distribution as we have no resources to continually update it
+- All ResourceBundles for localization have been combined in 
+  com/opencms/workplace/workplace.properties for easier translation
 - Improved language handling in workplace.CmsNewExplorerFileList, current Workplace language now stored in session
 - Added CmsXmlLanguageFile optimization from the 4_7x branch
 - Removed errors in JavaDocs and added package.html to all packages
