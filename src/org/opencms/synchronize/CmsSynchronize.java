@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/08/28 13:53:41 $
- * Version: $Revision: 1.8 $
- * Date   : $Date: 2003/08/28 13:53:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/28 13:54:34 $
+ * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/28 13:54:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/08/28 13:53:41 $
+ * @version $Revision: 1.9 $ $Date: 2003/08/28 13:54:34 $
  */
 public class CmsSynchronize {
 
@@ -336,7 +336,6 @@ public class CmsSynchronize {
             for (int i = 0; i < res.length; i++) {                
                 // get the relative filename
                 String resname = res[i].getAbsolutePath();
-                log("[copyFromFS] "+resname);
                 resname = resname.substring(m_synchronizePath.length(), resname.length());
                 // translate the folder seperator if nescessary
                 resname = resname.replace(File.separatorChar, '/');
@@ -346,6 +345,7 @@ public class CmsSynchronize {
                     if (!m_newSyncList.containsKey(translate(resname))) {
                         // this file does not exist in the VFS, so import it
                         importToVfs(res[i], resname, folder);
+                        log("[copyFromFS] "+resname);
                     }
                 } else {
                     // do a recursion if the current resource is a folder
