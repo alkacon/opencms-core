@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/03/27 14:06:01 $
-* Version: $Revision: 1.225 $
+* Date   : $Date: 2002/04/05 06:36:10 $
+* Version: $Revision: 1.226 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.225 $ $Date: 2002/03/27 14:06:01 $
+ * @version $Revision: 1.226 $ $Date: 2002/04/05 06:36:10 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3872,4 +3872,23 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
         return m_rb.getLimitedWorkplacePort();
     }
 
+    /**
+     * Changes the type of the user
+     *
+     * @param userId The id of the user to change
+     * @param userType The new type of the user
+     */
+    public void changeUserType(int userId, int userType) throws CmsException{
+        m_rb.changeUserType(m_context.currentUser(), m_context.currentProject(), userId, userType);
+    }
+
+    /**
+     * Changes the type of the user to webusertype
+     *
+     * @param username The name of the user to change
+     * @param userType The new type of the user
+     */
+    public void changeUserType(String username, int userType) throws CmsException{
+        m_rb.changeUserType(m_context.currentUser(), m_context.currentProject(), username, userType);
+    }
 }

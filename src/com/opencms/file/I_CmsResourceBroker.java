@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/03/13 11:24:23 $
-* Version: $Revision: 1.171 $
+* Date   : $Date: 2002/04/05 06:35:46 $
+* Version: $Revision: 1.172 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.171 $ $Date: 2002/03/13 11:24:23 $
+ * @version $Revision: 1.172 $ $Date: 2002/04/05 06:35:46 $
  *
  */
 
@@ -3538,4 +3538,38 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @returns the portnumber or -1 if no port is set.
      */
     public int getLimitedWorkplacePort();
+
+    /**
+     * Changes the user type of the user
+     * Only the administrator can change the type
+     *
+     * @param currentUser The current user
+     * @param currentProject The current project
+     * @param userId The id of the user to change
+     * @param userType The new usertype of the user
+     */
+    public void changeUserType(CmsUser currentUser, CmsProject currentProject, int userId, int userType) throws CmsException;
+
+    /**
+     * Changes the user type of the user
+     * Only the administrator can change the type
+     *
+     * @param currentUser The current user
+     * @param currentProject The current project
+     * @param username The name of the user to change
+     * @param userType The new usertype of the user
+     */
+    public void changeUserType(CmsUser currentUser, CmsProject currentProject, String username, int userType) throws CmsException;
+
+    /**
+     * Changes the user type of the user
+     * Only the administrator can change the type
+     *
+     * @param currentUser The current user
+     * @param currentProject The current project
+     * @param user The CmsUser object of the user to change
+     * @param userType The new usertype of the user
+     */
+    public void changeUserType(CmsUser currentUser, CmsProject currentProject, CmsUser user, int userType) throws CmsException;
+
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/03/21 08:46:20 $
-* Version: $Revision: 1.311 $
+* Date   : $Date: 2002/04/05 06:35:11 $
+* Version: $Revision: 1.312 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.311 $ $Date: 2002/03/21 08:46:20 $
+ * @version $Revision: 1.312 $ $Date: 2002/04/05 06:35:11 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7700,4 +7700,66 @@ protected void validName(String name, boolean blank) throws CmsException {
         return m_limitedWorkplacePort;
     }
 
+    /**
+     * Changes the user type of the user
+     * Only the administrator can change the type
+     *
+     * @param currentUser The current user
+     * @param currentProject The current project
+     * @param userId The id of the user to change
+     * @param userType The new usertype of the user
+     */
+    public void changeUserType(CmsUser currentUser, CmsProject currentProject, int userId, int userType) throws CmsException{
+        CmsUser theUser = m_dbAccess.readUser(userId);
+        changeUserType(currentUser, currentProject, theUser, userType);
+    }
+
+    /**
+     * Changes the user type of the user
+     * Only the administrator can change the type
+     *
+     * @param currentUser The current user
+     * @param currentProject The current project
+     * @param username The name of the user to change
+     * @param userType The new usertype of the user
+     */
+    public void changeUserType(CmsUser currentUser, CmsProject currentProject, String username, int userType) throws CmsException{
+        CmsUser theUser = null;
+        try{
+            // try to read the webuser
+            theUser = this.readWebUser(currentUser, currentProject, username);
+        } catch (CmsException e){
+            // try to read the systemuser
+            if(e.getType() == CmsException.C_NO_USER){
+                theUser = this.readUser(currentUser, currentProject, username);
+            } else {
+                throw e;
+            }
+        }
+        changeUserType(currentUser, currentProject, theUser, userType);
+    }
+
+    /**
+     * Changes the user type of the user
+     * Only the administrator can change the type
+     *
+     * @param currentUser The current user
+     * @param currentProject The current project
+     * @param userId The id of the user to change
+     * @param userType The new usertype of the user
+     */
+    public void changeUserType(CmsUser currentUser, CmsProject currentProject, CmsUser user, int userType) throws CmsException{
+        if(isAdmin(currentUser, currentProject)){
+            // try to remove user from cache
+            try{
+               m_userCache.remove(user.getName()+user.getType());
+               m_userCache.remove(user.getId());
+            } catch (Exception e){
+                // the user does not exist in cache
+            }
+            m_dbAccess.changeUserType(user.getId(), userType);
+        } else {
+            throw new CmsException("Only administrators can change usertype ",CmsException.C_NO_ACCESS);
+        }
+    }
 }

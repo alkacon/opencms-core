@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2002/04/05 06:36:35 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.46 $ $Date: 2001/11/15 16:41:21 $
+ * @version $Revision: 1.47 $ $Date: 2002/04/05 06:36:35 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -3492,6 +3492,45 @@ public class CmsShellCommands implements I_CmsConstants {
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Changes the type of the user
+     *
+     * @param userId The id of the user to change
+     * @param userType The new type of the user
+     */
+    public void changeUserTypeByUserid(String userId, String userType){
+        try{
+            m_cms.changeUserType(Integer.parseInt(userId), Integer.parseInt(userType));
+            CmsUser user = m_cms.readUser(Integer.parseInt(userId));
+            System.out.println(user.toString());
+        } catch (Exception e){
+            CmsShell.printException(e);
+        }
+    }
+
+    /**
+     * Changes the type of the user to webusertype
+     *
+     * @param username The name of the user to change
+     * @param userType The new type of the user
+     */
+    public void changeUserType(String username, String userType) throws CmsException{
+        try{
+            m_cms.changeUserType(username, Integer.parseInt(userType));
+            CmsUser user = null;
+            try{
+                user = m_cms.readWebUser(username);
+            } catch (CmsException ex){
+                if(ex.getType() == CmsException.C_NO_USER){
+                    user = m_cms.readUser(username);
+                }
+            }
+            System.out.println(user.toString());
+        } catch (Exception e){
+            CmsShell.printException(e);
         }
     }
 }
