@@ -1,0 +1,88 @@
+<html>
+<head>
+    <link rel=stylesheet type="text/css" href="format.css">
+<script>
+
+/* 
+    parent.aF(
+            "blahg.txt",                -filename
+            "/blah/blah/bla/"           -path
+            "super blah textdatei",     -title
+            0,                          -type    (->resource file)
+            "11.10.1988",               -date of last change
+            "otto",                     -who changed file last time
+            "12.10.1988",                -date
+            "234",                      -size
+            0,                          -status (unchanged=0 / changed=1 / new=2 / deleted=3)
+            1,                          -project
+            "horst",                    -owner
+            "users",                    -group
+            178,                        -permissions
+            "peter",                    -locked by
+            );
+*/
+
+function initialize() {
+
+    top.setProject(3);
+    top.setOnlineProject(3); //zugehoeriges onlineprojekt
+
+    top.setChecksum("324980");
+    top.setDirectory("/blah1/bla2/blah3/blah4/ffff5/");
+
+    top.rD();
+    top.aF("folder1","/usr/local/","",0,"10.10.1988","otto","01.10.1988",2454,0,2,"horst","Administrators",317,"tom");
+    top.aF("folder2","/usr/local/","",0,"10.10.1988","otto","01.10.1988",2454,0,2,"horst","Administrators",513,"helmut");
+    top.aF("blah.jpg","usr/local/","superbild",5,"10.10.1988","otto","01.10.1988",454,1,2,"horst","Administrators",237,"");
+    top.aF("blah.gif","/usr/local/","superbild",5,"10.10.1988","otto","01.10.1988",2454,2,2,"horst","Administrators",1023,"");
+    top.aF("blah.txt","/usr/local/","Titel",1,"10.10.1988","otto","01.10.1988",2454,3,2,"horst","Administrators",478,"helmut");
+    top.aF("blah.txt","/usr/local/","Titel",1,"10.10.1988","otto","01.10.1988",2454,2,2,"horst","Administrators",317,"tom");
+    top.aF("blah.txt","/usr/local/","Titel",2,"10.10.1988","otto","01.10.1988",2454,1,2,"horst","Administrators",137,"");
+    top.aF("blah.txt","/usr/local/","Titel",2,"10.10.1988","otto","01.10.1988",2454,0,2,"horst","Administrators",487,"helmut");
+    top.aF("core","/usr/local/","Titel",3,"10.10.1988","otto","01.10.1988",2454,1,2,"horst","Administrators",1023,"tom");
+    top.aF("core","/usr/local/","Titel",3,"10.10.1988","otto","01.10.1988",2454,2,2,"horst","Administrators",27,"");
+    top.aF("neues","/usr/local/","bad news",5,"10.10.1988","otto","01.10.1988",2454,3,2,"horst","Administrators",137,"helmut");
+    top.aF("neues","/usr/local/","bad news ",6,"10.10.1988","otto","01.10.1988",2454,0,2,"horst","Administrators",237,"");
+    top.aF("blah.html","/usr/local/","tolle seite",4,"10.10.1988","otto","01.10.1988",2454,1,2,"horst","Administrators",174,"helmut");
+    top.aF("blah.html","/usr/local/","tollste seite",4,"10.10.1988","otto","01.10.1988",2454,2,2,"horst","Administrators",117,"");
+
+    top.rT(); //reset tree
+    top.aC(2332,"root",-1);
+    top.aC(11,"dir1",2332);
+    top.aC(12,"dir2",11);
+    top.aC(13,"dir3",11);
+    top.aC(14,"dir4",2332);
+    top.aC(15,"dir5",14);
+    top.aC(16,"dir6",15);
+    top.aC(17,"dir6a",14);
+    top.aC(18,"dir7",16);
+    top.aC(19,"dir7a",17);
+    top.aC(110,"dir7a1",19);
+    top.aC(111,"dir7a2",110);
+    top.aC(112,"dir7b",18);
+    top.aC(140,"dir8",2332);
+    top.aC(114,"dir9",113);
+    top.aC(115,"dir10",114);
+    top.aC(116,"dir11",115);
+    top.aC(117,"dir7b",11);
+    top.aC(118,"dir8",17);
+    top.aC(119,"dir9",112);
+    top.aC(120,"dir10",11);
+    top.aC(121,"dir11",15);
+    top.aC(122,"dir9",13);
+    top.aC(123,"dir10",12);
+    top.aC(124,"dir11",122);
+    top.aC(125,"dir7b",118);
+    top.aC(126,"dir8",119);
+    top.aC(127,"dir9",126);
+    top.aC(128,"dir10",15);
+    top.aC(129,"dir11",18);
+
+    top.dU(document);
+}
+
+</script>
+</head>
+<BODY onLoad="initialize()"></BODY>
+</html>
+
