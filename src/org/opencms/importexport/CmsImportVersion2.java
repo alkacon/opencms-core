@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/10/06 14:20:56 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/10/14 12:06:12 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -338,7 +338,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.getLength(); i++) {
 
-                m_report.print(" ( " + (i + 1) + " / " + importSize + " ) ");
+                m_report.print(" ( " + (i + 1) + " / " + importSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
                 currentElement = (Element)fileNodes.item(i);
 
                 // get all information for a file-import
@@ -673,8 +673,9 @@ public class CmsImportVersion2 extends A_CmsImport {
             
 
             
-            m_report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_DEFAULT);
-            m_report.print(m_report.key("report.merge") + " " + resname, I_CmsReport.C_FORMAT_NOTE);
+            m_report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(m_report.key("report.merge") + " " , I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(resname, I_CmsReport.C_FORMAT_DEFAULT);
 
             // get the header file
             CmsFile pagefile = m_cms.readFile(resname);
@@ -721,13 +722,26 @@ public class CmsImportVersion2 extends A_CmsImport {
                     m_cms.writeProperty(resname, I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate);
                     m_cms.writeProperties(resname, properties);
                     m_cms.touch(resname, pagefile.getDateLastModified(), false, pagefile.getUserLastModified());
-                    // don, ulock the resource                   
+                    // done, ulock the resource                   
                     m_cms.unlockResource(resname, false);
                     // finally delete the old body file, it is not needed anymore
                     m_cms.lockResource(bodyname);
                     m_cms.deleteResource(bodyname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
                     m_report.println(" " + m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                } 
+                } else {
+                    // there are more than one template nodes in this control file.
+                    // convert the resource into a plain text file
+                    // lock the resource, so that it can be manipulated
+                    m_cms.lockResource(resname);
+                    // set the type to plain
+                    pagefile.setType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+                    // write all changes                     
+                    m_cms.writeFile(pagefile);
+                    // don, ulock the resource                   
+                    m_cms.unlockResource(resname, false);
+                    m_report.println(" " + m_report.key("report.notconverted"), I_CmsReport.C_FORMAT_OK);
+                    
+                }
 
             } catch (Exception e) {
                 throw new CmsException(e.toString());
@@ -769,8 +783,9 @@ public class CmsImportVersion2 extends A_CmsImport {
             if (files.size() == 0) {
                 List folders = m_cms.getSubFolders(resname, false);
                 if (folders.size() == 0) {
-                    m_report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_DEFAULT);
-                    m_report.print(m_report.key("report.delfolder") + " " + resname, I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print("( " + counter + " / " + size + " ) ",  I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(m_report.key("report.delfolder") + " " , I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(resname, I_CmsReport.C_FORMAT_DEFAULT);
                     m_cms.lockResource(resname);
                     m_cms.deleteResource(resname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/10/06 16:29:44 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/10/14 12:06:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -528,7 +528,7 @@ public abstract class A_CmsImport implements I_CmsImport {
     protected void updatePageLinks() {
         int importPagesSize = m_importedPages.size();
         for (int i = 0; i < importPagesSize; i++) {
-            m_report.print(" ( " + (i + 1) + " / " + importPagesSize + " ) ");
+            m_report.print(" ( " + (i + 1) + " / " + importPagesSize + " ) ",I_CmsReport.C_FORMAT_NOTE);
             try {
                 // first parse the page
                 CmsPageLinks links = m_cms.getPageLinks((String)m_importedPages.elementAt(i));
