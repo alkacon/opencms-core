@@ -107,7 +107,6 @@ addFileExtension image tif
 addFileExtension image tiff
 addFileExtension jsp jsp
 
-
 # Switch to the root context
 setSiteRoot "/"
 
@@ -124,9 +123,9 @@ chacc "/" "group" "Users" "+v+w+r+c+i"
 chacc "/" "group" "Guests" "+v+r+i"
 
 # Import the workplace and publish the project
-importResources "setupdata/vfs"
+importResources "setupdata/vfs" "/"
 publishProject "2"
-writeExportPath "packages/"
+writePackagePath "packages/"
 createDefaultProject "Offline" "The Offline Project"
 setSiteRoot "/sites/default/"
 
@@ -135,6 +134,3 @@ importModuleFromDefault "org.opencms.welcome.zip"
 
 # The setup is finished
 exit
-
-
-

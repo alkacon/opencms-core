@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/13 14:37:04 $
- * Version: $Revision: 1.322 $
+ * Date   : $Date: 2004/02/14 15:27:38 $
+ * Version: $Revision: 1.323 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.322 $ $Date: 2004/02/13 14:37:04 $
+ * @version $Revision: 1.323 $ $Date: 2004/02/14 15:27:38 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3234,29 +3234,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public int getBackupTagId() {
         return m_backupDriver.readNextBackupTagId();
-    }
-
-    /**
-     * Returns informations about the cache<p>
-     *
-     * All users are granted, except the anonymous user.
-     *
-     * @return a hashtable with informations about the cache.
-     */
-    public Hashtable getCacheInfo() {
-        Hashtable info = new Hashtable();
-        info.put("UserCache", "" + m_userCache.size());
-        info.put("GroupCache", "" + m_groupCache.size());
-        info.put("UserGroupCache", "" + m_userGroupsCache.size());
-        info.put("ResourceCache", "" + m_resourceCache.size());
-        info.put("SubResourceCache", "" + m_resourceListCache.size());
-        info.put("ProjectCache", "" + m_projectCache.size());
-        info.put("PropertyCache", "" + m_propertyCache.size());
-        info.put("PropertyDefinitionCache", "" + m_propertyDefCache.size());
-        info.put("PropertyDefinitionVectorCache", "" + m_propertyDefVectorCache.size());
-        info.put("AccessControlListCache", "" + m_accessControlListCache.size());
-
-        return info;
     }
 
     /**

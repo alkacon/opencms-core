@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/14 15:27:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsObject {
 
@@ -1600,26 +1600,6 @@ public class CmsObject {
      */
     public int getBackupTagId() {
         return m_driverManager.getBackupTagId();
-    }
-
-    /**
-    * Gets information about the cache size.
-    * <br>
-    * The size of the following caching areas is returned:
-    * <ul>
-    *  <li>GroupCache</li>
-    *  <li>UserGroupCache</li>
-    *  <li>ResourceCache</li>
-    *  <li>SubResourceCache</li>
-    *  <li>ProjectCache</li>
-    *  <li>PropertyCache</li>
-    *  <li>PropertyDefinitionCache</li>
-    *  <li>PropertyDefinitionVectorCache</li>
-    * </ul>
-    * @return a Hashtable with information about the size of the various cache areas.
-    */
-    public Hashtable getCacheInfo() {
-        return m_driverManager.getCacheInfo();
     }
 
     /**
