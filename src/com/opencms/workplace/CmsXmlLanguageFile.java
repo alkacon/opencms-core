@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/02/03 14:18:40 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/02/08 15:56:39 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.40 $ $Date: 2003/02/03 14:18:40 $
+ * @version $Revision: 1.41 $ $Date: 2003/02/08 15:56:39 $
  */
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -164,7 +164,7 @@ public class CmsXmlLanguageFile {
      * @return the resource string for the given key 
      */
     public String getLanguageValue(String keyName) {       
-        if (m_moduleMessages.size() == 0) return m_messages.key(keyName);
+        if ((m_moduleMessages.size() == 0) && (! m_supportOldLocale)) return m_messages.key(keyName);
         try {
             return m_messages.getString(keyName);
         } catch (MissingResourceException e) {}
