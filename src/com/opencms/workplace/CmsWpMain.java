@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/10/03 13:12:30 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/10/04 13:47:18 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/10/03 13:12:30 $
+ * @version $Revision: 1.26 $ $Date: 2000/10/04 13:47:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -188,11 +188,13 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 			String loopProjectId = loopProject.getId() + "";
 			values.addElement(loopProjectId);
 			names.addElement(loopProjectName);
+
 			if(loopProjectName.equals(currentProject)) {
 				// Fine. The project of this loop is the user's current project. Save it!
 				currentProjectNum = i;
 			}
 		}
+
 		return new Integer(currentProjectNum);
 	}
 	/**
