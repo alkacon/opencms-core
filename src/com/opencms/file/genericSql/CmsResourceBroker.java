@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/11 14:50:41 $
-* Version: $Revision: 1.315 $
+* Date   : $Date: 2002/04/11 15:21:59 $
+* Version: $Revision: 1.316 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.315 $ $Date: 2002/04/11 14:50:41 $
+ * @version $Revision: 1.316 $ $Date: 2002/04/11 15:21:59 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2880,6 +2880,17 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         Vector projects = new Vector();
         projects = m_dbAccess.getAllBackupProjects();
         return projects;
+     }
+
+    /**
+     * Returns a Vector with all export links
+     *
+     * @return Vector (Strings) with all export links.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public Vector getAllExportLinks() throws CmsException{
+        return m_dbAccess.getAllExportLinks();
      }
 
     /**

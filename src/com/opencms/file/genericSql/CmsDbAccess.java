@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/04/05 06:34:33 $
-* Version: $Revision: 1.239 $
+* Date   : $Date: 2002/04/11 15:21:58 $
+* Version: $Revision: 1.240 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.239 $ $Date: 2002/04/05 06:34:33 $ *
+ * @version $Revision: 1.240 $ $Date: 2002/04/11 15:21:58 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -6245,6 +6245,56 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                         }
                     }
                 }
+            }
+            return retValue;
+         }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(), CmsException.C_SQL_ERROR, e);
+        }
+        catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                 try {
+                     res.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+     }
+
+    /**
+     * Reads all export links.
+     *
+     * @return a Vector(of Strings) with the links.
+     */
+     public Vector getAllExportLinks() throws CmsException{
+        Vector retValue = new Vector();
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_EXPORT_GET_ALL_LINKS"));
+            res = statement.executeQuery();
+            while(res.next()) {
+                retValue.add(res.getString(m_cq.get("C_EXPORT_LINK")));
             }
             return retValue;
          }

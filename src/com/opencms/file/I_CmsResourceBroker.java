@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/05 06:35:46 $
-* Version: $Revision: 1.172 $
+* Date   : $Date: 2002/04/11 15:21:58 $
+* Version: $Revision: 1.173 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.172 $ $Date: 2002/04/05 06:35:46 $
+ * @version $Revision: 1.173 $ $Date: 2002/04/11 15:21:58 $
  *
  */
 
@@ -1091,6 +1091,16 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
      public Vector getAllBackupProjects() throws CmsException;
+
+
+    /**
+     * Returns a Vector with all export links
+     *
+     * @return Vector (Strings) with all export links.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public Vector getAllExportLinks() throws CmsException;
 
     /**
      * Returns a Vector with all I_CmsResourceTypes.

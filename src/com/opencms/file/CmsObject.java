@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/04/10 08:22:11 $
-* Version: $Revision: 1.227 $
+* Date   : $Date: 2002/04/11 15:21:58 $
+* Version: $Revision: 1.228 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.227 $ $Date: 2002/04/10 08:22:11 $
+ * @version $Revision: 1.228 $ $Date: 2002/04/11 15:21:58 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1483,6 +1483,17 @@ public Vector getAllManageableProjects() throws CmsException {
 public Vector getAllBackupProjects() throws CmsException {
     return m_rb.getAllBackupProjects();
 }
+
+/**
+ * Returns a Vector with all export links
+ *
+ * @return Vector (Strings) with all export links.
+ *
+ * @exception CmsException  Throws CmsException if operation was not succesful.
+ */
+ public Vector getAllExportLinks() throws CmsException{
+    return m_rb.getAllExportLinks();
+ }
 /**
  * Returns a Hashtable with all I_CmsResourceTypes.
  *
