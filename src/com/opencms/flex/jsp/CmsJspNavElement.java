@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2003/02/17 00:32:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/02/17 10:01:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Hashtable;
  * structure.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -69,11 +69,16 @@ public class CmsJspNavElement implements Comparable {
      * navigation beans that are properly initialized with current 
      * OpenCms context.
      * 
-     * @see #getNavigationForResource(CmsObject, String)
-     * @see #getNavigationForFolder(CmsObject, String)
-     * @see #getNavigationForFolder(CmsObject, String, String)
-     * @see #getNavigationForFolder(CmsObject, String, int, String)
-     * @see #getNavigationTreeForFolder(CmsObject, String, int, int, String)
+     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForResource
+     * (String)
+     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForFolder
+     * (String)
+     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForFolder
+     * (String, String)
+     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForFolder
+     * (String, int, String)
+     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationTreeForFolder
+     * (String, int, int, String)
      */
     public CmsJspNavElement() {
     }
@@ -136,7 +141,8 @@ public class CmsJspNavElement implements Comparable {
      * @param navTreeLevel tree level of this resource, for building 
      *     navigation trees
      * 
-     * @see #getNavigationForResource(CmsObject, String)
+     * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForResource
+     * (String)
      */    
     public void init(String resource, Hashtable properties, int navTreeLevel) {
         m_resource = resource;
