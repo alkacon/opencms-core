@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/08/21 16:16:13 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/08/25 12:35:27 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -168,7 +168,7 @@ public class CmsProperty extends CmsDialog {
         } else if (DIALOG_SAVE_DEFINE.equals(getParamAction())) {
             setAction(ACTION_SAVE_DEFINE);
         } else { 
-            // TODO: check here if another default dialog must be displayed                       
+            // set the default action               
             setAction(ACTION_DEFAULT); 
             setParamTitle(key("title.property") + ": " + CmsResource.getName(getParamResource()));
         }      
@@ -322,13 +322,14 @@ public class CmsProperty extends CmsDialog {
     public String buildActionButtons() {       
         if (isEditable()) {
             StringBuffer retValue = new StringBuffer(256);
+            String dialogLink = getJsp().link(URI_PROPERTY_DIALOG);
             
             retValue.append("<table border=\"0\">\n");
             retValue.append("<tr>\n\t<td>\n");
             
             //  create button to switch to the edit properties window
             setParamAction(DIALOG_SHOW_EDIT);
-            retValue.append("<form action=\""+getDialogUri()+"\" method=\"post\" class=\"nomargin\" name=\"define\">\n");
+            retValue.append("<form action=\""+dialogLink+"\" method=\"post\" class=\"nomargin\" name=\"define\">\n");
             retValue.append(paramsAsHidden());
             retValue.append("<input type=\"submit\" class=\"dialogbutton\" style=\"margin-left: 0;\" name=\"ok\" value=\""+key("button.edit")+"\">\n");
             retValue.append("</form>\n");
@@ -339,7 +340,7 @@ public class CmsProperty extends CmsDialog {
             
             // create button to switch to the define property window
             setParamAction(DIALOG_SHOW_DEFINE);
-            retValue.append("<form action=\""+getDialogUri()+"\" method=\"post\" class=\"nomargin\" name=\"define\">\n");
+            retValue.append("<form action=\""+dialogLink+"\" method=\"post\" class=\"nomargin\" name=\"define\">\n");
             retValue.append(paramsAsHidden());
             retValue.append("<input type=\"submit\" class=\"dialogbutton\" name=\"ok\" value=\""+key("button.newpropertydef")+"\">\n");
             retValue.append("</form>\n");
