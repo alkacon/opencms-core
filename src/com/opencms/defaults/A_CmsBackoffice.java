@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/11/27 19:08:50 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/11/29 15:05:37 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -3148,6 +3148,12 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
           value=result+"";
         }
         template.setData(datablockName,value);
+        // set the escaped value into datablock for unescaping
+        String escapedValue = value;
+        if(!"".equals(escapedValue.trim())){
+            escapedValue = Encoder.escape(escapedValue);
+        }
+        template.setData(datablockName+"escaped",escapedValue);
       } catch (Exception e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error during automatic call method '"+methodName+"':"+e.toString());
