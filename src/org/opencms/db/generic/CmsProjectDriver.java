@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2003/09/25 16:02:42 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.112 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.113 $ $Date: 2003/09/25 16:02:42 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -239,21 +239,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-    * Creates a project.<p>
-    * TODO: name x timestamp must be unique - since timestamp typically has a resulution
-    * of one second, creation of several tasks with the same name may fail.
-    *
-    * @param owner The owner of this project
-    * @param group The group for this project
-    * @param managergroup The managergroup for this project
-    * @param task The task
-    * @param name The name of the project to create
-    * @param description The description for the new project
-    * @param flags The flags for the project (e.g. archive)
-    * @param type the type for the project (e.g. normal)
-    * @return the new CmsProject instance
-    * @throws CmsException Throws CmsException if something goes wrong
-    */
+     * @see org.opencms.db.I_CmsProjectDriver#createProject(com.opencms.file.CmsUser, com.opencms.file.CmsGroup, com.opencms.file.CmsGroup, org.opencms.workflow.CmsTask, java.lang.String, java.lang.String, int, int, java.lang.Object)
+     */
     public CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type, Object reservedParam) throws CmsException {
         CmsProject project = null;
 
@@ -720,6 +707,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }        
     }
     
+    /**
+     * Resets the state to UNCHANGED and the last-modified-in-project-ID to 0 for a specified resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the Cms resource
+     * @throws CmsException if something goes wrong
+     */
     protected void internalResetResourceState(CmsRequestContext context, CmsResource resource) throws CmsException {
         try {
             // reset the resource state and the last-modified-in-project ID offline
