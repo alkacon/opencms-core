@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/26 10:34:58 $
- * Version: $Revision: 1.462 $
+ * Date   : $Date: 2003/02/28 13:26:50 $
+ * Version: $Revision: 1.463 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ OpenCms 5.0 (next version)
 * Fixed issue #55 from Bugzilla (compatibility.support.oldlocales not working if no new modules installed)
 * Fixed issue where an absolute link to the local machine with an URI outside of OpenCms
   was incorrectly treated as an OpenCms internal link by the link replacement engine
+- Added automatic forced exclusion of system folders for module import
 - Improved source code quality by removing unused method parameters in most (but not all) packages
 - Streamlined module administration options, now a module can be uploaded or created only when "offline"
 - Improved JavaDocs in package com.opencms.flex.jsp.*

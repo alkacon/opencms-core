@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/02/28 11:36:33 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2003/02/28 13:26:50 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,6 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -74,7 +73,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.67 $ $Date: 2003/02/28 11:36:33 $
+ * @version $Revision: 1.68 $ $Date: 2003/02/28 13:26:50 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -179,7 +178,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             // parse the registry-xmlfile and store it.
             InputStream content = new FileInputStream(xmlFile);
             m_xmlReg = parse(content);
-            init();
+            init(true);
         } catch (Exception exc) {
             throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
         }
@@ -582,7 +581,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             Vector resources = new Vector();
                                 
             if (additionalResources!=null && !additionalResources.equals("")) {                            
-                // add each additonal folder plus its content folder under "/system/bodies/"
+                // add each additonal folder plus its content folder under "content/bodys"
                 StringTokenizer additionalResourceTokens = null;
                 additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
                                        
@@ -627,6 +626,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             Vector wrongChecksum = new Vector();
             Vector filesInUse = new Vector();
             Vector resourceCodes = new Vector();
+        
             // get files by property
 
 			deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
@@ -664,7 +664,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         saveRegistry();
     
         try {
-            init();
+            init(false);
         } catch (Exception exc) {
             throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
         }
@@ -1814,29 +1814,6 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             throw new CmsException("the dependencies for the module are not fulfilled.", CmsException.C_REGISTRY_ERROR);
         }
     
-        // add all 5.0 default directories to the exclusion list
-        // otherwise all of these folders would be locked during import, which is usually not 
-        // required and slows down the import considerably (esp. for the "/system/" fodler)
-        if (I_CmsWpConstants.C_VFS_NEW_STRUCTURE && false) {
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_SYSTEM);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_MODULES);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_BODIES);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_WORKPLACE);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_MODULEDEMOS);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_GALLERIES);
-            exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_PICS);
-            exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_HTML);
-            exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_DOWNLOAD);
-            exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_EXTERNALLINKS);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_DEFAULT_BODIES);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_DEFAULT_INTERNAL);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_HELP);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_LOCALES);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_SCRIPTS);
-            exclusion.add(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS);
-        }
-    
         Vector resourceNames = new Vector();
         Vector resourceCodes = new Vector();
     
@@ -1853,17 +1830,36 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             // value of "isSimpleModule" will be false, so traditional module is the default         
         }
         
-		if (!isSimpleModule) {
-			// get list of unwanted properties
-			List deleteProperties = (List) A_OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
-			if ((deleteProperties != null) && (deleteProperties.contains("module")))  {
-				propertyName = propertyValue = null;
-			} else {
-				propertyName = "module";
-				propertyValue = newModuleName + "_" + newModuleVersion;
-			}
-		}
-    
+        if (isSimpleModule) {
+            // add all 5.0 default directories to the exclusion list
+            // otherwise all of these folders would be locked during import, which is usually not 
+            // required and slows down the import considerably (esp. for the "/system/" fodler)            
+            exclusion.add(I_CmsWpConstants.C_VFS_PATH_SYSTEM);
+            exclusion.add(I_CmsWpConstants.C_VFS_PATH_MODULES);
+            exclusion.add(I_CmsWpConstants.C_VFS_PATH_BODIES);
+            exclusion.add(I_CmsWpConstants.C_VFS_PATH_WORKPLACE);
+            exclusion.add(I_CmsWpConstants.C_VFS_PATH_MODULEDEMOS);
+            exclusion.add(I_CmsWpConstants.C_VFS_PATH_GALLERIES);
+            exclusion.add(I_CmsWpConstants.C_VFS_PATH_HELP);
+            exclusion.add(I_CmsWpConstants.C_VFS_PATH_LOCALES);
+            exclusion.add(I_CmsWpConstants.C_VFS_PATH_SCRIPTS);
+            exclusion.add(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS);
+            exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_PICS);
+            exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_HTML);
+            exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_DOWNLOAD);
+            exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_EXTERNALLINKS);
+        } else {    
+            // traditional module requires weird "module" property             
+            // get list of unwanted properties
+            List deleteProperties = (List) A_OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
+            if ((deleteProperties != null) && (deleteProperties.contains("module")))  {
+                propertyName = propertyValue = null;
+            } else {
+                propertyName = "module";
+                propertyValue = newModuleName + "_" + newModuleVersion;
+            }
+        }
+            
         CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, report);
         cmsImport.importResources(exclusion, resourceNames, resourceCodes, propertyName, propertyValue);
     
@@ -1912,7 +1908,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         saveRegistry();
     
         try {
-            init();
+            init(false);
         } catch (Exception exc) {
             throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
         }
@@ -1933,7 +1929,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     /**
      *  Inits all member-variables for the instance.
      */
-    private void init() throws Exception {
+    private void init(boolean booting) throws Exception {
         // clear and refill the hashtable for the exportpoints
         m_exportpoints.clear();
         getExportpoints();
@@ -1945,7 +1941,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         for (int i = 0; i < modules.getLength(); i++) {
             Element module = (Element)modules.item(i);
             String moduleName = module.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT))
+            if (C_LOGGING && booting && A_OpenCms.isLogging(C_OPENCMS_INIT))
                 A_OpenCms.log(C_OPENCMS_INIT, ". Loading module       : " + moduleName);
             // store the shortcuts to the modules
             m_modules.put(moduleName, module);
@@ -1972,7 +1968,10 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(xmlFile));
             A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os, A_OpenCms.getDefaultEncoding());
             // reinit the modules-hashtable
-            init();
+            init(false);
+            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsRegistry] Saved the registry");
+                            
         } catch (Exception exc) {
             throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);
         }

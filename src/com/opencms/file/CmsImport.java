@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/28 11:36:33 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2003/02/28 13:26:50 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.79 $ $Date: 2003/02/28 11:36:33 $
+ * @version $Revision: 1.80 $ $Date: 2003/02/28 13:26:50 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -440,12 +440,11 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      */
     private void importResource(String source, String destination, String type, String user, 
     String group, String access, long lastmodified, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
-        // print out the information for shell-users
-        m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
-        m_report.print(C_ROOT + destination + " ");
+
         boolean success = true;
         byte[] content = null;
         String fullname = null;
+        
         try {
             // get the file content
             if (source != null) {
@@ -552,6 +551,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         // get the old webapp url from the OpenCms properties
         m_webappUrl = (String)A_OpenCms.getRuntimeProperty("compatibility.support.import.old.webappurl");
         if (m_webappUrl == null) {
+            // use a default value
             m_webappUrl = "http://localhost:8080/opencms/opencms";
         }
         // cut last "/" from webappUrl if present
@@ -567,6 +567,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             // get all file-nodes
             fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
             int importSize = fileNodes.getLength();
+    
+            String root = I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS;
     
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.getLength(); i++) {
@@ -590,12 +592,23 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     lastmodified = System.currentTimeMillis();
                 }                
                 
-                // if the type is javascript set it to plain
+                // if the type is "script" set it to plain
                 if("script".equals(type)){
                     type = C_TYPE_PLAIN_NAME;
                 }
-                if (!inExcludeList(excludeList, m_importPath + destination)) {
-    
+                
+                String translatedName = root + m_importPath + destination;
+                if (C_TYPE_FOLDER_NAME.equals(type)) {
+                    translatedName += C_FOLDER_SEPARATOR;                    
+                }                    
+                translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
+                translatedName = translatedName.substring(root.length());
+                
+                if (! excludeList.contains(translatedName)) {                    
+                    // print out the information to the report
+                    m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(translatedName + " ");                    
+                        
                     // get all properties for this file
                     propertyNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_PROPERTY);
                     // clear all stores for property information
@@ -627,11 +640,12 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 						}
                     }
     
-                    // import the specified file and write maybe put it on the lists writtenFilenames, fileCodes
+                    // import the specified file 
                     importResource(source, destination, type, user, group, access, lastmodified, properties, launcherStartClass, writtenFilenames, fileCodes);
                 } else {
+                    // skip the file import, just print out the information to the report
                     m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
-                    m_report.println(destination);
+                    m_report.println(translatedName);
                 }
             }
             // at last we have to get the links from all new imported pages for the  linkmanagement
@@ -650,26 +664,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
               throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
           }
         }
-    }
-
-    /**
-     * Checks whether the path is on the list of files which are excluded from the import.<p>
-     *
-     * @param excludeList list of pathnames which should not be (over) written
-     * @param path a complete path of a resource
-     * @return boolean true if path is on the excludeList
-     */
-    private boolean inExcludeList(Vector excludeList, String path) {
-        boolean onList = false;
-        if (excludeList == null) {
-            return onList;
-        }
-        int i=0;
-        while (!onList && i<excludeList.size()) {
-            onList = (path.equals(excludeList.elementAt(i)));
-            i++;
-        }
-        return onList;
     }
 
     /**
@@ -1031,28 +1025,32 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     private String setDirectories(String content) {
         // get translation rules
         String[] rules = m_cms.getRequestContext().getDirectoryTranslator().getTranslations();
+        String root = I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS;   
         for (int i=0; i<rules.length; i++) {
             String actRule = rules[i];
             // cut String "/default/vfs/" from rule
-            actRule = com.opencms.flex.util.CmsStringSubstitution.substitute(actRule, "/default/vfs", "");
+            actRule = actRule.substring(root.length());
             // divide rule into search and replace parts and delete regular expressions
             StringTokenizer ruleT = new StringTokenizer(actRule, "#");
             ruleT.nextToken();
             String search = ruleT.nextToken();
             search = search.substring(0,search.lastIndexOf("(.*)"));
             String replace = ruleT.nextToken();
-            replace = replace.substring(0,replace.lastIndexOf("$1"));
+            replace = "$1" + replace.substring(0,replace.lastIndexOf("$1"));
             // scan content for paths if the replace String is not present
             if (content.indexOf(replace) == -1 && content.indexOf(search) != -1) {
-                content = com.opencms.flex.util.CmsStringSubstitution.substitute(content, search, replace);
+                // ensure subdirectories of the same name are not replaced
+                search = "([>\"']\\s*)" + search;
+                replace = "$1" + replace;
+                content = CmsStringSubstitution.substitute(content, search, replace);
             }
         }
         return content;
     }
     
     /**
-     * Searches for the webapps String and replaces it with a macro which is needed for the WYSIWYG editor.<p>
-     * Creates missing &lt;edittemplate&gt; tags from older OpenCms 4.x versions.<p>
+     * Searches for the webapps String and replaces it with a macro which is needed for the WYSIWYG editor,
+     * also reates missing &lt;edittemplate&gt; tags for exports of older OpenCms 4.x versions.<p>
      * 
      * @param content the filecontent 
      * @return String the modified filecontent
