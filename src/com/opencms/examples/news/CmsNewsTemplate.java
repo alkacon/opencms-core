@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/06/05 13:37:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/07/11 08:49:56 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,9 +54,13 @@ import javax.servlet.http.*;
  * the most actual news, a value of <code>2</code> will display the
  * article before this one and so on.
  *
+ * @deprecated Classes in com.opencms.examples.news are deprecated since
+ *	           there is a more generic solution in com.opencms.xmlmodules.news.
+ *             Some changes will be necessary in coding the templates which work 
+ *             with the newer classes.  
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/06/05 13:37:51 $
+ * @version $Revision: 1.12 $ $Date: 2000/07/11 08:49:56 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {
@@ -77,10 +81,14 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
 	/** XML tag used for the wml content definition */
     private final static String C_TAG_WMLLINKLABEL = "linklabel";
 	
+	/** XML tag used for the wml content definition */
+    public final static String C_WMLLINKLABEL_DEF = "mehr";
+	
+	
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms CmsObject Object for accessing system resources
+     * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
@@ -98,7 +106,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * <code>newsList</code> and <code>article</code> will be used
      * to display data of the content type "news article".
      * 
-     * @param cms CmsObject Object for accessing system resources
+     * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName <em>not used here</em>.
      * @param parameters <em>not used here</em>.
@@ -155,11 +163,12 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * <li><code>shorttext</code></li>
      * <li><code>text</code></li>
      * <li><code>file</code></li>
+     * <li><code>index</code></li>
      * </ul>
      * 
-     * @param cms CmsObject Object for accessing system resources.
+     * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
+     * @param doc Reference to the A_CmsXmlContent object the initiating XML document.  
      * @param userObj Hashtable with parameters.
      * @return List of all articles.
      */
@@ -169,10 +178,13 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
         CmsRequestContext reqCont = cms.getRequestContext();
         HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
         String servletPath = orgReq.getServletPath();
+		Hashtable parameters = (Hashtable)userObj;
 
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
-        CmsNewsContentFile article = (CmsNewsContentFile)((Hashtable)userObj).get("_ARTICLE_");
-        String result = null;
+        CmsNewsContentFile article = (CmsNewsContentFile)parameters.get("_ARTICLE_");
+		String elementName = (String)parameters.get("_ELEMENT_");
+       
+		String result = null;
         
         if(article != null) {
             if(tagcontent.toLowerCase().equals("externallink")) {
@@ -183,18 +195,31 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
                     result = Utils.getNiceShortDate(article.getNewsDate());
                 } 
             } else if(tagcontent.toLowerCase().equals("author")) {
-                result = article.getNewsAuthor();
+                result = Encoder.escapeXml(article.getNewsAuthor());
             } else if(tagcontent.toLowerCase().equals("headline")) {
-                result = article.getNewsHeadline();
+                result = Encoder.escapeXml(article.getNewsHeadline());
             } else if(tagcontent.toLowerCase().equals("shorttext")) {
-                result = article.getNewsShortText();
+                result = Encoder.escapeXml(article.getNewsShortText());
             } else if(tagcontent.toLowerCase().equals("text")) {
-                result = article.getNewsText(templateFile.getDataValue(C_TAG_PARAGRAPHSEP));
+                result = article.getNewsText(templateFile.getDataValue(C_TAG_PARAGRAPHSEP),true);
             } else if(tagcontent.toLowerCase().equals("file")) {
                 result = servletPath + C_NEWS_FOLDER_PAGE + article.getFilename() + "/index.html";
             } else if(tagcontent.toLowerCase().equals("linktext")) {
                 result = "Artikel lesen";
-            }
+			} else if(tagcontent.toLowerCase().equals("path")) {
+                result = servletPath;
+			} else if(tagcontent.toLowerCase().equals("index")) {
+				// gets the index of currently selected article
+				String newsFolder = getNewsFolder(elementName, parameters);
+				Vector v = CmsNewsContentFile.getAllArticles(cms, newsFolder);
+				for(int i=0; i<v.size(); i++) {
+					Object o = v.elementAt(i);
+					CmsNewsContentFile doc2 = (CmsNewsContentFile)o; 
+					if (doc2.getAbsoluteFilename().equals(article.getAbsoluteFilename())) {
+						result = "" + i;
+					}
+				}
+			}
         }        
         return result;
     }
@@ -204,7 +229,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * <P>
      * Called by the template file using <code>&lt;METHOD name="newsList"&gt;</code>.
      * 
-     * @param cms CmsObject Object for accessing system resources.
+     * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
@@ -231,10 +256,11 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
             Object o = v.elementAt(i);
             CmsNewsContentFile doc2 = (CmsNewsContentFile)o;        
             newsTemplateFile.setData("date", Utils.getNiceShortDate(doc2.getNewsDate()));
-            newsTemplateFile.setData("headline", doc2.getNewsHeadline());
-			newsTemplateFile.setData("author", doc2.getNewsAuthor());
-            newsTemplateFile.setData("shorttext", doc2.getNewsShortText());        
+            newsTemplateFile.setData("headline", Encoder.escapeXml(doc2.getNewsHeadline()));
+			newsTemplateFile.setData("author", Encoder.escapeXml(doc2.getNewsAuthor()));
+            newsTemplateFile.setData("shorttext", Encoder.escapeXml(doc2.getNewsShortText()));        
             newsTemplateFile.setData("link", servletPath + C_NEWS_FOLDER_PAGE + doc2.getFilename() + "/index.html");
+			newsTemplateFile.setData("path", servletPath);
 			newsTemplateFile.setData("index", "" + i );
             result = result + newsTemplateFile.getProcessedDataValue(C_TAG_NEWSLISTENTRY);        
         }                        
@@ -305,7 +331,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * <P>
      * Called by the template file using <code>&lt;METHOD name="getWmlTitle"&gt;</code>.
      * 
-     * @param cms CmsObject Object for accessing system resources.
+     * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
@@ -328,7 +354,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      * <P>
      * Called by the template file using <code>&lt;METHOD name="newsWmlFactory"&gt;</code>.
      * 
-     * @param cms CmsObject Object for accessing system resources.
+     * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
      * @param userObj Hashtable with parameters.
@@ -362,7 +388,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
 					Object o = v.elementAt(i);
 					CmsNewsContentFile doc2 = (CmsNewsContentFile)o;
 					newsTemplateFile.setData("selection", "?article=" + i );
-					newsTemplateFile.setData("headline", doc2.getNewsHeadline());
+					newsTemplateFile.setData("headline", Encoder.escapeXml(doc2.getNewsHeadline()));
 					result = result + newsTemplateFile.getProcessedDataValue(C_TAG_WMLNAV);
 				}
 			}
@@ -370,8 +396,14 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
 			// on one navigation deck, then insert a link to the next navigation deck.
 			nav+=1;
 			if (nav*max < v.size()) {
+				String linktext;
 				newsTemplateFile.setData("selection", "?nav=" +  nav);
-				newsTemplateFile.setData("headline", newsTemplateFile.getDataValue(C_TAG_WMLLINKLABEL));
+				try {
+					linktext = newsTemplateFile.getDataValue(C_TAG_WMLLINKLABEL);
+				} catch(CmsException e) { 
+					linktext = C_WMLLINKLABEL_DEF;
+				}
+				newsTemplateFile.setData("headline", linktext);
 				result = result + newsTemplateFile.getProcessedDataValue(C_TAG_WMLNAV);
 			}
 		}
@@ -383,9 +415,9 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
 				Object o = v.elementAt(selected);
 				CmsNewsContentFile doc2 = (CmsNewsContentFile)o;        
 				newsTemplateFile.setData("date", Utils.getNiceShortDate(doc2.getNewsDate()));
-				newsTemplateFile.setData("headline", doc2.getNewsHeadline());
-				newsTemplateFile.setData("shorttext", doc2.getNewsShortText());
-				newsTemplateFile.setData("author", doc2.getNewsAuthor());
+				newsTemplateFile.setData("headline", Encoder.escapeXml(doc2.getNewsHeadline()));
+				newsTemplateFile.setData("shorttext", Encoder.escapeXml(doc2.getNewsShortText()));
+				newsTemplateFile.setData("author", Encoder.escapeXml(doc2.getNewsAuthor()));
 				result = result + newsTemplateFile.getProcessedDataValue(C_TAG_WMLARTICLE);   
 			}
 		}

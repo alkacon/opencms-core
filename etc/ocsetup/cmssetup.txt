@@ -7,6 +7,7 @@ addResourceType image 1 ""
 addResourceType script 1 ""
 addResourceType link 4 ""
 addResourceType newspage 3 ""
+addResourceType pdfpage 5 ""
 createPropertydefinition Title plain 0
 createPropertydefinition Title page 0
 createPropertydefinition Title XMLTemplate 0
@@ -21,6 +22,11 @@ createPropertydefinition NavPos plain 0
 createPropertydefinition NavText folder 0
 createPropertydefinition NavPos folder 0
 createPropertydefinition Title folder 0
+createPropertydefinition Title pdfpage 0
+createPropertydefinition NavText pdfpage 0
+createPropertydefinition NavPos pdfpage 0
+createPropertydefinition TemplateType plain 0
+createPropertydefinition TemplateType XMLTemplate 0
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary
@@ -38,3 +44,4 @@ importResources "workplace/" "/"
 publishProject "2"
 writeExportPath "c:/temp/"
 exit
+

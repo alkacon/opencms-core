@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/07/11 08:49:57 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.25 $ $Date: 2000/07/11 08:49:57 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -222,7 +222,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // we have to read out the article
         CmsXmlControlFile newsPageFile = new CmsXmlControlFile(cms, file.getAbsolutePath());
         String readParam = newsPageFile.getElementParameter("body", "read");
-        String newsfolderParam = newsPageFile.getElementParameter("body", "newsfolder");
+        String newsfolderParam = newsPageFile.getElementParameter("body", "folder");
         
         if(readParam != null && !"".equals(readParam)) {
             // there is a read parameter given.

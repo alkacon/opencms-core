@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/06/07 15:49:47 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/07/11 08:49:56 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,8 +45,13 @@ import org.apache.xml.serialize.*;
  * Used both for displaying news administration overviews and
  * editing news.
  * 
+ * @deprecated Classes in com.opencms.examples.news are deprecated since
+ *	           there is a more generic solution in com.opencms.xmlmodules.news.
+ *             Some changes will be necessary in coding the templates which work 
+ *             with the newer classes.   
+ *      
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2000/06/07 15:49:47 $
+ * @version $Revision: 1.16 $ $Date: 2000/07/11 08:49:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -72,7 +77,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     /**
      * Indicates if the results of this class are cacheable.
      * 
-     * @param cms CmsObject Object for accessing system resources
+     * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
@@ -87,8 +92,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
      * 
-     * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms CmsObject Object for accessing system resources.
+     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+     * @param cms A_CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
@@ -140,12 +145,12 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                     }
                                     
                     parameters.put(C_NEWS_PARAM_DATE, Utils.getNiceShortDate(newsFile.getNewsDate()));
-                    parameters.put(C_NEWS_PARAM_HEADLINE, newsFile.getNewsHeadline());
-                    parameters.put(C_NEWS_PARAM_SHORTTEXT, newsFile.getNewsShortText());
-                    parameters.put(C_NEWS_PARAM_TEXT, newsFile.getNewsText("\n\n"));
+                    parameters.put(C_NEWS_PARAM_HEADLINE, Encoder.escapeXml(newsFile.getNewsHeadline()));
+                    parameters.put(C_NEWS_PARAM_SHORTTEXT, Encoder.escapeXml(newsFile.getNewsShortText()));
+                    parameters.put(C_NEWS_PARAM_TEXT, newsFile.getNewsText("\n\n",true));
                     parameters.put(C_NEWS_PARAM_EXTLINK, newsFile.getNewsExternalLink());
                     parameters.put(C_NEWS_PARAM_STATE, new Boolean(newsFile.isNewsActive()));
-                    xmlTemplateDocument.setData(C_NEWS_PARAM_AUTHOR, newsFile.getNewsAuthor());
+                    xmlTemplateDocument.setData(C_NEWS_PARAM_AUTHOR, Encoder.escapeXml(newsFile.getNewsAuthor()));
                     session.putValue(C_NEWS_PARAM_AUTHOR, newsFile.getNewsAuthor());
                 } else {
                     // the user requested a new article
@@ -211,13 +216,13 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                     }                    
                 } else {
                     newsContentFile = getNewsContentFile(cms, cms.readFile(file));                
-                    // Touch the page file. This will mark it a "changed".
+                    // Touch the page file. This will mark it as "changed".
                     cms.writeFileHeader((CmsFile)cms.readFileHeader(C_NEWS_FOLDER_PAGE + newsContentFile.getFilename() + "/index.html"));
                 }
                 
                 // Set news content and unlock resource
                 setNewsFileContent(newsContentFile, (String)session.getValue(C_NEWS_PARAM_AUTHOR), newDate, newHeadline, newShorttext, newText, newExternalLink, newState);
-                cms.unlockResource(newsContentFile.getAbsoluteFilename());                                                                             
+                //cms.unlockResource(newsContentFile.getAbsoluteFilename()); causes trouble!                                                                            
                 
                 // Session parameters are not needed any more...
                 session.removeValue(C_NEWS_PARAM_FILE);
@@ -314,7 +319,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     public String getExternalLink(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
         String result = (String)parameters.get(C_NEWS_PARAM_EXTLINK);
         if(result == null || "".equals(result)) {
-            result = "";
+            result = C_URL_PROTOCOL;
         }
         return result;
     }
@@ -363,10 +368,10 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         
         Vector newsFolders = cms.getSubFolders(C_NEWS_FOLDER_PAGE); 
         int numNewsFolders = newsFolders.size();
-         // Walk through the news folders backwards since we
-         // want to see the newest article first.
-         //for(int i=0; i<numNewsFolders; i++) {
-         for(int i=numNewsFolders-1; i>=0; i--) {
+        // Walk through the news folders backwards since we
+        // want to see the newest article first.
+        //for(int i=0; i<numNewsFolders; i++) {
+        for(int i=numNewsFolders-1; i>=0; i--) {
             CmsResource currFolder = (CmsResource)newsFolders.elementAt(i);
             CmsFile newsPageFile = null;
             try {
@@ -406,7 +411,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
      * @param cms Cms object for accessing system resources.
      * @param filelist Template file containing the definitions for the file list together with
      * the included customized defintions.
-     * @param res CmsResource Object of the current file list entry.
+     * @param res A_CmsResource Object of the current file list entry.
      * @param lang Current language file.
      * @exception CmsException if access to system resources failed.
      * @see I_CmsFileListUsers
@@ -419,8 +424,8 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         if(res instanceof CmsFile) { 
             CmsNewsContentFile newsContentFile = getNewsContentFile(cms, res);
             state = newsContentFile.isNewsActive() ? lang.getLanguageValue(C_LANG_LABEL + "." + C_NEWS_STATE_ACTIVE) : lang.getLanguageValue(C_LANG_LABEL + "." + C_NEWS_STATE_INACTIVE);
-            author = newsContentFile.getNewsAuthor();
-            name = newsContentFile.getNewsHeadline();
+            author = Encoder.escapeXml(newsContentFile.getNewsAuthor());
+            name = Encoder.escapeXml(newsContentFile.getNewsHeadline());
         } 
         filelistTemplate.setData(C_NEWS_STATE_VALUE, state);
         filelistTemplate.setData(C_NEWS_AUTHOR_VALUE, author);   
@@ -432,7 +437,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     /**
      * Get the corresponding news content file for a given newspage file.
      * @param file File object of the newspage file.
-     * @param cms CmsObject for accessing system resources.
+     * @param cms A_CmsObject for accessing system resources.
      * @return CmsNewsContentFile object of the corresponding news content file.
      * @exception CmsException if file access failed.
      */
@@ -467,7 +472,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     }
     
     /** Create the task for the new news article.
-     * @param cms CmsObject for accessing system resources.
+     * @param cms A_CmsObject for accessing system resources.
      * @param newsFileName File name of the news article, used to generate a link.
      * @param taskuser User of the new task
      * @param taskgroup Group of the new task. 
@@ -484,7 +489,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     /**
      * Get the new article number by scanning all existing articles
      * of the given date and inreasing the maximum number.
-     * @param cms CmsObject for accessing system resources
+     * @param cms A_CmsObject for accessing system resources
      * @param dateFileText String containing the date used in news file names
      * @return new article number.
      * @exception CmsException
@@ -527,7 +532,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
      * Get the initials of the current user.
      * If both firstname and lastname of the user are not set,
      * the login name will be returned instead.
-     * @author CmsUser object of the currently logged in user.
+     * @author A_CmsUser object of the currently logged in user.
      * @return initials of the user.
      */
     private String getInitials(CmsUser author) {
@@ -576,7 +581,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
      * Create a news content file. File flags setted in the user preferences
      * will be overridden to system default flags.
      * 
-     * @param cms CmsObject for accessing system resources.
+     * @param cms A_CmsObject for accessing system resources.
      * @param newsFileName filename to be used
      * @exception CmsException
      */
@@ -646,7 +651,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     /**
      * Create a new page file for displayin a given news content file.
      * 
-     * @param cms CmsObject for accessing system resources.
+     * @param cms A_CmsObject for accessing system resources.
      * @param newsFileName filename to be used
      * @param mastertemplate filename of the master template that should be used for displaying news.
      * @exception CmsException
@@ -668,7 +673,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         pageFile.setElementParameter(C_BODY_ELEMENT, C_NEWS_PARAM_READ, newsFileName);
         pageFile.write();
         cms.chmod(fullFilename, C_ACCESS_DEFAULT_FLAGS);
-        cms.unlockResource(fullFilename);
+        //cms.unlockResource(fullFilename); causes trouble!
     }
 
     /**

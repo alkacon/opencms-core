@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/07/08 06:34:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/07/11 08:49:56 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/07/08 06:34:23 $
+ * @version $Revision: 1.9 $ $Date: 2000/07/11 08:49:56 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1441,6 +1441,21 @@ public class CmsShell implements I_CmsConstants {
 		// import the resources
 		try {
 			m_cms.importResources(importFile, importPath);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
+	/**
+	 * Imports relevant files of a XML module ("news" for example) to the cms.
+	 * 
+	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 */
+	public void importXmlModule(String importFile) {
+		// import the resources
+		try {
+			m_cms.importResources(importFile, C_ROOT);
 		} catch( Exception exc ) {
 			printException(exc);
 		}

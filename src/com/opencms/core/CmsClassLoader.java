@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
- * Date   : $Date: 2000/06/05 13:37:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/07/11 08:49:56 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -88,6 +88,7 @@ package com.opencms.core;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.zip.*;
 
 import com.opencms.file.*;
 
@@ -110,7 +111,7 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/06/05 13:37:50 $
+ * @version $Revision: 1.8 $ $Date: 2000/07/11 08:49:56 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -177,7 +178,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                 file = (String)o;
             } catch (ClassCastException objectIsNotFile) {
                 throw new IllegalArgumentException("Object " + o
-                    + "is not a valid \"String\" instance");
+                    + " is not a valid \"String\" instance");
             }
 
             // Check to see if we have proper access.
@@ -187,7 +188,9 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                 throw new IllegalArgumentException("Repository "
                     + file + " could not be accessed while initializing class loader.");
            }
+			
         }
+
 
         // Store the class repository for use
         this.repository = classRepository;
@@ -254,27 +257,40 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
         
         // No class found.
         // Then we have to search in the OpenCMS System.
-
-        String secondNamePart = name.replace('.', '/') + ".class";        
+       
         Enumeration allRepositories = repository.elements();
-        String filename = null;
-        
+		String filename = null;
+		byte[] myClassData = null;
+		
         while(allRepositories.hasMoreElements()) {
-            filename = allRepositories.nextElement() + secondNamePart;
-            try {
-                classFile = m_cms.readFile(filename);
-            } catch(Exception e) {
-                // File could not be read for any reason
-                classFile = null;
-            }
+			filename = (String)allRepositories.nextElement();
+			
+			if (isZipOrJarArchive(filename)) {
+				try {
+					if(A_OpenCms.isLogging()) {
+						A_OpenCms.log(C_OPENCMS_DEBUG,"Try to load archive file " + filename + ".");
+					}
+					myClassData = loadClassFromZipFile(m_cms.readFile(filename),name);
+				} catch (Exception e) {
+					myClassData = null;
+				}
+			}
+			else {
+				//filename = filename + className;
+				try {
+					classFile = m_cms.readFile(filename);
+					myClassData = classFile.getContents();
+				} catch(Exception e) {
+					// File could not be read for any reason
+					classFile = null;
+					myClassData = null;
+				}
+				if(classFile == null) {
+					throw new ClassNotFoundException(name);
+				}
+			}
         }
 
-        if(classFile == null) {
-            throw new ClassNotFoundException(name);
-        }
-        
-        byte[] myClassData = classFile.getContents();
-            
         // Class data successfully read. Now define a new class using this data
         if(myClassData != null) {
             try {
@@ -285,16 +301,83 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                 throw new ClassNotFoundException(e.toString());
             } catch(Error e) {
                 throw new ClassNotFoundException("Something really bad happened while loading class " + filename);
-            }                 
+            } 
+			
             cache.put(name, c);
             if(resolve) {
                 resolveClass(c);
-            }
+			}
+			
+			if(A_OpenCms.isLogging()) {
+				A_OpenCms.log(C_OPENCMS_DEBUG,"Classloader returned class " + name + " successfully!");
+			}
             return c;
         }
         throw new ClassNotFoundException(name);
     }       
 
+	/**
+     * Test if a file is a ZIP or JAR archive.
+     *
+     * @param file the file to be tested.
+     * @return true if the file is a ZIP/JAR archive, false otherwise.
+     */
+    private boolean isZipOrJarArchive(String file) {
+        boolean isArchive = false;
+        if(file.endsWith(".zip")||file.endsWith(".jar"))
+			isArchive = true;
+        return isArchive;
+    }
+	
+	 /**
+     * Tries to load the class from a zip file.
+     *
+     * @param file The zipfile that contains classes.
+     * @param name The classname
+     * @param cache The cache entry to set the file if successful.
+     */
+    private byte[] loadClassFromZipFile(CmsFile file, String name)
+			throws IOException
+	{
+		String className = name.replace('.', '/') + ".class"; 
+		InputStream in = new ByteArrayInputStream(file.getContents());
+		ZipInputStream zipStream = new ZipInputStream(in);
+		
+		try {
+			ZipEntry entry = zipStream.getNextEntry(); 
+			while ((!entry.getName().equals(className))&&(entry != null)) {
+				entry = zipStream.getNextEntry();
+			}
+			if (entry != null) {
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				copyStream(zipStream, out);
+				return out.toByteArray();
+			} 
+			else {
+				return null;
+				}
+		} finally {
+			zipStream.close();
+		}
+	}
+	
+    /**
+     * Loads all the bytes of an InputStream.
+     */
+    private void copyStream(InputStream in, OutputStream out)
+        throws IOException
+    {
+		synchronized (in) {
+			synchronized (out) {
+				byte[] buffer = new byte[256];
+				while (true) {
+					int bytesRead = in.read(buffer);
+					if (bytesRead == -1) break;
+					out.write(buffer,0,bytesRead);
+				}
+			}
+		}
+    }
 
     /**
      * Get an InputStream on a given resource.  Will return null if no

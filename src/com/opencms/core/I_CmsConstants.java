@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/07/07 13:17:52 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2000/07/11 08:49:56 $
+ * Version: $Revision: 1.90 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.89 $ $Date: 2000/07/07 13:17:52 $
+ * @version $Revision: 1.90 $ $Date: 2000/07/11 08:49:56 $
  */
 public interface I_CmsConstants
 {
@@ -169,6 +169,11 @@ public interface I_CmsConstants
      * Property for resource navigation position
      */
     static final String C_PROPERTY_NAVPOS="NavPos";
+	
+	/**
+     * Property for template type
+     */
+    static final String C_PROPERTY_TEMPLATETYPE="TemplateType";
     
 	/**
 	 * This is the group for guests.

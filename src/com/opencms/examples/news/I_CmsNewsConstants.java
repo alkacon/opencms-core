@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/I_CmsNewsConstants.java,v $
- * Date   : $Date: 2000/05/18 13:53:39 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/07/11 08:49:57 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,8 +35,13 @@ package com.opencms.examples.news;
  * Some of these constants may be displaced here and should later be put
  * into a <code>news.ini</code> file.
  * 
+ * @deprecated Classes in com.opencms.examples.news are deprecated since
+ *	           there is a more generic solution in com.opencms.xmlmodules.news.
+ *             Some changes will be necessary in coding the templates which work 
+ *             with the newer classes.  
+ * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/05/18 13:53:39 $
+ * @version $Revision: 1.12 $ $Date: 2000/07/11 08:49:57 $
  */
 public interface I_CmsNewsConstants {
     
@@ -121,7 +126,7 @@ public interface I_CmsNewsConstants {
     public static final String C_NEWS_PARAM_AUTHOR = "author";        
 
     /** Name of the newsfolder parameter in the newspage file. */
-    public static final String C_NEWS_PARAM_NEWSFOLDER = "newsfolder";    
+    public static final String C_NEWS_PARAM_NEWSFOLDER = "folder";    
 
     /** Name of the read parameter in the newspage file. */
     public static final String C_NEWS_PARAM_READ = "read";        

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
- * Date   : $Date: 2000/07/07 17:35:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/07/11 08:49:57 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,18 +43,8 @@ import javax.servlet.http.*;
  * replaxed with <code>%hex</code> where hex is a two digit hex number.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/07/07 17:35:52 $
  */
 public class Encoder { 
-	
-  /**
-     * Identifies the last printable character in the Unicode range
-     * that is supported by the encoding used with this serializer.
-     * For 8-bit encodings this will be either 0x7E or 0xFF.
-     * For 16-bit encodings this will be 0xFFFF. Characters that are
-     * not printable will be escaped using character references.
-     */
-    private static int _lastPrintable = 0x7E;
 	
   /**
    * Constructor
@@ -177,18 +167,16 @@ public class Encoder {
 	protected static String getEntityRef( char ch )
     {
 		
-        // These five are defined by default for all XML documents.
+        // These four entities have to be escaped by default.
         switch ( ch ) {
         case '<':
             return "lt";
         case '>':
             return "gt";
-        case '"':
-            return "quot";
-        case '\'':
-            return "apos";
         case '&':
             return "amp";
+		case '"':
+            return "quot";
         }
         return null;
     }
@@ -212,23 +200,11 @@ public class Encoder {
         result = new StringBuffer( source.length() );
         for ( i = 0 ; i < source.length() ; ++i )  {
             ch = source.charAt( i );
-            // If the character is not printable, print as character reference.
-            // Non printables are below ASCII space but not tab or line
-            // terminator, ASCII delete, or above a certain Unicode threshold.
-            if ( ( ch < ' ' && ch != '\t' && ch != '\n' && ch != '\r' ) ||
-                 ch > _lastPrintable || ch == 0xF7 )
-                result.append( "&#" ).append( Integer.toString( ch ) ).append( ';' );
-            else {
-                // If there is a suitable entity reference for this
-                // character, print it. The list of available entity
-                // references is almost but not identical between
-                // XML and HTML.
-                charRef = getEntityRef( ch );
-                if ( charRef == null )
-                    result.append( ch );
-                else
-                    result.append( '&' ).append( charRef ).append( ';' );
-            }
+            charRef = getEntityRef( ch );
+            if ( charRef == null )
+				result.append( ch );
+            else
+				result.append( '&' ).append( charRef ).append( ';' );
         }
         return result.toString();
     }

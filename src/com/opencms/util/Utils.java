@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/07/07 17:35:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/07/11 08:49:57 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,11 +38,9 @@ import java.io.*;
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/07/07 17:35:52 $
  */
 public class Utils implements I_CmsConstants, I_CmsLogChannels {
-
-	/** Constant for sorting files upward by name */
+	/** Constant for sorting files upward by name */
     public static final int C_SORT_NAME_UP = 1;
     
 	/** Constant for sorting files downward by name */
@@ -142,6 +140,23 @@ public class Utils implements I_CmsConstants, I_CmsLogChannels {
          niceTime.append(year);
          return niceTime.toString();
      }
+	 
+	 /**
+      * Converts date string to a long value.
+      * @param dateString The date as a string.
+      * @return long value of date.
+      */
+     public static long splitDate(String dateString) {
+		long result = 0;
+        if(dateString != null && !"".equals(dateString)) {
+            String splittetDate[] = Utils.split(dateString, ".");
+            GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
+                    Integer.parseInt(splittetDate[1]) - 1,
+                    Integer.parseInt(splittetDate[0]), 0, 0, 0);
+            result = cal.getTime().getTime();
+        }
+        return result;
+	 }
      
      /**
       * Sorts a Vector of CmsFile objects according to an included sorting method.

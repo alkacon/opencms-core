@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsContentFile.java,v $
- * Date   : $Date: 2000/06/27 15:56:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/07/11 08:49:56 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,10 +42,15 @@ import org.xml.sax.*;
 /**
  * Sample content definition for news articles.
  * 
+ * @deprecated Classes in com.opencms.examples.news are deprecated since
+ *	           there is a more generic solution in com.opencms.xmlmodules.news.
+ *             Some changes will be necessary in coding the templates which work 
+ *             with the newer classes.  
+ * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/06/27 15:56:26 $
+ * @version $Revision: 1.6 $ $Date: 2000/07/11 08:49:56 $
  */
- public class CmsNewsContentFile extends A_CmsXmlContent implements I_CmsNewsConstants {
+ public class CmsNewsContentFile extends A_CmsXmlContent implements I_CmsNewsConstants, I_CmsXmlContent {
 
     /**
      * Default constructor.
@@ -58,7 +63,7 @@ import org.xml.sax.*;
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms CmsObject object for accessing system resources.
+     * @param cms A_CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
     public CmsNewsContentFile(CmsObject cms, CmsFile file) throws CmsException {
@@ -70,7 +75,7 @@ import org.xml.sax.*;
      * Constructor for creating a new object containing the content
      * of the given filename.
      * 
-     * @param cms CmsObject object for accessing system resources.
+     * @param cms A_CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */        
     public CmsNewsContentFile(CmsObject cms, String filename) throws CmsException {
@@ -100,10 +105,6 @@ import org.xml.sax.*;
      */
     public String getNewsAuthor() throws CmsException{
 		String parValue = getDataValue(C_NEWS_XML_AUTHOR);
-		//Xml-encode string for processing 
-		if (parValue != null && !"".equals(parValue)) {
-			parValue = Encoder.escapeXml(parValue);
-		}
         return parValue;
     }
 
@@ -121,10 +122,6 @@ import org.xml.sax.*;
      */
     public String getNewsHeadline() throws CmsException{
         String parValue = getDataValue(C_NEWS_XML_HEADLINE);
-		//Xml-encode string for processing 
-		if (parValue != null && !"".equals(parValue)) {
-			parValue = Encoder.escapeXml(parValue);
-		}
         return parValue;
     }
 
@@ -173,10 +170,11 @@ import org.xml.sax.*;
     /**
      * Gets the article text of all paragraphs.
      * @param paragraphSeparator String that should be used to separate two paragraphs
+     * @param escape Boolean value has to be set 'true' when it's necessary to escape the text
      * (e.g. <code>&lt;P&gt</code> for HTML output or <code>/n/n</code> for plain text output).
      * @return Article text.
      */
-    public String getNewsText(String paragraphSeparator) throws CmsException {
+    public String getNewsText(String paragraphSeparator, boolean escape) throws CmsException {
         Element articleElement = getData(C_NEWS_XML_TEXT);
         StringBuffer result = null;
         NodeList articleChilds = articleElement.getChildNodes();
@@ -188,7 +186,7 @@ import org.xml.sax.*;
             if(loop.getNodeType() == loop.ELEMENT_NODE && loop.getNodeName().toLowerCase().equals("paragraph")) {
                 String parValue = Utils.removeLineBreaks(getTagValue((Element)loop));
                 //Xml-encode string for processing 
-				if (parValue != null && !"".equals(parValue)) {
+				if (parValue != null && !"".equals(parValue) && escape==true) {
 					parValue = Encoder.escapeXml(parValue);
 				}
 				if(result == null) {
@@ -202,7 +200,7 @@ import org.xml.sax.*;
         if(result == null) {
             return "";
         } else {
-		     return result.toString();
+            return result.toString();
         }
     }
 
@@ -237,11 +235,6 @@ import org.xml.sax.*;
      */
     public String getNewsShortText() throws CmsException {
 		String parValue = Utils.removeLineBreaks(getDataValue(C_NEWS_XML_SHORTTEXT));
-        
-		//Xml-encode string for processing 
-		if (parValue != null && !"".equals(parValue)) {
-			parValue = Encoder.escapeXml(parValue);
-		}
 		return parValue;
     }
 
@@ -301,7 +294,7 @@ import org.xml.sax.*;
     
     /**
      * Gets a vaector of all active articles in a folder.
-     * @param cms CmsObject object for accessing system resources.
+     * @param cms A_CmsObject object for accessing system resources.
      * @param folder Name of the folder to scan for articles.
      * @return Vector of all active articles.
      * @exception CmsException when read access to the articles failed.
@@ -312,7 +305,7 @@ import org.xml.sax.*;
 
     /**
      * Gets a vector of all articles in a folder.
-     * @param cms CmsObject object for accessing system resources.
+     * @param cms A_CmsObject object for accessing system resources.
      * @param folder Name of the folder to scan for articles.
      * @param showInactive Idicates, if all articles (including inactive articles) should be listed
      * @return Vector of all articles.

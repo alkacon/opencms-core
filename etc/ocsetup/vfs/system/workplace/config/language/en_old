@@ -277,6 +277,7 @@
 				<script>Script</script>
 				<upload>Upload new File</upload>
 				<XMLTemplate>XML Template</XMLTemplate>
+				<pdfpage>PDF document</pdfpage>
 		</fileicon>
 		
 		<icon>
@@ -488,6 +489,7 @@
 			<mimetype>MimeTyp</mimetype>
 			<name>Name</name>
 			<newsstate>News-State</newsstate>
+			<articlestate>Article State</articlestate>
 			<notavailable>N/A</notavailable>
 			<page>Page</page>
 			<pictype>Picture Type</pictype>
