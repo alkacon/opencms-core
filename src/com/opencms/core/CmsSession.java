@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
-* Date   : $Date: 2002/01/08 10:42:07 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/10/21 15:25:36 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * session-failover in distributed-server environments.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2002/01/08 10:42:07 $
+ * @version $Revision: 1.20 $ $Date: 2002/10/21 15:25:36 $
  */
 public class CmsSession implements I_CmsSession,I_CmsConstants {
 
@@ -122,4 +122,15 @@ public class CmsSession implements I_CmsSession,I_CmsConstants {
         // indicate, that the session should be stored after the request.
         m_session.setAttribute(C_SESSION_IS_DIRTY, new Boolean(true));
     }
+    
+    /**
+     * Invalidates the session.
+     */
+    public void invalidate() {
+        if (m_session != null) m_session.invalidate();
+        // if there is session-data, invalidate it as well
+        if(m_sessionData != null) {
+            m_sessionData = new Hashtable();
+        }    
+    }        
 }

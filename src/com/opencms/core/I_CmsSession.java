@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsSession.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/10/21 15:25:43 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2001/07/31 15:50:13 $  
+ * @version $Revision: 1.13 $ $Date: 2002/10/21 15:25:43 $  
  */
 public interface I_CmsSession {
     
@@ -66,4 +66,9 @@ public interface I_CmsSession {
      * @param name the key for the value to remove.
      */
     public void removeValue(String name);
+    
+    /**
+     * Invalidates the session.
+     */
+    public void invalidate();
 }
