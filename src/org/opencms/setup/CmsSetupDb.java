@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/08/05 11:19:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/08/08 08:30:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.io.StringBufferInputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -51,7 +52,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2004/08/05 11:19:22 $
+ * @version $Revision: 1.9 $ $Date: 2004/08/08 08:30:56 $
  */
 public class CmsSetupDb extends Object {
     
@@ -169,10 +170,11 @@ public class CmsSetupDb extends Object {
     /**
      * Calls an update script.<p>
      * 
-     * @param updateScript the update script (script code, NOT filename!)
+     * @param updateScript the update script code
+     * @param replacers the replacers to use in the script code
      */
     public void updateDatabase(String updateScript, Map replacers) {
-        InputStreamReader reader = new InputStreamReader(new StringBufferInputStream(updateScript));
+        StringReader reader = new StringReader(updateScript);
         executeSql(reader, replacers);
     }
     
@@ -209,17 +211,17 @@ public class CmsSetupDb extends Object {
     /**
      * Internal method to parse and execute a setup script.<p>
      * 
-     * @param inputStreamReader an input stream reader on the setup script
+     * @param inputReader an input stream reader on the setup script
      * @param replacers the replacements to perform in the script
      */
-    private void executeSql(InputStreamReader inputStreamReader, Map replacers) {
+    private void executeSql(Reader inputReader, Map replacers) {
         String statement = "";
         LineNumberReader reader = null;
         String line = null;
 
         // parse the setup script 
         try {
-            reader = new LineNumberReader(inputStreamReader);
+            reader = new LineNumberReader(inputReader);
             line = null;
 
             while (true) {

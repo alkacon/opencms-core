@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/08/06 14:46:28 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/08/08 08:30:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.setup;
 import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.main.CmsShell;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsShellCommands;
@@ -62,9 +61,6 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.collections.ExtendedProperties;
 
-import org.dom4j.Document;
-import org.dom4j.Element;
-
 /**
  * A java bean as a controller for the OpenCms setup wizard.<p>
  * 
@@ -80,7 +76,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
