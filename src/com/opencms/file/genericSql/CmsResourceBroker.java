@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 16:16:20 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2000/06/09 17:00:57 $
+ * Version: $Revision: 1.45 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.44 $ $Date: 2000/06/09 16:16:20 $
+ * @version $Revision: 1.45 $ $Date: 2000/06/09 17:00:57 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -892,7 +892,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// set the file-state to changed
 		if(res.isFile()){
             // todo: implement this
-			//m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
+			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
 		} else {
 			//m_dbAccess.writeFolder(currentProject, m_fileRb.readFolder(currentProject, resource), true);			
 		}
@@ -3250,6 +3250,18 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void writeFile(CmsUser currentUser, CmsProject currentProject, 
 						  CmsFile file)
         throws CmsException {
+        // has the user write-access?
+		if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
+				
+			// write-acces  was granted - write the file.
+			m_dbAccess.writeFile(currentProject, 
+							   onlineProject(currentUser, currentProject), file,true );
+			// inform about the file-system-change
+			fileSystemChanged();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
+				CmsException.C_NO_ACCESS);
+		}
     }
 							
 	 /**
@@ -3378,6 +3390,36 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deleteFile(CmsUser currentUser, CmsProject currentProject,
 						   String filename)
         throws CmsException {
+        
+		// read the file
+		CmsResource onlineFile;
+		CmsResource file = m_dbAccess.readFileHeader(currentProject.getId(), filename);
+		try {
+			onlineFile = m_dbAccess.readFileHeader(onlineProject(currentUser, currentProject).getId(), filename);
+		} catch (CmsException exc) {
+			// the file dosent exist
+			onlineFile = null;
+		}
+		
+		// has the user write-access?
+		if( accessWrite(currentUser, currentProject, file) ) {
+				
+			// write-acces  was granted - delete the file.
+			// and the metainfos
+			deleteAllProperties(currentUser,currentProject,file.getAbsolutePath());
+			if(onlineFile == null) {
+				// the onlinefile dosent exist => remove the file realy!
+				m_dbAccess.removeFile(currentProject, filename);
+			} else {
+				m_dbAccess.deleteFile(currentProject, filename);
+			}
+			// inform about the file-system-change
+			fileSystemChanged();
+								
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**
@@ -3402,6 +3444,43 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void copyFile(CmsUser currentUser, CmsProject currentProject,
                          String source, String destination)
         throws CmsException {
+       
+		// the name of the new file.
+		String filename;
+		// the name of the folder.
+		String foldername;
+		
+		// read the source-file, to check readaccess
+		CmsResource file = readFileHeader(currentUser, currentProject, source);
+		
+		// split the destination into file and foldername
+		if (destination.endsWith("/")) {
+			filename = file.getName();
+			foldername = destination;
+		}else{
+			foldername = destination.substring(0, destination.lastIndexOf("/")+1);
+			filename = destination.substring(destination.lastIndexOf("/")+1,
+											 destination.length());
+		}
+		
+		CmsFolder cmsFolder = m_dbAccess.readFolder(currentProject.getId(), foldername);
+		if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
+				
+			// write-acces  was granted - copy the file and the metainfos
+			m_dbAccess.copyFile(currentProject, onlineProject(currentUser, currentProject), 
+							  currentUser.getId(),source,cmsFolder.getResourceId(), foldername + filename);
+			
+			// copy the metainfos
+           				
+			writeProperties(currentUser,currentProject, destination,
+                            readAllProperties(currentUser,currentProject,file.getAbsolutePath()));
+										
+			// inform about the file-system-change
+			fileSystemChanged();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + destination, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 16:36:06 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2000/06/09 17:00:57 $
+ * Version: $Revision: 1.57 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.56 $ $Date: 2000/06/09 16:36:06 $ * 
+ * @version $Revision: 1.57 $ $Date: 2000/06/09 17:00:57 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2458,8 +2458,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
            
                     file.setLocked(C_UNKNOWN_ID);
                     file.setState(C_STATE_UNCHANGED);
-                    createFile(onlineProject,onlineProject,file,C_UNKNOWN_ID,file.getParentId(), file.getFileId(),
-										   file.getAbsolutePath(),file.getResourceLastModifiedBy());
+     
                    
                  } else if (file.getState() == C_STATE_DELETED) {
                     removeFile(onlineProject,file.getAbsolutePath());
@@ -2988,9 +2987,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
      */    
 	 public CmsFile createFile(CmsProject project,
                                CmsProject onlineProject,
-                               CmsFile file,int resourceId,
-                               int parentId,int fileId, String filename,
-                               int resourceLastModifiedBy)
+                               CmsFile file,
+                               int userId,
+                               int parentId, String filename)
          throws CmsException {
           int state=0;         
           if (project.equals(onlineProject)) {
@@ -3010,10 +3009,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                     state=C_STATE_CHANGED;
                }              
            }
-           if (resourceId == C_UNKNOWN_ID){
-				resourceId = nextId(C_TABLE_RESOURCES);
-		   }
-		   fileId = nextId(C_TABLE_FILES);
+           
+           int resourceId = nextId(C_TABLE_RESOURCES);
+	       int fileId = nextId(C_TABLE_FILES);
+           
 		   PreparedStatement statementResourceWrite = null;
 		   PreparedStatement statementFileWrite = null;
            try {   
@@ -3035,7 +3034,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 statementResourceWrite.setTimestamp(15,new Timestamp(file.getDateCreated()));
                 statementResourceWrite.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
                 statementResourceWrite.setInt(17,file.getContents().length);
-                statementResourceWrite.setInt(18,resourceLastModifiedBy);
+                statementResourceWrite.setInt(18,userId);
                 statementResourceWrite.executeUpdate();
                 
                 statementFileWrite = m_pool.getPreparedStatement(C_FILES_WRITE_KEY);
@@ -3623,16 +3622,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 */	
 	 public void copyFile(CmsProject project,
                           CmsProject onlineProject,
-                          String source,int resourceId, 
-                          int parentId, int fileId,
-                          String destination,int resourceLastModifiedBy)
+                          int userId,
+                          String source,
+                          int parentId, 
+                          String destination)
          throws CmsException {
          CmsFile file;
          
          // read sourcefile
          file=readFile(project.getId(),onlineProject.getId(),source);
          // create destination file
-         createFile(project,onlineProject,file,resourceId,parentId,fileId,destination,resourceLastModifiedBy);
+         createFile(project,onlineProject,file,userId,parentId,destination);
      }
 
 	/**
