@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/06/10 12:22:22 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/06/11 19:22:18 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -97,7 +98,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -438,8 +439,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 // if a JSP errorpage was triggered the response will be already committed here
                 if (!res.isCommitted() || m_errorPagesAreNotCommited) {
 
+                    // check if the current request was done by a workplace user
+                    boolean isWorkplaceUser = CmsWorkplace.isWorkplaceUser(f_req);
+                    
                     // check if the content was modified since the last request
                     if (controller.isTop()
+                    && !isWorkplaceUser
                     && CmsFlexController.isNotModifiedSince(f_req, controller.getDateLastModified())) {
                         if (f_req.getParameterMap().size() == 0) {
                             // only use "expires" header on pages that have no parameters,
@@ -461,15 +466,19 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     } else if (controller.isTop()) {
                         // process headers and write output if this is the "top" request/response                                  
                         res.setContentLength(result.length);
-                        // set date last modified header                        
-                        CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());
-                        if ((f_req.getParameterMap().size() == 0) && (controller.getDateLastModified() > -1)) {
-                            // only use "expires" header on pages that have no parameters
-                            // and that are cachable (i.e. 'date last modified' is set)
-                            // otherwise some browsers (e.g. IE 6) will not even try to request 
-                            // updated versions of the page
-                            CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
-                        }                      
+                        if (isWorkplaceUser) {
+                            res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
+                        } else {
+                            // set date last modified header                        
+                            CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());
+                            if ((f_req.getParameterMap().size() == 0) && (controller.getDateLastModified() > -1)) {
+                                // only use "expires" header on pages that have no parameters
+                                // and that are cachable (i.e. 'date last modified' is set)
+                                // otherwise some browsers (e.g. IE 6) will not even try to request 
+                                // updated versions of the page
+                                CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
+                            }       
+                        }
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);
                         res.getOutputStream().flush();

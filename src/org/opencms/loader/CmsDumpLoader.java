@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/06/06 10:43:16 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/06/11 19:22:18 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -60,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -194,19 +195,24 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws IOException, CmsException {
 
-        // check if the request contains a last modified header
-        long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);                
-        if (lastModifiedHeader > -1) {
-            // last modified header is set, compare it to the requested resource
-            if ((resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) 
-            && (resource.getDateLastModified() == lastModifiedHeader)) {                
-                long now = System.currentTimeMillis();
-                if ((resource.getDateReleased() < now)
-                && (resource.getDateExpired() > now)) {
-                    CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired());
-                    res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                    return;
-                }                            
+        // check if the current request was done by a workplace user
+        boolean isWorkplaceUser = CmsWorkplace.isWorkplaceUser(req);
+
+        if (! isWorkplaceUser) {
+            // check if the request contains a last modified header
+            long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);                
+            if (lastModifiedHeader > -1) {
+                // last modified header is set, compare it to the requested resource
+                if ((resource.getState() == I_CmsConstants.C_STATE_UNCHANGED)
+                && (resource.getDateLastModified() == lastModifiedHeader)) {                
+                    long now = System.currentTimeMillis();
+                    if ((resource.getDateReleased() < now)
+                    && (resource.getDateExpired() > now)) {
+                        CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired());
+                        res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                        return;
+                    }                            
+                }
             }
         }
         
@@ -216,23 +222,19 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         res.setStatus(HttpServletResponse.SC_OK);           
         // set content length header
         res.setContentLength(file.getContents().length);
-        // set date last modified header
-        res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, file.getDateLastModified());
-        // set expire and chache headers        
-        int expireTime;
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            // allow proxy caching of 1 day
-            // TODO: Allow this value to be configured somehow  
-            expireTime = 86400;        
-        } else {
-            // allow proxy caching of 10 seconds only (required for PDF preview in offline project)
-            expireTime = 10;
-        }
         
-        // set default headers for cache control only if not already set
-        if (!res.containsHeader("Cache-Control")) {
-            res.setHeader("Cache-Control", "max-age=" + expireTime); // HTTP 1.1
-            res.setDateHeader("Expires", System.currentTimeMillis() + (expireTime * 1000)); // HTTP 1.0
+        if (isWorkplaceUser) {
+            // prevent caching for Workplace users
+            res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
+        } else {
+            // set date last modified header
+            res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, file.getDateLastModified());
+            // set expire and chache headers        
+            int expireTime = 86400;
+            // set default headers for cache control only if not already set
+            if (!res.containsHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL)) {
+                res.setDateHeader(I_CmsConstants.C_HEADER_EXPIRES, System.currentTimeMillis() + (expireTime * 1000)); // HTTP 1.0
+            }
         }
                          
         service(cms, file, req, res);        
