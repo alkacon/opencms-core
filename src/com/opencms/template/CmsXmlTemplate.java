@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/08/02 12:12:58 $
-* Version: $Revision: 1.97 $
+* Date   : $Date: 2002/08/29 17:23:31 $
+* Version: $Revision: 1.98 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.97 $ $Date: 2002/08/02 12:12:58 $
+ * @version $Revision: 1.98 $ $Date: 2002/08/29 17:23:31 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -550,23 +550,24 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 styleNS = "";
             }
         }
+        
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
         String servletPath = cms.getRequestContext().getRequest().getServletUrl();
         if(!servletPath.endsWith("/")){
+            // Make sure servletPath always end's with a "/"
             servletPath = cms.getRequestContext().getRequest().getServletUrl() + "/";
         }
 
+        // Make sure we don't have a double "/" in the style sheet path
+        if (styleIE.startsWith("/")) styleIE = styleIE.substring(1);
+        if (styleNS.startsWith("/")) styleNS = styleNS.substring(1);
+        
         // Get the user's browser
         String browser = orgReq.getHeader("user-agent");
-        if(browser == null) {
-
-            // the browser is unknown - return the ns-style
-            return styleNS;
-        }
-        if(browser.indexOf("MSIE") > -1) {
+        if ((browser!= null) && (browser.indexOf("MSIE") > -1)) {
             return servletPath + styleIE;
-        }
-        else {
+        } else {
+            // return NS style as default value
             return servletPath + styleNS;
         }
     }
