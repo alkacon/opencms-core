@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/01/11 13:36:58 $
-* Version: $Revision: 1.214 $
+* Date   : $Date: 2002/01/15 13:33:12 $
+* Version: $Revision: 1.215 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.214 $ $Date: 2002/01/11 13:36:58 $
+ * @version $Revision: 1.215 $ $Date: 2002/01/15 13:33:12 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3761,5 +3761,16 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     public void writeCronTable(String crontable)
         throws CmsException {
         m_rb.writeCronTable(m_context.currentUser(), m_context.currentProject(), crontable);
+    }
+
+
+    /**
+     * Method to encrypt the passwords.
+     *
+     * @param value The value to encrypt.
+     * @return The encrypted value.
+     */
+    public String digest(String value) {
+        return m_rb.digest(value);
     }
 }

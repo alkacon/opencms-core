@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/01/11 13:36:58 $
-* Version: $Revision: 1.166 $
+* Date   : $Date: 2002/01/15 13:33:13 $
+* Version: $Revision: 1.167 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.166 $ $Date: 2002/01/11 13:36:58 $
+ * @version $Revision: 1.167 $ $Date: 2002/01/15 13:33:13 $
  *
  */
 
@@ -3471,4 +3471,13 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      */
     public void writeCronTable(CmsUser currentUser, CmsProject currentProject, String crontable)
         throws CmsException;
+
+
+    /**
+     * Method to encrypt the passwords.
+     *
+     * @param value The value to encrypt.
+     * @return The encrypted value.
+     */
+    public String digest(String value);
 }
