@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/12/16 13:20:36 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/12/18 15:03:38 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -57,7 +57,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     private String m_property = null;    
     private String m_attribute = null;    
     private String m_body = null;
-    private String m_part = null;
+    private String m_element = null;
     
     /** Hashmap to save paramters to the include in */
     private HashMap m_parameterMap = null;
@@ -159,17 +159,17 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * Returns the part.
      * @return String
      */
-    public String getPart() {
-        return m_part;
+    public String getElement() {
+        return m_element;
     }
 
     /**
      * Sets the part
      * @param part the part to set
      */
-    public void setPart(String part) {
-        if (part != null) {
-            this.m_part = part.toLowerCase();
+    public void setElement(String element) {
+        if (element != null) {
+            this.m_element = element.toLowerCase();
         }
     }
     
@@ -200,7 +200,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         m_suffix = null;
         m_property = null;           
         m_body = null; 
-        m_part = null;
+        m_element = null;
         m_parameterMap = null;
     }    
     
@@ -223,10 +223,10 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
 
             String target = null;           
             
-            if (m_part != null) {
-                addParameter(CmsJspTagTemplate.C_TEMPLATE_ELEMENT, m_part);
+            if (m_element != null) {
+                addParameter(CmsJspTagTemplate.C_TEMPLATE_ELEMENT, m_element);
                 // Check for body part and add special parameters for XMLTemplate if required
-                if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(m_part.trim())) {
+                if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(m_element.trim())) {
                     // First check if a body was set in the cms request context
                     String body = (String)c_req.getCmsObject().getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);
                     if (body == null) {

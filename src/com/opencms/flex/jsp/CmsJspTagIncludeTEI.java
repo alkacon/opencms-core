@@ -36,7 +36,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * the <code>&lt;cms:include /&gt;</code> tag.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagIncludeTEI extends TagExtraInfo {
 
@@ -46,7 +46,7 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
     final private static String C_ATTR_PAGE = "page";
     final private static String C_ATTR_SUFFIX = "suffix";
     final private static String C_ATTR_BODY = "body";
-    final private static String C_ATTR_PART = "part";
+    final private static String C_ATTR_ELEMENT = "element";
     
     /**
      * Returns true if the given attribute name is specified, false otherwise.
@@ -80,7 +80,7 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
         boolean hasProperty = isSpecified(data, C_ATTR_PROPERTY);
         boolean hasBody = isSpecified(data, C_ATTR_BODY);
         boolean hasAttribute = isSpecified(data, C_ATTR_ATTRIBUTE);
-        boolean hasPart = isSpecified(data, C_ATTR_PART);
+        boolean hasElement = isSpecified(data, C_ATTR_ELEMENT);
         
         if (hasBody) {
             String type = (String)data.getAttribute(C_ATTR_BODY);

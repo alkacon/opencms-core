@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2002/12/16 13:20:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2002/12/18 15:03:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0 beta 2
  */
@@ -123,6 +123,21 @@ public class CmsJspActionElement {
         }
     }    
 
+    /**
+     * Returns the CmsObject from the wrapped request.<p>
+     *
+     * This is a convenience method in case you need access to
+     * the CmsObject in your JSP scriplets.
+     *
+     * @return the CmsObject from the wrapped request
+     *
+     * @see com.opencms.flex.cache.CmsFlexRequest#getCmsObject()
+     */
+    public CmsObject getCmsObject() {
+        if (m_notInitialized) return null;
+        return m_request.getCmsObject();
+    }
+    
     /**
      * Include a sub-element without paramters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="..." /&gt;</code> tag.
@@ -196,7 +211,7 @@ public class CmsJspActionElement {
      * 
      * @see  com.opencms.flex.jsp.CmsJspTagUser
      */
-    public String userProperty(String property) {
+    public String user(String property) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
         return CmsJspTagUser.userTagAction(property, m_request);
     }
@@ -310,30 +325,14 @@ public class CmsJspActionElement {
      * 
      * @see com.opencms.flex.jsp.CmsJspTagLabel
      */
-    public String wpLabel(String label) {
+    public String label(String label) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
         try {
             return CmsJspTagLabel.wpLabelTagAction(label, m_request);
         } catch (CmsException e) {
             return "+++ error reading workplace label '" + label + "' +++";
         }         
-    }
-    
-    /**
-     * Returns the CmsObject from the wrapped request.<p>
-     * 
-     * This is a convenience method in case you need access to 
-     * the CmsObject in your JSP scriplets.
-     * 
-     * @return the CmsObject from the wrapped request
-     * 
-     * @see com.opencms.flex.cache.CmsFlexRequest#getCmsObject()
-     */
-    public CmsObject getCmsObject() {
-        if (m_notInitialized) return null;        
-        return m_request.getCmsObject();
     }    
-    
     
     /**
      * Checks if a template part should be used or not, same as using 

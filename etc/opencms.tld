@@ -125,7 +125,7 @@
             <name>body</name>
         </attribute>        
         <attribute>
-            <name>part</name>
+            <name>element</name>
         </attribute>        
     </tag>        
     
