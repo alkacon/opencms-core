@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/06 12:26:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/01/06 14:30:31 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */
@@ -440,21 +440,34 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * Builds the html to display the special action button for the direct edit mode of the editor.<p>
      * 
      * @param nameValue the attribute value of the "name" attribute of the &lt;img&gt; tag
+     * @param jsFunction the JavaScript function which will be executed on the mouseup event 
      * @return the html to display the special action button
      */
-    public String buttonActionDirectEdit(String nameValue) {
+    public String buttonActionDirectEdit(String nameValue, String jsFunction) {
         StringBuffer retValue = new StringBuffer(256);
         // get the action class from the OpenCms runtime property
         I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
         String url;
         String name;
-        if (actionClass != null) { 
-            url = actionClass.getButtonUrl("/system/workplace/skins/modern/buttons/", getJsp());
+        boolean active = false; 
+        if (actionClass != null) {
+            // get button parameters and state from action class
+            url = actionClass.getButtonUrl(getJsp(), getParamResource());
             name = key(actionClass.getButtonName());
+            active = actionClass.isButtonActive(getJsp(), getParamResource());
         } else {
-            url = getSkinUri() + "buttons/publish.gif";
+            // action class not defined, display inactive button
+            url = getSkinUri() + "buttons/publish_in.gif";
             name = key("explorer.context.publish");
         }
+        if (active) {
+            // create the link for the button
+            retValue.append("<a href=\"#\" onMouseOver=\"" + nameValue + ".className='over';\" ");
+            retValue.append("onMouseOut=\"" + nameValue + ".className='norm';\" onMouseDown=\"" + nameValue + ".className='push';\" ");
+            retValue.append("onMouseUp=\"" + nameValue + ".className='over';" + jsFunction + ";\">");
+        }
+        
+        // build the button html
         retValue.append("<img src=\"" + url + "\" ");
         retValue.append("width=\"20\" height=\"20\" ");
         if (nameValue != null) {
@@ -462,6 +475,12 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
         retValue.append("alt=\"" + name + "\" ");
         retValue.append("title=\"" + name + "\">");
+        
+        if (active) {
+            // close the link
+            retValue.append("</a>");
+        }
+        
         return retValue.toString();
     }
    

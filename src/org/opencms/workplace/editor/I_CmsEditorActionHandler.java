@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/01/06 12:26:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/06 14:30:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,24 +45,22 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.0
  */
 public interface I_CmsEditorActionHandler {
     
-    /** 
-     * The runtime property name.<p>
-     */
+    /** The runtime property name */
     String EDITOR_ACTION = "class_editor_action"; 
     
-    // edit mode enabled
+    /** Constant for: edit mode enabled */
     String C_EDITMODE_ENABLED = "enabled";
     
-    // edit mode disabled
+    /** Constant for: edit mode disabled */
     String C_EDITMODE_DISABLED = "disabled";
     
-    // edit mode inactive
+    /** Constant for: edit mode inactive */
     String C_EDITMODE_INACTIVE = "inactive";
     
     /**
@@ -85,11 +83,20 @@ public interface I_CmsEditorActionHandler {
     /**
      * Returns the URL of the button displayed in the editor.<p>
      * 
-     * @param prefix optional prefix for the URL
      * @param jsp the JSP action element
+     * @param resourceName the name of the edited resource
      * @return the URL of the button
      */
-    String getButtonUrl(String prefix, CmsJspActionElement jsp);
+    String getButtonUrl(CmsJspActionElement jsp, String resourceName);
+    
+    /**
+     * Returns true if the customized button should be active, otherwise false.<p>
+     * 
+     * @param jsp the JSP action element
+     * @param resourceName the name of the edited resource
+     * @return true if the customized button should be active, otherwise false
+     */
+    boolean isButtonActive(CmsJspActionElement jsp, String resourceName);
     
     /**
      * Checks the current edit mode.<p>

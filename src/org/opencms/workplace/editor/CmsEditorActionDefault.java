@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/06 12:26:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/06 14:30:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.lock.CmsLock;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -50,7 +51,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.0
  */
@@ -73,6 +74,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         editor.actionClear();
         // create the publish link to redirect to
         String publishLink = jsp.link(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/dialogs/publishresource.html");
+        // define the parameters which are necessary for publishing the resource 
         String params = "?resource=" + editor.getParamResource() + "&action=" + CmsDialog.DIALOG_CONFIRMED;
         params += "&title=" + Encoder.escapeWBlanks(editor.key("messagebox.title.publishresource") + ": " + editor.getParamResource(), Encoder.C_UTF8_ENCODING) + "&oklink=";
         if ("true".equals(editor.getParamDirectedit())) {
@@ -95,14 +97,35 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     }
     
     /**
-     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getButtonUrl(java.lang.String, com.opencms.flex.jsp.CmsJspActionElement)
+     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#getButtonUrl(com.opencms.flex.jsp.CmsJspActionElement, java.lang.String)
      */
-    public String getButtonUrl(String prefix, CmsJspActionElement jsp) {
-        String button = "publish.gif";
-        if (prefix != null && !"".equals(prefix)) {
-            button = prefix + button;
+    public String getButtonUrl(CmsJspActionElement jsp, String resourceName) {
+        // get the button image
+        String button = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "skins/modern/buttons/publish";
+        if (!isButtonActive(jsp, resourceName)) {
+            // show disabled button if not active
+            button += "_in";
         }
-        return jsp.link(button);
+        return jsp.link(button) + ".gif";
+    }
+    
+    /**
+     * @see org.opencms.workplace.editor.I_CmsEditorActionHandler#isButtonActive(com.opencms.flex.jsp.CmsJspActionElement, java.lang.String)
+     */
+    public boolean isButtonActive(CmsJspActionElement jsp, String resourceName) {
+        try {
+            //get the lock type of the resource
+            org.opencms.lock.CmsLock lock = jsp.getCmsObject().getLock(resourceName);
+            int lockType = lock.getType();
+            if (lockType == CmsLock.C_TYPE_INHERITED || lockType == CmsLock.C_TYPE_SHARED_INHERITED) {
+                //lock is inherited, unlocking & publishing not possible, so disable button 
+                return false;
+            }
+        } catch (CmsException e) {
+            // getting the lock went wrong, disable button
+            return false;
+        }
+        return true;
     }
     
     /**
