@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/08/08 14:11:22 $
- * Version: $Revision: 1.490 $
+ * Date   : $Date: 2003/08/14 15:15:42 $
+ * Version: $Revision: 1.491 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,10 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.1.7 Salusa Secundus - August 14, 2003
+* Fixed more issues regarding the new locking mechanism
+* Fixed more issues regarding the new VFS database stucture
 
 OpenCms 5.1.6 Salusa Secundus - August 8, 2003
 ! New feature in opencms.properties allows free naming of default groups / users 
