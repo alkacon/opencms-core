@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2004/12/16 11:47:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/12/17 18:40:38 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.14 $ $Date: 2004/12/16 11:47:52 $
+ * @version $Revision: 1.15 $ $Date: 2004/12/17 18:40:38 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -522,7 +522,7 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public void setQuery(String query) {
 
-        m_query = CmsEncoder.unescape(query, null);
+        m_query = CmsEncoder.unescape(query, OpenCms.getSystemInfo().getDefaultEncoding());
         m_result = null;
         m_lastException = null;
     }

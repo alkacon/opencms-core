@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/17 16:15:23 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/12/17 18:38:47 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -4083,10 +4083,10 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param resource the resource to touch
      * @param dateLastModified timestamp the new timestamp of the changed resource.
-     * @param dateReleased the new release date of the changed resource. 
-     *              Set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}<code> to keep it unchanged.
-     * @param dateExpired the new expire date of the changed resource. 
-     *              Set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}<code> to keep it unchanged.
+     * @param dateReleased the new release date of the changed resource,
+     *              set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
+     * @param dateExpired the new expire date of the changed resource, 
+     *              set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
      * 
      * @throws CmsException if something goes wrong
      * 

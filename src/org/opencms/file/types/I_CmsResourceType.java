@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/12/17 16:15:04 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/12/17 18:40:38 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 
 import java.util.List;
 
@@ -544,10 +543,10 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to touch
      * @param dateLastModified timestamp the new timestamp of the changed resource.
-     * @param dateReleased the new release date of the changed resource. 
-     *              Set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}<code> to keep it unchanged.
-     * @param dateExpired the new expire date of the changed resource. 
-     *              Set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}<code> to keep it unchanged.
+     * @param dateReleased the new release date of the changed resource,
+     *              set it to <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
+     * @param dateExpired the new expire date of the changed resource, 
+     *              set it to <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * 
      * @throws CmsException if something goes wrong

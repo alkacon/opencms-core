@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2004/11/22 14:41:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/17 18:40:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -368,8 +369,7 @@ public class CmsChnav extends CmsDialog {
         } else {
             attributes = "";
         }
-        CmsDialog wp = new CmsDialog(null);
-        return wp.buildSelect("name=\""+PARAM_NAVPOS+"\"" + attributes, options, values, values.size()-1, true);  
+        return CmsWorkplace.buildSelect("name=\""+PARAM_NAVPOS+"\"" + attributes, options, values, values.size()-1, true);  
     }
     
     /**
