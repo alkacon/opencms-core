@@ -40,7 +40,7 @@ top.help_url='FunkButtonNeu/index.html';
                         <script language="JavaScript">
                             for(i=0;i<top.vi.resource.length;i++) {
                                 res = top.vi.resource[i];
-                                if ((res != null) && (res != undefined) && (res.createLink != undefined)) {
+                                if ((res != null) && (typeof res != 'undefined') && (typeof res.createLink != 'undefined')) {
                                 if (res.createLink != "") {
                                     document.write("<tr><td align=middle width=5%><INPUT type=radio id=R_NEU name=R_NEU value='");
                                     document.write(res.createLink);
