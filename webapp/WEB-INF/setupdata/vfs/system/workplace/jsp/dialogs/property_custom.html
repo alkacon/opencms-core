@@ -151,7 +151,8 @@ function submitAdvanced() {
 <% if (wp.showNavigation()) { %>
 function toggleNav() {
 	var checked = document.getElementById("enablenav").checked;
-	var disableFields = false;
+	var disableField = false;
+	var inputStyle = "Window";
 	if (checked == true && document.getElementById("enablenav").disabled == false) {
 		if (document.getElementById("<%= wp.PREFIX_HIDDEN %>NavText")) {
 			var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>NavText").value;
@@ -161,17 +162,20 @@ function toggleNav() {
 			}		
 		}	
 	} else {
-		disableFields = true;
+		disableField = true;
+		inputStyle = "Menu";
 		if (document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText")) {
 			document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText").checked = false;
 			toggleDelete('NavText');
 		}
 	}
 	if (document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText")) {
-		document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText").disabled = disableFields;
+		document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText").disabled = disableField;
 	}
-	document.getElementById("<%= wp.PREFIX_VALUE %>NavText").disabled = disableFields;
-	document.getElementById("navpos").disabled = disableFields;
+	document.getElementById("<%= wp.PREFIX_VALUE %>NavText").style.backgroundColor = inputStyle;
+	document.getElementById("navpos").style.backgroundColor = inputStyle;
+	document.getElementById("<%= wp.PREFIX_VALUE %>NavText").disabled = disableField;
+	document.getElementById("navpos").disabled = disableField;
 }
 <% } %>
 
