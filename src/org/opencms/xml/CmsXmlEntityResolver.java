@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2004/12/01 14:39:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/12/02 15:30:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.xml.sax.InputSource;
  * Also provides a cache for XML content schema definitions.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -174,7 +174,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             m_cachePermanent = Collections.synchronizedMap(cachePermanent);
 
             LRUMap cacheContentDefinitions = new LRUMap(64);
-            m_cacheContentDefinitions = Collections.synchronizedMap(cachePermanent);
+            m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
 
             if (OpenCms.getRunLevel() > 1) {
                 if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {

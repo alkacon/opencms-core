@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2004/11/25 13:04:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/02 15:30:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.xml.CmsXmlEntityResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.0
  */
@@ -72,6 +73,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsXmlPageInSystem.class.getName());
         
+        suite.addTest(new TestCmsXmlPageInSystem("testSchemaCachePublishIssue"));
         suite.addTest(new TestCmsXmlPageInSystem("testLinkReplacement"));
         suite.addTest(new TestCmsXmlPageInSystem("testCommentInSource"));
         
@@ -97,6 +99,44 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      */    
     public TestCmsXmlPageInSystem(String arg0) {
         super(arg0);
+    }
+    
+    /**
+     * Test the schema cache publish issue.<p>
+     * 
+     * Description of the issue:
+     * After the initial publish, the XML page schema does not work anymore.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testSchemaCachePublishIssue() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing the validation for values in the XML content");
+
+        String resourcename = "/folder1/page1.html";
+        cms.lockResource(resourcename);
+        
+        CmsFile file = cms.readFile(resourcename);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
+        page.validateXmlStructure(new CmsXmlEntityResolver(cms));
+        page.setStringValue(cms, "body", Locale.ENGLISH, "This is a test");
+        assertEquals("This is a test", page.getValue("body", Locale.ENGLISH).getStringValue(cms));
+        file.setContents(page.marshal());        
+        cms.writeFile(file);       
+        
+        cms.unlockResource(resourcename);
+        cms.publishResource(resourcename);
+        
+        cms.lockResource(resourcename);
+        
+        file = cms.readFile(resourcename);
+        page = CmsXmlPageFactory.unmarshal(cms, file);
+        page.validateXmlStructure(new CmsXmlEntityResolver(cms));   
+        page.setStringValue(cms, "body", Locale.ENGLISH, "This is a another test");
+        assertEquals("This is a another test", page.getValue("body", Locale.ENGLISH).getStringValue(cms));
+        file.setContents(page.marshal());
+        cms.writeFile(file); 
     }
     
     /**
