@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/29 15:58:47 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2003/07/30 09:26:57 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.98 $ $Date: 2003/07/29 15:58:47 $
+ * @version $Revision: 1.99 $ $Date: 2003/07/30 09:26:57 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1988,7 +1988,7 @@ public class CmsDriverManager extends Object {
         } else {
             // m_vfsDriver.deleteFolder(context.currentProject(), cmsFolder);
             cmsFolder.setState(I_CmsConstants.C_STATE_DELETED);
-            m_vfsDriver.updateResourcestate(cmsFolder, C_UPDATE_STRUCTURE_STATE);
+            m_vfsDriver.updateResourceState(context.currentProject(), cmsFolder, C_UPDATE_STRUCTURE_STATE);
             // delete the access control entries
             deleteAllAccessControlEntries(context, cmsFolder);
         }
@@ -7159,7 +7159,7 @@ public class CmsDriverManager extends Object {
                 
         res.setDateLastModified(timestamp);
         res.setUserLastModified(user);
-        m_vfsDriver.updateResourcestate(res, C_UPDATE_RESOURCE);
+        m_vfsDriver.updateResourceState(context.currentProject(), res, C_UPDATE_RESOURCE);
         
         clearResourceCache();
         fileSystemChanged(res.isFolder());
@@ -7182,7 +7182,7 @@ public class CmsDriverManager extends Object {
                 
         res.setDateLastModified(timestamp);
         res.setUserLastModified(user);
-        m_vfsDriver.updateResourcestate(res, C_UPDATE_STRUCTURE);
+        m_vfsDriver.updateResourceState(context.currentProject(), res, C_UPDATE_STRUCTURE);
         
         clearResourceCache();
         fileSystemChanged(res.isFolder());        
@@ -7253,7 +7253,7 @@ public class CmsDriverManager extends Object {
         //if (resource.isHardLink())
         //    m_vfsDriver.updateResourcestate(resource, C_UPDATE_RESOURCE_STATE);
         // else
-            m_vfsDriver.updateResourcestate(resource, C_UPDATE_STRUCTURE_STATE);
+            m_vfsDriver.updateResourceState(context.currentProject(), resource, C_UPDATE_STRUCTURE_STATE);
         
         clearResourceCache();
 

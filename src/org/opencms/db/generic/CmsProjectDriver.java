@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/29 15:58:46 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/07/30 09:26:57 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.35 $ $Date: 2003/07/29 15:58:46 $
+ * @version $Revision: 1.36 $ $Date: 2003/07/30 09:26:57 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1256,7 +1256,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     if (currentFolder.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
                         // set the state of current folder in the offline project to unchanged
                         currentFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().updateResourcestate(currentFolder, CmsDriverManager.C_UPDATE_ALL);
+                        m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), currentFolder, CmsDriverManager.C_UPDATE_ALL);
                     }
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
                     // I_CmsConstants.C_STATE_CHANGED
@@ -1272,7 +1272,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                             // create the new folder
                             onlineFolder = m_driverManager.getVfsDriver().createFolder(context.currentUser(), onlineProject, currentFolder, currentFolder.getParentId(), currentFolder.getResourceName());
                             onlineFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                            m_driverManager.getVfsDriver().updateResourcestate(onlineFolder, CmsDriverManager.C_UPDATE_ALL);
+                            m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), onlineFolder, CmsDriverManager.C_UPDATE_ALL);
                         } else {
                             throw exc;
                         }
@@ -1313,7 +1313,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     if (currentFolder.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
                         // set the state of current folder in the offline project to unchanged
                         currentFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().updateResourcestate(currentFolder, CmsDriverManager.C_UPDATE_ALL);
+                        m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), currentFolder, CmsDriverManager.C_UPDATE_ALL);
                     }
                 }
             }
@@ -1477,7 +1477,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     if (currentFile.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
                         // set the file state to unchanged
                         currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().updateResourcestate(currentFile, CmsDriverManager.C_UPDATE_ALL);
+                        m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), currentFile, CmsDriverManager.C_UPDATE_ALL);
                     }
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_NEW) {
                     // C_STATE_NEW
@@ -1548,7 +1548,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     if (currentFile.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
                         // set the file state to unchanged
                         currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        m_driverManager.getVfsDriver().updateResourcestate(currentFile, CmsDriverManager.C_UPDATE_ALL);
+                        m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), currentFile, CmsDriverManager.C_UPDATE_ALL);
                     }
                 }
             }

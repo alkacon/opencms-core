@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/29 16:27:35 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2003/07/30 09:26:57 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.61 $ $Date: 2003/07/29 16:27:35 $
+ * @version $Revision: 1.62 $ $Date: 2003/07/30 09:26:57 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -2919,34 +2919,38 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      * @param res com.opencms.file.CmsResource
      * @throws com.opencms.core.CmsException The exception description.
      */
-    public void updateResourcestate(CmsResource res, int changed) throws CmsException {
+    public void updateResourceState(CmsProject project, CmsResource resource, int changed) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
+        
         try {
-            conn = m_sqlManager.getConnection(res.getProjectId());
+            conn = m_sqlManager.getConnection(project);
             
             if (changed == CmsDriverManager.C_UPDATE_RESOURCE) {
-                stmt = m_sqlManager.getPreparedStatement(conn, res.getProjectId(), "C_RESOURCES_UPDATE_RESOURCE_STATELASTMODIFIED");
-                stmt.setInt(1, res.getState());
-                stmt.setTimestamp(2, new Timestamp(res.getDateLastModified()));
-                stmt.setString(3, res.getUserLastModified().toString());
-                stmt.setString(4, res.getResourceId().toString());
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCE_STATELASTMODIFIED");
+                stmt.setInt(1, resource.getState());
+                stmt.setTimestamp(2, new Timestamp(resource.getDateLastModified()));
+                stmt.setString(3, resource.getUserLastModified().toString());
+                stmt.setInt(4, project.getId());
+                stmt.setString(5, resource.getResourceId().toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(null, stmt, null);
             }
 
             if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE || changed == CmsDriverManager.C_UPDATE_ALL) {
-                stmt = m_sqlManager.getPreparedStatement(conn, res.getProjectId(), "C_RESOURCES_UPDATE_RESOURCE_STATE");
-                stmt.setInt(1, res.getState());
-                stmt.setString(2, res.getResourceId().toString());
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCE_STATE");
+                stmt.setInt(1, resource.getState());
+                stmt.setInt(2, project.getId());
+                stmt.setString(3, resource.getResourceId().toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(null, stmt, null);
             }
 
             if (changed == CmsDriverManager.C_UPDATE_STRUCTURE || changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE || changed == CmsDriverManager.C_UPDATE_ALL) {
-                stmt = m_sqlManager.getPreparedStatement(conn, res.getProjectId(), "C_RESOURCES_UPDATE_STRUCTURE_STATE");
-                stmt.setInt(1, res.getState());
-                stmt.setString(2, res.getId().toString());
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_STRUCTURE_STATE");
+                stmt.setInt(1, resource.getState());
+                stmt.setInt(2, project.getId());
+                stmt.setString(3, resource.getId().toString());
                 stmt.executeUpdate();
             }
                         
@@ -3089,7 +3093,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(9, file.isLockedBy().toString());
             //stmt.setInt(10, file.getProjectId());
             stmt.setInt(10, project.getId());
-            stmt.setInt(11, this.countVfsLinks(project.getId(), file.getResourceId()));
+            stmt.setInt(11, countVfsLinks(project.getId(), file.getResourceId()));
             stmt.setString(12, file.getResourceId().toString());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
