@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/10/31 13:11:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/11/01 13:38:43 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.12 $ $Date: 2000/10/31 13:11:24 $
+ * @version $Revision: 1.13 $ $Date: 2000/11/01 13:38:43 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -370,6 +370,41 @@ public void copyResourceToProject(String fromProjectId, String resource)
 			CmsShell.printException(exc);
 		}		
 	}
+/**
+ * Creates a module in the registry.
+ * 
+ * @param String modulename the name of the module.
+ */
+public void createModule(String modulename) {
+	// create the module
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.createModule(modulename, "", "", "", 0, 0);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
+/**
+ * This method creates a new module in the repository.
+ *
+ * @param String modulename the name of the module.
+ * @param String niceModulename another name of the module.
+ * @param String description the description of the module.
+ * @param String author the name of the author.
+ * @param String createDate the creation date of the module
+ * @param String version the version number of the module.
+ */
+public void createModule(String modulename, String niceModulename, String description, String author, String createDate, String version) {
+	// create the module
+	try {
+		I_CmsRegistry reg = m_cms.getRegistry();
+		int ver = Integer.parseInt(version);
+		long date = Long.parseLong(createDate);
+		reg.createModule(modulename, niceModulename, description, author, date, ver);
+	} catch (Exception exc) {
+		CmsShell.printException(exc);
+	}
+}
 	/**
 	 * Creates a project.
 	 * 

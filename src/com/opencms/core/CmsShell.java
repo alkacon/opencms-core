@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/10/31 13:46:36 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2000/11/01 13:38:43 $
+ * Version: $Revision: 1.57 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.56 $ $Date: 2000/10/31 13:46:36 $
+ * @version $Revision: 1.57 $ $Date: 2000/11/01 13:38:43 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -64,6 +64,28 @@ public class CmsShell implements I_CmsConstants {
 	 */
 	private boolean m_echo = false;
 	
+/**
+ * Insert the method's description here.
+ * Creation date: (10/05/00 %r)
+ * @author: 
+ */
+public CmsShell(String args[])
+{
+	try
+	{
+		Configurations conf = new Configurations(new ExtendedProperties(args[0]));
+		m_openCms = new OpenCms(conf);
+		m_cms = new CmsObject();
+		this.shellCommands = new CmsShellCommands(args, m_openCms, m_cms);
+
+		//log in default user.
+		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+	}
+	catch (Exception exc)
+	{
+		printException(exc);
+	}
+}
 /**
  * Calls a command
  * 
@@ -131,7 +153,6 @@ private void call(Vector command)
 		try{			
 			FileReader fr = new FileReader(FileDescriptor.in);
 			LineNumberReader lnr = new LineNumberReader(fr);
-//			System.out.println("Type help to get a list of commands.");
 			for(;;) { // ever
 				printPrompt();
 				StringReader reader = new StringReader(lnr.readLine());
@@ -155,28 +176,6 @@ private void call(Vector command)
 			printException(exc);
 		}
 	}
-/**
- * Insert the method's description here.
- * Creation date: (10/05/00 %r)
- * @author: 
- */
-public CmsShell(String args[])
-{
-	try
-	{
-		Configurations conf = new Configurations(new ExtendedProperties(args[0]));
-		m_openCms = new OpenCms(conf);
-		m_cms = new CmsObject();
-		this.shellCommands = new CmsShellCommands(args, m_openCms, m_cms);
-
-		//log in default user.
-		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-	}
-	catch (Exception exc)
-	{
-		printException(exc);
-	}
-}
 	/**
  * The main entry point for the commandline interface to the opencms. 
  *

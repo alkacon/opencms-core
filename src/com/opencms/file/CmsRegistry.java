@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/11/01 09:40:25 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/11/01 13:38:44 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/11/01 09:40:25 $
+ * @version $Revision: 1.17 $ $Date: 2000/11/01 13:38:44 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -83,6 +83,11 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 	private static final String C_UPLOAD_EVENT_METHOD_NAME = "moduleWasUploaded";
 	private static final String C_UPDATE_PARAMETER_EVENT_METHOD_NAME = "moduleParameterWasUpdated";
 	private static final String C_DELETE_EVENT_METHOD_NAME = "moduleWasDeleted";
+
+	/**
+	 * Declaration of an empty module in the registry.
+	 */
+	private static final String[] C_EMPTY_MODULE = { "<module><name>", "</name><nicename>", "</nicename><version>", "</version><description>", "</description><author>", "</author><email/><creationdate>", "</creationdate><view/><documentation/><dependencies/><maintenance_class/><parameters/></module>" }; 
 
 /**
  * Creates a new CmsRegistry for a user. The cms-object represents the current state of the current user.
@@ -232,11 +237,23 @@ public I_CmsRegistry clone(CmsObject cms) {
 public void createModule(String modulename, String niceModulename, String description, String author, long createDate, int version) throws CmsException {
 
 	// find out if the module exists already
-	if( !moduleExists(modulename) ) {
+	if( moduleExists(modulename) ) {
 		throw new CmsException("Module exists already " + modulename, CmsException.C_REGISTRY_ERROR);
 	}
 
+	// create the new module in the registry
+
+	String moduleString = C_EMPTY_MODULE[0] + modulename;
+	moduleString += C_EMPTY_MODULE[1] + niceModulename;
+	moduleString += C_EMPTY_MODULE[2] + version;
+	moduleString += C_EMPTY_MODULE[3] + description;
+	moduleString += C_EMPTY_MODULE[4] + author;
+	moduleString += C_EMPTY_MODULE[5] + m_dateFormat.format(new Date(createDate));
+	moduleString += C_EMPTY_MODULE[6];
 	
+	Document doc = parse(moduleString);
+	m_xmlReg.getElementsByTagName("modules").item(0).appendChild(getXmlParser().importNode(m_xmlReg, doc.getFirstChild()));
+	saveRegistry();
 }
 /**
  * This method checks which modules need this module. If a module depends on this the name 
@@ -641,6 +658,15 @@ public Class getModuleMaintenanceEventClass(String modulname) {
  */
 public Enumeration getModuleNames() {
 	return m_modules.keys();
+}
+/**
+ * Returns the nice name of the module.
+ *
+ * @parameter String the name of the module.
+ * @return java.lang.String the description of the module.
+ */
+public String getModuleNiceName(String module) {
+	return getModuleData(module, "nicename");
 }
 /**
  * Gets a parameter for a module.
@@ -1338,6 +1364,9 @@ private void saveRegistry() throws CmsException {
 
 		// parse the registry-xmlfile and store it.
 		A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, xmlWriter);
+
+		// reinit the modules-hashtable
+		init();
 	} catch (Exception exc) {
 		throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);
 	}
@@ -1457,6 +1486,15 @@ public void setModuleDocumentPath(String modulename, String url) {
  */
 public void setModuleMaintenanceEventClass(String modulname, String classname) {
 	setModuleData(modulname, "maintenance_class", classname);
+}
+/**
+ * Sets the description of the module.
+ *
+ * @param String the name of the module.
+ * @param String the nice name of the module.
+ */
+public void setModuleNiceName(String module, String nicename) {
+	setModuleData(module, "nicename", nicename);
 }
 	/**
 	 * Sets a parameter for a module.

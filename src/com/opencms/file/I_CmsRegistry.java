@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/11/01 09:40:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/11/01 13:38:44 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/11/01 09:40:25 $
+ * @version $Revision: 1.14 $ $Date: 2000/11/01 13:38:44 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -165,6 +165,13 @@ public Class getModuleMaintenanceEventClass(String modulname);
  * @return String[] the names of all available modules.
  */
 public Enumeration getModuleNames();
+/**
+ * Gets the nice name of the module.
+ *
+ * @param String the name of the module.
+ * @returns String the nice name of the module.
+ */
+public String getModuleNiceName(String module);
 	/**
 	 * Gets a parameter for a module.
 	 * 
@@ -529,6 +536,13 @@ public void setModuleDocumentPath(String modulename, String url);
  * @param java.lang.Class that receives all maintenance-events for the module.
  */
 public void setModuleMaintenanceEventClass(String modulname, String classname);
+/**
+ * Sets the description of the module.
+ *
+ * @param String the name of the module.
+ * @param String the nice name of the module.
+ */
+public void setModuleNiceName(String module, String nicename);
 /**
  * Sets a parameter for a module.
  * 
