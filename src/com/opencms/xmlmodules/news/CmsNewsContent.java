@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/xmlmodules/news/Attic/CmsNewsContent.java,v $
- * Date   : $Date: 2000/08/01 09:18:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/08/02 14:55:13 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -57,7 +57,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Matthias Schreiber
- * @version $Revision: 1.4 $ $Date: 2000/08/01 09:18:30 $
+ * @version $Revision: 1.5 $ $Date: 2000/08/02 14:55:13 $
  * @see com.opencms.xmlmodules.A_CmsModuleContent
  */
 public class CmsNewsContent extends A_CmsModuleContent implements I_CmsNewsConstants {
@@ -282,5 +282,33 @@ public class CmsNewsContent extends A_CmsModuleContent implements I_CmsNewsConst
         }
         return listFiles;        
 	}
+	
+	/**
+     * Gets a valid URI especially for use in XSL-templates to produce PDF files.
+     * <P>
+     * Called by the template file using 
+     * <code>&lt;METHOD name="getValidURI"/&gt;</code>.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object the initiating XML document.  
+     * @param userObj Hashtable with parameters.
+     * @return Valid URI.
+     */
+    public String getValidURI(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj)  
+            throws CmsException {
+
+		Hashtable parameters = (Hashtable)userObj;
+        CmsNewsObject article = (CmsNewsObject)parameters.get("_ARTICLE_");
+		String result = "";
+        
+        if(article != null) {
+			result = article.getExternalLink();
+			if ((result == null)||("".equals(result))) {
+				result="#";
+			}
+		}        
+        return result;
+    }
 	
 }
