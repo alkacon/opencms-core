@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/08/25 13:40:05 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2000/08/30 12:54:22 $
+ * Version: $Revision: 1.107 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.106 $ $Date: 2000/08/25 13:40:05 $ 
+ * @version $Revision: 1.107 $ $Date: 2000/08/30 12:54:22 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1216,6 +1216,20 @@ public class CmsObject implements I_CmsConstants {
 		m_rb = broker;
 		m_context = new CmsRequestContext();
 		m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId);
+	}
+	/**
+	 * Determines, if the users current group is the admin-group.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @return true, if the users current group is the admin-group, 
+	 * else it returns false.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	public boolean isAdmin() 
+		throws CmsException {
+		return m_rb.isAdmin(getRequestContext().currentUser(), getRequestContext().currentProject());
 	}
 	/**
 	 * Returns the user, who had locked the resource.<BR/>

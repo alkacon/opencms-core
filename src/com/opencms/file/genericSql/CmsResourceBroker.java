@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/29 15:42:50 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2000/08/30 12:54:22 $
+ * Version: $Revision: 1.113 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.template.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.112 $ $Date: 2000/08/29 15:42:50 $
+ * @version $Revision: 1.113 $ $Date: 2000/08/30 12:54:22 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2855,8 +2855,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 
 	 public I_CmsRegistry getRegistry(CmsUser currentUser, CmsProject currentProject, CmsObject cms)
 	 	throws CmsException {
-	     // Check the security
-		return m_registry;
+		return m_registry.clone(cms);
 	 }
 	/**
 	 * Returns a CmsResourceTypes.

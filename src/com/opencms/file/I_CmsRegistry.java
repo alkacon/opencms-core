@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/08/28 11:53:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/30 12:54:22 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/08/28 11:53:17 $
+ * @version $Revision: 1.6 $ $Date: 2000/08/30 12:54:22 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -45,9 +45,17 @@ public interface I_CmsRegistry extends Cloneable {
 /**
  * This method clones the registry.
  *
+ * @param CmsObject the current cms-object for the user.
  * @return the cloned registry.
  */
-public Object clone();
+public I_CmsRegistry clone(CmsObject cms);
+/**
+ *  Deletes a module. This method is synchronized, so only one module can be deleted at one time.
+ *
+ *  @param module-name the name of the module that should be deleted.
+ *  @param exclusion a Vector with resource-names that should be excluded from this deletion.
+ */
+public void deleteModule(String module, Vector exclusion) throws CmsException;
 	/**
 	 *  Checks for files that already exist in the system but should be replaced by the module.
 	 *
@@ -100,6 +108,15 @@ public String getModuleDescription(String module);
  * @return java.lang.String the url to the documentation of the module.
  */
 public String getModuleDocumentPath(String modulename);
+/**
+ * Returns all filenames and hashcodes belonging to the module.
+ *
+ * @param String modulname the name of the module.
+ * @param retNames the names of the resources belonging to the module.
+ * @param retCodes the hashcodes of the resources belonging to the module.
+ * @return the amount of entrys.
+ */
+public int getModuleFiles(String modulename, Vector retNames, Vector retCodes);
 /**
  * Returns the class, that receives all maintenance-events for the module.
  * 

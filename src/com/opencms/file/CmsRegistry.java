@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/08/28 11:53:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/08/30 12:54:22 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/08/28 11:53:17 $
+ * @version $Revision: 1.5 $ $Date: 2000/08/30 12:54:22 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -57,8 +57,27 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 	/**
 	 *  A hashtable with shortcuts into the dom-structure for each module.
 	 */
-	private Hashtable m_modules;
+	private Hashtable m_modules = new Hashtable();
 
+	/**
+	 *  The cms-object to get access to the system with the context of the current user.
+	 */
+	private CmsObject m_cms = null;
+
+/**
+ * Creates a new CmsRegistry for a user. The cms-object represents the current state of the current user.
+ *
+ * @param CmsObject the cms-object to get access to the system
+ */
+public CmsRegistry(CmsRegistry reg, CmsObject cms) {
+	super();
+	// there is no need of a real copy for this parameters
+	m_modules = reg.m_modules;
+	m_regFileName = reg.m_regFileName;
+	m_xmlReg = reg.m_xmlReg;
+	// store the cms-object for this instance.
+	m_cms = cms;
+}
 /**
  * Creates a new CmsRegistry. The regFileName is the path to the registry-file in
  * the server filesystem.
@@ -168,10 +187,59 @@ private Vector checkDependencies(Element module) throws CmsException {
 /**
  * This method clones the registry.
  *
+ * @param CmsObject the current cms-object to get access to the system.
  * @return the cloned registry.
  */
-public Object clone() {
-	return null;
+public I_CmsRegistry clone(CmsObject cms) {
+	return new CmsRegistry(this, cms);
+}
+/**
+ *  Deletes a module. This method is synchronized, so only one module can be deleted at one time.
+ *
+ *  @param module-name the name of the module that should be deleted.
+ *  @param exclusion a Vector with resource-names that should be excluded from this deletion.
+ */
+public synchronized void deleteModule(String module, Vector exclusion) throws CmsException {
+	// check if the user is allowed to set parameters
+
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'importModule'", CmsException.C_REGISTRY_ERROR);
+	}
+
+	// TODO: invoke the event-method
+
+	// get the files, that are belonging to the module.
+	Vector resourceNames = new Vector();
+	Vector resourceCodes = new Vector();
+	getModuleFiles(module, resourceNames, resourceCodes);
+
+	// move backwarts through all resource-names and try to delete them
+	for (int i = resourceNames.size() - 1; i > 0; i--) {
+		try {
+			String currentResource = (String) resourceNames.elementAt(i);
+			m_cms.lockResource(currentResource, true);
+			if (currentResource.endsWith("/")) {
+				// this is a folder
+				m_cms.deleteFolder(currentResource);
+			} else {
+				// this is a file
+				m_cms.deleteFile(currentResource);
+			}
+		} catch (CmsException exc) {
+			// ignore the exception and delete the next resource.
+			// exc.printStackTrace();
+		}
+	}
+
+	// delete all entries for the module in the registry
+	Element moduleElement = getModuleElement(module);
+	moduleElement.getParentNode().removeChild(moduleElement);
+	saveRegistry();
+	try {
+		init();
+	} catch (Exception exc) {
+		throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
+	}
 }
 /**
  *  Checks for files that already exist in the system but should be replaced by the module.
@@ -324,6 +392,28 @@ private Element getModuleElementFromImport(String filename) {
 	} catch (Exception exc) {
 		return null;
 	}
+}
+/**
+ * Returns all filenames and hashcodes belonging to the module.
+ *
+ * @param String modulname the name of the module.
+ * @param retNames the names of the resources belonging to the module.
+ * @param retCodes the hashcodes of the resources belonging to the module.
+ * @return the amount of entrys.
+ */
+public int getModuleFiles(String modulename, Vector retNames, Vector retCodes) {
+	try {
+		Element module = getModuleElement(modulename);
+		Element files = (Element) (module.getElementsByTagName("files").item(0));
+		NodeList file = files.getElementsByTagName("file");
+		for (int i = 0; i < file.getLength(); i++) {
+			retNames.addElement(((Element) file.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue());
+			retCodes.addElement(((Element) file.item(i)).getElementsByTagName("checksum").item(0).getFirstChild().getNodeValue());
+		}
+	} catch (Exception exc) {
+		// ignore the exception - reg is not welformed
+	}
+	return retNames.size();
 }
 /**
  * Returns the class, that receives all maintenance-events for the module.
@@ -836,8 +926,14 @@ public int getViews(Vector views, Vector urls) {
  * @returns true if access is granted, else false.
  */
 private boolean hasAccess() {
-	// TODO: check the access!
-	return true;
+	// check the access - only the admin has write access.
+	boolean retValue = false;
+	try{
+		retValue = m_cms.isAdmin();
+	} catch(CmsException exc) {
+		// ignore the exception - no access granted
+	}
+	return retValue;
 }
 /**
  *  Checks for files that already exist in the system but should be replaced by the module.
@@ -849,8 +945,9 @@ public Vector importGetConflictingFileNames(String moduleZip) throws CmsExceptio
 	if (!hasAccess()) {
 		throw new CmsException("No access to perform the action 'getConflictingFileNames'", CmsException.C_REGISTRY_ERROR);
 	}
-	// TODO: getConflictingFileNames
-	return new Vector();
+
+	CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms);
+	return cmsImport.getConflictingFilenames();
 }
 /**
  *  Imports a module. This method is synchronized, so only one module can be imported at on time.
@@ -873,12 +970,15 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
 	}
 	Vector dependencies = checkDependencies(newModule);
 
-	// are there any dependencies no fullfilled?
+	// are there any dependencies not fulfilled?
 	if (dependencies.size() != 0) {
 		throw new CmsException("the dependencies for the module are not fulfilled.", CmsException.C_REGISTRY_ERROR);
 	}
 
-	// TODO: import the module into the vfs
+	Vector resourceNames = new Vector();
+	Vector resourceCodes = new Vector();
+	CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms);
+	cmsImport.importResources(exclusion, resourceNames, resourceCodes, "module", newModuleName);
 
 	// import the module data into the registry
 	Element regModules = (Element) (m_xmlReg.getElementsByTagName("modules").item(0));
@@ -887,17 +987,36 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
 	uploadDate.appendChild(newModule.getOwnerDocument().createTextNode(System.currentTimeMillis() + ""));
 	newModule.appendChild(uploadDate);
 
-	// TODO: set the import-user
+	// set the import-user
 	Node uploadBy = newModule.getOwnerDocument().createElement("uploadedby");
-	uploadBy.appendChild(newModule.getOwnerDocument().createTextNode("U.Nknown"));
+	uploadBy.appendChild(newModule.getOwnerDocument().createTextNode(m_cms.getRequestContext().currentUser().getName()));
 	newModule.appendChild(uploadBy);
 
-	// TODO: store the resources-names that are depending to the module
+	// set the files
+	Node files = newModule.getOwnerDocument().createElement("files");
+
+	// store the resources-names that are depending to the module
+	for (int i = 0; i < resourceNames.size(); i++) {
+		Node file = newModule.getOwnerDocument().createElement("file");
+		files.appendChild(file);
+		Node name = newModule.getOwnerDocument().createElement("name");
+		file.appendChild(name);
+		Node checksum = newModule.getOwnerDocument().createElement("checksum");
+		file.appendChild(checksum);
+		name.appendChild(newModule.getOwnerDocument().createTextNode((String) resourceNames.elementAt(i)));
+		checksum.appendChild(newModule.getOwnerDocument().createTextNode((String) resourceCodes.elementAt(i)));
+	}
+
+	// append the files to the module-entry
+	newModule.appendChild(files);
 
 	// append the module data to the registry
 	Node newNode = getXmlParser().importNode(m_xmlReg, newModule);
 	regModules.appendChild(newNode);
 	saveRegistry();
+
+	// TODO: invoke the event-method
+
 	try {
 		init();
 	} catch (Exception exc) {
@@ -908,11 +1027,11 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
  *  Inits all member-variables for the instance.
  */
 private void init() throws Exception {
+	System.err.println("init()");
 	// get the entry-points for the modules
 	NodeList modules = m_xmlReg.getElementsByTagName("module");
-
 	// create the hashtable for the shortcuts
-	m_modules = new Hashtable(modules.getLength());
+	m_modules.clear();
 
 	// walk throug all modules
 	for (int i = 0; i < modules.getLength(); i++) {

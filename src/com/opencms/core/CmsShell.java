@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/08/22 13:22:48 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/08/30 12:54:22 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,10 +39,10 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2000/08/22 13:22:48 $
+ * @version $Revision: 1.20 $ $Date: 2000/08/30 12:54:22 $
  */
 public class CmsShell implements I_CmsConstants {
-	
+
 	/**
 	 * The resource broker to get access to the cms.
 	 */
@@ -52,7 +52,6 @@ public class CmsShell implements I_CmsConstants {
 	 * The open-cms.
 	 */
 	private A_OpenCms m_openCms;
-
 	/**
 	 * Tests if the user can access the project.
 	 * 
@@ -469,6 +468,19 @@ public class CmsShell implements I_CmsConstants {
 		}
 	}
 	/**
+	 * Deletes a module from the cms.
+	 * 
+	 * @param module The name of module to delete.
+	 */
+	public void deleteModule(String module) {
+		try {
+			I_CmsRegistry reg = m_cms.getRegistry();
+			reg.deleteModule(module, new Vector());
+		} catch (Exception exc) {
+			printException(exc);
+		}
+	}
+	/**
 	 * Deletes a project.
 	 * 
 	 * @param id The id of the project to delete.
@@ -713,6 +725,88 @@ public class CmsShell implements I_CmsConstants {
 		}
 	}
 	/**
+	 * Imports a module into the cms.
+	 * 
+	 * @param moduleZip The file-name of module to import.
+	 */
+	public void getModuleFiles(String name) {
+		try {
+			I_CmsRegistry reg = m_cms.getRegistry();
+			Vector names = new Vector();
+			Vector codes = new Vector();
+			reg.getModuleFiles(name, names, codes);
+			for (int i = 0; i < names.size(); i++) {
+				System.out.print(names.elementAt(i));
+				System.out.print(" -> ");
+				System.out.println(codes.elementAt(i));
+			}
+		} catch (Exception exc) {
+			printException(exc);
+		}
+	}
+	/**
+	 * Imports a module into the cms.
+	 * 
+	 * @param moduleZip The file-name of module to import.
+	 */
+	public void getModuleInformations() {
+		try {
+			I_CmsRegistry reg = m_cms.getRegistry();
+			java.util.Enumeration names = reg.getModuleNames();
+
+			// print out the available modules
+			while (names.hasMoreElements()) {
+				String name = (String) names.nextElement();
+				System.out.println("\nModule: " + name + " v" + reg.getModuleVersion(name));
+				System.out.println("\tDescription: " + reg.getModuleDescription(name));
+				System.out.println("\tAuthor: " + reg.getModuleAuthor(name));
+				System.out.println("\tUploaded by: " + reg.getModuleUploadedBy(name));
+				System.out.println("\tEmail: " + reg.getModuleAuthorEmail(name));
+				System.out.println("\tCreationdate: " + new java.util.Date(reg.getModuleCreateDate(name)));
+				System.out.println("\tUploaddate: " + new java.util.Date(reg.getModuleUploadDate(name)));
+				System.out.println("\tDocumentationPath: " + reg.getModuleDocumentPath(name));
+				System.out.println("\trepositories: ");
+				String[] repositories = reg.getModuleRepositories(name);
+				for (int i = 0; i < repositories.length; i++) {
+					System.out.println("\t\t" + repositories[i]);
+				}
+				System.out.println("\tparameters: ");
+				String[] parameters = reg.getModuleParameterNames(name);
+				for (int i = 0; i < parameters.length; i++) {
+					System.out.print("\t\t" + parameters[i]);
+					System.out.print(" = " + reg.getModuleParameter(name, parameters[i]));
+					System.out.print(" is " + reg.getModuleParameterType(name, parameters[i]));
+					System.out.println("  (" + reg.getModuleParameterDescription(name, parameters[i]) + ")");
+				}
+				System.out.println("\tWiew name: " + reg.getModuleViewName(name));
+				System.out.println("\tWiew url: " + reg.getModuleViewUrl(name));
+				System.out.println("\tDependencies");
+				java.util.Vector modules = new java.util.Vector();
+				java.util.Vector min = new java.util.Vector();
+				java.util.Vector max = new java.util.Vector();
+				reg.getModuleDependencies(name, modules, min, max);
+				for (int i = 0; i < modules.size(); i++) {
+					System.out.println("\t\t" + modules.elementAt(i) + ": min v" + min.elementAt(i) + " max v" + max.elementAt(i));
+				}
+			}
+			System.out.println("\ngeneral stuff");
+			System.out.println("\tall repositories: ");
+			String[] repositories = reg.getRepositories();
+			for (int i = 0; i < repositories.length; i++) {
+				System.out.println("\t\t" + repositories[i]);
+			}
+			System.out.println("\tall views: ");
+			java.util.Vector views = new java.util.Vector();
+			java.util.Vector urls = new java.util.Vector();
+			int max = reg.getViews(views, urls);
+			for (int i = 0; i < max; i++) {
+				System.out.println("\t\t" + views.elementAt(i) + " -> " + urls.elementAt(i));
+			}
+		} catch (Exception exc) {
+			printException(exc);
+		}
+	}
+	/**
 	 * Returns the parent group of a group<P/>
 	 * 
 	 * <B>Security:</B>
@@ -784,6 +878,24 @@ public class CmsShell implements I_CmsConstants {
 		}
 	}
 	/**
+	 * Imports a module into the cms.
+	 * 
+	 * @param moduleZip The file-name of module to import.
+	 */
+	public void getViews() {
+		try {
+			I_CmsRegistry reg = m_cms.getRegistry();
+			java.util.Vector views = new java.util.Vector();
+			java.util.Vector urls = new java.util.Vector();
+			int max = reg.getViews(views, urls);
+			for (int i = 0; i < max; i++) {
+				System.out.println(views.elementAt(i) + " -> " + urls.elementAt(i));
+			}
+		} catch (Exception exc) {
+			printException(exc);
+		}
+	}
+	/**
 	 * Prints all possible commands.
 	 */
 	public void help() {
@@ -849,6 +961,23 @@ public class CmsShell implements I_CmsConstants {
 			printException(exc);
 		}
 	}
+	/**
+	 * Checks for conflicting file names for a import.
+	 * 
+	 * @param moduleZip The file-name of module to import.
+	 */
+	public void importGetConflictingFileNames(String moduleZip) {
+		try {
+			I_CmsRegistry reg = m_cms.getRegistry();
+			Vector conflicts = reg.importGetConflictingFileNames(moduleZip);
+			System.out.println("Conflicts: " + conflicts.size());
+			for(int i = 0; i < conflicts.size(); i++) {
+				System.out.println(conflicts.elementAt(i));
+			}
+		} catch( Exception exc ) { 
+			printException(exc);
+		}
+	}
  /**
  * Imports a module (zipfile) to the cms.
  * 
@@ -889,20 +1018,6 @@ public void importResources(String importFile, String importPath) {
 		printException(exc);
 	}
 }
-	/**
-	 * Imports relevant files of a XML module ("news" for example) to the cms.
-	 * 
-	 * @param importFile the name (absolute Path) of the import resource (zip or folder)
-	 * @param importPath the name (absolute Path) of folder in which should be imported
-	 */
-	public void importXmlModule(String importFile) {
-		// import the resources
-		try {
-			m_cms.importResources(importFile, C_ROOT);
-		} catch( Exception exc ) {
-			printException(exc);
-		}
-	}
 	/**
 	 * Inits the database.
 	 * 
