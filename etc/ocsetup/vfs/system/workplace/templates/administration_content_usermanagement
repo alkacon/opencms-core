@@ -15,6 +15,7 @@ function show_help()
 //-->
 </script>
 
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 
 <head>
@@ -36,8 +37,8 @@ function show_help()
 	</tr>
 	<tr valign=top align=center>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
-		<td>]]><ICON name="ic_users" label="users" action="" href="administration_content_users.html" target=""/><![CDATA[</td>
-		<td>]]><ICON name="ic_group" label="groups" action="" href="administration_content_group.html" target=""/><![CDATA[</td>
+		<td>]]><ICON name="ic_users" label="users" action="" href="javascript:notImplemented('Benutzerverwaltung');" target=""/><![CDATA[</td>
+		<td>]]><ICON name="ic_group" label="groups" action="" href="javascript:notImplemented('Gruppenverwaltung');" target=""/><![CDATA[</td>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>

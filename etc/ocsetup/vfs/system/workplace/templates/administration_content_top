@@ -13,6 +13,7 @@ function show_help()
 //-->
 </script>
 
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 <head>
 
@@ -36,8 +37,8 @@ function show_help()
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
 		<td>]]><ICON name="ic_usermanagement" label="user" action="location.href='administration_content_usermanagement.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
 		<td>]]><ICON name="ic_project" label="project" action="location.href='administration_content_project.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
-		<td>]]><ICON name="ic_computer" label="mountpoint" action="location.href='administration_content_mountpoint.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
-		<td>]]><ICON name="ic_clock" label="processmanagement" action="location.href='administration_content_schedule.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
+		<td>]]><ICON name="ic_computer" label="mountpoint" action="notImplemented('Mountpointverwaltung');" href="#" target=""/><![CDATA[</td>
+		<td>]]><ICON name="ic_clock" label="processmanagement" action="notImplemented('Vorgangsverwaltung');" href="#" target=""/><![CDATA[</td>
 		<td>]]><ICON name="ic_data" label="database" action="location.href='administration_content_database.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
 	</tr>
 </table>

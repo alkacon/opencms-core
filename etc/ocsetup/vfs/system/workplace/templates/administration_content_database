@@ -15,7 +15,7 @@ function show_help()
 //-->
 </script>
 
-
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 <head>
 
@@ -36,8 +36,8 @@ function show_help()
 	</tr>
 	<tr valign=top align=center>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
-		<td>]]><ICON name="ic_export" label="export" action="" href="administration_content_dbexport.html" target=""/><![CDATA[</td>
-		<td>]]><ICON name="ic_import" label="import" action="" href="administration_content_dbimport.html" target=""/><![CDATA[</td>
+		<td>]]><ICON name="ic_export" label="export" action="notImplemented('Datenbankexport');" href="#" target=""/><![CDATA[</td>
+		<td>]]><ICON name="ic_import" label="import" action="notImplemented('Datenimport');" href="#" target=""/><![CDATA[</td>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>

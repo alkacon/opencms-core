@@ -302,3 +302,47 @@ function checkDate(eDat)
 	}
 	return true;
 }
+
+//------------------------------------------------------------------------------------
+// which radiobutton is checked
+// m.schleich 11.01.1999
+// 
+// parameters:
+// formname: name of the form
+// radionae: name of the radiobottuns group
+// i: how many radiobuttons are there
+// return: the value of the checked radiobutton
+//------------------------------------------------------------------------------------
+
+function check_radio(formname, radioname, i)
+{
+	for(j=0;j<i;j++)
+	{
+		if(document[formname][radioname][j].checked)
+		{
+			return document[formname][radioname][j].value;
+		}
+
+	}
+
+}
+
+//------------------------------------------------------------------------------------
+// notImplemented
+// 
+// author:	Andreas Schouten
+// company:	mindfact interaktive medien ag
+// date:	01.03.2000
+//
+// functionname: The name of the functionality, that is not implemented.
+// displays a "not implemented" message in the workplace
+//------------------------------------------------------------------------------------
+
+function notImplemented(functionname)
+{
+	message = "Die Funktionalität '" + functionname + "' ist auf der Workplace noch nicht implementiert.\n\n";
+	message = message + "Der OpenCms-Kern bietet diese Funktionalität bereits an. Die Umsetzung auf der Workplace wird in Kürze erfolgen.";
+	
+	// display the message
+	alert(message);
+}

@@ -13,6 +13,8 @@ function show_help()
 //-->
 </script>
 
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -32,7 +34,7 @@ function show_help()
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
 		<td>]]><ICON name="ic_newproject" label="newproject" action="location.href='#';" href="administration_content_projectnew.html" target=""/><![CDATA[</td>
 		<td>]]><ICON name="ic_closeproject" label="currentprojects" action="location.href='administration_content_project.html';" href="administration_content_projectresent.html" target=""/><![CDATA[</td>
-		<td>]]><ICON name="ic_historyproject" label="projecthistory" action="location.href='#';" href="administration_content_projecthistory.html" target=""/><![CDATA[</td>
+		<td>]]><ICON name="ic_historyproject" label="projecthistory" action="notImplemented('Projekt Historie');" href="#" target=""/><![CDATA[</td>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 	</tr>
