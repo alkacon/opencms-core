@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.87 $
+* Date   : $Date: 2004/07/03 10:15:37 $
+* Version: $Revision: 1.88 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.87 $ $Date: 2004/06/28 07:44:02 $
+ * @version $Revision: 1.88 $ $Date: 2004/07/03 10:15:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -307,7 +307,7 @@ public class CmsFileList extends A_CmsWpElement {
             // test if the resource is in the project or if the online project is displayed
             if((cms.getRequestContext().currentProject().isOnlineProject())
                     //|| (!res.inProject(cms.getRequestContext().currentProject()))) {
-                    || (!cms.isInsideCurrentProject(res))) {
+                    || (!cms.isInsideCurrentProject(cms.getSitePath(res)))) {
                 if(res.isFile()) {
                     contextMenu = C_DEFAULT_CONTEXTMENU;
                 }
@@ -786,7 +786,7 @@ public class CmsFileList extends A_CmsWpElement {
     private String getState(CmsObject cms, CmsResource file, CmsXmlLanguageFile lang) throws CmsException {
         StringBuffer output = new StringBuffer();
         //if(file.inProject(cms.getRequestContext().currentProject())) {
-        if (cms.isInsideCurrentProject(file)) {
+        if (cms.isInsideCurrentProject(cms.getSitePath(file))) {
             int state = file.getState();
             output.append(lang.getLanguageValue("explorer.state" + state));
         }
@@ -808,7 +808,7 @@ public class CmsFileList extends A_CmsWpElement {
 
         // check if the resource is in the actual project
         //if(!file.inProject(cms.getRequestContext().currentProject())) {
-        if (!cms.isInsideCurrentProject(file)) {
+        if (!cms.isInsideCurrentProject(cms.getSitePath(file))) {
             output.append(C_STYLE_NOTINPROJECT);
         }
         else {
