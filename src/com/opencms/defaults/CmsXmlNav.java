@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/04/06 11:53:12 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/07 08:40:50 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.6 $ $Date: 2000/04/06 11:53:12 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/07 08:40:50 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 		
@@ -214,12 +214,14 @@ public class CmsXmlNav extends A_CmsNavBase {
             throws CmsException {
 		
 		int level=0;
+		int depth=0;
 		// if level is zero or null or negative then all folders recursive must  
 		// be showed starting from root folder unless all folders stating from 
 		// specified level of parent folder.
 		if (!tagcontent.equals("")) {
 			try {
-				level=Integer.parseInt(tagcontent);
+				level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+				depth=Integer.parseInt(tagcontent.substring(tagcontent.indexOf(",")+1));
 			} catch(NumberFormatException e) {
 				throw new CmsException(e.getMessage());
 			}
@@ -257,7 +259,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			if (!xmlDataBlock.hasData("navTreeEnd")) {
 				xmlDataBlock.setData("navTreeEnd", "");
 			}
-			result=buildNavTree(cms,xmlDataBlock,resources,requestedUri,currentFolder,servletPath);
+			result=buildNavTree(cms,xmlDataBlock,resources,requestedUri,currentFolder,servletPath,depth);
 		}
 		
 		return result.getBytes();
@@ -671,7 +673,12 @@ public class CmsXmlNav extends A_CmsNavBase {
 				// if there is no filename then the parameters are ignored, so I
 				// can't use e.g. ?cmsframe=body.
 				if (navLink[i].endsWith("/")) {
-					xmlDataBlock.setData("navLink", servletPath + navLink[i] + "index.html" );
+					String navIndex=cms.readProperty(navLink[i],C_PROPERTY_NAVINDEX);
+					if (navIndex!=null) {
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex );
+					} else {
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + "index.html" );
+					}
 				} else {
 					xmlDataBlock.setData("navLink", servletPath + navLink[i] );
 				}
@@ -698,9 +705,10 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param requestedUri The absolute path of current requested file. 
 	 * @param currentFolder The currenet folder.
 	 * @param servletPath The absolute path of servlet
+	 * @param depth An Integer that shows how many folders must be displayed.
 	 * @return String that contains the navigation.
 	 */	
-	private String buildNavTree(A_CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Vector resources, String requestedUri, String currentFolder, String servletPath)
+	private String buildNavTree(A_CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Vector resources, String requestedUri, String currentFolder, String servletPath,int depth)
 		throws CmsException {
 		
 		StringBuffer result = new StringBuffer();
@@ -720,7 +728,12 @@ public class CmsXmlNav extends A_CmsNavBase {
 				// if there is no filename then the parameters are ignored, so I
 				// can't use e.g. ?cmsframe=body.
 				if (navLink[i].endsWith("/")) {
-					xmlDataBlock.setData("navLink", servletPath + navLink[i] + "index.html" );
+					String navIndex=cms.readProperty(navLink[i],C_PROPERTY_NAVINDEX);
+					if (navIndex!=null) {
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex );
+					} else {
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + "index.html" );
+					}
 				} else {
 					xmlDataBlock.setData("navLink", servletPath + navLink[i] );
 				}
@@ -731,15 +744,18 @@ public class CmsXmlNav extends A_CmsNavBase {
 					result.append(xmlDataBlock.getProcessedDataValue("navEntry"));
 				}
 				// choose only folders.
-				if (navLink[i].endsWith("/")) {
-					Vector all=cms.getSubFolders(navLink[i]);
-					Vector files=cms.getFilesInFolder(navLink[i]);
-					all.ensureCapacity(all.size() + files.size());
-					Enumeration e = files.elements();
-					while (e.hasMoreElements()) {
-						all.addElement(e.nextElement());
+				depth--;
+				if (depth>=0) {
+					if (navLink[i].endsWith("/")) {
+						Vector all=cms.getSubFolders(navLink[i]);
+						Vector files=cms.getFilesInFolder(navLink[i]);
+						all.ensureCapacity(all.size() + files.size());
+						Enumeration e = files.elements();
+						while (e.hasMoreElements()) {
+							all.addElement(e.nextElement());
+						}
+						result.append(buildNavTree(cms,xmlDataBlock,all,requestedUri,currentFolder,servletPath,depth));
 					}
-					result.append(buildNavTree(cms,xmlDataBlock,all,requestedUri,currentFolder,servletPath));
 				}
 			}
 			result.append(xmlDataBlock.getProcessedDataValue("navTreeEnd"));

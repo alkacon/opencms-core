@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsNavBase.java,v $
- * Date   : $Date: 2000/04/06 10:25:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/07 08:40:58 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,9 +40,12 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.5 $ $Date: 2000/04/06 10:25:51 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/07 08:40:58 $
  */
 public abstract class A_CmsNavBase extends CmsXmlTemplate {	
+	
+	protected static final String C_PROPERTY_NAVINDEX="NavIndex";
+	protected static final String C_NAVINDEX="index.html";
 	
 	
 	/**
