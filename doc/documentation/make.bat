@@ -7,5 +7,6 @@ makeindex OpenCmsDoc
 pdflatex OpenCmsDoc
 
 del *.aux,*.idx,*.log,*.dvi,*.toc,*.ilg,*.ind
+move OpenCmsDoc.pdf ..\..\..\zip
 
 
