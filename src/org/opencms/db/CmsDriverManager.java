@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/31 16:44:31 $
- * Version: $Revision: 1.113 $
+ * Date   : $Date: 2003/07/31 17:41:18 $
+ * Version: $Revision: 1.114 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.113 $ $Date: 2003/07/31 16:44:31 $
+ * @version $Revision: 1.114 $ $Date: 2003/07/31 17:41:18 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -8276,24 +8276,11 @@ public class CmsDriverManager extends Object {
      * @return true, if the resource name of the specified resource matches any of the current project's resources
      * @throws CmsException if something goes wrong
      */
-    public boolean isInsideCurrentProject(CmsRequestContext context, CmsResource resource) {        
-        return isInsideProject(context.currentProject(), resource);
-    } 
-    
-    /**
-     * Proves if a resource is inside a specified project.<p>
-     * 
-     * @param project the project
-     * @param resource the resource
-     * @return true, if the resource name of the specified resource matches any of the project's resources
-     */
-    public boolean isInsideProject(CmsProject project, CmsResource resource) {
+    public boolean isInsideCurrentProject(CmsRequestContext context, CmsResource resource) {
         List projectResources = null;
-        
-        // TODO the result of these operations should be cached to minimize costs
-
+           
         try {
-            projectResources = m_vfsDriver.readProjectResources(project);
+            projectResources = m_vfsDriver.readProjectResources(context.currentProject());
         } catch (CmsException e) {
             if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager.isInsideProject()] error reading project resources " + e.getMessage());
@@ -8301,7 +8288,19 @@ public class CmsDriverManager extends Object {
                         
             return false;
         }
-
+                     
+        return isInsideProject(projectResources, resource);
+    } 
+    
+    /**
+     * Proves if the full resource name (including the site root) of a resource matches
+     * any of the project resources of a project.<p>
+     * 
+     * @param projectResources a List of project resources as strings
+     * @param resource the resource
+     * @return true, if the resource name of the specified resource matches any of the project's resources
+     */
+    public boolean isInsideProject(List projectResources, CmsResource resource) {        
         for (int i = 0; i < projectResources.size(); i++) {
             if (resource.getFullResourceName().startsWith((String) projectResources.get(i))) {
                 return true;
