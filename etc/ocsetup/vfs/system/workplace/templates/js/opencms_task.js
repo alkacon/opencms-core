@@ -33,19 +33,21 @@ function writeUser()
 
 function setUser(objSel, bereich)
 {
- 	 	for(i = 0; i < objSel.length; i++)
+	if(aRolle[bereich]) {
+		for(i = 0; i < objSel.length; i++)
 		 {
-	    	if(i < aRolle[bereich].length)
+			if(i < aRolle[bereich].length)
 			{
 				objSel.options[i].text = aRolle[bereich][i].sText;
-	       		objSel.options[i].value = aRolle[bereich][i].sValue;
+				objSel.options[i].value = aRolle[bereich][i].sValue;
 			}
 			else
 			{
 				objSel.options[i].text = '';
 				objSel.options[i].value = '';
-	    	}
-         }
-		 objSel.selectedIndex = 0;		//reset selected User to default entry
+			}
+		 }
+	}
+	objSel.selectedIndex = 0;		//reset selected User to default entry
 }
   
