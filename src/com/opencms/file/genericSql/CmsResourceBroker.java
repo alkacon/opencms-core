@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/08 17:12:57 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/06/09 07:17:09 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2000/06/08 17:12:57 $
+ * @version $Revision: 1.31 $ $Date: 2000/06/09 07:17:09 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1416,8 +1416,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								CmsProject project) 
         throws CmsException {
-		// TODO: implement this!
-        return null;
+
+		return this.m_dbAccess.readGroup(project.getGroupId());
     }
 	
 	/**
@@ -1433,10 +1433,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public CmsGroup readManagerGroup(CmsUser currentUser, CmsProject currentProject, 
-									   CmsProject project) 
+									 CmsProject project) 
         throws CmsException {
-		// TODO: implement this!
-        return null;
+		
+		return m_dbAccess.readGroup(project.getManagerGroupId());
     }
 	
 	/**
@@ -1488,7 +1488,27 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */	
 	public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject) 
         throws CmsException {
-        return true;
+		// is the user owner of the project?
+		if( currentUser.getId() == currentProject.getOwnerId() ) {
+			// YES
+			return true;
+		}
+		
+		// get all groups of the user
+		Vector groups = getGroupsOfUser(currentUser, currentProject, 
+										currentUser.getName());
+		
+		for(int i = 0; i < groups.size(); i++) {
+			// is this a managergroup for this project?
+			if( ((CmsGroup)groups.elementAt(i)).getId() == 
+				currentProject.getManagerGroupId() ) {
+				// this group is manager of the project
+				return true;
+			}
+		}
+		
+		// this user is not manager of this project
+		return false;
     }
 	
 	/**
@@ -1671,9 +1691,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String groupname)
         throws CmsException {
-		// TODO: use the real method!
-		return true;
-		/*
          Vector groups = getGroupsOfUser(currentUser,currentProject,username);
      	 CmsGroup group;
 		 for(int z = 0; z < groups.size(); z++) {
@@ -1683,7 +1700,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 }
 		 }
 		 return false;
-		*/
     }
 
 	/** 
@@ -3653,6 +3669,12 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
         throws CmsException {
+		if(isAdmin(currentUser, currentProject)) {
+			new CmsImport(importFile, importPath, cms);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] importResources",
+				 CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**
@@ -3671,6 +3693,12 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms)
         throws CmsException {
+		if(isAdmin(currentUser, currentProject)) {
+			new CmsExport(exportFile, exportPath, cms);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+				 CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**
@@ -3690,5 +3718,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms, boolean includeSystem)
         throws CmsException {
+		if(isAdmin(currentUser, currentProject)) {
+			new CmsExport(exportFile, exportPath, cms, includeSystem);
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] exportResources",
+				 CmsException.C_NO_ACCESS);
+		}
     }
 }

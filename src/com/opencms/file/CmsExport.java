@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/06/05 15:15:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/09 07:17:09 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,9 +42,9 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/06/05 15:15:04 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/09 07:17:09 $
  */
-class CmsExport implements I_CmsConstants {
+public class CmsExport implements I_CmsConstants {
 	
 	/**
 	 * The export-zipfile to store resources to
@@ -89,7 +89,7 @@ class CmsExport implements I_CmsConstants {
 	 * @param cms the cms-object to work with.
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
-	CmsExport(String exportFile, String exportPath, CmsObject cms) 
+	public CmsExport(String exportFile, String exportPath, CmsObject cms) 
 		throws CmsException {
 		this(exportFile, exportPath, cms, false);
 	}
@@ -103,7 +103,7 @@ class CmsExport implements I_CmsConstants {
 	 * @param includeSystem desides, if to include the system-stuff.
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
-	CmsExport(String exportFile, String exportPath, CmsObject cms, boolean includeSystem) 
+	public CmsExport(String exportFile, String exportPath, CmsObject cms, boolean includeSystem) 
 		throws CmsException {
 
 		m_exportFile = exportFile;

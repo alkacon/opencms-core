@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/06/05 15:15:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/09 07:17:09 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,9 +40,9 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/06/05 15:15:04 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/09 07:17:09 $
  */
-class CmsImport implements I_CmsConstants {
+public class CmsImport implements I_CmsConstants {
 	
 	/**
 	 * The import-file to load resources from
@@ -81,7 +81,7 @@ class CmsImport implements I_CmsConstants {
 	 * @param importPath the path to the cms to import into.
 	 * @exception CmsException the CmsException is thrown if something goes wrong.
 	 */
-	CmsImport(String importFile, String importPath, CmsObject cms) 
+	public CmsImport(String importFile, String importPath, CmsObject cms) 
 		throws CmsException {
 
 		m_importFile = importFile;
