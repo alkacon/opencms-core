@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/29 10:13:35 $
- * Version: $Revision: 1.183 $
+ * Date   : $Date: 2003/08/29 16:12:04 $
+ * Version: $Revision: 1.184 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.183 $ $Date: 2003/08/29 10:13:35 $
+ * @version $Revision: 1.184 $ $Date: 2003/08/29 16:12:04 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7240,9 +7240,9 @@ public class CmsDriverManager extends Object {
                     backupFile.getUserCreated(),
                     offlineFile.getDateLastModified(),
                     context.currentUser().getId(),
-                    backupFile.getContents(),
                     backupFile.getLength(),
-                    backupFile.getLinkCount());
+                    backupFile.getLinkCount(),
+                    backupFile.getContents());
             writeFile(context, newFile);
             clearResourceCache();
         }
@@ -7682,9 +7682,9 @@ public class CmsDriverManager extends Object {
                     onlineFile.getUserCreated(),
                     onlineFile.getDateLastModified(),
                     onlineFile.getUserLastModified(),
-                    onlineFile.getContents(),
                     onlineFile.getLength(),
-                    resource.getLinkCount());
+                    resource.getLinkCount(),
+                    onlineFile.getContents());
             
             // write the file in the offline project
             // this sets a flag so that the file date is not set to the current time
@@ -8541,9 +8541,9 @@ public class CmsDriverManager extends Object {
                     context.currentUser().getId(), 
                     0, 
                     context.currentUser().getId(), 
-                    contents, 
                     contents.length, 
-                    1);
+                    1, 
+                    contents);
                 newResource = m_vfsDriver.createFile(context.currentProject(), newFile, context.currentUser().getId(), parentFolder.getId(), CmsResource.getName(resourcename));
             } else {
                 // create the folder in the offline project  
