@@ -1,9 +1,9 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/16 16:25:27 $
- * Version: $Revision: 1.13 $
- * Date   : $Date: 2003/07/16 16:25:27 $
- * Version: $Revision: 1.13 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
+ * Date   : $Date: 2003/07/21 08:17:42 $
+ * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/21 08:17:42 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package org.opencms.synchronize;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -61,7 +61,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/07/16 16:25:27 $
+ * @version $Revision: 1.1 $ $Date: 2003/07/21 08:17:42 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 

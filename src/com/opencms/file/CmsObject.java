@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.337 $
+* Date   : $Date: 2003/07/21 08:17:42 $
+* Version: $Revision: 1.338 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,16 +27,7 @@
 */
 
 package com.opencms.file;
-
-import org.opencms.db.CmsDriverManager;
-import org.opencms.file.CmsSynchronize;
-import org.opencms.loader.CmsXmlTemplateLoader;
-import org.opencms.lock.CmsLock;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsAccessControlList;
-import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.I_CmsPrincipal;
-
+ 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.flex.util.CmsResourceTranslator;
@@ -57,6 +48,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.opencms.db.CmsDriverManager;
+import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.lock.CmsLock;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.synchronize.CmsSynchronize;
+
 import source.org.apache.java.util.Configurations;
 
 /**
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.337 $
+ * @version $Revision: 1.338 $
  */
 public class CmsObject extends Object {
 
