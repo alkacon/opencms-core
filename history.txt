@@ -16,6 +16,7 @@ OpenCms 4.5.8  Gom Jabbar   - XX September 2001
 * Bugfix 1696: before creating the project and copying the resources the wait template is shown.
 * Bugfix 1735: when creating a resource the subfolders lockstate is checked now
 - Optimized the explorerfilelist. Useless bytes are no longer submitted.
+- Disabled static export.
 
 OpenCms 4.5.7  Gom Jabbar   - 11 September 2001
 * Now the templates will be displayed correct again in the html-editor.
