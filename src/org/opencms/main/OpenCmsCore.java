@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/07/19 17:05:00 $
- * Version: $Revision: 1.135 $
+ * Date   : $Date: 2004/07/21 15:35:06 $
+ * Version: $Revision: 1.136 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.135 $
+ * @version $Revision: 1.136 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1887,7 +1887,14 @@ public final class OpenCmsCore {
         if (m_localeManager.isInitialized()) {
             // locale manager is initialized
             // resolve locale and encoding
-            i18nInfo = m_localeManager.getI18nInfo(req, user, project, currentSite.concat(requestedResource));        
+            String resourceName;
+            if (requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
+                // add site root only if resource name does not start with "/system"
+                resourceName = requestedResource;
+            } else {
+                resourceName = currentSite.concat(requestedResource);
+            }  
+            i18nInfo = m_localeManager.getI18nInfo(req, user, project, resourceName);        
         } else {
             // locale manager not initialized, this will be true _only_ during system startup
             // the values set does not matter, no locale information form VFS is used on system startup
@@ -1906,7 +1913,7 @@ public final class OpenCmsCore {
             currentSite,
             i18nInfo.getLocale(),
             i18nInfo.getEncoding(),
-            remoteAddr);
+            remoteAddr);               
 
         // now generate and return the CmsObject
         return initCmsObject(contextInfo, sessionStorage);        
