@@ -117,13 +117,19 @@
 ]]>
 </TEMPLATE>
 
-<TEMPLATE name="done">
+<TEMPLATE name="wait">
 <![CDATA[
 <HTML>
 <HEAD>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="Javascript">
+function reload()
+{
+location.href="administration_content_delete_project.html?action=working&ok=ok&time=]]><PROCESS>time</PROCESS><![CDATA[" ;
+}
+</SCRIPT>
 </HEAD>
-<BODY onload="window.top.head.location.href='../../../action/head.html'; parent.frames[0].location.reload()">
+<BODY onload="setTimeout('reload()', 2000);">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
@@ -140,7 +146,21 @@
 </tr>
 </table>
 <!-- End please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+    <tr><br><br>
+        <td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
+    </tr>
+</table>
 </CENTER>
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="done">
+<![CDATA[
+<HTML>
+<BODY onload="window.top.head.location.href='../../../action/head.html';">
 </BODY>
 </HTML>
 ]]>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2001/09/21 06:52:32 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -39,18 +39,20 @@ import javax.servlet.http.*;
 /**
  * Template class for displaying OpenCms workplace admin project resent.
  * <P>
- * 
+ *
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.13 $ $Date: 2001/09/21 06:52:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsConstants,I_CmsLogChannels {
-    
+
+    private final String C_DELETE_THREAD = "deleteprojectthread";
+
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
+     * with the given parameters.
+     *
      * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
@@ -58,64 +60,96 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsC
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, 
+
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters,
             String templateSelector) throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " 
+            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element "
                     + ((elementName == null) ? "<root>" : elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " 
+            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: "
                     + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " 
+            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: "
                     + ((templateSelector == null) ? "<default>" : templateSelector));
         }
-        CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, 
+        CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
-        int projectId = Integer.parseInt((String)parameters.get("projectid"));
-        CmsProject project = cms.readProject(projectId);
+
+        CmsProject project = null;
+        I_CmsSession session = cms.getRequestContext().getSession(true);
+        String action = (String)parameters.get("action");
+        String projectId = (String)parameters.get("projectid");
+        if(projectId == null || "".equals(projectId)){
+            projectId = (String)session.getValue("delprojectid");
+        } else {
+            session.putValue("delprojectid", projectId);
+        }
         if(parameters.get("ok") != null) {
-            
-            // delete the project
-            try {
-                
+            if(action == null){
+                // start the deleting
+                project = cms.readProject(Integer.parseInt(projectId));
+                // first clear the session entry if necessary
+                if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
+                    session.removeValue(C_SESSION_THREAD_ERROR);
+                }
                 // change to the online-project, if needed.
                 if(project.equals(cms.getRequestContext().currentProject())) {
                     cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
                 }
-                cms.deleteProject(project.getId());
-                templateSelector = "done";
+                Thread doDelete = new CmsAdminProjectDeleteThread(cms, Integer.parseInt(projectId), session);
+                doDelete.start();
+                session.putValue(C_DELETE_THREAD, doDelete);
+                xmlTemplateDocument.setData("time", "10");
+                templateSelector = "wait";
+            } else if("working".equals(action)) {
+                // still working?
+                Thread doDelete = (Thread)session.getValue(C_DELETE_THREAD);
+                if(doDelete.isAlive()) {
+                    String time = (String)parameters.get("time");
+                    int wert = Integer.parseInt(time);
+                    wert += 2;
+                    xmlTemplateDocument.setData("time", "" + wert);
+                    templateSelector = "wait";
+                } else {
+                    // thread has come to an end, was there an error?
+                    String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
+                    if(errordetails == null) {
+                        // clear the languagefile cache
+                        CmsXmlWpTemplateFile.clearcache();
+                        templateSelector = "done";
+                        session.removeValue("delprojectid");
+                    } else {
+                        // get errorpage:
+                        xmlTemplateDocument.setData("details", errordetails);
+                        templateSelector = "error";
+                        session.removeValue(C_SESSION_THREAD_ERROR);
+                        session.removeValue("delprojectid");
+                    }
+                }
             }
-            catch(CmsException exc) {
-                
-                // display error-message
-                xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
-                templateSelector = "error";
-            }
-        }
-        else {
-            
+        } else {
             // show details about the project
+            project = cms.readProject(Integer.parseInt(projectId));
             CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
             CmsProjectlist.setListEntryData(cms, lang, xmlTemplateDocument, project);
-        
+
         // Now load the template file and start the processing
         }
-        return startProcessing(cms, xmlTemplateDocument, elementName, parameters, 
+        return startProcessing(cms, xmlTemplateDocument, elementName, parameters,
                 templateSelector);
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, 
+
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
     }
