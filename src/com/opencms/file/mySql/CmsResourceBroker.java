@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/14 08:08:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/07/14 12:27:27 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/07/14 08:08:22 $
+ * @version $Revision: 1.3 $ $Date: 2000/07/14 12:27:27 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -269,7 +269,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 /*CmsTask task = m_taskRb.createProject(currentUser, name, group,
 													 new java.sql.Timestamp(System.currentTimeMillis()),
 													 C_TASK_PRIORITY_NORMAL); */
-			 CmsTask task = new CmsTask();
+			CmsTask task=createProject(currentUser,name,1,group.getName(),
+                                       System.currentTimeMillis(),C_TASK_PRIORITY_NORMAL);
+                                                              
 			 
 			 return m_dbAccess.createProject(currentUser, group, managergroup, task, name, description, C_PROJECT_STATE_UNLOCKED, C_PROJECT_TYPE_NORMAL );
 		} else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/14 09:04:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/07/14 12:27:27 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,14 +49,14 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.4 $ $Date: 2000/07/14 09:04:31 $ * 
+ * @version $Revision: 1.5 $ $Date: 2000/07/14 12:27:27 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
 	/**
 	 * The maximum amount of tables.
 	 */
-	private static int C_MAX_TABLES = 9;
+	private static int C_MAX_TABLES = 12;
 	
 	/**
 	 * Table-key for max-id
@@ -4842,7 +4842,19 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		addUserToGroup(admin.getId(), administrators.getId());
 
 		// TODO: use real task here-when available!
-		CmsTask task = new CmsTask();
+        CmsTask task=createTask(0,0,1, // standart project type,
+				     admin.getId(), 
+                     admin.getId(),						
+				     administrators.getId(),
+				     C_PROJECT_ONLINE,
+			         new java.sql.Timestamp(new java.util.Date().getTime()),
+				     new java.sql.Timestamp(new java.util.Date().getTime()),
+				     C_TASK_PRIORITY_NORMAL);
+        
+        
+		/*CmsTask task = createProject(admin, C_PROJECT_ONLINE, administrators, 
+											  new java.sql.Timestamp(new java.util.Date().getTime()), 
+											  C_TASK_PRIORITY_NORMAL);*/
 		CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 		
 		// create the root-folder
@@ -4916,7 +4928,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			
         try {
 			statement = m_pool.getPreparedStatement(C_SYSTEMID_INIT_KEY);
-			for (int i = 0; i < C_MAX_TABLES; i++){
+			for (int i = 0; i <= C_MAX_TABLES; i++){
 				statement.setInt(1,i);
 				statement.executeUpdate();
 				statement.clearParameters();

@@ -95,4 +95,79 @@ create table CMS_FILES                  (FILE_ID int not null,
 create table CMS_SYSTEMID               (TABLE_KEY int not null,
                                          ID int not null,
                                          primary key(TABLE_KEY));
+										
+#
+# Table structure for table 'GlobeTask'
+#
+										 
+										 CREATE TABLE CMS_Task (
+										   autofinish int(11),
+										   endtime datetime,
+										   escalationtyperef int(11),
+										   id int(11) NOT NULL,
+										   initiatoruserref int(11),
+										   milestoneref int(11),
+										   name varchar(254),
+										   originaluserref int(11),
+										   agentuserref int(11),
+										   parent int(11),
+										   percentage varchar(50),
+										   permission varchar(50),
+										   priorityref int(11) DEFAULT '2',
+										   roleref int(11),
+										   root int(11),
+										   starttime datetime,
+										   state int(11),
+										   tasktyperef int(11),
+										   timeout datetime,
+										   wakeuptime datetime,
+										   htmllink varchar(254),
+										   estimatetime int(11) DEFAULT '86400',
+										   PRIMARY KEY (id)
+										 );
+										 
+#
+# Table structure for table 'GlobeTaskType'
+#
+										 
+										 CREATE TABLE CMS_TaskType (
+										   autofinish int(11),
+										   escalationtyperef int(11),
+										   htmllink varchar(254),
+										   id int(11) NOT NULL,
+										   name varchar(50),
+										   permission varchar(50),
+										   priorityref int(11),
+										   roleref int(11),
+										   PRIMARY KEY (id)
+										 );
+										 
+										 INSERT INTO CMS_TaskType VALUES (1,0,'../taskforms/adhoc.asp',1,'Ad-Hoc','30308',1,1);
+										 
+#
+# Table structure for table 'GlobeTaskLog'
+#
+										 
+										 CREATE TABLE CMS_TaskLog (
+										   comment text,
+										   externalusername varchar(254),
+										   id int(11) NOT NULL,
+										   starttime datetime,
+										   taskref int(11),
+										   userref int(11),
+										   type int(18) DEFAULT '0',
+										   PRIMARY KEY (id)
+										 );
+										 
+#
+# Table structure for table 'GlobeTaskPar'
+#
+										 
+										 CREATE TABLE CMS_TaskPar (
+										   id int(11) NOT NULL ,
+										   parname varchar(50),
+										   parvalue varchar(50),
+										   ref int(11),
+										   PRIMARY KEY (id)
+);
 
