@@ -162,7 +162,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                                  <td class=dialogtxt><input type="text" value="]]><PROCESS>USERNAME</PROCESS><![CDATA[" maxlength=32 class="textfeld" name="USERNAME" id="USERNAME"></td>
                                  <td class=formular>
                                  ]]><LABEL value="input.email"/><![CDATA[:</td>
-                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>EMAIL</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
+                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>EMAIL</PROCESS><![CDATA[" maxlength=100 class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
                             </tr>
                             <tr>
                                  <td class=formular>
@@ -170,7 +170,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
                                  <td class=dialogtxt><input type="text" value="]]><PROCESS>USERFIRSTNAME</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USERFIRSTNAME" id="USERFIRSTNAME"></td>
                                  <td class=formular>
                                  ]]><LABEL value="input.street"/><![CDATA[:</td>
-                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERSTREET</PROCESS><![CDATA[" class="textfeld" name="USERSTREET" id="USERSTREET"></td>
+                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERSTREET</PROCESS><![CDATA[" maxlength=100 class="textfeld" name="USERSTREET" id="USERSTREET"></td>
                             </tr>
                          
                             <tr>
@@ -401,7 +401,7 @@ function checkForm(){
                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERNAME</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USERNAME" id="USERNAME"></td>
                                 <td class=formular>
                                 ]]><LABEL value="input.email"/><![CDATA[:</td>
-                                <td class=dialogtxt><input type="text" value="]]><PROCESS>EMAIL</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
+                                <td class=dialogtxt><input type="text" value="]]><PROCESS>EMAIL</PROCESS><![CDATA[" maxlength=100 class="textfeld" name="USEREMAIL" id="USEREMAIL"></td>
                             </tr>
                             <tr>
                                 <td class=formular>
@@ -409,7 +409,7 @@ function checkForm(){
                                 <td class=dialogtxt><input type="text" value="]]><PROCESS>USERFIRSTNAME</PROCESS><![CDATA[" maxlength=50 class="textfeld" name="USERFIRSTNAME" id="USERFIRSTNAME"></td>
                                 <td class=formular>
                                 ]]><LABEL value="input.street"/><![CDATA[:</td>
-                                <td class=dialogtxt><input type="text" value="]]><PROCESS>USERSTREET</PROCESS><![CDATA[" class="textfeld" name="USERSTREET" id="USERSTREET"></td>
+                                <td class=dialogtxt><input type="text" value="]]><PROCESS>USERSTREET</PROCESS><![CDATA[" maxlength=100 class="textfeld" name="USERSTREET" id="USERSTREET"></td>
                             </tr>
                             <tr>
                                 <td class=formular>
