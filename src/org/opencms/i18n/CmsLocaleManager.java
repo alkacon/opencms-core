@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/09 14:16:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsLocaleManager {
     
@@ -407,7 +407,7 @@ public class CmsLocaleManager {
     /**
      * Returns the default m_locale configured in <code>opencms.properties</code>.<p>
      *
-     * The default m_locale is the first m_locale of the configured default locales.
+     * The default locale is the first locale int the list of configured default locales.
      *
      * @return the default m_locale
      */    
@@ -416,9 +416,9 @@ public class CmsLocaleManager {
     }
 
     /**
-     * Returns the list of default m_locale names configured in <code>opencms.properties</code>.<p>
+     * Returns the list of default locale names configured in <code>opencms.properties</code>.<p>
      * 
-     * @return the list of default m_locale names, e.g. <code>en, de</code>
+     * @return the list of default locale names, e.g. <code>en, de</code>
      */
     public List getDefaultLocales() {
         return m_defaultLocales;

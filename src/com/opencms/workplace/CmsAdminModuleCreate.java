@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2004/02/09 14:16:34 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.util.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

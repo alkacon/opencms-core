@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -46,7 +45,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.38 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.39 $ $Date: 2004/02/09 14:16:35 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

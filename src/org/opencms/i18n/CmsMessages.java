@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/09 14:16:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package org.opencms.i18n;
 
+import org.opencms.main.OpenCms;
+
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -41,13 +43,13 @@ import java.util.ResourceBundle;
  * Reads localized resource Strings from a <code>java.util.ResourceBundle</code> 
  * and provides convenience methods to access the Strings from a template.<p>
  * 
- * This class is to be used from JSP templates. Because of that, throwing of 
+ * This class is frequently used from JSP templates. Because of that, throwing of 
  * exceptions related to the access of the resource bundle are suppressed
  * so that a template always execute. The class provides an {@link #isInitialized()} method
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0 beta 2
  */
@@ -56,10 +58,22 @@ public class CmsMessages extends Object {
     /** Prefix / Suffix for unknown keys */
     public static final String C_UNKNOWN_KEY_EXTENSION = "???";
     
+    /** Full date / time format (this is more complete then LONG) */
+    public static final int FULL = DateFormat.FULL;
+    
+    /** Long date / time format */
+    public static final int LONG = DateFormat.LONG;
+    
+    /** Medium date / time format */
+    public static final int MEDIUM = DateFormat.MEDIUM;
+    
+    /** Short date / time format */
+    public static final int SHORT = DateFormat.SHORT;
+    
+    
     // member variables
     private ResourceBundle m_bundle; 
-    private Locale m_locale;
-    
+    private Locale m_locale;    
        
     /**
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
@@ -144,71 +158,134 @@ public class CmsMessages extends Object {
     }
     
     /**
-     * Returns a formatted date.<p>
+     * Returns a formated date String from a Date value,
+     * the formatting based on the provided options.<p>
      * 
-     * @param date the date to format 
-     * @return a formatted date
-     */    
-    public String getDate(Date date) {
-        return getDate(date, DateFormat.SHORT);
-    }
-    
-    /**
-     * Returns a formatted date.<p>
-     * 
-     * @param date the date to format 
-     * @param style the style to format the date with 
-     * @return a formatted date
-     * @see java.text.DateFormat
-     */      
-    public String getDate(Date date, int style) {
-        DateFormat df = DateFormat.getDateInstance(style, m_locale);
+     * @param date the Date object to format as String
+     * @param format the format to use, see {@link CmsMessages} for possible values
+     * @param locale the locale to use
+     * @return the formatted date 
+     */       
+    public static String getDate(Date date, int format, Locale locale) {
+        DateFormat df = DateFormat.getDateInstance(format, locale);
         return df.format(date);
     }
 
     /**
-     * Returns a formatted date.<p>
+     * Returns a formated date String form a timestamp value,
+     * the formatting based on the OpenCms system default locale
+     * and the {@link CmsMessages#SHORT} date format.<p>
      * 
-     * @param timestamp the date timestamp to format
-     * @return a formatted date
+     * @param time the time value to format as date
+     * @return the formatted date 
      */
-    public String getDate(long timestamp) {
-        return getDate(new Date(timestamp));
+    public static String getDateShort(long time) {
+        return getDate(new Date(time), SHORT, OpenCms.getLocaleManager().getDefaultLocale());
+    }
+
+    /**
+     * Returns a formated date and time String from a Date value,
+     * the formatting based on the provided options.<p>
+     * 
+     * @param date the Date object to format as String
+     * @param format the format to use, see {@link CmsMessages} for possible values
+     * @param locale the locale to use
+     * @return the formatted date 
+     */    
+    public static String getDateTime(Date date, int format, Locale locale) {        
+        DateFormat df = DateFormat.getDateInstance(format, locale);
+        DateFormat tf = DateFormat.getTimeInstance(format, locale);
+        StringBuffer buf = new StringBuffer();
+        buf.append(df.format(date));
+        buf.append(" ");
+        buf.append(tf.format(date));
+        return buf.toString();
     }
     
     /**
-     * Returns a formatted date with a time formatted with the 
-     * {@link DateFormat.SHORT} formatting.<p>
+     * Returns a formated date and time String form a timestamp value,
+     * the formatting based on the OpenCms system default locale
+     * and the {@link CmsMessages#SHORT} date format.<p>
      * 
-     * @param date the date to format 
-     * @return a formatted date with a time
-     */     
-    public String getDateTime(Date date) {
-        return getDateTime(date, DateFormat.SHORT);
-    }
-    
-    /**
-     * Returns a formatted date with a time.<p>
-     * 
-     * @param date the date to format 
-     * @param style the style to format the date with 
-     * @return a formatted date with a time
-     * @see java.text.DateFormat 
-     */     
-    public String getDateTime(Date date, int style) {
-        DateFormat df = DateFormat.getDateInstance(style, m_locale);
-        DateFormat tf = DateFormat.getTimeInstance(style, m_locale);
-        return df.format(date) + " " + tf.format(date);
+     * @param time the time value to format as date
+     * @return the formatted date 
+     */
+    public static String getDateTimeShort(long time) {
+        return getDateTime(new Date(time), SHORT, OpenCms.getLocaleManager().getDefaultLocale());        
     }    
     
     /**
-     * Returns a formatted date with a time.<p>
+     * Returns a formated date String from a Date value,
+     * the format being {@link CmsMessages#SHORT} and the locale
+     * based on this instance.<p>
      * 
-     * @param timestamp the date timestamp to format
-     * @return a formatted date with a time
-     */    
-    public String getDateTime(long timestamp) {
-        return getDateTime(new Date(timestamp));
+     * @param date the Date object to format as String
+     * @return the formatted date 
+     */  
+    public String getDate(Date date) {
+        return getDate(date, SHORT, m_locale);
+    }
+    
+    /**
+     * Returns a formated date String from a Date value,
+     * the formatting based on the provided option and the locale
+     * based on this instance.<p>
+     * 
+     * @param date the Date object to format as String
+     * @param format the format to use, see {@link CmsMessages} for possible values
+     * @return the formatted date 
+     */      
+    public String getDate(Date date, int format) {
+        return getDate(date, format, m_locale);        
+    }
+
+    /**
+     * Returns a formated date String from a timestamp value,
+     * the format being {@link CmsMessages#SHORT} and the locale
+     * based on this instance.<p>
+     * 
+     * @param time the time value to format as date
+     * @return the formatted date 
+     */  
+    public String getDate(long time) {
+        return getDate(new Date(time), SHORT, m_locale);        
+    }
+    
+    /**
+     * Returns a formated date and time String from a Date value,
+     * the format being {@link CmsMessages#SHORT} and the locale
+     * based on this instance.<p>
+     * 
+     * @param date the Date object to format as String
+     * @return the formatted date and time
+     */   
+    public String getDateTime(Date date) {
+        return getDateTime(date, SHORT, m_locale);
+    }
+    
+    /**
+     * Returns a formated date and time String from a Date value,
+     * the formatting based on the provided option and the locale
+     * based on this instance.<p>
+     * 
+     * @param date the Date object to format as String
+     * @param format the format to use, see {@link CmsMessages} for possible values
+     * @return the formatted date and time
+     */      
+    public String getDateTime(Date date, int format) {
+        return getDateTime(date, format, m_locale);
+    }    
+    
+    /**
+     * Returns a formated date and time String from a timestamp value,
+     * the format being {@link CmsMessages#SHORT} and the locale
+     * based on this instance.<p>
+     * 
+     * @param time the time value to format as date
+     * @return the formatted date and time
+     */  
+    public String getDateTime(long time) {
+        return getDateTime(new Date(time), SHORT, m_locale);        
     }
     
     /**
@@ -280,5 +357,5 @@ public class CmsMessages extends Object {
             }
         }
         return formatUnknownKey(keyName);
-    }    
+    }
 }

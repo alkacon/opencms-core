@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/02/05 08:28:08 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.defaults;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -44,7 +45,6 @@ import com.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.template.I_CmsXmlTemplate;
-import com.opencms.util.Utils;
 import com.opencms.workplace.CmsWorkplaceDefault;
 import com.opencms.workplace.CmsXmlLanguageFile;
 import com.opencms.workplace.CmsXmlWpTemplateFile;
@@ -74,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
@@ -1139,8 +1139,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     template.setData("id", id);
                     template.setData("histid", curVersion.getId().toString());
                     template.setData("histtitle", curVersion.getTitle());
-                    template.setData("histlastmodified", Utils.getNiceDate(curVersion.getDateLastModified()));
-                    template.setData("histpublished", Utils.getNiceDate(curVersion.getDateCreated()));
+                    template.setData("histlastmodified", CmsMessages.getDateTimeShort(curVersion.getDateLastModified()));
+                    template.setData("histpublished", CmsMessages.getDateTimeShort(curVersion.getDateCreated()));
                     template.setData("histmodifiedby", userName);
                     template.setData("histdescription", projectDescription);
                     CmsUUID curUser = cms.getRequestContext().currentUser().getId();
@@ -1249,7 +1249,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     long updated = curCd.getDateCreated();
                     String userName = readSaveUserName(cms, curCd.getLastModifiedBy());
                     long lastModified = curCd.getDateLastModified();
-                    String output = Utils.getNiceDate(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + Utils.getNiceDate(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + userName;
+                    String output = CmsMessages.getDateTimeShort(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + CmsMessages.getDateTimeShort(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + userName;
                     names.addElement(output);
                     values.addElement(curCd.getVersionId() + "");
                 } catch (Exception e) {

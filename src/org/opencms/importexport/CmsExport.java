@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/09 14:16:35 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -48,7 +49,6 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.ByteArrayOutputStream;
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.25 $ $Date: 2004/01/06 09:46:26 $
+ * @version $Revision: 1.26 $ $Date: 2004/02/09 14:16:35 $
  */
 public class CmsExport implements Serializable {
 
@@ -918,7 +918,7 @@ public class CmsExport implements Serializable {
         Element info = exportNode.addElement(I_CmsConstants.C_EXPORT_TAG_INFO);
         info.addElement(I_CmsConstants.C_EXPORT_TAG_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
         info.addElement(I_CmsConstants.C_EXPORT_TAG_OC_VERSION).addText(OpenCms.getVersionName());
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_DATE).addText(Utils.getNiceDate(System.currentTimeMillis()));
+        info.addElement(I_CmsConstants.C_EXPORT_TAG_DATE).addText(CmsMessages.getDateTimeShort(System.currentTimeMillis()));
         info.addElement(I_CmsConstants.C_EXPORT_TAG_PROJECT).addText(getCms().getRequestContext().currentProject().getName());
         info.addElement(I_CmsConstants.C_EXPORT_TAG_VERSION).addText(I_CmsConstants.C_EXPORT_VERSION);
         

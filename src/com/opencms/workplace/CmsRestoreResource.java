@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRestoreResource.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/02/09 14:16:34 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,14 @@
 
 package com.opencms.workplace;
 
+import org.opencms.i18n.CmsMessages;
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.util.Utils;
-
-import org.opencms.main.OpenCms;
-import org.opencms.workplace.CmsWorkplaceAction;
 
 import java.util.Hashtable;
 
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.19 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.20 $ $Date: 2004/02/09 14:16:34 $
  */
 
 public class CmsRestoreResource extends CmsWorkplaceDefault {
@@ -142,7 +142,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault {
         }
         // set the required datablocks
         if (action == null) {
-            xmlTemplateDocument.setData("CHANGEDATE", Utils.getNiceDate(file.getDateLastModified()));
+            xmlTemplateDocument.setData("CHANGEDATE", CmsMessages.getDateTimeShort(file.getDateLastModified()));
             xmlTemplateDocument.setData("USER", cms.readUser(file.getUserLastModified()).getName());
             xmlTemplateDocument.setData("FILENAME", file.getName());
         }

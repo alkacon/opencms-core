@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2004/02/09 14:16:34 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workflow.CmsTask;
@@ -39,7 +40,6 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsUser;
-import com.opencms.util.Utils;
 
 import java.util.GregorianCalendar;
 import java.util.Vector;
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.47 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.48 $ $Date: 2004/02/09 14:16:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -248,9 +248,9 @@ public class CmsTaskAction implements I_CmsWpConstants {
         // add comment
         String comment = "";
         comment += lang.getLanguageValue("task.dialog.due.logmessage1") + " ";
-        comment += Utils.getNiceShortDate(task.getTimeOut().getTime()) + " ";
+        comment += CmsMessages.getDateShort(task.getTimeOut().getTime()) + " ";
         comment += lang.getLanguageValue("task.dialog.due.logmessage2") + " ";
-        comment += Utils.getNiceShortDate(timeout);
+        comment += CmsMessages.getDateShort(timeout);
         cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_DUECHANGED);
     }
 

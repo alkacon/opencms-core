@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
@@ -37,7 +38,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.util.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -98,7 +98,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
         table.put(C_PUBLISHCLASS, getStringValue(reg.getModulePublishClass(module)));
         table.put(C_AUTHOR, getStringValue(reg.getModuleAuthor(module)));
         table.put(C_EMAIL, getStringValue(reg.getModuleAuthorEmail(module)));
-        table.put(C_DATE, getStringValue(Utils.getNiceShortDate(reg.getModuleCreateDate(module))));
+        table.put(C_DATE, getStringValue(CmsMessages.getDateShort(reg.getModuleCreateDate(module))));
 
         // get the dependencies
         Vector depNames = new Vector();

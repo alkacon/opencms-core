@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHtmlBrowser.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Hashtable;
@@ -51,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author magnus meurer
- * @version $Revision: 1.21 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.22 $ $Date: 2004/02/09 14:16:35 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

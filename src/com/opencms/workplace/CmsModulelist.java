@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,13 @@
 
 package com.opencms.workplace;
 
+import org.opencms.i18n.CmsMessages;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -48,7 +49,7 @@ import org.w3c.dom.Element;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author Hanjo Riege
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -143,12 +144,12 @@ public class CmsModulelist extends A_CmsWpElement {
             listdef.setData(C_MODULELIST_NICE_NAME, reg.getModuleNiceName(currentModule));
             listdef.setData(C_MODULELIST_VERSION, reg.getModuleVersion(currentModule) + "");
             listdef.setData(C_MODULELIST_AUTHOR, reg.getModuleAuthor(currentModule));
-            listdef.setData(C_MODULELIST_DATECREATED, Utils.getNiceShortDate(reg.getModuleCreateDate(currentModule)));
+            listdef.setData(C_MODULELIST_DATECREATED, CmsMessages.getDateShort(reg.getModuleCreateDate(currentModule)));
             if(reg.getModuleUploadDate(currentModule) == -1) {
                 listdef.setData(C_MODULELIST_DATEUPLOADED, "   -   ");
             }
             else {
-                listdef.setData(C_MODULELIST_DATEUPLOADED, Utils.getNiceShortDate(reg.getModuleUploadDate(currentModule)));
+                listdef.setData(C_MODULELIST_DATEUPLOADED, CmsMessages.getDateShort(reg.getModuleUploadDate(currentModule)));
             }
             listdef.setData(C_MODULELIST_IDX, new Integer(i).toString());
             result.append(listdef.getProcessedDataValue(C_TAG_MODULELIST_DEFAULT, callingObject, parameters));

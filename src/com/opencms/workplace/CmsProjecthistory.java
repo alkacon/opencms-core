@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2004/02/09 14:16:34 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,12 +30,12 @@
 package com.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsObject;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.12 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.13 $ $Date: 2004/02/09 14:16:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -192,9 +192,9 @@ public class CmsProjecthistory extends A_CmsWpElement {
         xmlFile.setData("resources", reslist);
         xmlFile.setData(C_PROJECTLIST_PROJECTWORKER, project.getGroupName());
         xmlFile.setData(C_PROJECTLIST_PROJECTMANAGER, project.getManagerGroupName());
-        xmlFile.setData(C_PROJECTLIST_DATECREATED, Utils.getNiceDate(project.getCreateDate()));
+        xmlFile.setData(C_PROJECTLIST_DATECREATED, CmsMessages.getDateTimeShort(project.getCreateDate()));
         xmlFile.setData(C_PROJECTLIST_OWNER, project.getOwnerName());
-        xmlFile.setData("publishdate", Utils.getNiceDate(project.getPublishingDate()));
+        xmlFile.setData("publishdate", CmsMessages.getDateTimeShort(project.getPublishingDate()));
         xmlFile.setData("publishedby", project.getPublishedByName());
         xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, CmsEncoder.escape(project.getName(),
             cms.getRequestContext().getEncoding()));

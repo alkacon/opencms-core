@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2004/02/09 14:16:34 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
-import com.opencms.util.Utils;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -49,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.31 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.32 $ $Date: 2004/02/09 14:16:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

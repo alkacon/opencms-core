@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2004/02/09 14:16:34 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsResourceTypeImage;
-import com.opencms.util.Utils;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -49,7 +48,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.42 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.43 $ $Date: 2004/02/09 14:16:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

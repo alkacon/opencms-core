@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/02/09 14:16:34 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.CmsException;
@@ -39,7 +40,6 @@ import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -57,7 +57,7 @@ import org.w3c.dom.Element;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.22 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.23 $ $Date: 2004/02/09 14:16:34 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -327,7 +327,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             // ignore the exception
             }
             try {
-                due = Utils.getNiceShortDate(timeout);
+                due = CmsMessages.getDateShort(timeout);
             }
             catch(Exception exc) {
                 
@@ -335,7 +335,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             // ignore the exception
             }
             try {
-                from = Utils.getNiceShortDate(startTime);
+                from = CmsMessages.getDateShort(startTime);
             }
             catch(Exception exc) {
                 

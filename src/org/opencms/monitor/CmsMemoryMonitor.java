@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/01/07 16:53:02 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/09 14:16:35 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,10 @@ package org.opencms.monitor;
 import org.opencms.cache.CmsLruCache;
 import org.opencms.cron.I_CmsCronJob;
 import org.opencms.flex.CmsFlexCache.CmsFlexCacheVariation;
-import org.opencms.main.CmsSessionInfoManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
@@ -53,7 +54,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.util.Utils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,7 +70,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.21 $ $Date: 2004/01/07 16:53:02 $
+ * @version $Revision: 1.22 $ $Date: 2004/02/09 14:16:35 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -583,7 +583,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             // if email iterval is <= 0 status email is disabled
             return;
         }
-        String date = Utils.getNiceDate(System.currentTimeMillis());
+        String date = CmsMessages.getDateTimeShort(System.currentTimeMillis());
         String subject;
         String content = "";
         if (warning) {

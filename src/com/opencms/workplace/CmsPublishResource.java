@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,16 +29,16 @@
 
 package com.opencms.workplace;
 
+import org.opencms.i18n.CmsMessages;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.threads.CmsPublishThread;
 import org.opencms.workplace.CmsWorkplaceAction;
-import org.opencms.threads.*;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import org.opencms.report.A_CmsReportThread;
-import com.opencms.util.Utils;
 
 import java.util.Hashtable;
 
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.34 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.35 $ $Date: 2004/02/09 14:16:35 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault {
@@ -105,7 +105,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
             // initial request, display confirm dialog box            
             CmsResource file = readResource(cms, filename);
 
-            xmlTemplateDocument.setData("CHANGEDATE", Utils.getNiceDate(file.getDateLastModified()));
+            xmlTemplateDocument.setData("CHANGEDATE", CmsMessages.getDateTimeShort(file.getDateLastModified()));
             xmlTemplateDocument.setData("USER", cms.readUser(file.getUserLastModified()).getName());
             xmlTemplateDocument.setData("FILENAME", file.getName());
             

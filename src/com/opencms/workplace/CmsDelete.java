@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.util.Utils;
 
 import java.util.Hashtable;
 
@@ -47,7 +46,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.56 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.57 $ $Date: 2004/02/09 14:16:35 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault {

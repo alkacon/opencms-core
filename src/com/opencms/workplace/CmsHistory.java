@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2004/02/09 14:16:34 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,17 +29,17 @@
 
 package com.opencms.workplace;
 
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.lock.CmsLock;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsBackupResource;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
-import com.opencms.util.Utils;
-
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.lock.CmsLock;
-import org.opencms.main.OpenCms;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.41 $ $Date: 2004/02/09 14:16:34 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault {
@@ -134,9 +134,9 @@ public class CmsHistory extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("TITLE", CmsEncoder.escapeXml(title));
             xmlTemplateDocument.setData("SIZE", new Integer(backupFile.getLength()).toString());
             xmlTemplateDocument.setData("EDITEDBY", editedBy);
-            xmlTemplateDocument.setData("EDITEDAT", Utils.getNiceDate(backupFile.getDateLastModified()));
+            xmlTemplateDocument.setData("EDITEDAT", CmsMessages.getDateTimeShort(backupFile.getDateLastModified()));
             xmlTemplateDocument.setData("PUBLISHEDBY", project.getPublishedByName());
-            xmlTemplateDocument.setData("PUBLISHEDAT", Utils.getNiceDate(project.getPublishingDate()));
+            xmlTemplateDocument.setData("PUBLISHEDAT", CmsMessages.getDateTimeShort(project.getPublishingDate()));
             xmlTemplateDocument.setData("PROJECTDESCRIPTION", CmsEncoder.escapeXml(project.getDescription()));
         }
         xmlTemplateDocument.setData("FILENAME", theFileName);
@@ -181,8 +181,8 @@ public class CmsHistory extends CmsWorkplaceDefault {
                     userName = file.getLastModifiedByName();
                 }
                 long lastModified = file.getDateLastModified();
-                String output = "["+file.getVersionId()+"]&nbsp;&nbsp;&nbsp;"+Utils.getNiceDate(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                                + Utils.getNiceDate(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                String output = "["+file.getVersionId()+"]&nbsp;&nbsp;&nbsp;"+CmsMessages.getDateTimeShort(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                                + CmsMessages.getDateTimeShort(updated) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                                 + userName;
                 names.addElement(output);
                 values.addElement(file.getTagId()+"");

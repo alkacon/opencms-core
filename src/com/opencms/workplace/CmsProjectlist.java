@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,12 +30,12 @@
 package com.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.30 $ $Date: 2004/02/09 14:16:35 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -215,7 +215,7 @@ public class CmsProjectlist extends A_CmsWpElement {
         xmlFile.setData(C_PROJECTLIST_STATE, lang.getLanguageValue(state));
         xmlFile.setData(C_PROJECTLIST_PROJECTMANAGER, cms.readManagerGroup(project).getName());
         xmlFile.setData(C_PROJECTLIST_PROJECTWORKER, cms.readGroup(project).getName());
-        xmlFile.setData(C_PROJECTLIST_DATECREATED, Utils.getNiceDate(project.getCreateDate()));
+        xmlFile.setData(C_PROJECTLIST_DATECREATED, CmsMessages.getDateTimeShort(project.getCreateDate()));
         xmlFile.setData(C_PROJECTLIST_OWNER, cms.readOwner(project).getName());
     }
 }

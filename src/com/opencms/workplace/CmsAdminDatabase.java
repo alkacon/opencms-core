@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,14 +30,13 @@ package com.opencms.workplace;
 
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.setup.CmsBase;
 import org.opencms.threads.CmsDatabaseExportThread;
 import org.opencms.threads.CmsDatabaseImportThread;
 
-import org.opencms.setup.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.util.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,7 +51,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {

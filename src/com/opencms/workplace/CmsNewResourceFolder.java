@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsResourceTypeImage;
-import com.opencms.util.Utils;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -53,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.54 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.55 $ $Date: 2004/02/09 14:16:35 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault {

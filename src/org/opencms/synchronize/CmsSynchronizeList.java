@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeList.java,v $
- * Date   : $Date: 2003/07/31 13:19:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/09 14:16:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.synchronize;
 
-import com.opencms.util.Utils;
+import org.opencms.i18n.CmsMessages;
 
 import java.io.Serializable;
 
@@ -41,7 +41,7 @@ import java.io.Serializable;
  *
  * @author Edna Falkenhan
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/09 14:16:35 $
  */
 public class CmsSynchronizeList implements Serializable {
 
@@ -124,8 +124,8 @@ public class CmsSynchronizeList implements Serializable {
      */
     public String toString() {
         String output = m_resName + ":" + m_transResName + ":" + m_modifiedVfs + ":" + m_modifiedFs;
-        output += ":VFS=" + Utils.getNiceDate(m_modifiedVfs);
-        output += ":FS=" + Utils.getNiceDate(m_modifiedFs);
+        output += ":VFS=" + CmsMessages.getDateTimeShort(m_modifiedVfs);
+        output += ":FS=" + CmsMessages.getDateTimeShort(m_modifiedFs);
         return output;
     }
 

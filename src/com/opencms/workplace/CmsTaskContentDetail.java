@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2004/02/04 17:18:07 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2004/02/09 14:16:35 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.workflow.CmsTask;
 
@@ -38,7 +39,6 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsUser;
-import com.opencms.util.Utils;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -52,7 +52,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.39 $ $Date: 2004/02/04 17:18:07 $
+ * @version $Revision: 1.40 $ $Date: 2004/02/09 14:16:35 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -312,7 +312,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         timeout = task.getTimeOut().getTime();
         String due = "";
         try {
-            due = Utils.getNiceShortDate(timeout);
+            due = CmsMessages.getDateShort(timeout);
         }
         catch(Exception exc) {
             
@@ -321,7 +321,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         }
         String from = "";
         try {
-            from = Utils.getNiceShortDate(startTime);
+            from = CmsMessages.getDateShort(startTime);
         }
         catch(Exception exc) {
             
