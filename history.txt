@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.7.0 ??????? - ?? March 2001
+OpenCms 4.7.0 Ecaz - ?? March 2001
 - Change in Task Emails: Now in all subjects the initator or receiver appears. This is for
   Mails to all members of a role. A role member can see if the task is directly for him 
   without have a look into the taskmanagement in OpenCms.
