@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/03/14 14:55:55 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2000/03/15 13:51:27 $
+ * Version: $Revision: 1.55 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.54 $ $Date: 2000/03/14 14:55:55 $
+ * @version $Revision: 1.55 $ $Date: 2000/03/15 13:51:27 $
  */
 public interface I_CmsConstants
 {
@@ -79,10 +79,11 @@ public interface I_CmsConstants
 	 */
 	 static final int C_FLAG_DISABLED = 1;	
 
-     /**
-      * Path to the workplace ini file
-      */     
+     /** Path to the workplace ini file */     
      static final String C_WORKPLACE_INI = "/system/workplace/config/workplace.ini";
+     
+     /** Path to the workplace ini file */     
+     static final String C_PATH_INTERNAL_TEMPLATES = "/content/internal/";
      
      /** prefix for temporary files */
      public static final String C_TEMP_PREFIX = "~";
