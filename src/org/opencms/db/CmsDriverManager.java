@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/17 08:31:29 $
- * Version: $Revision: 1.228 $
+ * Date   : $Date: 2003/09/17 09:30:15 $
+ * Version: $Revision: 1.229 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.228 $ $Date: 2003/09/17 08:31:29 $
+ * @version $Revision: 1.229 $ $Date: 2003/09/17 09:30:15 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -485,20 +485,18 @@ public class CmsDriverManager extends Object {
      * @return list of CmsResources added with full resource name 
      * @throws CmsException if something goes wrong
      */
-    private List getAllFullPaths(CmsRequestContext context, List resourceList) throws CmsException {
-        
-        Iterator i=resourceList.iterator();
-      
+    public List setFullResourceNames(CmsRequestContext context, List resourceList) throws CmsException {
+        Iterator i = resourceList.iterator();
+
         while (i.hasNext()) {
-            CmsResource res=(CmsResource)i.next();
-           
-            res.setFullResourceName(readPath(context,res, true));
+            CmsResource res = (CmsResource) i.next();
+            if (!res.hasFullResourceName()) {
+                res.setFullResourceName(readPath(context, res, true));
+            }
         }
-         
+
         return resourceList;
-    }
-    
-    
+    }      
 
     /**
      * Adds a user to the Cms.
@@ -792,8 +790,7 @@ public class CmsDriverManager extends Object {
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
 
         // update the project flag of a modified resource as "modified inside the current project"
-        m_vfsDriver.updateProjectId(context.currentProject(), context.currentProject().getId(), resource);
-        //m_vfsDriver.changeLockedInProject(projectId, resource.getResourceId());        
+        m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), resource);
 
         clearResourceCache();
         
@@ -1119,10 +1116,9 @@ public class CmsDriverManager extends Object {
             return;
         }
 
-
         // validate the destination path/filename
         validFilename(destination.replace('/', 'a'));
-        
+
         // extract the destination folder and filename
         destinationFolderName = destination.substring(0, destination.lastIndexOf("/") + 1);
         destinationFileName = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
@@ -1131,38 +1127,36 @@ public class CmsDriverManager extends Object {
         CmsFile sourceFile = readFile(context, source, false);
         CmsFolder destinationFolder = readFolder(context, destinationFolderName);
 
-
         // check the link mode to see if this resource has to be copied as a link.
         // only check this if the override flag "copyAsLink" is not set.
         if (!copyAsLink) {
             // if we have the copy mode "copy as link, set the override flag to true
-            if (copyMode==I_CmsConstants.C_COPY_AS_LINK) {
-                copyAsLink=true;
+            if (copyMode == I_CmsConstants.C_COPY_AS_LINK) {
+                copyAsLink = true;
             }
             // if the mode is "preservre links", we have to check the link counter
-            if (copyMode==I_CmsConstants.C_COPY_PRESERVE_LINK) {
-                if (sourceFile.getLinkCount()>1) {
-                    copyAsLink=true;
+            if (copyMode == I_CmsConstants.C_COPY_PRESERVE_LINK) {
+                if (sourceFile.getLinkCount() > 1) {
+                    copyAsLink = true;
                 }
             }
         }
-
 
         // checks, if the type is valid, i.e. the user can copy files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
         if (!isAdmin(context) && (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID || sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] copyFile() " + source, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        
+
         // check if the user has read access to the source file and write access to the destination folder
         checkPermissions(context, sourceFile, I_CmsConstants.C_READ_ACCESS);
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // read the source properties
         properties = readProperties(context, source, null, false);
-        
+
         if (copyAsLink) {
-        // create a copy of the source file in the destination parent folder      
+            // create a copy of the source file in the destination parent folder      
             newResource = createVfsLink(context, destination, source, properties, false);
         } else {
             // create a new resource in the destination folder
@@ -1173,14 +1167,14 @@ public class CmsDriverManager extends Object {
                 // reset "labeled" link flag
                 flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             }
-            
+
             // create the file
             newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, flags, destinationFolder, sourceFile.getContents(), getResourceType(sourceFile.getType()));
             newResource.setFullResourceName(destination);
 
             // copy the properties
             m_vfsDriver.writeProperties(properties, context.currentProject().getId(), newResource, newResource.getType(), false);
-            m_propertyCache.clear();             
+            m_propertyCache.clear();
 
             // copy the access control entries
             ListIterator aceList = m_userDriver.readAccessControlEntries(context.currentProject(), sourceFile.getResourceId(), false).listIterator();
@@ -1189,20 +1183,20 @@ public class CmsDriverManager extends Object {
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
             }
-                        
-            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);
-            
-            touch(context,destination,sourceFile.getDateLastModified(),sourceFile.getUserLastModified());            
-        
-        if (lockCopy) {
+
+            m_vfsDriver.writeResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
+
+            touch(context, destination, sourceFile.getDateLastModified(), sourceFile.getUserLastModified());
+
+            if (lockCopy) {
                 lockResource(context, destination);
-        }
+            }
         }
 
         clearAccessControlListCache();
         m_accessCache.clear();
         clearResourceCache();
-        
+
         List modifiedResources = (List) new ArrayList();
         modifiedResources.add(sourceFile);
         modifiedResources.add(newResource);
@@ -1499,7 +1493,7 @@ public class CmsDriverManager extends Object {
            
         clearResourceCache();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", newFile)));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", newFile)));        
         
         return newFile;
     }
@@ -1718,7 +1712,7 @@ public class CmsDriverManager extends Object {
             // check the name
             validFilename(name);
             m_propertyDefVectorCache.clear();
-            return (m_vfsDriver.createPropertydefinition(name, context.currentProject().getId(), resourcetype));
+            return (m_vfsDriver.createPropertyDefinition(name, context.currentProject().getId(), resourcetype));
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] createPropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                            
         }
@@ -1895,26 +1889,30 @@ public class CmsDriverManager extends Object {
         
         // setting the full resource name twice here looks crude but is essential!
         linkResource.setFullResourceName(linkName);
-        linkResource = m_vfsDriver.createVfsLink(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getStructureId(), resourceName);
+        linkResource = m_vfsDriver.createSibling(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getStructureId(), resourceName);
         linkResource.setFullResourceName(linkName);
+        
+        // mark the new sibling as modified in the current project
+        m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), linkResource);
         
         if (linkProperties == null) {
             // "empty" properties are represented by an empty property map
             linkProperties = Collections.EMPTY_MAP;
         }
-        // write its properties
-        m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType(), false);
         
-        if (lockResource) {
-        // lock the resource
-            lockResource(context, linkName);
-        }
-
+        // write its properties
+        m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType(), false);      
+        
         // if the source
         clearResourceCache();
         m_propertyCache.clear();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", parentFolder)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", parentFolder)));
+        
+        if (lockResource) {
+            // lock the resource
+            lockResource(context, linkName);
+        } 
 
         return linkResource;
     }
@@ -1964,10 +1962,10 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
 
         //delete all Properties
-        m_vfsDriver.deleteAllProperties(context.currentProject().getId(), res);
+        m_vfsDriver.deleteProperties(context.currentProject().getId(), res);
         m_propertyCache.clear();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
     }
 
     /**
@@ -2076,7 +2074,7 @@ if (resVersions>1) {
 
         // if selected, add all links pointing to this resource to the list of files that get deleted/removed  
         if (deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS) {
-            resources.addAll(getAllVfsSoftLinks(context, filename));
+            resources.addAll(readSiblings(context, filename, false));
         }
 
         // ensure that each link pointing to the resource is unlocked or locked by the current user
@@ -2130,12 +2128,12 @@ if (resVersions>1) {
                     // the resource exists online => mark the file as deleted
                     //m_vfsDriver.deleteFile(context.currentProject(), currentResource);
                     currentResource.setState(I_CmsConstants.C_STATE_DELETED);
-                    m_vfsDriver.updateResourceState(context.currentProject(), currentResource, C_UPDATE_STRUCTURE_STATE);                    
+                    m_vfsDriver.writeResourceState(context.currentProject(), currentResource, C_UPDATE_STRUCTURE_STATE);                    
                     // add the project id as a property, this is later used for publishing
                     m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), ""+context.currentProject().getId(), currentResource, currentResource.getType(), false);
                     // TODO: still necessary after we have the property?
                     // update the project ID
-                    m_vfsDriver.updateProjectId(context.currentProject(), context.currentProject().getId(), currentResource);
+                    m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), currentResource);
                 }
             }
         }               
@@ -2203,12 +2201,12 @@ if (resVersions>1) {
             // add the project id as a property, this is later used for publishing
             m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), ""+context.currentProject().getId(), cmsFolder, cmsFolder.getType(), false);
             cmsFolder.setState(I_CmsConstants.C_STATE_DELETED);
-            m_vfsDriver.updateResourceState(context.currentProject(), cmsFolder, C_UPDATE_STRUCTURE_STATE);
+            m_vfsDriver.writeResourceState(context.currentProject(), cmsFolder, C_UPDATE_STRUCTURE_STATE);
             // delete the access control entries
             deleteAllAccessControlEntries(context, cmsFolder);
             // update the project ID
             // TODO: still nescessary?
-            m_vfsDriver.updateProjectId(context.currentProject(), context.currentProject().getId(), cmsFolder);            
+            m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), cmsFolder);            
         }       
         
         // update cache
@@ -2298,7 +2296,7 @@ if (resVersions>1) {
                         changeLock(context, currentResourceName);
                     }
                     // delete the properties
-                    m_vfsDriver.deleteAllProperties(projectId, currentFile);
+                    m_vfsDriver.deleteProperties(projectId, currentFile);
                     // delete the file
                     m_vfsDriver.removeFile(context.currentProject(), currentFile);
                     // remove the access control entries
@@ -2328,7 +2326,7 @@ if (resVersions>1) {
                     undoChanges(context, currentResourceName);
                 }
                 
-                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFile)));
+                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFile)));
             }
             // now delete folders or undo changes in folders
             for (int i = 0; i < allFolders.size(); i++) {
@@ -2337,7 +2335,7 @@ if (resVersions>1) {
                 CmsLock lock = getLock(context, currentFolder);
                 if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
                     // delete the properties
-                    m_vfsDriver.deleteAllProperties(projectId, currentFolder);
+                    m_vfsDriver.deleteProperties(projectId, currentFolder);
                     // add the folder to the vector of folders that has to be deleted
                     deletedFolders.addElement(currentFolder);
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {                    
@@ -2362,7 +2360,7 @@ if (resVersions>1) {
                     undoChanges(context, currentResourceName);
                 }
                 
-                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFolder)));
+                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFolder)));
             }
             // now delete the folders in the vector
             for (int i = deletedFolders.size() - 1; i > -1; i--) {
@@ -2371,7 +2369,7 @@ if (resVersions>1) {
                 // remove the access control entries
                 m_userDriver.removeAccessControlEntries(context.currentProject(), delFolder.getResourceId());
                 
-                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", delFolder)));
+                OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", delFolder)));
             }
             // unlock all resources in the project
             m_lockDispatcher.removeResourcesInProject(deleteProject.getId());
@@ -2467,7 +2465,7 @@ if (resVersions>1) {
             // first read and then delete the metadefinition.
             m_propertyDefVectorCache.clear();
             m_propertyDefCache.remove(name + (getResourceType(resourcetype)).getResourceType());
-            m_vfsDriver.deletePropertydefinition(readPropertydefinition(context, name, resourcetype));
+            m_vfsDriver.deletePropertyDefinition(readPropertydefinition(context, name, resourcetype));
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deletePropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
         }
@@ -2708,70 +2706,41 @@ if (resVersions>1) {
      * @throws CmsException if something goes wrong
      */
       public boolean existsResourceId (CmsRequestContext context, CmsUUID resourceId) throws CmsException {
-          return m_vfsDriver.existsResourceId(context.currentProject().getId(), resourceId);          
+          return m_vfsDriver.validateResourceIdExists(context.currentProject().getId(), resourceId);          
       }
     
-
     /**
-     * Gets a list of all hard and soft links pointing to the content of a resource.<p>
+     * Reads all siblings that point to the resource record of a specified resource name.<p>
      * 
-     * @param theUser the current user
-     * @param context.currentProject() the current project
-     * @param theResourceName the name of the resource of which the VFS links are fetched
-     * @return an ArrayList with the resource names of the fetched VFS links
-     * @throws CmsException
+     * @param context the request context
+     * @param resourcename the name of the specified resource
+     * @param readAllSiblings true if the specified resource should be included in the result; false, if the specified resource should be excluded from the result
+     * @return a List of CmsResources
+     * @throws CmsException if something goes wrong
      */
-    public List getAllVfsLinks(CmsRequestContext context, String resourcename) throws CmsException {        
+    public List readSiblings(CmsRequestContext context, String resourcename, boolean readAllSiblings) throws CmsException {
         if (resourcename == null || "".equals(resourcename)) {
-            return (List) new ArrayList(0);
+            return Collections.EMPTY_LIST;
         }
-        
+
         CmsResource resource = readFileHeader(context, resourcename);
-        List siblings = m_vfsDriver.getAllVfsLinks(context.currentProject(), resource);
+        List siblings = m_vfsDriver.readSiblings(context.currentProject(), resource);
 
-        for (int i = 0; i < siblings.size(); i++) {
-            readPath(context, (CmsResource) siblings.get(i), false);
-    }
-    
-        return siblings;
-    }
-    
-    public List getAllSiblings(CmsRequestContext context, String resourcename) {
-        List siblings = null;
+        int n = siblings.size();
+        for (int i = 0; i < n; i++) {
+            CmsResource currentResource = (CmsResource) siblings.get(i);
 
-        try {
-            List path = readPath(context, resourcename, true);
-            CmsResource resource = (CmsResource) path.get(path.size() - 1);
-            siblings = m_vfsDriver.getAllVfsSoftLinks(context.currentProject(), resource);
-
-            for (int i = 0; i < siblings.size(); i++) {
-                readPath(context, (CmsResource) siblings.get(i), false);
+            if (!readAllSiblings && currentResource.getStructureId().equals(resource.getStructureId())) {
+                siblings.remove(i);
+                n--;
             }
-        } catch (CmsException e) {
-            siblings = Collections.EMPTY_LIST;
         }
 
+        setFullResourceNames(context, siblings);
+        
         return siblings;
     }
     
-    /**
-     * Gets a list of all soft links pointing to the content of a resource, excluding it's
-     * hard link, and excluding the resource itself in case it is a soft link.<p>
-     * 
-     * @param context
-     * @param resourcename
-     * @return a list of all soft links pointing to the content of a resource
-     * @throws CmsException
-     */
-    public List getAllVfsSoftLinks(CmsRequestContext context, String resourcename) throws CmsException {        
-        if (resourcename == null || "".equals(resourcename)) {
-            return (List) new ArrayList(0);
-        }
-        
-        CmsResource resource = readFileHeader(context, resourcename);
-        return getAllFullPaths(context,m_vfsDriver.getAllVfsSoftLinks(context.currentProject(), resource));
-    }
-
     protected void finalize() throws Throwable {
         clearcache();
 
@@ -3297,7 +3266,7 @@ if (resVersions>1) {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getFilesWithProperty(CmsRequestContext context, String propertyDefinition, String propertyValue) throws CmsException {
-        List result=getAllFullPaths(context,m_vfsDriver.getFilesWithProperty(context.currentProject().getId(), propertyDefinition, propertyValue));         
+        List result=setFullResourceNames(context,m_vfsDriver.readResourceNames(context.currentProject().getId(), propertyDefinition, propertyValue));         
         return new Vector(result);
     }
 
@@ -3369,7 +3338,7 @@ if (resVersions>1) {
      */
     private Set getFolderIds(CmsRequestContext context, String folder) throws CmsException {
         CmsFolder parentFolder = readFolder(context, folder);        
-        return (Set) new HashSet(m_vfsDriver.getFolderTree(context.currentProject(), parentFolder));
+        return (Set) new HashSet(m_vfsDriver.readFolderTree(context.currentProject(), parentFolder));
             }
 
     /**
@@ -3582,7 +3551,14 @@ if (resVersions>1) {
             retValue = (Vector) m_resourceListCache.get(cacheKey);
 
             if (retValue == null || retValue.size() == 0) {
-                resources = m_vfsDriver.getResourcesInFolder(context.currentProject().getId(), folderRes);
+                //resources = m_vfsDriver.getResourcesInFolder(context.currentProject().getId(), folderRes);
+                
+                List subFolders = m_vfsDriver.readChildResources(context.currentProject(), folderRes, true);
+                List subFiles = m_vfsDriver.readChildResources(context.currentProject(), folderRes, false);
+                resources.addAll(subFolders);
+                resources.addAll(subFiles);
+                
+                setFullResourceNames(context, resources);
                 retValue = new Vector(resources.size());
 
                 // make sure that we have access to all these
@@ -3630,7 +3606,7 @@ if (resVersions>1) {
             // get the folder tree
             Set storage = getFolderIds(context, folder);
             // now get all resources which contain the selected property
-            List resources = m_vfsDriver.getResourcesInTimeRange(context.currentProject().getId(), starttime, endtime);
+            List resources = m_vfsDriver.readResources(context.currentProject().getId(), starttime, endtime);
             // filter the resources inside the tree
             extractedResources = extractResourcesInTree(context, storage, resources);
             // cache the calculated result list
@@ -3654,7 +3630,7 @@ if (resVersions>1) {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getResourcesWithPropertyDefinition(CmsRequestContext context, String propertyDefinition) throws CmsException {
-        List result=getAllFullPaths(context,m_vfsDriver.getResourcesWithProperty(context.currentProject().getId(), propertyDefinition));
+        List result=setFullResourceNames(context,m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition));
         return new Vector(result); 
     }
 
@@ -3680,7 +3656,7 @@ if (resVersions>1) {
             // get the folder tree
             Set storage = getFolderIds(context, folder);
             // now get all resources which contain the selected property
-            List resources = m_vfsDriver.getResourcesWithProperty(context.currentProject().getId(), propertyDefinition);
+            List resources = m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition);
             // filter the resources inside the tree
             extractedResources = extractResourcesInTree(context, storage, resources);
             // cache the calculated result list
@@ -3706,7 +3682,7 @@ if (resVersions>1) {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getResourcesWithPropertyDefintion(CmsRequestContext context, String propertyDefinition, String propertyValue, int resourceType) throws CmsException {
-        return m_vfsDriver.getResourcesWithProperty(context.currentProject().getId(), propertyDefinition, propertyValue, resourceType);
+        return m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition, propertyValue, resourceType);
     }
 
     /**
@@ -3846,7 +3822,7 @@ if (resVersions>1) {
         }
 
         // get the sub resources from the VFS driver and check the required permissions
-        subResources = m_vfsDriver.getSubResources(context.currentProject(), parentFolder, getSubFolders);
+        subResources = m_vfsDriver.readChildResources(context.currentProject(), parentFolder, getSubFolders);
         for (int i = 0; i < subResources.size(); i++) {
             currentResource = (CmsResource) subResources.get(i);
             if (!includeDeleted && currentResource.getState() == I_CmsConstants.C_STATE_DELETED) {
@@ -4033,7 +4009,7 @@ if (resVersions>1) {
     public Vector getVisibleResourcesWithProperty(CmsRequestContext context, String propertyDefinition, String propertyValue, int resourceType) throws CmsException {
         Vector visibleResources = new Vector();
         Vector allResources = new Vector();
-        allResources = m_vfsDriver.getResourcesWithProperty(context.currentProject().getId(), propertyDefinition, propertyValue, resourceType);
+        allResources = m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition, propertyValue, resourceType);
 
         // check if the user has view access 
         Enumeration e = allResources.elements();
@@ -4206,13 +4182,12 @@ if (resVersions>1) {
              // get the list of marked sites from the runtime property
              List markedSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
              // now check if one of the other vfs links lies in a marked site
-             List vfsLinkList = m_vfsDriver.getAllVfsSoftLinks(context.currentProject(), resource);
+             List vfsLinkList = m_vfsDriver.readSiblings(context.currentProject(), resource);
+             setFullResourceNames(context, vfsLinkList);
              Iterator i = vfsLinkList.iterator();
              boolean markedFound = false;
              while (!markedFound && i.hasNext()) {
                  CmsResource currentResource = (CmsResource)i.next();
-                 // read the full path of the current resource
-                 readPath(context, currentResource, true);
                  String curPath = currentResource.getRootPath();
                  for (int k = 0; k < markedSites.size(); k++) {
                      if (curPath.startsWith((String)markedSites.get(k))) {
@@ -4524,9 +4499,9 @@ if (resVersions>1) {
         // check if the user has write access to the resource
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
-        if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED && resource.getProjectLastModified() != context.currentProject().getId()) {
+        if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
             // update the project flag of a modified resource as "modified inside the current project"
-            m_vfsDriver.updateProjectId(context.currentProject(), context.currentProject().getId(), resource);
+            m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), resource);
         }
 
         // add the resource to the lock dispatcher
@@ -4571,9 +4546,9 @@ if (resVersions>1) {
             throw e;
         }
 
-        if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED && resource.getProjectLastModified() != context.currentProject().getId()) {
+        if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
             // update the project flag of a modified resource as "modified inside the current project"
-            m_vfsDriver.updateProjectId(context.currentProject(), context.currentProject().getId(), resource);
+            m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), resource);
         }
 
         m_lockDispatcher.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId());
@@ -4756,7 +4731,7 @@ if (resVersions>1) {
         // its sufficient to use source instead of dest, since there is only one resource
         destination.setDateLastModified(System.currentTimeMillis());
         destination.setUserLastModified(context.currentUser().getId());
-        m_vfsDriver.updateResourceState(context.currentProject(), destination, C_UPDATE_STRUCTURE);
+        m_vfsDriver.writeResourceState(context.currentProject(), destination, C_UPDATE_STRUCTURE);
 
         // lock the new resource
         lockResource(context,destinationName);
@@ -5201,7 +5176,7 @@ if (resVersions>1) {
      */
     public Vector readAllProjectResources(CmsRequestContext context, int projectId) throws CmsException {
         CmsProject project = m_projectDriver.readProject(projectId);
-        List result = getAllFullPaths(context, m_projectDriver.readProjectResources(project));
+        List result = setFullResourceNames(context, m_projectDriver.readProjectResources(project));
         return new Vector(result);
     }
 
@@ -5248,7 +5223,7 @@ if (resVersions>1) {
         
         returnValue = (Vector) m_propertyDefVectorCache.get(Integer.toString(resourceType.getResourceType()));
         if (returnValue == null) {
-            returnValue = m_vfsDriver.readAllPropertydefinitions(context.currentProject().getId(), resourceType);
+            returnValue = m_vfsDriver.readPropertyDefinitions(context.currentProject().getId(), resourceType);
             Collections.sort(returnValue);
             m_propertyDefVectorCache.put(Integer.toString(resourceType.getResourceType()), returnValue);
         }
@@ -5580,35 +5555,6 @@ if (resVersions>1) {
     }
 
     /**
-     * Reads all file headers for a project from the Cms.<BR/>
-     *
-     * @param context the current request context
-     * @param projectId The id of the project to read the resources for.
-     *
-     * @return a Vector of resources.
-     *
-     * @throws CmsException will be thrown, if the file couldn't be read.
-     * The CmsException will also be thrown, if the user has not the rights
-     * for this resource.
-     */
-    public Vector readFileHeaders(CmsRequestContext context, int projectId) throws CmsException {
-        CmsProject project = readProject(projectId);
-        Vector resources = m_vfsDriver.readResources(project);
-        Vector retValue = new Vector();
-
-        // check the security
-        for (int i = 0; i < resources.size(); i++) {
-                CmsResource res=(CmsResource) resources.elementAt(i);
-            if (hasPermissions(context, res, I_CmsConstants.C_READ_OR_VIEW_ACCESS, false)) {
-                res.setFullResourceName(readPath(context,res,true));
-                retValue.addElement(res);
-            }
-        }
-
-        return retValue;
-    }
-
-    /**
      * Reads all files from the Cms, that are of the given type.<BR/>
      *
      * @param projectId A project id for reading online or offline resources
@@ -5620,7 +5566,7 @@ if (resVersions>1) {
      */
     public Vector readFilesByType(CmsRequestContext context, int projectId, int resourcetype) throws CmsException {
         Vector resources = new Vector();
-        resources = m_vfsDriver.readFilesByType(projectId, resourcetype);
+        resources = m_vfsDriver.readFiles(projectId, resourcetype);
         Vector retValue = new Vector(resources.size());
 
         // check if the user has view access 
@@ -5631,7 +5577,7 @@ if (resVersions>1) {
                 res.setFullResourceName(readPath(context,res,true));
                 retValue.addElement(res);
             }
-        }
+        }        
         return retValue;
     }
 
@@ -6811,47 +6757,10 @@ if (resVersions>1) {
         returnValue = (CmsPropertydefinition) m_propertyDefCache.get(name + resourcetype);
 
         if (returnValue == null) {
-            returnValue = m_vfsDriver.readPropertydefinition(name, context.currentProject().getId(), resourcetype);
+            returnValue = m_vfsDriver.readPropertyDefinition(name, context.currentProject().getId(), resourcetype);
             m_propertyDefCache.put(name + resourcetype, returnValue);
         }
         return returnValue;
-    }
-
-    /**
-     * Returns a Vector with the resources that contains the given part in the resourcename.<br>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read and view this resource</li>
-     * </ul>
-     *
-     * @param context the current request context
-     * @param resourcename A part of resourcename
-     *
-     * @return subfolders A Vector with resources.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public Vector readResourcesLikeName(CmsRequestContext context, String resourcename) throws CmsException {
-        Vector resources = new Vector();
-        resources = m_vfsDriver.readResourcesLikeName(context.currentProject(), resourcename);
-        Vector retValue = new Vector(resources.size());
-
-        // check if the user has read access 
-        Enumeration e = resources.elements();
-        String lastcheck = "#"; // just a char that is not valid in a filename
-        while (e.hasMoreElements()) {
-            CmsResource res = (CmsResource) e.nextElement();
-            if (! context.removeSiteRoot(readPath(context, res, false)).equals(lastcheck)) {
-                if (hasPermissions(context, res, I_CmsConstants.C_READ_ACCESS, false)) {
-                    retValue.addElement(res);
-                    lastcheck = context.removeSiteRoot(readPath(context, res, false));
-                }
-            }
-        }
-        return retValue;
     }
 
     /**
@@ -7217,12 +7126,10 @@ if (resVersions>1) {
             List labeledSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
 
             // check if one of the other vfs links lies in a labeled site folder
-            List vfsLinkList = m_vfsDriver.getAllVfsSoftLinks(project, resource);
+            List vfsLinkList = readSiblings(context, resource.getRootPath(), false);
             Iterator i = vfsLinkList.iterator();
             while (i.hasNext()) {
                 CmsResource currentResource = (CmsResource)i.next();
-                // read the full path of the current resource
-                readPath(context, currentResource, true);
                 String curPath = currentResource.getRootPath();
                 for (int k = 0; k < labeledSites.size(); k++) {
                     if (curPath.startsWith((String)labeledSites.get(k))) {
@@ -7374,7 +7281,7 @@ if (resVersions>1) {
 
         touch(context,resourceName, System.currentTimeMillis(), context.currentUser().getId());
 
-        m_vfsDriver.updateResourceState(context.currentProject(), resource, C_UPDATE_RESOURCE);        
+        m_vfsDriver.writeResourceState(context.currentProject(), resource, C_UPDATE_RESOURCE);        
 
         // clear the cache
         clearResourceCache();
@@ -7680,7 +7587,7 @@ if (resVersions>1) {
         res.setState(I_CmsConstants.C_STATE_CHANGED);        
         res.setDateLastModified(timestamp);
         res.setUserLastModified(user);
-        m_vfsDriver.updateResourceState(context.currentProject(), res, C_UPDATE_RESOURCE);
+        m_vfsDriver.writeResourceState(context.currentProject(), res, C_UPDATE_RESOURCE);
         
         clearResourceCache();        
         
@@ -7770,7 +7677,7 @@ if (resVersions>1) {
             m_vfsDriver.writeFolder(context.currentProject(), restoredFolder, C_NOTHING_CHANGED, restoredFolder.getUserLastModified());
             // restore the properties in the offline project
             readPath(context,restoredFolder,true);
-            m_vfsDriver.deleteAllProperties(context.currentProject().getId(), restoredFolder);
+            m_vfsDriver.deleteProperties(context.currentProject().getId(), restoredFolder);
             Map propertyInfos = m_vfsDriver.readProperties(onlineProject.getId(), onlineFolder, onlineFolder.getType());
             m_vfsDriver.writeProperties(propertyInfos, context.currentProject().getId(), restoredFolder, restoredFolder.getType(), false);
         } else {
@@ -7818,7 +7725,7 @@ if (resVersions>1) {
             
             // restore the properties in the offline project
             readPath(context,restoredFile,true);
-            m_vfsDriver.deleteAllProperties(context.currentProject().getId(), restoredFile);
+            m_vfsDriver.deleteProperties(context.currentProject().getId(), restoredFile);
             Map propertyInfos = m_vfsDriver.readProperties(onlineProject.getId(), onlineFile, onlineFile.getType());
             m_vfsDriver.writeProperties(propertyInfos, context.currentProject().getId(), restoredFile, restoredFile.getType(), false);
 
@@ -7838,7 +7745,7 @@ if (resVersions>1) {
         m_propertyCache.clear();
         m_accessCache.clear();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));        
     }
 
     /**
@@ -7880,13 +7787,13 @@ if (resVersions>1) {
      */
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
-        clearResourceCache();   
-        
-        //CmsResource resource = readFileHeader(context, resourcename);
-        //OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+        clearResourceCache();
 
-        return oldLock;     
-        }
+        CmsResource resource = readFileHeader(context, resourcename);
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
+
+        return oldLock;
+    }
         
     /**
      * When a project is published this method aktualises the online link table.
@@ -8065,11 +7972,11 @@ if (resVersions>1) {
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
 
         // get the old values
-        long dateLastModified=resource.getDateLastModified();
-        CmsUUID userLastModified=resource.getUserLastModified();
-        
+        long dateLastModified = resource.getDateLastModified();
+        CmsUUID userLastModified = resource.getUserLastModified();
+
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
-        
+
         m_userDriver.writeAccessControlEntry(context.currentProject(), acEntry);
         clearAccessControlListCache();
         touchResource(context, resource, dateLastModified, userLastModified);
@@ -8315,7 +8222,7 @@ if (resVersions>1) {
         // update the cache
         clearResourceCache();
         
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));        
     }
 
     /**
@@ -8379,7 +8286,7 @@ if (resVersions>1) {
         // check the security
         if (isAdmin(context)) {
             m_propertyDefVectorCache.clear();
-            return (m_vfsDriver.writePropertydefinition(propertydef));
+            return (m_vfsDriver.writePropertyDefinition(propertydef));
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] writePropertydefinition() " + propertydef.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                                    
         }
@@ -8671,7 +8578,7 @@ if (resVersions>1) {
 
             // set the resource state to unchanged coz the resource exists online
             newResource.setState(I_CmsConstants.C_STATE_UNCHANGED);
-            m_vfsDriver.updateResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
+            m_vfsDriver.writeResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
         } catch (CmsException e) {
             // the exception is caught just to have a finally clause to switch back to the 
             // previous project. the exception should be handled in the upper app. layer.

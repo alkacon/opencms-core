@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/09/16 19:12:39 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/09/17 09:30:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $ $Date: 2003/09/16 19:12:39 $ 
+ * @version $Revision: 1.17 $ $Date: 2003/09/17 09:30:16 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -2321,22 +2321,6 @@ class CmsShellCommands {
     }
 
     /**
-     * Reads all file headers of a project from the Cms.
-     *
-     * @param projectId the id of the project to read the file headers for.
-     */
-    public void readFileHeaders(String projectId) {
-        try {
-            Vector files = m_cms.readFileHeaders(Integer.parseInt(projectId));
-            for (int i = 0; i < files.size(); i++) {
-                System.out.println(files.elementAt(i));
-            }
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
-    /**
      * Reads a folder from the Cms.<BR/>
      *
      * @param folder The complete path to the folder that will be read.
@@ -2605,30 +2589,6 @@ class CmsShellCommands {
             System.out.println(m_cms.readPropertydefinition(name, m_cms.getResourceTypeId(resourcetype)));
         } catch (Exception exc) {
             CmsShell.printException(exc);
-        }
-    }
-
-    /**
-     * Returns the resources that contains the given part in the resourcename.<br>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read and view this resource</li>
-     * </ul>
-     *
-     * @param resourcename A part of resourcename
-     */
-    public void readResourcesLikeName(String resourcename) {
-        try {
-            Vector resources = m_cms.readResourcesLikeName(resourcename);
-            for (int i = 0; i < resources.size(); i++) {
-                CmsResource res = (CmsResource)resources.elementAt(i);
-                System.out.println(res.toString());
-            }
-        } catch (Exception e) {
-            CmsShell.printException(e);
         }
     }
 
@@ -3470,7 +3430,7 @@ class CmsShellCommands {
             Random random = new Random();
             int projectId = m_cms.getRequestContext().currentProject().getId();
 
-            List testResources = vfsDriver.getResourcesInTimeRange(projectId, 0, System.currentTimeMillis());
+            List testResources = vfsDriver.readResources(projectId, 0, System.currentTimeMillis());
             int numResources = testResources.size();
             System.out.println("#Resources:\t" + numResources);
             long totalTime = 0, minTime = 0, maxTime = 0, t, tt;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/17 08:31:30 $
-* Version: $Revision: 1.410 $
+* Date   : $Date: 2003/09/17 09:30:16 $
+* Version: $Revision: 1.411 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.410 $
+ * @version $Revision: 1.411 $
  */
 public class CmsObject {
 
@@ -1597,26 +1597,18 @@ public class CmsObject {
     }
 
     /**
-     * Gets all hard and soft links pointing to a specified resource.<p>
-     * 
-     * @param resourcename the name of the resource
-     * @return a List with CmsResources
-     * @throws CmsException if something goes wrong
+     * Reads all siblings that point to the resource record of a specified resource name.<p>
      */
-    public List getAllVfsLinks(String resourcename) throws CmsException {       
-        return m_driverManager.getAllVfsLinks( m_context, addSiteRoot(resourcename) );
+    public List getAllVfsLinks(String resourcename) throws CmsException {
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), true);
     }
 
     /**
-     * Gets all soft links pointing to a specified resource, excluding the
-     * resource itself if it is a soft link and its hard link.<p>
-     * 
-     * @param resourcename the name of the resource
-     * @return a List with CmsResources
-     * @throws CmsException if something goes wrong
+     * Reads all siblings that point to the resource record of a specified resource name,
+     * excluding the specified resource from the result.<p>
      */
     public List getAllVfsSoftLinks(String resourcename) throws CmsException {       
-        return m_driverManager.getAllVfsSoftLinks( m_context, addSiteRoot(resourcename) );
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), false);
     }    
 
     /**
@@ -3150,20 +3142,6 @@ public class CmsObject {
     }
 
     /**
-     * Reads all file headers of a project from the Cms.
-     *
-     * @param projectId the id of the project to read the file headers for.
-     *
-     * @return a Vector of resources.
-     *
-     * @throws CmsException if the user has not the rights
-     * to read the file headers, or if the file headers couldn't be read.
-     */
-    public Vector readFileHeaders(int projectId) throws CmsException {
-        return (m_driverManager.readFileHeaders(m_context, projectId));
-    }
-
-    /**
      * Reads all files from the Cms, that are of the given type.<BR/>
      *
      * @param projectId A project id for reading online or offline resources
@@ -3562,26 +3540,6 @@ public class CmsObject {
      */
     public CmsPropertydefinition readPropertydefinition(String name, int resourcetype) throws CmsException {
         return (m_driverManager.readPropertydefinition(m_context, name, resourcetype));
-    }
-
-    /**
-     * Returns a Vector with the resources that contains the given part in the resourcename.<br>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read and view this resource</li>
-     * </ul>
-     *
-     * @param resourcename A part of resourcename
-     *
-     * @return subfolders A Vector with resources.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public Vector readResourcesLikeName(String resourcename) throws CmsException {
-        return m_driverManager.readResourcesLikeName(m_context, resourcename);
     }
 
     /**

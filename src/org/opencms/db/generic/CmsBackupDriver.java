@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/17 08:31:28 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2003/09/17 09:30:15 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.54 $ $Date: 2003/09/17 08:31:28 $
+ * @version $Revision: 1.55 $ $Date: 2003/09/17 09:30:15 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -844,7 +844,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             while (keys.hasNext()) {
                 hasBatch = true;
                 key = (String)keys.next();
-                CmsPropertydefinition propdef = m_driverManager.getVfsDriver().readPropertydefinition(key, publishProject.getId(), resource.getType());
+                CmsPropertydefinition propdef = m_driverManager.getVfsDriver().readPropertyDefinition(key, publishProject.getId(), resource.getType());
                 String value = (String)properties.get(key);
 
                 if (propdef == null) {

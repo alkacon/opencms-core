@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/09/15 13:30:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/17 09:30:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -199,7 +199,7 @@ public interface I_CmsEventListener {
      * <li>key "resource" (mandatory): the CmsResource that has the modified properties attached</li>
      * </ul>
      */
-    int EVENT_PROPERTIES_MODIFIED = 15;
+    int EVENT_RESOURCE_AND_PROPERTIES_MODIFIED = 15;
     
     /** 
      * Event "clear all offline caches".<p>

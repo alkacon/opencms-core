@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/09/17 09:30:16 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2003/09/15 10:51:15 $
+ * @version $Revision: 1.44 $ $Date: 2003/09/17 09:30:16 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -219,7 +219,7 @@ public final class CmsLockDispatcher extends Object {
         // calculate the lock state
 
         // fetch all siblings of the resource to the same content record
-        List siblings = driverManager.getAllSiblings(context, resourcename);
+        List siblings = internalReadSiblings(driverManager, context, resourcename);
 
         if ((parentFolderLock = getParentFolderLock(resourcename)) == null) {
             // all parent folders are unlocked
@@ -273,8 +273,8 @@ public final class CmsLockDispatcher extends Object {
         }        
                 
         // nope, fetch all siblings of the resource to the same content record
-        List siblings = driverManager.getAllSiblings(context, resourcename);
-        
+        List siblings = internalReadSiblings(driverManager, context, resourcename);
+                
         for (int i = 0; i < siblings.size(); i++) {
             sibling = (CmsResource) siblings.get(i);
             
@@ -320,17 +320,40 @@ public final class CmsLockDispatcher extends Object {
     private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
         CmsResource resource = null;
 
-        // reading a resource using readFileHeader while the lock state is checked would
+        // reading resources using readFileHeader while the lock state is checked would
         // inevitably result in an infinite loop...
 
         try {
             List path = driverManager.readPath(context, resourcename, false);
             resource = (CmsResource) path.get(path.size() - 1);
+            resource.setFullResourceName(resourcename);
         } catch (CmsException e) {
             resource = null;
         }
 
         return resource;
+    }
+    
+    private List internalReadSiblings(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+
+        // reading siblings using the DriverManager methods while the lock state is checked would
+        // inevitably result in an infinite loop...        
+
+        CmsResource resource = internalReadFileHeader(driverManager, context, resourcename);
+        List siblings = driverManager.getVfsDriver().readSiblings(context.currentProject(), resource);
+        
+        int n = siblings.size();
+        for (int i = 0; i < n; i++) {
+            CmsResource currentResource = (CmsResource) siblings.get(i);
+
+            if (currentResource.getStructureId().equals(resource.getStructureId())) {
+                siblings.remove(i);
+                n--;
+            }
+        }
+
+        driverManager.setFullResourceNames(context, siblings);
+        return siblings;
     }
 
     /**
@@ -408,7 +431,7 @@ public final class CmsLockDispatcher extends Object {
         if (lock.getType() == CmsLock.C_TYPE_SHARED_EXCLUSIVE) {
             // when a resource with a shared lock gets unlocked, fetch all siblings of the resource 
             // to the same content record to identify the exclusive locked sibling
-            List siblings = driverManager.getAllSiblings(context, resourcename);
+            List siblings = internalReadSiblings(driverManager, context, resourcename);
 
             for (int i = 0; i < siblings.size(); i++) {
                 sibling = (CmsResource) siblings.get(i);
