@@ -690,7 +690,7 @@
 				<createmessage>Sorry, the new module could not be created.</createmessage>
 				<createreason>The fields packetname and version must be filled out.</createreason>
 				<empty> </empty>
-				<existsreason>This module already exists.</existsreason>
+				<existsreason>This module already exist.</existsreason>
 				<existsugg>Change the packetname.</existsugg>
 				<noprojectreason>Could not create the modulefolder in /system/modules/ .</noprojectreason>
 				<noprojectsugg>Create a project including the rootfolder.</noprojectsugg>
