@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/10/02 09:57:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/10/06 10:01:07 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.19 $ $Date: 2003/10/02 09:57:35 $
+ * @version $Revision: 1.20 $ $Date: 2003/10/06 10:01:07 $
  */
 public class CmsExport implements Serializable {
 
@@ -99,6 +99,9 @@ public class CmsExport implements Serializable {
 
     /** Indicated if the unchanged resources should be included to the export */
     private boolean m_excludeUnchanged;
+    
+    /** Counter for the export */
+    private int m_exportCount;
 
     /** The channelid and the resourceobject of the exported channels */
     private Set m_exportedChannelIds;
@@ -184,6 +187,7 @@ public class CmsExport implements Serializable {
         m_excludeUnchanged = excludeUnchanged;
         m_exportUserdata = exportUserdata;
         m_contentAge = contentAge;
+        m_exportCount = 0;
 
         try {
             Element exportNode = openExportFile();
@@ -549,6 +553,7 @@ public class CmsExport implements Serializable {
      */
     private void exportFile(CmsFile file) throws CmsException {
         String source = trimResourceName(getCms().readAbsolutePath(file));
+        getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
         getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
         getReport().print(getCms().readAbsolutePath(file));
         getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
@@ -576,7 +581,7 @@ public class CmsExport implements Serializable {
             getReport().println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
-        getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
+        getReport().println(" " + getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -614,8 +619,9 @@ public class CmsExport implements Serializable {
      */
     private void exportGroups(Element parent) throws CmsException, SAXException {
         Vector allGroups = getCms().getGroups();
-        for (int i = 0; i < allGroups.size(); i++) {
+        for (int i = 0, l = allGroups.size(); i < l; i++) {
             CmsGroup group = (CmsGroup)allGroups.elementAt(i);
+            getReport().print(" ( " + (i+1) + " / " + l + " ) ", I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getReport().key("report.exporting_group"), I_CmsReport.C_FORMAT_NOTE);
             getReport().print(group.getName());
             getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
@@ -644,6 +650,7 @@ public class CmsExport implements Serializable {
             }
         } else {
             // output something to the report for the folder
+            getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getCms().readAbsolutePath(resource));
             getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
@@ -683,7 +690,6 @@ public class CmsExport implements Serializable {
                 // append the node for a property
                 Element q = p.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTY);
                 q.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(key);
-                q.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(Integer.toString(getCms().readPropertydefinition(key, resource.getType()).getType()));
                 q.addElement(I_CmsConstants.C_EXPORT_TAG_VALUE).addCDATA((String)fileProperties.get(key));
             }
         }
@@ -705,12 +711,12 @@ public class CmsExport implements Serializable {
             CmsUUID acePrincipal = ace.getPrincipal();
             if ((flags & I_CmsConstants.C_ACCESSFLAGS_GROUP) > 0) {
                 // the principal is a group
-                acePrincipalName = I_CmsConstants.C_EXPORT_ACEPRINCIPAL_GROUP;
-                acePrincipalName += getCms().readGroup(acePrincipal).getName();
+                acePrincipalName = I_CmsConstants.C_EXPORT_ACEPRINCIPAL_GROUP 
+                    + getCms().readGroup(acePrincipal).getName();
             } else {
                 // the principal is a user
-                acePrincipalName = I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER;
-                acePrincipalName += getCms().readUser(acePrincipal).getName();
+                acePrincipalName = I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER 
+                    + getCms().readUser(acePrincipal).getName();
             }
 
             a.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
@@ -792,8 +798,9 @@ public class CmsExport implements Serializable {
      */
     private void exportUsers(Element parent) throws CmsException, SAXException {
         Vector allUsers = getCms().getUsers();
-        for (int i = 0; i < allUsers.size(); i++) {
+        for (int i = 0, l = allUsers.size(); i < l; i++) {
             CmsUser user = (CmsUser)allUsers.elementAt(i);
+            getReport().print(" ( " + (i+1) + " / " + l + " ) ", I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getReport().key("report.exporting_user"), I_CmsReport.C_FORMAT_NOTE);
             getReport().print(user.getName());
             getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
