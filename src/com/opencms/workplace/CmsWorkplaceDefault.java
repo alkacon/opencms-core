@@ -15,10 +15,10 @@ import java.util.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/28 11:43:04 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/28 17:10:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public class CmsWorkplaceDefault extends CmsXmlTemplate {
+public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
     
     /** URL of the pics folder in the webserver's docroot */
     private String m_picsurl = null;

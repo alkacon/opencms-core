@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/01/28 13:46:37 $
+ * @version $Revision: 1.14 $ $Date: 2000/01/28 17:10:17 $
  */
 public interface I_CmsWpConstants {
 
@@ -15,8 +15,10 @@ public interface I_CmsWpConstants {
     /**
      * Parameter for foldername
      */
-    public static final String C_PARA_FOLDER="FOLDER";
+    public static final String C_PARA_FOLDER="folder";
     
+    /** Parameter for view name */
+    public static final String C_PARA_VIEW = "view";
     
     
     // Filenames of workplace files

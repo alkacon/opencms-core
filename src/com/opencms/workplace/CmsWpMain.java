@@ -7,17 +7,22 @@ import com.opencms.template.*;
 
 import java.util.*;
 
+import javax.servlet.http.*;
+
 /**
- * Common template class for displaying OpenCms workplace main screen.
+ * Template class for displaying OpenCms workplace main screen.
  * <P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/28 11:43:37 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/28 17:10:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
-           
+
+    private Vector m_viewNames = null;
+    private Vector m_viewLinks = null;
+    
     /**
      * Indicates if the results of this class are cacheable.
      * 
@@ -30,8 +35,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
      */
     public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
-    }
-    
+    }    
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -54,6 +58,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         A_CmsRequestContext reqCont = cms.getRequestContext();
         String newGroup = (String)parameters.get("group");
         String newProject = (String)parameters.get("project");
+        String newView = (String)parameters.get(C_PARA_VIEW);
         
         // Check if the user requested a group change
         if(newGroup != null && !("".equals(newGroup))) {
@@ -69,27 +74,63 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             }
         }                            
         
+        // Check if the user requested a new view
+        if(newView != null && !("".equals(newView))) {
+            HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(true);
+            session.putValue(C_PARA_VIEW, newView);
+        }
+        
+        // Now load the template file and start the processing
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }            
-    
-    
-    public Object getInformation(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+        
+    /**
+     * Gets the currently logged in user.
+     * <P>
+     * Used for displaying information in the 'foot' frame of the workplace.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Additional parameter passed to the method <em>(not used here)</em>.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
+     * @param userObj Hashtable with parameters <em>(not used here)</em>.
+     * @return String containing the current user.
+     * @exception CmsException
+     */
+    public Object getUser(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
-        Hashtable parameters = (Hashtable)userObj;
         A_CmsRequestContext reqContext = cms.getRequestContext();
         A_CmsUser currentUser = reqContext.currentUser();
         return currentUser.getName();
     }    
-
     
-    public Integer getGroups(A_CmsObject cms, Vector names, Vector values) 
+    /**
+     * Gets all groups of the currently logged in user.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * <P>
+     * Both <code>names</code> and <code>values</code> will contain
+     * the group names after returning from this method.
+     * <P>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @return Index representing the user's current group in the vectors.
+     * @exception CmsException
+     */
+    public Integer getGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) 
             throws CmsException {
+
+        // Get a vector of all of the user's groups by asking the request context
         A_CmsRequestContext reqCont = cms.getRequestContext();
         A_CmsGroup currentGroup = reqCont.currentGroup();
-        A_CmsUser currentUser = reqCont.currentUser();
-        Vector allGroups = cms.getGroupsOfUser(currentUser.getName());
+        Vector allGroups = cms.getGroupsOfUser(reqCont.currentUser().getName());
         
+        // Now loop through all groups and fill the result vectors
         int numGroups = allGroups.size();
         int currentGroupNum = 0;
         for(int i=0; i<numGroups; i++) {
@@ -98,20 +139,39 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             values.addElement(loopGroupName);
             names.addElement(loopGroupName);
             if(loopGroup.equals(currentGroup)) {
+                // Fine. The group of this loop is the user's current group. Save it!
                 currentGroupNum = i;
             }
         }
         return new Integer(currentGroupNum);
     }
 
-
-
-    public Integer getProjects(A_CmsObject cms, Vector names, Vector values) 
+    /**
+     * Gets all projects of the currently logged in user.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * <P>
+     * Both <code>names</code> and <code>values</code> will contain
+     * the project names after returning from this method.
+     * <P>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @return Index representing the user's current project in the vectors.
+     * @exception CmsException
+     */
+    public Integer getProjects(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) 
             throws CmsException {
+        // Get all project information
         A_CmsRequestContext reqCont = cms.getRequestContext();
         A_CmsProject currentProject = reqCont.currentProject();
         Vector allProjects = cms.getAllAccessibleProjects();
         
+        // Now loop through all projects and fill the result vectors
         int numProjects = allProjects.size();
         int currentProjectNum = 0;
         for(int i=0; i<numProjects; i++) {
@@ -120,12 +180,68 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             values.addElement(loopProjectName);
             names.addElement(loopProjectName);
             if(loopProject.equals(currentProject)) {
+                // Fine. The project of this loop is the user's current project. Save it!
                 currentProjectNum = i;
             }
         }
         return new Integer(currentProjectNum);
     }
     
+    /**
+     * Gets all views available in the workplace screen.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * <P>
+     * <code>names</code> will contain language specific view descriptions
+     * and <code>values</code> will contain the correspondig URL for each
+     * of these views after returning from this method.
+     * <P>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @return Index representing the user's current workplace view in the vectors.
+     * @exception CmsException
+     */
+    public Integer getViews(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) 
+            throws CmsException {
+        
+        // Let's see if we have a session
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
 
+        // If there ist a session, let's see if it has a view stored
+        String currentView = null;
+        if(session != null) {
+            currentView = (String)session.getValue(C_PARA_VIEW);
+        }        
+        
+        // Check if the list of available views is not yet loaded from the workplace.ini
+        if(m_viewNames == null || m_viewLinks == null) {
+            m_viewNames = new Vector();
+            m_viewLinks = new Vector();
 
+            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);            
+            configFile.getViews(m_viewNames, m_viewLinks);            
+        }
+        
+        // OK. Now m_viewNames and m_viewLinks contail all available
+        // view information.
+        // Loop through the vectors and fill the result vectors.
+        int currentViewIndex = 0;
+        int numViews = m_viewNames.size();        
+        for(int i=0; i<numViews; i++) {
+            String loopValue = (String)m_viewLinks.elementAt(i);
+            String loopName = (String)m_viewNames.elementAt(i);
+            values.addElement(loopValue);
+            names.addElement(lang.getLanguageValue("select." + loopName));
+            if(loopValue.equals(currentView)) {
+                currentViewIndex = i;
+            }
+        }
+        return new Integer(currentViewIndex);
+    }
 }

@@ -4,12 +4,16 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
 
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
+import java.util.*;
 
 /**
  * Content definition for "/workplace/workplace.ini".
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/25 17:19:29 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/28 17:10:17 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -134,6 +138,50 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
         return getDataValue("path.picsurl");
     }
     
+    /**
+     * Gets the available workplace views defined in the config file.
+     * Names of the views will be stored in <code>names</code>,
+     * the corresponding URL will be stored in <code>values</code>.
+     * 
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public void getViews(Vector names, Vector values) throws CmsException {
+        
+        // Check the tag "WORKPLACEVIEWS" in the config file
+        if(!hasData("workplaceviews")) {
+            throwException("Tag \"workplaceviews\" missing in workplace configuration file.", CmsException.C_XML_TAG_MISSING);
+        }
+        Element viewsElement = getData("workplaceviews");
+        
+        // Now get a NodeList of all available views
+        NodeList allViews = viewsElement.getElementsByTagName("VIEW");
+
+        // Check the existance of at least one view.
+        int numViews = allViews.getLength();        
+        if(numViews == 0) {
+            throwException("No views defined workplace configuration file.", CmsException.C_XML_TAG_MISSING);
+        }
+                
+        // Everything is fine.
+        // Now loop through the available views and fill the result
+        // vectors.
+        for(int i=0; i<numViews; i++) {
+            Element currentView = (Element)allViews.item(i);
+            String name = currentView.getAttribute("name");
+            if(name == null || "".equals(name)) {
+                name = "View " + i;
+            }
+            String link = getTagValue(currentView);
+            if(link == null || "".equals(link)) {
+                throwException("View \"" + name + "\" has no value defined workplace configuration file.", CmsException.C_XML_TAG_MISSING);
+            }
+            names.addElement(name);
+            values.addElement(link);
+        }
+    }
+        
     /**
      * Overridden internal method for getting datablocks.
      * This method first checkes, if the requested value exists.

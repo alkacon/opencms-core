@@ -10,13 +10,12 @@ import com.opencms.file.*;
 import java.lang.reflect.*;
 import java.util.*;
 
-
 /**
  * Class for building workplace buttons. <BR>
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/28 11:44:03 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/28 17:10:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -40,6 +39,11 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
      */    
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
+        /** Here the different select box options will be stored */
+        Vector values = new Vector();
+        Vector names = new Vector();
+
+        /** StringBuffer for the generated output */
         StringBuffer result = new StringBuffer();
         
         // Read selectbox parameters
@@ -57,13 +61,12 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
         
         // call the method for generating listbox elements
         Method groupsMethod = null;
-        Vector values = new Vector();
-        Vector names = new Vector();
         int selectedOption = 0;
         try {
-            groupsMethod = callingObject.getClass().getMethod(selectMethod, new Class[] {A_CmsObject.class, Vector.class, Vector.class});
-            selectedOption = ((Integer)groupsMethod.invoke(callingObject, new Object[] {cms, values, names})).intValue();
+            groupsMethod = callingObject.getClass().getMethod(selectMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Vector.class, Vector.class});
+            selectedOption = ((Integer)groupsMethod.invoke(callingObject, new Object[] {cms, lang, values, names})).intValue();
         } catch(NoSuchMethodException exc) {
+            // The requested method was not found.
             throwException("Could not find method " + selectMethod + " in calling class " + callingObject.getClass().getName() + " for generating select box content.", CmsException.C_NOT_FOUND);
         } catch(InvocationTargetException targetEx) {
             // the method could be invoked, but throwed a exception
@@ -81,9 +84,7 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
         } catch(Exception exc2) {
             throwException("User method " + selectMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
-        
-        
-        
+                      
         // check the returned elements and put them into option tags.
         // The element with index "selectedOption" has to get the "selected" tag.
         int numValues = values.size();
@@ -97,9 +98,8 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
             }                        
         }
         
-        // get the processed selectbox end.
-        result.append(inputdef.getSelectBoxEnd());
-        
+        // get the processed selectbox end sequence.
+        result.append(inputdef.getSelectBoxEnd());        
         return result.toString(); 
     }           
 }
