@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2001/02/19 16:22:05 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/04/06 13:30:19 $
+* Version: $Revision: 1.16 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -42,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2001/02/19 16:22:05 $
+ * @version $Revision: 1.16 $ $Date: 2001/04/06 13:30:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -163,7 +164,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                 if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                     session.removeValue(C_SESSION_THREAD_ERROR);
                 }
-                Thread doExport = new CmsAdminDatabaseExportThread(cms, cms.readExportPath()
+                Thread doExport = new CmsAdminDatabaseExportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
                         + fileName, exportPaths, excludeSystem, excludeUnchanged, exportUserdata);
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
@@ -178,7 +179,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                     if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                         session.removeValue(C_SESSION_THREAD_ERROR);
                     }
-                    Thread doImport = new CmsAdminDatabaseImportThread(cms, cms.readExportPath()
+                    Thread doImport = new CmsAdminDatabaseImportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
                             + existingFile);
                     doImport.start();
                     session.putValue(C_DATABASE_THREAD, doImport);
@@ -223,14 +224,18 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
 
         // get the systems-exportpath
         String exportpath = cms.readExportPath();
+        exportpath = CmsBase.getAbsolutePath(exportpath);
         File folder = new File(exportpath);
         if (!folder.exists()){
             folder.mkdirs();
         }
         // get a list of all files
-        String[] list = folder.list();
+        String[] list = folder.list(new FilenameFilter() {
+                public boolean accept(File dir, String fileName) {
+                        return(fileName.endsWith(".zip"));
+                }});
         for(int i = 0;i < list.length;i++) {
-            File diskFile = new File(exportpath + list[i]);
+            File diskFile = new File(exportpath, list[i]);
 
             // check if it is a file
             if(diskFile.isFile()) {
