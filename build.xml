@@ -20,7 +20,7 @@
     <property name="build.metainf"              value="${build.web}/META-INF"/>
     <property name="build.lib"                  value="${build.webinf}/lib"/>
     <property name="build.oclib"                value="${build.webinf}/oclib"/>
-	<property name="build.exclude.junit"		value="com/opencms/boot/CmsTest**,com/opencms/tests/**,com/opencms/core/CmsTest**"/>
+    <property name="build.exclude.junit"        value="com/opencms/boot/CmsTest**,com/opencms/tests/**,com/opencms/core/CmsTest**"/>
     <property name="build.excludes"             value="${build.exclude.junit}"/>
 
     <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>
@@ -58,7 +58,7 @@
                 <available file="${build.inputlib.tidy}"/>
             </and>
         </condition>
-		
+        
         <property name="ex.oracle"      value="com/opencms/file/oracleplsql/**"/>
         <property name="ex.pdflaunch"   value="com/opencms/launcher/CmsPdfLauncher.java"/>
                 
@@ -142,7 +142,8 @@ ${build.inputlib.tidy}
             <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
         </tstamp>
         <property name="version.number" value="${env.USERNAME}_${timestamp}"/>
-        <echo file="${build.version.propertyfile}">version.number=${version.number}</echo>
+        <echo file="${build.version.propertyfile}">version.number=${version.number}
+</echo>
         <echo file="${build.version.propertyfile}" append="on">version.name=${version.name}</echo>
     </target>
     
@@ -388,46 +389,46 @@ ${build.inputlib.tidy}
 
     <target name="test-user" depends="compiletests,jar" description="Performs a unit test of all OpenCms classes concerning user management">  <!-- wieder einfuegen: depends="compiletests,setup"> -->
         <junit haltonfailure="no">
-			<sysproperty key="build.webinf" value="${build.webinf}"/>
-			<classpath>
-				<pathelement location="." />
-				<pathelement location="build/opencms/WEB-INF/oclib/activation.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/fesi.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/jakarta-oro-2.0.6.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/mail.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/mm.mysql-2.0.4-bin.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/opencms.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/Tidys.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/xerces-1_4_4.jar" />
-				<pathelement location="build/opencms/WEB-INF/lib/opencmsboot.jar" />
-			</classpath>
+            <sysproperty key="build.webinf" value="${build.webinf}"/>
+            <classpath>
+                <pathelement location="." />
+                <pathelement location="build/opencms/WEB-INF/oclib/activation.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/fesi.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/jakarta-oro-2.0.6.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/mail.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/mm.mysql-2.0.4-bin.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/opencms.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/Tidys.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/xerces-1_4_4.jar" />
+                <pathelement location="build/opencms/WEB-INF/lib/opencmsboot.jar" />
+            </classpath>
 
             <formatter type="brief"/>
-			<test name="com.opencms.tests.CmsTestUser" todir="../junit-report"/>
+            <test name="com.opencms.tests.CmsTestUser" todir="../junit-report"/>
         </junit>
     </target> 
 
     <target name="test-resources" depends="compiletests,jar" description="Performs a unit test of all OpenCms classes concerning resources">  <!-- wieder einfuegen: depends="setup"> -->
         <junit haltonfailure="no">
-			<sysproperty key="build.webinf" value="${build.webinf}"/>
-			<classpath>
-				<pathelement location="." />
-				<pathelement location="build/opencms/WEB-INF/oclib/activation.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/fesi.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/jakarta-oro-2.0.6.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/mail.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/mm.mysql-2.0.4-bin.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/opencms.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/Tidys.jar" />
-				<pathelement location="build/opencms/WEB-INF/oclib/xerces-1_4_4.jar" />
-				<pathelement location="build/opencms/WEB-INF/lib/opencmsboot.jar" />
-			</classpath>
+            <sysproperty key="build.webinf" value="${build.webinf}"/>
+            <classpath>
+                <pathelement location="." />
+                <pathelement location="build/opencms/WEB-INF/oclib/activation.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/fesi.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/jakarta-oro-2.0.6.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/mail.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/mm.mysql-2.0.4-bin.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/opencms.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/Tidys.jar" />
+                <pathelement location="build/opencms/WEB-INF/oclib/xerces-1_4_4.jar" />
+                <pathelement location="build/opencms/WEB-INF/lib/opencmsboot.jar" />
+            </classpath>
 
             <formatter type="brief"/>
-			<test name="com.opencms.tests.CmsTestResources" todir="../junit-report"/>
+            <test name="com.opencms.tests.CmsTestResources" todir="../junit-report"/>
         </junit>
     </target> 
 
-	<target name="test-all" description="Performs ALL OpenCms JUnit tests." depends="test-user,test-resources"/>
+    <target name="test-all" description="Performs ALL OpenCms JUnit tests." depends="test-user,test-resources"/>
 
 </project>
