@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/07/03 11:53:57 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/07/19 14:09:52 $
+* Version: $Revision: 1.14 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -357,6 +357,8 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                     CmsElementDefinition elDef = elDefs.get(lookupName);
                     if(elDef != null) {
                         // We have successfully found an element definition.
+                        // first add the parameter from the elementdefinition to the parameters
+                        elDef.joinParameters(parameters);
                         // Try to get the corresponding element using the element locator
                         A_CmsElement subEl = elementCache.getElementLocator().get(cms, elDef.getDescriptor(), parameters);
                         if(resolveDebug) System.err.println("= Element defintion for \"" + lookupName +"\" says: ");
