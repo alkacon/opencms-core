@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChpwd.java,v $
-* Date   : $Date: 2001/07/31 15:50:18 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/07/12 09:54:58 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2001/07/31 15:50:18 $
+ * @version $Revision: 1.9 $ $Date: 2002/07/12 09:54:58 $
  */
 
 public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -92,14 +92,15 @@ public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                     }
                     catch(CmsException exp) {
                         // check if the old password was not correct
-                        if(exp.getType() == CmsException.C_NO_USER) {
+                        if((exp.getType() == CmsException.C_NO_USER)
+                                || (exp.getType() == CmsException.C_NO_ACCESS)) {
                             xmlTemplateDocument.setData("details", Utils.getStackTrace(exp));
                             template = "error2";
                         } else {
-                            if (exp.getType() == 1){
-                                xmlTemplateDocument.setData("details", Utils.getStackTrace(exp));
-                                template = "error2";
-                            } else {
+                            if(exp.getType() == CmsException.C_INVALID_PASSWORD){
+                                xmlTemplateDocument.setData("reasonOfError", exp.getMessage());
+                                template = "error3";
+                            }else{
                                 throw exp;
                             }
                         }
