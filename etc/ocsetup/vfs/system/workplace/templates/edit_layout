@@ -91,7 +91,4 @@
 </html>
 ]]>
 </TEMPLATE>
-<ELEMENTDEF name="editor">
-    <CLASS>com.opencms.workplace.CmsEditor</CLASS>
-</ELEMENTDEF>
 </WORKPLACE>
