@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduler.java,v $
-* Date   : $Date: 2003/03/28 10:56:33 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/03/28 11:15:32 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 
 package com.opencms.core;
+
+import com.opencms.boot.I_CmsLogChannels;
 
 import java.util.*;
 
@@ -104,5 +106,8 @@ class CmsCronScheduler extends Thread {
     public void shutDown() {
         interrupt();
         m_destroyed = true; 
+        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsCronScheduler] Destroyed");
+        }
     } 
 }

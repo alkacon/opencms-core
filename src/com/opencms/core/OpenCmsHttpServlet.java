@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/03/19 08:43:10 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/03/28 11:15:32 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.45 $ $Date: 2003/03/19 08:43:10 $
+ * @version $Revision: 1.46 $ $Date: 2003/03/28 11:15:32 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -260,19 +260,27 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * Destroys all running threads before closing the VM.
      */
     public void destroy() {
-        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Performing shutdown ...");
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
+            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] Performing shutdown ...");
+        }
         try {
             m_opencms.destroy();
         }catch(CmsException e) {
-            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
+            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
+            }
         }
         try{
             Utils.getModulShutdownMethods(OpenCms.getRegistry());
         }catch (CmsException e){
             // log exception since we are about to shutdown anyway
-            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Module shutdown exception: " + e);
+            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Module shutdown exception: " + e);
+            }
         }
-        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] ... shutdown completed.");
+        if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
+            A_OpenCms.log(C_OPENCMS_INIT, "[OpenCmsServlet] ... shutdown completed.");
+        }
     }
 
     /**
