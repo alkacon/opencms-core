@@ -30,11 +30,8 @@ function initTrace() {
 }
 
 function closeErrorDialog(actionValue, theForm) {
-	if (history.length < 1) {
-		submitAction(actionValue, theForm);
-	} else { 
-		history.back();
-	}
+	// removed history.back() in order to avoid odd dialog behaviour (does not close anymore)
+	submitAction(actionValue, theForm);
 }
 </script>
 
