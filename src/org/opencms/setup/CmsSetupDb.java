@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/02/18 11:49:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/05/25 11:00:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 package org.opencms.setup;
 
+import org.opencms.main.CmsException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -47,7 +49,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2004/02/18 11:49:35 $
+ * @version $Revision: 1.5 $ $Date: 2004/05/25 11:00:42 $
  */
 public class CmsSetupDb extends Object {
     
@@ -57,10 +59,10 @@ public class CmsSetupDb extends Object {
     /** The folder where the setup wizard is located */
     public static String C_SETUP_FOLDER = "setup/";
 
-    private Connection m_con = null;
-    private Vector m_errors = null;
-    private String m_basePath = null;
-    private boolean m_errorLogging = true;
+    private Connection m_con;
+    private Vector m_errors;
+    private String m_basePath;
+    private boolean m_errorLogging;
 
     /**
      * Creates a new CmsSetupDb object.<p>
@@ -70,6 +72,7 @@ public class CmsSetupDb extends Object {
     public CmsSetupDb(String basePath) {
         m_errors = new Vector();
         m_basePath = basePath;
+        m_errorLogging = true;
     }
 
     /**
@@ -85,9 +88,11 @@ public class CmsSetupDb extends Object {
             Class.forName(DbDriver).newInstance();
             m_con = DriverManager.getConnection(DbConStr, DbUser, DbPwd);
         } catch (ClassNotFoundException e) {
-            m_errors.addElement("Error loading JDBC driver: " + DbDriver + "\n" + e.toString() + "\n");
+            m_errors.addElement("Error loading JDBC driver: " + DbDriver);
+            m_errors.addElement(CmsException.getStackTraceAsString(e));
         } catch (Exception e) {
-            m_errors.addElement("Error connecting to database using: " + DbConStr + "\n" + e.toString() + "\n");
+            m_errors.addElement("Error connecting to database using: " + DbConStr);
+            m_errors.addElement(CmsException.getStackTraceAsString(e));
         }
     }
 
@@ -157,7 +162,7 @@ public class CmsSetupDb extends Object {
         String filename = null;
         String line = null;
 
-        /* get and parse the setup script */
+        // get and parse the setup script 
         try {
             filename = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + sqlScript;
             reader = new LineNumberReader(new FileReader(filename));
@@ -173,31 +178,31 @@ public class CmsSetupDb extends Object {
                 while (st.hasMoreTokens()) {
                     String currentToken = st.nextToken();
 
-                    /* comment! Skip rest of the line */
+                    // comment! Skip rest of the line
                     if (currentToken.startsWith("#")) {
                         break;
                     }
 
-                    /* not to be executed */
+                    // not to be executed
                     if (currentToken.startsWith("prompt")) {
                         break;
                     }
 
-                    /* add token to query */
+                    // add token to query 
                     statement += " " + currentToken;
 
-                    /* query complete (terminated by ';') */
+                    // query complete (terminated by ';') 
                     if (currentToken.endsWith(";")) {
-                        /* cut of ';' at the end */
+                        // cut of ';' at the end 
                         statement = statement.substring(0, (statement.length() - 1));
 
-                        /* normal statement. Execute it */
+                        // normal statement, execute it 
                         if (replacers != null) {
-                            ExecuteStatement(replaceValues(statement, replacers));
+                            executeStatement(replaceValues(statement, replacers));
                         } else {
-                            ExecuteStatement(statement);
+                            executeStatement(statement);
                         }
-                        //reset
+                        // reset
                         statement = "";
                     }
                 }
@@ -207,17 +212,17 @@ public class CmsSetupDb extends Object {
         } catch (FileNotFoundException e) {
             if (m_errorLogging) {
                 m_errors.addElement("Database setup SQL script not found: " + filename);
-                m_errors.addElement(e.toString());
-            }            
+                m_errors.addElement(CmsException.getStackTraceAsString(e));
+            }
         } catch (SQLException e) {
             if (m_errorLogging) {
                 m_errors.addElement("Error executing SQL statement: " + statement);
-                m_errors.addElement(e.toString());
+                m_errors.addElement(CmsException.getStackTraceAsString(e));
             }            
         } catch (Exception e) {
             if (m_errorLogging) {
                 m_errors.addElement("Error parsing database setup SQL script in line: " + line);
-                m_errors.addElement(e.toString());
+                m_errors.addElement(CmsException.getStackTraceAsString(e));
             } 
         } finally {
             try {
@@ -265,7 +270,7 @@ public class CmsSetupDb extends Object {
      * 
      * @param statement the database statement
      */
-    private void ExecuteStatement(String statement) throws SQLException {
+    private void executeStatement(String statement) throws SQLException {
         Statement stmt = null;
 
         try {
