@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/28 14:38:30 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.4
  * 
@@ -251,8 +251,8 @@ public final class CmsLockManager extends Object {
 
         resource = internalReadFileHeader(driverManager, context, resourcename);
 
-        if (resource == null || resource.getState() == I_CmsConstants.C_STATE_DELETED) {
-            // deleted, removed or non-existent resources are never locked
+        if (resource == null) {
+            // non-existent resources are never locked
             return CmsLock.getNullLock();
         }
 

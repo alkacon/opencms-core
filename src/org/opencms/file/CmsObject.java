@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/06/28 14:38:30 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  */
 public class CmsObject {
 
@@ -410,7 +410,7 @@ public class CmsObject {
      */    
     public void lockResource(String resourcename, int mode) throws CmsException {
         
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(
             resource.getTypeId()
         ).lockResource(

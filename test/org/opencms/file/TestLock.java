@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/28 14:38:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,10 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -115,7 +115,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             cms.touch(source, timestamp, timestamp, timestamp, false);            
-        } catch (CmsSecurityException e) {
+        } catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         }        
@@ -126,7 +126,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             cms.deleteResource(source, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-        } catch (CmsSecurityException e) {
+        } catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         }        
@@ -137,7 +137,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             cms.writeFile(file);
-        }  catch (CmsSecurityException e) {
+        }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         } 
@@ -148,7 +148,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             cms.moveResource(source, "index_dest.html");
-        }  catch (CmsSecurityException e) {
+        }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         } 
@@ -159,7 +159,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             cms.writePropertyObject(source, new CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, "New title", null));
-        }  catch (CmsSecurityException e) {
+        }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         } 
@@ -172,7 +172,7 @@ public class TestLock extends OpenCmsTestCase {
             List properties = new ArrayList();
             properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, "New title 2", null));
             cms.writePropertyObjects(source, properties);
-        }  catch (CmsSecurityException e) {
+        }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         } 
@@ -183,7 +183,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             cms.chflags(source, 1234);
-        }  catch (CmsSecurityException e) {
+        }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         } 
@@ -194,7 +194,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             cms.chtype(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
-        }  catch (CmsSecurityException e) {
+        }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         } 
@@ -205,7 +205,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             cms.replaceResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, "Kaputt".getBytes(), null);
-        }  catch (CmsSecurityException e) {
+        }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         } 
@@ -216,7 +216,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             cms.changeLastModifiedProjectId(source);
-        }  catch (CmsSecurityException e) {
+        }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         } 
@@ -228,7 +228,7 @@ public class TestLock extends OpenCmsTestCase {
         try {
             CmsPermissionSet permissions = new CmsPermissionSet(I_CmsConstants.C_ACCESS_WRITE, I_CmsConstants.C_ACCESS_READ);
             cms.chacc(source, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupAdministrators(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
-        }  catch (CmsSecurityException e) {
+        }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         } 
@@ -239,7 +239,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             cms.undeleteResource(source);
-        }  catch (CmsSecurityException e) {
+        }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
         } 
@@ -249,5 +249,17 @@ public class TestLock extends OpenCmsTestCase {
         
         // make sure original resource is unchanged
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        
+        // now perform a delete operation with lock
+        cms.lockResource(source);
+        cms.deleteResource(source, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        
+        // now undelete the resource
+        cms.lockResource(source);        
+        cms.undeleteResource(source);
+        cms.unlockResource(source);
+        
+        // make sure original resource is still unchanged
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);        
     }      
 }

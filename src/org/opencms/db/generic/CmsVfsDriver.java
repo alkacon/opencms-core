@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/28 07:47:32 $
- * Version: $Revision: 1.189 $
+ * Date   : $Date: 2004/06/28 14:38:30 $
+ * Version: $Revision: 1.190 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.189 $ $Date: 2004/06/28 07:47:32 $
+ * @version $Revision: 1.190 $ $Date: 2004/06/28 14:38:30 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1520,12 +1520,15 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         int structureState = resource.getState();
         int resourceState = resource.getState();
+        int projectId = project.getId();
 
         if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE) {
             resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
         } else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE) {
             structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
-        } else if (changed != CmsDriverManager.C_NOTHING_CHANGED) {
+        } else if (changed == CmsDriverManager.C_NOTHING_CHANGED) {
+            projectId = resource.getProjectLastModified();
+        } else {
             resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
             structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
         }
@@ -1544,7 +1547,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setInt(7, resource.getLength());
             stmt.setString(8, resource.getContentId().toString());
             stmt.setString(9, CmsUUID.getNullUUID().toString());
-            stmt.setInt(10, project.getId());
+            stmt.setInt(10, projectId);
             stmt.setInt(11, internalCountSiblings(project.getId(), resource.getResourceId()));
             stmt.setString(12, resource.getResourceId().toString());
             stmt.executeUpdate();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2004/06/14 14:25:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/28 14:38:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.main.CmsException;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2004/06/14 14:25:58 $
+ * @version $Revision: 1.10 $ $Date: 2004/06/28 14:38:30 $
  * @since 5.1.4
  */
 public class CmsLockException extends CmsException {
@@ -49,6 +49,9 @@ public class CmsLockException extends CmsException {
     
     /** A resource is locked by the current user, but a particular action requires that the resource is unlocked. */
     public static final int C_RESOURCE_LOCKED_BY_CURRENT_USER = 202;
+    
+    /** A resource is not locked by the current user, but a particular action requires that the resource is locked. */
+    public static final int C_RESOURCE_NOT_LOCKED_BY_CURRENT_USER = 206;
     
     /** A resource is locked by a user different from the current user, but a particular action requires that the resource is locked by the current user. */
     public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 203;
@@ -78,5 +81,33 @@ public class CmsLockException extends CmsException {
     public CmsLockException(String message, int type) {
         super(message, type, null);
     }
+    
+    /**
+     * Returns the exception description message.<p>
+     *
+     * @return the exception description message
+     */
+    public String getMessage() {
+        if (m_message != null) {
+            return getClass().getName() + ": " + m_message;
+        } else {
+            return getClass().getName() + ": " + getErrorDescription(getType());
+        }
+    }
+    
+    /**
+     * Returns the description String for the provided CmsException type.<p>
+     * 
+     * @param type exception error code 
+     * @return the description String for the provided CmsException type
+     */    
+    protected String getErrorDescription(int type) {
+        switch (type) {
+            case C_RESOURCE_NOT_LOCKED_BY_CURRENT_USER:                
+                return "Resource not locked for the current user!";
+            default:
+                return super.getErrorDescription(type);
+        }
+    }    
 
 }
