@@ -4,7 +4,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 1999/12/22 19:12:24 $
+ * @version $Revision: 1.9 $ $Date: 1999/12/23 12:51:45 $
  */
 public class CmsException extends Exception {
 	
@@ -88,6 +88,12 @@ public class CmsException extends Exception {
     */
     public final static int C_LOCKED= 13;
 
+     /**
+    * Definition of error code filesystem error.
+    */
+    public final static int C_FILESYSTEM_ERROR= 14;
+    
+    
 	public final static String C_EXTXT[] = {
 							"Unknown exception ",
 							"Access denied ",
@@ -102,7 +108,8 @@ public class CmsException extends Exception {
                             "Unknown User ",
                             "No removal from Default Group ",
                             "Resource already exists",
-                            "Locked Resource "
+                            "Locked Resource ",
+                            "Filesystem exception "
 							};
     
 	/** 

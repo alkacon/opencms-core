@@ -12,20 +12,16 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/22 19:12:24 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/23 12:51:45 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
-
-    /**
-    * This is the root path of this filesystem module in the local filesystem.
-    */
-    private String m_root  = null;
-    
+   
     /**
     * This is the mountpoint of this filesystem module.
     */
-    private String m_mountpoint  = null;
+    private CmsMountPoint m_mountpoint  = null;
     
+   
     /**
      * The fileseperator of this filesystem.
      */
@@ -40,9 +36,8 @@ import com.opencms.core.*;
      * @exception CmsException Throws CmsException if connection fails.
      * 
      */
-    public CmsAccessFileFilesystem(String rootpath, String mountpoint)	
+    public CmsAccessFileFilesystem(CmsMountPoint mountpoint)	
         throws CmsException {
-        m_root=rootpath;
         m_mountpoint=mountpoint;
         //m_fileseperator=System.getProperty("file.seperator").charAt(0);
         
@@ -86,7 +81,7 @@ import com.opencms.core.*;
          } else {
              throw new CmsException(CmsException.C_FILE_EXISTS);
          }
-         return null;
+         return readFile(project,filename);
      }
 	
 	/**
@@ -103,8 +98,30 @@ import com.opencms.core.*;
 	 */
 	 public CmsFile readFile(A_CmsProject project, String filename)
          throws CmsException {
-       
-         return null;
+         
+         // read the file header
+         CmsFile file =(CmsFile)readFileHeader(project,filename);
+         // check if the fileheader is not found
+         if (file != null) {
+             File discFile=new File(absoluteName(filename));
+		     // check if it is a file
+             if (discFile.isFile()){
+                 try {
+                    // read the file content form the filesystem
+			        InputStream s = new FileInputStream(discFile);
+				    byte[] discFileContent= new byte[(new Long(discFile.length())).intValue()];
+				    int result = s.read(discFileContent);
+                    if (result!=-1){
+                        file.setContents(discFileContent);
+                    }
+				    s.close();
+			   } catch (Exception e) {
+                      throw new CmsException(e.getMessage());
+               }
+					   
+		    } 
+		  }
+		  return file;
      }
 	
 	/**
@@ -120,8 +137,31 @@ import com.opencms.core.*;
 	 */
 	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
          throws CmsException {
-                 
-      return null;
+         
+         CmsFile file= null;
+         // get file
+         File discFile= new File (absoluteName(filename));
+         // check if file exists in the filesystem.
+         if (discFile.exists()) {
+             // create file header
+             file=new CmsFile(filename,
+                              m_mountpoint.getType(),
+                              m_mountpoint.getFlags(),
+                              m_mountpoint.getUser(),
+                              m_mountpoint.getGroup(),
+                              m_mountpoint.getProject(),
+                              m_mountpoint.getAccessFlags(),
+                              C_STATE_UNCHANGED,
+                              C_UNKNOWN_ID,
+                              m_mountpoint.getLauncherId(),
+                              m_mountpoint.getLauncherClass(),
+                              discFile.lastModified(),
+                              discFile.lastModified(),
+                              new byte[0]);
+         } else {
+             throw new CmsException(CmsException.C_NOT_FOUND);
+         }
+      return file;
        }
 	
 	/**
@@ -134,8 +174,22 @@ import com.opencms.core.*;
 	 */	
      public void writeFile(A_CmsProject project, CmsFile file)
        throws CmsException {
-     
-      }
+          // create new file
+         File diskFile= new File(absoluteName(file.getAbsolutePath()));
+         // check if this file is already existing
+         if (diskFile.exists()){
+             try {
+                 // write the new file to disk
+                 OutputStream s = new FileOutputStream(diskFile);
+                 s.write(file.getContents());
+                 s.close();
+             } catch (Exception e) {
+               throw new CmsException(e.getMessage());
+             }
+         } else {
+             throw new CmsException(CmsException.C_NOT_FOUND);
+         }
+     }
 	
 	 /**
 	 * Writes the fileheader to the Cms.
@@ -147,6 +201,9 @@ import com.opencms.core.*;
 	 */	
 	 public void writeFileHeader(A_CmsProject project, CmsFile file)
          throws CmsException {
+         
+         // Since the file header informations of all files in a disc filesystem is 
+         // controlled by its mountpoint, nothing is done here.
         
      }
      
@@ -161,6 +218,22 @@ import com.opencms.core.*;
 	 */		
 	 public void renameFile(A_CmsProject project, String oldname, String newname)
          throws CmsException {
+         	File discFile=new File(absoluteName(oldname));
+			File newDiscFile =new File(absoluteName(newname));
+			// check if file exists
+            if (discFile.exists())	{
+                // check if it is really a file
+                if (discFile.isFile()) {
+					boolean success=discFile.renameTo(newDiscFile);
+					if (!success) {
+                        throw new CmsException(CmsException.C_FILESYSTEM_ERROR);
+					}
+                } else {
+                    throw new CmsException(CmsException.C_NOT_FOUND);
+                }
+            } else {
+                  throw new CmsException(CmsException.C_NOT_FOUND);
+            }
      }
 	
 	/**
@@ -173,7 +246,21 @@ import com.opencms.core.*;
 	 */	
 	 public void deleteFile(A_CmsProject project, String filename)
          throws CmsException {
-        
+         File discFile=new File(absoluteName(filename));
+		 // check if file exists
+         if (discFile.exists()){
+             // it is really a file
+             if(discFile.isFile()) {
+				boolean success=discFile.delete();
+				if (!success) {
+						 throw new CmsException(CmsException.C_FILESYSTEM_ERROR);
+				}
+             } else {
+                 throw new CmsException(CmsException.C_NOT_FOUND);
+             }
+         } 	else {
+             throw new CmsException(CmsException.C_NOT_FOUND);
+         }
      }
 	
 		
@@ -188,7 +275,24 @@ import com.opencms.core.*;
 	 */	
 	 public void copyFile(A_CmsProject project, String source, String destination)
          throws CmsException {
-        
+         // read the source file
+         CmsFile sourcefile=readFile(project,source);
+         System.err.println(sourcefile.toString());
+         // write the destination file
+         File diskFile= new File(absoluteName(destination));
+         // check if this file is already existing
+         if (!diskFile.exists()){
+             try {
+                 // write the new file to disk
+                 OutputStream s = new FileOutputStream(diskFile);
+                 s.write(sourcefile.getContents());
+                 s.close();
+             } catch (Exception e) {
+               throw new CmsException(e.getMessage());
+             }
+         } else {
+             throw new CmsException(CmsException.C_FILE_EXISTS);
+         }
      }
 	
 	/**
@@ -202,7 +306,7 @@ import com.opencms.core.*;
 	 */	
 	 public void moveFile(A_CmsProject project, String source,  String destination)
          throws CmsException {   
-      
+         renameFile(project,source,destination);
      }
 	
 	/**
@@ -221,7 +325,19 @@ import com.opencms.core.*;
                             A_CmsProject project, String foldername,
                             int flags)
          throws CmsException {
-         return null;
+         
+          // create folder
+		  File discFolder=new File(absoluteName(foldername));
+          // check if this folder already exits
+		  if (!discFolder.exists())	{
+			boolean success=discFolder.mkdir();
+			if (!success) {
+				throw new CmsException(CmsException.C_FILESYSTEM_ERROR);
+			}
+          } else {
+              throw new CmsException(CmsException.C_FILE_EXISTS);
+          }
+        return readFolder(project,foldername);
      }
 
 	/**
@@ -236,10 +352,28 @@ import com.opencms.core.*;
 	 */
 	 public CmsFolder readFolder(A_CmsProject project, String foldername)
          throws CmsException {
-         
-      
-        return null;
-        
+ 	     
+	     CmsFolder folder = null;
+	   
+	     File discFolder=new File(absoluteName(foldername));
+         if (discFolder != null) {
+	   	   if (discFolder.exists() && discFolder.isDirectory()){
+			   folder = new CmsFolder(foldername,
+                                      C_TYPE_FOLDER,
+                                      m_mountpoint.getFlags(),
+                                      m_mountpoint.getUser(),
+                                      m_mountpoint.getGroup(),
+                                      m_mountpoint.getProject(),
+                                      m_mountpoint.getAccessFlags(),
+                                      C_STATE_UNCHANGED,
+                                      C_UNKNOWN_ID,
+                                      discFolder.lastModified(),
+                                      discFolder.lastModified());
+		   }
+	     } else {
+             throw new CmsException(CmsException.C_NOT_FOUND);
+         }
+	   return folder;       
     }
 	
      	
@@ -254,6 +388,9 @@ import com.opencms.core.*;
 	 public void writeFolder(A_CmsProject project, CmsFolder folder)
          throws CmsException {
          
+                  
+         // Since the folder informations of all folders in a disc filesystem is 
+         // controlled by its mountpoint, nothing is done here.
      }
 
 	
@@ -344,8 +481,25 @@ import com.opencms.core.*;
 	 */
 	 public Vector getSubFolders(A_CmsProject project, String foldername)
          throws CmsException {
-       
-         return null;
+         
+         CmsFolder folder=null;
+         Vector v =new Vector();
+         // get folder
+		 File diskFolder= new File(absoluteName(foldername));		
+		 
+         // get a list of all sub folders, sort them alphabetically.
+         String[] diskFolders=SortEntrys(diskFolder.list());	
+	
+         // create the subfolder objects.
+		 for (int i = 0; i < diskFolders.length; i++) {
+			File diskSubFolder=new File(absoluteName(foldername+diskFolders[i]));
+				// check if it is a folder.  
+                if (diskSubFolder.isDirectory()) {
+                     folder = readFolder(project, foldername+diskFolders[i]);
+                     v.addElement(folder);
+                }
+			}
+       return v;
      }
 	
 	/**
@@ -360,7 +514,23 @@ import com.opencms.core.*;
 	 */
 	 public Vector getFilesInFolder(A_CmsProject project, String foldername)
          throws CmsException {
-       return null;  
+         CmsFile file=null;
+          Vector v =new Vector();
+
+          // get folder
+		  File diskFolder= new File(absoluteName(foldername));			
+	     // get a list of all files, sort them alphabetically.
+          String[] diskFiles=SortEntrys(diskFolder.list());				
+				
+          for (int i = 0; i < diskFiles.length; i++) {
+			File diskFile=new File(absoluteName(foldername+diskFiles[i]));
+			// check if it is a file
+            if (diskFile.isFile()) {
+				 file=(CmsFile)readFileHeader(project,foldername+diskFiles[i]);
+			     v.addElement(file);					   
+			}
+		}
+		return v;		
      }
 	       
     
@@ -373,8 +543,8 @@ import com.opencms.core.*;
 	 */
      private String absoluteName(String filename) {
 	   
-       int pos=filename.indexOf(m_mountpoint);
-	   int len=m_mountpoint.length();
+       int pos=filename.indexOf(m_mountpoint.getMountpoint());
+	   int len=m_mountpoint.getMountpoint().length();
 	   
        String path=null;
 	   String name=null;
@@ -387,11 +557,33 @@ import com.opencms.core.*;
 	   }
        
 	   // new path is rootpath + extracted filenamen	   
-	   path=m_root+name;
+	   path=m_mountpoint.getMountPath()+name;
        
        // adjust the fileseperator
 	   path=path.replace('/',m_fileseperator);
        return path;
      }
        
+     /**
+	 * Sorts a list of files or folders alphabetically. 
+	 * This method uses an insertion sort algorithem.
+	 * 
+	 * @param unsortedList Array of strings containing the list of files or folders.
+	 * @return Array of sorted strings.
+	 */
+	private String[] SortEntrys(String[] unsortedList) {
+		int in,out;
+		int nElem = unsortedList.length;
+		
+		for(out=1; out < nElem; out++) {
+			String temp= unsortedList[out];
+			in = out;
+			while (in >0 && unsortedList[in-1].compareTo(temp) >= 0){
+				unsortedList[in]=unsortedList[in-1];
+				--in;
+			}
+			unsortedList[in]=temp;
+		}
+		return unsortedList;
+	}
 }

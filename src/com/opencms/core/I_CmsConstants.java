@@ -5,7 +5,7 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 1999/12/21 18:40:56 $
+ * @version $Revision: 1.9 $ $Date: 1999/12/23 12:51:45 $
  */
 public interface I_CmsConstants
 {
@@ -298,4 +298,15 @@ public interface I_CmsConstants
       * This is the classname for an undefined launcher.
       */
      static final String C_UNKNOWN_LAUNCHER  = "UNKNOWN";
+     
+     /**
+      * This is the defintion for a filesystem mountpoint.
+      */
+     static final int C_MOUNTPOINT_FILESYSTEM=1;
+
+      /**
+      * This is the defintion for a database mountpoint.
+      */
+     static final int C_MOUNTPOINT_MYSQL=2;
+     
 }
