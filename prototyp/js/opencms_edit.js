@@ -57,6 +57,8 @@ var windowWidth=null;
 var windowHeight=null;
 var NS = null;
 var IE = null;
+var str=null;
+var textSetted=null;
 
 NS = (document.layers)? true:false;
 IE = (document.all)? true:false;
@@ -73,75 +75,17 @@ function getDimensions() {
 }
 
 
-function displayCode() {
-  document.GUIApplet.setCode(code);
-}
-
-
-function writeAppletTag()
-{
-  var str=null;
-  getDimensions();
-  document.open();
-  if (NS==true) 
-	document.write('<APPLET name="GUIApplet" CODE="GUIApplet" WIDTH="100%" WIDTH="'+ windowWidth +'" HEIGHT="86%" HEIGHT="'+ windowHeight +'" mayscript></APPLET>');
-  else if (IE==true)
-  {
-	str = '<OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02 height=100% id=edit1 name=edit1 onfocus=setText(); width=100%><PARAM NAME="_Version" VALUE="131083"><PARAM NAME="_ExtentX" VALUE="22887"><PARAM NAME="_ExtentY" VALUE="7223"><PARAM NAME="_StockProps" VALUE="125"><PARAM NAME="Text" VALUE="Loading ....."><PARAM NAME="ForeColor" VALUE="0"><PARAM NAME="BackColor" VALUE="16777215"><PARAM NAME="BorderStyle" VALUE="1"><PARAM NAME="Enabled" VALUE="-1"><PARAM NAME="AutoIndent" VALUE="-1"><PARAM NAME="BackColorSelected" VALUE="8388608"><PARAM NAME="BookmarksMax" VALUE="16">';
-    str= str + '<PARAM NAME="CanChangeFile" VALUE="0">';
-	str= str + '<PARAM NAME="CanChangeFont" VALUE="0">';
-	str= str + '<PARAM NAME="CaretWidth" VALUE="0">';
-	str= str + '<PARAM NAME="DefaultSelection" VALUE="-1">';
-	str= str + '<PARAM NAME="ExtraComments" VALUE="0">';
-	str= str + '<PARAM NAME="Item2AsComment" VALUE="0">';
-	str= str + '<PARAM NAME="UnixStyleSave" VALUE="0">';
-	str= str + '<PARAM NAME="CurrentWordAsText" VALUE="0">';
-	str= str + '<PARAM NAME="MultilineItems" VALUE="0">';
-	str= str + '<PARAM NAME="MultilineStrings" VALUE="0">';
-	str= str + '<PARAM NAME="SinglelineStrings" VALUE="0">';
-	str= str + '<PARAM NAME="ExtraHorzSpacing" VALUE="3">';
-	str= str + '<PARAM NAME="ExtraVertSpacing" VALUE="0">';
-	str= str + '<PARAM NAME="FileMask" VALUE="\/All Files\/*.*\/">';
-	str= str + '<PARAM NAME="FileName" VALUE="+">';
-	str= str + '<PARAM NAME="ForeColorSelected" VALUE="16777215">';
-	str= str + '<PARAM NAME="HasFile" VALUE="-1">';
-	str= str + '<PARAM NAME="HasMenu" VALUE="0">';
-	str= str + '<PARAM NAME="Highlight" VALUE="0">';
-	str= str + '<PARAM NAME="InsertMode" VALUE="1">';
-	str= str + '<PARAM NAME="ScrollBars" VALUE="3">';
-	str= str + '<PARAM NAME="Syntax" VALUE="">';
-	str= str + '<PARAM NAME="PaintMode" VALUE="0">';
-	str= str + '<PARAM NAME="TabStopSize" VALUE="4">';
-	str= str + '<PARAM NAME="ReadOnly" VALUE="0">';
-	str= str + '<PARAM NAME="UndoDepth" VALUE="-1">';
-	str= str + '<PARAM NAME="InitializeType" VALUE="0">';
-	str= str + '<PARAM NAME="GroupNumber" VALUE="0">';
-	str= str + '<PARAM NAME="StartInComments" VALUE="0">';
-	str= str + '<PARAM NAME="MacStyleSave" VALUE="0">';
-	str= str + '<PARAM NAME="WantTab" VALUE="-1">';
-	str= str + '<PARAM NAME="WordWrap" VALUE="0">';
-	str= str + '<PARAM NAME="WordWrapAuto" VALUE="-1">';
-	str= str + '<PARAM NAME="WordWrapRMargin" VALUE="0">';
-	str= str + '<PARAM NAME="WordWrapWidth" VALUE="0">';
-	str= str + '<PARAM NAME="NoPrintDialog" VALUE="0">';
-	str= str + '<PARAM NAME="NoPrintProgress" VALUE="0">';
-	str= str + '<PARAM NAME="WrapKeys" VALUE="0">';
-	str= str + '<PARAM NAME="BackColorPrint" VALUE="16777215">';
-	str= str + '<PARAM NAME="PrintJobName" VALUE="Document">';
-	str= str + '<PARAM NAME="ZeroSubstitute" VALUE="0"></OBJECT>';
-	document.write(str);
-	}
-  document.close();
-}
-
 // to load the file content into the editor
 function setText()
 {
-//    if(! textSetted )
-//    {
-//	   	document.all.edit1.Text = unescape("<#=content#>");
-//	   	textSetted = true;
-//	}
+	  if(! textSetted )
+	  {
+		 if (IE)
+	   		document.all.edit1.Text = unescape("<#=content#>");
+		 else if (NS)
+			document.EDITTEXT.TextEditor.value = unescape(code);
+	   	textSetted = true;
+	}
 }
 
 // Function action on button click
