@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/02 14:47:22 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2003/09/03 11:57:52 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.74 $ $Date: 2003/09/02 14:47:22 $
+ * @version $Revision: 1.75 $ $Date: 2003/09/03 11:57:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -531,8 +531,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
             
-			m_sqlManager.closeAll(null, stmt, null);
-			
+            m_sqlManager.closeAll(null, stmt, null);
+            
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_DELETE_BY_PROJECTID");
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
@@ -665,7 +665,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         // create the root-folder for the online project
         CmsFolder onlineRootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "/", 0, 0, admin.getId(), 0, admin.getId());
         onlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-        m_driverManager.getVfsDriver().writeFolder(online, onlineRootFolder, CmsDriverManager.C_UPDATE_ALL);        		
+        m_driverManager.getVfsDriver().writeFolder(online, onlineRootFolder, CmsDriverManager.C_UPDATE_ALL);
            
         ////////////////////////////////////////////////////////////////////////////////////////////
         // setup project stuff
@@ -683,8 +683,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-	 * @see java.lang.Object#finalize()
-	 */
+     * @see java.lang.Object#finalize()
+     */
     protected void finalize() throws Throwable {
         if (m_sqlManager!=null) {
             m_sqlManager.finalize();
@@ -1295,8 +1295,15 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 switch (currentFileHeader.getState()) {
                     // the current resource is deleted
                     case I_CmsConstants.C_STATE_DELETED :
+                        String delProject=m_driverManager.getVfsDriver().readProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), currentFileHeader, currentFileHeader.getType());                    
+
+                        if (delProject!=null && delProject.equals(""+context.currentProject().getId())) {
+                            publishCurrentResource = true;
+                        } else {
+                            publishCurrentResource = false;
+                        }                      
                         // it is published, if it was changed to deleted in the current project
-                        publishCurrentResource = currentFileHeader.getProjectId() == context.currentProject().getId();
+                        //publishCurrentResource = currentFileHeader.getProjectId() == context.currentProject().getId();
                         break;
 
                         // the current resource is new ...    
@@ -1485,6 +1492,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
                             m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), currentFile, CmsDriverManager.C_UPDATE_ALL);
                         }
+                       
+                       m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFile);
+
                     } else if (currentFile.getState() == I_CmsConstants.C_STATE_NEW) {
                         // C_STATE_NEW
 
@@ -1560,9 +1570,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
                             m_driverManager.getVfsDriver().updateResourceState(context.currentProject(), currentFile, CmsDriverManager.C_UPDATE_ALL);
                         }
+                        
+                        m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFile);                        
                     }
 
-                    m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFile);
+                    //m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFile);
 
                     OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", currentFile)));
                     
@@ -2016,7 +2028,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             // TODO make the getConnection and getPreparedStatement calls project-ID dependent
             conn = m_sqlManager.getConnection();
             String query = m_sqlManager.get("C_RESOURCES_PROJECTVIEW") + whereClause + orderClause;
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, CmsSqlManager.replaceTableKey(I_CmsConstants.C_PROJECT_ONLINE_ID+1,query));
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, CmsSqlManager.replaceTableKey(I_CmsConstants.C_PROJECT_ONLINE_ID+1, query));
 
             stmt.setInt(1, project);
             res = stmt.executeQuery();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/29 16:12:04 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2003/09/03 11:57:52 $
+ * Version: $Revision: 1.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.108 $ $Date: 2003/08/29 16:12:04 $
+ * @version $Revision: 1.109 $ $Date: 2003/09/03 11:57:52 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1239,10 +1239,22 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     m_sqlManager.closeAll(conn, stmt, null);
                 }
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + orgFolder.getResourceName(), CmsException.C_NOT_EMPTY);
+                String errorResNames="";
+                Iterator i=folders.iterator();
+                while (i.hasNext()) {
+                    CmsResource errorRes=(CmsResource)i.next();
+                    errorResNames += "["+errorRes.getResourceName()+"]";
+                }                
+                throw new CmsException("[" + this.getClass().getName() + "] " + orgFolder.getResourceName()+errorResNames, CmsException.C_NOT_EMPTY);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + orgFolder.getResourceName(), CmsException.C_NOT_EMPTY);
+            String errorResNames="";
+            Iterator i=files.iterator();
+            while (i.hasNext()) {
+                CmsResource errorRes=(CmsResource)i.next();
+                errorResNames += "["+errorRes.getResourceName()+"]";
+            }
+            throw new CmsException("[" + this.getClass().getName() + "] " + orgFolder.getResourceName()+errorResNames, CmsException.C_NOT_EMPTY);
         }
     }
 
@@ -2952,10 +2964,22 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 // }
                 removeResource(currentProject, folder);
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + folder.getResourceName(), CmsException.C_NOT_EMPTY);
+                String errorResNames="";
+                Iterator i=folders.iterator();
+                while (i.hasNext()) {
+                    CmsResource errorRes=(CmsResource)i.next();
+                    errorResNames += "["+errorRes.getResourceName()+"]";
+                }
+                throw new CmsException("[" + this.getClass().getName() + "] " + folder.getResourceName()+errorResNames, CmsException.C_NOT_EMPTY);
             }
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + folder.getResourceName(), CmsException.C_NOT_EMPTY);
+            String errorResNames="";
+            Iterator i=files.iterator();
+            while (i.hasNext()) {
+                CmsResource errorRes=(CmsResource)i.next();
+                errorResNames += "["+errorRes.getResourceName()+"]";
+            }
+            throw new CmsException("[" + this.getClass().getName() + "] " + folder.getResourceName()+errorResNames, CmsException.C_NOT_EMPTY);
         }
     }
 

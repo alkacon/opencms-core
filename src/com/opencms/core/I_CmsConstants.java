@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/09/01 16:44:53 $
-* Version: $Revision: 1.266 $
+* Date   : $Date: 2003/09/03 11:57:52 $
+* Version: $Revision: 1.267 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.266 $ $Date: 2003/09/01 16:44:53 $
+ * @version $Revision: 1.267 $ $Date: 2003/09/03 11:57:52 $
  */
 public interface I_CmsConstants {
 
@@ -115,6 +115,9 @@ public interface I_CmsConstants {
 
     /** Property for the active method in the administration view */
     String C_PROPERTY_ACTIV = "activemethod";
+
+    /** Property for internal use (e.g. delete) */
+    String C_PROPERTY_INTERNAL = "internal";
 
     /** Property for the static export */
     String C_PROPERTY_EXPORT = "export";
