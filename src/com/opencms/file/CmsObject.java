@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/08 09:02:08 $
-* Version: $Revision: 1.397 $
+* Date   : $Date: 2003/09/08 09:08:09 $
+* Version: $Revision: 1.398 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.397 $
+ * @version $Revision: 1.398 $
  */
 public class CmsObject {
 
@@ -340,19 +340,19 @@ public class CmsObject {
      */
     public void backupProject(int projectId, int versionId, long publishDate) throws CmsException {
         CmsProject backupProject = m_driverManager.readProject(projectId);
-        m_driverManager.backupProject(m_context, backupProject, versionId, publishDate, getRequestContext().currentUser());
+        m_driverManager.backupProject(m_context, backupProject, versionId, publishDate);
     }
 
     /**
      * Changes the access control for a given resource and a given principal(user/group).
      * 
-     * @param resourceName name of the resource
-     * @param principalType the type of the principal (currently group or user)
-     * @param principalName name of the principal
-     * @param allowedPermissions bitset of allowed permissions
-     * @param deniedPermissions bitset of denied permissions
-     * @param flags flags
-     * @throws CmsException if something goes wrong
+     * @param resourceName			name of the resource
+     * @param principalType			the type of the principal (currently group or user)
+     * @param principalName			name of the principal
+     * @param allowedPermissions	bitset of allowed permissions
+     * @param deniedPermissions		bitset of denied permissions
+     * @param flags					flags
+     * @throws CmsException			if something goes wrong
      */
     // TODO: find a better mechanism to select the principalType
     public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
@@ -376,11 +376,11 @@ public class CmsObject {
     /**
      * Changes the access control for a given resource and a given principal(user/group).
      * 
-     * @param resourceName name of the resource
-     * @param principalType the type of the principal (group or user)
-     * @param principalName name of the principal
-     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
-     * @throws CmsException if something goes wrong
+     * @param resourceName	name 	of the resource
+     * @param principalType			the type of the principal (group or user)
+     * @param principalName	name 	of the principal
+     * @param permissionString		the permissions in the format ((+|-)(r|w|v|c|i))*
+     * @throws CmsException			if something goes wrong
      */
     // TODO: find a better mechanism to select the principalType
     public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
@@ -403,11 +403,11 @@ public class CmsObject {
 
     /**
      * Changes the project-id of a resource to the new project
-     * for publishing the resource directly.<p>
+    	 * for publishing the resource directly.<p>
      *
-     * @param projectId The new project-id
+    	 * @param projectId The new project-id
      * @param resourcename The name of the resource to change
-     * @throws CmsException if something goes wrong
+    	 * @throws CmsException if something goes wrong
      */
     public void changeLockedInProject(int projectId, String resourcename) throws CmsException {
         // must include files marked as deleted when publishing
@@ -444,7 +444,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      * @deprecated the VFS now uses ACL's instead of user/group/permissions
      */
-    public void chgrp(String filename, String newGroup) throws CmsException { }
+    public void chgrp(String filename, String newGroup) throws CmsException {}
 
     /**
      * Does nothing.<p>
@@ -455,7 +455,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      * @deprecated the VFS now uses ACL's instead of user/group/permissions
      */
-    public void chgrp(String filename, String newGroup, boolean chRekursive) throws CmsException { }
+    public void chgrp(String filename, String newGroup, boolean chRekursive) throws CmsException {}
 
     /**
      * Does nothing.<p>
@@ -607,7 +607,7 @@ public class CmsObject {
     public int countLockedResources(int id) throws CmsException {
         return m_driverManager.countLockedResources(m_context, id);
     }
-    
+
     public int countLockedResources(String foldername) throws CmsException {
         return m_driverManager.countLockedResources(m_context, addSiteRoot(foldername));
     }
@@ -1751,8 +1751,8 @@ public class CmsObject {
      *
      * @return int The new version id
      */
-    public int getBackupVersionId() {
-        return m_driverManager.getBackupVersionId();
+    public int getBackupTagId() {
+        return m_driverManager.getBackupTagId();
     }
 
     /**
@@ -2064,7 +2064,7 @@ public class CmsObject {
      */
 
     public CmsRegistry getRegistry() throws CmsException {
-        return m_driverManager.getRegistry(this);
+        return (m_driverManager.getRegistry(this));
     }
 
     /**
@@ -2644,16 +2644,16 @@ public class CmsObject {
 
     /**
      * Publishes the current project, printing messages to a shell report.<p>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void publishProject() throws CmsException {
         publishProject(new CmsShellReport());
     }
-    
+
     /**
      * Publishes the current project, printing messages to the specified report.<p>
-     * 
+     *
      * @param report the report
      * @throws CmsException if something goes wrong
      */
@@ -2682,87 +2682,86 @@ public class CmsObject {
         clearcache();
 
         synchronized (m_driverManager) {
-            publishedResources = new CmsPublishedResources(m_context.currentProject());
+        publishedResources = new CmsPublishedResources(m_context.currentProject());
+        try {
+           
+            // first we remember the new resources for the link management
+            newResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "new");
             
-            try {
+            deletedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "deleted");
+            
+            changedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "changed");
 
-                // first we remember the new resources for the link management
-                newResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "new");
-
-                deletedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "deleted");
-
-                changedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "changed");
-
-                updateOnlineProjectLinks(deletedResources, changedResources, null, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
-
+            updateOnlineProjectLinks(deletedResources, changedResources, null, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+           
                 publishedResources = m_driverManager.publishProject(this, m_context, report, directPublishResource);
 
-                // update the online links table for the new resources (now they are there)
-                updateOnlineProjectLinks(null, null, newResources, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+            // update the online links table for the new resources (now they are there)
+            updateOnlineProjectLinks(null, null, newResources, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
 
-                changedResources.clear();
-                changedResources = null;
-                newResources = null;
+            changedResources.clear();
+            changedResources = null;
+            newResources = null;
 
-                changedResources = publishedResources.getChangedVfsResources();
-                changedModuleMasters = publishedResources.getChangedCosResources();
+            changedResources = publishedResources.getChangedVfsResources();
+            changedModuleMasters = publishedResources.getChangedCosResources();
+ 
+            if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
+                CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
+            }
 
-                if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
-                    CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
+            clearcache();
+            success = true;
+        } catch (Exception e) {
+            String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
+            String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
+            if (DEBUG > 0) {
+                System.err.println("###################################");
+                System.err.println(stamp1);
+                System.err.println(stamp2);
+                e.printStackTrace();
+                System.err.println("Vector of changed resources:");
+                if (changedResources != null) {
+                    for (int i = 0; i < changedResources.size(); i++) {
+                        System.err.println("    -- " + i + " -->" + (String)changedResources.get(i) + "<--");
+                    }
                 }
-
-                clearcache();
-                success = true;
-            } catch (Exception e) {
-                String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
-                String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
+            }
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp1);
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp2);
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
+            }
+        } finally {
+            if (changedResources == null || changedResources.size() < 1) {
+                String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
+                String stamp2 = "[" + this.getClass().getName() + ".publishProject()/2] User: " + m_context.currentUser().toString();
+                String stamp3 = "[" + this.getClass().getName() + ".publishProject()/2] Vector was null or empty";
                 if (DEBUG > 0) {
                     System.err.println("###################################");
                     System.err.println(stamp1);
                     System.err.println(stamp2);
-                    e.printStackTrace();
-                    System.err.println("Vector of changed resources:");
-                    if (changedResources != null) {
-                        for (int i = 0; i < changedResources.size(); i++) {
-                            System.err.println("    -- " + i + " -->" + (String) changedResources.get(i) + "<--");
-                        }
-                    }
+                    System.err.println(stamp3);
                 }
-                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp1);
-                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp2);
-                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp1);
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp2);
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp3);
                 }
-            } finally {
-                if (changedResources == null || changedResources.size() < 1) {
-                    String stamp1 = "[" + this.getClass().getName() + ".publishProject()/2] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
-                    String stamp2 = "[" + this.getClass().getName() + ".publishProject()/2] User: " + m_context.currentUser().toString();
-                    String stamp3 = "[" + this.getClass().getName() + ".publishProject()/2] Vector was null or empty";
-                    if (DEBUG > 0) {
-                        System.err.println("###################################");
-                        System.err.println(stamp1);
-                        System.err.println(stamp2);
-                        System.err.println(stamp3);
-                    }
-                    if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
-                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp1);
-                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp2);
-                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp3);
-                    }
-                    success = false;
-                }
-                if (!success) {
-                    if (CmsXmlTemplateLoader.getOnlineElementCache() != null)
-                        CmsXmlTemplateLoader.getOnlineElementCache().clearCache();
-                }
-                // set current project to online project if the published project was temporary
-                // and the published project is still the current project
-                if (m_context.currentProject().getId() == m_context.currentProject().getId() && (m_context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
-                    m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-                }
-
-                this.fireEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, publishedResources);
+                success = false;
             }
+            if (!success) {
+                if (CmsXmlTemplateLoader.getOnlineElementCache() != null)
+                    CmsXmlTemplateLoader.getOnlineElementCache().clearCache();
+            }
+            // set current project to online project if the published project was temporary
+            // and the published project is still the current project
+            if (m_context.currentProject().getId() == m_context.currentProject().getId() && (m_context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
+                m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            }
+
+        this.fireEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, publishedResources);
+    }
         }
     }
 
@@ -2854,7 +2853,6 @@ public class CmsObject {
         } else {
             throw new CmsSecurityException("[CmsObject] cannot publish resource in online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
-        
         //this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_RESOURCE, res);
         OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", res)));
         
@@ -2991,26 +2989,26 @@ public class CmsObject {
      * The reading excludes the filecontent.
      *
      * @param filename the complete path of the file to be read.
-     * @param versionId the version id of the resource
+     * @param tagId the version id of the resource
      *
      * @return file the read file.
      *
      * @throws CmsException , if the user has not the rights
      * to read the file headers, or if the file headers couldn't be read.
      */
-    public CmsResource readBackupFileHeader(String filename, int versionId) throws CmsException {
-        return (m_driverManager.readBackupFileHeader(m_context, versionId, addSiteRoot(filename)));
+    public CmsResource readBackupFileHeader(String filename, int tagId) throws CmsException {
+        return (m_driverManager.readBackupFileHeader(m_context, tagId, addSiteRoot(filename)));
     }
 
     /**
-     * Reads a project from the Cms.
+     * Reads a backup project from the Cms.
      *
-     * @param task the task for which the project will be read.
-     *
+     * @param tagId  the tag of the backup project to be read
+     * @return CmsBackupProject object of the requested project
      * @throws CmsException if operation was not successful.
      */
-    public CmsBackupProject readBackupProject(int versionId) throws CmsException {
-        return (m_driverManager.readBackupProject(m_context.currentUser(), m_context.currentProject(), versionId));
+    public CmsBackupProject readBackupProject(int tagId) throws CmsException {
+        return (m_driverManager.readBackupProject(m_context.currentUser(), m_context.currentProject(), tagId));
     }
 
     /**
@@ -3889,7 +3887,7 @@ public class CmsObject {
     public CmsFolder rootFolder() throws CmsException {
         return (readFolder(I_CmsConstants.C_ROOT));
     }
-    
+
     /**
      * Returns a list of all currently logged in users.
      * This method is only allowed for administrators.

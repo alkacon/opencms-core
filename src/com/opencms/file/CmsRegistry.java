@@ -1,33 +1,33 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/08 09:03:55 $
- * Version: $Revision: 1.91 $
- *
- * This library is part of OpenCms -
- * the Open Source Content Mananagement System
- *
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
+ * Date   : $Date: 2003/09/08 09:08:09 $
+ * Version: $Revision: 1.92 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
  * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
- * For further information about OpenCms, please see the
+* For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 package com.opencms.file;
 
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.91 $
+ * @version $Revision: 1.92 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -154,7 +154,7 @@ public class CmsRegistry extends A_CmsXmlContent {
 
     /**
      * Creates a new CmsRegistry that is stored a file with the given filename.<p> 
-     * 
+     *
      * @param regFileName the path to the registry file
      * @throws CmsException in case somthing goes wrong
      */
@@ -181,9 +181,9 @@ public class CmsRegistry extends A_CmsXmlContent {
      * 
      * @param module the DOM element describing the module
      * @param replaceMode if <code>true</code> this is for module replacement, 
-     *      if <code>false</code> it is form module deletion
+     * if <code>false</code> it is form module deletion
      * @return a Vector of conflict description Strings, if this is an empty vector, 
-     *      there are no conficts (i.e. the dependencies are fullfilled)
+     * there are no conficts (i.e. the dependencies are fullfilled)
      * @throws CmsException in case something goes wrong
      */
     private Vector checkDependencies(Element module, boolean replaceMode) throws CmsException {
@@ -231,6 +231,7 @@ public class CmsRegistry extends A_CmsXmlContent {
                 throw new CmsException("Could not check the dependencies", CmsException.C_REGISTRY_ERROR, exc);
             }
         }
+
         return retValue;
     }
 
@@ -401,6 +402,7 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @throws CmsException in case something goes wrong
      */
     public Vector deleteCheckDependencies(String modulename, boolean replaceMode) throws CmsException {
+
         Vector result = new Vector();
         if (replaceMode)
             return result;
@@ -582,8 +584,8 @@ public class CmsRegistry extends A_CmsXmlContent {
         Class eventClass = getModuleMaintenanceEventClass(module);
 
         try {
-            Class declaration[] = {CmsObject.class};
-            Object arguments[] = {m_cms};
+            Class declaration[] = {CmsObject.class };
+            Object arguments[] = {m_cms };
             Method eventMethod = eventClass.getMethod(C_EVENT_METHOD_NAME_DELETE, declaration);
             eventMethod.invoke(null, arguments);
         } catch (Exception exc) {
@@ -722,7 +724,7 @@ public class CmsRegistry extends A_CmsXmlContent {
     }
 
     /**
-     * This method exports a module to the file system.<p>
+     * This method exports a module to the filesystem.<p>
      *
      * @param modulename the name of the module to be exported
      * @param resources an array of resources to be exported
@@ -762,8 +764,22 @@ public class CmsRegistry extends A_CmsXmlContent {
         return "Registry";
     }
 
+
     /**
-     * Returns all exportpoints and paths.<p>
+      * This method gets the maximum number of backup versions for each file.<p>
+      *
+      * @return  maximum number of backup versions for each file
+      * @throws CmsException if something goes wrong
+      */
+    public int getMaximumBackupVersions() throws CmsException {    
+        Hashtable histproperties = getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
+        String versions = ((String)histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_VERSIONS));          
+        return new Integer(versions).intValue();
+    }
+
+
+    /**
+     * This method returns the author of the module.
      *
      * @return Hashtable the exportpoints and the paths
      */
@@ -1164,10 +1180,10 @@ public class CmsRegistry extends A_CmsXmlContent {
             retValue = new String[para.getLength()];
             for (int i = 0; i < para.getLength(); i++) {
                 retValue[i] = ((Element)para.item(i)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-            }
+    }
         } catch (Exception exc) {
             // ignore the exception - reg is not welformed
-        }
+    }
         return retValue;
     }
 
@@ -1208,7 +1224,7 @@ public class CmsRegistry extends A_CmsXmlContent {
             retValue = param.getElementsByTagName("type").item(0).getFirstChild().getNodeValue();
         } catch (Exception exc) {
             // ignore the exception - parameter is not existent
-        }
+    }
         return retValue;
     }
 
@@ -1222,7 +1238,7 @@ public class CmsRegistry extends A_CmsXmlContent {
     public int getModulePublishables(Vector classes, String requiredMethod) {
         if (requiredMethod == null) {
             requiredMethod = "";
-        }
+    }
         try {
             NodeList classList = m_xmlReg.getElementsByTagName("publishclass");
             for (int x = 0; x < classList.getLength(); x++) {
@@ -1230,21 +1246,21 @@ public class CmsRegistry extends A_CmsXmlContent {
                     String methodValue = ((Element)classList.item(x)).getAttribute("method");
                     if (methodValue == null) {
                         methodValue = "";
-                    }
+            }
                     if (methodValue.equals(requiredMethod)) {
                         String name = ((Element)classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
                         if ((name != null) && (!"".equals(name)))
                             classes.addElement(name);
                     }
-                } catch (Exception exc) {
+        } catch (Exception exc) {
                     // ignore the exception and try the next view-pair.
-                }
-            }
+        }
+    }
             return classes.size();
         } catch (Exception exc) {
             // no return-values
             return 0;
-        }
+    }
     }
 
     /**
@@ -1289,7 +1305,7 @@ public class CmsRegistry extends A_CmsXmlContent {
 
     /**
      * Returns the value of the "type" node for a module.<p>
-     * 
+     *
      * @param modulename the name of the module
      * @return the value of the "type" node for a module
      */
@@ -1402,14 +1418,14 @@ public class CmsRegistry extends A_CmsXmlContent {
 
     /**
      * Returns the class name of the property dialog handler as String.<p>
-     * 
+     *
      * @return the class name of the property dialog handler
      */
     public String getPropertyDialogHandler() {
         Element systemElement = getSystemElement();
         String className = systemElement.getElementsByTagName("propertydialoghandler").item(0).getFirstChild().getFirstChild().getNodeValue();
         return className;
-    }
+                }
 
     /**
      * Returns all repositories for all modules.
@@ -1504,21 +1520,21 @@ public class CmsRegistry extends A_CmsXmlContent {
         try {
             Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
             NodeList resTypes = systemElement.getElementsByTagName(node).item(0).getChildNodes();
-            if (resTypes != null) {
+            if (resTypes!=null) {
                 for (int x = 0; x < resTypes.getLength(); x++) {
                     try {
                         String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
                         result.add(className);
                     } catch (Exception exc) {
                         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
-                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". Error getting registry node " + node);
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". Error getting registry node "+node);
                     }
                 }
             }
         } catch (Exception e) {
             // no returnvalues
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO))
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". Error getting registry node " + node);
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, ". Error getting registry node "+node);
         }
         return result;
     }
@@ -1576,12 +1592,21 @@ public class CmsRegistry extends A_CmsXmlContent {
     public Hashtable getSystemValues(String key) {
         Hashtable retValue = new Hashtable();
         try {
+                
             Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
             NodeList list = systemElement.getElementsByTagName(key).item(0).getChildNodes();
-            for (int i = 0; i < list.getLength(); i++) {
-                retValue.put(list.item(i).getNodeName(), list.item(i).getFirstChild().getNodeValue());
+            for (int i = 0; i < list.getLength(); i++) { 
+                String regKey = list.item(i).getNodeName();
+                String regValue=null;
+                if (list.item(i).hasChildNodes()) {
+                    regValue = list.item(i).getFirstChild().getNodeValue();
+                }                                 
+                if (regValue!=null) {
+                    retValue.put(regKey, regValue);
+                }   
+
             }
-        } catch (Exception exc) {
+        } catch (Exception exc) {      
             // ignore the exception - registry is not wellformed
         }
         return retValue;
@@ -1811,6 +1836,7 @@ public class CmsRegistry extends A_CmsXmlContent {
         I_CmsReport report
     ) throws CmsException {
         // check if the user is allowed to import a module.
+
         if (!hasAccess()) {
             throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
@@ -1926,8 +1952,8 @@ public class CmsRegistry extends A_CmsXmlContent {
         Class eventClass = getModuleMaintenanceEventClass(newModuleName);
 
         try {
-            Class declaration[] = {CmsObject.class};
-            Object arguments[] = {m_cms};
+            Class declaration[] = {CmsObject.class };
+            Object arguments[] = {m_cms };
             Method eventMethod = eventClass.getMethod(C_EVENT_METHOD_NAME_UPLOAD, declaration);
             eventMethod.invoke(null, arguments);
         } catch (Exception exc) {
@@ -1991,8 +2017,22 @@ public class CmsRegistry extends A_CmsXmlContent {
         }
     }
 
+
     /**
-     * Sets the author of a module.<p>
+     * This method sets the maximum number of backup versions for each resource in the history.<p>
+     *
+     * @param versions maximum number of backup versions
+     * @throws CmsException if something goes wrong
+     */
+    public void setMaximumBackupVersions(int versions) throws CmsException {
+        Hashtable histproperties = getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
+        histproperties.put(I_CmsConstants.C_REGISTRY_HISTORY_VERSIONS, versions+"");
+        setSystemValues(I_CmsConstants.C_REGISTRY_HISTORY, histproperties);        
+    }
+
+
+    /**
+     * This method sets the author of the module.
      *
      * @param modulename the name of the module
      * @param author the name of the module author
@@ -2149,7 +2189,7 @@ public class CmsRegistry extends A_CmsXmlContent {
      */
     public void setModuleNiceName(String modulename, String nicename) throws CmsSecurityException {
         setModuleData(modulename, "nicename", nicename);
-    }
+            }
 
     /**
      * Sets a parameter for a module.<p>
@@ -2161,6 +2201,7 @@ public class CmsRegistry extends A_CmsXmlContent {
      */
     public void setModuleParameter(String modulename, String parameter, String value) throws CmsException {
         // check if the user is allowed to set parameters
+
         if (!hasAccess()) {
             throw new CmsSecurityException(CmsSecurityException.C_SECURITY_NO_REGISTRY_PERMISSIONS);
         }
@@ -2175,8 +2216,8 @@ public class CmsRegistry extends A_CmsXmlContent {
             // try to invoke the event-method for setting parameters on this class.
             Class eventClass = getModuleMaintenanceEventClass(modulename);
             try {
-                Class declaration[] = {CmsObject.class};
-                Object arguments[] = {m_cms};
+                Class declaration[] = {CmsObject.class };
+                Object arguments[] = {m_cms };
                 Method eventMethod = eventClass.getMethod(C_EVENT_METHOD_NAME_UPDATE_PARAMETER, declaration);
                 eventMethod.invoke(null, arguments);
             } catch (Exception exc) {
@@ -2197,7 +2238,7 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @param names Vector with parameternames
      * @param descriptions Vector with parameterdescriptions
      * @param types Vector with parametertypes (string, float,...)
-     * @param values Vector with default values for parameters
+     * @param values Vector with defaultvalues for parameters
      * @throws CmsSecurityException in case the current user does not have permission to modify the registry
      */
     public void setModuleParameterdef(
@@ -2242,8 +2283,8 @@ public class CmsRegistry extends A_CmsXmlContent {
             // try to invoke the event-method for setting parameters on this class.
             Class eventClass = getModuleMaintenanceEventClass(modulename);
             try {
-                Class declaration[] = {CmsObject.class};
-                Object arguments[] = {m_cms};
+                Class declaration[] = {CmsObject.class };
+                Object arguments[] = {m_cms };
                 Method eventMethod = eventClass.getMethod(C_EVENT_METHOD_NAME_UPDATE_PARAMETER, declaration);
                 eventMethod.invoke(null, arguments);
             } catch (Exception exc) {
@@ -2319,7 +2360,7 @@ public class CmsRegistry extends A_CmsXmlContent {
 
     /**
      * Sets the type for a given module.<p>
-     * 
+     *
      * @param modulename the name of the module
      * @param moduletype the new type of the module
      */
@@ -2486,4 +2527,5 @@ public class CmsRegistry extends A_CmsXmlContent {
             }
         }
     }
-}
+            }
+

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/08/14 15:37:26 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/09/08 09:08:08 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.42 $
- * $Date: 2003/08/14 15:37:26 $
+ * $Revision: 1.43 $
+ * $Date: 2003/09/08 09:08:08 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -628,7 +628,7 @@ public abstract class CmsMasterContent
         boolean enableHistory = cms.isHistoryEnabled();
         if (enableHistory){
             // Get the next version id
-            versionId = cms.getBackupVersionId();
+            versionId = cms.getBackupTagId();
             // backup the current project
             cms.backupProject(cms.getRequestContext().currentProject().getId(), versionId, publishDate);
         }

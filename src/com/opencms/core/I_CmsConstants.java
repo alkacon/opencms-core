@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/09/05 15:17:11 $
-* Version: $Revision: 1.269 $
+* Date   : $Date: 2003/09/08 09:08:09 $
+* Version: $Revision: 1.270 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.269 $ $Date: 2003/09/05 15:17:11 $
+ * @version $Revision: 1.270 $ $Date: 2003/09/08 09:08:09 $
  */
 public interface I_CmsConstants {
 
@@ -1147,17 +1147,23 @@ public interface I_CmsConstants {
     /**
      * The name of the tag in registry if versions of the history should be deleted 
      */
-    String C_DELETE_HISTORY = "deleteversions";
+    String C_REGISTRY_HISTORY_DELETE = "deleteversions";
 
     /**
      * The name of the tag in registry for the number of weeks the versions should remain in the history.
      */
-    String C_WEEKS_HISTORY = "weeks";
+    String C_REGISTRY_HISTORY_WEEKS = "weeks";
 
     /**
      * The name of the tag in registry if history is enabled.
      */
-    String C_ENABLE_HISTORY = "enabled";
+    String C_REGISTRY_HISTORY_ENABLE = "enabled";
+    
+    /**
+     * The name of the tag in registry storign the max number of versions
+     */
+    String C_REGISTRY_HISTORY_VERSIONS = "versions";
+    
 
     /**
      * The module property key name to specifiy additional resources which are
@@ -1218,7 +1224,7 @@ public interface I_CmsConstants {
      
      /** the resource is marked as internal */
      int C_RESOURCEFLAG_INTERNAL = 1;
-     
+
      /** the resource is linked inside a site folder specified in the OpenCms properties  */
      int C_RESOURCEFLAG_LABELLINK = 2;
      

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHistoryProperties.java,v $
-* Date   : $Date: 2003/08/30 11:30:08 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/09/08 09:08:09 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,43 +81,43 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
 
         // clear session values on first load
         String step = (String)parameters.get(C_STEP);
-        weeks = (String)parameters.get(C_WEEKS_HISTORY);
-        enableHistory = (String)parameters.get(C_ENABLE_HISTORY);
-        enableDelete = (String)parameters.get(C_DELETE_HISTORY);
+        weeks = (String)parameters.get(C_REGISTRY_HISTORY_WEEKS);
+        enableHistory = (String)parameters.get(C_REGISTRY_HISTORY_ENABLE);
+        enableDelete = (String)parameters.get(C_REGISTRY_HISTORY_DELETE);
         
         // if there are still values in the session (like after an error), use them
         if((weeks == null) || ("".equals(weeks))) {
-            weeks = (String)session.getValue(C_WEEKS_HISTORY);
+            weeks = (String)session.getValue(C_REGISTRY_HISTORY_WEEKS);
             if(weeks == null){
                 weeks = new String();
             }
         }
         if((enableHistory == null) || ("".equals(enableHistory))) {
-            enableHistory = (String)session.getValue(C_ENABLE_HISTORY);
+            enableHistory = (String)session.getValue(C_REGISTRY_HISTORY_ENABLE);
         }
         if((enableDelete == null) || ("".equals(enableDelete))) {
-            enableDelete = (String)session.getValue(C_DELETE_HISTORY);
+            enableDelete = (String)session.getValue(C_REGISTRY_HISTORY_DELETE);
         }
         
         if(step == null) {
             // if the dialog was opened the first time remove the session values
             if(session.getValue(C_STEP) == null){
                 // remove all session values
-                session.removeValue(C_WEEKS_HISTORY);
-                session.removeValue(C_ENABLE_HISTORY);
-                session.removeValue(C_DELETE_HISTORY);
+                session.removeValue(C_REGISTRY_HISTORY_WEEKS);
+                session.removeValue(C_REGISTRY_HISTORY_ENABLE);
+                session.removeValue(C_REGISTRY_HISTORY_DELETE);
                 session.removeValue("lasturl");
                 session.putValue(C_STEP, "nextstep");
                 
                 // if the values are still empty try to read them from the registry
                 if((weeks == null) || ("".equals(weeks))) {
-                    weeks = (String)histproperties.get(C_WEEKS_HISTORY);
+                    weeks = (String)histproperties.get(C_REGISTRY_HISTORY_WEEKS);
                 }
                 if((enableHistory == null) || ("".equals(enableHistory))) {
-                    enableHistory = (String)histproperties.get(C_ENABLE_HISTORY);
+                    enableHistory = (String)histproperties.get(C_REGISTRY_HISTORY_ENABLE);
                 }
                 if((enableDelete == null) || ("".equals(enableDelete))) {
-                    enableDelete = (String)histproperties.get(C_DELETE_HISTORY);
+                    enableDelete = (String)histproperties.get(C_REGISTRY_HISTORY_DELETE);
                 }
             }
         } else {
@@ -125,32 +125,35 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
                 // the form has just been submitted
                 try{
                     // now update the registry
-                    histproperties.put(C_WEEKS_HISTORY, weeks);
+                    histproperties.put(C_REGISTRY_HISTORY_WEEKS, weeks);
                     if("true".equals(enableHistory)){
-                        histproperties.put(C_ENABLE_HISTORY, "true");
+                        histproperties.put(C_REGISTRY_HISTORY_ENABLE, "true");
                     } else {
-                        histproperties.put(C_ENABLE_HISTORY, "false");
+                        histproperties.put(C_REGISTRY_HISTORY_ENABLE, "false");
                     }
                     if("true".equals(enableDelete)){
-                        histproperties.put(C_DELETE_HISTORY, "true");
+                        histproperties.put(C_REGISTRY_HISTORY_DELETE, "true");
                     } else {
-                        histproperties.put(C_DELETE_HISTORY, "false");
+                        histproperties.put(C_REGISTRY_HISTORY_DELETE, "false");
                     }
+                    
+                
+                    
                     reg.setSystemValues(C_REGISTRY_HISTORY, histproperties);
                     templateSelector = "done";
                     // remove the values from the session
                     // remove all session values
-                    session.removeValue(C_WEEKS_HISTORY);
-                    session.removeValue(C_ENABLE_HISTORY);
-                    session.removeValue(C_DELETE_HISTORY);      
+                    session.removeValue(C_REGISTRY_HISTORY_WEEKS);
+                    session.removeValue(C_REGISTRY_HISTORY_ENABLE);
+                    session.removeValue(C_REGISTRY_HISTORY_DELETE);      
                 } catch (CmsException e){
                     // there was an exception, store the data in the session
-                    session.putValue(C_WEEKS_HISTORY, weeks);
+                    session.putValue(C_REGISTRY_HISTORY_WEEKS, weeks);
                     if(enableHistory != null){
-                        session.putValue(C_ENABLE_HISTORY, enableHistory);
+                        session.putValue(C_REGISTRY_HISTORY_ENABLE, enableHistory);
                     }
                     if(enableDelete != null){
-                        session.putValue(C_DELETE_HISTORY, enableDelete);
+                        session.putValue(C_REGISTRY_HISTORY_DELETE, enableDelete);
                     }
                     templateSelector = "errorhistproperties";
                     if("errorhistproperties".equals(templateSelector)){
@@ -162,27 +165,27 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
             } else if("execute".equalsIgnoreCase(step)){
                 try{
                     // now update the registry
-                    histproperties.put(C_WEEKS_HISTORY, weeks);
+                    histproperties.put(C_REGISTRY_HISTORY_WEEKS, weeks);
                     if("true".equals(enableHistory)){
-                        histproperties.put(C_ENABLE_HISTORY, "true");
+                        histproperties.put(C_REGISTRY_HISTORY_ENABLE, "true");
                     } else {
-                        histproperties.put(C_ENABLE_HISTORY, "false");
+                        histproperties.put(C_REGISTRY_HISTORY_ENABLE, "false");
                     }
                     if("true".equals(enableDelete)){
-                        histproperties.put(C_DELETE_HISTORY, "true");
+                        histproperties.put(C_REGISTRY_HISTORY_DELETE, "true");
                     } else {
-                        histproperties.put(C_DELETE_HISTORY, "false");
+                        histproperties.put(C_REGISTRY_HISTORY_DELETE, "false");
                     }
                     reg.setSystemValues(C_REGISTRY_HISTORY, histproperties);                
                     executeDeleting(cms, null);
                 } catch (CmsException e){
                     // there was an exception, store the data in the session
-                    session.putValue(C_WEEKS_HISTORY, weeks);
+                    session.putValue(C_REGISTRY_HISTORY_WEEKS, weeks);
                     if(enableHistory != null){
-                        session.putValue(C_ENABLE_HISTORY, enableHistory);
+                        session.putValue(C_REGISTRY_HISTORY_ENABLE, enableHistory);
                     }
                     if(enableDelete != null){
-                        session.putValue(C_DELETE_HISTORY, enableDelete);
+                        session.putValue(C_REGISTRY_HISTORY_DELETE, enableDelete);
                     }
                     templateSelector = "errorhistproperties";
                     if("errorhistproperties".equals(templateSelector)){
@@ -196,25 +199,25 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
             } else if("cancel".equals(step)){
                 // remove the values from the session
                 // remove all session values
-                session.removeValue(C_WEEKS_HISTORY);
-                session.removeValue(C_ENABLE_HISTORY);
-                session.removeValue(C_DELETE_HISTORY);
+                session.removeValue(C_REGISTRY_HISTORY_WEEKS);
+                session.removeValue(C_REGISTRY_HISTORY_ENABLE);
+                session.removeValue(C_REGISTRY_HISTORY_DELETE);
                 templateSelector = "done";
             }
             session.removeValue(C_STEP);
         }
         
         // set the data in the template
-        templateDocument.setData(C_WEEKS_HISTORY, weeks);
+        templateDocument.setData(C_REGISTRY_HISTORY_WEEKS, weeks);
         if("true".equalsIgnoreCase(enableHistory)){
-            templateDocument.setData(C_ENABLE_HISTORY, "checked");
+            templateDocument.setData(C_REGISTRY_HISTORY_ENABLE, "checked");
         } else {
-            templateDocument.setData(C_ENABLE_HISTORY, "");
+            templateDocument.setData(C_REGISTRY_HISTORY_ENABLE, "");
         }
         if("true".equalsIgnoreCase(enableDelete)){
-            templateDocument.setData(C_DELETE_HISTORY, "checked");
+            templateDocument.setData(C_REGISTRY_HISTORY_DELETE, "checked");
         } else {
-            templateDocument.setData(C_DELETE_HISTORY, "");
+            templateDocument.setData(C_REGISTRY_HISTORY_DELETE, "");
         }
 
         // Now load the template file and start the processing
@@ -257,7 +260,7 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
         int versionId = 0;
         // get the number of weeks from the registry
         Hashtable histproperties = cms.getRegistry().getSystemValues(C_REGISTRY_HISTORY);
-        String weeks = (String)histproperties.get(C_WEEKS_HISTORY);
+        String weeks = (String)histproperties.get(C_REGISTRY_HISTORY_WEEKS);
         if((weeks != null) && !("".equals(weeks.trim()))){
             versionId = cms.deleteBackups(Integer.parseInt(weeks));
         }

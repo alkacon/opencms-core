@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/08 09:08:08 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import oracle.jdbc.driver.OracleResultSet;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsBackupProject;
+import com.opencms.file.CmsBackupResource;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.util.SqlHelper;
 
@@ -45,13 +46,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Vector;
+
+import org.apache.commons.dbcp.DelegatingResultSet;
 
 /**
  * Oracle/OCI implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.10 $ $Date: 2003/09/08 09:08:08 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {   
@@ -72,10 +76,10 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                Vector resources = m_driverManager.getVfsDriver().readBackupProjectResources(res.getInt("VERSION_ID"));
+                Vector resources = m_driverManager.getVfsDriver().readBackupProjectResources(res.getInt("TAG_ID"));
                 projects.addElement(
                     new CmsBackupProject(
-                        res.getInt("VERSION_ID"),
+                        res.getInt("TAG_ID"),
                         res.getInt("PROJECT_ID"),
                         res.getString("PROJECT_NAME"),
                         res.getString("PROJECT_DESCRIPTION"),
@@ -109,6 +113,55 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         return new org.opencms.db.oracle.CmsSqlManager();
     }
 
+
+    /**
+     * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(java.util.List)
+     */
+    public void deleteBackups(List existingBackups, int maxVersions) throws CmsException {        
+        PreparedStatement stmt1 = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement stmt3 = null;
+        
+        Connection conn = null;
+        CmsBackupResource currentResource = null;
+        int count = existingBackups.size() - maxVersions;
+
+        try {
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt1 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_BACKUP_DELETE_CONTENT");
+            stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_BACKUP_DELETE_RESOURCES");
+            stmt3 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_BACKUP_DELETE_STRUCTURE");
+
+            for (int i = 0; i < count; i++) {
+                currentResource = (CmsBackupResource)existingBackups.get(i);
+                // add the values to delete the file table
+                stmt1.setString(1, currentResource.getBackupId().toString());             
+                stmt1.addBatch();
+                // add the values to delete the resource table
+                stmt2.setString(1, currentResource.getBackupId().toString());             
+                stmt2.addBatch();
+                // add the values to delete the structure table
+                stmt3.setString(1, currentResource.getBackupId().toString());             
+                stmt3.addBatch();
+            }
+
+            if (count > 0) {
+                stmt1.executeBatch();
+                stmt2.executeBatch();
+                stmt3.executeBatch();
+            }
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception ex) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt1, null);
+            m_sqlManager.closeAll(conn, stmt2, null);
+            m_sqlManager.closeAll(conn, stmt3, null);
+        }
+    }
+
     /**
      * @see org.opencms.db.I_CmsBackupDriver#writeBackupFileContent(com.opencms.flex.util.CmsUUID, com.opencms.flex.util.CmsUUID, byte[], int)
      */
@@ -116,7 +169,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         CmsUUID backupId,
         CmsUUID fileId,
         byte[] fileContent,
-        int versionId)
+        int tagId)
         throws CmsException {
 
         PreparedStatement stmt = null;
@@ -124,6 +177,34 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         PreparedStatement trimStatement = null;
         Connection conn = null;
         ResultSet res = null;
+        
+        //this.createFileContent(fileId,fileContent,tagId,1,true);
+        
+        try {
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILESFORINSERT_BACKUP");
+
+            // first insert new file without file_content, then update the file_content
+            // these two steps are necessary because of using BLOBs in the Oracle DB
+            stmt.setString(1, fileId.toString());
+            stmt.setInt(2, tagId);
+            stmt.setString(3, backupId.toString());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(
+                this,
+                null,
+                CmsException.C_SQL_ERROR,
+                e,
+                false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, nextStatement, null);
+            m_sqlManager.closeAll(null, trimStatement, null);
+        }
+        
+        
+        
         try {
 
             conn = m_sqlManager.getConnectionForBackup();
@@ -134,8 +215,10 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
 
             // update the file content in the FILES database.
             stmt.setString(1, fileId.toString());
+            stmt.setString(2, backupId.toString());
             conn.setAutoCommit(false);
-            res = stmt.executeQuery();
+            //res = stmt.executeQuery();
+            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             try {
                 while (res.next()) {
                     oracle.sql.BLOB blobnew =
@@ -193,3 +276,4 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         }
     }
 }
+
