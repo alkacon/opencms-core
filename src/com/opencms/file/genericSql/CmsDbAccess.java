@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/13 13:46:09 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2000/09/13 14:39:17 $
+ * Version: $Revision: 1.124 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.123 $ $Date: 2000/09/13 13:46:09 $ * 
+ * @version $Revision: 1.124 $ $Date: 2000/09/13 14:39:17 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -2243,7 +2243,7 @@ public CmsProject getOnlineProject(int project) throws CmsException
  * retrieve the correct instance of the queries holder.
  * This method should be overloaded if other query strings should be used.
  */
-com.opencms.file.genericSql.CmsQueries getQueries()
+protected com.opencms.file.genericSql.CmsQueries getQueries()
 {
 	return new com.opencms.file.genericSql.CmsQueries();
 }

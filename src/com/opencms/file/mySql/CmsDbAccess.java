@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/13 13:46:12 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/09/13 14:39:18 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.30 $ $Date: 2000/09/13 13:46:12 $ * 
+ * @version $Revision: 1.31 $ $Date: 2000/09/13 14:39:18 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -305,7 +305,7 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 	}
 	}
 	return group;
-  }        
+  }  
 	/**
 	 * Destroys this access-module
 	 * @exception throws CmsException if something goes wrong.
@@ -426,7 +426,7 @@ protected void fillDefaults() throws CmsException
  * retrieve the correct instance of the queries holder.
  * This method should be overloaded if other query strings should be used.
  */
-com.opencms.file.genericSql.CmsQueries getQueries()
+protected com.opencms.file.genericSql.CmsQueries getQueries()
 {
 	return new com.opencms.file.mySql.CmsQueries();
 }
@@ -622,7 +622,7 @@ com.opencms.file.genericSql.CmsQueries getQueries()
 	m_pool.initPreparedStatement (m_cq.C_SESSION_UPDATE_KEY, m_cq.C_SESSION_UPDATE);
 	m_pool.initPreparedStatement (m_cq.C_SESSION_READ_KEY, m_cq.C_SESSION_READ);
 	m_pool.initPreparedStatement (m_cq.C_SESSION_DELETE_KEY, m_cq.C_SESSION_DELETE);
-  }        
+  }  
 	/**
 	 * Instanciates the access-module and sets up all required modules and connections.
 	 * @param config The OpenCms configuration.
