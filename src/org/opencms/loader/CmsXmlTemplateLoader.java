@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/01/23 09:07:31 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/01/23 14:46:31 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -134,11 +134,12 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      * @return the element cache that belongs to the given cms context
      */        
     public static final CmsElementCache getElementCache(CmsObject cms) {
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+//        patched 23.1.2004 by ph@ethikom.de: XML element cache has to be called always
+//        if (cms.getRequestContext().currentProject().isOnlineProject()) {
             return m_elementCache;
-        } else {        
-            return null;
-        }        
+//        } else {
+//            return null;
+//        }
     }
 
     /**
@@ -166,8 +167,10 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      * @return true if the element cache is enabled for the given cms context
      */
     public static final boolean isElementCacheEnabled(CmsObject cms) {
-        return (m_elementCache != null) && cms.getRequestContext().currentProject().isOnlineProject();            
-    }    
+//        patched 23.1.2004 by ph@ethikom.de: XML element cache has to be called always
+//        return (m_elementCache != null) && cms.getRequestContext().currentProject().isOnlineProject();
+        return m_elementCache != null;
+    }
 
     /**
      * Utility method used by the loader implementation to give control
@@ -432,12 +435,16 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         }
 
         if (elementCacheEnabled) {
-                // now lets get the output
-                if (elementreplace) {
-                    output = cmsUri.callCanonicalRoot(elementCache, cms, newParameters);
-                } else {
-                    output = elementCache.callCanonicalRoot(cms, newParameters, uri);
-                }
+//        patched 23.1.2004 by ph@ethikom.de: otherwise problems with cached and parsed XML content appear
+            // TODO: Make cache more efficient
+            clearLoaderCache(true, true);
+
+            // now lets get the output
+            if (elementreplace) {
+                output = cmsUri.callCanonicalRoot(elementCache, cms, newParameters);
+            } else {
+                output = elementCache.callCanonicalRoot(cms, newParameters, uri);
+            }
         } else {
             // ----- traditional stuff ------
             // Element cache is deactivated. So let's go on as usual.
