@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/07/04 10:02:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/04 10:03:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/04 10:02:14 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/04 10:03:18 $
  * @since 5.1
  */
 public class CmsDbPool extends Object {
@@ -171,7 +171,6 @@ public class CmsDbPool extends Object {
         connectionPool.setTestWhileIdle(true);
 
         // initialize a connection factory to make the DriverManager taking connections from the pool
-        System.err.println("username: " + username + ", password: " + password);
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
 
         // initialize a keyed object pool to store PreparedStatements
