@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/02/17 18:41:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/19 10:17:12 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,10 +43,13 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/17 18:41:47 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/19 10:17:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
+
+    /** Protocol used for the URL in the pics browser */
+    public final static String C_PROTOCOL_NAME = "http://";
 
     /**
      * Indicates if the results of this class are cacheable.
@@ -87,7 +90,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
                 
         // Check if the user requested a special folder
         if(folder == null || "".equals(folder)) {
-            folder = getConfigFile(cms).getWpPicturePath();
+            folder = getConfigFile(cms).getCommonPicturePath();
             parameters.put(C_PARA_FOLDER, folder);
         }
 
@@ -158,14 +161,17 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         int to = ((from+C_PICBROWSER_MAXIMAGES)>numPics)?numPics:(from+C_PICBROWSER_MAXIMAGES);
         
         String picsUrl = getConfigFile(cms).getCommonPictureUrl();
-        
+        HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
+        String servletPath = req.getServletPath();
+        String hostName = req.getServerName();
+                                     
         // Generate the picture list
         for(int i=from; i<to; i++) {
             CmsFile file = (CmsFile)filteredPics.elementAt(i);
             String filename = file.getName();
             if(inFilter(filename, filter) && isImage(filename)) {
                 result.append(xmlTemplateDocument.getProcessedXmlDataValue("picstartseq", this, userObj));
-                result.append(picsUrl + file.getName());
+                result.append(C_PROTOCOL_NAME + hostName + servletPath + picsUrl + file.getName());
                 result.append(xmlTemplateDocument.getProcessedXmlDataValue("picendseq", this, userObj));
                 result.append(xmlTemplateDocument.getProcessedXmlDataValue("textstartseq", this, userObj));
                 result.append(file.getName() + " (" + file.getLength() + " Bytes)\n");
