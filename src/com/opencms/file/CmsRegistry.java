@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/11/03 15:24:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/11/22 10:32:01 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2000/11/03 15:24:48 $
+ * @version $Revision: 1.22 $ $Date: 2000/11/22 10:32:01 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -397,6 +397,11 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
  *  @param exclusion a Vector with resource-names that should be excluded from this deletion.
  */
 public synchronized void deleteModule(String module, Vector exclusion) throws CmsException {
+	// check if the module exists
+	if (!moduleExists(module)) {
+		throw new CmsException("Module '"+module+"' does not exist", CmsException.C_REGISTRY_ERROR);	
+	}	
+	
 	// check if the user is allowed to perform this action
 	if (!hasAccess()) {
 		throw new CmsException("No access to perform the action 'deleteModule'", CmsException.C_REGISTRY_ERROR);
@@ -420,20 +425,20 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
 	} catch(Exception exc) {
 		// ignore the exception.
 	}
-	
+
 	// get the files, that are belonging to the module.
 	Vector resourceNames = new Vector();
 	Vector missingFiles = new Vector();
 	Vector wrongChecksum = new Vector();
 	Vector filesInUse = new Vector();
 	Vector resourceCodes = new Vector();
-
+	
 	// get files by property
 	deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
-	
+
 	// get files by registry
 	getModuleFiles(module, resourceNames, resourceCodes);
-
+	
 	// move through all resource-names and try to delete them
 	for (int i = resourceNames.size() - 1; i >= 0; i--) {
 		try {
@@ -457,6 +462,7 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
 	Element moduleElement = getModuleElement(module);
 	moduleElement.getParentNode().removeChild(moduleElement);
 	saveRegistry();
+
 	try {
 		init();
 	} catch (Exception exc) {
