@@ -3,6 +3,7 @@
 
 <nounchangedbox></nounchangedbox>
 <userdatabox></userdatabox>
+<selectoption><![CDATA[<option value="]]><process>value</process><![CDATA[">]]><process>name</process></selectoption>
 
 <TEMPLATE>
 <![CDATA[
@@ -63,7 +64,7 @@ function checkFormData()
         }
     }
     if(document.DBEXPORT.ALLRES.value.length < 1){
-        alert(']]><LABEL value="error.reason.projectdatamissing" /><![CDATA[');
+        alert(']]><LABEL value="error.reason.channelsmissing" /><![CDATA[');
         return false;
     }
     return result;
@@ -105,14 +106,12 @@ function selectAll(theList) {
 
 function selectAllModules(theList) {
     var n=theList.length;
-    for (i=0; i<n; i++) {
-        theList.options[i].selected=true;
-    }
-    // umgehe das Problem mit Silverstream
     var allModules="";
     if (n>0) {
         for (i=0; i<n; i++) {
-            allModules = allModules + theList.options[i].value + ';';
+        	if(theList.options[i].selected){
+            	allModules = allModules + theList.options[i].value + ';';
+            }
         } 
     } 
     document.DBEXPORT.ALLMOD.value=allModules;
@@ -136,7 +135,7 @@ function selectAllModules(theList) {
             
             <!-- Beginn Tabellenkopf blau-->
             <tr> 
-                <td class="head">]]><LABEL value="database.label.titleexport"/><![CDATA[</td>
+                <td class="head">]]><LABEL value="database.label.titleexportmoduledata"/><![CDATA[</td>
             </tr>
             <!-- Ende Tabellenkopf blau-->
             
@@ -152,16 +151,15 @@ function selectAllModules(theList) {
                     <tr><td class=dialogtxt>
                         <table border=0 width=100%>
 							<tr>
-								<td class=formular>]]><LABEL value="input.exportadd" /><![CDATA[:</td>
+								<td class=formular>]]><LABEL value="input.exportmodules" /><![CDATA[:</td>
 								<td class=dialogtxt>
-									]]><SELECT class="textfeld" name="new_modules" size="10" method="getModules" width="300"  onchange="" multiple="multiple" /><![CDATA[
+									<select class="textfeld" name="new_modules" size="10" style="WIDTH:300px"  onchange="" multiple>]]><process>moduleselect</process><![CDATA[</select>
 								</td>
 							</tr>
                             <tr>
                                 <td class=formular>]]><LABEL value="input.exportadd" /><![CDATA[:</td>
                                 <td class=dialogtxt> 
-                                <input type="text" name="selectallfolders" class="textfeld3" size=31 value=""
-                                       onSubmit=""> 
+                                <input type="text" name="selectallfolders" class="textfeld3" size=31 value="" onSubmit=""> 
 
                                 </td> 
                                 <td class=formular valign=bottom> 
@@ -169,7 +167,7 @@ function selectAllModules(theList) {
                                 </td>                                
                             </tr>
                             <tr> 
-                                <td class=formular valign=middle>]]><LABEL value="input.exportresources" /><![CDATA[:</td>
+                                <td class=formular valign=middle>]]><LABEL value="input.exportchannels" /><![CDATA[:</td>
                                 <td class=dialogtxt>
                                     <select name="new_ressources" id="new_ressources" style="width:300px" size=5 width="300" multiple></select>
                                 </td>
@@ -237,7 +235,7 @@ function selectAllModules(theList) {
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="error.title.database" message="error.message.database" reason="error.reason.database" suggestion="error.suggestion.database" ref="index.html?sender=/system/workplace/administration/database/export/index.html" ><process>details</process></ERRORPAGE><![CDATA[
+]]><ERRORPAGE title="error.title.database" message="error.message.database" reason="error.reason.database" suggestion="error.suggestion.database" ref="index.html?sender=/system/workplace/administration/database/exportmoduldata/index.html" ><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 
