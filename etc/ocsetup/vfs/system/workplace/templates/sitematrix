@@ -2,87 +2,142 @@
 <XMLTEMPLATE>
 
 <TEMPLATE>
-<![CDATA[<html>
-<head>
-<title>SiteMatrix</title>
-<script language="JavaScript" type="text/javascript">
-<!-- 
-function showThing(id)
-{
-  alert('Is supposed to show site with id = ' + id);
-}
-
-function editThing(id)
-{
-  alert('Is supposed to edit site with id = ' + id);
-}
-
-// -->
-</script>
-</head>
-<body bgcolor="#ffffff">
-<h1>SiteMatrix</h1>
-
-<table border="0" cellspacing="1" cellpadding="1">
-  <tr align="center">
-    <td colspan="2">&nbsp;</td>
-    <td colspan="]]><process>domaincount</process><![CDATA[" bgcolor="#bbbbbb">Domains</td>
-  </tr>
-  ]]>
-  <process>domainlist</process>
-  <process>lines</process>
 <![CDATA[
-</table>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
+<html>
+<head>
+	<title>Matrix</title>
+	
+<script type="text/javascript" language="JavaScript" src="../templates/js/gigaMatrix/warp_layer.js"></script>
+<script type="text/javascript" language="JavaScript" src="../templates/js/gigaMatrix/table.js"></script>
+<script type="text/javascript" language="JavaScript" src="../templates/js/gigaMatrix/style_giga_context_menu.js"></script>
+<script type="text/javascript" language="JavaScript" src="../templates/js/gigaMatrix/giga_context_menu.js"></script>
+<script type="text/javascript" language="JavaScript" src="../templates/js/gigaMatrix/giga_site_matrix.js"></script>
+
+<script language="JavaScript">
+
+function initMatrix() {
+
+	var sM = new siteMatrix(100, 60);
+	
+]]><process>domains</process><![CDATA[
+]]><process>categories</process><![CDATA[
+]]><process>sites</process><![CDATA[
+
+	initContextMenus();
+	
+	sM.drawMatrix();
+ // alert(sM.siteDomains[1]["domainId"])
+}
+	
+</script>
+<script language="JavaScript" type="text/javascript">
+
+
+function initContextMenus() {
+
+
+  
+  cM = new gigaContextMenuCollection('cM'); // The name MUST also be passed as a parameter in the form of a string.
+  cM2 = new gigaContextMenuCollection('cM2');
+  
+    /* Create ALL menus needed for operation now, important if you use branching 
+  
+     the first menu is the ROOT, from which it will close all it's menus again.
+  */
+  
+
+  cM.addMenu('m001',165);
+  cM2.addMenu('m001',165);
+
+  
+  cM.menus['m001'].addItem('i001','Enable',"javascript:alert('Id: ' + currSiteNodeId);");
+  cM.menus['m001'].addItem('i002','---','');
+  cM.menus['m001'].addItem('i003','Edit Site','javascript:;');
+  cM.menus['m001'].addItem('i004','Edit Site Configuration','javascript:;');
+  cM.menus['m001'].addItem('i005','Preview Site','javascript:;');
+
+  cM.menus['m001'].addItem('i006','---','');
+  cM.menus['m001'].addItem('i007','Copy','javascript:;');
+  cM.menus['m001'].addItem('i008','Paste','javascript:;');
+  cM.menus['m001'].menuItems['i008'].ghosted = true;
+  cM.menus['m001'].addItem('i009','Move','javascript:;');
+  cM.menus['m001'].addItem('i010','Delete','javascript:;');
+  cM.menus['m001'].addItem('i011','---','');
+  cM.menus['m001'].addItem('i012','Properties','javascript:;');
+
+  cM2.menus['m001'].addItem('i001','Disable','javascript:;');
+  cM2.menus['m001'].addItem('i002','---','');
+  cM2.menus['m001'].addItem('i003','Edit Site','javascript:;');
+  cM2.menus['m001'].addItem('i004','Edit Site Configuration','javascript:;');
+  cM2.menus['m001'].addItem('i005','Preview Site','javascript:;');
+
+  cM2.menus['m001'].addItem('i006','---','');
+  cM2.menus['m001'].addItem('i007','Copy','javascript:;');
+  cM2.menus['m001'].addItem('i008','Paste','javascript:;');
+  cM2.menus['m001'].menuItems['i008'].ghosted = true;
+  cM2.menus['m001'].addItem('i009','Move','javascript:;');
+  cM2.menus['m001'].addItem('i010','Delete','javascript:;');
+  cM2.menus['m001'].addItem('i011','---','');
+  cM2.menus['m001'].addItem('i012','Properties','javascript:;');
+
+  
+   drawContextMenus();
+  
+}
+
+
+var isAdmin = false;
+ 
+
+function drawContextMenus() {
+
+
+   cM.menus['m001'].menuItems['i001'].ghosted = !isAdmin;
+   cM.menus['m001'].menuItems['i004'].ghosted = !isAdmin;
+   cM.menus['m001'].menuItems['i007'].ghosted = !isAdmin;
+   cM.menus['m001'].menuItems['i009'].ghosted = !isAdmin;
+   cM.menus['m001'].menuItems['i010'].ghosted = !isAdmin;
+
+   cM2.menus['m001'].menuItems['i001'].ghosted = !isAdmin;
+   cM2.menus['m001'].menuItems['i004'].ghosted = !isAdmin;
+   cM2.menus['m001'].menuItems['i007'].ghosted = !isAdmin;
+   cM2.menus['m001'].menuItems['i009'].ghosted = !isAdmin;
+   cM2.menus['m001'].menuItems['i010'].ghosted = !isAdmin;
+
+  cM.menus['m001'].drawMenu();
+  cM2.menus['m001'].drawMenu();
+
+}
+	
+</script>
+<link rel="stylesheet" type="text/css" href="../css/site_matrix.css">
+</head>
+
+<body onload="initMatrix();" alink="#00ff00" vlink="#000000" bgcolor="#ffffff">
+
+    <!-- following line must be placed in the bottom of the body tag -->
+	<script language="javAscript">if((navigator.appName == "Microsoft Internet Explorer")) {document.write('<div id="dpIE"></div>');} 
+
+	// here comes the lame netscape fix
+	// else { if(isNav) { for(i = 0; i < numOfNodes; i++) {document.write('<br>');}}}</script>
 </body>
 </html>
 ]]>
 </TEMPLATE>
 
-<domainrow>
-<![CDATA[
-  <tr align="center">
-    <td colspan="2">&nbsp;</td>
-]]><process>domains</process><![CDATA[
-  </tr>
-]]>
-</domainrow>
 
-<domaindot>
-<![CDATA[<td bgcolor="#bbbbbb">]]><process>domainname</process><![CDATA[</td>]]>
-</domaindot>
+<domain>
+	<![CDATA[sM.addSiteDomain('d]]><process>x</process><![CDATA[',']]><process>shortname</process><![CDATA[',']]><process>name</process><![CDATA[');]]>
+</domain>
 
-<firstrow>
-<![CDATA[
-  <tr align="center">
-    <td bgcolor="#bbbbbb" rowspan="]]><process>categorycount</process><![CDATA["><img src="../img/text_sitetype_rotated.gif" width="12" height="43"></td>
-    <td bgcolor="#bbbbbb" align="left">]]><process>categoryname</process><![CDATA[</td>]]>
-    <process>dots</process>
-<![CDATA[
-  </tr>
-]]>
-</firstrow>
+<category>
+	<![CDATA[sM.addSiteType('t]]><process>y</process><![CDATA[', ']]><process>name</process><![CDATA[');]]>
+</category>
 
-<row>
-<![CDATA[
-  <tr align="center">
-    <td bgcolor="#bbbbbb" align="left">]]><process>categoryname</process><![CDATA[</td>]]>
-    <process>dots</process>
-<![CDATA[
-  </tr>
-]]>
-</row>
-
-<emptydot>
-<![CDATA[<td bgcolor="#eeeeee">&nbsp;</td>]]>
-</emptydot>
-
-<activedot>
-<![CDATA[<td bgcolor="#eeeeee"> <a href="javascript:showThing(']]><process>id</process><![CDATA[');">[p]</a> <a href="javascript:editThing(']]><process>id</process><![CDATA[');">[e]</a> </td>]]>
-</activedot>
-
-<inactivedot>
-<![CDATA[<td bgcolor="#eeeeee"> ? </td>]]>
-</inactivedot>
+<sitenode>
+	<![CDATA[sM.addSiteNode('n]]><process>id</process><![CDATA[', ']]><process>name</process><![CDATA[', 'd]]><process>x</process><![CDATA[', 't]]><process>y</process><![CDATA[', true);]]>
+</sitenode>
 
 </XMLTEMPLATE>

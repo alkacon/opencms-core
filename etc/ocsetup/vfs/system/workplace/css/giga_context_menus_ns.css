@@ -1,0 +1,22 @@
+a.menuItem  {
+	font-size : 13px;
+	font-family : verdana;
+	color: #000000;
+	text-decoration: none;
+}
+
+a.menuItem:active  {
+	color: #ffffff;
+}
+
+a.menuItem:hover  {
+	color: #ffffff;
+}
+
+
+.ghostItem  {
+	font-size : 13px;
+	font-family : verdana;
+	color: #888888;
+	text-decoration: none;
+}

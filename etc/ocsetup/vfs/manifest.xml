@@ -2137,6 +2137,42 @@
 			<properties/>
 		</file>
 		<file>
+			<source>css/giga_context_menus_ie.css</source>
+			<destination>system/workplace/css/giga_context_menus_ie.css</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>css/giga_context_menus_ns.css</source>
+			<destination>system/workplace/css/giga_context_menus_ns.css</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>css/site_matrix.css</source>
+			<destination>system/workplace/css/site_matrix.css</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>css/warp_layer.css</source>
+			<destination>system/workplace/css/warp_layer.css</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
 			<destination>system/workplace/help</destination>
 			<type>folder</type>
 			<user>Admin</user>
@@ -6733,6 +6769,33 @@
 			<properties/>
 		</file>
 		<file>
+			<source>pics/system/sitedot.gif</source>
+			<destination>system/workplace/pics/sitedot.gif</destination>
+			<type>image</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>15</access>
+			<properties/>
+		</file>
+		<file>
+			<source>pics/system/sitedot_off.gif</source>
+			<destination>system/workplace/pics/sitedot_off.gif</destination>
+			<type>image</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>15</access>
+			<properties/>
+		</file>
+		<file>
+			<source>pics/system/sitedot_on.gif</source>
+			<destination>system/workplace/pics/sitedot_on.gif</destination>
+			<type>image</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>15</access>
+			<properties/>
+		</file>
+		<file>
 			<source>pics/system/pixel_blue.gif</source>
 			<destination>system/workplace/pics/pixel_blue.gif</destination>
 			<type>image</type>
@@ -7993,6 +8056,59 @@
 		<file>
 			<source>templates/js/opencms_timer.js</source>
 			<destination>system/workplace/templates/js/opencms_timer.js</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<destination>system/workplace/templates/js/gigaMatrix</destination>
+			<type>folder</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>templates/js/gigaMatrix/giga_context_menu.js</source>
+			<destination>system/workplace/templates/js/gigaMatrix/giga_context_menu.js</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>templates/js/gigaMatrix/giga_site_matrix.js</source>
+			<destination>system/workplace/templates/js/gigaMatrix/giga_site_matrix.js</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>templates/js/gigaMatrix/style_giga_context_menu.js</source>
+			<destination>system/workplace/templates/js/gigaMatrix/style_giga_context_menu.js</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>templates/js/gigaMatrix/table.js</source>
+			<destination>system/workplace/templates/js/gigaMatrix/table.js</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>templates/js/gigaMatrix/warp_layer.js</source>
+			<destination>system/workplace/templates/js/gigaMatrix/warp_layer.js</destination>
 			<type>plain</type>
 			<user>Admin</user>
 			<group>Users</group>
