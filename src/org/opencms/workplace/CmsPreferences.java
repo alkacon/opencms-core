@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/02/26 11:35:35 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/03/07 19:21:54 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.12
  */
@@ -668,32 +668,29 @@ public class CmsPreferences extends CmsTabDialog {
         
         List options = new ArrayList();
         List values = new ArrayList();
-        int selectedIndex = 0;        
+        int selectedIndex = 0;                
         
-        // get the Vector of available views from the registry      
-        Vector viewNames = new Vector();
-        Vector viewLinks = new Vector();
-        getCms().getRegistry().getViews(viewNames, viewLinks);                       
-
         // loop through the vectors and fill the result vectors
-        int numViews = viewNames.size();
-        for (int i = 0; i<numViews; i++) {
-            String loopName = (String)viewNames.get(i);
-            String loopLink = (String)viewLinks.get(i);
+        Iterator i = OpenCms.getWorkplaceManager().getViews().iterator();    
+        int count = -1;
+        while (i.hasNext()) {
+            count++;
+            CmsWorkplaceView view = (CmsWorkplaceView)i.next();
+            String viewKey = view.getKey();
+            String viewUri = view.getUri();
             
             boolean visible = true;
             try {
-                getCms().readFileHeader(loopLink);
+                getCms().readFileHeader(viewUri);
             } catch (CmsException e) {
                 visible = false;
             }
             if (visible) {
-                //loopLink = getJsp().link(loopLink);
-                options.add(key(loopName));
-                values.add(loopLink);
+                options.add(key(viewKey));
+                values.add(viewUri);
 
-                if (loopLink.equals(getParamTabWpView())) {
-                    selectedIndex = i;
+                if (viewUri.equals(getParamTabWpView())) {
+                    selectedIndex = count;
                 }
             }
         }        

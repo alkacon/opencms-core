@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2004/03/07 19:22:11 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.65 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.66 $ $Date: 2004/03/07 19:22:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -346,31 +346,31 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		}
 		Vector viewNames = new Vector();
 		Vector viewLinks = new Vector();
+        int currentViewIndex = 0;
 
-		// get the List of available views from the Registry
-		int numViews = (cms.getRegistry()).getViews(viewNames, viewLinks);
-		int currentViewIndex = 0;
-
-		// Loop through the vectors and fill the resultvectors
-		for (int i = 0; i < numViews; i++) {
-			String loopName = (String) viewNames.elementAt(i);
-			String loopLink = (String) viewLinks.elementAt(i);
-            
-			boolean visible = true;
-			try {
-				cms.readFileHeader(loopLink);
-			}
-			catch (CmsException e) {
-				visible = false;
-			}
-			if (visible) {
-				if (loopLink.equals(currentView)) {
-					currentViewIndex = values.size();
-				}
-				names.addElement(lang.getLanguageValue(loopName));
-				values.addElement(loopLink);
-			}
-		}
+//		// get the List of available views from the Registry
+//		int numViews = (cms.getRegistry()).getViews(viewNames, viewLinks);
+//
+//		// Loop through the vectors and fill the resultvectors
+//		for (int i = 0; i < numViews; i++) {
+//			String loopName = (String) viewNames.elementAt(i);
+//			String loopLink = (String) viewLinks.elementAt(i);
+//            
+//			boolean visible = true;
+//			try {
+//				cms.readFileHeader(loopLink);
+//			}
+//			catch (CmsException e) {
+//				visible = false;
+//			}
+//			if (visible) {
+//				if (loopLink.equals(currentView)) {
+//					currentViewIndex = values.size();
+//				}
+//				names.addElement(lang.getLanguageValue(loopName));
+//				values.addElement(loopLink);
+//			}
+//		}
 		return new Integer(currentViewIndex);
 	}
 

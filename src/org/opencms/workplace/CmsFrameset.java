@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/03/07 19:21:54 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
-
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -60,14 +59,11 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 5.1
  */
 public class CmsFrameset extends CmsWorkplace {
-    
-    private static Vector m_viewNames = null;
-    private static Vector m_viewLinks = null;
     
     /**
      * Public constructor.<p>
@@ -321,38 +317,31 @@ public class CmsFrameset extends CmsWorkplace {
         
         List options = new ArrayList();
         List values = new ArrayList();
-        int selectedIndex = 0;        
+        int selectedIndex = 0;                
         
-        // get the Vector of available views from the Registry, but only once
-        if (m_viewLinks == null) {
-            synchronized (this) {
-                Vector viewNames = new Vector();
-                Vector viewLinks = new Vector();
-                getCms().getRegistry().getViews(viewNames, viewLinks);
-                m_viewNames = viewNames;
-                m_viewLinks = viewLinks;
-            }
-        }
-
         // loop through the vectors and fill the result vectors
-        int numViews = m_viewNames.size();
-        for (int i = 0; i<numViews; i++) {
-            String loopName = (String)m_viewNames.get(i);
-            String loopLink = (String)m_viewLinks.get(i);
+        Iterator i = OpenCms.getWorkplaceManager().getViews().iterator();    
+        int count = -1;
+        while (i.hasNext()) {
+            count++;
+            CmsWorkplaceView view = (CmsWorkplaceView)i.next();
+            String viewKey = view.getKey();
+            String viewUri = view.getUri();
             
             boolean visible = true;
             try {
-                getCms().readFileHeader(loopLink);
+                getCms().readFileHeader(viewUri);
             } catch (CmsException e) {
                 visible = false;
             }
             if (visible) {
-                loopLink = getJsp().link(loopLink);
-                options.add(key(loopName));
+                String loopLink = getJsp().link(viewUri);
+                
+                options.add(key(viewKey));
                 values.add(loopLink);
 
                 if (loopLink.equals(getSettings().getViewUri())) {
-                    selectedIndex = i;
+                    selectedIndex = count;
                 }
             }
         }        

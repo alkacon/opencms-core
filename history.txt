@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/03/06 18:46:05 $
- * Version: $Revision: 1.531 $
+ * Date   : $Date: 2004/03/07 19:18:44 $
+ * Version: $Revision: 1.532 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ OpenCms 5.3.4 Ix - March xx, 2004
 ! VFS configuration moved to new "opencms.xml" configuration
 ! Import / Export configuration moved to new "opencms.xml" configuration
 ! Import now supports conversion of multiple page bodies to xmlpage elements  
+! Workplace configuration moved to new "opencms.xml" configuration
 
 OpenCms 5.3.3 Ix - March 01, 2004
 - Refactored classes com.opencms.file.* to org.opencms.file.*

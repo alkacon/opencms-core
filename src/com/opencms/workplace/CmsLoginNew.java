@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2004/02/22 13:52:26 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/03/07 19:22:11 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.CmsWorkplaceView;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
@@ -46,14 +47,15 @@ import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Template class for displaying the login screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -172,7 +174,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
             setStartProjectId(cms, session, startProjectId);
 
             // set startup task view
-            setStartTaskId(cms, session, startTaskId);            
+            setStartTaskId(session, startTaskId);            
             
             // set the additional user preferences
             Hashtable preferences = (Hashtable)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_PREFERENCES);
@@ -266,24 +268,21 @@ public class CmsLoginNew extends CmsXmlTemplate {
     /**
      * Sets the startup view to display the selected start task.
      * 
-     * @param cms the initialized CmsObject
      * @param session the initialized user session 
      * @param startTaskId the id of the task to display
-     * @throws CmsException in case of issues reading the registry
      */
-    private void setStartTaskId(CmsObject cms, I_CmsSession session, String startTaskId) 
-    throws CmsException {
-        if ((startTaskId == null) || ("".equals(startTaskId))) return;
-        Vector viewNames = new Vector();
-        Vector viewLinks = new Vector();
-        // this will initialize the Vectors with the values from the registry.xml
-        cms.getRegistry().getViews(viewNames, viewLinks);
+    private void setStartTaskId(I_CmsSession session, String startTaskId) {
+        if ((startTaskId == null) || ("".equals(startTaskId))) { 
+            return;
+        }
         String link = "";
-        for (int i = 0; i < viewNames.size(); i++) {
-            if (((String)viewNames.elementAt(i)).equals("select.tasks")) {
-                link = (String)viewLinks.elementAt(i);
+        Iterator i = OpenCms.getWorkplaceManager().getViews().iterator();
+        while (i.hasNext()) {
+            CmsWorkplaceView view = (CmsWorkplaceView)i.next();
+            if (view.getKey().equals("select.tasks")) {
+                link = view.getUri();
                 break;
-            }
+            }            
         }
         session.putValue(I_CmsWpConstants.C_PARA_STARTTASKID, startTaskId);
         session.putValue(I_CmsWpConstants.C_PARA_VIEW, link);

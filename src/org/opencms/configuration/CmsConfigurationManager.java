@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/03/06 18:47:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/07 19:22:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -148,7 +148,7 @@ public class CmsConfigurationManager {
             I_CmsXmlConfiguration configuration = (I_CmsXmlConfiguration)i.next();
             configurationElement
                 .addElement(N_CONFIG)
-                .addAttribute(A_CmsXmlConfiguration.A_CLASS, configuration.getClass().getName());
+                .addAttribute(I_CmsXmlConfiguration.A_CLASS, configuration.getClass().getName());
             configuration.generateXml(root);
         }
         // return the resulting document
@@ -191,12 +191,12 @@ public class CmsConfigurationManager {
         
         // add rule for <configuration> node        
         m_digester.addCallMethod("*/" + N_CONFIGURATION + "/" + N_CONFIG, "addConfiguration", 1);
-        m_digester.addCallParam("*/" + N_CONFIGURATION + "/" + N_CONFIG, 0, A_CmsXmlConfiguration.A_CLASS);    
+        m_digester.addCallParam("*/" + N_CONFIGURATION + "/" + N_CONFIG, 0, I_CmsXmlConfiguration.A_CLASS);    
         
         // generic <param> parameter rules
-        m_digester.addCallMethod("*/" + A_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
-        m_digester.addCallParam ("*/" +  A_CmsXmlConfiguration.N_PARAM, 0,  A_CmsXmlConfiguration.A_NAME);
-        m_digester.addCallParam ("*/" +  A_CmsXmlConfiguration.N_PARAM, 1);
+        m_digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
+        m_digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0,  I_CmsXmlConfiguration.A_NAME);
+        m_digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);
         
         // start the parsing process        
         m_digester.parse(url.openStream());        

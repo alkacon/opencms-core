@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/03/06 18:48:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/03/07 19:24:34 $
+ * Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -118,9 +118,6 @@ public class CmsRegistry extends A_CmsXmlContent {
     /** A message digest to check the resource codes */
     private MessageDigest m_digest;
 
-    /** A hashtable with all exportpoints and paths */
-    private Hashtable m_exportpoints = new Hashtable();
-
     /** A hashtable with shortcuts into the dom-structure for each module */
     private Hashtable m_modules = new Hashtable();
 
@@ -143,7 +140,7 @@ public class CmsRegistry extends A_CmsXmlContent {
         super();
         // there is no need of a real copy for this parameters
         m_modules = reg.m_modules;
-        m_exportpoints = reg.m_exportpoints;
+        // m_exportpoints = reg.m_exportpoints;
         m_regFileName = reg.m_regFileName;
         m_xmlReg = reg.m_xmlReg;
         // store the cms-object for this instance.
@@ -812,45 +809,6 @@ public class CmsRegistry extends A_CmsXmlContent {
         String versions = ((String)histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_VERSIONS));          
         return new Integer(versions).intValue();
     }
-    
-    /**
-     * This method returns the exportpoints and the destination paths in the RFS.<p>
-     *
-     * @return Hashtable with the exportpoints and the destination paths in the RFS
-     */
-    public Hashtable getExportpoints() {
-        return getExportpoints(false);
-    }
-
-
-    /**
-     * This method returns the exportpoints and the destination paths in the RFS.<p>
-     *
-     * @param refresh if true, the Hashtable of export points will be rebuilt
-     * @return Hashtable with the exportpoints and the destination paths in the RFS
-     */
-    public Hashtable getExportpoints(boolean refresh) {
-        if (refresh || (m_exportpoints == null) || (m_exportpoints.size() == 0)) {
-            m_exportpoints = new Hashtable();
-            try {
-                NodeList exportpointsList = m_xmlReg.getElementsByTagName("exportpoint");
-                for (int x = 0; x < exportpointsList.getLength(); x++) {
-                    try {
-                        String curExportpoint = ((Element)exportpointsList.item(x)).getElementsByTagName("source").item(0).getFirstChild().getNodeValue();
-                        String curPath = ((Element)exportpointsList.item(x)).getElementsByTagName("destination").item(0).getFirstChild().getNodeValue();
-                        m_exportpoints.put(curExportpoint, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(curPath)); 
-                    } catch (Exception exc) {
-                        exc.printStackTrace();
-                        // ignore the exception and try the next view-pair.
-                    }
-                }
-            } catch (Exception exc) {
-                exc.printStackTrace();
-                // no return-values
-            }
-        }
-        return m_exportpoints;
-    }
 
     /**
      * Returns the author of a module.<p>
@@ -1499,33 +1457,6 @@ public class CmsRegistry extends A_CmsXmlContent {
         retValue.copyInto(retValueArray);
         return retValueArray;
     }
-    
-    /**
-     * Returns a list of all configured dialog handler classes.<p>
-     *
-     * @return a list of all configured dialog handler classes
-     */
-    public List getDialogHandler() {
-        return getSystemSubNodes("dialoghandler");
-    }
-    
-    /**
-     * Returns a list of all configured editor handler classes.<p>
-     *
-     * @return a list of all configured editor handler classes
-     */
-    public List getEditorHandler() {
-        return getSystemSubNodes("editorhandler");
-    }
-    
-    /**
-     * Returns a list of all configured editor action classes.<p>
-     *
-     * @return a list of all configured editor action classes
-     */
-    public List getEditorAction() {
-        return getSystemSubNodes("editoraction");
-    }
 
     /**
      * Returns the configured locale handler class.<p>
@@ -1756,34 +1687,7 @@ public class CmsRegistry extends A_CmsXmlContent {
         }
         return values;
     }
-    
-    /**
-     * Returns all views and uris for all installed modules.<p>
-     *
-     * @param views in this Vector the views will be returned
-     * @param uris in this Vector the uris vor the views will be returned
-     * @return int the number of views
-     */
-    public int getViews(Vector views, Vector uris) {
-        try {
-            NodeList viewList = m_xmlReg.getElementsByTagName("view");
-            for (int x = 0; x < viewList.getLength(); x++) {
-                try {
-                    String name = ((Element)viewList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-                    String url = ((Element)viewList.item(x)).getElementsByTagName("url").item(0).getFirstChild().getNodeValue();
-                    views.addElement(name);
-                    uris.addElement(url);
-                } catch (Exception exc) {
-                    // ignore the exception and try the next view-pair.
-                }
-            }
-            return views.size();
-        } catch (Exception exc) {
-            // no return-vaules
-            return 0;
-        }
-    }
-
+ 
     /**
      * Gets the expected tagname for the XML documents of this content type
      * @return Expected XML tagname.
@@ -2040,9 +1944,6 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @throws Exception in case something goes wrong
      */
     private void init(boolean booting) throws Exception {
-        // clear and refill the hashtable for the exportpoints
-        m_exportpoints.clear();
-        getExportpoints();
         // get the entry-points for the modules
         NodeList modules = m_xmlReg.getElementsByTagName("module");
         // create the hashtable for the shortcuts

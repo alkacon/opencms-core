@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2004/03/06 18:47:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/07 19:22:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,9 +80,6 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     
     /** The import immutable resource node */
     protected static final String N_IMMUTABLES = "immutables";
-    
-    /** An individual immutable resource node */
-    protected static final String N_RESOURCE = "resource";
 
     /** The principal translation node */
     protected static final String N_PRINCIPALTRANSLATIONS = "princialtranslations";
@@ -166,7 +163,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      * @see org.opencms.configuration.I_CmsXmlConfiguration#generateXml(org.dom4j.Element)
      */
     public Element generateXml(Element parent) {
-        // generate vfs node and subnodes
+        // generate import/export node and subnodes
         Element importexportElement = parent.addElement(N_IMPORTEXPORT);
         
         Element resourceloadersElement = importexportElement.addElement(N_IMPORTEXPORTHANDLERS);

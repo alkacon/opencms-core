@@ -4,6 +4,7 @@
 <opencms>
     <configuration>
         <config class="org.opencms.configuration.CmsVfsConfiguration"/>
+        <config class="org.opencms.configuration.CmsWorkplaceConfiguration"/>
         <config class="org.opencms.configuration.CmsImportExportConfiguration"/>
         <config class="org.opencms.configuration.CmsTestConfiguration"/>
     </configuration>  
@@ -36,6 +37,32 @@
             <type class="org.opencms.file.CmsResourceTypeXmlPage" />
         </resourcetypes>        
     </vfs>   
+    <workplace>
+    	<defaultlocale>en</defaultlocale>
+    	<dialoghandlers>
+    		<dialoghandler class="org.opencms.workplace.CmsDelete"/>
+    		<dialoghandler class="org.opencms.workplace.CmsLock"/>
+    		<dialoghandler class="org.opencms.workplace.CmsProperty"/>
+    	</dialoghandlers>
+    	<editorhandler class="org.opencms.workplace.editor.CmsEditorHandler"/>
+    	<editoraction class="org.opencms.workplace.editor.CmsEditorActionDefault"/>
+    	<views>
+    		<view key="select.explorer" uri="/system/workplace/jsp/explorer_fs.html" order="10"/>
+    		<view key="select.admin" uri="/system/workplace/action/administration.html" order="20"/>
+    		<view key="select.tasks" uri="/system/workplace/action/tasks.html" order="30"/>
+    	</views>
+    	<exportpoints>
+    		<exportpoint uri="/system/workplace/resources/" destination="resources/"/>
+    		<exportpoint uri="/system/workplace/skins/" destination="skins/"/>
+    	</exportpoints>
+    	<autolock>true</autolock>
+    	<enableusermanagement>true</enableusermanagement>
+    	<maxfileuploadsize>-1</maxfileuploadsize>
+    	<labledfolders>
+    		<resource uri="/system/"/>
+    		<resource uri="/system/login/"/>
+    	</labledfolders>    	
+    </workplace>      
 	<importexport>
 		<importexporthandlers>
 	        <importexporthandler class="com.opencms.legacy.CmsCosImportExportHandler"/>
@@ -83,5 +110,5 @@
         		<property name="module"/>
         	</ignoredproperties>     			
 		</import>
-	</importexport>            
+	</importexport>        
 </opencms>    

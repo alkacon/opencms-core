@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/02/14 00:22:01 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/03/07 19:21:28 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.main;
 
 import org.opencms.db.CmsDefaultUsers;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsLoaderManager;
@@ -43,10 +45,8 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.workplace.CmsWorkplaceManager;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
-
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public final class OpenCms {
     
@@ -67,7 +67,7 @@ public final class OpenCms {
     private OpenCms() {
         // empty
     }
-
+    
     /**
      * Add a cms event listener that listens to all events.<p>
      *
@@ -134,6 +134,25 @@ public final class OpenCms {
     public static CmsDefaultUsers getDefaultUsers() {
         return OpenCmsCore.getInstance().getDefaultUsers();
     }
+    /**
+     * Returns the configured export points,
+     * the returned set being an unmodifiable set.<p>
+     * 
+     * @return an unmodifiable set of the configured export points
+     */
+    public static Set getExportPoints() {
+        return OpenCmsCore.getInstance().getExportPoints();
+    }
+    
+    /**
+     * Returns the initialized import/export manager, 
+     * which contains information about how to handle imported resources.<p> 
+     * 
+     * @return the initialized import/export manager
+     */
+    public static CmsImportExportManager getImportExportManager() {
+        return OpenCmsCore.getInstance().getImportExportManager();
+    }    
     
     /**
      * Returns the link manager to resolve links in &lt;link&gt; tags.<p>
@@ -237,6 +256,16 @@ public final class OpenCms {
     }
 
     /**
+     * Returns the initialized search manager,
+     * which provides indexing and searching operations.<p>
+     * 
+     * @return the initialized search manager
+     */
+    public static CmsSearchManager getSearchManager() {
+        return OpenCmsCore.getInstance().getSearchManager();
+    }
+
+    /**
      * Returns the session info storage for all active users.<p>
      * 
      * @return the session info storage for all active users
@@ -256,26 +285,6 @@ public final class OpenCms {
     }
     
     /**
-     * Returns the initialized import/export manager, 
-     * which contains information about how to handle imported resources.<p> 
-     * 
-     * @return the initialized import/export manager
-     */
-    public static CmsImportExportManager getImportExportManager() {
-        return OpenCmsCore.getInstance().getImportExportManager();
-    }    
-
-    /**
-     * Returns the initialized search manager,
-     * which provides indexing and searching operations.<p>
-     * 
-     * @return the initialized search manager
-     */
-    public static CmsSearchManager getSearchManager() {
-        return OpenCmsCore.getInstance().getSearchManager();
-    }
-    
-    /**
      * Returns the properties for the static export.<p>
      * 
      * @return the properties for the static export
@@ -283,6 +292,15 @@ public final class OpenCms {
     public static CmsStaticExportManager getStaticExportManager() {
         return OpenCmsCore.getInstance().getStaticExportManager();
     }
+    
+    /**
+     * Returns the system information storage.<p> 
+     * 
+     * @return the system information storage
+     */
+    public static CmsSystemInfo getSystemInfo() {
+        return OpenCmsCore.getInstance().getSystemInfo();
+    }    
     
     /**
      * Returns the cron manager.<p>
@@ -353,14 +371,5 @@ public final class OpenCms {
      */
     public static void setRuntimeProperty(Object key, Object value) {
         OpenCmsCore.getInstance().setRuntimeProperty(key, value);
-    }    
-    
-    /**
-     * Returns the system information storage.<p> 
-     * 
-     * @return the system information storage
-     */
-    public static CmsSystemInfo getSystemInfo() {
-        return OpenCmsCore.getInstance().getSystemInfo();
     }    
 }

@@ -3,7 +3,7 @@
 The root configuration node is calles "opencms".
 
 -->
-<!ELEMENT opencms (configuration, tests, vfs, importexport)>
+<!ELEMENT opencms (configuration, tests, vfs, workplace, importexport)>
 
 
 
@@ -41,7 +41,9 @@ Test node configuration.
 <vfs> node options.
 
 -->
-<!ELEMENT vfs (resourceloaders, resourcetypes)>
+<!ELEMENT vfs (
+	resourceloaders, 
+	resourcetypes )>
 
 <!ELEMENT resourceloaders (loader+)>
 <!ELEMENT loader (param*)>
@@ -51,6 +53,107 @@ Test node configuration.
 <!ELEMENT type (param*)>
 <!ATTLIST type class CDATA #REQUIRED>
 
+<!--
+# <workplace node options.
+-->
+<!ELEMENT workplace (
+	defaultlocale,
+	dialoghandlers, 
+	editorhandler, 
+	editoraction, 
+	views,
+	exportpoints, 
+	autolock?, 
+	enableusermanagement?, 
+	maxfileuploadsize?, 
+	labledfolders? )>
+
+<!--
+# The default locale of the OpenCms workplace that is selected if a user
+# log into the workplace for the first time, of if his current selection 
+# is invalid. User can change this setting individually with the preference dialog.
+-->
+<!ELEMENT defaultlocale (#PCDATA)>
+
+<!--
+# The worklace dialog handlers allow extending / changing the default
+# Workplace dialogs with another, customized implementation.
+# For example, if your application requires a lot of special properties,
+# you can implement your own property dialog handler that contains only
+# the properties required by your application in a more user friendly form.
+-->
+<!ELEMENT dialoghandlers (dialoghandler+)>
+<!ELEMENT dialoghandler EMPTY>
+<!ATTLIST dialoghandler class CDATA #REQUIRED>
+
+<!--
+# Using editor handler and editor action classes you can
+# modify the behaviour of the "edit" action in the OpenCms Workplace.
+-->
+<!ELEMENT editorhandler EMPTY>
+<!ATTLIST editorhandler class CDATA #REQUIRED>
+
+<!ELEMENT editoraction EMPTY>
+<!ATTLIST editoraction class CDATA #REQUIRED>
+
+<!--
+# The Workplace views are displayed in the top frame of the workplace.
+# Each view is a link to a certain resource in the OpenCms VFS.
+# Usually this resource is a JSP or some other template that creates
+# a user interface with special options.
+-->
+<!ELEMENT views (view+)>
+<!ELEMENT view EMPTY>
+<!ATTLIST view key CDATA #REQUIRED uri CDATA #REQUIRED order CDATA #REQUIRED>
+
+<!--
+# An export point is a folder inside the OpenCms VFS that is copied 1:1 to a 
+# location in the real file system during publishing. This is for example used to 
+# copy Java classes, JAR files or other system resouces from the VFS to the WEB-INF/classes or 
+# WEB-INF/lib folder. No link processing is done for resources written with export points. 
+-->
+<!ELEMENT exportpoints (exportpoint+)>
+<!ELEMENT exportpoint EMPTY>
+<!ATTLIST exportpoint uri CDATA #REQUIRED destination CDATA #REQUIRED>
+
+<!--
+# Enables or disables the automatic locking of resources in the explorer view.
+# If this is set to "true" (the default) edit operations can be performed
+# on a resource that is unlocked, and the resource will be automatically locked
+# for the user that performs the operation. If set to "false", an explicit
+# locking of the resource is required.
+-->
+<!ELEMENT autolock (#PCDATA)>
+
+<!--
+# Enables or disables the icons for editing users and groups 
+# in the user management view. Set this to "false" if you
+# administrate groups and users with an external tool.
+# The default is "true".
+-->
+<!ELEMENT enableusermanagement (#PCDATA)>
+
+<!--
+# Limits the size of the files which can be uploaded
+# by users to the VFS. Limitation does not apply for members
+# of the Administrators group.
+# The value is the maximum file size in kilobytes.
+# Disable the limitation by setting the value to -1, 
+# or leaving this node empty.
+-->
+<!ELEMENT maxfileuploadsize (#PCDATA)>
+
+<!--
+# List of labled folders. If a resource has a sibling in one of these folders,
+# a special label icon will be shown in the explorer view on all siblings.
+# Use this feature to identify "dangerous" folders (e.g. folders that 
+# contain material that will be public available after publishing) 
+# to prevent accidental creation of siblings in this folder to a resource that 
+# contains sensitive data.
+-->
+<!ELEMENT labledfolders (resource+)>
+<!ELEMENT resource EMPTY>
+<!ATTLIST resource uri CDATA #REQUIRED>
 
 <!--
 # <importexport> node options.
@@ -59,7 +162,9 @@ Test node configuration.
 # content from old OpenCms versions, you usually do not need any special 
 # configuration. 
 -->
-<!ELEMENT importexport (importexporthandlers, import)>
+<!ELEMENT importexport (
+	importexporthandlers, 
+	import )>
 
 <!--
 # List of import / export handlers.
@@ -122,8 +227,6 @@ Test node configuration.
 # to another system.
 -->
 <!ELEMENT immutables (resource*)>
-<!ELEMENT resource EMPTY>
-<!ATTLIST resource uri CDATA #REQUIRED>
 
 <!--
 # Import principal (ie. user/group) name translation:
@@ -141,4 +244,12 @@ Test node configuration.
 <!ELEMENT ignoredproperties (property*)>
 <!ELEMENT property EMPTY>
 <!ATTLIST property name CDATA #REQUIRED>
+
+
+
+
+
+
+<!ELEMENT localehandler EMPTY>
+<!ATTLIST localehandler class CDATA #REQUIRED>
 

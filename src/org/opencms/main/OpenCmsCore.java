@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/03/06 18:48:54 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2004/03/07 19:21:28 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.main;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
+import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.cron.CmsCronEntry;
 import org.opencms.cron.CmsCronScheduleJob;
 import org.opencms.cron.CmsCronScheduler;
@@ -104,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.99 $
+ * @version $Revision: 1.100 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -120,6 +121,9 @@ public final class OpenCmsCore {
 
     /** Prefix for a critical init error */
     public static final String C_MSG_CRITICAL_ERROR = "Critical init error/";
+
+    /** Request parameter to force locale selection */
+    public static final String C_PARAMETER_LOCALE = "_locale";
 
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
@@ -150,6 +154,9 @@ public final class OpenCmsCore {
 
     /** List to save the event listeners in */
     private Map m_eventListeners;
+
+    /** The set of configured export points */
+    private Set m_exportPoints;
 
     /** The cron manager */
     // TODO enable the cron manager
@@ -220,10 +227,7 @@ public final class OpenCmsCore {
 
     /** The workplace manager contains information about the global workplace settings */
     private CmsWorkplaceManager m_workplaceManager;
-
-    /** Request parameter to force locale selection */
-    public static final String C_PARAMETER_LOCALE = "_locale";
-
+    
     /**
      * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
      * @throws CmsInitException in case of errors during the initialization
@@ -255,6 +259,29 @@ public final class OpenCmsCore {
             }
         }
         return m_instance;
+    }
+    
+    /**
+     * Adds the given set of export points to the list of all configured export points.<p> 
+     * 
+     * @param exportPoints the export points to add
+     */
+    public void addExportPoints(Set exportPoints) {
+        // create a new immutable set of export points
+        HashSet newSet = new HashSet(m_exportPoints.size() + exportPoints.size());
+        newSet.addAll(exportPoints);
+        newSet.addAll(m_exportPoints);
+        m_exportPoints = Collections.unmodifiableSet(newSet);
+    }
+    
+    /**
+     * Returns the configured export points,
+     * the returned set being an unmodifiable set.<p>
+     * 
+     * @return an unmodifiable set of the configured export points
+     */
+    public Set getExportPoints() {
+        return m_exportPoints;
     }
 
     /**
@@ -1115,6 +1142,12 @@ public final class OpenCmsCore {
         CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)configurationManager.getConfiguration(CmsImportExportConfiguration.class);
         m_importExportManager = importExportConfiguration.getImportExportManager();
         
+        // get the workplace configuration
+        CmsWorkplaceConfiguration workplaceConfiguration = (CmsWorkplaceConfiguration)configurationManager.getConfiguration(CmsWorkplaceConfiguration.class);
+        m_workplaceManager = workplaceConfiguration.getWorkplaceManager();
+        // add the export points from the workplace
+        addExportPoints(m_workplaceManager.getExportPoints());                       
+        
         try {
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
@@ -1299,8 +1332,10 @@ public final class OpenCmsCore {
         
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
+        
         // initialize the workplace manager
-        m_workplaceManager = CmsWorkplaceManager.initialize(configuration, adminCms);
+        m_workplaceManager.initialize(adminCms);
+        
         // initialize the locale manager
         m_localeManager = CmsLocaleManager.initialize(configuration, adminCms);
         // initialize the site manager
@@ -1502,6 +1537,7 @@ public final class OpenCmsCore {
         m_eventListeners = new HashMap();
         m_requestHandlers = new HashMap();
         m_systemInfo = new CmsSystemInfo();
+        m_exportPoints = Collections.EMPTY_SET;
     }
 
     /**
