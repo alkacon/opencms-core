@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/09/17 18:08:07 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/09/19 15:33:08 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -181,8 +181,8 @@ public final class Utils {
                                         new Class[] {CmsObject.class, Vector.class}).invoke(
                                         null, new Object[] {cms, changedLinks});
             } catch (Exception ex) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error when publish data of module " + publishModules.elementAt(i), ex);
+                if (OpenCms.getLog(Utils.class).isErrorEnabled()) {
+                    OpenCms.getLog(Utils.class).error("Error when publish data of module " + publishModules.elementAt(i), ex);
                 }
             }
         }

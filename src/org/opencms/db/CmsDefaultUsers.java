@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2003/09/17 18:08:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/19 15:33:08 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $ $Date: 2003/09/17 18:08:33 $
+ * @version $Revision: 1.11 $ $Date: 2003/09/19 15:33:08 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -133,8 +133,8 @@ public class CmsDefaultUsers {
             String[] defaultUserArray = conf.getStringArray("db.default.users");
             defaultUsers = new CmsDefaultUsers(defaultUserArray);        
         } catch (Exception e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Critical init error/6", e);
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isFatalEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).fatal("Critical init error/6", e);
             }
             throw e;
         }

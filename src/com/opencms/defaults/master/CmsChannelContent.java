@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/09/19 14:42:53 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/09/19 15:33:08 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 package com.opencms.defaults.master;
 
 import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -56,8 +55,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.61 $
- * $Date: 2003/09/19 14:42:53 $
+ * $Revision: 1.62 $
+ * $Date: 2003/09/19 15:33:08 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -908,8 +907,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
             getAllResources(cms, "/", content);
         } catch(CmsException e) {
             // ignore the exception
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).warn("Error while reading subfolders of cos root", e);
+            if (OpenCms.getLog(CmsChannelContent.class).isWarnEnabled()) {
+                OpenCms.getLog(CmsChannelContent.class).warn("Error while reading subfolders of cos root", e);
             }
         } finally {
             cms.getRequestContext().restoreSiteRoot();

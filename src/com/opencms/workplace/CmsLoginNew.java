@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/09/17 14:30:13 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/09/19 15:33:08 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -52,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -150,8 +149,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
             }
             
             if (! validLogin) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_USER).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_USER).info("Failed login attempt for user '" + name + "'");
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info("Failed login attempt for user '" + name + "'");
                 }                
                 throw new CmsException("[OpenCms login failed]", CmsException.C_NO_USER);
             }
@@ -160,8 +159,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
             // get a session for this user so that he is authentificated at the
             // end of this request
             session = cms.getRequestContext().getSession(true);
-            if (OpenCms.getLog(CmsLog.CHANNEL_USER).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_USER).info("Login of user '" + username + "'");
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info("Login of user '" + username + "'");
             }
 
             // read the user data from the databsse

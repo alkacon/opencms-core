@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/09/19 14:42:53 $
-* Version: $Revision: 1.94 $
+* Date   : $Date: 2003/09/19 15:33:08 $
+* Version: $Revision: 1.95 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.94 $ $Date: 2003/09/19 14:42:53 $
+ * @version $Revision: 1.95 $ $Date: 2003/09/19 15:33:08 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
@@ -251,8 +251,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * Deletes all files from the file cache.
      */
     public static void clearFileCache() {
-        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Clearing XML file cache.");
+        if (OpenCms.getLog(A_CmsXmlContent.class).isInfoEnabled()) {
+            OpenCms.getLog(A_CmsXmlContent.class).info("Clearing XML file cache.");
         }
         m_filecache.clear();
     }

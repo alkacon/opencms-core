@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/19 15:33:08 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -248,8 +248,8 @@ public final class CmsSiteManager implements Cloneable {
                 }      
             }
         } catch (Throwable t) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error reading site properties", t);
+            if (OpenCms.getLog(CmsSiteManager.class).isErrorEnabled()) {
+                OpenCms.getLog(CmsSiteManager.class).error("Error reading site properties", t);
             }            
         } finally {
             // restore the user's current context 

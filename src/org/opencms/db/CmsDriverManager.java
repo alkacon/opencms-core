@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.245 $
+ * Date   : $Date: 2003/09/19 15:33:08 $
+ * Version: $Revision: 1.246 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.245 $ $Date: 2003/09/19 14:42:52 $
+ * @version $Revision: 1.246 $ $Date: 2003/09/19 15:33:08 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -352,8 +352,8 @@ public class CmsDriverManager extends Object {
             }
         } catch (Exception exc) {
             String message = "Critical error while loading driver manager";
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal(message, exc);
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isFatalEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).fatal(message, exc);
             }
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
@@ -419,8 +419,8 @@ public class CmsDriverManager extends Object {
             }
         } catch (Exception exc) {
             String message = "Critical error while loading driver manager";
-            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isFatalEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_MAIN).fatal(message, exc);
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isFatalEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).fatal(message, exc);
             }
 
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);

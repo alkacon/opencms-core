@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/19 15:33:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,21 +48,12 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsLog implements Log {
 
     /** Initialization messages */
-    public static final String CHANNEL_INIT = "org.opencms.init";
-
-    /** The master log channel */
-    public static final String CHANNEL_MAIN = "org.opencms";
-
-    /** Module messsages */
-    public static final String CHANNEL_MODULE = "org.opencms.module";      
-    
-    /** Messages about user loggin in (and out) */
-    public static final String CHANNEL_USER = "org.opencms.user";
+    public static final String CHANNEL_INIT = "org.opencms.init";    
 
     /** Map that contains the different loggers */
     private Map m_loggers;
@@ -95,6 +86,8 @@ public class CmsLog implements Log {
     protected void init(Configurations configuration, String configFile) {
         m_configFile = configFile;
         m_loggers = new HashMap();
+        // clean up previously initialized loggers
+        LogFactory.releaseAll();
         try {
             // set "opencms.log" variable 
             System.setProperty("opencms.log", configuration.getString("log.file"));
