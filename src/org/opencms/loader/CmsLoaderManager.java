@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2003/07/19 01:51:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/28 14:10:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -94,7 +94,7 @@ public class CmsLoaderManager {
     /**
      * Returns the loader class instance for the given loader id.<p>
      * 
-     * @param id the id of the launcher to return
+     * @param id the id of the loader to return
      * @return the loader class instance for the given loader id
      */
     public I_CmsResourceLoader getLoader(int id) {
