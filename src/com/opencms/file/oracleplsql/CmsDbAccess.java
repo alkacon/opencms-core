@@ -3,11 +3,11 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/01 15:37:20 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2001/02/01 17:11:58 $
+ * Version: $Revision: 1.17 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -15,15 +15,15 @@ import oracle.jdbc.driver.*;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -47,12 +47,12 @@ import com.opencms.file.genericSql.I_CmsDbPool;
 /**
  * This is the generic access module to load and store resources from and into
  * the database.
- * 
+ *
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.16 $ $Date: 2001/02/01 15:37:20 $ * 
+ * @version $Revision: 1.17 $ $Date: 2001/02/01 17:11:58 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -61,15 +61,15 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 	 * @param config The OpenCms configuration.
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public CmsDbAccess(Configurations config) 
+	public CmsDbAccess(Configurations config)
 		throws CmsException {
 
 		super(config);
 	}
-	
+
 	/**
 	 *  Checks, if the user may create this resource.
-	 * 
+	 *
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param resource The resource to check.
@@ -105,21 +105,21 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					statement.close();
 				} catch (SQLException exc){
 					// nothing to do here
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException exc){
 					// nothing to do here
-				}			
-			}	
+				}
+			}
 		}
 	}
-	
+
 	/**
 	 * Checks, if the user may lock this resource.
-	 * 
+	 *
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param resource The resource to check.
@@ -155,21 +155,21 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					statement.close();
 				} catch (SQLException exc){
 					// nothing to do here
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException exc){
 					// nothing to do here
-				}			
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks, if the user may read this resource.
-	 * 
+	 *
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param resource The resource to check.
@@ -204,21 +204,21 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					statement.close();
 				} catch (SQLException exc){
 					// nothing to do here
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException exc){
 					// nothing to do here
-				}			
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks, if the user may read this resource.
-	 *  
+	 *
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param resource The resource to check.
@@ -254,21 +254,21 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					statement.close();
 				} catch (SQLException exc){
 					// nothing to do here
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException exc){
 					// nothing to do here
-				}			
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks, if the user may write this resource.
-	 * 
+	 *
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param resource The resource to check.
@@ -304,21 +304,21 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					statement.close();
 				} catch (SQLException exc){
 					// nothing to do here
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException exc){
 					// nothing to do here
-				}			
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates a serializable object in the systempropertys.
-	 *  
+	 *
 	 * @param name The name of the property.
 	 * @param object The property-object.
 	 * @return object The property-object.
@@ -335,7 +335,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		ResultSet res = null;
 		try {
 			int id = nextId(C_TABLE_SYSTEMPROPERTIES);
-			// serialize the object	
+			// serialize the object
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			ObjectOutputStream oout = new ObjectOutputStream(bout);
 			oout.writeObject(object);
@@ -351,11 +351,11 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			statement.setString(2, name);
 			//statement.setBytes(3,value);
 			statement.executeUpdate();
-			statement.close();
+			//statement.close();
 			// now update the systemproperty_value
 			statement2 = con.prepareStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORUPDATE);
 			statement2.setInt(1, id);
-			con.setAutoCommit(false);	
+			con.setAutoCommit(false);
 			res = statement2.executeQuery();
 			while (res.next()) {
 				oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
@@ -369,8 +369,8 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 				instream.close();
 				outstream.close();
 			}
-			statement2.close();
-			res.close();
+			//statement2.close();
+			//res.close();
 			// for the oracle-driver commit or rollback must be executed manually
 			// because setAutoCommit = false
 			nextStatement = con.prepareStatement(cq.C_COMMIT);
@@ -387,13 +387,13 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					res.close();
 				} catch (SQLException se) {
 				}
-			}			
+			}
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (SQLException exc){
-				}				
-			}	
+				}
+			}
 			if (statement2 != null) {
 				try {
 					statement2.close();
@@ -404,31 +404,31 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					nextStatement.execute();
 				} catch (SQLException exc){
 					// nothing to do here
-				} 	
+				}
 			}
 			if (nextStatement != null) {
 				try {
 					nextStatement.close();
 				} catch (SQLException exc){
 				}
-			}	
+			}
 			if (con != null) {
 				try {
 					con.setAutoCommit(true);
 				} catch (SQLException exc){
 					// nothing to do here
-				} 
+				}
 				try {
 					con.close();
 				} catch (SQLException e){
-				}	
+				}
 			}
-		}	
+		}
 		return readSystemProperty(name);
 	}
 	/**
 	 * Adds a user to the database.
-	 * 
+	 *
 	 * @param name username
 	 * @param password user-password
 	 * @param description user-description
@@ -523,7 +523,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					res.close();
 				} catch (SQLException se) {
 				}
-			}		
+			}
 			if (statement != null) {
 				try {
 					statement.close();
@@ -546,30 +546,30 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					nextStatement.close();
 				} catch (SQLException exc){
 				}
-			}	
+			}
 			if (con != null) {
 				try {
 					con.setAutoCommit(true);
 				} catch (SQLException se) {
-				}	
+				}
 				try {
 					con.close();
 				} catch (SQLException e) {
-				}	
+				}
 			}
 		}
 		return readUser(id);
 	}
 	/**
 	 * Copies the file.
-	 * 
+	 *
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param userId The id of the user who wants to copy the file.
 	 * @param source The complete path of the sourcefile.
 	 * @param parentId The parentId of the resource.
 	 * @param destination The complete path of the destinationfile.
-	 * 
+	 *
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public void copyFile(CmsProject project, int userId, String source, String destination) throws CmsException {
@@ -577,7 +577,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		if (destination.length() > C_MAX_LENGTH_RESOURCE_NAME){
 			throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
 		}
-		
+
 		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 		CallableStatement statement = null;
 		Connection con = null;
@@ -606,8 +606,8 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 				try {
 					con.close();
 				} catch (SQLException e) {
-				}	
-			}	
+				}
+			}
 		}
 	}
 	// methods working with resources
@@ -643,17 +643,17 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 				try {
 					statement.close();
 				} catch (SQLException exc){
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException e){
 				}
-			}	
+			}
 		}
 	}
-	
+
 	/**
 	 * Create a new Connection guard.
 	 * This method should be overloaded if another connectionguard should be used.
@@ -665,7 +665,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 	public com.opencms.file.genericSql.CmsConnectionGuard createCmsConnectionGuard(I_CmsDbPool m_pool, long sleepTime) {
 		return new com.opencms.file.oracleplsql.CmsConnectionGuard(m_pool, sleepTime);
 	}
-	
+
 	/**
 	 * Creates a CmsDbPool
 	 * Creation date: (06-09-2000 14:08:10)
@@ -680,7 +680,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 	public I_CmsDbPool createCmsDbPool(String driver, String url, String user, String passwd, int maxConn) throws com.opencms.core.CmsException {
 		return new com.opencms.file.oracleplsql.CmsDbPool(driver,url,user,passwd,maxConn);
 	}
-	
+
 /**
  * Creates a new file with the given content and resourcetype.
  *
@@ -692,9 +692,9 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
  * @param parentId The parentId of the resource.
  * @param contents The contents of the new file.
  * @param resourceType The resourceType of the new file.
- * 
+ *
  * @return file The created file.
- * 
+ *
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, int parentId, byte[] contents, CmsResourceType resourceType) throws CmsException {
@@ -702,7 +702,7 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 	if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
 		throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
 	}
-	
+
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	// it is not allowed, that there is no content in the file
 	// TODO: check if this can be done in another way:
@@ -713,13 +713,13 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 	// Test if the file is already there and marked as deleted.
 	// If so, delete it
 	try {
-		CmsResource resource = readFileHeader(project.getId(), filename);   
+		CmsResource resource = readFileHeader(project.getId(), filename);
 	} catch (CmsException e) {
 		// if the file is maked as deleted remove it!
 		if (e.getType()==CmsException.C_RESOURCE_DELETED) {
 		   removeFile(project.getId(),filename);
 		   state=C_STATE_CHANGED;
-		}              
+		}
 	}
 	int resourceId = nextId(C_TABLE_RESOURCES);
 	int fileId = nextId(C_TABLE_FILES);
@@ -819,7 +819,7 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
 				nextStatement.execute();
 			} catch (SQLException se) {
-			} 	
+			}
 		}
 		if (nextStatement != null) {
 			try {
@@ -831,11 +831,11 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 			try {
 				con.setAutoCommit(true);
 			} catch (SQLException se) {
-			} 
+			}
 			try {
 				con.close();
 			} catch (SQLException e){
-			}	
+			}
 		}
 	}
 	return readFile(user.getId(), project.getId(), onlineProject.getId(), filename);
@@ -843,9 +843,9 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 // methods working with session-storage
 
 /**
- * This method creates a new session in the database. It is used 
+ * This method creates a new session in the database. It is used
  * for sessionfailover.
- * 
+ *
  * @param sessionId the id of the session.
  * @return data the sessionData.
  */
@@ -857,7 +857,7 @@ public void createSession(String sessionId, Hashtable data) throws CmsException 
 	PreparedStatement statement2 = null;
 	PreparedStatement nextStatement = null;
 	Connection con = null;
-	ResultSet res = null;	
+	ResultSet res = null;
 	try {
 		// serialize the hashtable
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -907,7 +907,7 @@ public void createSession(String sessionId, Hashtable data) throws CmsException 
 				res.close();
 			} catch (SQLException se) {
 			}
-		}		
+		}
 		if (statement != null) {
 			try {
 				statement.close();
@@ -923,7 +923,7 @@ public void createSession(String sessionId, Hashtable data) throws CmsException 
 				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
 				nextStatement.execute();
 			} catch (SQLException se) {
-			} 	
+			}
 		}
 		if (nextStatement != null) {
 			try {
@@ -935,19 +935,19 @@ public void createSession(String sessionId, Hashtable data) throws CmsException 
 			try {
 				con.setAutoCommit(true);
 			} catch (SQLException se) {
-			} 
+			}
 			try {
 				con.close();
 			} catch (SQLException e) {
-			}	
+			}
 		}
 	}
 }
 /**
  * Returns all projects, which are owned by a user.
- * 
+ *
  * @param user The requesting user.
- * 
+ *
  * @return a Vector of projects.
  */
 public Vector getAllAccessibleProjects(CmsUser user) throws CmsException {
@@ -984,20 +984,20 @@ public Vector getAllAccessibleProjects(CmsUser user) throws CmsException {
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException e) {
-			}	
-		}	
+			}
+		}
 	}
 	return (projects);
 }
 /**
  * Returns a list of groups of a user.<P/>
- * 
+ *
  * @param name The name of the user.
  * @return Vector of groups
  * @exception CmsException Throws CmsException if operation was not succesful
@@ -1013,6 +1013,7 @@ public Vector getAllGroupsOfUser(String username) throws CmsException {
 	ResultSet res = null;
 	try {
 		//  get all all groups of the user
+                con = DriverManager.getConnection(m_poolName);
 		statement = con.prepareCall(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER);
 		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, user.getId());
@@ -1038,20 +1039,20 @@ public Vector getAllGroupsOfUser(String username) throws CmsException {
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException e){
-			}	
-		}	
+			}
+		}
 	}
 	return groups;
 }
 /**
  * Get the exeption.
- * 
+ *
  * @return Exception.
  */
 private CmsException getCmsException(String errorIn, Exception exc) {
@@ -1061,12 +1062,12 @@ private CmsException getCmsException(String errorIn, Exception exc) {
 	exceptionMessage = exc.getMessage();
 	try {
 		exceptionNumber = Integer.parseInt(exceptionMessage.substring(4, 9));
-	} catch(StringIndexOutOfBoundsException iobexc) {	
-		System.err.println("Error in getCmsException() " + exceptionMessage);	
+	} catch(StringIndexOutOfBoundsException iobexc) {
+		System.err.println("Error in getCmsException() " + exceptionMessage);
 	} catch(Exception otherExc) {
-		cmsException = new CmsException(errorIn + exceptionMessage, CmsException.C_UNKNOWN_EXCEPTION);		
-	}	
-	
+		cmsException = new CmsException(errorIn + exceptionMessage, CmsException.C_UNKNOWN_EXCEPTION);
+	}
+
 	switch (exceptionNumber) {
 		case 20000 :
 			cmsException = new CmsException(errorIn, CmsException.C_UNKNOWN_EXCEPTION);
@@ -1160,33 +1161,32 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 
 	/**
 	 * Gets all users of a type.
-	 * 
+	 *
 	 * @param type The type of the user.
 	 * @exception thorws CmsException if something goes wrong.
-	 */ 
-	public Vector getUsers(int type) 
+	 */
+	public Vector getUsers(int type)
 		throws CmsException {
 		//System.out.println("PL/SQL: getUsers");
 		Vector users = new Vector();
 		PreparedStatement statement = null;
 		Connection con = null;
 		ResultSet res = null;
-		
-		try	{			
+		try	{
+                        con = DriverManager.getConnection(m_poolName);
 			statement = con.prepareStatement(m_cq.C_USERS_GETUSERS);
 			statement.setInt(1,type);
 			res = statement.executeQuery();
 			// create new Cms user objects
 			while( res.next() ) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO); 
-				byte[] value = new byte[(int) blob.length()]; 
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+                                byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
 				ByteArrayInputStream bin= new ByteArrayInputStream(value);
 				ObjectInputStream oin = new ObjectInputStream(bin);
 				Hashtable info=(Hashtable)oin.readObject();
-
 				CmsUser user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
 										   res.getString(m_cq.C_USERS_USER_NAME),
 										   res.getString(m_cq.C_USERS_USER_PASSWORD),
@@ -1207,14 +1207,12 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 										   res.getString(m_cq.C_USERS_USER_ADDRESS),
 										   res.getString(m_cq.C_USERS_USER_SECTION),
 										   res.getInt(m_cq.C_USERS_USER_TYPE));
-				
 				users.addElement(user);
-			} 
-
+			}
 		} catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		} catch (Exception e) {
-			throw new CmsException("["+this.getClass().getName()+"]", e);			
+			throw new CmsException("["+this.getClass().getName()+"]", e);
 		} finally {
 			if (res != null) {
 				try {
@@ -1226,48 +1224,48 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 				try {
 					statement.close();
 				} catch (SQLException exc) {
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException se) {
-				}	
-			}	
+				}
+			}
 		}
 		return users;
 	}
-	
+
 	 /**
 	 * Gets all users of a type and namefilter.
-	 * 
+	 *
 	 * @param type The type of the user.
 	 * @param namestart The namefilter
 	 * @exception thorws CmsException if something goes wrong.
-	 */ 
-	public Vector getUsers(int type, String namefilter) 
+	 */
+	public Vector getUsers(int type, String namefilter)
 		throws CmsException {
 		//System.out.println("PL/SQL: getUsers");
 		Vector users = new Vector();
 	    Statement statement = null;
 		Connection con = null;
 		ResultSet res = null;
-		
+
 		try	{
 			con = DriverManager.getConnection(m_poolName);
 			statement = con.createStatement();
-			
+
 			/*statement.setInt(1,type);
 			statement.setString(2,namefilter+"%");
 			res = statement.executeQuery();*/
 
-			//res = statement.executeQuery("SELECT * FROM CMS_USERS,CMS_GROUPS where USER_TYPE = "+type+" and USER_DEFAULT_GROUP_ID = GROUP_ID and USER_NAME like '"+namefilter+"%' ORDER BY USER_NAME");  
-			res = statement.executeQuery(m_cq.C_USERS_GETUSERS_FILTER1+type+m_cq.C_USERS_GETUSERS_FILTER2+namefilter+m_cq.C_USERS_GETUSERS_FILTER3);  
+			//res = statement.executeQuery("SELECT * FROM CMS_USERS,CMS_GROUPS where USER_TYPE = "+type+" and USER_DEFAULT_GROUP_ID = GROUP_ID and USER_NAME like '"+namefilter+"%' ORDER BY USER_NAME");
+			res = statement.executeQuery(m_cq.C_USERS_GETUSERS_FILTER1+type+m_cq.C_USERS_GETUSERS_FILTER2+namefilter+m_cq.C_USERS_GETUSERS_FILTER3);
 			// create new Cms user objects
 			while( res.next() ) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO); 
-				byte[] value = new byte[(int) blob.length()]; 
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
 				ByteArrayInputStream bin= new ByteArrayInputStream(value);
@@ -1294,15 +1292,15 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 										   res.getString(m_cq.C_USERS_USER_ADDRESS),
 										   res.getString(m_cq.C_USERS_USER_SECTION),
 										   res.getInt(m_cq.C_USERS_USER_TYPE));
-				
-				users.addElement(user);
-			} 
 
-			res.close();
+				users.addElement(user);
+			}
+
+			//res.close();
 		} catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		} catch (Exception e) {
-			throw new CmsException("["+this.getClass().getName()+"]", e);			
+			throw new CmsException("["+this.getClass().getName()+"]", e);
 		} finally {
 			if (res != null) {
 				try {
@@ -1314,20 +1312,20 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 				try {
 					statement.close();
 				} catch (SQLException exc) {
-				}	
-			} 
+				}
+			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException se) {
-				}	
-			}	
+				}
+			}
 		}
 		return users;
 	}
 /**
  * Returns a list of users of a group.<P/>
- * 
+ *
  * @param name The name of the group.
  * @param type the type of the users to read.
  * @return Vector of users
@@ -1378,14 +1376,14 @@ public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
-		}	
+			}
+		}
 	}
 	return users;
 }
@@ -1393,10 +1391,10 @@ public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws
 /**
  * Determines, if the users may manage a project.<BR/>
  * Only the manager of a project may publish it.
- * 
+ *
  * <B>Security:</B>
  * All users are granted.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @return true, if the may manage this project.
@@ -1429,20 +1427,20 @@ public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
-		}	
+			}
+		}
 	}
 }
 /**
   * Deletes a project from the cms.
   * Therefore it deletes all files, resources and properties.
-  * 
+  *
   * @param project the project to delete.
   * @exception CmsException Throws CmsException if something goes wrong.
   */
@@ -1488,13 +1486,13 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
 			long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
 			int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
 			int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
-			resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId, 
-										groupId, projectId, accessFlags, state, lockedBy, launcherType, 
+			resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId,
+										groupId, projectId, accessFlags, state, lockedBy, launcherType,
 										launcherClass, created, modified, modifiedBy, resSize);
 			resources.addElement(resource);
 		}
-		res.close();
-		statement.close();
+		//res.close();
+		//statement.close();
 		return resources;
 	} catch (SQLException sqlexc) {
 		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
@@ -1512,27 +1510,27 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
-		}	
+			}
+		}
 	}
 }
 /**
  * Publishes a project.
- * 
+ *
  * <B>Security</B>
  * Only the admin or the owner of the project can do this.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param id The id of the project to be published.
  * @return a vector of changed resources.
- * 
+ *
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject) throws CmsException {
@@ -1558,7 +1556,7 @@ public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject
 		statement.registerOutParameter(7, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.execute();
 		// now export to filesystem if necessary
-		// for deleted folder		
+		// for deleted folder
 		res1 = (ResultSet) statement.getObject(4);
 		while (res1.next()) {
 			String exportKey = checkExport(res1.getString("RESOURCE_NAME"));
@@ -1624,25 +1622,25 @@ public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
-		}	
+			}
+		}
 	}
 }
 /**
  * Reads a file from the Cms.<BR/>
- * 
+ *
  * @param projectId The Id of the project in which the resource will be used.
  * @param onlineProjectId The online projectId of the OpenCms.
  * @param filename The complete name of the new file (including pathinformation).
- * 
+ *
  * @return file The read file.
- * 
+ *
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public CmsFile readFile(int currentUserId, int currentProjectId, int onlineProjectId, String filename) throws CmsException {
@@ -1709,26 +1707,26 @@ public CmsFile readFile(int currentUserId, int currentProjectId, int onlineProje
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
-		}	
+			}
+		}
 	}
 	return file;
 }
 /**
  * Reads a file from the Cms.<BR/>
- * 
+ *
  * @param projectId The Id of the project in which the resource will be used.
  * @param onlineProjectId The online projectId of the OpenCms.
  * @param filename The complete name of the new file (including pathinformation).
- * 
+ *
  * @return file The read file.
- * 
+ *
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public CmsFile readFile(int currentUserId, int currentProjectId, String filename) throws CmsException {
@@ -1772,9 +1770,9 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 			//		String out_buffer = new String(content);
 			//		System.out.println(out_buffer);
 
-			file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId, 
-								currentProjectId, accessFlags, state, lockedBy, launcherType, launcherClass, 
-								created, modified, modifiedBy, content, resSize);	
+			file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId,
+								currentProjectId, accessFlags, state, lockedBy, launcherType, launcherClass,
+								created, modified, modifiedBy, content, resSize);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
 		}
@@ -1797,20 +1795,20 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
-		}	
+			}
+		}
 	}
 	return file;
 }
 	/**
 	 * Private helper method to read the fileContent for publishProject(export).
-	 * 
+	 *
 	 * @param fileId the fileId.
 	 *
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
@@ -1822,7 +1820,7 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 		Connection con = null;
 		ResultSet res = null;
 		byte[] returnValue = null;
-		try {  
+		try {
 			// read fileContent from database
 			con = DriverManager.getConnection(m_poolName);
 			statement = con.prepareStatement(m_cq.C_FILE_READ);
@@ -1837,10 +1835,10 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 //		String out_buffer = new String(content);
 //		System.out.println(out_buffer);
 				} else {
-				  throw new CmsException("["+this.getClass().getName()+"]"+fileId,CmsException.C_NOT_FOUND);  
-			}   
+				  throw new CmsException("["+this.getClass().getName()+"]"+fileId,CmsException.C_NOT_FOUND);
+			}
 		} catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}finally {
 			if (res != null) {
 				try {
@@ -1852,20 +1850,20 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 				try {
 					statement.close();
 				} catch (SQLException exc) {
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException se) {
-				}	
-			}	
+				}
+			}
 		}
 		return returnValue;
 	}
 /**
  * Reads a session from the database.
- * 
+ *
  * @param sessionId, the id og the session to read.
  * @return the read session as Hashtable.
  * @exception thorws CmsException if something goes wrong.
@@ -1911,24 +1909,24 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
-		}	
+			}
+		}
 	}
 	return session;
 }
 	 /**
 	 * Reads a serializable object from the systempropertys.
-	 * 
+	 *
 	 * @param name The name of the property.
-	 * 
+	 *
 	 * @return object The property-object.
-	 * 
+	 *
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public Serializable readSystemProperty(String name)
@@ -1939,31 +1937,31 @@ public Hashtable readSession(String sessionId) throws CmsException {
 		ResultSet res = null;
 		PreparedStatement statement = null;
 		Connection con = null;
-			
+
 		// create get the property data from the database
 		try {
-			con = DriverManager.getConnection(m_poolName);	
+			con = DriverManager.getConnection(m_poolName);
 			statement = con.prepareStatement(m_cq.C_SYSTEMPROPERTIES_READ);
 			statement.setString(1,name);
 			res = statement.executeQuery();
 			if(res.next()) {
 				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_SYSTEMPROPERTY_VALUE);
-				byte[] value = new byte[(int) blob.length()];			    
+				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
 				ByteArrayInputStream bin= new ByteArrayInputStream(value);
 				ObjectInputStream oin = new ObjectInputStream(bin);
-				property=(Serializable)oin.readObject();                
-			}	
+				property=(Serializable)oin.readObject();
+			}
 		}
 		catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}	
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
 		catch (IOException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);
 		}
 	    catch (ClassNotFoundException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);
 		}finally {
 			if (res != null) {
 				try {
@@ -1975,26 +1973,26 @@ public Hashtable readSession(String sessionId) throws CmsException {
 				try {
 					statement.close();
 				} catch (SQLException exc) {
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException se) {
-				}	
-			}	
-		}	
+				}
+			}
+		}
 		return property;
 	}
 	/**
 	 * Reads a user from the cms, only if the password is correct.
-	 * 
+	 *
 	 * @param id the id of the user.
 	 * @param type the type of the user.
 	 * @return the read user.
 	 * @exception thorws CmsException if something goes wrong.
 	 */
-	public CmsUser readUser(int id) 
+	public CmsUser readUser(int id)
 		throws CmsException {
 		//System.out.println("PL/SQL: readUser");
 		PreparedStatement statement = null;
@@ -2007,12 +2005,12 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			statement = con.prepareStatement(m_cq.C_USERS_READID);
 			statement.setInt(1,id);
 			res = statement.executeQuery();
-			
+
 			// create new Cms user object
 			if(res.next()) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO); 
-				byte[] value = new byte[(int) blob.length()]; 
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
 				ByteArrayInputStream bin= new ByteArrayInputStream(value);
@@ -2047,7 +2045,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			return user;
 		 }
 		catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
 		// a.lucas: catch CmsException here and throw it again.
 		// Don't wrap another CmsException around it, since this may cause problems during login.
@@ -2055,7 +2053,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			throw e;
 		}
 		catch (Exception e) {
-			throw new CmsException("["+this.getClass().getName()+"]", e);			
+			throw new CmsException("["+this.getClass().getName()+"]", e);
 		} finally {
 			if (res != null) {
 				try {
@@ -2067,40 +2065,40 @@ public Hashtable readSession(String sessionId) throws CmsException {
 				try {
 					statement.close();
 				} catch (SQLException exc) {
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException se) {
 				}
-			}	
+			}
 		}
 	}
 	/**
 	 * Reads a user from the cms.
-	 * 
+	 *
 	 * @param name the name of the user.
 	 * @param type the type of the user.
 	 * @return the read user.
 	 * @exception thorws CmsException if something goes wrong.
 	 */
-	public CmsUser readUser(String name, int type) 
+	public CmsUser readUser(String name, int type)
 		throws CmsException {
 		//System.out.println("PL/SQL: readUser");
 		PreparedStatement statement = null;
 		Connection con = null;
 		ResultSet res = null;
 		CmsUser user = null;
-		
+
 		try	{
 			con = DriverManager.getConnection(m_poolName);
 			statement = con.prepareStatement(m_cq.C_USERS_READ);
 			statement.setString(1,name);
 			statement.setInt(2,type);
-   
+
 			res = statement.executeQuery();
-			
+
 			// create new Cms user object
 			if(res.next()) {
 				// read the additional infos.
@@ -2136,11 +2134,11 @@ public Hashtable readSession(String sessionId) throws CmsException {
 				res.close();
 				res = null;
 				throw new CmsException("["+this.getClass().getName()+"]"+name,CmsException.C_NO_USER);
-			}           
+			}
 			return user;
 		 }
 		catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
 		// a.lucas: catch CmsException here and throw it again.
 		// Don't wrap another CmsException around it, since this may cause problems during login.
@@ -2148,7 +2146,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			throw e;
 		}
 		catch (Exception e) {
-			throw new CmsException("["+this.getClass().getName()+"]", e);			
+			throw new CmsException("["+this.getClass().getName()+"]", e);
 		} finally {
 			if (res != null) {
 				try {
@@ -2160,26 +2158,26 @@ public Hashtable readSession(String sessionId) throws CmsException {
 				try {
 					statement.close();
 				} catch (SQLException exc) {
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException se) {
-				}	
-			}	
+				}
+			}
 		}
 	}
 	/**
 	 * Reads a user from the cms, only if the password is correct.
-	 * 
+	 *
 	 * @param name the name of the user.
 	 * @param password the password of the user.
 	 * @param type the type of the user.
 	 * @return the read user.
 	 * @exception thorws CmsException if something goes wrong.
 	 */
-	public CmsUser readUser(String name, String password, int type) 
+	public CmsUser readUser(String name, String password, int type)
 		throws CmsException {
 		//System.out.println("PL/SQL: readUser");
 		PreparedStatement statement = null;
@@ -2194,12 +2192,12 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			statement.setString(2,digest(password));
 			statement.setInt(3,type);
 			res = statement.executeQuery();
-			
+
 			// create new Cms user object
 			if(res.next()) {
 				// read the additional infos.
 				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
-				byte[] value = new byte[(int) blob.length()]; 
+				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
 				ByteArrayInputStream bin= new ByteArrayInputStream(value);
@@ -2223,7 +2221,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 												res.getString(m_cq.C_GROUPS_GROUP_NAME),
 												res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
 												res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
-								  				
+
 								   res.getString(m_cq.C_USERS_USER_ADDRESS),
 								   res.getString(m_cq.C_USERS_USER_SECTION),
 								   res.getInt(m_cq.C_USERS_USER_TYPE));
@@ -2235,7 +2233,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			return user;
 		 }
 		catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
 		// a.lucas: catch CmsException here and throw it again.
 		// Don't wrap another CmsException around it, since this may cause problems during login.
@@ -2243,7 +2241,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			throw e;
 		}
 		catch (Exception e) {
-			throw new CmsException("["+this.getClass().getName()+"]", e);			
+			throw new CmsException("["+this.getClass().getName()+"]", e);
 		} finally {
 			if (res != null) {
 				try {
@@ -2255,29 +2253,29 @@ public Hashtable readSession(String sessionId) throws CmsException {
 				try {
 					statement.close();
 				} catch (SQLException exc) {
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException se) {
 				}
-			}	
+			}
 		}
 	}
 	/**
 	 * Reads the user, which is agent for the role, from the cms, only if the password is correct.
-	 * 
+	 *
 	 * @param id the id of the role.
 	 * @param type the type of the user.
 	 * @return the read user.
 	 * @exception throws CmsException if something goes wrong.
 	 */
-	public CmsUser readUserAgent(int roleId) 
+	public CmsUser readUserAgent(int roleId)
 		throws CmsException {
-		//System.out.println("PL/SQL: readUserAgent");	
+		//System.out.println("PL/SQL: readUserAgent");
 		int agentId = this.findAgent(roleId);
-		
+
 		PreparedStatement statement = null;
 		Connection con = null;
 		ResultSet res = null;
@@ -2288,12 +2286,12 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			statement = con.prepareStatement(m_cq.C_USERS_READID);
 			statement.setInt(1,agentId);
 			res = statement.executeQuery();
-			
+
 			// create new Cms user object
 			if(res.next()) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO); 
-				byte[] value = new byte[(int) blob.length()]; 
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
 				ByteArrayInputStream bin= new ByteArrayInputStream(value);
@@ -2328,7 +2326,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			return user;
 		 }
 		catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
 		// a.lucas: catch CmsException here and throw it again.
 		// Don't wrap another CmsException around it, since this may cause problems during login.
@@ -2336,7 +2334,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			throw e;
 		}
 		catch (Exception e) {
-			throw new CmsException("["+this.getClass().getName()+"]", e);			
+			throw new CmsException("["+this.getClass().getName()+"]", e);
 		} finally {
 			if (res != null) {
 				try {
@@ -2348,20 +2346,20 @@ public Hashtable readSession(String sessionId) throws CmsException {
 				try {
 					statement.close();
 				} catch (SQLException exc) {
-				}	
+				}
 			}
 			if (con != null) {
 				try {
 					con.close();
 				} catch (SQLException se) {
 				}
-			}	
+			}
 		}
 	}
 /**
   * Deletes a project from the cms.
   * Therefore it deletes all files, resources and properties.
-  * 
+  *
   * @param project the project to delete.
   * @exception CmsException Throws CmsException if something goes wrong.
   */
@@ -2402,8 +2400,8 @@ public Vector unlockResource(CmsUser currentUser, CmsProject currentProject, Str
 			long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
 			int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
 			int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
-			resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId, groupId, 
-										projectId, accessFlags, state, lockedBy, launcherType, launcherClass, 
+			resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId, groupId,
+										projectId, accessFlags, state, lockedBy, launcherType, launcherClass,
 										created, modified, modifiedBy, resSize);
 			resources.addElement(resource);
 		}
@@ -2424,20 +2422,20 @@ public Vector unlockResource(CmsUser currentUser, CmsProject currentProject, Str
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException se) {
 			}
-		}	
+		}
 	}
 }
 /**
- * This method updates a session in the database. It is used 
+ * This method updates a session in the database. It is used
  * for sessionfailover.
- * 
+ *
  * @param sessionId the id of the session.
  * @return data the sessionData.
  */
@@ -2468,7 +2466,7 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
 		statement.setString(2, sessionId);
 		retValue = statement.executeUpdate();
 		statement.close();
-		// now update the session_data	
+		// now update the session_data
 		statement2 = con.prepareStatement(cq.C_PLSQL_SESSION_FORUPDATE);
 		statement2.setString(1, sessionId);
 		con.setAutoCommit(false);
@@ -2543,22 +2541,22 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
 			try {
 				con.setAutoCommit(true);
 			} catch (SQLException se) {
-			} 
+			}
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
+			}
 		}
 	}
 	return retValue;
 }
 /**
  * Checks if a user is member of a group.<P/>
- *  
+ *
  * @param nameid The id of the user to check.
  * @param groupid The id of the group to check.
  * @return True or False
- * 
+ *
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public boolean userInGroup(int userid, int groupid) throws CmsException {
@@ -2588,25 +2586,25 @@ public boolean userInGroup(int userid, int groupid) throws CmsException {
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
-		}	
+			}
+		}
 	}
 	return userInGroup;
 }
 /**
  * Writes a file to the Cms.<BR/>
- * 
+ *
  * @param project The project in which the resource will be used.
  * @param onlineProject The online project of the OpenCms.
  * @param file The new file.
  * @param changed Flag indicating if the file state must be set to changed.
- * 
+ *
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file, boolean changed) throws CmsException {
@@ -2616,7 +2614,7 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
 	PreparedStatement nextStatement = null;
 	OraclePreparedStatement trimStatement = null;
 	Connection con = null;
-	ResultSet res = null;	
+	ResultSet res = null;
 	try {
 		// update the file header in the RESOURCE database.
 		writeFileHeader(project, file, changed);
@@ -2650,7 +2648,7 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
 			nextStatement = con.prepareStatement(cq.C_COMMIT);
 			nextStatement.execute();
 			nextStatement.close();
-		    con.setAutoCommit(true);			
+		    con.setAutoCommit(true);
 		} catch (IOException e) {
 			throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
 		}
@@ -2692,17 +2690,17 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
 			try {
 				con.setAutoCommit(true);
 			} catch (SQLException se) {
-			} 
+			}
 			try {
 				con.close();
-			} catch (SQLException se) {	
-			}	
+			} catch (SQLException se) {
+			}
 		}
 	}
 }
 /**
  * Writes the fileheader to the Cms.
- * 
+ *
  * @param project The project in which the resource will be used.
  * @param onlineProject The online project of the OpenCms.
  * @param file The new file.
@@ -2788,7 +2786,7 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
 		statementResourceUpdate.setInt(4, file.getGroupId());
 		statementResourceUpdate.setInt(5, file.getProjectId());
 		statementResourceUpdate.setInt(6, file.getAccessFlags());
-		//STATE       
+		//STATE
 		int state = file.getState();
 		if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
 			statementResourceUpdate.setInt(7, state);
@@ -2828,7 +2826,7 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
 			try {
 				statementFileRead.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (statementFileIns != null) {
 			try {
@@ -2839,25 +2837,25 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
 				commitStatement = con.prepareStatement(cq.C_ROLLBACK);
 				commitStatement.execute();
 			} catch (SQLException se) {
-			} 	
+			}
 		}
 		if (statementFileUpd != null) {
 			try {
 				statementFileUpd.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (statementResourceUpdate != null) {
 			try {
 				statementResourceUpdate.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (commitStatement != null) {
 			try {
 				commitStatement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (con != null) {
 			try {
@@ -2867,19 +2865,19 @@ public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) t
 				try {
 					con.close();
 				} catch (SQLException se) {
-				}	
-			}	
+				}
+			}
 		}
 	}
 }
 /**
  * Writes a serializable object to the systemproperties.
- * 
+ *
  * @param name The name of the property.
  * @param object The property-object.
- * 
+ *
  * @return object The property-object.
- * 
+ *
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public Serializable writeSystemProperty(String name, Serializable object) throws CmsException {
@@ -2892,7 +2890,7 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 	Connection con = null;
 	byte[] value = null;
 	try {
-		// serialize the object	
+		// serialize the object
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		ObjectOutputStream oout = new ObjectOutputStream(bout);
 		oout.writeObject(object);
@@ -2902,7 +2900,7 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 		statement = con.prepareStatement(cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE);
 		statement.setString(1, name);
 		con.setAutoCommit(false);
-		res = statement.executeQuery();	
+		res = statement.executeQuery();
 		while (res.next()) {
 			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
 			// first trim the blob to 0 bytes, otherwise ther could be left some bytes
@@ -2950,7 +2948,7 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
 				nextStatement.execute();
 			} catch (SQLException exc){
-			}	
+			}
 		}
 		if (nextStatement != null) {
 			try {
@@ -2972,14 +2970,14 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
+			}
 		}
 	}
 	return readSystemProperty(name);
 }
 /**
  * Writes a user to the database.
- * 
+ *
  * @param user the user to write
  * @exception thorws CmsException if something goes wrong.
  */
@@ -3064,7 +3062,7 @@ public void writeUser(CmsUser user) throws CmsException {
 			try {
 				statement.close();
 			} catch (SQLException exc) {
-			}	
+			}
 		}
 		if (statement2 != null) {
 			try {
@@ -3075,7 +3073,7 @@ public void writeUser(CmsUser user) throws CmsException {
 				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
 				nextStatement.execute();
 			} catch (SQLException se) {
-			}	
+			}
 		}
 		if (nextStatement != null) {
 			try {
@@ -3097,7 +3095,7 @@ public void writeUser(CmsUser user) throws CmsException {
 			try {
 				con.close();
 			} catch (SQLException se) {
-			}	
+			}
 		}
 		if (res != null) {
 			try {
