@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/02/01 19:14:46 $
-* Version: $Revision: 1.351 $
+* Date   : $Date: 2003/02/01 22:57:41 $
+* Version: $Revision: 1.352 $
 
 *
 * This library is part of OpenCms -
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.351 $ $Date: 2003/02/01 19:14:46 $
+ * @version $Revision: 1.352 $ $Date: 2003/02/01 22:57:41 $
 
  *
  */
@@ -1492,9 +1492,6 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         m_propertyDefVectorCache.clear();
         m_onlineProjectCache = null;
         m_accessCache.clear();
-
-        CmsTemplateClassManager.clearCache();
-
     }
     /**
      * Copies a file in the Cms. <br>
