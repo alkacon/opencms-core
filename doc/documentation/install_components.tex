@@ -4,8 +4,8 @@
 This chapter describes all external parts required to run OpenCms.
 If you want to prepare an installation, please collect all
 components listed here. If you download a major release of OpenCms
-(e.g. version 4.6), mySql-databasedriver, Xerces, JavaMail, Fesi, 
-jakarta-oro and Tidy will be shipped with the distribution.
+(e.g. version 5.x) the MySQL connector, Xerces, JavaMail, Fesi, 
+Jakarta-ORO and JTidy will be shipped with the distribution.
 
 \section{Operating System}
 OpenCms is implemented in 100\% Java. Since Java should be platform independent, OpenCms should run
@@ -41,21 +41,18 @@ Since servlets are a standard API which is part of the J2EE specification,
 other servlets engines should be working without problems.
 
 \section{Java VM}
-To run servlets, a Java Virtual Machine (VM) is needed. Currently for development we are using
-a version 1.3 compliant JDK, like the one provided \\
-by SUN (\rqhttp{http://java.sun.com/products/jdk/1.3/}{http://java.sun.com/products/jdk/1.3/})\\
+To run servlets, a Java Virtual Machine (VM) is needed. For development we are currently using
+a version 1.4 compliant JDK, like the one provided \\
+by SUN (\rqhttp{http://java.sun.com/j2se/1.4/}{http://java.sun.com/j2se/1.4/})\\
 or IBM (\rqhttp{http://www.ibm.com/java/jdk/index.html}{http://www.ibm.com/java/jdk/index.html}).\\
-For running systems we recommend using a Java VM version 1.3 or
-higher.
+For running systems we recommend using a Java VM version 1.4 or higher.
 
 \section{Database}
 The OpenCms architecture allows to use any SQL capable database that offers a JDBC connector.
 These include enterprise databases like e.g. Oracle (\rqhttp{http://www.oracle.com}{http://www.oracle.com}),
 but also Open Source databases like MySQL (\rqhttp{http://www.mysql.com}{http://www.mysql.com}).
-
-The reference installation uses MySQL. (\rqhttp{http://www.worldserver.com/mm.mysql}{http://www.worldserver.com/mm.mysql}. 
-For development currently we are using version version 3.23 of the database and version 2.0.4 of the
-JDBC driver.
+The reference installation uses MySQL. For development we are currently using version version 3.23 of 
+MySQL and version 2.0.14 of the MySQL Connector/J driver.
 
 \section{XML Parser}
 OpenCms makes heavy use of XML to store content and template data. For XML parsing, we make use of
@@ -80,6 +77,6 @@ OpenCms uses JTidy release 7 to cleanup and parse HTML-fragments produced by the
 (\rqhttp{http://sourceforge.net/projects/jtidy}{http://sourceforge.net/projects/jtidy})
 
 \section{Jakarta-ORO}
-OpenCms uses regular expressions for linkreplacements in case of static export. Therefor jakarta-oro-2.0.4.jar
+OpenCms uses regular expressions for linkreplacements in case of static export. Therefor jakarta-oro-2.0.6.jar
 is used.
 (\rqhttp{http://jakarta.apache.org/oro/index.html}{http://jakarta.apache.org/oro/index.html})

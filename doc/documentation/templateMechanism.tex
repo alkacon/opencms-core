@@ -3,6 +3,18 @@
 %==========================================================
 \chapter{The template mechanism}
 
+\textbf{Since Version 5 of OpenCms, we suggest to build templates and all sub-elements based on Java Server Pages (JSP).} 
+
+Using templates based on JSP offers you some important advantages:
+\begin{itemize}
+\item{ Experienced Java programmers can start immediately to implement their own templates without having to learn a new template language.}
+\item{ Java Server Pages make it easy to extent OpenCms by implementing reusable standard components such as Java Beans.}
+\item{ OpenCms offers a package with Java Beans plus a taglib to access the most common OpenCms functions such as navigation entries etc. pp.}
+\item{ HTML producers can develop JSP templates by using the OpenCms JSP Taglib and the Java Standard Tag Library (JSTL).}
+\item{ The FlexCache is a highly efficient caching mechanism to cache JSP templates/elements.}
+\item{ JSP templates/elements are localized by using standard Java resource bundles.}
+\end{itemize}
+
 \section{Introduction to the template mechanism}
 %============================================================================
 
@@ -50,13 +62,23 @@ frametemplate and the contenttemplate.
 
 The mastertemplate only defines which frametemplate and which
 contenttemplate should be used by the page. We will create a
-template set of {\dir /content/templates/template1} (the mastertemplate), 
-{\dir /content/frametemplates/frametemplate1} and 
-{\dir /content/content\-tem\-pla\-tes/con\-tent\-tem\-plate1}. 
+template set of 
+
+{\dir /system/modules/org.\-opencms.\-default/tem\-plates/template1} (the mastertemplate), 
+
+{\dir /system/modules/org.\-opencms.\-default/frame\-tem\-plates/frametemplate1} 
+
+and {\dir /system/modules/org.\-opencms.\-default/content\-tem\-pla\-tes/con\-tent\-tem\-plate1}. 
+
 To create a template you must first create a new text file in the project's 
-{\dir /content/templates/} directory. 
-Go to the {\dir /content/templates/} directory in the Explorer view 
-of the new project and start the wizard that creates the new files 
+
+{\dir /system/modules/org.\-opencms.\-default/tem\-plates/} 
+
+directory. Go to the 
+
+{\dir /system/modules/org.\-opencms.\-default/tem\-plates/} 
+
+directory in the Explorer view of the new project and start the wizard that creates the new files 
 by clicking on the icon with the magic wand.
 Select {\name Text} for the type of the file from the New dialog
 box (figure~\ref{createOtherType}).
@@ -115,22 +137,27 @@ contain the following text:
 \begin{verbatim}
 <?xml version="1.0" encoding="ISO-8859-1"?> 
 <XMLTEMPLATE>
-    <ELEMENTDEF name="contenttemplate">
-        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-        <TEMPLATE>/content/contenttemplates/contenttemplate1</TEMPLATE>
-    </ELEMENTDEF>
-    <ELEMENTDEF name="frametemplate">
-        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-        <TEMPLATE>/content/frametemplates/frametemplate1</TEMPLATE>
-    </ELEMENTDEF>
-<TEMPLATE> <ELEMENT name="frametemplate"/> </TEMPLATE>
+
+<ELEMENTDEF name="contenttemplate">
+    <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+    <TEMPLATE>../contenttemplates/contenttemplate1</TEMPLATE>
+</ELEMENTDEF> 
+<ELEMENTDEF name="frametemplate">
+    <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
+    <TEMPLATE>../frametemplates/frametemplate1</TEMPLATE>
+</ELEMENTDEF>
+
+<TEMPLATE> 
+    <ELEMENT name="frametemplate"/> 
+</TEMPLATE>
+
 </XMLTEMPLATE>
 \end{verbatim}
 
 You can either type in this text or copy and paste it into the
 editor. Exit the editor and save the file by clicking on the icon
 to the left that shows a floppy disk and a cross. Now create the
-frametemplate1 in the directory {\dir /content/frametemplates/}
+frametemplate1 in the directory {\dir /system/modules/org.\-opencms.\-default/frame\-tem\-plates/}
 with the text:
 %\input{examples/templateMechanism/frametemplate1}
 \begin{verbatim}
@@ -149,8 +176,11 @@ with the text:
 </XMLTEMPLATE>
 \end{verbatim}
 
-At last create the contenttemplate1 in {\dir/content/contenttemplates/}
-with this text:
+At last create the contenttemplate1 in 
+
+{\dir/system/modules/org.\-opencms.\-default/content\-tem\-plates/}
+
+with this content:
 %\input{examples/templateMechanism/contenttemplate1}
 \begin{verbatim}
 <?xml version="1.0" encoding="ISO-8859-1"?> 
@@ -169,8 +199,10 @@ and use the wizard to create a new file. Select {\name Page} as the new file typ
 page's name and title. The name is the name of the file and the title is the title that should
 be shown when the page is requested. Select the master template for the new page from the
 Template drop-down list, which displays the titles of the templates that can be found in the
-{\dir /content/templates/} directory (figure~\ref{chooseMaster}).
-The other fields in this dialog will be
+
+{\dir /system/modules/org.\-opencms.\-default/tem\-plates/} 
+
+directory (figure~\ref{chooseMaster}). The other fields in this dialog will be
 discussed later. For the time being, they can retain their default values. Click
 on the {\name Finish} button to create the new page.
 
@@ -180,7 +212,7 @@ on the {\name Finish} button to create the new page.
                    {pics/templateMech/chooseMaster}
 \caption[choose the master template]
            {The Template drop-down list displays the titles of the templates that are stored in the
-            {\dir /content/templates/} directory}
+            {\dir /system/modules/org.\-opencms.\-default/tem\-plates/} directory}
 \label{chooseMaster}
 \end{center}
 \end{figure}
@@ -198,7 +230,10 @@ We will now create a new frametemplate that uses a method of the OpenCms system
 to set the title in the template. This way the title will be set dynamically and
 is not the same for all pages created with our template.
 To create the new frametemplate you have to create a new
-text file (frametemplate2) in the {\dir /content/frametemplates/}
+text file (frametemplate2) in the 
+
+{\dir /system/modules/org.\-opencms.\-default/frame\-tem\-plates/}
+
 directory. Follow the steps to create a new template that are
 described in the first example, and insert the following text in
 your frametemplate:
@@ -223,7 +258,11 @@ your frametemplate:
 
 Now you also need a new mastertemplate which uses the new
 frametemplate2 and the old contenttemplate.
-Create it in {\dir /content/templates/} as described in the first example:
+Create it in 
+
+{\dir /system/modules/org.\-opencms.\-default/tem\-plates/} 
+
+as described in the first example:
 
 %\input{examples/templateMechanism/template2}
 \begin{verbatim}
@@ -231,11 +270,11 @@ Create it in {\dir /content/templates/} as described in the first example:
 <XMLTEMPLATE>
     <ELEMENTDEF name="contenttemplate">
         <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-        <TEMPLATE>/content/contenttemplates/contenttemplate1</TEMPLATE>
+        <TEMPLATE>../contenttemplates/contenttemplate1</TEMPLATE>
     </ELEMENTDEF>
     <ELEMENTDEF name="frametemplate">
         <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-        <TEMPLATE>/content/frametemplates/frametemplate2</TEMPLATE>
+        <TEMPLATE>../frametemplates/frametemplate2</TEMPLATE>
     </ELEMENTDEF>
 <TEMPLATE> <ELEMENT name="frametemplate"/> </TEMPLATE>
 </XMLTEMPLATE>
@@ -246,7 +285,7 @@ that the title of the generated HTML page is exactly the one you typed
 in when creating the page. OpenCms provides a number
 of standard methods that can be used when creating
 a template. The methods are defined in the 
-\textit{com.opencms.template.CmsXmlTmplate} class which is
+\textit{com.opencms.template.CmsXmlTemplate} class which is
 assigned to the mastertemplate per default in the page-control file.
 As you can see, the usage of standard methods is quite simple.
 
@@ -340,7 +379,7 @@ template is inserted via the ELEMENT-tag:
 
 Here, the element with the name {\name body} is inserted after the
 {\name Hello, world!} text. The assignment of the element  {\name
-body} to the body template in the {\dir /content/bodys/} directory
+body} to the body template in the {\dir /system/bodies/} directory
 is made in the page-control file.
 \clearpage
 
@@ -366,8 +405,11 @@ navigation and a content area for the content. This layout can for
 example be realized with a table defined in the frametemplate and
 three elements which are inserted. To  create a page with this
 layout, you should first create the frametemplate3 with the table
-in the {\dir /content/frametemplate/} directory.  The creation can
-be done similar to the way we did it before. You can then add the
+in the 
+
+{\dir /system/modules/org.opencms.default/frametemplates/} 
+
+directory.  The creation can be done similar to the way we did it before. You can then add the
 following code to the frametemplate3:
 %\input{examples/templateMechanism/frametemplate3}
 \begin{verbatim}
@@ -399,7 +441,10 @@ following code to the frametemplate3:
 </XMLTEMPLATE>
 \end{verbatim}
 
-You also need a new mastertemplate in {\dir /content/templates/}
+You also need a new mastertemplate in 
+
+{\dir /system/modules/org.\-opencms.\-default/tem\-plates/}
+
 where you use the new frame\-template and an empty contenttemplate:
 %\input{examples/templateMechanism/template3}
 \begin{verbatim}
@@ -407,11 +452,11 @@ where you use the new frame\-template and an empty contenttemplate:
 <XMLTEMPLATE>
     <ELEMENTDEF name="contenttemplate">
         <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-        <TEMPLATE>/content/contenttemplates/empty</TEMPLATE>
+        <TEMPLATE>../contenttemplates/empty</TEMPLATE>
     </ELEMENTDEF>
     <ELEMENTDEF name="frametemplate">
         <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-        <TEMPLATE>/content/frametemplates/frametemplate3</TEMPLATE>
+        <TEMPLATE>../frametemplates/frametemplate3</TEMPLATE>
     </ELEMENTDEF>
 <TEMPLATE> <ELEMENT name="frametemplate"/> </TEMPLATE>
 </XMLTEMPLATE>
@@ -504,12 +549,12 @@ stored in different standard directories of OpenCms.
 If you create a new file of the type {\name Page}
 within a project, a page-control file is created in the
 current directory. Also a body-template is created with the same name as the page
-in the {\dir /content/bodys/} directory under the same directory structure.
+in the {\dir /system/bodies/} directory under the same directory structure.
 For example if you create a page in the folder /examples the body-template will be located
-in /content/bodys/examples. 
+in /system/bodies/examples. 
 If you click on the page-control file and choose {\name Edit Page} 
 from the context menu, you actually edit the body in the 
-{\dir /content/bodys/} directory with
+{\dir /system/bodies/} directory with
 the WYSIWYG editor. You can check this out by looking at both
 files with the source-code editor after you have changed
 something, but you should never change the files in the body directory
@@ -520,8 +565,11 @@ directly.
 
 \subsubsection{- templates:} \index{templates}
 
-In the directory {\dir /content/templates/} are the definitions for
-the different combinations of frame- and contenttemplates. These
+In the directory 
+
+{\dir /system/modules/org.\-opencms.\-default/tem\-plates/} 
+
+are the definitions for the different combinations of frame- and contenttemplates. These
 files have always the same structure as you have seen in the
 examples so far. The only things that can be changed are the names
 of the two templates (only names not the path!). Never add any
@@ -561,53 +609,6 @@ elements folder.
 Here you can store your dynamic elements. An element is dynamic if
 it doesn't use the standard class CmsXmlTemplate. For Example the
 navigation element.
-Table~\ref{directTab1} shows which files are stored in the different directories.
-
-\begin{figure}[hbt]
-\begin{center}
-\includegraphics[width=\sgw]
-                   {pics/templateMech/StandardDirectories}
-\caption[Standard directories]
-           {The standard directories of OpenCms}
-\label{StDir}
-\end{center}
-\end{figure}
-
-
-\begin{table}
-\begin{tabular}{|l|p{0.55\linewidth}|}
-\hline
-{\bf Directory} &
-{\bf Files stored in the Directory} \\ \hline
-/content &
-Parent directory for the directories that take up the template files.\\ 
-/download&
-Files that can be downloaded.\\
-/pics&
-Picture files used in websites\\ 
-/system &
-Parent directory for several directories that contain workplace templates and
-configuration files for the system\\ 
-/system/workplace/action&
-Executable files like login, copy etc.\\ 
-/system/workplace/administration&
-Subdirectories for every Item in the Administration view.\\ 
-/system/workplace/config&
-The language files that are stored in subdirectories for every
-language, and different configuration files.\\ 
-/system/workplace/css&
-The used style sheets.\\ 
-/system/workplace/help&
-The help system.\\ 
-/system/workplace/pics&
-The pictures that are used to create the workplace.\\
-/system/workplace/templates&
-The templates that are used to create the workplace.\\ 
-\hline
-\end{tabular}
-\caption[Standard directories] {Standard directories}
-\label{directTab1}
-\end{table}
 
 \clearpage 
 
@@ -626,7 +627,10 @@ template. A data block is a named block of text that can contain
 XML and HTML code. We will change the earlier example by putting
 the {\name Hello, world!} text into a data block with the name
 {\name message.} To create the new contenttemplate, create a new
-text file named contenttemplate2 in the {\dir /content/contenttemplates/} 
+text file named contenttemplate2 in the 
+
+{\dir /system/modules/org.\-opencms.\-default/content\-tem\-plates/} 
+
 directory with the following text:
 \index{data blocks}
 
@@ -691,7 +695,7 @@ userdefined class. Here is the text that the contenttemplate should contain:
 </TEMPLATE>
 <ELEMENTDEF name="example4">
     <CLASS>CmsExample4</CLASS>
-    <TEMPLATE>/content/elements/example4</TEMPLATE>
+    <TEMPLATE>../elements/example4</TEMPLATE>
 </ELEMENTDEF>
 </XMLTEMPLATE>
 \end{verbatim}
@@ -752,7 +756,6 @@ public class CmsExample4 extends CmsXmlTemplate \{\\
 \jtabb        getOwnTemplateFile(cms, templateFile, elementName, parameters,\\
 \jtabd                           templateSelector);\\
 
-
 \jtabb        templateDocument.setData("greeting","from Java!");\\
 \jtabb        return startProcessing(cms, templateDocument, \\
 \jtabd                               elementName, parameters, templateFile);\\
@@ -777,7 +780,7 @@ and {\meth startProcessing()} are used in almost every case when writing a {\met
 method because they provide a rather basic functionality that allows manipulating and processing of the template.
 
 You can compile the class and place the generated {\class Example4.class} file
-in the subdirectory WEB-INF/occlasses of your webapp. 
+in the subdirectory {\dir WEB-INF/classes/} of your webapp. 
 To load the new class you have to restart the webapplication. If everything
 works fine you should see something like in figure~\ref{OutputJavaClass}.
 
@@ -821,7 +824,6 @@ import com.opencms.template.*;\\
 import com.opencms.file.*;\\
 import com.opencms.core.*;\\
 
-
 import java.util.*;\\
 
 public class  CmsExample5 extends  CmsXmlTemplate \{\\
@@ -835,7 +837,7 @@ public class  CmsExample5 extends  CmsXmlTemplate \{\\
 \end{java}
 
 Note that the signature of user-defined methods is always the same and cannot be changed.
-To use the class, compile it and place it in the subdirectory {\dir WEB-INF/occlasses/} of your
+To use the class, compile it and place it in the subdirectory {\dir WEB-INF/classes/} of your
 webapp. Create a new page that uses the new mastertemplate. 
 
 The output of the new template will be the same as that of the previous
@@ -859,10 +861,10 @@ Below is the page-control file for an earlier example:
 <?xml version= "1.0" encoding="ISO-8859-1"?>\\
 <page>\\
 \xtaba <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
-\xtaba <MASTERTEMPLATE>/content/templates/template5</MASTERTEMPLATE>\\
+\xtaba <MASTERTEMPLATE>/system/modules/org.\-opencms.\-default/tem\-plates/template5</MASTERTEMPLATE>\\
 \xtaba <ELEMENTDEF name="body">\\
 \xtaba <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
-\xtaba <TEMPLATE>/content/bodys/page5.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/system/bodies/page5.html</TEMPLATE>\\
 \xtaba </ELEMENTDEF>\\
 </page>\\
 \end{xml}
@@ -971,8 +973,8 @@ This is the source code for the new class:
 import com.opencms.template.*;\\
 import com.opencms.file.*;\\
 import com.opencms.core.*;\\
-import java.util.*;\\[1ex]
 
+import java.util.*;\\[1ex]
 
 public class CmsExample6 extends CmsXmlTemplate \{\\[1ex]
 
@@ -1089,9 +1091,11 @@ source code of the Java class:
 \begin{java}
 import com.opencms.file.*;\\
 import com.opencms.template.*;\\
+
 import java.util.*;\\[1ex]
 
 public class CmsExample7 extends CmsXmlTemplate \{\\
+
 public byte[] getContent(CmsObject cms, String templateFile,\\
 \jtabc        String elementName, Hashtable parameters,\\
 \jtabc        String templateSelector) throws CmsException \{\\
@@ -1248,9 +1252,11 @@ This is the Java source code for the class needed for this example:
 import com.opencms.template.*;\\
 import com.opencms.file.*;\\
 import com.opencms.core.*;\\
+
 import java.util.*;\\[1ex]
 
 public class CmsExample9 extends CmsXmlTemplate \{\\
+
 \jtabb   public Object getTable(CmsObject cms, String tagcontent,\\
 \jtabe           A\_CmsXmlContent doc, Object userObject)\\
 \jtabe           throws CmsException \{\\
@@ -1298,9 +1304,11 @@ the new Java class including the method:
 import com.opencms.core.*;\\
 import com.opencms.file.*;\\
 import com.opencms.template.*;\\
+
 import java.util.*;\\[1 ex]
 
 public class CmsExample10 extends CmsXmlTemplate \{\\
+
 \jtabc        static Hashtable colors = new Hashtable();\\
 \jtabc        static \{\\
 \jtabd                colors.put("black", "000000");\\
@@ -1421,12 +1429,12 @@ This is the contenttemplate for the new example:
 </TEMPLATE>\\
 
 <ELEMENTDEF name="hello">\\
-\xtaba <TEMPLATE>/content/bodys/page4.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/system/bodies/page4.html</TEMPLATE>\\
 \xtaba <CLASS>CmsExample4</CLASS>\\
 </ELEMENTDEF>\\
 
 <ELEMENTDEF name="random">\\
-\xtaba <TEMPLATE>/content/bodys/page6.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/system/bodies/page6.html</TEMPLATE>\\
 \xtaba <CLASS>CmsExample6</CLASS>\\
 </ELEMENTDEF>\\
 
@@ -1452,10 +1460,10 @@ the original page-control file:
 <?xml version= "1.0" encoding="ISO-8859-1"?>\\
 <page>\\
 \xtaba <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
-\xtaba <MASTERTEMPLATE>/content/templates/template8</MASTERTEMPLATE>\\
+\xtaba <MASTERTEMPLATE>/system/modules/org.\-opencms.\-default/tem\-plates/template8</MASTERTEMPLATE>\\
 \xtaba <ELEMENTDEF name="body">\\
 \xtaba <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
-\xtaba <TEMPLATE>/content/bodys/page\_11.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/system/bodies/page\_11.html</TEMPLATE>\\
 \xtaba </ELEMENTDEF>\\
 </page>\\
 \end{xml}
@@ -1467,13 +1475,13 @@ for the  {\name hello} element to the page-control file:
 <?xml version= "1.0"?>\\
 <page>\\
 \xtaba <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
-\xtaba <MASTERTEMPLATE>/content/templates/template8</MASTERTEMPLATE>\\
+\xtaba <MASTERTEMPLATE>/system/modules/org.\-opencms.\-default/tem\-plates/template8</MASTERTEMPLATE>\\
 \xtaba <ELEMENTDEF name="body">\\
 \xtaba <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\\
-\xtaba <TEMPLATE>/content/bodys/page\_11.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/system/bodies/page\_11.html</TEMPLATE>\\
 \xtaba </ELEMENTDEF>\\
 \xtaba <ELEMENTDEF name="hello">\\
-\xtaba <TEMPLATE>/content/bodys/page6.html</TEMPLATE>\\
+\xtaba <TEMPLATE>/system/bodies/page6.html</TEMPLATE>\\
 \xtaba <CLASS>CmsExample6</CLASS>\\
 \xtaba </ELEMENTDEF>\\
 
@@ -1502,7 +1510,7 @@ colors. This is the new definition of the {\name hello} element:
 
 \begin{java}
 <ELEMENTDEF name="hello">\\
-<TEMPLATE>/content/bodys/page\_14\_param.html</TEMPLATE>\\
+<TEMPLATE>/system/bodies/page\_14\_param.html</TEMPLATE>\\
 <CLASS>CmsExample14</CLASS>\\
 <PARAMETER name="foreground">blue</PARAMETER>\\
 <PARAMETER name="background">green</PARAMETER>\\
@@ -1521,7 +1529,9 @@ import com.opencms.file.*;\\
 import com.opencms.core.*;\\
 
 import java.util.*;\\
+
 public class CmsExample14 extends CmsXmlTemplate \{\\
+
 public byte[] getContent(CmsObject cms, \\
 \jtabd        String templateFile, String elementName,\\
 \jtabd        Hashtable parameters,String templateSelector)\\
@@ -1588,7 +1598,7 @@ as well.
 \begin{xml}
 <?xml version="1.0" encoding="ISO-8859-1"?>\\
 <XMLTEMPLATE>\\
-<stylesheet>system/modules/.../css/style.css</stylesheet>\\
+<stylesheet>system/modules/.../resources/style.css</stylesheet>\\
 
 <TEMPLATE>\\
 <![CDATA[\\
@@ -1599,7 +1609,7 @@ as well.
 \xtabb      charset=iso-8859-1">\\
 \xtaba  <link rel="stylesheet" href="]]><method\\
 \xtabb      name="getServletPath"/>\\
-\xtabb      <![CDATA[system/modules/.../css/style.css">\\
+\xtabb      <![CDATA[system/modules/.../resources/style.css">\\
 </head>\\
 
 <body ...\\
