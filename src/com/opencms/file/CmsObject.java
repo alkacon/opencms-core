@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.251 $
+* Date   : $Date: 2002/12/12 19:03:14 $
+* Version: $Revision: 1.252 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.251 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.252 $ $Date: 2002/12/12 19:03:14 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1846,7 +1846,7 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
      * @return String The substituded link.
      */
     public String getLinkSubstitution(String link){
-        return m_linkSubstitution.getLinkSubstitution(this, link);
+        return LinkSubstitution.getLinkSubstitution(this, link);
     }
 
     /**
@@ -2564,7 +2564,7 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
         // set current project to online project if the published project was temporary
         // and the published project is still the current project
         if(theProject.getId() == m_context.currentProject().getId() &&
-            theProject.getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY){
+             (theProject.getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY)) {
             m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
         }
     }
@@ -2593,6 +2593,10 @@ public void publishResource(String resourcename) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public int publishResource(String resourcename, boolean justPrepare) throws CmsException {
+    return publishResource(resourcename, justPrepare, justPrepare?null:new CmsShellReport());
+}
+
+public int publishResource(String resourcename, boolean justPrepare, I_CmsReport report) throws CmsException {
     int oldProjectId = m_context.currentProject().getId();
     int retValue = -1;
     CmsResource res = null;
@@ -2617,17 +2621,17 @@ public int publishResource(String resourcename, boolean justPrepare) throws CmsE
         if(isAdmin() || isManagerOfProject()){
             int newProjectId = m_rb.createDirectPublishProject(m_context.currentUser(), m_context.currentProject(),
                                               "Direct Publish","","Users",
-                                              "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
+                                              "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();                                              
             retValue = newProjectId;
             getRequestContext().setCurrentProject(newProjectId);
             I_CmsResourceType rt = getResourceType(res.getType());
-            // copy the resource to the
+            // copy the resource to the project
             rt.copyResourceToProject(this, resourcename);
             // set the project_id of the resource to the current project
             rt.changeLockedInProject(this, newProjectId, resourcename);
             if(!justPrepare){
                 // publish the temporary project
-                publishProject(newProjectId);
+                publishProject(newProjectId, report);
             }
             getRequestContext().setCurrentProject(oldProjectId);
         } else {
@@ -3019,6 +3023,24 @@ public CmsResource readFileHeader(String filename) throws CmsException {
     return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename)));
 }
 
+/**
+ * Reads a file header from the Cms.
+ * <br>
+ * The reading excludes the filecontent.
+ *
+ * @param filename the complete path of the file to be read
+ * @param includeDeleted if <code>true</code>, deleted files (in offline projects) will 
+ * also be read
+ *
+ * @return file the read file header
+ *
+ * @throws CmsException if the user has not the rights
+ * to read the file headers, or if the file headers couldn't be read
+ */
+public CmsResource readFileHeader(String filename, boolean includeDeleted) throws CmsException {
+    return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename), includeDeleted));
+}
+    
 /**
  * Reads a file header from the Cms.
  * <br>
@@ -4057,7 +4079,7 @@ public Vector getLoggedInUsers() throws CmsException {
  * @param newProjectId The new project-id
  * @param resourcename The name of the resource to change
  */
-protected void changeLockedInProject(int projectId, String resourcename) throws CmsException{
+public void changeLockedInProject(int projectId, String resourcename) throws CmsException{
     CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resourcename), true);
     I_CmsResourceType rt = getResourceType(res.getType());
     rt.changeLockedInProject(this, projectId, resourcename);
