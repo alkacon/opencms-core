@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/locale/Attic/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/01/20 11:09:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/20 15:26:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Set;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2004/01/20 11:09:23 $
+ * @version $Revision: 1.3 $ $Date: 2004/01/20 15:26:36 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsLocaleManager {
@@ -110,9 +110,11 @@ public class CmsLocaleManager {
      */
     public Locale getDefaultLocale(Set localeNames) {
         
-        for (int i=0; i < m_defaultLocaleNames.length; i++) {
-            if (localeNames.contains(m_defaultLocaleNames[i])) {
-                return m_defaultLocales[i];
+        if (localeNames != null) {
+            for (int i=0; i < m_defaultLocaleNames.length; i++) {
+                if (localeNames.contains(m_defaultLocaleNames[i])) {
+                    return m_defaultLocales[i];
+                }
             }
         }
         
