@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/10/05 07:33:07 $
-* Version: $Revision: 1.184 $
+* Date   : $Date: 2001/10/16 08:58:34 $
+* Version: $Revision: 1.185 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.184 $ $Date: 2001/10/05 07:33:07 $
+ * @version $Revision: 1.185 $ $Date: 2001/10/16 08:58:34 $
  */
 public interface I_CmsConstants {
 
@@ -1130,6 +1130,20 @@ public interface I_CmsConstants {
     */
     static final String C_ERRPREFIX="err";
 
+    /**
+     * The name of the default site
+     */
+    static final String C_DEFAULT_SITE = "/default";
+
+    /**
+     * The root name of the VFS
+     */
+    static final String C_ROOTNAME_VFS = "/vfs";
+
+    /**
+     * The root name of the COS
+     */
+    static final String C_ROOTNAME_COS = "/cos";
 }
 
 
