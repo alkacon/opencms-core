@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/I_CmsHtmlLinkValidatable.java,v $
- * Date   : $Date: 2004/01/22 14:11:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/22 14:17:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * HTML links are considered as href attribs in anchor tags and src attribs in image tags.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/01/22 14:11:23 $
+ * @version $Revision: 1.2 $ $Date: 2004/01/22 14:17:26 $
  * @since 5.3.0
  */
 public interface I_CmsHtmlLinkValidatable {
@@ -54,8 +54,8 @@ public interface I_CmsHtmlLinkValidatable {
      * Returns a list with the Cms URIs of all linked resources (either via href attribs or img 
      * tags) in the (body) content of the specified Cms resource.<p>
      * 
-     * Implementations of this method must return an empty list, or better Collections.EMPTY_LIST,
-     * if no links are found at all.<p>
+     * Implementations of this method must return an empty list, or better 
+     * {@link java.util.Collections#EMPTY_LIST}, if no links are found at all.<p>
      * 
      * Second, implementations of this method are responsible to filter out any "external" URLs 
      * pointing to targets outside the OpenCms VFS (http, https, mailto, ftp etc.) from the result 
