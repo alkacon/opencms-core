@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/11/28 21:57:58 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/11/29 15:50:18 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 5.3.5
  */
@@ -2137,6 +2137,28 @@ public class OpenCmsTestCase extends TestCase {
 
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+    
+    /**
+     * Tests whether a resource has currently a specified flag set.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param flag a flag to check
+     */
+    public void assertFlags(CmsObject cms, String resourceName, int flag) {
+        
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
+
+            // test if the specified flag is set
+            if (!((res.getFlags() & flag) > 0)) {
+                fail("[Flags (" + res.getFlags() + ") do not contain flag (" + flag + ")");
+            }
+        } catch (CmsException e) {
+            fail("Error reading resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
         }
     }
 
