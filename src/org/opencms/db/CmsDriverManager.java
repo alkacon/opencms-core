@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/04/02 17:01:11 $
- * Version: $Revision: 1.348 $
+ * Date   : $Date: 2004/04/05 05:33:02 $
+ * Version: $Revision: 1.349 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.348 $ $Date: 2004/04/02 17:01:11 $
+ * @version $Revision: 1.349 $ $Date: 2004/04/05 05:33:02 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8758,24 +8758,26 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public List readPropertyObjects(CmsRequestContext context, String resourceName, String siteRoot, boolean search) throws CmsException {
+
         // read the file header
         CmsResource resource = readFileHeader(context, resourceName);
         
         // check the permissions
         checkPermissions(context, resource, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
 
+        // check if search mode is enabled
         search = search && (siteRoot != null);
         
         // check if we have the result already cached
         String cacheKey = getCacheKey(C_CACHE_ALL_PROPERTIES + search, context.currentProject().getId(), resource.getRootPath());
-        List value = (List) m_propertyCache.get(cacheKey);
+        List value = (List)m_propertyCache.get(cacheKey);
 
         if (value == null) {
             // result not cached, let's look it up in the DB
             if (search) {
                 boolean cont;
                 siteRoot += "/";
-                value = (List) new ArrayList();
+                value = (List)new ArrayList();
                 List parentValue;
                 do {
                     try {
@@ -8783,7 +8785,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                         parentValue.addAll(value);
                         value.clear();
                         value.addAll(parentValue);
-                        resourceName = CmsResource.getParentFolder(resource.getRootPath());
+                        resourceName = CmsResource.getParentFolder(resourceName);
                         cont = (!"/".equals(resourceName));
                     } catch (CmsSecurityException se) {
                         // a security exception (probably no read permission) we return the current result                      
@@ -8814,12 +8816,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public CmsProperty readPropertyObject(CmsRequestContext context, String resourceName, String siteRoot, String key, boolean search) throws CmsException {      
+
         // read the resource
         CmsResource resource = readFileHeader(context, resourceName);
 
         // check the security
         checkPermissions(context, resource, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
 
+        // check if search mode is enabled
         search = search && (siteRoot != null);
         
         // check if we have the result already cached
@@ -8833,13 +8837,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             if (allProperties != null) {
                 // list of properties already read, look up value there 
-                // unfortunatly, the list is always case sentitive, but in MySQL 
-                // using readProperty() is not, so to make really sure a property is found
-                // we must look up all the entries in the map manually, which should be faster 
-                // than a connect to the DB nevertheless
                 for (int i = 0; i < allProperties.size(); i++) {
                     CmsProperty property = (CmsProperty) allProperties.get(i);
-                    if (property.getKey().equalsIgnoreCase(key)) {
+                    if (property.getKey().equals(key)) {
                         value = property;
                         break;
                     }
@@ -8849,13 +8849,13 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 String cacheKey3 = getCacheKey(key + false, context.currentProject().getId(), resource.getRootPath());
                 value = (CmsProperty) m_propertyCache.get(cacheKey3);
                 
-                if ((value == null) || (value == CmsProperty.getNullProperty())) {
+                if ((value == null) || value.isNullProperty()) {
                     boolean cont;
                     siteRoot += "/";
                     do {
                         try {
                             value = readPropertyObject(context, resourceName, siteRoot, key, false);
-                            cont = ((value == null) && (!"/".equals(resourceName)));
+                            cont = (value.isNullProperty() && (!"/".equals(resourceName)));
                         } catch (CmsSecurityException se) {
                             // a security exception (probably no read permission) we return the current result                      
                             cont = false;
@@ -8877,7 +8877,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_propertyCache.put(cacheKey, value);
         }
         
-        return (value == CmsProperty.getNullProperty()) ? null : value;
-    }      
-    
+        return value;
+    }
 }
