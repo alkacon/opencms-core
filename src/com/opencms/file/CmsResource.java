@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/07/30 13:22:24 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2003/08/01 08:37:21 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.76 $ 
+ * @version $Revision: 1.77 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -352,17 +352,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
         return false;
     }
-    
-    /**
-     * Returns the absolute path of this resource without the current site root,
-     * e.g. <code>/folder/index.html</code><p>
-     *
-     * @param cms the current cms context (to obtain the site root from)
-     * @return the absolute path of the this resource
-     */    
-    public String getAbsolutePath(CmsObject cms) {               
-        return cms.getRequestContext().removeSiteRoot(m_fullResourceName);
-    }
 
     /**
      * Returns the accessflags of this resource.<p>
@@ -418,6 +407,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the resource name including it's path
      */
     public String getFullResourceName() {
+        if (m_fullResourceName == null) {
+            throw new RuntimeException("Full resource name not set for resource " + getResourceName());
+        }
         return m_fullResourceName;
     }
 
@@ -438,7 +430,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public int getLength() {
         return m_size;
     }
-
 
     /**
      * Gets the number of references to the resource.<p>
@@ -481,22 +472,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public String getName() {
         return getResourceName();
-    }
-    
-    /**
-     * Returns the parent folder name of this resource with absolute path from the site root,
-     * same as callig <code>getParent(getAbsolutePath(cms))</code>.<p>
-     * 
-     * Example: <code>/system/workplace/</code> has the parent <code>/system/</code>.
-     * 
-     * @param cms the current cms context
-     * @see #getParent(String)
-     * @return the parent folder name of this resource with absolute path from the site root, 
-     * or <code>null</code> for the site root folder 
-     */
-     public String getParent(CmsObject cms) {
-        return getParent(getAbsolutePath(cms));
-     }    
+    }    
 
     /**
      * Gets the ID of the parent's file tree/hierarchy database entry.
@@ -506,18 +482,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public CmsUUID getParentId() {
         return m_parentId;
     }
-     
-    /**
-     * Returns the folder path of this resource with absolute path from the site root,
-     * same as calling <code>getPath(getAbsolutePath(cms))</code>.<p>
-     *
-     * @param cms the current cms context
-     * @see #getPath(String)
-     * @return the folder path of this resource with absolute path from the site root
-     */
-    public String getPath(CmsObject cms) {
-        return getPath(getAbsolutePath(cms));
-    }     
 
     /**
      * Returns the ID of the project where the resource has been last modified.<p>
@@ -643,7 +607,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if this is is a folder
      */
     public boolean isFolder() {
-        return this.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
+        return getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
     }
 
     /**
@@ -686,10 +650,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-    * Sets the access flags of this resource.<p>
-    *
-    * @param flags the access flags to set
-    */
+     * Sets the access flags of this resource.<p>
+     *
+     * @param flags the access flags to set
+     */
     public void setAccessFlags(int flags) {
         m_accessFlags = flags;
     }
@@ -703,17 +667,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_isTouched = true;
         m_dateLastModified = time;
     }
-    
-    /**
-     * Sets the file id of this resource.<p>
-     *
-     * @param file the file id to set
-     */
-    /*
-    public void setFileId(CmsUUID file) {
-        m_contentId = file;
-    }
-    */
     
     /**
     * Sets the flags of this resource.<p>
@@ -736,7 +689,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
     * Sets the loader id of this resource.<p>
     *
-    * @param the loader id of this resource
+    * @param loaderId the loader id of this resource
     */
     public void setLoaderId(int loaderId) {
         m_loaderId = loaderId;
