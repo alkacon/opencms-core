@@ -36,7 +36,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * the <code>&lt;cms:include /&gt;</code> tag.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsJspTagIncludeTEI extends TagExtraInfo {
 
@@ -55,18 +55,13 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
     }
     
     /**
-     * Checks the validity of the <code>&lt;cms:include /&gt;</code> attributs.<p>
+     * Checks the validity of the <code>&lt;cms:include /&gt;</code> attributes.<p>
      *
      * The logic used is:
      * <pre>
-     * if (hasBody) {
-     *       String type = (String)data.getAttribute(C_ATTR_BODY);
-     *       if (! ("eval".equals(type) || "params".equals(type))) return false;
-     * }
      * if (hasFile && (hasSuffix || hasProperty || hasAttribute)) return false;
      * if (hasProperty && hasAttribute) return false;
      * if (hasSuffix && !(hasProperty || hasAttribute)) return false;
-     * if (! (hasProperty || hasFile || hasBody || hasAttribute)) return false;
      * </pre>
      * 
      * @param data the tag data

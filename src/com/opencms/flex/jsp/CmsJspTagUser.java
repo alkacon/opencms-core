@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagUser.java,v $
-* Date   : $Date: 2003/01/20 17:57:52 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/02/17 01:12:45 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,45 +35,64 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * This Tag provides access to the data of the currently logged in user.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
     
+    // internal member variables
 	private String m_property = null;
+    
+    /** static array of the possible user properties */
+    private static final String[] m_userProperties =
+        {
+            "name",
+            "firstname",
+            "lastname",
+            "email",
+            "street",
+            "zip",
+            "city",
+            "description",
+            "group",
+            "currentgroup",
+            "defaultgroup",
+            "otherstuff" };
 
+    /** array list for fast lookup */
+    private static final java.util.List m_userProperty =
+        java.util.Arrays.asList(m_userProperties);
+        
+    /**
+     * Sets the property name.<p>
+     * 
+     * @param name the property name
+     */
 	public void setProperty(String name) {
 		if (name != null) {
 			m_property = name.toLowerCase();
 		}
 	}
 
+    /**
+     * Returns the property name.<p>
+     * 
+     * @return String the property name
+     */
 	public String getProperty() {
 		return m_property != null ? m_property : "";
 	}
 
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */
 	public void release() {
 		super.release();
 		m_property = null;
 	}
 
-	private static final String[] m_userProperties =
-		{
-			"name",
-			"firstname",
-			"lastname",
-			"email",
-			"street",
-			"zip",
-			"city",
-			"description",
-			"group",
-			"currentgroup",
-			"defaultgroup",
-			"otherstuff" };
-
-	private static final java.util.List m_userProperty =
-		java.util.Arrays.asList(m_userProperties);
-
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     */
 	public int doStartTag() throws javax.servlet.jsp.JspException {
 
 		javax.servlet.ServletRequest req = pageContext.getRequest();
@@ -96,7 +115,14 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
         return SKIP_BODY;
     }
     
-	public static String userTagAction(String property, CmsFlexRequest req) {   
+    /**
+     * Internal action method.<p>
+     * 
+     * @param property the selected user property
+     * @param req the current request
+     * @return String the value of the selected user property
+     */
+	static String userTagAction(String property, CmsFlexRequest req) {   
              
         com.opencms.file.CmsObject cms = req.getCmsObject();
         com.opencms.file.CmsUser user = cms.getRequestContext().currentUser();

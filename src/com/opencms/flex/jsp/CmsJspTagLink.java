@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLink.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/02/17 01:12:45 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,20 +36,18 @@ import javax.servlet.jsp.JspException;
 
 /**
  * Implements the <code>&lt;cms:link&gt;[filename]&lt;/cms:link&gt;</code> 
- * tag to add OpenCms managed links to a JSP page, required for the static 
- * export to work properly. 
+ * tag to add OpenCms managed links to a JSP page, required for link
+ * management and the static 
+ * export to work properly.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
-
+ 
     /**
-     * Default JSP method to process the tag data.
-     * 
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      * @return EVAL_PAGE
-     * 
-     * @throws JspException in case of trouble calculating the link or writing the output to the JSP
      */
     public int doEndTag() throws JspException {
         
@@ -80,12 +78,13 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
     }
     
     /**
+     * Internal action method.<p>
+     * 
      * Calulates a link using the OpenCms link export rules using the
      * given CmsFlexRequest to access the link substitutor.<p>
      * 
      * @param link the link that should be calculated, can be relative or absolute
      * @param req the current request
-     * 
      * @return the calculated link
      * 
      * @see com.opencms.util.LinkSubstitution#getLinkSubstitution(CmsObject, String)

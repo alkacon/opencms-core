@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLabel.java,v $
-* Date   : $Date: 2002/12/16 13:20:36 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/02/17 01:12:45 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,26 +36,18 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * This Tag provides access to the labels stored in the
  * language files of the OpenCms workplace.<p>
  * 
- * This is rather a "proof-of-concept" then a perfect implementation.
- * The overhead required to read and parse the XML language files 
- * is to high and performance would be hit seriously if this tag 
- * is used often on a page.<p>
- * 
  * Instead of using the XML based workplace tags one should 
  * consider using standard Java resource bundles to provide language independent 
  * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsJspTagLabel extends javax.servlet.jsp.tagext.BodyTagSupport {
-    
-    /** Attribute to store WP label definition file */
-    public static final String C_JSP_ATTR_TAGLABEL_DEF = "com.opencms.flex.CmsJspTagLabel.labeldeffile";
-    
-    /** Attribute to store WP language file */
-    public static final String C_JSP_ATTR_TAGLABEL_LANG = "com.opencms.flex.CmsJspTagLabel.langfile";
             
+    /**
+     * @see javax.servlet.jsp.tagext.IterationTag#doAfterBody()
+     */
     public int doAfterBody() throws javax.servlet.jsp.JspException {
         
         javax.servlet.ServletRequest req = pageContext.getRequest();
@@ -84,7 +76,15 @@ public class CmsJspTagLabel extends javax.servlet.jsp.tagext.BodyTagSupport {
         }
         return SKIP_BODY;
     }
-    
+
+    /**
+     * Internal action method.<p>
+     * 
+     * @param label the label to look up
+     * @param req the current request
+     * @return String the value of the selected lable
+     * @throws CmsException in case something goes wrong
+     */    
     public static String wpLabelTagAction(String label, CmsFlexRequest req) 
     throws CmsException {
         com.opencms.workplace.CmsXmlWpLabelDefFile labeldeffile;

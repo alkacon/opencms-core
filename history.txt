@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/17 00:32:27 $
- * Version: $Revision: 1.457 $
+ * Date   : $Date: 2003/02/17 01:12:45 $
+ * Version: $Revision: 1.458 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ OpenCms 5.0 (next version)
 * Fixed issue #55 from Bugzilla (compatibility.support.oldlocales not working if no new modules installed)
 * Fixed issue where an absolute link to the local machine with an URI outside of OpenCms
   was incorrectly treated as an OpenCms internal link by the link replacement engine
+- Improved JavaDocs in package com.opencms.flex.jsp.*
 - Improved the API for the building of dynamic navigations on a JSP
 - Module version numbers are of type float instead of int now, so that values like "0.9" are possible
 - Workplace now adopts to the systems default encoding if possible instead of using only the encoding

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInfo.java,v $
- * Date   : $Date: 2003/02/02 15:59:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/02/17 01:12:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,12 +68,30 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * error message.<p>
  *  
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
     
     // member variables    
 	private String m_property = null;
+
+    /** Static array with allowed info property values */
+    private static final String[] m_systemProperties =
+        {
+            "opencms.version", // 0
+            "opencms.url", // 1
+            "opencms.uri", // 2
+            "opencms.webapp", // 3
+            "opencms.webbasepath", // 4 
+            "opencms.request.uri", // 5
+            "opencms.request.element.uri", // 6
+            "opencms.request.folder", // 7      
+            "opencms.request.encoding" // 8      
+        };                
+            
+    /** array list of allowed property values for more convenient lookup */
+    private static final java.util.List m_userProperty =
+        java.util.Arrays.asList(m_systemProperties);
 
     /**
      * Sets the info property name.
@@ -96,31 +114,16 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
 	}
 
     /**
-     * Releases the tag resources.
+     * @see javax.servlet.jsp.tagext.Tag#release()
      */
 	public void release() {
 		super.release();
 		m_property = null;
 	}
-
-    /** Static array with allowed info property values */
-	private static final String[] m_systemProperties =
-		{
-			"opencms.version", // 0
-            "opencms.url", // 1
-            "opencms.uri", // 2
-            "opencms.webapp", // 3
-            "opencms.webbasepath", // 4 
-            "opencms.request.uri", // 5
-            "opencms.request.element.uri", // 6
-            "opencms.request.folder", // 7      
-            "opencms.request.encoding" // 8      
-        };                
-            
-    /** array list of allowed property values for more convenient lookup */
-	private static final java.util.List m_userProperty =
-		java.util.Arrays.asList(m_systemProperties);
-
+    
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     */
 	public int doStartTag() throws javax.servlet.jsp.JspException {
 
 		javax.servlet.ServletRequest req = pageContext.getRequest();
@@ -145,7 +148,7 @@ public class CmsJspTagInfo extends javax.servlet.jsp.tagext.TagSupport {
 
     /**
      * Returns the selected info property value based on the provided 
-     * parameters.
+     * parameters.<p>
      * 
      * @param property the info property to look up
      * @param req the currents request

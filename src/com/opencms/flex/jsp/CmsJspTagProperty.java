@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
-* Date   : $Date: 2003/01/20 17:57:52 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/02/17 01:12:45 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,64 +34,138 @@ import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.util.Encoder;
 
 /**
- * This Tag provides access to the currently included files OpenCms properties.
+ * This Tag provides access to the currently included files OpenCms properties.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
+    // internal member variabled
     private String m_propertyName = null;    
     private String m_propertyFile = null;    
     private String m_defaultValue = null;
     private boolean m_escapeHtml = false;
     
+    // public accessor constants
+    public static final String USE_PARENT = "parent";
+    public static final String USE_THIS = "this";
+    public static final String USE_SEARCH = "search";
+    public static final String USE_SEARCH_PARENT = "search-parent";
+    public static final String USE_SEARCH_THIS = "search-this";
+    
+    /** static array of the possible "file" properties */
+    private static final String[] m_actionValues =
+        {
+            USE_PARENT,
+            USE_THIS,
+            USE_SEARCH_THIS,
+            USE_SEARCH,
+            USE_SEARCH_PARENT,
+        };
+
+    /** array list for fast lookup */
+    private static final java.util.List m_actionValue =
+        java.util.Arrays.asList(m_actionValues);    
+    
+    /**
+     * Sets the property name.<p>
+     * 
+     * @param name the property name to set
+     */
     public void setName(String name) {
         if (name != null) {
             m_propertyName = name;
         }
     }
     
+    /**
+     * Returns the property name.<p>
+     * 
+     * @return String the property name
+     */
     public String getName() {
         return m_propertyName!=null?m_propertyName:"";
     }
 
+    /**
+     * Sets the default value.<p>
+     * 
+     * This is used if a selected property is not found.<p>
+     * 
+     * @param def the default value
+     */
     public void setDefault(String def) {
         if (def != null) {
             m_defaultValue = def;
         }
     }
     
+    /**
+     * Returns the default value.<p>
+     * 
+     * @return String the default value
+     */
     public String getDefault() {
         return m_defaultValue!=null?m_defaultValue:"";
     }
     
+    /**
+     * Sets the file name.<p>
+     * 
+     * @param file the file name
+     */
     public void setFile(String file) {
         if (file != null) {
             m_propertyFile = file.toLowerCase();
         }
     }
     
+    /**
+     * Returns the file name.<p>
+     * 
+     * @return String the file name
+     */
     public String getFile() {
         return m_propertyFile!=null?m_propertyFile:"parent";
     }
 
+    /**
+     * Set the escape html flag.<p>
+     * 
+     * @param value should be "true" or "false" (all values other then "true" are
+     * considered to be false)
+     */
     public void setEscapeHtml(String value) {
         if (value != null) {
             m_escapeHtml = "true".equalsIgnoreCase(value.trim());
         }
     }
 
+    /**
+     * The value of the escape html flag.<p>
+     * 
+     * @return String the value of the escape html flag
+     */
     public String getEscapeHtml() {
         return "" + m_escapeHtml;
     }
         
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */
     public void release() {
         super.release();
         m_propertyFile = null;
         m_propertyName = null;
+        m_defaultValue = null;
+        m_escapeHtml = false;
     }    
     
+    /**
+     * @return SKIP_BODY
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     */
     public int doStartTag() throws javax.servlet.jsp.JspException {
         
         javax.servlet.ServletRequest req = pageContext.getRequest();
@@ -114,6 +188,18 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
         return SKIP_BODY;
     }
 
+    /**
+     * Internal action method.<p>
+     * 
+     * @param property the property to look up
+     * @param action the search action
+     * @param defaultValue the default value
+     * @param escape if the result html should be escaped or not
+     * @param req the current request
+     * @return String the value of the property or <code>null</code> if not found (and no
+     * defaultValue provided)
+     * @throws CmsException if something goes wrong
+     */
     public static String propertyTagAction(String property, String action, String defaultValue, boolean escape, CmsFlexRequest req) 
     throws CmsException
     {
@@ -121,22 +207,31 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
         if (defaultValue == null) defaultValue = "";
         String value;
         
-        if ("parent".equals(action)) {                    
-            // Read properties of parent (i.e. top requested) file
-            value = req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, false, defaultValue);                  
-        } else if ("this".equals(action)) {
-            // Read properties of this file
-            value = req.getCmsObject().readProperty(req.getCmsResource(), property, false, defaultValue);
-        } else if ("search-this".equals(action)) {
-            // Try to find property on this file and all parent folders
-            value = req.getCmsObject().readProperty(req.getCmsResource(), property, true, defaultValue);
-        } else if ("search-parent".equals(action) || "search".equals(action)) {
-            // Try to find property on parent file and all parent folders
-            value = req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, true, defaultValue);
-        } else {
-            // Read properties of the file named in the attribute
-            value = req.getCmsObject().readProperty(req.toAbsolute(action), property, false, defaultValue);
-        }        
+        // if action is not set use default
+        if (action == null) action = m_actionValues[0];
+
+        switch (m_actionValue.indexOf(action)) {      
+            case 0: // USE_PARENT
+                // Read properties of parent (i.e. top requested) file
+                value = req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, false, defaultValue); 
+                break;
+            case 1: // USE_THIS
+                // Read properties of this file            
+                value = req.getCmsObject().readProperty(req.getCmsResource(), property, false, defaultValue);
+                break;
+            case 2: // USE_SEARCH_THIS
+                // Try to find property on this file and all parent folders
+                value = req.getCmsObject().readProperty(req.getCmsResource(), property, true, defaultValue);
+                break;
+            case 3: // USE_SEARCH
+            case 4: // USE_SEARCH_PARENT 
+                // Try to find property on parent file and all parent folders
+                value = req.getCmsObject().readProperty(req.getCmsRequestedResource(), property, true, defaultValue);
+                break;
+            default:
+                // Read properties of the file named in the attribute            
+                value = req.getCmsObject().readProperty(req.toAbsolute(action), property, false, defaultValue);
+        }           
         if (escape) value = Encoder.escapeHtml(value);        
         return value;
     }

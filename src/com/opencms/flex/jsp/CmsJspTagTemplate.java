@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagTemplate.java,v $
-* Date   : $Date: 2002/12/18 15:03:38 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/02/17 01:12:45 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -68,13 +68,16 @@ public class CmsJspTagTemplate extends BodyTagSupport {
     }
 
     /**
-     * Release the resources of the tag.
-     */    
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */ 
     public void release() {
         super.release();
         m_element = null;
     }    
 
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     */
     public int doStartTag() throws JspException {
         if (templateTagAction(m_element, (CmsFlexRequest)pageContext.getRequest())) {
             return EVAL_BODY_INCLUDE;
@@ -82,9 +85,17 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             return SKIP_BODY;
         }
     }
-    
-    public static boolean templateTagAction(String part, CmsFlexRequest req) {
+
+    /**
+     * Internal action method.<p>
+     * 
+     * @param element the selected element
+     * @param req the current request 
+     * @return boolean <code>true</code> if this element should be inclued, <code>false</code>
+     * otherwise
+     */    
+    public static boolean templateTagAction(String element, CmsFlexRequest req) {
         String param =  req.getParameter(C_TEMPLATE_ELEMENT);        
-        return ((param == null) || (param.equals(part)));
+        return ((param == null) || (param.equals(element)));
     }
  }
