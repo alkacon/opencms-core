@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
-* Date   : $Date: 2001/06/29 13:56:39 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/06/29 14:02:34 $
+* Version: $Revision: 1.17 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.util.*;
  * given launcher id.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2001/06/29 13:56:39 $
+ * @version $Revision: 1.17 $ $Date: 2001/06/29 14:02:34 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
 
@@ -86,7 +86,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
         }
 
         // try to load launcher classes.
-        for(int i = 0;i < knownLaunchers.size();i++) {
+        for(int i = 1;i <= knownLaunchers.size();i++) {
             try {
                 launcherName = (String)knownLaunchers.get(I_CmsConstants.C_REGISTRY_LAUNCHER+i);
                 launcherClass = Class.forName(launcherName);
