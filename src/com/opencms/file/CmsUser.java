@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2000/02/19 17:05:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/19 18:38:51 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/02/19 17:05:41 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/19 18:38:51 $
  */
 
 public class CmsUser extends A_CmsUser implements I_CmsConstants,
@@ -448,7 +448,7 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants,
     }
     
     /** 
-    * Clones the CmsResource by creating a new CmsUser.
+    * Clones the CmsResource by creating a new CmsUser Object.
     * @return Cloned CmsUser.
     */
     public Object clone() {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/02/15 18:02:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/19 18:38:51 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/02/15 18:02:19 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/19 18:38:51 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -527,7 +527,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         int index = min(s.indexOf("["), s.indexOf("]"));
         int lastindex = 0;
         while(index != -1) {
-            System.err.println("### substring: lastindex " + lastindex + "    index " + index);
             String sub = s.substring(lastindex, index);
             tempContent.append(sub);
             if(s.charAt(index) == '[') {                
@@ -539,7 +538,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             //index = s.indexOf(search, index+1);
             index = min(s.indexOf("[", index+1), s.indexOf("]", index+1));
         }
-        System.err.println("### substring: lastindex " + lastindex);
         tempContent.append(s.substring(lastindex));
         return new String(tempContent);
     }

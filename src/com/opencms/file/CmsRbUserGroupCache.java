@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroupCache.java,v $
- * Date   : $Date: 2000/02/19 17:05:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/19 18:38:51 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/19 17:05:41 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/19 18:38:51 $
  */
  class CmsRbUserGroupCache extends CmsRbUserGroup {
 
@@ -344,7 +344,6 @@ import com.opencms.core.*;
 				     uig=new Boolean(true);
 			    }
 		    }
-       
           m_useringroupcache.put(username+groupname,uig);
          }
 		return uig.booleanValue();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/02/19 17:05:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/19 18:38:51 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/19 17:05:41 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/19 18:38:51 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -162,8 +162,8 @@ import com.opencms.core.*;
 		throws CmsException{
         String key=C_FILE+project.getId()+filename;
         // delete file in cache
-        m_filecache.remove(key);
         m_accessFile.deleteFile(project,filename);
+        m_filecache.remove(key);
      }
     
      /**
@@ -189,8 +189,8 @@ import com.opencms.core.*;
 		throws CmsException{
         String key=C_FILE+project.getId()+filename;
         // delete file in cache
-        m_filecache.remove(key);
         m_accessFile.removeFile(project,filename);
+        m_filecache.remove(key);
      }
      
     
@@ -250,8 +250,8 @@ import com.opencms.core.*;
 	public void writeFolder(A_CmsProject project, CmsFolder folder)
         throws CmsException {
         String key=C_FOLDER+project.getId()+folder.getAbsolutePath();
-        m_filecache.put(key,folder);
         m_accessFile.writeFolder(project, folder);
+        m_filecache.put(key,folder);
     }
  
     	
@@ -282,8 +282,7 @@ import com.opencms.core.*;
 	public void deleteFolder(A_CmsProject project, String foldername, boolean force)
 		throws CmsException {
         String key=C_FOLDER+project.getId()+foldername;
-        m_filecache.remove(key);
         m_accessFile.deleteFolder(project,foldername,force);
+        m_filecache.remove(key);
      }
-    
 }
