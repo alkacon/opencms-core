@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/CmsStringSubstitutionTest.java,v $
- * Date   : $Date: 2003/03/07 15:16:36 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/04/09 12:49:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,15 @@
 
 package com.opencms.flex.util;
 
+import com.opencms.workplace.I_CmsWpConstants;
+
 import junit.framework.TestCase;
 
 /** 
  * Test cases for the class "CmsStringSubstitution"
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.0
  */
@@ -109,4 +111,45 @@ public class CmsStringSubstitutionTest extends TestCase {
             "<cms:link>/system/galleries/pics/test.gif</cms:link> <img src=\"/system/galleries/pics/test.gif\"> script = '/system/galleries/pics/test.gif' <cms:link> /system/galleries/pics/othertest.gif </cms:link>\n" +
             "<cms:link>/mymodule/pics/test.gif</cms:link> <img src=\"/mymodule/pics/test.gif\"> script = '/mymodule/pics/test.gif' <cms:link> /mymodule/system/galleries/pics/othertest.gif </cms:link>");    
     }
+    
+    public void testCmsContentReplacement() {
+        
+        String content, result, context, search, replace;
+        
+        content =           
+            "<html><body>\n" +
+            "See <a href=\"http://www.opencms.org/opencms/opencms/opencms/index.html\">\n" +
+            "http://www.opencms.org/opencms/opencms/opencms/index.html</a>\n" +
+            "or <a href=\"/opencms/opencms/opencms/index.html\">\n" +
+            "/opencms/opencms/opencms/index.html</a>\n" +
+            "<img src=\"/opencms/opencms/system/galleries/pics/test/test.gif\">\n" +
+            "<img src=\"http://www.othersite.org/opencms/opencms/system/galleries/pics/test/test.gif\">\n" +
+            "Some URL in the Text: http://www.thirdsite.org/opencms/opencms/some/url.html.\n" +
+            "Another URL in the Text: /opencms/opencms/some/url.html.\n" +
+            "</body></html>\n";
+                    
+        result =         
+            "<html><body>\n" +
+            "See <a href=\"http://www.opencms.org/opencms/opencms/opencms/index.html\">\n" +
+            "http://www.opencms.org/opencms/opencms/opencms/index.html</a>\n" +
+            "or <a href=\"" + I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/opencms/index.html\">\n" +
+            I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/opencms/index.html</a>\n" +
+            "<img src=\"" + I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/system/galleries/pics/test/test.gif\">\n" +
+            "<img src=\"http://www.othersite.org/opencms/opencms/system/galleries/pics/test/test.gif\">\n" +
+            "Some URL in the Text: http://www.thirdsite.org/opencms/opencms/some/url.html.\n" +
+            "Another URL in the Text: " + I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/some/url.html.\n" +
+            "</body></html>\n";       
+        
+        context = "/opencms/opencms/";        
+        
+        // search = "([>\"']\\s*)" + context;
+        search = "([^\\w/])" + context;
+        replace = "$1" + CmsStringSubstitution.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/";
+        
+        String test = CmsStringSubstitution.substitutePerl(content, search, replace, "g");
+        
+        System.err.println(this.getClass().getName() + ".testCmsContentReplacement():");   
+        System.err.println(test);  
+        assertEquals(test, result);        
+    }    
 }
