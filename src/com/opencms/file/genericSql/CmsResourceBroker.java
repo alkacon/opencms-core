@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/04/17 15:33:48 $
-* Version: $Revision: 1.375 $
+* Date   : $Date: 2003/05/22 08:04:40 $
+* Version: $Revision: 1.375.2.1 $
 
 *
 * This library is part of OpenCms -
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.375 $ $Date: 2003/04/17 15:33:48 $
+ * @version $Revision: 1.375.2.1 $ $Date: 2003/05/22 08:04:40 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7349,7 +7349,9 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 (c != '-') && (c != '.') &&
                 (c != '_') && (c != '~') &&
                 (c != ' ') && (c != 'ß') &&
-                (c != '/') && (c != '(') && (c != ')') && (c != '\'')
+                (c != '/') && (c != '(') && 
+                (c != ')') && (c != '\'') &&
+                (c != '#') && (c != '&') && (c != ';')
                 ) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + taskname,
                     CmsException.C_BAD_NAME);
