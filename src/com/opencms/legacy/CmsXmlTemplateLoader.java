@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/02/27 14:26:11 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/27 14:35:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -296,7 +296,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             // check if cached
             if (OpenCms.getLog(this).isDebugEnabled()) {
                 OpenCms.getLog(this).debug("found cmsUri=" + cmsUri);
-            }
+        }
             if ((cmsUri != null) && !cmsUri.getElementDescriptor().getTemplateName().equalsIgnoreCase(templateProp)) {
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("cmsUri has different template: " + cmsUri.getElementDescriptor().getTemplateName()
@@ -630,7 +630,15 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         processXmlTemplate(cms, CmsFile.upgrade(resource, cms));
     }
     
-    private void initLegacyRequest(CmsObject cms, HttpServletRequest req, HttpServletResponse res) throws CmsException {
+    /**
+     * Initializes the current request with the legacy Cms request and response wrappers.<p>
+     * 
+     * @param cms the current cms context
+     * @param req the request to wrap
+     * @param res the response to wrap
+     * @throws CmsException if something goes wrong
+     */
+    public static void initLegacyRequest(CmsObject cms, HttpServletRequest req, HttpServletResponse res) throws CmsException {
         if (cms.getRequestContext().getAttribute(I_CmsRequest.C_CMS_REQUEST) != null) {
             return;
         }
