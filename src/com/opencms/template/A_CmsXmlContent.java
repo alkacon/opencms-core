@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/02/09 15:33:22 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/02/28 10:57:46 $
+* Version: $Revision: 1.39 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -77,7 +77,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2001/02/09 15:33:22 $
+ * @version $Revision: 1.39 $ $Date: 2001/02/28 10:57:46 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -607,20 +607,27 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         if(n != null) {
             NodeList childNodes = n.getChildNodes();
             Node child = null;
-            int numchilds = childNodes.getLength();
             if(childNodes != null) {
+                int numchilds = childNodes.getLength();
                 for(int i = 0;i < numchilds;i++) {
                     child = childNodes.item(i);
+                    String nodeValue = child.getNodeValue();
 
-                    //if(child.getNodeType() == n.TEXT_NODE || child.getNodeType() == n.CDATA_SECTION_NODE) {
-                    if(child.getNodeType() == n.CDATA_SECTION_NODE) {
-                        result.append(child.getNodeValue());
-                    }
-                    else {
-                        if(child.getNodeType() == n.TEXT_NODE) {
-                            String s = child.getNodeValue().trim();
-                            if(!"".equals(s)) {
-                                result.append(child.getNodeValue());
+                    if(nodeValue != null) {
+                        //if(child.getNodeType() == n.TEXT_NODE || child.getNodeType() == n.CDATA_SECTION_NODE) {
+                        if(child.getNodeType() == n.CDATA_SECTION_NODE) {
+                            //result.append(child.getNodeValue());
+                            result.append(nodeValue);
+                        }
+                        else {
+                            if(child.getNodeType() == n.TEXT_NODE) {
+                                //String s = child.getNodeValue().trim();
+                                nodeValue = nodeValue.trim();
+                                //if(!"".equals(s)) {
+                                if(!"".equals(nodeValue)) {
+                                    //result.append(child.getNodeValue());
+                                    result.append(nodeValue);
+                                }
                             }
                         }
                     }
