@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/02/16 16:22:30 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsXmlPage {
     
@@ -358,7 +358,8 @@ public class CmsXmlPage {
             
             if (enabled == null || "true".equals(enabled.getValue())) {
                 
-                content = data.getText();
+                content = data.getStringValue();
+                // content = data.getText();
             }
         }
         
@@ -388,28 +389,29 @@ public class CmsXmlPage {
         
         CmsLinkTable linkTable = new CmsLinkTable();
         
-        for (Iterator i = links.elementIterator(C_NODE_LINK); i.hasNext();) {
-                    
-            Element lelem = (Element)i.next();
-            Attribute lname = lelem.attribute(C_ATTRIBUTE_NAME);
-            Attribute type = lelem.attribute(C_ATTRIBUTE_TYPE);
-            Attribute internal = lelem.attribute(C_ATTRIBUTE_INTERNAL);
-            
-            Element target = lelem.element(C_NODE_TARGET);
-            Element anchor = lelem.element(C_NODE_ANCHOR);
-            Element query  = lelem.element(C_NODE_QUERY);
-            
-            CmsLink link = new CmsLink(
-                    lname.getValue(), 
-                    type.getValue(), 
-                    (target != null) ? target.getText() : null, 
-                    (anchor != null) ? anchor.getText() : null, 
-                    (query  != null) ? query.getText()  : null, 
-                    Boolean.valueOf(internal.getValue()).booleanValue());
-            
-            linkTable.addLink(link);
-        }        
-        
+        if (links != null) {
+            for (Iterator i = links.elementIterator(C_NODE_LINK); i.hasNext();) {
+                        
+                Element lelem = (Element)i.next();
+                Attribute lname = lelem.attribute(C_ATTRIBUTE_NAME);
+                Attribute type = lelem.attribute(C_ATTRIBUTE_TYPE);
+                Attribute internal = lelem.attribute(C_ATTRIBUTE_INTERNAL);
+                
+                Element target = lelem.element(C_NODE_TARGET);
+                Element anchor = lelem.element(C_NODE_ANCHOR);
+                Element query  = lelem.element(C_NODE_QUERY);
+                
+                CmsLink link = new CmsLink(
+                        lname.getValue(), 
+                        type.getValue(), 
+                        (target != null) ? target.getText() : null, 
+                        (anchor != null) ? anchor.getText() : null, 
+                        (query  != null) ? query.getText()  : null, 
+                        Boolean.valueOf(internal.getValue()).booleanValue());
+                
+                linkTable.addLink(link);
+            }        
+        }    
         return linkTable;
     }
     
