@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/01/05 15:30:47 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2005/01/07 08:48:50 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.map.LRUMap;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.84 $
+ * @version $Revision: 1.85 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1055,6 +1055,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         value = cms.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_EXPORTNAME, false)
                             .getValue();
                         cont = ((value == null) && (!"/".equals(resourceName)));
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        // this is for publishing deleted resources 
+                        cont = (!"/".equals(resourceName));
                     } catch (CmsSecurityException se) {
                         // a security exception (probably no read permission) we return the current result                      
                         cont = false;

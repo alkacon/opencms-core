@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2005/01/05 15:30:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/01/07 08:48:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.ServletException;
  * This handler exports all changes immediately after something is published.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */
@@ -180,7 +180,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                     List li = cms.readSiblings(res.getRootPath(), CmsResourceFilter.ALL);
                     siblings = new ArrayList();
                     for (int i = 0, l = li.size(); i < l; i++) {
-                        siblings.add(cms.getSitePath((CmsResource)li.get(i)));
+                        siblings.add(((CmsResource)li.get(i)).getRootPath());
                     }
                 } catch (CmsException e) {
                     siblings = Collections.singletonList(res.getRootPath());
