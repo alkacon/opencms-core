@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsProcessedString.java,v $
-* Date   : $Date: 2004/03/12 16:00:48 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,21 +41,30 @@ import java.io.UnsupportedEncodingException;
  * make use of this class and return the original String.
  *
  * @author Alexander Lucas 
- * @version $Revision: 1.6 $ $Date: 2004/03/12 16:00:48 $
+ * @version $Revision: 1.7 $ $Date: 2004/06/15 10:59:44 $
  */
 public class CmsProcessedString {
 
-    /** Store for the original String */
+    /** Store for the original String. */
     String m_orgString;
 
-    /** Constructor for a new CmsProcessedString object */
+    /** 
+     * Constructor for a new CmsProcessedString object.<p>
+     * 
+     * @param s the original String 
+     */
     public CmsProcessedString(String s) {
         m_orgString = s;
     }
 
-    /** Constructor for a new CmsProcessedString object */
+    /** 
+     * Constructor for a new CmsProcessedString object.<p>
+     * 
+     * @param b the byte array to create the String from
+     * @param encoding the encoding of the byte array
+     */
     public CmsProcessedString(byte[] b, String encoding) {
-        if(b == null) {
+        if (b == null) {
             m_orgString = null;
         } else {
             try {
@@ -66,7 +75,11 @@ public class CmsProcessedString {
         }
     }
 
-    /** Get back the original String */
+    /** 
+     * Get back the original String.<p> 
+     * 
+     * @return the original String 
+     */
     public String toString() {
         return m_orgString;
     }

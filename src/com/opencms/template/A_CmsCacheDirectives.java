@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsCacheDirectives.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,8 +39,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Abstact class for all CacheDirectives classes.
  *
@@ -50,49 +48,53 @@ import javax.servlet.http.HttpServletRequest;
 
 public abstract class A_CmsCacheDirectives {
 
-    /** Bitfield for storing external cache properties */
+    /** Bitfield for storing external cache properties. */
     protected int m_cd;
 
     // everthing to get the cache key
 
     // indicates if the username is part of the cache key
-    private boolean m_user = false;
+    private boolean m_user;
     // indicates if the groupname is part of the cache key
-    private boolean m_group = false;
+    private boolean m_group;
     //indicates if the uri is part of the cache key
-    private boolean m_uri = false;
+    private boolean m_uri;
     //the parameters for which the element is cacheable
-    private Vector m_cacheParameter = null;
+    private Vector m_cacheParameter;
 
     // if one of these parameters occures the element is dynamic
-    private Vector m_dynamicParameter = null;
+    private Vector m_dynamicParameter;
 
     // indicates if this element should removed from cache after publish even if the template is unchanged.
-    private boolean renewAfterEveryPublish = false;
+    private boolean m_renewAfterEveryPublish;
 
-    // the timeout object
+    /** The timeout object. */
     protected CmsTimeout m_timeout;
-    protected boolean m_timecheck = false;
+    /** Flag to check the time. */
+    protected boolean m_timecheck;
 
-    // indicates if the user has set the value or if it has to be generated
-    protected boolean m_userSetProxyPrivate = false;
-    protected boolean m_userSetProxyPublic = false;
-    protected boolean m_userSetExport = false;
+    /** Indicates if the user has set the value: proxyprivate flag. */ 
+    protected boolean m_userSetProxyPrivate;
+    /** Indicates if the user has set the value: proxypublic flag. */
+    protected boolean m_userSetProxyPublic;
+    /** Indicates if the user has set the value: export flag. */
+    protected boolean m_userSetExport;
 
 
-    /** Flag for internal cacheable */
+    /** Flag for internal cacheable. */
     public static final int C_CACHE_INTERNAL = 1;
-    /** Flag for cacheable in private proxies */
+    /** Flag for cacheable in private proxies. */
     public static final int C_CACHE_PROXY_PRIVATE  = 2;
-    /** Flag for cacheable in public proxies */
+    /** Flag for cacheable in public proxies. */
     public static final int C_CACHE_PROXY_PUBLIC = 4;
-    /** Flag for exportable */
+    /** Flag for exportable. */
     public static final int C_CACHE_EXPORT = 8;
-    /** Flag for streamable */
+    /** Flag for streamable. */
     public static final int C_CACHE_STREAM = 16;
 
     /**
-     * Get the state of the "internal cacheable" property.
+     * Get the state of the "internal cacheable" property.<p>
+     * 
      * @return <code>true</code> if internal caching is possible, <code>false</code> otherwise.
      */
     public boolean isInternalCacheable() {
@@ -100,22 +102,25 @@ public abstract class A_CmsCacheDirectives {
     }
 
     /**
-     * get information about the cacheKey.
+     * Get information about the cacheKey.<p>
+     * 
      * @return <code>true</code> if user or group is in the key, <code>false</code> otherwise.
      */
-    public boolean isUserPartOfKey(){
+    public boolean isUserPartOfKey() {
         return m_group || m_user;
     }
     /**
-     * get information about the cacheKey.
+     * Get information about the cacheKey.<p>
+     * 
      * @return <code>true</code> if parameters are in the key, <code>false</code> otherwise.
      */
-    public boolean isParameterPartOfKey(){
-        return (m_cacheParameter != null) && ( !m_cacheParameter.isEmpty());
+    public boolean isParameterPartOfKey() {
+        return (m_cacheParameter != null) && (!m_cacheParameter.isEmpty());
     }
 
     /**
-     * Get the timeout object(used if the element should be reloaded every x minutes.
+     * Get the timeout object(used if the element should be reloaded every x minutes.<p>
+     * 
      * @return timeout object.
      */
     public CmsTimeout getTimeout() {
@@ -123,10 +128,11 @@ public abstract class A_CmsCacheDirectives {
     }
 
     /**
-     * Get information if the element is time critical.
+     * Get information if the element is time critical.<p>
+     * 
      * @return <code>true</code> if a timeout object was set, <code>false</code> otherwise.
      */
-    public boolean isTimeCritical(){
+    public boolean isTimeCritical() {
         return m_timecheck;
     }
 
@@ -137,48 +143,53 @@ public abstract class A_CmsCacheDirectives {
     public abstract void setTimeout(CmsTimeout timeout);
 
     /**
-     * sets the renewAfterEveryPublish value to true. This means that this element
+     * Sets the renewAfterEveryPublish value to true. This means that this element
      * is removed from cache every time a project is published even if its template or class
-     * was not changed in the project.
+     * was not changed in the project.<p>
      */
-    public void renewAfterEveryPublish(){
-        renewAfterEveryPublish = true;
+    public void renewAfterEveryPublish() {
+        m_renewAfterEveryPublish = true;
     }
 
     /**
      * Switches off the renewAfterPublish function. If someone needs the uri in the key
      * but don't need the renew function he has to use this to get rid of it. To stay
-     * compatible to old versions we can't remove it from the setUri method.
+     * compatible to old versions we can't remove it from the setUri method.<p>
      */
-    public void noAutoRenewAfterPublish(){
-        renewAfterEveryPublish = false;
+    public void noAutoRenewAfterPublish() {
+        m_renewAfterEveryPublish = false;
     }
 
     /**
-     * returns true if this element has to be deleted from cache every time a project
-     * is published. This is when the uri is part of the cacheKey or if the user says so.
+     * Returns true if this element has to be deleted from cache every time a project
+     * is published. This is when the uri is part of the cacheKey or if the user says so.<p>
+     * 
+     * @return true if this element has to be deleted from cache every time a project is published
      */
-    public boolean shouldRenew(){
-        return renewAfterEveryPublish;
+    public boolean shouldRenew() {
+        return m_renewAfterEveryPublish;
     }
 
     /**
-     * calculates the cacheKey for the element.
-     * @return The cache key or null if it is not cacheable
+     * Calculates the cacheKey for the element.<p>
+     * 
+     * @param cms the initialized cms request object
+     * @param parameters the parameters
+     * @return the cache key or null if it is not cacheable
      */
     public String getCacheKey(CmsObject cms, Hashtable parameters) {
 
-        if ( ! this.isInternalCacheable()){
+        if (! this.isInternalCacheable()) {
             return null;
         }
-        if (parameters == null){
+        if (parameters == null) {
             parameters = new Hashtable();
         }
         // first test the parameters which say it is dynamic
-        if((m_dynamicParameter != null) && (!m_dynamicParameter.isEmpty())){
-            for (int i=0; i < m_dynamicParameter.size(); i++){
+        if ((m_dynamicParameter != null) && (!m_dynamicParameter.isEmpty())) {
+            for (int i=0; i < m_dynamicParameter.size(); i++) {
                 String testparameter = (String)m_dynamicParameter.elementAt(i);
-                if(parameters.containsKey(testparameter)){
+                if (parameters.containsKey(testparameter)) {
                     return null;
                 }
             }
@@ -197,39 +208,40 @@ public abstract class A_CmsCacheDirectives {
         // ok, a cachekey exists. lets put it together
         // first we need the scheme of the request
         String scheme = "http";
-        try{
-            scheme = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getScheme();
-        }catch(Exception e){
+        try {
+            scheme = (CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getScheme();
+        } catch (Exception e) {
+            // noop
         }
         String key = "key_"+scheme+"_";
-        if(m_uri){
+        if (m_uri) {
             key += reqContext.getUri();
         }
-        if(m_user){
+        if (m_user) {
             key += reqContext.currentUser().getName();
         }
         key += groupKey;
-        if((m_cacheParameter != null) && ( !m_cacheParameter.isEmpty())){
-            for (int i=0; i < m_cacheParameter.size(); i++){
+        if ((m_cacheParameter != null) && (!m_cacheParameter.isEmpty())) {
+            for (int i=0; i < m_cacheParameter.size(); i++) {
                 String para = (String)m_cacheParameter.elementAt(i);
-                if (parameters.containsKey(para)){
+                if (parameters.containsKey(para)) {
                     key += (String)parameters.get(para);
                 }
             }
         }
-        if(key.equals("")){
+        if (key.equals("")) {
             return null;
         }
         // now add the elementdefinition-parameters
         String elementName = (String)parameters.get("_ELEMENT_");
-        if(elementName == null) {
+        if (elementName == null) {
             // this is the root-template
             elementName = I_CmsConstants.C_ROOT_TEMPLATE_NAME;
         }
         Enumeration paramKeys = parameters.keys();
-        while(paramKeys.hasMoreElements()) {
+        while (paramKeys.hasMoreElements()) {
             String paramKey = (String) paramKeys.nextElement();
-            if(paramKey.startsWith(elementName)) {
+            if (paramKey.startsWith(elementName)) {
                 key += paramKey + "=" + parameters.get(paramKey) + ";";
             }
         }
@@ -237,55 +249,63 @@ public abstract class A_CmsCacheDirectives {
     }
 
     /**
-     * defines if the group is part of the cacheKey
+     * Defines if the group is part of the cacheKey.<p>
+     * 
      * @param groupCache if true the group will be part of the cache key.
      */
-    public void setCacheGroups(boolean groupCache){
+    public void setCacheGroups(boolean groupCache) {
         m_group = groupCache;
     }
 
     /**
-     * if this Vector is set the groups are part of the cache key and the element
-     * will be cacheable only if the current group is in the Vector. If not it is dynamic.
+     * If this Vector is set the groups are part of the cache key and the element
+     * will be cacheable only if the current group is in the Vector. If not it is dynamic.<p>
+     * 
      * @param groupNames A Vector with the names of the groups for which the element is cacheable.
      */
-    public void setCacheGroups(Vector groupNames){
+    public void setCacheGroups(Vector groupNames) {
 //        m_group = true;
 //        m_cacheGroups = groupNames;
+        // this is for style reasons...  
+        groupNames.hashCode();
     }
 
     /**
-     * includes the user in the cache key.
+     * Includes the user in the cache key.<p>
+     * 
      * @param userCache if true the user will be part of the cachekey.
      */
-    public void setCacheUser(boolean userCache){
+    public void setCacheUser(boolean userCache) {
         m_user = userCache;
         //autoSetExternalCache();
     }
 
     /**
-     * includes the uri in the cache key.
+     * Includes the uri in the cache key.<p>
+     * 
      * @param uriCache if true the uri will be part of the cachekey.
      */
-    public void setCacheUri(boolean uriCache){
+    public void setCacheUri(boolean uriCache) {
         m_uri = uriCache;
-        renewAfterEveryPublish = true;
+        m_renewAfterEveryPublish = true;
     }
 
     /**
-     * if this Vector is set the values of each of the parameters in the Vector
-     * will appear in the cachekey.
+     * If this Vector is set the values of each of the parameters in the Vector
+     * will appear in the cachekey.<p>
+     * 
      * @param parameterNames the parameter that should take part in the cachkey generation.
      */
-    public void setCacheParameters(Vector parameterNames){
+    public void setCacheParameters(Vector parameterNames) {
         m_cacheParameter = parameterNames;
     }
 
     /**
-     * If one of this parameters apear in the request the element is dynamic! (no cachkey).
+     * If one of this parameters apear in the request the element is dynamic! (no cachekey).<p>
+     * 
      * @param parameterNames the names of the parameter that make a element dynamic
      */
-    public void setNoCacheParameters(Vector parameterNames){
+    public void setNoCacheParameters(Vector parameterNames) {
         m_dynamicParameter = parameterNames;
     }
 
@@ -310,7 +330,8 @@ public abstract class A_CmsCacheDirectives {
     /**
      * Merge the current CmsCacheDirective object with another cache directive.
      * Resulting properties will be build by a conjunction (logical AND) of
-     * the two source properties.
+     * the two source properties.<p>
+     * 
      * @param cd CmsCacheDirectives to be merged.
      */
     public void merge(A_CmsCacheDirectives cd) {
@@ -318,7 +339,8 @@ public abstract class A_CmsCacheDirectives {
     }
 
     /**
-     * Get the state of the "proxy private cacheable" property.
+     * Get the state of the "proxy private cacheable" property.<p>
+     * 
      * @return <code>true</code> if proxy private caching is possible, <code>false</code> otherwise.
      */
     public boolean isProxyPrivateCacheable() {
@@ -326,7 +348,8 @@ public abstract class A_CmsCacheDirectives {
     }
 
     /**
-     * Get the state of the "proxy public cacheable" property.
+     * Get the state of the "proxy public cacheable" property.<p>
+     * 
      * @return <code>true</code> if proxy public caching is possible, <code>false</code> otherwise.
      */
     public boolean isProxyPublicCacheable() {
@@ -334,7 +357,8 @@ public abstract class A_CmsCacheDirectives {
     }
 
     /**
-     * Get the state of the "exporting ability" property.
+     * Get the state of the "exporting ability" property.<p>
+     * 
      * @return <code>true</code> if exporting is possible, <code>false</code> otherwise.
      */
     public boolean isExportable() {
@@ -342,7 +366,8 @@ public abstract class A_CmsCacheDirectives {
     }
 
     /**
-     * Get the state of the "streaming ability" property.
+     * Get the state of the "streaming ability" property.<p>
+     * 
      * @return <code>true</code> if streaming is possible, <code>false</code> otherwise.
      */
     public boolean isStreamable() {
@@ -350,24 +375,26 @@ public abstract class A_CmsCacheDirectives {
     }
 
     /**
-     * get the userSet information.
+     * Get the userSet information.<p>
+     * 
      * @return <code>true</code> if the proxyPrivate flag was set, <code>false</code> otherwise.
      */
-    public boolean userSetProxyPrivate(){
+    public boolean userSetProxyPrivate() {
         return m_userSetProxyPrivate;
     }
     /**
-     * get the userSet information.
+     * Get the userSet information.<p>
+     * 
      * @return <code>true</code> if the proxyPublic flag was set, <code>false</code> otherwise.
      */
-    public boolean userSetProxyPublic(){
+    public boolean userSetProxyPublic() {
         return m_userSetProxyPublic;
     }
     /**
-     * get the userSet information.
+     * Get the userSet information.<p>
      * @return <code>true</code> if the export flag was set, <code>false</code> otherwise.
      */
-    public boolean userSetExport(){
+    public boolean userSetExport() {
         return m_userSetExport;
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2004/06/15 07:22:30 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.50 $ $Date: 2004/06/15 07:22:30 $
+ * @version $Revision: 1.51 $ $Date: 2004/06/15 10:59:44 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -115,7 +115,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     /**
      * File counter.
      */
-    int m_filecounter = 0;
+    int m_filecounter;
 
     /**
      * The data from the original request. We save them to get them after the
@@ -411,7 +411,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     }
 
     /** String to the requested resource. */
-    private String m_requestedResource = null;
+    private String m_requestedResource;
 
     /**
      * This funtion returns the name of the requested resource.

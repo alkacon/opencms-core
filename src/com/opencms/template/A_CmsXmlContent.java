@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.102 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.103 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,26 +87,26 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.102 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.103 $ $Date: 2004/06/15 10:59:44 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
     /** parameter types for XML node handling methods. */
-    public static final Class[] C_PARAMTYPES_HANDLING_METHODS = new Class[] { Element.class, Object.class, Object.class };
+    public static final Class[] C_PARAMTYPES_HANDLING_METHODS = new Class[] {Element.class, Object.class, Object.class};
 
-    /** parameter types for user methods called by METHOD tags */
-    public static final Class[] C_PARAMTYPES_USER_METHODS = new Class[] { CmsObject.class, String.class, A_CmsXmlContent.class, Object.class };
+    /** parameter types for user methods called by METHOD tags. */
+    public static final Class[] C_PARAMTYPES_USER_METHODS = new Class[] {CmsObject.class, String.class, A_CmsXmlContent.class, Object.class};
 
-    /** The classname of the super XML content class */
+    /** The classname of the super XML content class. */
     public static final String C_MINIMUM_CLASSNAME = "com.opencms.template.A_CmsXmlContent";
 
     /** Constant extension of the template-files. */
     public static final String C_TEMPLATE_EXTENSION = "";
 
-    /** Error message for bad <code>&lt;PROCESS&gt;</code> tags */
+    /** Error message for bad <code>&lt;PROCESS&gt;</code> tags. */
     public static final String C_ERR_NODATABLOCK = "? UNKNOWN DATABLOCK ";
 
-    /** CmsObject Object for accessing resources */
+    /** CmsObject Object for accessing resources. */
     protected CmsObject m_cms;
 
     /** All XML tags known by this class. */
@@ -128,36 +128,36 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      */
     protected Hashtable m_mainProcessTags = new Hashtable();
 
-    /** constant for registering handling tags */
-    protected final static int C_REGISTER_FIRST_RUN = 1;
+    /** Constant for registering handling tags. */
+    protected static final int C_REGISTER_FIRST_RUN = 1;
 
-    /** constant for registering handling tags */
-    protected final static int C_REGISTER_MAIN_RUN = 2;
+    /** Constant for registering handling tags. */
+    protected static final int C_REGISTER_MAIN_RUN = 2;
 
-    /** Boolean for additional debug output control */
+    /** Boolean for additional debug output control. */
     private static final boolean C_DEBUG = false;
 
     /** DOM representaion of the template content. */
     private Document m_content;
 
-    /** Filename this template was read from */
+    /** Filename this template was read from. */
     private String m_filename;
 
-    /** All datablocks in DOM format */
+    /** All datablocks in DOM format. */
     private Hashtable m_blocks = new Hashtable();
 
-    /** Reference All included A_CmsXmlContents */
+    /** Reference all included A_CmsXmlContents. */
     private Vector m_includedTemplates = new Vector();
 
-    /** Cache for parsed documents */
-    static private Hashtable m_filecache = new Hashtable();
+    /** Cache for parsed documents. */
+    private static Hashtable m_filecache = new Hashtable();
 
-    /** XML parser */
+    /** XML parser. */
     private static I_CmsXmlParser m_parser = new CmsXmlXercesParser();
 
-    private String m_newEncoding = null;
+    private String m_newEncoding;
 
-    /** Constructor for creating a new instance of this class */
+    /** Constructor for creating a new instance of this class. */
     public A_CmsXmlContent() {
         registerAllTags();
     }
@@ -173,10 +173,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @param callingObject Reference to the object containing the called method.
      * @param userObj Customizable user object that will be passed through to the user method.
      * @param resolveMethods If true the methodtags will be resolved even if they have own CacheDirectives.
-     * @throws CmsException
+     * @return cutomizable user object
+     * @throws CmsException if something goes wrong
      */
     protected Object callUserMethod(String methodName, String parameter, Object callingObject, Object userObj, boolean resolveMethods) throws CmsException {
-        Object[] params = new Object[] { m_cms, parameter, this, userObj };
+        Object[] params = new Object[] {m_cms, parameter, this, userObj};
         Object result = null;
 
         // Check if the user selected a object where to look for the user method.
@@ -189,14 +190,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         // an normal element. We do this only if elementCache is active.
         if (CmsXmlTemplateLoader.isElementCacheEnabled() && !resolveMethods) {
             try {
-                if (callingObject.getClass().getMethod("getMethodCacheDirectives", new Class[] { CmsObject.class, String.class }).invoke(callingObject, new Object[] { m_cms, methodName }) != null) {
+                if (callingObject.getClass().getMethod("getMethodCacheDirectives", new Class[] {CmsObject.class, String.class}).invoke(callingObject, new Object[] {m_cms, methodName}) != null) {
                     return null;
                 }
-            }
-            catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException e) {
                 throwException("Method getMethodeCacheDirectives was not found in class " + callingObject.getClass().getName() + ".", CmsException.C_XML_NO_USER_METHOD);
-            }
-            catch (InvocationTargetException targetEx) {
+            } catch (InvocationTargetException targetEx) {
 
                 // the method could be invoked, but throwed a exception
                 // itself. Get this exception and throw it again.
@@ -204,13 +203,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                 if (!(e instanceof CmsException)) {
                     // Only print an error if this is NO CmsException
                     throwException("Method getMethodeCacheDirectives throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
-                }
-                else {
+                } else {
                     // This is a CmsException Error printing should be done previously.
                     throw (CmsException) e;
                 }
-            }
-            catch (Exception exc2) {
+            } catch (Exception exc2) {
                 throwException("Method getMethodeCacheDirectives was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
             }
         }
@@ -219,11 +216,9 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         try {
             // try to invoke the method 'methodName'
             result = getUserMethod(methodName, callingObject).invoke(callingObject, params);
-        }
-        catch (NoSuchMethodException exc) {
+        } catch (NoSuchMethodException exc) {
             throwException("User method " + methodName + " was not found in class " + callingObject.getClass().getName() + ".", CmsException.C_XML_NO_USER_METHOD);
-        }
-        catch (InvocationTargetException targetEx) {
+        } catch (InvocationTargetException targetEx) {
 
             // the method could be invoked, but throwed a exception
             // itself. Get this exception and throw it again.
@@ -231,14 +226,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             if (!(e instanceof CmsException)) {
                 // Only print an error if this is NO CmsException
                 throwException("User method " + methodName + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
-            }
-            else {
+            } else {
                 // This is a CmsException
                 // Error printing should be done previously.
                 throw (CmsException) e;
             }
-        }
-        catch (Exception exc2) {
+        } catch (Exception exc2) {
             throwException("User method " + methodName + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
         if ((result != null) && (!(result instanceof String || result instanceof CmsProcessedString || result instanceof Integer || result instanceof NodeList || result instanceof byte[]))) {
@@ -282,15 +275,14 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
     /**
      * Creates a clone of this object.
      * @return cloned object.
-     * @throws CloneNotSupportedException
+     * @throws CloneNotSupportedException if an error occurs while cloning
      */
     public Object clone() throws CloneNotSupportedException {
         try {
             A_CmsXmlContent newDoc = (A_CmsXmlContent) getClass().newInstance();
             newDoc.init(m_cms, (Document) m_content.cloneNode(true), m_filename);
             return newDoc;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error while trying to clone object " + this.getClass().getName());
             }
@@ -340,8 +332,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         m_filename = filename;
         try {
             m_content = m_parser.createEmptyDocument(getXmlDocumentTagName());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throwException("Cannot create empty XML document for file " + m_filename + ". ", CmsException.C_XML_PARSING_ERROR);
         }
         write();
@@ -375,7 +366,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
     }
 
     /**
-     * Gets the absolute filename of the XML file represented by this content class
+     * Gets the absolute filename of the XML file represented by this content class.<p>
+     * 
      * @return Absolute filename
      */
     public String getAbsoluteFilename() {
@@ -396,22 +388,21 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * (e.g. "OpenCms news article").
      * @return content description.
      */
-    abstract public String getContentDescription();
+    public abstract String getContentDescription();
 
     /**
      * Gets a complete datablock from the datablock hashtable.
      *
      * @param tag Key for the datablocks hashtable.
-     * @return Complete DOM element of the datablock for the given key
-     * or null if no datablock is found for this key.
+     * @return Complete DOM element of the datablock for the given key or null if no datablock is found for this key.
+     * @throws CmsException if something goes wrong
      */
     protected Element getData(String tag) throws CmsException {
         Object result = m_blocks.get(tag.toLowerCase());
         if (result == null) {
             String errorMessage = "Unknown Datablock " + tag + " requested.";
             throwException(errorMessage, CmsException.C_XML_UNKNOWN_DATA);
-        }
-        else {
+        } else {
             if (!(result instanceof Element)) {
                 String errorMessage = "Unexpected object returned as datablock. Requested Tagname: " + tag + ". Returned object: " + result.getClass().getName() + ".";
                 throwException(errorMessage, CmsException.C_XML_CORRUPT_INTERNAL_STRUCTURE);
@@ -425,8 +416,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * datablock hashtable.
      *
      * @param tag Key for the datablocks hashtable.
-     * @return Datablock content for the given key or null if no datablock
-     * is found for this key.
+     * @return Datablock content for the given key or null if no datablock is found for this key.
+     * @throws CmsException if something goes wrong
      */
     protected String getDataValue(String tag) throws CmsException {
         Element dataElement = getData(tag);
@@ -447,7 +438,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      *
      * @param tag Key for the datablocks hashtable.
      * @return Processed datablock for the given key.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected Element getProcessedData(String tag) throws CmsException {
         return getProcessedData(tag, null, null);
@@ -459,7 +450,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @param tag Key for the datablocks hashtable.
      * @param callingObject Object that should be used to look up user methods.
      * @return Processed datablock for the given key.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected Element getProcessedData(String tag, Object callingObject) throws CmsException {
         return getProcessedData(tag, callingObject, null);
@@ -475,7 +466,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @param callingObject Object that should be used to look up user methods.
      * @param userObj any object that should be passed to user methods
      * @return Processed datablock for the given key.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected Element getProcessedData(String tag, Object callingObject, Object userObj) throws CmsException {
         Element dBlock = (Element) getData(tag).cloneNode(true);
@@ -494,7 +485,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @param userObj any object that should be passed to user methods
      * @param stream OutputStream that may be used for directly streaming the results or null.
      * @return Processed datablock for the given key.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected Element getProcessedData(String tag, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
         Element dBlock = (Element) getData(tag).cloneNode(true);
@@ -508,7 +499,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      *
      * @param tag Key for the datablocks hashtable.
      * @return Processed datablock for the given key.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected String getProcessedDataValue(String tag) throws CmsException {
         return getProcessedDataValue(tag, null, null, null);
@@ -521,7 +512,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @param tag Key for the datablocks hashtable.
      * @param callingObject Object that should be used to look up user methods.
      * @return Processed datablock for the given key.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected String getProcessedDataValue(String tag, Object callingObject) throws CmsException {
         return getProcessedDataValue(tag, callingObject, null, null);
@@ -538,7 +529,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @param callingObject Object that should be used to look up user methods.
      * @param userObj any object that should be passed to user methods
      * @return Processed datablock for the given key.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected String getProcessedDataValue(String tag, Object callingObject, Object userObj) throws CmsException {
         return getProcessedDataValue(tag, callingObject, userObj, null);
@@ -557,7 +548,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @param userObj any object that should be passed to user methods
      * @param stream OutputStream that may be used for directly streaming the results or null.
      * @return Processed datablock for the given key.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected String getProcessedDataValue(String tag, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
         // we cant cache the methods here, so we use the other way
@@ -572,7 +563,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * e.g. <code>&lt;ELEMENT&gt;foo blah &lt;![CDATA[&lt;H1&gt;Hello&lt;/H1&gt;]]&gt;&lt;/ELEMENT&gt;</code>.
      *
      * @param n Element that should be read out.
-     * @return Concatenated string of all text and CDATA nodes or <code>null</code>
+     * @return concatenated string of all text and CDATA nodes or <code>null</code>
      * if no nodes were found.
      */
     protected String getTagValue(Element n) {
@@ -591,8 +582,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                         if (child.getNodeType() == Node.CDATA_SECTION_NODE) {
                             //result.append(child.getNodeValue());
                             result.append(nodeValue);
-                        }
-                        else {
+                        } else {
                             if (child.getNodeType() == Node.TEXT_NODE) {
                                 //String s = child.getNodeValue().trim();
                                 nodeValue = nodeValue.trim();
@@ -645,7 +635,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * It returns the name of the XML document tag to scan for.
      * @return name of the XML document tag.
      */
-    abstract public String getXmlDocumentTagName();
+    public abstract String getXmlDocumentTagName();
 
     /**
      * Gets the currently used XML Parser.
@@ -656,7 +646,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
     }
 
     /**
-     * Prints the XML parsed content to a String
+     * Prints the XML parsed content to a String.<p>
+     * 
      * @return String with XML content
      */
     public String getXmlText() {
@@ -677,7 +668,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
     /**
      * Prints the XML parsed content of the given Node and
-     * its subnodes to the given Writer.
+     * its subnodes to the given Writer.<p>
      *
      * @param out Writer to print to.
      * @param n Node that should be printed.
@@ -687,11 +678,24 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         tempDoc.appendChild(m_parser.importNode(tempDoc, n));
         m_parser.getXmlText(tempDoc, out);
     }
-
+    
+    /**
+     * Prints the XML parsed content of the given Node and
+     * its subnodes to the given Writer.<p>
+     *
+     * @param out Stream to print to
+     */
     public void getXmlText(OutputStream out) {
         m_parser.getXmlText(m_content, out, m_newEncoding);
     }
 
+    /**
+     * Prints the XML parsed content of the given Node and
+     * its subnodes to the given Writer.<p>
+     *
+     * @param out Stream to print to
+     * @param n Node that should be printed.
+     */
     public void getXmlText(OutputStream out, Node n) {
         Document tempDoc = (Document) m_content.cloneNode(false);
         tempDoc.appendChild(m_parser.importNode(tempDoc, n));
@@ -700,7 +704,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
     /**
      * Prints the XML parsed content of a given node and
-     * its subnodes to a String
+     * its subnodes to a String.<p>
+     * 
      * @param n Node that should be printed.
      * @return String with XML content
      */
@@ -716,7 +721,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * since they are called only using reclection API.
      * Do not use this method. 
      * 
-     * @throws CmsException 
+     * @throws CmsException if something goes wrong
      */
     protected void callAllUncalledMethodsSoThatEclipseDoesntComplainAboutThem() throws CmsException {
         this.handleDataTag(null, null, null);
@@ -753,8 +758,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             // look for the best fitting hierarchy name part, too
             if (parent.getNodeName().equals("DATA")) {
                 blockname = ((Element) parent).getAttribute("name");
-            }
-            else {
+            } else {
                 blockname = parent.getNodeName();
                 String secondName = ((Element) parent).getAttribute("name");
                 if (!"".equals(secondName)) {
@@ -764,8 +768,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             blockname = blockname.toLowerCase();
             if (parentname == null) {
                 parentname = blockname;
-            }
-            else {
+            } else {
                 parentname = blockname + "." + parentname;
             }
             if (m_blocks.containsKey(parentname)) {
@@ -779,8 +782,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         // next, look for the tag name (the part behind the last ".")
         if (n.getNodeName().equals("DATA")) {
             blockname = n.getAttribute("name");
-        }
-        else {
+        } else {
             blockname = n.getNodeName();
             String secondName = n.getAttribute("name");
             if (!"".equals(secondName)) {
@@ -848,12 +850,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         Object result = null;
         try {
             result = callUserMethod(method, tagcontent, callingObject, userObj, false);
-        }
-        catch (Throwable e1) {
+        } catch (Throwable e1) {
             if (e1 instanceof CmsException) {
                 throw (CmsException) e1;
-            }
-            else {
+            } else {
                 throwException("handleMethodTag() received an exception from callUserMethod() while calling \"" + method + "\" requested by class " + callingObject.getClass().getName() + ": " + e1);
             }
         }
@@ -881,12 +881,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         Object result = null;
         try {
             result = callUserMethod(method, tagcontent, callingObject, userObj, true);
-        }
-        catch (Throwable e1) {
+        } catch (Throwable e1) {
             if (e1 instanceof CmsException) {
                 throw (CmsException) e1;
-            }
-            else {
+            } else {
                 throwException("handleMethodTagForSure() received an exception from callUserMethod() while calling \"" + method + "\" requested by class " + callingObject.getClass().getName() + ": " + e1);
             }
         }
@@ -914,13 +912,13 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                 String logUri = "";
                 try {
                     logUri = " RequestUri is " + m_cms.getRequestContext().getFolderUri() + m_cms.getRequestContext().getUri() + ".";
+                } catch (Exception e) {
+                    // noop    
                 }
-                catch (Exception e) {}
                 OpenCms.getLog(this).error("Requested datablock  \"" + blockname + "\" not found in " + m_filename + " - " + logUri);
             }
             return C_ERR_NODATABLOCK + blockname;
-        }
-        else {
+        } else {
             return datablock.getChildNodes();
         }
     }
@@ -939,7 +937,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * Load and parse the content of the given CmsFile object.
      * @param cms CmsObject Object for accessing resources.
      * @param file CmsFile object of the file to be loaded and parsed.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public void init(CmsObject cms, CmsFile file) throws CmsException {
         String filename = cms.readAbsolutePath(file);
@@ -961,12 +959,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                 // Start with an empty XML document.
                 try {
                     parsedContent = getXmlParser().createEmptyDocument(getXmlDocumentTagName());
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     throwException("Could not initialize now XML document " + filename + ". " + e, CmsException.C_XML_PARSING_ERROR);
                 }
-            }
-            else {
+            } else {
                 parsedContent = parse(fileContent);
             }
             m_filecache.put(currentProject + ":" + cms.getRequestContext().addSiteRoot(filename), parsedContent.cloneNode(true));
@@ -982,7 +978,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @param cms CmsObject Object for accessing resources.
      * @param filename file name to use when storing the parsed XML in the cache
      * @param content XMl content to parse
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public void init(CmsObject cms, String filename, String content) throws CmsException {
         m_cms = cms;
@@ -1001,8 +997,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * <code>lookupAbsoluteFilename</code>.
      *
      * @param cms CmsObject Object for accessing resources.
-     * @param file CmsFile object of the file to be loaded and parsed.
-     * @throws CmsException
+     * @param filename CmsFile name of the file to be loaded and parsed.
+     * @throws CmsException if something goes wrong
      */
     public void init(CmsObject cms, String filename) throws CmsException {
 
@@ -1019,8 +1015,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             
             parsedContent = parse(file.getContents());
             m_filecache.put(currentProject + ":" + cms.getRequestContext().addSiteRoot(filename), parsedContent.cloneNode(true));
-        }
-        else {
+        } else {
 
             // File was found in cache.
             // We have to read the file header to check access rights.
@@ -1037,7 +1032,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         init(cms, parsedContent, filename);
     }
 
-    /** Flag to enable / disable printNode() method */
+    /** Flag to enable / disable printNode() method. */
     private static final boolean C_PRINTNODES = false;
 
     /**
@@ -1062,7 +1057,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             final String badChars = "\n";
 
             // Char array for the printNode() method
-            final String[] goodChars = { "\\n" };
+            final String[] goodChars = {"\\n"};
 
             int nodeType = node.getNodeType();
 
@@ -1077,8 +1072,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                         path += nodeName;
                     }
                 }
-            }
-            else if (nodeType == Node.TEXT_NODE) {
+            } else if (nodeType == Node.TEXT_NODE) {
                 String nodeValue = node.getNodeValue();
 
                 if (!"".equals(nodeValue)) {
@@ -1090,8 +1084,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
                         if ((index = badChars.indexOf(nodeValue.charAt(i))) != -1) {
                             nodeValueNoBadChars += goodChars[index];
-                        }
-                        else {
+                        } else {
                             nodeValueNoBadChars += nodeValue.charAt(i);
                         }
                     }
@@ -1106,8 +1099,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                         System.out.print("\n");
                     }
                 }
-            }
-            else if (nodeType == Node.CDATA_SECTION_NODE) {
+            } else if (nodeType == Node.CDATA_SECTION_NODE) {
                 CDATASection cdata = (CDATASection) node;
                 String nodeValue = cdata.getData();
 
@@ -1120,8 +1112,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
                         if ((index = badChars.indexOf(nodeValue.charAt(i))) != -1) {
                             nodeValueNoBadChars += goodChars[index];
-                        }
-                        else {
+                        }    else {
                             nodeValueNoBadChars += nodeValue.charAt(i);
                         }
                     }
@@ -1150,9 +1141,9 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
     /**
      * Initialize the class with the given parsed XML DOM document.
      * @param cms CmsObject Object for accessing system resources.
-     * @param document DOM document object containing the parsed XML file.
+     * @param content DOM document object containing the parsed XML file.
      * @param filename OpenCms filename of the XML file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public void init(CmsObject cms, Document content, String filename) throws CmsException {
         m_cms = cms;
@@ -1178,14 +1169,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         // in a Hashtable (still in DOM representation!)
         try {
             processNode(m_content, m_firstRunTags, A_CmsXmlContent.class.getDeclaredMethod("handleDataTag", C_PARAMTYPES_HANDLING_METHODS), null, null);
-        }
-        catch (CmsException e) {
+        } catch (CmsException e) {
             if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn("Error while scanning for DATA and INCLUDE tags in file " + getAbsoluteFilename(), e);
             }
             throw e;
-        }
-        catch (NoSuchMethodException e2) {
+        } catch (NoSuchMethodException e2) {
             String errorMessage = "XML tag process method \"handleDataTag\" could not be found";
             throwException(errorMessage, CmsException.C_XML_NO_PROCESS_METHOD);
         }
@@ -1218,8 +1207,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         if ((!data.getNodeName().toLowerCase().equals("data")) && nameAttr != null && (!"".equals(nameAttr))) {
             // this is an extended datablock
             workTag = tag.substring(0, tag.lastIndexOf("."));
-        }
-        else {
+        } else {
             workTag = tag;
         }
         // Import the node for later inserting
@@ -1230,8 +1218,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             // Fine. We can insert the new Datablock at the of the document
             m_content.getDocumentElement().appendChild(importedNode);
             m_blocks.put(tag, importedNode);
-        }
-        else {
+        } else {
             // This is a hierachical datablock tag. We have to search for
             // an appropriate place to insert first.
             boolean found = false;
@@ -1242,8 +1229,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                 match = match.substring(0, dotIndex);
                 if (hasData(match.substring(1))) {
                     found = true;
-                }
-                else {
+                } else {
                     dotIndex = match.lastIndexOf(".");
                     newBlocks.addElement(match.substring(dotIndex + 1));
                 }
@@ -1268,8 +1254,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                 m_blocks.put(datablockPrefix + (String) newBlocks.elementAt(i), newElem);
                 if (lastElem != null) {
                     lastElem.appendChild(newElem);
-                }
-                else {
+                } else {
                     lastElem = newElem;
                 }
             }
@@ -1277,8 +1262,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             // Finally the given datablock can be inserted.
             if (lastElem != null) {
                 lastElem.appendChild(importedNode);
-            }
-            else {
+            } else {
                 lastElem = importedNode;
             }
             m_blocks.put(datablockPrefix + tag, importedNode);
@@ -1291,8 +1275,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             if (found) {
                 Element parent = (Element) m_blocks.get(match.substring(1));
                 parent.appendChild(lastElem);
-            }
-            else {
+            } else {
                 m_content.getDocumentElement().appendChild(lastElem);
             }
         }
@@ -1312,8 +1295,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             try {
                 //cachedDoc = lookup.cloneNode(true).getOwnerDocument();
                 cachedDoc = (Document) lookup.cloneNode(true);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 lookup = null;
                 cachedDoc = null;
             }
@@ -1342,6 +1324,15 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         return tempNode.getChildNodes();
     }
     
+    /**
+     * Starts the XML parser with the content of the given CmsFile object.
+     * After parsing the document it is scanned for INCLUDE and DATA tags
+     * by calling processNode with m_firstRunParameters.
+     *
+     * @param content byte array to be parsed
+     * @return parsed DOM document
+     * @throws CmsException if something goes wrong
+     */
     protected Document parse(byte[] content) throws CmsException {
         return parse(new ByteArrayInputStream(content));
     }
@@ -1353,8 +1344,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      *
      * @param content String to be parsed
      * @return Parsed DOM document.
-     * @see #processNode
-     * @see #firstRunParameters
+     * @throws CmsException if something goes wrong
      */
     protected Document parse(InputStream content) throws CmsException {
         Document parsedDoc = null;
@@ -1363,8 +1353,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         // get a DOM representation of the document
         try {
             parsedDoc = m_parser.parse(content);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Error while parsing the document.
             // there ist nothing to do, we cannot go on.
             String errorMessage = "Cannot parse XML file \"" + getAbsoluteFilename() + "\". " + e;
@@ -1386,8 +1375,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             Class elementClass = Class.forName("org.w3c.dom.Element");
             Method normalizeMethod = elementClass.getMethod("normalize", new Class[] {});
             normalizeMethod.invoke(parsedDoc.getDocumentElement(), new Object[] {});
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // The workaround using reflection API failed.
             // We have to throw an exception.
             throwException("Normalizing the XML document failed. Possibly you are using concurrent versions of " + "the XML parser with different DOM levels. ", e, CmsException.C_XML_PARSING_ERROR);
@@ -1414,12 +1402,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
     /**
      * Main processing funtion for the whole XML document.
      *
-     * @see #processNode
      * @param keys Hashtable with XML tags to look for and corresponding methods.
      * @param defaultMethod Method to be called if the tag is unknown.
      * @param callingObject Reference to the object requesting the node processing.
      * @param userObj Customizable user object that will be passed through to handling and user methods.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected void processDocument(Hashtable keys, Method defaultMethod, Object callingObject, Object userObj) throws CmsException {
         processNode(m_content.getDocumentElement(), keys, defaultMethod, callingObject, userObj);
@@ -1447,12 +1434,37 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @param defaultMethod Method to be called if the tag is unknown.
      * @param callingObject Reference to the Object that requested the node processing.
      * @param userObj Customizable user object that will be passed to handling and user methods.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected void processNode(Node n, Hashtable keys, Method defaultMethod, Object callingObject, Object userObj) throws CmsException {
         processNode(n, keys, defaultMethod, callingObject, userObj, null);
     }
 
+    /**
+     * Universal main processing function for parsed XML templates.
+     * The given node is processed by a tree walk.
+     * <P>
+     * Every XML tag will be looked up in the Hashtable "keys".
+     * If a corresponding entry is found, the tag will be handled
+     * by the corresponding function returned from the Hashtable.
+     * <P>
+     * If an unknown tag is detected the method defaultMethod is called
+     * instead. Is defaultMethod == null nothing will be done with unknown tags.
+     * <P>
+     * The invoked handling methods are allowed to return null or objects
+     * of the type String, Node, Integer or byte[].
+     * If the return value is null, nothing happens. In all other cases
+     * the handled node in the tree will be replaced by a new node.
+     * The value of this new node depends on the type of the returned value.
+     *
+     * @param n Node with its subnodes to process
+     * @param keys Hashtable with XML tags to look for and corresponding methods.
+     * @param defaultMethod Method to be called if the tag is unknown.
+     * @param callingObject Reference to the Object that requested the node processing.
+     * @param userObj Customizable user object that will be passed to handling and user methods.
+     * @param stream the output stream
+     * @throws CmsException if something goes wrong
+     */
     protected void processNode(Node n, Hashtable keys, Method defaultMethod, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
 
         // Node currently processed
@@ -1502,8 +1514,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
                         // name of this element found in keys Hashtable
                         callMethod = (Method) keys.get(childName);
-                    }
-                    else {
+                    } else {
                         if (!m_knownTags.contains(childName)) {
 
                             // name was not found
@@ -1520,9 +1531,8 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                             }
 
                             // now invoke the tag processing method.
-                            methodResult = callMethod.invoke(this, new Object[] { child, callingObject, userObj });
-                        }
-                        catch (Exception e) {
+                            methodResult = callMethod.invoke(this, new Object[] {child, callingObject, userObj});
+                        } catch (Exception e) {
                             if (e instanceof InvocationTargetException) {
                                 Throwable thrown = ((InvocationTargetException) e).getTargetException();
 
@@ -1530,12 +1540,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                                 // throw it again
                                 if (thrown instanceof CmsException) {
                                     throw (CmsException) thrown;
-                                }
-                                else {
+                                } else {
                                     throwException("processNode received an exception while handling XML tag \"" + childName + "\" by \"" + callMethod.getName() + "\" for file " + getFilename() + ": " + e, CmsException.C_XML_PROCESS_ERROR);
                                 }
-                            }
-                            else {
+                            } else {
                                 throwException("processNode could not invoke the XML tag handling method " + callMethod.getName() + "\" for file " + getFilename() + ": " + e, CmsException.C_XML_PROCESS_ERROR);
                             }
                         }
@@ -1545,29 +1553,23 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                         // recognized. All other types will be ignored.
                         if (methodResult == null) {
                             newnodes = null;
-                        }
-                        else {
+                        } else {
                             if (methodResult instanceof NodeList) {
                                 newnodes = (NodeList) methodResult;
-                            }
-                            else {
+                            } else {
                                 if (methodResult instanceof String) {
                                     newnodes = stringToNodeList((String) methodResult);
-                                }
-                                else {
+                                } else {
                                     if (methodResult instanceof CmsProcessedString) {
                                         newnodes = stringToNodeList(((CmsProcessedString) methodResult).toString());
                                         newnodesAreAlreadyProcessed = true;
-                                    }
-                                    else {
+                                    } else {
                                         if (methodResult instanceof Integer) {
                                             newnodes = stringToNodeList(((Integer) methodResult).toString());
-                                        }
-                                        else {
+                                        } else {
                                             if (methodResult instanceof byte[]) {
                                                 newnodes = stringToNodeList(new String((byte[]) methodResult));
-                                            }
-                                            else {
+                                            } else {
 
                                                 // Type not recognized.
                                                 if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1617,8 +1619,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                                     nextchild = treeWalkerWidth(startingNode, child);
                                 }
 
-                            }
-                            else {
+                            } else {
 
                                 // the list of the new childs is empty.
                                 // so we have to re-calculate the next node
@@ -1631,16 +1632,14 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                             child.getParentNode().removeChild(child);
                         }
                     }
-                }
-                else if (stream != null) {
+                } else if (stream != null) {
                     /* We are in HTTP streaming mode.
                     So we can put the content of the current node directly into
                     the output stream. */
                     String streamResults = null;
                     if (child.getNodeType() == Node.CDATA_SECTION_NODE) {
                         streamResults = child.getNodeValue();
-                    }
-                    else {
+                    } else {
                         if (child.getNodeType() == Node.TEXT_NODE) {
                             String s = child.getNodeValue().trim();
                             if (!"".equals(s)) {
@@ -1651,8 +1650,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                     if (streamResults != null) {
                         try {
                             stream.write(streamResults.getBytes(m_cms.getRequestContext().getEncoding()));
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
                         }
                     }
@@ -1667,7 +1665,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * into the own Hashtable of datablocks.
      *
      * @param include completely initialized A_CmsXmlObject to be included
-     * @throws CmsExeption
+     * @throws CmsException if something goes wrong
      */
     public void readIncludeFile(A_CmsXmlContent include) throws CmsException {
         m_includedTemplates.addElement(include);
@@ -1678,8 +1676,9 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * Parses the given file and stores it in the internal list of included files and
      * appends the relevant data structures of the new file to its own structures.
      *
-     * @param include Filename of the XML file to be included
-     * @throws CmsException
+     * @param filename file name of the XML file to be included
+     * @return file with xml conten
+     * @throws CmsException if something goes wrong
      */
     public A_CmsXmlContent readIncludeFile(String filename) throws CmsException {
         A_CmsXmlContent include = null;
@@ -1689,8 +1688,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         try {
             include = (A_CmsXmlContent) getClass().newInstance();
             include.init(m_cms, filename);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error include file: " + filename, e);
             }
@@ -1767,13 +1765,13 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                 break;
 
             case C_REGISTER_MAIN_RUN :
+            default:
                 selectedRun = m_mainProcessTags;
                 break;
         }
         try {
             selectedRun.put(tagname.toLowerCase(), c.getDeclaredMethod(methodName, C_PARAMTYPES_HANDLING_METHODS));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn("Exception in register tag ", e);
             }
@@ -1783,7 +1781,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
     /**
      * Remove a datablock from the internal hashtable and
-     * from the XML document
+     * from the XML document.<p>
      * @param tag Key of the datablock to delete.
      */
     protected void removeData(String tag) {
@@ -1798,7 +1796,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
     }
 
     /**
-     * Deletes this object from the internal XML file cache
+     * Deletes this object from the internal XML file cache.<p>
      */
     public void removeFromFileCache() {
         String currentProject = m_cms.getRequestContext().currentProject().getName();
@@ -1824,8 +1822,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             // empty string or null are given.
             // put an empty datablock without any text nodes.
             setData(tag, newElement);
-        }
-        else {
+        } else {
             // Fine. String is not empty.
             // So we can add a new text node containig the string data.
             // Leading spaces are removed before creating the text node.
@@ -1846,8 +1843,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         // to create a new text node.
         if (data == null) {
             setData(tag, "");
-        }
-        else {
+        } else {
             // Now we can be sure to have a correct Element
             tag = tag.toLowerCase();
             Element newElement = (Element) data.cloneNode(true);
@@ -1886,6 +1882,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      *
      * @param tag Key for this datablock.
      * @param data String to be put in the datablock.
+     * @throws CmsException if something goes wrong
      */
     public void setParsedData(String tag, String data) throws CmsException {
 
@@ -1902,8 +1899,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         Document tempDoc = null;
         try {
             tempDoc = m_parser.parse(parserReader);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throwException("PARSING ERROR! " + e.toString(), CmsException.C_XML_PARSING_ERROR);
         }
         Element templateNode = (Element) tempDoc.getDocumentElement().getFirstChild();
@@ -1928,7 +1924,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * an error message to the OpenCms logfile and throwing a
      * CmsException of the type "unknown".
      * @param errorMessage String with the error message to be printed.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected void throwException(String errorMessage) throws CmsException {
         throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
@@ -1940,7 +1936,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * CmsException of the given type.
      * @param errorMessage String with the error message to be printed.
      * @param type Type of the exception to be thrown.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
         if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1955,7 +1951,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * CmsException of the type "unknown".
      * @param errorMessage String with the error message to be printed.
      * @param e Original exception.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
         throwException(errorMessage, e, CmsException.C_UNKNOWN_EXCEPTION);
@@ -1968,7 +1964,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @param errorMessage String with the error message to be printed.
      * @param e Original exception.
      * @param type Type of the exception to be thrown.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected void throwException(String errorMessage, Exception e, int type) throws CmsException {
         if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1976,8 +1972,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         }
         if (e instanceof CmsException) {
             throw (CmsException) e;
-        }
-        else {
+        } else {
             throw new CmsException(errorMessage, type, e);
         }
     }
@@ -2000,6 +1995,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * First it will be looked for children of the given node.
      * If there are no children, the siblings and the siblings of our parents
      * are examined. This will be done by calling treeWalkerWidth.
+     * @param root the root node
      * @param n Node representing the actual position in the tree
      * @return next node
      */
@@ -2009,8 +2005,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             // child has child notes itself
             // process these first in the next loop
             nextnode = n.getFirstChild();
-        }
-        else {
+        } else {
             // child has no subchild.
             // so we take the next sibling
             nextnode = treeWalkerWidth(root, n);
@@ -2021,6 +2016,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
     /**
      * Help method to walk through the DOM document tree by a
      * width-first-order.
+     * @param root the root node
      * @param n Node representing the actual position in the tree
      * @return next node
      */
@@ -2045,7 +2041,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
     /**
      * Writes the XML document back to the OpenCms system.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public void write() throws CmsException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -2076,7 +2072,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
     /**
      * Sets new encoding for XML document.
-     * @param encoding
+     * @param encoding the encoding to set
      */
     public void setEncoding(String encoding) {
         m_newEncoding = encoding;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2004/06/14 16:04:30 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,14 +40,16 @@ import org.w3c.dom.Node;
 
 /**
  * Various methods used by CmsHtmlConverter to
- * check, remove or replace tags and Strings.
+ * check, remove or replace tags and Strings.<p>
+ * 
  * @author Andreas Zahner
  * @version 1.0
  */
 final class CmsHtmlConverterTools {
 
     /**
-     * Tests if a set of tags contains the specified tag.&nbsp;This method is used to remove tags, blocks and to check inlinetags.
+     * Tests if a set of tags contains the specified tag.&nbsp;This method is used to remove tags, blocks and to check inlinetags.<p>
+     * 
      * @param NodeName String with tagname
      * @param tags set of tags
      * @return true if NodeName is found in tags, otherwise false.
@@ -65,7 +67,8 @@ final class CmsHtmlConverterTools {
 
     /**
      * Scans a String for substrings specified in a list of Strings and replaces them, returns a String where all replacements are done;
-     * this method is needed for replacement run #1.
+     * this method is needed for replacement run #1.<p>
+     * 
      * @param testString is the String which has to be scanned
      * @param rStrings lists all subStrings which have to be replaced
      * @return String with replaced content
@@ -83,7 +86,8 @@ final class CmsHtmlConverterTools {
     }
 
     /**
-     * Scans a String for substrings specified in a list of Strings and replaces them, returns a String where all replacements are done.
+     * Scans a String for substrings specified in a list of Strings and replaces them, returns a String where all replacements are done.<p>
+     * 
      * @param testString is the String which has to be scanned
      * @param rStrings lists all subStrings which have to be replaced
      * @return String with replaced content
@@ -102,6 +106,7 @@ final class CmsHtmlConverterTools {
 
     /**
      * Scans a String and replaces umlauts and other special characters.<p>
+     * 
      * @param testString is the String which has to be scanned
      * @param rStrings lists all subStrings wich have to be replaced
      * @return String with replaced special characters
@@ -119,7 +124,8 @@ final class CmsHtmlConverterTools {
     }
 
     /**
-     * Method to replace a subString with replaceItem.
+     * Method to replace a subString with replaceItem.<p>
+     * 
      * @param testString the original String
      * @param searchString the subString that has to be replaced
      * @param replaceItem the String that replaces searchString
@@ -146,7 +152,8 @@ final class CmsHtmlConverterTools {
     }
 
     /**
-     * Method to scan attributes of a node and return the value.
+     * Method to scan attributes of a node and return the value.<p>
+     * 
      * @param node the node which is tested
      * @param attrName String with attribute name
      * @return String with attribute value

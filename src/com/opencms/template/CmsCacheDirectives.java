@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.template.cache.CmsTimeout;
  *
  * @author Alexander Lucas
  * @author Hanjo Riege
- * @version $Revision: 1.19 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.20 $ $Date: 2004/06/15 10:59:44 $
  */
 public class CmsCacheDirectives extends A_CmsCacheDirectives {
 
@@ -47,7 +47,7 @@ public class CmsCacheDirectives extends A_CmsCacheDirectives {
      * @param b Boolean value that should be set for all caching properties
      */
     public CmsCacheDirectives(boolean b) {
-        if(b) {
+        if (b) {
             m_cd = C_CACHE_INTERNAL | C_CACHE_PROXY_PRIVATE | C_CACHE_PROXY_PUBLIC | C_CACHE_EXPORT | C_CACHE_STREAM;
         } else {
             m_cd = 0;
@@ -80,7 +80,8 @@ public class CmsCacheDirectives extends A_CmsCacheDirectives {
     }
 
     /**
-     * Constructor
+     * Constructor.<p>
+     * 
      * @param internal Initial value for "internal cacheable" property.
      * @param stream Initial value for "streamable" property.
      */
@@ -91,44 +92,44 @@ public class CmsCacheDirectives extends A_CmsCacheDirectives {
     }
 
     /**
-     * enables or disables the proxy public cache for this element.
+     * Enables or disables the proxy public cache for this element.<p>
      * @param proxyPublic true if the flag should be set in the response header.
      */
-    public void setProxyPublicCacheable(boolean proxPublic){
+    public void setProxyPublicCacheable(boolean proxyPublic) {
         m_userSetProxyPublic = true;
         setExternalCaching(isInternalCacheable(), isProxyPrivateCacheable(),
-                            proxPublic, isExportable(), isStreamable());
+                            proxyPublic, isExportable(), isStreamable());
     }
 
     /**
-     * enables or disables the proxy private cache for this element.
+     * Enables or disables the proxy private cache for this element.<p>
      * @param proxyPrivate true if the flag should be set in the response header.
      */
-    public void setProxyPrivateCacheable(boolean proxPrivate){
+    public void setProxyPrivateCacheable(boolean proxyPrivate) {
         m_userSetProxyPrivate = true;
-        setExternalCaching(isInternalCacheable(), proxPrivate,
+        setExternalCaching(isInternalCacheable(), proxyPrivate,
                             isProxyPublicCacheable(), isExportable(), isStreamable());
     }
 
     /**
-     * enables or disables the export for this element.
+     * Enables or disables the export for this element.<p>
      * @param export true if the flag should be set in the response header.
      */
-    public void setExport(boolean export){
+    public void setExport(boolean export) {
         m_userSetExport = true;
         setExternalCaching(isInternalCacheable(), isProxyPrivateCacheable(),
                             isProxyPublicCacheable(), export, isStreamable());
     }
 
     /**
-     * set the timeout object(used if the element should be reloaded every x minutes.
+     * Sset the timeout object(used if the element should be reloaded every x minutes.
      * if the timeout object says so the proxyCache is disabled.
      * @param timeout a CmsTimeout object.
      */
     public void setTimeout(CmsTimeout timeout) {
         m_timecheck = true;
         m_timeout = timeout;
-        if ( !m_timeout.isProxyCacheable()){
+        if (!m_timeout.isProxyCacheable()) {
             setProxyPrivateCacheable(false);
             setProxyPublicCacheable(false);
         }

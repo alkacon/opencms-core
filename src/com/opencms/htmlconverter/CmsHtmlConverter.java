@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2004/06/14 16:04:30 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,17 +46,17 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     /** Filename for JTidy configuration. */
     private String m_tidyConfFile = "";
     /** Checks if JTidy is already defined. */
-    private boolean m_tidyConfFileDefined = false;
+    private boolean m_tidyConfFileDefined;
     /** Filename for CmsHtmlConverter configuration. */
     private String m_converterConfFile = "";
     /** Checks if CmsHtmlConverter is configured from file. */
-    private boolean m_converterConfFileDefined = false;
+    private boolean m_converterConfFileDefined;
     /** Checks if CmsHtmlConverter is configured. */
-    private boolean m_converterConfigDefined = false;
+    private boolean m_converterConfigDefined;
     /** stores number of predefined replaceTags. */
-    private int m_numberReplaceTags = 0;
+    private int m_numberReplaceTags;
     /** stores number of predefined replaceTags. */
-    private int m_numberReplaceBlocks = 0;
+    private int m_numberReplaceBlocks;
     /** temporary buffer used in transformation method. */
     private StringBuffer m_tempString;
     /** instance of JTidy. */
@@ -70,11 +70,11 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     /** object stores data for replacing blocks. */
     private CmsHtmlConverterObjectReplaceBlocks m_blockObject = new CmsHtmlConverterObjectReplaceBlocks();
     // replacestring for the modifyParameter methode. Used for the html editor replacement
-    private String m_servletPrefix = null;
+    private String m_servletPrefix;
     // replace String for relative uris 
-    private String m_relativeRoot = null;
+    private String m_relativeRoot;
     //the url object for links that should not be replaced
-    private URL m_url = null;
+    private URL m_url;
     /** Vector stores tag names, after the end-tag, a "\n" is added to the output. */
     private Vector m_enterTags = new Vector();
 
@@ -89,7 +89,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     }
 
     /**
-     * constructor with name of Tidy configuration file as parameter.<p>
+     * Constructor with name of Tidy configuration file as parameter.<p>
+     * 
      * @param tidyConfFileName String with Tidy configuration file name
      */
     public CmsHtmlConverter(String tidyConfFileName) {
@@ -98,7 +99,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     }
 
     /**
-     * constructor with name of Tidy and Converter configuration files as parameters.<p>
+     * Constructor with name of Tidy and Converter configuration files as parameters.<p>
+     * 
      * @param tidyConfFileName String with Tidy configuration file name
      * @param confFile String with Converter configuration file name
      */
@@ -108,7 +110,9 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         initialiseTags();
     }
 
-    /** initialises Vector m_enterTags with tag names.<p> */
+    /** 
+     * Initialises Vector m_enterTags with tag names.<p> 
+     */
     private void initialiseTags() {
         StringTokenizer T = new StringTokenizer("p,table,tr,td,body,head,script,pre,title,style,h1,h2,h3,h4,h5,h6,ul,ol,li", ",");
         while (T.hasMoreTokens()) {
@@ -149,6 +153,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * If defined, returns JTidy configuration filename.<p>
+     * 
      * @return filename of JTidy configuration file
      */
     public String getTidyConfFile() {
@@ -161,6 +166,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Checks whether JTidy is already configured or not.<p>
+     * 
      * @return true if JTidy configuration file is set, otherwise false
      */
     public boolean tidyConfigured() {
@@ -169,6 +175,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Configures CmsHtmlConverter from file.<p>
+     * 
      * @param confFile filename of configuration file
      */
     public void setConverterConfFile(String confFile) {
@@ -187,6 +194,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Configures CmsHtmlConverter from string.<p>
+     * 
      * @param configuration string with CmsHtmlConverter configuration
      */
     public void setConverterConfString(String configuration) {
@@ -199,6 +207,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * If defined, returns filename of CmsHtmlConverter configuration file.<p>
+     * 
      * @return filename of configuration file
      */
     public String getConverterConfFile() {
@@ -211,6 +220,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Checks whether CmsHtmlConverter is already configured or not.<p>
+     * 
      * @return true if CmsHtmlConverter configuration is set, otherwise false
      */
     public boolean converterConfigured() {
@@ -219,6 +229,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Checks if HTML code has errors.<p>
+     * 
      * @param inString String with HTML code
      * @return true if errors were detected, otherwise false
      */
@@ -229,6 +240,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Checks if HTML code has errors.<p>
+     * 
      * @param input InputStream with HTML code
      * @return true if errors were detected, otherwise false
      */
@@ -245,7 +257,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     }
 
     /**
-     * returns number of found errors in last parsed html code.<p>
+     * Returns number of found errors in last parsed html code.<p>
+     * 
      * @return int with number of errors
      */
     public int getNumberErrors() {
@@ -254,6 +267,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Checks if HTML code has errors and lists errors.<p>
+     * 
      * @param inString String with HTML code
      * @return String with detected errors
      */
@@ -266,6 +280,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Checks if HTML code has errors and lists errors.<p>
+     * 
      * @param input InputStream with HTML code
      * @param output OutputStream with detected errors
      */
@@ -286,6 +301,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Transforms HTML code into user defined output.<p>
+     * 
      * @param inString String with HTML code
      * @return String with transformed code
      */
@@ -298,6 +314,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Transforms HTML code into user defined output.<p>
+     * 
      * @param input Reader with HTML code
      * @param output Writer with transformed code
      */
@@ -423,6 +440,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Private method to transform element nodes and create start tags in output.<p>
+     * 
      * @param node actual element node
      * @param replaceBlock index of object m_replaceBlocks
      * @param replaceTag index of object m_replaceTags
@@ -502,6 +520,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Private method to transform element nodes and create end tags in output.<p>
+     * 
      * @param node actual element node
      * @param replaceBlock index of object m_replaceBlocks
      * @param replaceTag index of object m_replaceTags
@@ -582,6 +601,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Private method to transform text nodes.<p>
+     * 
      * @param node actual text node
      */
     private void transformTextNode(Node node) {
@@ -624,7 +644,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
 
     /**
      * Tests if specified tag has to be replaced and, if it is found,
-     * delivers index of hit in ArrayList..<p>
+     * delivers index of hit in ArrayLis.<p>
+     * 
      * @param node DOM Node which might be replaced
      * @return "-1" if tag is not found, otherwise index of list with hit
      */
@@ -661,7 +682,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     }
 
     /**
-     * scans node attributes and creates new CmsHtmlConverterObjectReplaceTags.<p>
+     * Scans node attributes and creates new CmsHtmlConverterObjectReplaceTags.<p>
+     * 
      * @param node DOM node which is scanned
      * @param testObject parent replaceTag object
      * @return index of new object in ArrayList replaceTags
@@ -703,6 +725,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     /**
      * Tests if specified block has to be replaced and, if it is found,
      * delivers index of hit in ArrayList.<p>
+     * 
      * @param node DOM Node which might be replaced
      * @return "-1" if tag is not found, otherwise index of list with hit
      */
@@ -738,7 +761,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     }
 
     /**
-     * scans node attributes and creates new CmsHtmlConverterObjectReplaceBlocks.<p>
+     * Scans node attributes and creates new CmsHtmlConverterObjectReplaceBlocks.<p>
+     * 
      * @param node DOM node which is scanned
      * @param testObject parent replaceBlock object
      * @return index of new object in ArrayList replaceBlocks

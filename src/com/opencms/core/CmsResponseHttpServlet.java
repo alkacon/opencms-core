@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2004/06/15 07:22:30 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.42 $ $Date: 2004/06/15 07:22:30 $
+ * @version $Revision: 1.43 $ $Date: 2004/06/15 10:59:44 $
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 
@@ -59,16 +59,16 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
     private int m_type = I_CmsConstants.C_RESPONSE_HTTP;
 
     /** Remember, if a redirect was sent. */
-    private boolean m_redir = false;
+    private boolean m_redir;
 
     /** Buffer for the output stream. */
-    private OutputStream m_orgOutputStream = null;
+    private OutputStream m_orgOutputStream;
 
     /** Flag to indicate what JSDK is available. */
     private static boolean jsdk2 = checkJsdk();
 
     /** String to save the content type. */
-    private String m_contentType = null;
+    private String m_contentType;
     
     /** Debug flag. */
     private static final boolean DEBUG = false;

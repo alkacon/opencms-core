@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpStylesheet.java,v $
-* Date   : $Date: 2004/03/12 16:00:48 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
  * Dump the correct stylesheet for the current browser.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2004/03/12 16:00:48 $
+ * @version $Revision: 1.10 $ $Date: 2004/06/15 10:59:44 $
  */
 public class CmsDumpStylesheet extends CmsDumpTemplate {
 
@@ -53,22 +53,22 @@ public class CmsDumpStylesheet extends CmsDumpTemplate {
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
      *
      * @return Array of bytes that contains the page.
+     * 
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
-        HttpServletRequest orgReq = (HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
+        HttpServletRequest orgReq = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
         int dotIdx = templateFile.lastIndexOf(".");
         String pre = templateFile.substring(0, dotIdx);
         String post = templateFile.substring(dotIdx);
 
         // Get the user's browser
         String browser = orgReq.getHeader("user-agent");
-        if(browser.indexOf("MSIE") > -1) {
+        if (browser.indexOf("MSIE") > -1) {
             templateFile = pre + "-ie" + post;
-        }
-        else {
+        } else {
             templateFile = pre + "-ns" + post;
         }
         return super.getContent(cms, templateFile, elementName, parameters);
@@ -83,7 +83,7 @@ public class CmsDumpStylesheet extends CmsDumpTemplate {
      * @param parameters <em>not used here</em>.
      * @param templateSelector <em>not used here</em>.
      * @return Unprocessed content of the given template file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 
@@ -104,7 +104,7 @@ public class CmsDumpStylesheet extends CmsDumpTemplate {
     public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
 
         // First build our own cache directives.
-        CmsCacheDirectives result = new CmsCacheDirectives(false,true,false,false,true);
+        CmsCacheDirectives result = new CmsCacheDirectives(false, true, false, false, true);
         return result;
     }
 

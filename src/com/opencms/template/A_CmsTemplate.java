@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.24 $ $Date: 2004/06/15 10:59:44 $
  */
 public abstract class A_CmsTemplate implements I_CmsTemplate {
 
@@ -67,7 +67,7 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         try {
             return cms.getRequestContext().currentProject().isOnlineProject();
-        } catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -127,7 +127,7 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
         String projId = "" + reqContext.currentProject().getId() + ":";
         String uri = reqContext.getUri();
         String uri2 = null;
-        if(uri != null && uri.indexOf("?") > 1) {
+        if (uri != null && uri.indexOf("?") > 1) {
             uri2 = uri.substring(0, uri.indexOf("?"));
         }
 
@@ -157,9 +157,9 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @return <EM>true</EM> if exportable, <EM>false</EM> otherwise.
      */
     public boolean isExportable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        HttpServletRequest httpReq = (HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
+        HttpServletRequest httpReq = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
         String queryString = "";
-        if(httpReq != null){
+        if (httpReq != null) {
             queryString = httpReq.getQueryString();
         }
         boolean result = isProxyPrivateCacheable(cms, templateFile, elementName, parameters, templateSelector)
@@ -167,7 +167,7 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
         try {
             CmsFile file = cms.readFile(templateFile);
             result = result && (file.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) != I_CmsConstants.C_ACCESS_INTERNAL_READ;
-        } catch(Exception e) {
+        } catch (Exception e) {
             result = false;
         }
         return result;
@@ -223,10 +223,16 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
         CmsCacheDirectives result = new CmsCacheDirectives(isCacheable, isProxyPrivateCacheable, isProxyPublicCacheable, isExportable, isStreamable);
         return result;
     }
-
+    
+    /**
+     * This is for debugging out.put generation.<p>
+     * 
+     * @param s String to print
+     * @param i type of cachekey
+     */
     protected void debugPrint(String s, int i) {
         System.err.print("* " + s);
-        for(int j=0; j<(15-s.length()); j++) {
+        for (int j=0; j<(15-s.length()); j++) {
             System.err.print(" ");
         }
 
@@ -245,7 +251,7 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * an error message to the OpenCms logfile and throwing a
      * CmsException of the type "unknown".
      * @param errorMessage String with the error message to be printed.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected void throwException(String errorMessage) throws CmsException {
         throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
@@ -257,10 +263,10 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * CmsException of the given type.
      * @param errorMessage String with the error message to be printed.
      * @param type Type of the exception to be thrown.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(OpenCms.getLog(this).isErrorEnabled() ) {
+        if (OpenCms.getLog(this).isErrorEnabled()) {
             OpenCms.getLog(this).error(errorMessage);
         }
         throw new CmsException(errorMessage, type);
@@ -272,16 +278,15 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * caught exception.
      * @param errorMessage String with the error message to be printed.
      * @param e Exception to be re-thrown.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
-        if(OpenCms.getLog(this).isErrorEnabled() ) {
+        if (OpenCms.getLog(this).isErrorEnabled()) {
             OpenCms.getLog(this).error(errorMessage, e);
         }
-        if(e instanceof CmsException) {
+        if (e instanceof CmsException) {
             throw (CmsException)e;
-        }
-        else {
+        } else {
             throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION, e);
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.143 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.144 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,33 +61,35 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.143 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.144 $ $Date: 2004/06/15 10:59:44 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
+    
+    /** Name of the frame selector parameter. */
     public static final String C_FRAME_SELECTOR = "cmsframe";
 
-    /** name of the special body element */
-    public final static String C_BODY_ELEMENT = I_CmsConstants.C_XML_BODY_ELEMENT;
+    /** Name of the special body element. */
+    public static final String C_BODY_ELEMENT = I_CmsConstants.C_XML_BODY_ELEMENT;
 
-    /** Boolean for additional debug output control */
-    public final static boolean C_DEBUG = true;
+    /** Boolean for additional debug output control. */
+    public static final boolean C_DEBUG = true;
 
     /** Error string to be inserted for corrupt subtemplates for guest user requests. */
-    private final static String C_ERRORTEXT = "ERROR!";
+    private static final String C_ERRORTEXT = "ERROR!";
     
-    /** Element descriptior */
+    /** Element descriptor. */
     private static final String C_ELEMENT = "_ELEMENT_";
 
     /**
      * Template cache for storing cacheable results of the subtemplates.
      */
-    protected static com.opencms.template.I_CmsTemplateCache m_cache = null;
+    protected static com.opencms.template.I_CmsTemplateCache m_cache;
 
     /**
      * For debugging purposes only.
      * Counts the number of re-uses od the instance of this class.
      */
-    private int counter = 0;
+    private int m_counter;
 
     /**
      * For debugging purposes only.
@@ -100,12 +102,12 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return Actual value of <code>counter</code>.
      */
     public Integer counter(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        counter++;
-        return new Integer(counter);
+        m_counter++;
+        return new Integer(m_counter);
     }
 
     /**
@@ -126,7 +128,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param elementName Element name of this template in our parent template
      * @param parameters Hashtable with all template class parameters.
      * @return Content of the template and all subtemplates.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
         return getContent(cms, templateFile, elementName, parameters, null);
@@ -142,15 +144,17 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
+     * @return Content of the template and all subtemplates.
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG ) {
+        if (OpenCms.getLog(this).isDebugEnabled() && C_DEBUG ) {
             OpenCms.getLog(this).debug("[CmsXmlTemplate] getting content of element " + ((elementName == null) ? "<root>" : elementName));
             OpenCms.getLog(this).debug("[CmsXmlTemplate] template file is: " + templateFile);
             OpenCms.getLog(this).debug("[CmsXmlTemplate] selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        if(templateSelector == null || "".equals(templateSelector)) {
+        if (templateSelector == null || "".equals(templateSelector)) {
             templateSelector = (String)parameters.get(C_FRAME_SELECTOR);
         }
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
@@ -160,9 +164,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object getFileUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String uri = cms.getRequestContext().getUri();
@@ -177,9 +181,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent The relative path of the resource incl. name of the resource.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object mergeAbsolutePath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         return CmsLinkManager.getAbsoluteUri(tagcontent, doc.getAbsoluteFilename()).getBytes();
@@ -193,12 +197,12 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent The relative path of the resource incl. name of the resource.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object mergeAbsoluteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        String ocPath = new String((byte[])mergeAbsolutePath(cms,tagcontent, doc, userObject));
+        String ocPath = new String((byte[])mergeAbsolutePath(cms, tagcontent, doc, userObject));
         String servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
         return (servletPath + ocPath).getBytes();
     }
@@ -211,101 +215,92 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object getFrameQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
 
         String query = new String();
         // get the parameternames of the original request and get the values from the userObject
-        try{
-            Enumeration parameters = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getParameterNames();
+        try {
+            Enumeration parameters = (CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getParameterNames();
             StringBuffer paramQuery = new StringBuffer();
-            while(parameters.hasMoreElements()){
+            while (parameters.hasMoreElements()) {
                 String name = (String)parameters.nextElement();
                 String value = (String)((Hashtable)userObject).get(name);
-                if(value != null && !"".equals(value)){
+                if (value != null && !"".equals(value)) {
                     paramQuery.append(name+"="+value+"&");
                 }
             }
-            if(paramQuery.length() > 0){
+            if (paramQuery.length() > 0) {
                 // add the parameters to the query string
-                query = paramQuery.substring(0,paramQuery.length()-1).toString();
+                query = paramQuery.substring(0, paramQuery.length()-1).toString();
             }
-        } catch (Exception exc){
+        } catch (Exception exc) {
             exc.printStackTrace();
         }
 
         // get the name of the frame and parameters
         String frame = "", param = "";
-        if(!tagcontent.equals("")) {
-            if(!tagcontent.startsWith("&")) {
-                if(tagcontent.indexOf(",") != -1) {
+        if (!tagcontent.equals("")) {
+            if (!tagcontent.startsWith("&")) {
+                if (tagcontent.indexOf(",") != -1) {
                     frame = tagcontent.substring(0, tagcontent.indexOf(","));
                     param = tagcontent.substring(tagcontent.indexOf(",") + 1);
-                }
-                else {
+                } else {
                     frame = tagcontent;
                 }
-            }
-            else {
+            } else {
                 param = tagcontent;
             }
         }
         query = (query == null ? "" : query);
-        if(!query.equals("")) {
-            if(query.indexOf("cmsframe=") != -1) {
+        if (!query.equals("")) {
+            if (query.indexOf("cmsframe=") != -1) {
                 int start = query.indexOf("cmsframe=");
                 int end = query.indexOf("&", start);
                 String cmsframe = "";
-                if(end != -1) {
+                if (end != -1) {
                     cmsframe = query.substring(start + 9, end);
-                }
-                else {
+                } else {
                     cmsframe = query.substring(start + 9);
                 }
-                if(!cmsframe.equals("plain")) {
-                    if(!frame.equals("")) {
-                        if(end != -1) {
+                if (!cmsframe.equals("plain")) {
+                    if (!frame.equals("")) {
+                        if (end != -1) {
                             query = query.substring(0, start + 9) + frame + query.substring(end);
-                        }
-                        else {
+                        } else {
                             query = query.substring(0, start + 9) + frame;
                         }
-                    }
-                    else {
-                        if(end != -1) {
+                    } else {
+                        if (end != -1) {
                             query = query.substring(0, start) + query.substring(end + 1);
-                        }
-                        else {
+                        } else {
                             query = query.substring(0, start);
                         }
                     }
                 }
-            }
-            else {
-                if(!tagcontent.equals("")) {
+            } else {
+                if (!tagcontent.equals("")) {
                     query = query + "&cmsframe=" + frame;
                 }
             }
-            if(!query.equals("")) {
+            if (!query.equals("")) {
                 query = "?" + query;
             }
-        }
-        else {
-            if(!frame.equals("")) {
+        } else {
+            if (!frame.equals("")) {
                 query = "?cmsframe=" + frame;
             }
         }
-        if(!query.equals("")) {
+        if (!query.equals("")) {
             query = query + param;
-        }
-        else {
+        } else {
             query = "?" + param.substring(param.indexOf("&") + 1);
         }
-        if (query.trim().equals("?") || query.trim().equals("&") || query.trim().equals("?&") ||
-            query.trim().equals("??")) {
+        if (query.trim().equals("?") || query.trim().equals("&") || query.trim().equals("?&")
+                || query.trim().equals("??")) {
             query="";
         }
         return query;
@@ -320,20 +315,20 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object getFrameTarget(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String target = "";
         String cmsframe = (String)((Hashtable)userObject).get("cmsframe");
         cmsframe = (cmsframe == null ? "" : cmsframe);
-        if(cmsframe.equals("plain")) {
+        if (cmsframe.equals("plain")) {
             target = "";
-        }else {
-            if(tagcontent.equals("")) {
+        } else {
+            if (tagcontent.equals("")) {
                 target = "target=_top";
-            }else {
+            } else {
                 target = "target=" + tagcontent;
             }
         }
@@ -358,7 +353,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         CmsRequestContext reqContext = cms.getRequestContext();
         String result = "" + reqContext.currentProject().getId() + ":" + reqContext.currentUser().getName() + reqContext.getUri() + reqContext.addSiteRoot(templateFile);
         Enumeration keys = parameters.keys();
-        while(keys.hasMoreElements()) {
+        while (keys.hasMoreElements()) {
             String key = (String)keys.nextElement();
             result = result + key + parameters.get(key);
         }
@@ -378,6 +373,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
+     * @return the template file
+     * @throws CmsException if something goes wrong
      */
     public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile(cms, templateFile);
@@ -385,12 +382,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     }
 
     /**
+     * Gets the path uri.<p>
+     * 
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object getPathUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String path = cms.getRequestContext().getUri();
@@ -408,13 +407,13 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object getQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        String query = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getQueryString();
-        if(query != null && !"".equals(query)) {
+        String query = (CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getQueryString();
+        if (query != null && !"".equals(query)) {
             query = "?" + query;
         }
         return query;
@@ -429,12 +428,12 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public String getRequestIp(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        return ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getRemoteAddr();
+        return (CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getRemoteAddr();
     }
 
     /**
@@ -446,9 +445,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      * @deprecated instead of this method you should use the link tag.
      */
     public Object getServletPath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
@@ -464,12 +463,12 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     *@throws CmsException if something goes wrong
      */
     public String getSessionId(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        return ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getSession(true).getId();
+        return (CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getSession(true).getId();
     }
 
     /**
@@ -491,7 +490,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException In case no stylesheet was found (or there were errors accessing the CmsObject)
      */
@@ -499,11 +498,15 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         String styleSheetUri = null;
         try {
             styleSheetUri = getStylesheet(cms, tagcontent, null, doc, userObject);
-        } catch (CmsException e) {} // Happens if no frametemplate is defined, can be ignored
+        } catch (CmsException e) {
+            // Happens if no frametemplate is defined, can be ignored
+        } 
         if ((styleSheetUri == null) || ("".equals(styleSheetUri))) {
             styleSheetUri = getStylesheet(cms, tagcontent, "frametemplate", doc, userObject);
         } // The original behaviour is to throw an exception in case no stylesheed could be found
-        if (styleSheetUri == null) styleSheetUri = "";
+        if (styleSheetUri == null) {
+            styleSheetUri = "";
+        }
         return styleSheetUri;
     }
                 
@@ -539,39 +542,39 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         // Get the styles from the parameter hashtable
         String styleIE = null;
         String styleNS = null;
-        if(templateFile.hasData("stylesheet-ie")) {
+        if (templateFile.hasData("stylesheet-ie")) {
             styleIE = templateFile.getDataValue("stylesheet-ie");
-        }
-        else {
-            if(templateFile.hasData("stylesheet")) {
+        } else {
+            if (templateFile.hasData("stylesheet")) {
                 styleIE = templateFile.getDataValue("stylesheet");
-            }
-            else {
+            } else {
                 styleIE = "";
             }
         }
-        if(templateFile.hasData("stylesheet-ns")) {
+        if (templateFile.hasData("stylesheet-ns")) {
             styleNS = templateFile.getDataValue("stylesheet-ns");
-        }
-        else {
-            if(templateFile.hasData("stylesheet")) {
+        } else {
+            if (templateFile.hasData("stylesheet")) {
                 styleNS = templateFile.getDataValue("stylesheet");
-            }
-            else {
+            } else {
                 styleNS = "";
             }
         }
 
-        HttpServletRequest orgReq = (HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
+        HttpServletRequest orgReq = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
         String servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
-        if(!servletPath.endsWith("/")){
+        if (!servletPath.endsWith("/")){
             // Make sure servletPath always end's with a "/"
             servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + "/";
         }
 
         // Make sure we don't have a double "/" in the style sheet path
-        if (styleIE.startsWith("/")) styleIE = styleIE.substring(1);
-        if (styleNS.startsWith("/")) styleNS = styleNS.substring(1);
+        if (styleIE.startsWith("/")) {
+            styleIE = styleIE.substring(1);
+        }
+        if (styleNS.startsWith("/")) {
+            styleNS = styleNS.substring(1);
+        }
 
         // Get the user's browser
         String browser = orgReq.getHeader("user-agent");
@@ -593,27 +596,28 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param doc CmsXmlTemplateFile object of our template file including a subtemplate.
      * @param parameters Hashtable with all template class parameters.
      * @return Name of the class that should generate the output for the included template file.
+     * @throws CmsException if something goes wrong
      */
     protected String getTemplateClassName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
         String result = null;
-        if(parameters.containsKey(elementName + "._CLASS_")) {
+        if (parameters.containsKey(elementName + "._CLASS_")) {
             result = (String)parameters.get(elementName + "._CLASS_");
-        }else {
-            if(doc.hasSubtemplateClass(elementName)) {
+        } else {
+            if (doc.hasSubtemplateClass(elementName)) {
                 result = doc.getSubtemplateClass(elementName);
-            }else {
+            } else {
 
                 // Fallback to "body" element
-                if(parameters.containsKey("body._CLASS_")) {
+                if (parameters.containsKey("body._CLASS_")) {
                     result = (String)parameters.get("body._CLASS_");
                 }
             }
         }
-        if(result == null){
+        if (result == null) {
             CmsElementDefinitionCollection elDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
-            if(elDefs != null){
+            if (elDefs != null) {
                 CmsElementDefinition elDef = elDefs.get(elementName);
-                if(elDef != null){
+                if (elDef != null) {
                     result = elDef.getClassName();
                 }
             }
@@ -630,26 +634,27 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param doc CmsXmlTemplateFile object of our template file including a subtemplate.
      * @param parameters Hashtable with all template class parameters.
      * @return Name of the template file that should be included.
+     * @throws CmsException if something goes wrong
      */
     protected String getTemplateFileName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
         String result = null;
-        if(parameters.containsKey(elementName + "._TEMPLATE_")) {
+        if (parameters.containsKey(elementName + "._TEMPLATE_")) {
             result = (String)parameters.get(elementName + "._TEMPLATE_");
-        }else {
-            if(doc.hasSubtemplateFilename(elementName)) {
+        } else {
+            if (doc.hasSubtemplateFilename(elementName)) {
                 result = doc.getSubtemplateFilename(elementName);
-            }else {
+            } else {
                 // Fallback to "body" element
-                if(parameters.containsKey("body._TEMPLATE_")) {
+                if (parameters.containsKey("body._TEMPLATE_")) {
                     result = (String)parameters.get("body._TEMPLATE_");
                 }
             }
         }
-        if(result == null){
+        if (result == null) {
             CmsElementDefinitionCollection elDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
-            if(elDefs != null){
+            if (elDefs != null) {
                 CmsElementDefinition elDef = elDefs.get(elementName);
-                if(elDef != null){
+                if (elDef != null) {
                     result = elDef.getTemplateName();
                 }
             }
@@ -666,20 +671,19 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param doc CmsXmlTemplateFile object of our template file including a subtemplate.
      * @param parameters Hashtable with all template class parameters.
      * @return Name of the class that should generate the output for the included template file.
+     * @throws CmsException if something goes wrong
      */
     protected String getTemplateSelector(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
-        if(parameters.containsKey(elementName + "._TEMPLATESELECTOR_")) {
+        if (parameters.containsKey(elementName + "._TEMPLATESELECTOR_")) {
             return (String)parameters.get(elementName + "._TEMPLATESELECTOR_");
-        }
-        else {
-            if(doc.hasSubtemplateSelector(elementName)) {
+        } else {
+            if (doc.hasSubtemplateSelector(elementName)) {
                 return doc.getSubtemplateSelector(elementName);
-            }
-            else {
+            } else {
                 CmsElementDefinitionCollection elDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
-                if(elDefs != null){
+                if (elDefs != null) {
                     CmsElementDefinition elDef = elDefs.get(elementName);
-                    if(elDef != null){
+                    if (elDef != null) {
                         return elDef.getTemplateSelector();
                     }
                 }
@@ -697,14 +701,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String requestedUri = cms.getRequestContext().getUri();
         String title = cms.readProperty(requestedUri, I_CmsConstants.C_PROPERTY_TITLE);
-        if(title == null) {
+        if (title == null) {
             return "";
         }
         return title;
@@ -720,14 +724,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object getTitleEscaped(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String requestedUri = cms.getRequestContext().getUri();
         String title = cms.readProperty(requestedUri, I_CmsConstants.C_PROPERTY_TITLE);
-        if(title == null) {
+        if (title == null) {
             return "";
         }
         return CmsEncoder.escapeHtml(title);
@@ -742,14 +746,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object getDescription(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String requestedUri = cms.getRequestContext().getUri();
         String description = cms.readProperty(requestedUri, I_CmsConstants.C_PROPERTY_DESCRIPTION);
-        if(description == null) {
+        if (description == null) {
             description = "";
         }
         return description;
@@ -764,21 +768,21 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent The name of the property.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Object getProperty(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String requestedUri = cms.getRequestContext().getUri();
         String value = "";
-        try{
+        try {
             value = cms.readProperty(requestedUri, tagcontent);
-        }catch(Exception e){
-            if(OpenCms.getLog(this).isWarnEnabled()) {
+        } catch (Exception e) {
+            if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn("Usermethod getProperty throwed an Exception getting " + tagcontent, e);
             }
         }
-        if(value == null) {
+        if (value == null) {
             value = "";
         }
         return value;
@@ -793,14 +797,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cms CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
-     * @param userObj Hashtable with parameters.
+     * @param userObject Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException
      */
     public Object getKeywords(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
         String requestedUri = cms.getRequestContext().getUri();
         String keywords = cms.readProperty(requestedUri, I_CmsConstants.C_PROPERTY_KEYWORDS);
-        if(keywords == null) {
+        if (keywords == null) {
             keywords = "";
         }
         return keywords;

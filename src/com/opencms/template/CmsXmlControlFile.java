@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2004/05/19 16:20:54 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,14 +55,14 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2004/05/19 16:20:54 $
+ * @version $Revision: 1.49 $ $Date: 2004/06/15 10:59:44 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent {
 
     /**
      * Default constructor.
      */
-    public CmsXmlControlFile() throws CmsException {
+    public CmsXmlControlFile() {
         super();
     }
 
@@ -71,7 +71,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * of the given filename.
      *
      * @param cms CmsObject object for accessing system resources.
-     * @param filename Name of the body file that shoul be read.
+     * @param file name of the body file that shoul be read.
+     * @throws CmsException if something goes wrong
      */
     public CmsXmlControlFile(CmsObject cms, CmsFile file) throws CmsException {
         super();
@@ -83,7 +84,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * of the given filename.
      *
      * @param cms CmsObject object for accessing system resources.
-     * @param filename Name of the body file that shoul be read.
+     * @param filename name of the body file that shoul be read.
+     * @throws CmsException if something goes wrong
      */
     public CmsXmlControlFile(CmsObject cms, String filename) throws CmsException {
         super();
@@ -97,6 +99,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * @param cms for accessing system resources
      * @param filename name of the file that shoul be stored in this XML file cache
      * @param content XML file to parse
+     * @throws CmsException if something goes wrong
      */
     public CmsXmlControlFile(CmsObject cms, String filename, String content) throws CmsException {
         super();
@@ -113,7 +116,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * @param name Name of the element definition section.
      */
     private void createElementDef(String name) {
-        if(!hasData("ELEMENTDEF." + name)) {
+        if (!hasData("ELEMENTDEF." + name)) {
             Document doc = getXmlDocument();
             Element e = doc.createElement("ELEMENTDEF");
             e.setAttribute("name", name);
@@ -133,6 +136,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Gets the template class of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Name of the template class.
+     * @throws CmsException if something goes wrong
      */
     public String getElementClass(String elementName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".CLASS");
@@ -142,7 +146,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Gets an enumeration of all names of the subelement definition in the
      * body file.
      * @return Enumeration with of names.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Enumeration getElementDefinitions() throws CmsException {
         NodeList elementDefTags = getXmlDocument().getDocumentElement().getChildNodes();
@@ -153,6 +157,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Gets the value of a single parameter of a given subelement definition.
      * @param elementName Name of the subelement.
      * @param parameterName Name of the requested parameter.
+     * @return the element parameter value
+     * @throws CmsException if something goes wrong
      */
     public String getElementParameter(String elementName, String parameterName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName);
@@ -162,7 +168,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Gets an enumeration of all parameter names of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Enumeration of all names.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Enumeration getElementParameterNames(String elementName) throws CmsException {
         Element elementDefinition = getData("elementdef." + elementName);
@@ -174,7 +180,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Get a hashtable containing all parameters and thies values of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Enumeration of all names.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Hashtable getElementParameters(String elementName) throws CmsException {
         Hashtable result = new Hashtable();
@@ -182,11 +188,11 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
         NodeList parameterTags = elementDefinition.getChildNodes();
 
         int numElements = parameterTags.getLength();
-        for(int i = 0;i < numElements;i++) {
+        for (int i = 0; i < numElements; i++) {
             Node n = parameterTags.item(i);
-            if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
+            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
                 String name = ((Element)n).getAttribute("name");
-                if(name != null && !"".equals(name)) {
+                if (name != null && !"".equals(name)) {
                     result.put(name, getTagValue((Element)n));
                 }
             }
@@ -198,6 +204,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Gets the filename of the master template file of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Filename of the template file.
+     * @throws CmsException if something goes wrong
      */
     public String getElementTemplate(String elementName) throws CmsException {
         //return getDataValue("ELEMENTDEF." + elementName + ".TEMPLATE");
@@ -209,6 +216,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Gets the filename of the master template file of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Filename of the template file.
+     * @throws CmsException if something goes wrong
      */
     public String getElementTemplSelector(String elementName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".TEMPLATESELECTOR");
@@ -218,12 +226,12 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Gets the filename of the master template file defined in
      * the body file.
      * @return Filename of the template file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public String getMasterTemplate() throws CmsException {
         String result = getDataValue("mastertemplate");
-        if(result == null || "".equals(result)) {
-            if(OpenCms.getLog(this).isErrorEnabled() ) {
+        if (result == null || "".equals(result)) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("<MASTERTEMPLATE> tag not found in file " + getAbsoluteFilename());
             }
             removeFromFileCache();
@@ -245,18 +253,17 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
     private Enumeration getNamesFromNodeList(NodeList nl, String tag, boolean unnamedAllowed) throws CmsException {
         int numElements = nl.getLength();
         Vector collectNames = new Vector();
-        for(int i = 0;i < numElements;i++) {
+        for (int i = 0; i < numElements; i++) {
             Node n = nl.item(i);
-            if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
+            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
                 String name = ((Element)n).getAttribute("name");
-                if(name == null || "".equals(name)) {
+                if (name == null || "".equals(name)) {
 
                     // unnamed element found.
-                    if(unnamedAllowed) {
+                    if (unnamedAllowed) {
                         name = "(default)";
-                    }
-                    else {
-                        if(OpenCms.getLog(this).isErrorEnabled()) {
+                    } else {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
                             OpenCms.getLog(this).error("Unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename());
                         }
                         throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename(), CmsException.C_XML_TAG_MISSING);
@@ -271,6 +278,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
     /**
      * Gets the value of a single parameter of the master template.
      * @param parameterName Name of the requested parameter.
+     * @return the parameter value
+     * @throws CmsException if something goes wrong
      */
     public String getParameter(String parameterName) throws CmsException {
         return getDataValue("PARAMETER." + parameterName);
@@ -279,7 +288,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
     /**
      * Gets an enumeration of all parameter names of the master template.
      * @return Enumeration of all names.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public Enumeration getParameterNames() throws CmsException {
         NodeList parameterTags = getXmlDocument().getDocumentElement().getChildNodes();
@@ -289,14 +298,15 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
     /**
      * Gets the template class defined in the body file.
      * @return Name of the template class.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public String getTemplateClass() throws CmsException {
         return getDataValue("class");
     }
 
     /**
-     * Gets the expected tagname for the XML documents of this content type
+     * Gets the expected tagname for the XML documents of this content type.<p>
+     * 
      * @return Expected XML tagname.
      */
     public String getXmlDocumentTagName() {
@@ -307,7 +317,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Checks if the body file contains a definition of the
      * template class name for a given subelement definition.
      * @param elementName Name of the subelement.
-     * @return <code>true<code> if a definition exists, <code>false</code> otherwise.
+     * @return <code>true</code> if a definition exists, <code>false</code> otherwise.
      */
     public boolean isElementClassDefined(String elementName) {
         return this.hasData("ELEMENTDEF." + elementName + ".CLASS");
@@ -317,7 +327,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Checks if the body file contains a definition of the
      * template file name for a given subelement definition.
      * @param elementName Name of the subelement.
-     * @return <code>true<code> if a definition exists, <code>false</code> otherwise.
+     * @return <code>true</code> if a definition exists, <code>false</code> otherwise.
      */
     public boolean isElementTemplateDefined(String elementName) {
         return this.hasData("ELEMENTDEF." + elementName + ".TEMPLATE");
@@ -327,7 +337,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Checks if the body file contains a definition of the
      * template selector for a given subelement definition.
      * @param elementName Name of the subelement.
-     * @return <code>true<code> if a definition exists, <code>false</code> otherwise.
+     * @return <code>true</code> if a definition exists, <code>false</code> otherwise.
      */
     public boolean isElementTemplSelectorDefined(String elementName) {
         return this.hasData("ELEMENTDEF." + elementName + ".TEMPLATESELECTOR");
@@ -349,16 +359,15 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * @param parameterName Name of the requested parameter.
      * @param parameterValue Value to be set
      */
-    public void setElementParameter(String elementName, String parameterName, String parameterValue) throws CmsException {
+    public void setElementParameter(String elementName, String parameterName, String parameterValue) {
         createElementDef(elementName);
-        if(!hasData("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName)) {
+        if (!hasData("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName)) {
             Document doc = getXmlDocument();
             Element e = doc.createElement("PARAMETER");
             e.setAttribute("name", parameterName);
             e.appendChild(doc.createTextNode(parameterValue));
             setData("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName, e);
-        }
-        else {
+        } else {
             setData("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName, parameterValue);
         }
     }
@@ -387,7 +396,6 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * Sets the filename of the master template file defined in
      * the body file.
      * @param template Filename of the template file.
-     * @throws CmsException
      */
     public void setMasterTemplate(String template) {
         setData("masterTemplate", template);
@@ -398,51 +406,56 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * @param parameterName Name of the requested parameter.
      * @param parameterValue Value to be set
      */
-    public void setParameter(String parameterName, String parameterValue) throws CmsException {
-        if(!hasData("PARAMETER." + parameterName)) {
+    public void setParameter(String parameterName, String parameterValue) {
+        if (!hasData("PARAMETER." + parameterName)) {
             Document doc = getXmlDocument();
             Element e = doc.createElement("PARAMETER");
             e.setAttribute("name", parameterName);
             e.appendChild(doc.createTextNode(parameterValue));
             setData("PARAMETER." + parameterName, e);
-        }
-        else {
+        } else {
             setData("PARAMETER." + parameterName, parameterValue);
         }
     }
 
     /**
-     * Set the template class used for the master Template
+     * Set the template class used for the master Template.<p>
+     * 
      * @param templateClass Name of the template class.
      */
     public void setTemplateClass(String templateClass) {
         setData("class", templateClass);
     }
 
-
+    /**
+     * Gets a collection of element definitions.<p>
+     * 
+     * @return a collection of element definitions
+     * @throws CmsException if something goes wrong
+     */
     public CmsElementDefinitionCollection getElementDefinitionCollection() throws CmsException {
         CmsElementDefinitionCollection result = new CmsElementDefinitionCollection();
         Enumeration elementDefinitions = getElementDefinitions();
-        while(elementDefinitions.hasMoreElements()) {
+        while (elementDefinitions.hasMoreElements()) {
             String elementName = (String)elementDefinitions.nextElement();
 
             String elementClass = null;
             String elementTemplate = null;
             String elementTs = null;
-            if(isElementClassDefined(elementName)) {
+            if (isElementClassDefined(elementName)) {
                 elementClass = getElementClass(elementName);
             }
-            if(isElementTemplateDefined(elementName)) {
+            if (isElementTemplateDefined(elementName)) {
                 elementTemplate = getElementTemplate(elementName);
             }
-            if(isElementTemplSelectorDefined(elementName)) {
+            if (isElementTemplSelectorDefined(elementName)) {
                 elementTs = getElementTemplSelector(elementName);
             }
             Hashtable elementParameters = getElementParameters(elementName);
-            if(elementClass == null){
+            if (elementClass == null) {
                 elementClass = I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS;
             }
-            if(elementTemplate != null){
+            if (elementTemplate != null) {
                 elementTemplate = CmsLinkManager.getAbsoluteUri(elementTemplate, getAbsoluteFilename());
             }
             result.add(new CmsElementDefinition(elementName, elementClass, elementTemplate, elementTs, elementParameters));
@@ -462,7 +475,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * @param page the page of which the body path gets validated
      * @return the original body path if it valid, or "/system/bodies/" + current folder + filename
      */
-    public String validateBodyPath( CmsObject cms, String bodyPath, CmsResource page) {
+    public String validateBodyPath(CmsObject cms, String bodyPath, CmsResource page) {
         String validatedBodyPath = null;
         
         if (bodyPath==null || "".equals(bodyPath)) {

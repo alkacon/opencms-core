@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterObjectReplaceTags.java,v $
-* Date   : $Date: 2004/06/14 16:04:30 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,8 @@
 package com.opencms.htmlconverter;
 
 /**
- * Object for replacing HTML tags.
+ * Object for replacing HTML tags.<p>
+ * 
  * @author Andreas Zahner
  * @version 1.0
  */
@@ -50,7 +51,7 @@ final class CmsHtmlConverterObjectReplaceTags {
     /** the suffix will be placed behind every replaced tag. */
     private String m_suffix;
     /** if true, individual replaceStrings will be read from tag attributes. */
-    private boolean m_getReplaceFromAttrs = false;
+    private boolean m_getReplaceFromAttrs;
     /** tag attribute where the replaceStartTag String is stored. */
     private String m_startAttribute;
     /** tag attribute where the replaceEndTag String is stored. */
@@ -58,12 +59,12 @@ final class CmsHtmlConverterObjectReplaceTags {
     /** tag attribute where the parameter String is stored. */
     private String m_parameter;
     /** if true, only tag attribute specified in parameter String is replaced. */
-    private boolean m_replaceParamAttr = false;
+    private boolean m_replaceParamAttr;
     /** true, if replaceEndTag is empty. */
-    private boolean m_inline = false;
+    private boolean m_inline;
 
     /**
-     * default constructor creates object with empty Strings.<p>
+     * Default constructor creates object with empty Strings.<p>
      */
     protected CmsHtmlConverterObjectReplaceTags () {
         m_prefix = "";
@@ -81,7 +82,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * constructor creates object with parameters.<p>
+     * Constructor creates object with parameters.<p>
+     * 
      * @param prefix String prefix
      * @param tagName String tagName
      * @param tagAttrib String tagAttribute
@@ -114,7 +116,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns prefix of actual object.<p>
+     * Returns prefix of actual object.<p>
+     * 
      * @return String with prefix
      */
     protected String getPrefix() {
@@ -122,7 +125,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns suffix of actual object.<p>
+     * Returns suffix of actual object.<p>
+     * 
      * @return String with suffix
      */
     protected String getSuffix() {
@@ -130,7 +134,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns tag name of tag which will be replaced.<p>
+     * Returns tag name of tag which will be replaced.<p>
+     * 
      * @return String with tag name
      */
     protected String getTagName() {
@@ -138,7 +143,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns attribute of tag which will be replaced.<p>
+     * Returns attribute of tag which will be replaced.<p>
+     * 
      * @return String with attribute name
      */
     protected String getTagAttrib() {
@@ -146,7 +152,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns attribute value of tag which will be replaced.<p>
+     * Returns attribute value of tag which will be replaced.<p>
+     * 
      * @return String with attribute value
      */
     protected String getTagAttribValue() {
@@ -154,7 +161,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns String which replaces the start tag.<p>
+     * Returns String which replaces the start tag.<p>
+     * 
      * @return String with prefix, content and suffix
      */
     protected String getReplaceStartTag() {
@@ -162,7 +170,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns String which replaces the end tag.<p>
+     * Returns String which replaces the end tag.<p>
+     * 
      * @return String with prefix, content and suffix
      */
     protected String getReplaceEndTag() {
@@ -173,7 +182,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * checks if end tag will be replaced or deleted.<p>
+     * Checks if end tag will be replaced or deleted.<p>
+     * 
      * @return true if m_replaceEndTag is "", otherwise false
      */
     protected boolean getInline() {
@@ -181,7 +191,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * checks if replacecontents are encoded in html code attributes.<p>
+     * Checks if replacecontents are encoded in html code attributes.<p>
+     * 
      * @return true if replacecontents are encoded, otherwise false
      */
     protected boolean getReplaceFromAttrs() {
@@ -189,7 +200,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns name of start attribute of encoded replacecontents.<p>
+     * Returns name of start attribute of encoded replacecontents.<p>
+     * 
      * @return String with attribute name
      */
     protected String getStartAttribute() {
@@ -197,7 +209,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns name of end attribute of encoded replacecontents.<p>
+     * Returns name of end attribute of encoded replacecontents.<p>
+     * 
      * @return String with attribute name
      */
     protected String getEndAttribute() {
@@ -205,7 +218,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns attribute name of parameter.<p>
+     * Returns attribute name of parameter.<p>
+     * 
      * @return String with attribute name
      */
     protected String getParameter() {
@@ -213,7 +227,8 @@ final class CmsHtmlConverterObjectReplaceTags {
     }
 
     /**
-     * returns if only an attribute must be replaced.<p>
+     * Returns if only an attribute must be replaced.<p>
+     * 
      * @return true if only attribute has to be replaced
      */
     protected boolean getReplaceParamAttr() {

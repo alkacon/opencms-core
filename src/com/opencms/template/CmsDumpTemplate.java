@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2004/03/29 10:39:54 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,16 +29,13 @@
 
 package com.opencms.template;
 
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResourceTypePlain;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
-import com.opencms.legacy.*;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.cache.A_CmsElement;
 import com.opencms.template.cache.CmsElementDump;
 
@@ -50,14 +47,19 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.58 $ $Date: 2004/03/29 10:39:54 $
+ * @version $Revision: 1.59 $ $Date: 2004/06/15 10:59:44 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
-    /** Boolean for additional debug output control */
+    /** Boolean for additional debug output control. */
     private static final boolean C_DEBUG = false;
 
-    public CmsDumpTemplate() {}
+    /**
+     * Creates a new CmsDumpTemplate.<p>
+     */
+    public CmsDumpTemplate() {
+        // noop    
+    }
 
     /**
      * gets the caching information from the current template class.
@@ -85,10 +87,10 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @param elementName <em>not used here</em>.
      * @param parameters <em>not used here</em>.
      * @return Unprocessed content of the given template file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
-        if(C_DEBUG && OpenCms.getLog(this).isDebugEnabled()) {
+        if (C_DEBUG && OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Dumping contents of file " + templateFile);
         }
         byte[] s = null;
@@ -96,14 +98,13 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
             // Encoding project:
             CmsFile file = cms.readFile(templateFile); 
             s = file.getContents();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             s = null;
             String errorMessage = "Error while reading file " + templateFile + ": " + e;
-            if(OpenCms.getLog(this).isErrorEnabled() ) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(errorMessage, e);
             }
-            if(e instanceof CmsException) {
+            if (e instanceof CmsException) {
                 throw (CmsException)e;
             } else {
                 throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
@@ -121,7 +122,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @param parameters <em>not used here</em>.
      * @param templateSelector <em>not used here</em>.
      * @return Unprocessed content of the given template file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 
@@ -138,7 +139,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      *
      * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file
-     * @param parameters Hashtable with all template class parameters.
+     * @param parameter Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
@@ -159,6 +160,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
     /**
      * Template cache is not used here since we don't include
      * any subtemplates <em>(not implemented)</em>.
+     * 
+     * @param c the cms template cache
      */
     public void setTemplateCache(I_CmsTemplateCache c) {
         // do nothing.
@@ -167,6 +170,11 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
     /**
      * Template cache is not used here since we don't include
      * any subtemplates. So we can always return <code>false</code> here.
+     * @param cms the cms object
+     * @param templateFile the name of the template file
+     * @param elementName the name of the element
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return <code>false</code>
      */
     public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
@@ -185,7 +193,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @param parameters All parameters of the current request
      * @return New element for the element cache
      */
-    public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters){
+    public A_CmsElement createElement (CmsObject cms, String templateFile, Hashtable parameters) {
         return new CmsElementDump(getClass().getName(), templateFile, getCacheDirectives(cms, templateFile, null, parameters, null),
                     CmsXmlTemplateLoader.getElementCache().getVariantCachesize());
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterObjectReplaceStrings.java,v $
-* Date   : $Date: 2004/06/14 16:04:30 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,19 +30,20 @@ package com.opencms.htmlconverter;
 
 /**
  * Object for replacing Strings. Contains 4 Strings with String to replace,
- * String with new content and prefix and suffix.
+ * String with new content and prefix and suffix.<p>
+ * 
  * @author Andreas Zahner
  * @version 1.0
  */
 final class CmsHtmlConverterObjectReplaceStrings extends CmsHtmlConverterObjectReplaceContent {
 
-    /** the prefix will be placed in front of every replaced content. */
+    /** The prefix will be placed in front of every replaced content. */
     private String m_prefix;
-    /** the suffix will be placed behind every replaced content. */
+    /** The suffix will be placed behind every replaced content. */
     private String m_suffix;
 
     /**
-     * default constructor creates object with empty Strings.<p>
+     * Default constructor creates object with empty Strings.<p>
      */
     protected CmsHtmlConverterObjectReplaceStrings () {
         super();
@@ -51,7 +52,8 @@ final class CmsHtmlConverterObjectReplaceStrings extends CmsHtmlConverterObjectR
     }
 
     /**
-     * constructor creates object with parameter values.<p>
+     * Constructor creates object with parameter values.<p>
+     * 
      * @param sS String searchString
      * @param p String prefix
      * @param rS String replaceString
@@ -64,7 +66,8 @@ final class CmsHtmlConverterObjectReplaceStrings extends CmsHtmlConverterObjectR
     }
 
     /**
-     * returns the new content.<p>
+     * Returns the new content.<p>
+     * 
      * @return new String with prefix and suffix added
      */
     protected String getReplaceItem() {

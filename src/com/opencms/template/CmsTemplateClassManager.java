@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/06/15 10:59:44 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,12 +42,12 @@ public final class CmsTemplateClassManager {
      * Hides the public constructor.<p>
      */
     private CmsTemplateClassManager() {
+        // empty constructor
     }
     
     /**
      * Creates an instance of the class with the given classname.<p>
      *
-     * @param cms the cms context
      * @param classname name of the class to create
      * @return an instance of the class with the given name
      * @throws CmsException if something goes wrong

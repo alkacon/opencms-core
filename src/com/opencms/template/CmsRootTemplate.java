@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * the content of a master template.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.50 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.51 $ $Date: 2004/06/15 10:59:44 $
  */
 public class CmsRootTemplate {
 
@@ -63,6 +63,8 @@ public class CmsRootTemplate {
      * @param parameters Hashtable with all template class parameters.
      *
      * @return Byte array containing the results of the master template.
+     * 
+     * @throws CmsException if something goes wrong
      */
     public byte[] getMasterTemplate(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, com.opencms.template.I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
         byte[] result;
@@ -89,15 +91,15 @@ public class CmsRootTemplate {
         I_CmsResponse resp = CmsXmlTemplateLoader.getResponse(cms.getRequestContext());
 
         // was there already a cache-control header set?
-        if(!resp.containsHeader("Cache-Control")) {
+        if (!resp.containsHeader("Cache-Control")) {
 
             // only if the resource is cacheable and if the current project is online,
             // then the browser may cache the resource
-            if(cd.isProxyPublicCacheable() || cd.isProxyPrivateCacheable()) {
+            if (cd.isProxyPublicCacheable() || cd.isProxyPrivateCacheable()) {
 
                 // set max-age to 5 minutes. In this time a proxy may cache this content.
                 resp.setHeader("Cache-Control", "max-age=300");
-                if(cd.isProxyPrivateCacheable()) {
+                if (cd.isProxyPrivateCacheable()) {
                     resp.addHeader("Cache-Control", "private");
                 }
 
@@ -111,20 +113,19 @@ public class CmsRootTemplate {
             }
         }
 
-        if(cacheable && cache.has(cacheKey) && !templateClass.shouldReload(cms, masterTemplateUri, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null)) {
+        if (cacheable && cache.has(cacheKey) && !templateClass.shouldReload(cms, masterTemplateUri, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null)) {
             result = cache.get(cacheKey);
         } else {
             try {
                 result = templateClass.getContent(cms, masterTemplateUri, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters);
-            }
-            catch(CmsException e) {
+            } catch (CmsException e) {
                 cache.clearCache(cacheKey);
-                if(OpenCms.getLog(this).isWarnEnabled() && (e.getType() != CmsException.C_NO_USER)) {
+                if (OpenCms.getLog(this).isWarnEnabled() && (e.getType() != CmsException.C_NO_USER)) {
                     OpenCms.getLog(this).warn("Could not get contents of master template " + masterTemplate.getName(), e);
                 }
                 throw e;
             }
-            if(cacheable) {
+            if (cacheable) {
                 cache.put(cacheKey, result);
             }
         }

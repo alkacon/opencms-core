@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2004/05/13 13:58:10 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,31 +34,39 @@ import org.opencms.monitor.CmsMemoryMonitor;
 
 import org.apache.commons.collections.map.LRUMap;
 
-
+/**
+ * Implements the OpenCms template cache.<p>
+ * 
+ * @author Alexander Lucas
+ * @version $Revision: 1.20 $ $Date: 2004/06/15 10:59:44 $
+ */
 public class CmsTemplateCache implements I_CmsTemplateCache {
     
-    /** Hashtable to store the cached data */
+    /** Hashtable to store the cached data. */
+    private LRUMap m_templateCache = new LRUMap(1000);
     
-    private LRUMap templateCache = new LRUMap(1000);
-    
-    /** Default constructor to create a template cache */
+    /** 
+     * Default constructor to create a template cache.<p>
+     */
     public CmsTemplateCache() {
         CmsMemoryMonitor monitor = OpenCms.getMemoryMonitor();
         if ((monitor != null) && monitor.enabled()) {
-            monitor.register(this.getClass().getName()+"."+"templateCache", templateCache);
+            monitor.register(this.getClass().getName()+"."+"templateCache", m_templateCache);
         }
         
-        if(OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled() ) {
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : XMLTemplate template cache initialized successfully");
         }
     }
     
-    /** Deletes all documents from the template cache. */
+    /** 
+     * Deletes all documents from the template cache. 
+     */
     public void clearCache() {
-        if(OpenCms.getLog(this).isInfoEnabled()) {
+        if (OpenCms.getLog(this).isInfoEnabled()) {
             OpenCms.getLog(this).info("Clearing template cache");
         }
-        templateCache.clear();
+        m_templateCache.clear();
     }
     
     /**
@@ -67,11 +75,10 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
      * @param key Key of the template that should be deleted.
      */
     public void clearCache(Object key) {
-        if(key instanceof String) {
-            templateCache.remove(key);
-        }
-        else {
-            if(OpenCms.getLog(this).isInfoEnabled()) {
+        if (key instanceof String) {
+            m_templateCache.remove(key);
+        } else {
+            if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info("Could not clear key from cache: " + key);
             }
         }
@@ -83,13 +90,13 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
      * @return byte array with the cached template content or null if no cached value was found.
      */
     public byte[] get(Object key) {
-        if(OpenCms.getLog(this).isInfoEnabled()) {
+        if (OpenCms.getLog(this).isInfoEnabled()) {
             OpenCms.getLog(this).info("Getting " + key + " from cache");
         }
-        if(key instanceof String) {
-            return (byte[])templateCache.get(key);
+        if (key instanceof String) {
+            return (byte[])m_templateCache.get(key);
         } else {
-            if(OpenCms.getLog(this).isInfoEnabled()) {
+            if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info("Getting " + key + " from cache failed");
             }
             return null;
@@ -103,10 +110,10 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
      * @return <EM>true</EM> if a cached content was found, <EM>false</EM> otherwise.
      */
     public boolean has(Object key) {
-        if(key instanceof String) {
-            return templateCache.get(key) != null;
+        if (key instanceof String) {
+            return m_templateCache.get(key) != null;
         } else {
-            if(OpenCms.getLog(this).isWarnEnabled()) {
+            if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn(key + " is not instanceof String");
             }
             return false;
@@ -119,10 +126,10 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
      * @param content Template content to store.
      */
     public void put(Object key, byte[] content) {
-        if(key instanceof String) {
-            templateCache.put(key, content);
+        if (key instanceof String) {
+            m_templateCache.put(key, content);
         } else {
-            if(OpenCms.getLog(this).isWarnEnabled()) {
+            if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn(key + " is not instanceof String");
             }
         }

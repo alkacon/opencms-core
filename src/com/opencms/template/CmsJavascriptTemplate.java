@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsJavascriptTemplate.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,11 @@ import com.opencms.template.cache.A_CmsElement;
 
 import java.util.Hashtable;
 
+/**
+ * Represents a JavaScript template.
+ * @author Alexander Lucas
+ * @version $Revision: 1.23 $ $Date: 2004/06/15 10:59:44 $
+ */
 public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascriptTemplate {
 
     /**
@@ -55,7 +60,7 @@ public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascr
      * @param elementName Element name of this template in our parent template
      * @param parameters Hashtable with all template class parameters.
      * @return Content of the template and all subtemplates.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
         return "".getBytes();
@@ -72,7 +77,7 @@ public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascr
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector section that should be processed.
      * @return Content of the template and all subtemplates.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         return "".getBytes();
@@ -155,7 +160,7 @@ public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascr
      * @param c Template cache to be used.
      */
     public void setTemplateCache(I_CmsTemplateCache c) {
-
+        // noop
     }
 
     /**
@@ -173,7 +178,12 @@ public class CmsJavascriptTemplate extends A_CmsTemplate implements I_CmsJavascr
     }
 
     /**
-     * Not yet implemented
+     * Not yet implemented.<p>
+     * 
+     * @param cms CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param parameters Hashtable with all template class parameters
+     * @return the element
      */
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
         // to be implemented

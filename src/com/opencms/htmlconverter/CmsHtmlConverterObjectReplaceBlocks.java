@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterObjectReplaceBlocks.java,v $
-* Date   : $Date: 2004/06/14 16:04:30 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2004/06/15 10:59:44 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ final class CmsHtmlConverterObjectReplaceBlocks {
     /** the suffix will be placed behind every replaced block. */
     private String m_suffix;
     /** if true, individual replaceString will be read from tag attribute. */
-    private boolean m_getReplaceFromAttrs = false;
+    private boolean m_getReplaceFromAttrs;
     /** tag attribute where the replaceString is stored. */
     private String m_replaceAttribute;
     /** tag attribute where the parameter String is stored. */
